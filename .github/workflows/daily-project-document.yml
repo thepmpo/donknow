@@ -1,0 +1,55 @@
+name: Daily project document (19 KST)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 10 * * *' # 19:00 Asia/Seoul; GitHub may delay scheduled jobs
+permissions:
+  contents: write
+concurrency:
+  group: daily-project-document
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify journal collection
+        run: python3 -m unittest discover -s test -p '*_test.py'
+      - name: Summarize committed work and regenerate HTML
+        run: python3 scripts/daily-project-update.py
+      - name: Save documentation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/daily-updates.md docs/daily-update-state.json docs/notion-handoff.md docs/asset-manifest.json public/project.html public/project-assets
+          if ! git diff --cached --quiet; then
+            git commit -m 'docs: daily project update [skip ci]'
+            git push origin HEAD:main
+          fi
+      - name: Request public site deployment
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          python3 - <<'PY'
+          import os, urllib.request, urllib.parse
+          hook=os.environ.get('RENDER_DEPLOY_HOOK','')
+          if not hook:
+              print('::warning::GitHub HTML updated. Public Render deployment requires the RENDER_DEPLOY_HOOK repository secret; it is not configured.')
+          else:
+              url=urllib.parse.urlsplit(hook)
+              if url.scheme!='https' or url.netloc!='api.render.com' or url.path!='/deploy/srv-dbgpc0ff3r2c73abc7e0':
+                  raise SystemExit('Unexpected deployment hook; no request sent')
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(hook,method='POST'),timeout=30) as response:
+                      if not 200<=response.status<300: raise ValueError()
+              except Exception:
+                  raise SystemExit('Render deployment request failed. Secret URL was not logged.')
+              print('Render deployment requested. This is not a Live-status confirmation.')
+          PY

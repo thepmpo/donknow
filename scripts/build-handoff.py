@@ -12,6 +12,8 @@ DATE = datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')
 REPO = 'https://github.com/sjfieni/donknow'
 RAW = f'https://raw.githubusercontent.com/sjfieni/donknow/{CODE}/'
 images = sorted(p for folder in ('artifacts', 'mobile/assets') for p in (ROOT/folder).rglob('*') if p.suffix.lower() in {'.png','.jpg','.jpeg','.gif','.webp','.svg','.ico'})
+priority = ['artifacts/mobile-todos.png','artifacts/mobile-calendar.png','artifacts/mobile-duckduck.png','artifacts/mobile-log.png','artifacts/mobile-profile.png']
+images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if p.relative_to(ROOT).as_posix() in priority else (1 if p.name.startswith('mobile-') else 2, p.as_posix()))
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
@@ -226,7 +228,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 실제 작업에는 연결된 GitHub 저장소 소스와 필요한 도구/계정 접근이 추가로 필요합니다. 문서를 읽는 것만으로 코드·계정 권한이 자동 제공되지 않습니다. 읽기/브라우저 도구가 없어 문서를 열지 못하면 HTML 파일 또는 본문을 요청하세요. 로그인 비밀번호·토큰은 채팅으로 요청하지 말고, 계정 인증은 사용자가 해당 서비스의 보안 화면에서 수행하게 하세요. 접근 실패를 서비스 장애로 단정하지 마세요.
 
-수정한 뒤 변경 내용·관련 파일·검증·실제 배포 상태를 docs/change-log.md와 이 HTML에 반드시 갱신하세요. 전체 실행 지침은 17절, 환경/보안 설정은 6–11절, 실제 작업 문서 전문은 18절에 포함되어 있습니다. 모르는 운영 상태는 성공으로 추정하지 말고 확인 전으로 유지하세요.
+수정한 뒤 변경 내용·관련 파일·검증·실제 배포 상태를 docs/change-log.md와 이 HTML에 반드시 갱신하세요. 전체 실행 지침은 17절, 환경/보안 설정은 데이터·보안·설정·검증 부분, 실제 작업 문서 전문은 18절에 포함되어 있습니다. 모르는 운영 상태는 성공으로 추정하지 말고 확인 전으로 유지하세요.
 
 ### 이어받기 절차
 
@@ -289,8 +291,10 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 '''
 history = subprocess.check_output(['git','log','--reverse','--format=%h %s'],cwd=ROOT,text=True).strip()
 gallery = []
+labels={'mobile-todos':'할 일','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
 for item in manifest:
-    gallery += [f"### {item['path']}", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']
+    name=labels.get(Path(item['path']).stem,Path(item['path']).stem.replace('-',' '))
+    gallery += [f"### {name}", f"파일: `{item['path']}`", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']
 
 def appendix(path):
     original = (ROOT/path).read_text()
@@ -310,8 +314,20 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
-body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',(ROOT/'docs/change-log.md').read_text()).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
+documents=['docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
+# Put the reader's decisions ahead of engineering reference material.
+daily=(ROOT/'docs/daily-updates.md').read_text()
+daily=re.sub(r'<!-- daily:.*? -->', '', daily)
+daily=re.sub(r'^(#{1,4}) ',r'##\1 ',daily,flags=re.M)
+body=body.replace('### Git 커밋 이력', '### 저녁 7시 자동 정리\n\n'+daily+'\n\n### Git 커밋 이력')
+order=[(1,'덕은 어떤 서비스인가요'),(3,'지금 어디까지 되었나요'),(14,'최근 변경과 매일 기록'),(2,'화면과 사용 흐름'),(15,'화면 미리보기와 이미지'),(13,'댓글로 수정 요청하기'),(12,'다음 할 일과 AI 이어받기'),(4,'서비스와 관리 바로가기'),(5,'개발 구조와 파일 지도'),(6,'데이터와 보안'),(7,'환경 변수'),(8,'연결과 동기화'),(9,'운영·백업·복구'),(10,'오류와 해결 기록'),(11,'검증과 실행 명령'),(16,'소스와 정적 미리보기'),(17,'AI 개발 지침 전문'),(18,'전체 참고 문서')]
+pieces=re.split(r'(?=^## \d+\. )',body,flags=re.M)
+sections={int(re.match(r'^## (\d+)\.',piece)[1]):piece for piece in pieces[1:]}
+body=pieces[0]+''.join(re.sub(r'^## \d+\. [^\n]+',f'## {i}. {title}',sections[old],count=1) for i,(old,title) in enumerate(order,1))
+number_map={old:i for i,(old,_) in enumerate(order,1)}
+body=re.sub(r'(?<!\d)(\d+)절',lambda m:str(number_map.get(int(m[1]),int(m[1])))+'절',body)
+body=body.replace('14번', '3번').replace('6–11절', '9–15절')
 (ROOT/'docs/notion-handoff.md').write_text(body)
 import_md=body
 for item in manifest:import_md=import_md.replace(RAW+item['path'],item['import_path'])
@@ -344,6 +360,7 @@ for line in inline_md.splitlines():
         html_parts.append('<tr>'+''.join('<td>'+inline(cell.strip())+'</td>' for cell in line.strip('|').split('|'))+'</tr>');continue
     heading=re.match(r'^(#{1,6}) (.*)',line)
     if heading:level=len(heading[1]);html_parts.append(f'<h{level}>'+inline(heading[2])+f'</h{level}>')
+    elif line.startswith('!['):html_parts.append(inline(line))
     elif line.startswith('> '):html_parts.append('<blockquote>'+inline(line[2:])+'</blockquote>')
     elif line.strip():html_parts.append('<p>'+inline(line)+'</p>')
 if table:html_parts.append('</tbody></table></div>')
@@ -362,9 +379,9 @@ for item in manifest:
     encoded = base64.b64encode(data).decode()
     project = re.sub(r'src="data:[^;]+;base64,'+re.escape(encoded)+r'"', 'loading="lazy" decoding="async" width="960" height="720" src="/project-assets/'+filename+'"', project)
 toc_groups = [
-    ('제품과 현재 상태', 1, 4), ('구현과 서비스 연결', 5, 8),
-    ('운영과 검증', 9, 11), ('협업과 수정 요청', 12, 14),
-    ('이미지와 소스', 15, 16), ('AI 지침과 참고 문서', 17, 99),
+    ('먼저 볼 내용', 1, 4), ('화면과 수정 요청', 5, 6),
+    ('이어가기·바로가기', 7, 8), ('개발 구조와 설정', 9, 12),
+    ('운영과 문제 해결', 13, 16), ('AI 지침과 전체 자료', 17, 99),
 ]
 groups = [[] for _ in toc_groups]
 section_index = 0
@@ -376,16 +393,17 @@ def section_heading(match):
     level, content = int(match[1]), match[2]
     title = re.sub('<[^>]+>', '', content)
     if level == 2:
-        anchor = 'section-'+str(section_index)
-        section_index += 1
         numbered = re.match(r'^(\d+)\.', html.unescape(title))
         if numbered:
             number = int(numbered[1])
+            anchor = 'section-'+str(number-1)
             current_group = next(i for i, (_, low, high) in enumerate(toc_groups) if low <= number <= high)
             current = {'title':title, 'anchor':anchor, 'children':[]}
             groups[current_group].append(current)
-        elif current is not None:
-            current['children'].append((anchor, title, 3))
+        else:
+            anchor = 'subsection-'+str(sub_index)
+            sub_index += 1
+            if current is not None:current['children'].append((anchor, title, 3))
     else:
         anchor = 'subsection-'+str(sub_index)
         sub_index += 1
@@ -403,17 +421,45 @@ for (label, _, _), sections in zip(toc_groups, groups):
             entries.append('<details class="toc-section"><summary>'+link+'</summary><div class="toc-children">'+children+'</div></details>')
         else:
             entries.append('<div class="toc-section">'+link+'</div>')
-    toc.append('<details class="toc-group" open><summary>'+label+'</summary>'+''.join(entries)+'</details>')
+    toc.append('<details class="toc-group"'+(' open' if len(toc)<3 else '')+'><summary>'+label+'</summary>'+''.join(entries)+'</details>')
+before,_,rest=project.partition('<body>')
+content,_,after=rest.partition('</body>')
+chunks=re.split(r'(?=<h2 id="section-\d+">)',content)
+readable=[chunks[0]]
+for chunk in chunks[1:]:
+    heading,body_part=chunk.split('</h2>',1)
+    number=int(re.match(r'<h2 id="section-(\d+)">',heading)[1])+1
+    if number==2:
+        body_part='<p class="status-intro">Google·Notion 연결과 백업 복원은 확인했어요. 지금은 최신 디자인·모션을 아이폰에서 확인하고 출시를 준비하는 단계예요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
+    if number==3:
+        change_count=[0]
+        def fold_change(match):
+            change_count[0]+=1
+            return '<details class="change-entry"'+(' open' if change_count[0]==1 else '')+'><summary id="'+match[1]+'">'+match[2]+'</summary><div class="change-content">'+match[3]+'</div></details>'
+        body_part=re.sub(r'<h4 id="([^"]+)">(.*?)</h4>(.*?)(?=<h[1-4] |$)',fold_change,body_part,flags=re.S)
+        body_part=re.sub(r'(<h3[^>]*>Git 커밋 이력</h3>)(<pre>.*?</pre>)',r'<details class="technical-section"><summary>개발 커밋 이력 펼쳐보기</summary>\1\2</details>',body_part,flags=re.S)
+    if number>=9:
+        body_part='<details class="technical-section"><summary>개발 자료 펼쳐보기</summary><div class="technical-content">'+body_part+'</div></details>'
+    elif number==5:
+        cards=re.split(r'(?=<h3 )',body_part)
+        body_part=cards[0]+'<div class="image-grid">'+''.join('<article class="screenshot-card">'+card+'</article>' for card in cards[1:])+'</div>'
+    readable.append('<section class="document-section">'+heading+'</h2>'+body_part+'</section>')
+project=before+'<body>'+''.join(readable)+'</body>'+after
 project = project.replace('<body>', '<body><aside class="project-toc" aria-label="목차"><details open><summary>목차</summary><nav>'+''.join(toc)+'<a href="#feedback">댓글 · 수정 요청</a></nav></details></aside>', 1)
 project = project.replace('<title>', '<meta name="robots" content="noindex"><meta name="document-version" content="'+CODE+'"><link rel="stylesheet" href="/project-comments.css"><title>',1)
-project = project.replace('<body>', '<body><nav class="project-nav"><strong>duckduck 개발 문서</strong><a href="/">덕 앱</a><a href="#feedback">댓글·수정 요청</a><button id="feedback-selection" type="button">선택한 문장에 댓글</button></nav>',1)
+project = project.replace('<body>', '<body><nav class="project-nav"><strong>🦆 duckduck</strong><a href="/">덕 앱</a><a href="#feedback">댓글·수정 요청</a><button id="feedback-selection" type="button">선택한 문장에 댓글</button></nav>',1)
 feedback = r'''<section id="feedback" class="feedback"><h2>댓글 · 수정 요청</h2><p class="feedback-warning">이 문서와 댓글은 링크를 가진 사람이 볼 수 있어요. 비밀번호·API 키·개인정보는 적지 마세요. 덕 계정으로 로그인하고 이메일 인증을 마치면 작성할 수 있어요.</p><p>문서의 절이나 이미지 옆 수정 요청 버튼으로 위치를 지정하세요. 댓글을 남긴 뒤 AI에게 이 페이지 주소와 댓글 위치를 알려주세요. 자동으로 감시하거나 수정하지는 않습니다.</p>
 <p id="feedback-status" role="status" aria-live="polite"></p>
 <form id="feedback-login"><h3>덕 계정으로 로그인</h3><label>이메일<input id="feedback-email" type="email" required autocomplete="username"></label><label>비밀번호<input id="feedback-password" type="password" required autocomplete="current-password"></label><button id="feedback-signin" type="submit">로그인</button><a href="/">계정 만들기·이메일 인증은 덕 앱에서</a></form>
 <div id="feedback-authenticated" hidden><p>로그인되어 있어요. 내 댓글만 수정·삭제·반영 확인할 수 있어요.</p><button id="feedback-signout" type="button">로그아웃</button></div><p id="feedback-verify" hidden>덕 앱 내정보에서 이메일 인증을 먼저 완료해주세요.</p>
 <form id="feedback-composer" hidden><label>공개 표시 이름<input id="feedback-name" value="작성자" maxlength="40" required></label><label>문서 위치<input id="feedback-section" value="문서 전체" maxlength="160" required></label><label>참고할 문장·이미지<textarea id="feedback-quote" maxlength="500"></textarea></label><label>댓글·원하는 수정 사항<textarea id="feedback-body" maxlength="2000" required placeholder="현재 동작과 원하는 변경을 적어주세요."></textarea></label><button id="feedback-submit" type="submit">댓글 저장</button></form>
 <label>댓글 상태<select id="feedback-filter"><option value="all">전체</option><option value="open">열린 요청</option><option value="resolved">반영 확인</option></select></label><button id="feedback-refresh" type="button">댓글 새로고침</button><button id="feedback-copy" type="button">AI에 전달할 댓글 복사</button><textarea id="feedback-copy-text" aria-label="AI에 전달할 요청" readonly hidden></textarea><p><a href="/api/project/comments?status=open">AI에게 전달할 열린 댓글 목록(JSON)</a></p><div id="feedback-list"></div><button id="feedback-more" type="button" hidden>댓글 더 보기</button></section><script src="/project-comments.js" defer></script>'''
+project = re.sub(r'<h1>duckduck — 제품.*?</h1>', '', project, count=1)
 project = project.replace('실제 Notion에 생성된 페이지가 아니라 <strong>한 페이지 가져오기 원본</strong>입니다.', '외부에서 읽고 댓글로 수정 요청을 남길 수 있는 프로젝트 문서입니다.')
+hero='<header class="project-hero"><span class="eyebrow">DUCKDUCK PROJECT</span><h1>덕과 함께 만드는 하루</h1><p>지금까지 만든 것, 바뀐 것, 다음에 할 일을 한곳에서 확인하세요.</p><div class="hero-meta"><span>문서 갱신 '+DATE+'</span><a href="#section-2">최근 변경 보기 →</a></div><div class="overview-cards"><a href="#section-1"><span>현재 상태</span><strong>아이폰 출시 진행 중</strong><small>첫 빌드 업로드 · 새 디자인 빌드 필요</small></a><a href="#section-4"><span>화면 미리보기</span><strong>다섯 탭을 한눈에</strong><small>할 일 · 캘린더 · 덕 · log · 내정보</small></a><a href="#feedback"><span>함께 다듬기</span><strong>수정할 점을 남겨주세요</strong><small>문서 위치와 연결되는 댓글</small></a></div></header>'
+# Add the hero after the top utility nav, not inside the sidebar's navigation.
+marker='<button id="feedback-selection" type="button">선택한 문장에 댓글</button></nav>'
+project=project.replace(marker,marker+hero,1)
 project = project.replace('</body>',feedback+'</body>')
 # Give navigation its own grid column rather than overlaying the document.
 aside = re.search(r'<aside class="project-toc".*?</aside>', project).group(0)

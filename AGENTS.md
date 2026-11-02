@@ -69,3 +69,8 @@
 
 - 사용자는 코드/디자인/동작이 수정될 때마다 공개 HTML 문서에도 기록하라고 요청했다. `docs/change-log.md`에 날짜·내용·기존 동작 유지 조건·검증·실제 배포 여부를 추가하고 `python3 scripts/build-handoff.py`로 `/project` 본문을 갱신한다.
 - 구현 커밋 뒤 생성하면 문서의 소스 스냅샷을 최신 구현에 맞출 수 있다. 생성 결과와 필요한 이미지 해시 파일도 저장한다. GitHub 반영을 Render/TestFlight 배포 완료로 기록하지 않는다.
+
+## 문서 우선순위와 매일 정리
+
+- 공개 HTML은 사용자에게 중요한 상태·최근 변경·사용 흐름·화면·수정 요청을 앞에 배치한다. 개발/설정/오류/검증과 AI 전문 자료는 뒤에 보존하고 접어서 보여준다. 문서만으로 프로젝트 배경을 이어받을 수 있게 하되 실제 코드·계정 권한까지 생긴다고 설명하지 않는다.
+- `.github/workflows/daily-project-document.yml`은 매일 19:00 KST 예약이다. 수동 설명은 계속 `docs/change-log.md`에 기록한다. 자동 집계는 GitHub 커밋만 읽으며 실제 테스트/배포 결과를 추정하지 않는다. 공개 배포를 위한 hook 연결과 GitHub 예약 성공은 아직 확인 전이다. `docs/daily-document-automation.md`를 따른다.

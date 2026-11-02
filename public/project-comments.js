@@ -24,10 +24,26 @@ $('feedback-login').addEventListener('submit',async event=>{event.preventDefault
 $('feedback-signout').addEventListener('click',async()=>{try{await request('/api/auth/logout','POST',{});user=null;renderAuth();await load();notice('로그아웃했어요.');}catch(e){notice(e.message,true);}});
 $('feedback-composer').addEventListener('submit',async event=>{event.preventDefault();const submit=$('feedback-submit');submit.disabled=true;try{await request('/api/project/comments','POST',{name:$('feedback-name').value.trim()||'작성자',section:$('feedback-section').value,quote:$('feedback-quote').value,body:$('feedback-body').value,documentVersion:document.querySelector('meta[name="document-version"]').content});$('feedback-body').value='';$('feedback-quote').value='';filter='all';$('feedback-filter').value='all';await load();notice('댓글을 저장했어요. 이 페이지 주소와 댓글 위치를 대화에서 알려주세요.');}catch(e){notice(e.message,true);}finally{submit.disabled=false;}});
 $('feedback-refresh').addEventListener('click',()=>{void load();});$('feedback-more').addEventListener('click',()=>{void load(true);});$('feedback-filter').addEventListener('change',event=>{filter=event.target.value;void load();});
-function target(section,quote=''){$('feedback-section').value=section.slice(0,160);$('feedback-quote').value=quote.slice(0,500);$('feedback').scrollIntoView({behavior:'smooth'});if(user?.emailVerified)$('feedback-body').focus();}
+function target(section,quote=''){$('feedback-section').value=section.slice(0,160);$('feedback-quote').value=quote.slice(0,500);$('feedback').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});if(user?.emailVerified)$('feedback-body').focus();}
 document.querySelectorAll('h2').forEach((heading,index)=>{if(heading.closest('#feedback'))return;heading.id=heading.id||'section-'+index;const name=heading.textContent;heading.append(button('이 절에 수정 요청',async()=>target(name)));});
 document.querySelectorAll('figure').forEach(figure=>{const image=figure.querySelector('img');if(image)figure.append(button('이 이미지에 수정 요청',async()=>target(image.alt,image.alt)));});
 $('feedback-selection').addEventListener('click',()=>{const selection=window.getSelection()?.toString().trim();if(!selection)return notice('문서에서 문장을 먼저 선택해주세요.');target('선택한 문장',selection);});
 void(async()=>{await session();await load();const id=location.hash.slice(1);if(/^comment-[a-f0-9-]{36}$/.test(id)){if(!document.getElementById(id)){try{const item=await request('/api/project/comments/'+id.slice(8));items=[item,...items.filter(value=>value.id!==item.id)];render();}catch(e){notice(e.message,true);}}document.getElementById(id)?.scrollIntoView();}})();
 
 $('feedback-copy').addEventListener('click',async()=>{const element=$('feedback-copy');element.disabled=true;try{const result=await request('/api/project/comments?status=open');const text=['duckduck 수정 요청',location.origin+'/project',...result.items.map(item=>`\n댓글: ${item.id}\n위치: ${item.section}\n참고: ${item.quote}\n요청: ${item.body}\n링크: ${location.origin}/project#comment-${item.id}`),...(result.nextCursor?['추가 요청은 다음 페이지에 있습니다.']:[])].join('\n');try{await navigator.clipboard.writeText(text);notice('열린 요청을 복사했어요. AI 대화에 붙여넣어주세요.');}catch{const area=$('feedback-copy-text');area.hidden=false;area.value=text;area.focus();area.select();notice('아래 내용을 복사해 AI 대화에 붙여넣어주세요.');}}catch(e){notice(e.message,true);}finally{element.disabled=false;}});
+
+// Deep links into folded engineering material reveal only the requested section.
+function revealSection(hash){
+ const element=document.getElementById(hash.slice(1));if(!element)return;
+ let parent=element.parentElement;
+ while(parent){if(parent.tagName==='DETAILS')parent.open=true;parent=parent.parentElement;}
+ const details=element.closest('.document-section')?.querySelector('.technical-section');
+ if(details)details.open=true;
+}
+document.querySelector('.project-toc').addEventListener('click',event=>{const link=event.target.closest('a[href^="#"]');if(link)revealSection(link.getAttribute('href'));});
+window.addEventListener('hashchange',()=>revealSection(location.hash));revealSection(location.hash);
+// Start compact on phones; keep a dedicated, expanded sidebar on larger screens.
+const tocMedia=window.matchMedia('(max-width: 1049px)');
+const tocDisclosure=document.querySelector('.project-toc>details');
+function sizeToc(){tocDisclosure.open=!tocMedia.matches;}
+sizeToc();tocMedia.addEventListener('change',sizeToc);
