@@ -2,6 +2,13 @@
 
 구현 날짜와 배포 상태를 구분한다. 최신 항목을 위에 추가한다. 코드·동작을 바꾸면 이 파일과 공개 HTML을 함께 갱신한다.
 
+## 2026-11-02 — iOS 빌드 의존성 검사 보완
+
+- **사용자 로그:** build `96d90e45-22aa-41f7-8cd0-9f0c421cd7de`의 expo doctor가 expo-font 직접 의존성 누락과 Expo/알림/React Native 패치 불일치를 보고했다. 이 단계 로그만으로 최종 빌드 상태나 Submission 부재 원인을 확정하지 않는다.
+- **수정:** expo `~58.0.22`, expo-notifications `~58.1.7`, react-native `0.88.1`, expo-font `~58.0.11`을 package.json과 잠금 파일에 반영했다. 검사 제외 설정으로 숨기지 않는다.
+- **검증:** 설치된 SDK의 bundledNativeModules에 맞는 버전과 직접 peer 선언을 확인했다. 온라인 Expo API 검사는 이 환경의 403/DNS 제한으로 완료하지 못했다. doctor 20개 중 18개가 통과했고 남은 항목은 원래 두 문제와 다른 외부 API/React Native Directory 조회였다. TypeScript, iOS/웹 번들, 웹 기능 회귀와 모션 테스트는 통과했다. 실제 EAS 환경의 doctor 결과는 새 실행에서 확인한다.
+- **배포:** 소스 수정은 기존 빌드를 바꾸지 않는다. 최신 main으로 새 빌드하고 EAS Submit을 켠 production 제출을 별도로 확인해야 한다. 현재 수정의 실제 새 IPA·Apple 업로드·TestFlight 설치는 아직 확인 전이다.
+
 ## 2026-11-02 — TestFlight 자동 제출 설정 수정
 
 - **원인:** 웹에서 EAS Submit을 켰을 때 production 제출 프로필에 App Store Connect 앱 ID가 없어 `Set ascAppId in the submit profile` 오류로 중단됐다. 실패 실행은 `12e5cc38-1cb8-438c-aa9c-1887e2fd6666`이다.

@@ -56,3 +56,7 @@ Expo에서 GitHub 저장소를 연결하는 경우 저장소는 `sjfieni/donknow
 ## 웹 자동 제출 오류 수정
 
 웹 자동 제출은 대화형으로 앱을 고를 수 없어 `submit.production.ios.ascAppId`가 필요하다. 기존 Store 앱 ID `6829597261`을 프로필에 고정했다. 실패한 build `12e5cc38-1cb8-438c-aa9c-1887e2fd6666`의 동일 커밋 Retry 대신 최신 main으로 새 빌드를 시작한다. 이 수정은 제출 설정 보완이며 아직 새 빌드/업로드 성공 증거가 아니다. 기존 CLI 빌드에서 선택한 표준/면제 암호화는 `ios.infoPlist.ITSAppUsesNonExemptEncryption=false`로 기록했다.
+
+## SDK 의존성 검사 로그
+
+build `96d90e45-22aa-41f7-8cd0-9f0c421cd7de`에서 보고한 peer/패치 불일치를 수정했다: expo 58.0.22, 알림 58.1.7, RN 0.88.1, expo-font 직접 선언 58.0.11. 잠금 파일도 함께 갱신했다. expo doctor의 단일 단계 실패 로그를 전체 빌드/업로드 성공 여부와 혼동하지 않는다. 빌드 Finished와 자동 제출 성공은 각각 확인해야 하며, Submission이 없다면 웹 시작 화면의 EAS Submit 체크와 production 제출 프로필을 확인한다. Expo API가 막힌 이 작업 환경에서는 모든 온라인 doctor 항목 통과를 주장하지 않는다.
