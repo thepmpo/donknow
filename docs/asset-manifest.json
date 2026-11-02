@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-11-02",
-  "codeCommit": "df99a6d9ee4f51da0a93bdad89606acc31a2b577",
+  "codeCommit": "5d096f27b269bac16cbda4958b368ae5fed70e8b",
   "imageCount": 35,
   "images": [
     {
@@ -69,8 +69,8 @@
     {
       "path": "artifacts/mobile-duck-draft.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 32724,
-      "sha256": "264669ed0b8210d2132351491193f32166877f3f8c50604f51ec47b23f9f2e65",
+      "bytes": 32719,
+      "sha256": "bddb1f89bc1652e32daaded77493e8a050c348ddba9e0a71a0daef1783b6a6fc",
       "import_path": "images/artifacts__mobile-duck-draft.png"
     },
     {
@@ -83,8 +83,8 @@
     {
       "path": "artifacts/mobile-external-search-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 56462,
-      "sha256": "759e91a2278cd97927cb4d9077e23e34fe722f5c6bff9a6377b0309592925e30",
+      "bytes": 48517,
+      "sha256": "18cac1ac3601cf9c100308c53c5a812183562cf4445d923484a13e70e71f055b",
       "import_path": "images/artifacts__mobile-external-search-fixture.png"
     },
     {
@@ -97,8 +97,8 @@
     {
       "path": "artifacts/mobile-kakao-paste.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 32485,
-      "sha256": "dea1439d58a25c2196f51a840377be587449593b712d2a0bcb8b507567301647",
+      "bytes": 40950,
+      "sha256": "d29d6204a1bab5aaf48efed696739d9f7a17daf0a66b4af69c5e62b15bf46539",
       "import_path": "images/artifacts__mobile-kakao-paste.png"
     },
     {
@@ -111,8 +111,8 @@
     {
       "path": "artifacts/mobile-log.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 31172,
-      "sha256": "8b777438d274bc160a989ead557ee55a1d972c88a752fdf266345743a39439c0",
+      "bytes": 30992,
+      "sha256": "ee7c6e15fd25b8be9574fd342e3c43fbe63ee024f62abc013f8fb061f45d2986",
       "import_path": "images/artifacts__mobile-log.png"
     },
     {
@@ -139,8 +139,8 @@
     {
       "path": "artifacts/mobile-record-search.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 49542,
-      "sha256": "5bf020ad2225e11f400acb7401210030115f6bc8c4db10c5cd4ce4d32ed15df9",
+      "bytes": 39532,
+      "sha256": "c0ce93cd8f5da8bde2cf4fcb53e9f9f42ac3563d31e57e03b8db2ab8110fb141",
       "import_path": "images/artifacts__mobile-record-search.png"
     },
     {
