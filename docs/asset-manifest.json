@@ -1,35 +1,42 @@
 {
   "generatedAt": "2026-11-02",
-  "codeCommit": "5d096f27b269bac16cbda4958b368ae5fed70e8b",
+  "codeCommit": "c1422b3e3b8fde11705e545799c6a3ecd635b5a8",
   "imageCount": 35,
   "images": [
     {
-      "path": "artifacts/calendar.png",
-      "category": "단계별 개요 또는 초기 웹 프로토타입",
-      "bytes": 67096,
-      "sha256": "eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351",
-      "import_path": "images/artifacts__calendar.png"
+      "path": "artifacts/mobile-todos.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 29358,
+      "sha256": "34a2c42fec7637f00fafb95d8f394f6490a5abab2a586de7fcbb067b3da316c2",
+      "import_path": "images/artifacts__mobile-todos.png"
     },
     {
-      "path": "artifacts/duckduck.png",
-      "category": "단계별 개요 또는 초기 웹 프로토타입",
-      "bytes": 53117,
-      "sha256": "f773dfd7a01bf87c0deaabe2f3c9751bb6c6bd5cf883e830e1df6687c6b863b3",
-      "import_path": "images/artifacts__duckduck.png"
+      "path": "artifacts/mobile-calendar.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 29215,
+      "sha256": "1822884fc4e1bd2ec6e109335e11381586da9b7900882c6509769bfcaaab5b3f",
+      "import_path": "images/artifacts__mobile-calendar.png"
     },
     {
-      "path": "artifacts/features-overview.png",
-      "category": "단계별 개요 또는 초기 웹 프로토타입",
-      "bytes": 133916,
-      "sha256": "a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba",
-      "import_path": "images/artifacts__features-overview.png"
+      "path": "artifacts/mobile-duckduck.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 31393,
+      "sha256": "8fe73071baedee27e47f8f960bb5b87e3290632ab9ca072eb4a1e41cf097234b",
+      "import_path": "images/artifacts__mobile-duckduck.png"
     },
     {
-      "path": "artifacts/log.png",
-      "category": "단계별 개요 또는 초기 웹 프로토타입",
-      "bytes": 43986,
-      "sha256": "5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea",
-      "import_path": "images/artifacts__log.png"
+      "path": "artifacts/mobile-log.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 30992,
+      "sha256": "ee7c6e15fd25b8be9574fd342e3c43fbe63ee024f62abc013f8fb061f45d2986",
+      "import_path": "images/artifacts__mobile-log.png"
+    },
+    {
+      "path": "artifacts/mobile-profile.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 41352,
+      "sha256": "912d882198aa94fffcae10f96a47ecc31a40f8c0092053030a9882ea39c798b1",
+      "import_path": "images/artifacts__mobile-profile.png"
     },
     {
       "path": "artifacts/mobile-account-settings.png",
@@ -53,13 +60,6 @@
       "import_path": "images/artifacts__mobile-auth.png"
     },
     {
-      "path": "artifacts/mobile-calendar.png",
-      "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 29215,
-      "sha256": "1822884fc4e1bd2ec6e109335e11381586da9b7900882c6509769bfcaaab5b3f",
-      "import_path": "images/artifacts__mobile-calendar.png"
-    },
-    {
       "path": "artifacts/mobile-completed-reference-fixture.png",
       "category": "모의 응답 테스트 화면",
       "bytes": 48390,
@@ -72,13 +72,6 @@
       "bytes": 32719,
       "sha256": "bddb1f89bc1652e32daaded77493e8a050c348ddba9e0a71a0daef1783b6a6fc",
       "import_path": "images/artifacts__mobile-duck-draft.png"
-    },
-    {
-      "path": "artifacts/mobile-duckduck.png",
-      "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 31393,
-      "sha256": "8fe73071baedee27e47f8f960bb5b87e3290632ab9ca072eb4a1e41cf097234b",
-      "import_path": "images/artifacts__mobile-duckduck.png"
     },
     {
       "path": "artifacts/mobile-external-search-fixture.png",
@@ -109,13 +102,6 @@
       "import_path": "images/artifacts__mobile-kakao-share.png"
     },
     {
-      "path": "artifacts/mobile-log.png",
-      "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 30992,
-      "sha256": "ee7c6e15fd25b8be9574fd342e3c43fbe63ee024f62abc013f8fb061f45d2986",
-      "import_path": "images/artifacts__mobile-log.png"
-    },
-    {
       "path": "artifacts/mobile-overview.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
       "bytes": 145614,
@@ -128,13 +114,6 @@
       "bytes": 48909,
       "sha256": "2e33d9dfd1ab3484bf5625881f76abb8ad2c07af28619f9b2c78b441bf164483",
       "import_path": "images/artifacts__mobile-personal-export.png"
-    },
-    {
-      "path": "artifacts/mobile-profile.png",
-      "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 41352,
-      "sha256": "912d882198aa94fffcae10f96a47ecc31a40f8c0092053030a9882ea39c798b1",
-      "import_path": "images/artifacts__mobile-profile.png"
     },
     {
       "path": "artifacts/mobile-record-search.png",
@@ -165,18 +144,39 @@
       "import_path": "images/artifacts__mobile-task-sync-fixture.png"
     },
     {
-      "path": "artifacts/mobile-todos.png",
-      "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 29358,
-      "sha256": "34a2c42fec7637f00fafb95d8f394f6490a5abab2a586de7fcbb067b3da316c2",
-      "import_path": "images/artifacts__mobile-todos.png"
-    },
-    {
       "path": "artifacts/mobile-verification.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
       "bytes": 37768,
       "sha256": "e9a54fdd43d7c0f8817eb08302dadea23f8017980f9969affcda57b56137bbad",
       "import_path": "images/artifacts__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 67096,
+      "sha256": "eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351",
+      "import_path": "images/artifacts__calendar.png"
+    },
+    {
+      "path": "artifacts/duckduck.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 53117,
+      "sha256": "f773dfd7a01bf87c0deaabe2f3c9751bb6c6bd5cf883e830e1df6687c6b863b3",
+      "import_path": "images/artifacts__duckduck.png"
+    },
+    {
+      "path": "artifacts/features-overview.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 133916,
+      "sha256": "a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba",
+      "import_path": "images/artifacts__features-overview.png"
+    },
+    {
+      "path": "artifacts/log.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43986,
+      "sha256": "5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea",
+      "import_path": "images/artifacts__log.png"
     },
     {
       "path": "artifacts/overview.png",
