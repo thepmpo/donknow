@@ -91,7 +91,7 @@
 
 ##### 2026-11-02 — 당일 저장된 작업
 
-실제 정리: 17:01 KST. 새 저장 작업 8개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+실제 정리: 19:54 KST. 새 저장 작업 2개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
 
 - [44a8c84](https://github.com/sjfieni/donknow/commit/44a8c84f438583bd3a6b6633757bad149dafb241) · 11-02 12:05 · Record Toss-inspired design reference and Duck application guidelines
 
@@ -108,6 +108,10 @@
 - [c521084](https://github.com/sjfieni/donknow/commit/c521084aace829c717de74d83d8c4fbf88f699b2) · 11-02 16:37 · Reconcile current handoff status and add self-contained continuation instructions
 
 - [c1422b3](https://github.com/sjfieni/donknow/commit/c1422b3e3b8fde11705e545799c6a3ecd635b5a8) · 11-02 16:54 · Prioritize reader-facing TDS documentation and schedule daily 19 KST updates
+
+- [501ac14](https://github.com/sjfieni/donknow/commit/501ac140a6e1c63c80a1b74c9793bad578c8f0ea) · 11-02 17:22 · Set App Store Connect app ID for noninteractive iOS submission
+
+- [cc5c95f](https://github.com/sjfieni/donknow/commit/cc5c95f753928bbada88d4493d3d3bbeaa29ff9c) · 11-02 17:39 · Fix native Expo font peer dependency and align SDK 58 patches
 
 
 매일 한국 시간 19:00에 GitHub에 저장된 작업을 모읍니다. 아직 자동 실행 결과를 확인하지 않았습니다. GitHub 예약은 지연될 수 있으며, 채팅에만 있는 내용은 자동으로 수집하지 않습니다. 늦게 저장된 작업은 다음 실행에서 포함합니다.
@@ -151,6 +155,7 @@ b5cce64 docs: daily project update [skip ci]
 501ac14 Set App Store Connect app ID for noninteractive iOS submission
 ef1ff86 Record TestFlight automatic submission fix in public handoff
 cc5c95f Fix native Expo font peer dependency and align SDK 58 patches
+5c4a125 Document iOS dependency diagnostics and validated patch update
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
