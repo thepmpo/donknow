@@ -9,7 +9,7 @@
 - EAS production: App Store 배포, 자동 빌드 번호 증가, 기존 HTTPS 서버를 기본 연결로 포함. 서버 키·비밀값은 앱에 넣지 않는다.
 - production 빌드가 자동으로 심사 제출되거나 공개되지는 않는다.
 - Expo 웹 프로젝트는 사용자가 생성했다: `thepmpo/duckduck-donknow`, Project ID `f7827732-1b41-485f-b3b2-6bcc145f3c44`. 사용자 제공 식별자를 `mobile/app.json`의 owner와 extra.eas.projectId에 반영했다. 원격 계정 접근 권한은 별도 확인이 필요하다.
-- 이 클라우드에는 EAS CLI와 Expo/Apple 제출 인증이 없다. 아직 IPA 생성·서명·TestFlight 업로드·심사 제출을 하지 않았다.
+- 첫 서명 IPA 생성과 App Store Connect 업로드는 사용자 확인까지 완료했다 (아래 2026-11-02 기록). 최신 디자인/모션은 새 빌드가 필요하며, 실제 TestFlight 설치·심사·공개는 아직 미확인이다. 이 작업 환경에서는 Expo API가 403으로 차단돼 직접 계정 작업을 하지 못했다.
 
 ## 계정 연결 후 실행
 

@@ -4,6 +4,10 @@
 
 ## 확인 상태
 
+### 최신 이어받기 상태 — 2026-11-02
+
+첫 iOS build `37a454bf-afdf-49aa-ab21-70fec36ba28a` (소스 `400e9d5`)의 서명 IPA 생성과 App Store Connect 업로드 성공은 사용자 확인까지 완료했다. Expo 프로젝트는 thepmpo/duckduck-donknow이며 Store 앱 ID는 6829597261이다. 이후 TDS 디자인·공통 모션을 구현하고 웹 회귀/모션/타입/iOS JS 번들을 검증했다. 최신 디자인·모션의 Render 실제 배포와 새 iOS 빌드·TestFlight 설치·심사·공개는 확인 전이다. AI·Slack·범용 붙여넣기 자동 추출은 보류 유지한다. 아래 날짜별 기록은 당시 상태이며 현재 판단은 이 항목과 공개 인계 문서 3절을 우선한다.
+
 ### iPhone 출시 요청 — 최신 변경
 
 사용자가 2026-10-30 App Store 출시를 명시적으로 요청했다. iPhone 배포 보류를 해제하고 빌드·서명·스토어 제출 준비를 진행한다. Apple 개발자 계정만 보유한다고 응답했으며 Expo 계정 연결은 필요하다. 앱 1.0.0·EAS 빌드 설정과 기존 API 기본 주소를 준비하고 TypeScript/iOS JS export를 검증했다. 서명 IPA·TestFlight·실기기·심사 제출은 아직 완료되지 않았다. AI·Slack과 범용 붙여넣기 자동 추출은 보류 유지한다. 세부 항목은 [출시 안내](ios-release.md)를 따른다.

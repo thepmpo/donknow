@@ -29,7 +29,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
-**AI API 연결과 아이폰 배포는 현재 보류**입니다. 외부 AI가 연결됐다고 표현하지 않으며 AI가 대화를 이해/자동 추출/기록 추천하는 척하지 않습니다. 현재 덕은 입력·붙여넣기·초안 편집·수동 확인·기록 검색을 제공합니다.
+**AI API 연결은 보류, 아이폰 App Store 출시는 진행 중**입니다. 첫 서명 빌드의 App Store Connect 업로드는 사용자 확인까지 마쳤고, 이후 디자인·모션을 수정했으므로 새 빌드가 필요합니다. 외부 AI가 연결됐다고 표현하지 않으며 AI가 대화를 이해/자동 추출/기록 추천하는 척하지 않습니다. 현재 덕은 입력·붙여넣기·초안 편집·수동 확인·기록 검색을 제공합니다.
 
 ## 2. 사용자가 정한 IA와 동작
 
@@ -53,15 +53,18 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | 가입/로그인/저장 | 구현·검증 | 계정별 분리·재시작·만료 처리 자동 테스트 |
 | 이메일 인증 | 실사용 확인 | 사용자가 Resend 설정 후 인증 완료 |
 | Google Tasks 읽기 | 실사용 확인 | 사용자가 미완료 가져오기·완료 조회·외부 검색 확인 |
-| 선택적 완료 동기화 | 코드·자동 테스트 완료, 기본 꺼짐 | 새 수정 권한 승인과 직접 켜기, 실계정 확인 필요 |
-| Google 캘린더 | 월별·한국 날짜·페이지 조회 구현 | 추가 API/범위 승인과 실계정 확인 필요 |
-| Gmail·Drive | 제목/메타데이터 조회·선택 가져오기 구현 | 추가 API/범위 승인과 실계정 확인 필요 |
-| Slack·Notion | OAuth·읽기·페이지 이동·가져오기·점검 구현 | 앱 등록·워크스페이스 승인·실제 데이터 확인 필요 |
+| 선택적 완료 동기화 | 실사용 확인 | 사용자 계정에서 켜기·완료 전송·미완료 복원 전송 성공. 다른 사용자는 기본 꺼짐 |
+| Google 캘린더 | 구현·기본 실사용 확인 | 사용자가 API/권한 설정 후 기본 동작 확인. 일반 사용자 OAuth 검증은 별개 |
+| Gmail·Drive | 구현·기본 실사용 확인 | 사용자가 기본 동작 확인. Gmail 본문/Drive 파일 본문 전체 읽기는 하지 않음 |
+| Notion | 실사용 확인 | 연결·페이지 조회·Todo 가져오기 사용자 확인 |
+| Slack | 구현, 실제 연결 보류 | 사용자 후속 요청 전 활성화하지 않음 |
 | 아이폰 미리 알림 | 읽기·가져오기·완료 참고·수동 양방향 상태 맞추기 구현 | 실제 아이폰 권한/ID/상태 확인 필요 |
 | 기기 알림 | 미래 시간·권한·예약·변경·취소 구현 | 실제 아이폰 잠금/재실행/권한 검증 필요 |
 | 개인 데이터 내보내기 | 웹 다운로드·네이티브 파일 공유 구현 | 웹 실동작 테스트, 네이티브 공유는 기기 확인 필요 |
-| 원격 암호화 백업·복원 | 구현·격리 DB 검증 | GitHub 비밀 설정/활성화/실제 복구 훈련 필요 |
-| AI·아이폰 스토어 배포 | 보류 | 새 사용자 요청 전까지 시작하지 않음 |
+| 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 정기 schedule 성공은 아직 미확인 |
+| iPhone 출시 | 첫 IPA 생성·App Store Connect 업로드 성공 | build 37a454bf-afdf-49aa-ab21-70fec36ba28a / 소스 400e9d5. TestFlight 설치·심사·공개는 미확인 |
+| 최신 디자인·모션 | 구현·웹/타입/iOS JS 검증 통과 | source 5d096f2 이후. Render 최신 배포 및 새 iOS 서명 빌드 반영 확인 필요 |
+| AI·범용 붙여넣기 추출 | 보류/백로그 | 아직 AI 연결·자동 추출을 구현하지 않음 |
 
 **GitHub에 저장된 최신 기능이 Render에 자동으로 배포되지는 않습니다.** Render의 자동 배포는 꺼져 있습니다. 이번 확장 기능은 최신 커밋으로 수동 배포한 후 실제 화면에서 확인해야 합니다. 에이전트의 공개 사이트 직접 접속은 환경 네트워크 제한으로 막힌 적이 있으므로 사용자 확인과 자동 검증을 혼동하지 않습니다.
 
@@ -75,6 +78,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
+- Expo 프로젝트: https://expo.dev/accounts/thepmpo/projects/duckduck-donknow
+- Expo Project ID: f7827732-1b41-485f-b3b2-6bcc145f3c44
+- iOS Bundle ID: com.sjfieni.duckduck
+- App Store Connect/TestFlight: https://appstoreconnect.apple.com/apps/6829597261/testflight/ios
 - Google 프로젝트: https://console.cloud.google.com/home/dashboard?project=duckduck-513102
 - Resend: https://resend.com/emails
 - Turso: https://app.turso.tech
@@ -88,6 +95,11 @@ React Native/Expo SDK 58 + TypeScript로 실제 네이티브 컴포넌트를 사
 | 위치 | 역할 |
 |---|---|
 | mobile/App.tsx | 5개 탭, 세션/계정 변경 시 화면 초기화, 에디터 |
+| mobile/src/theme.ts | 확인한 TDS 색상·글자와 덕의 의미 토큰 |
+| mobile/src/motion.tsx | 공통 눌림/전환/닫기, 실시간 동작 줄이기 |
+| mobile/e2e/motion.mjs | 실제 웹 번들의 모션·취소·선호 설정 검증 |
+| mobile/app.json · mobile/eas.json | Expo 프로젝트 연결, iOS Bundle ID와 배포 프로필 |
+| docs/change-log.md | 변경 날짜·검증·배포 상태, 이 HTML에 직접 포함 |
 | mobile/src/useTodos.ts | 계정/저장소/할 일 상태, 실패 보존, 완료 4초 처리 |
 | mobile/src/domain.ts | 데이터 검증, 날짜·월 그리드·제목 검색 |
 | mobile/src/screens/DuckScreen.tsx | 입력/붙여넣기→초안→Todo |
@@ -194,6 +206,7 @@ npm test
 npm --prefix mobile run typecheck
 npm --prefix mobile run export:web -- --max-workers 2
 npm --prefix mobile run test:e2e
+npm --prefix mobile run test:motion
 npm --prefix mobile run export:ios -- --max-workers 2
 npm run build:container
 npm run test:container
@@ -205,13 +218,25 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ## 12. 다음 AI가 바로 할 일
 
+### 새 채팅에서 바로 사용할 지침
+
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack과 자동 할 일 추출은 보류이며 iPhone 출시는 진행 중입니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/4초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+
+다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 현재 업로드된 첫 빌드의 소스는 400e9d5라서 최신 디자인/모션이 포함되지 않았습니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
+
+실제 작업에는 연결된 GitHub 저장소 소스와 필요한 도구/계정 접근이 추가로 필요합니다. 문서를 읽는 것만으로 코드·계정 권한이 자동 제공되지 않습니다. 읽기/브라우저 도구가 없어 문서를 열지 못하면 HTML 파일 또는 본문을 요청하세요. 로그인 비밀번호·토큰은 채팅으로 요청하지 말고, 계정 인증은 사용자가 해당 서비스의 보안 화면에서 수행하게 하세요. 접근 실패를 서비스 장애로 단정하지 마세요.
+
+수정한 뒤 변경 내용·관련 파일·검증·실제 배포 상태를 docs/change-log.md와 이 HTML에 반드시 갱신하세요. 전체 실행 지침은 17절, 환경/보안 설정은 6–11절, 실제 작업 문서 전문은 18절에 포함되어 있습니다. 모르는 운영 상태는 성공으로 추정하지 말고 확인 전으로 유지하세요.
+
+### 이어받기 절차
+
 1. 이 페이지의 최신 상태와 GitHub main, 실제 배포 커밋을 대조한다. 현재 디렉터리의 AGENTS.md를 읽는다.
 2. 사용자가 새 댓글/수정 요청을 알려주면 접근 가능한 해당 페이지와 댓글을 먼저 읽는다. 도구가 없으면 읽었다고 주장하지 않고 댓글 내용/캡처를 요청한다.
 3. 실제 계정·기기에서 남아 있는 확인을 코드 작업과 구분해 실행한다. 제공 업체 키를 채팅으로 요구하지 않는다.
 4. 반복 구현하지 않는다. 이미 통과한 Google Tasks 읽기 흐름과 세션/저장 보호를 유지한다.
 5. 수정 요청을 요청→결정→변경 파일→검증→배포 상태로 기록한다. 사용자 계정/데이터를 추정하거나 강제로 덮어쓰지 않는다.
 6. 댓글 답글/알림을 자동으로 보내거나 백그라운드 감시를 하고 있다고 말하지 않는다. 사용자 요청이 있을 때 확인하고 대화로 결과를 보고한다.
-7. AI·아이폰 배포 보류와 무료 우선 조건을 유지한다. 도구/계정/하드웨어로 막힌 항목은 정확하게 밝힌다.
+7. AI·Slack·범용 붙여넣기 자동 추출의 보류와 무료 우선 조건을 유지한다. 아이폰 출시는 사용자 요청으로 진행 중이다. 도구/계정/하드웨어로 막힌 항목은 정확하게 밝힌다.
 
 ## 13. 외부 HTML에서 댓글로 수정 요청하기
 
