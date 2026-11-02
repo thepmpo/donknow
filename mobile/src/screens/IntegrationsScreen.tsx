@@ -1,6 +1,7 @@
+import { MotionPressable as Pressable } from '../motion';
 import { TaskSyncPanel } from './TaskSyncPanel';
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AppState, Platform, StyleSheet, Text, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { Button, colors, Page, s } from '../ui';
 import type { TodoStore } from '../useTodos';

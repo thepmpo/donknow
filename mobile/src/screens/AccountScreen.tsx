@@ -1,5 +1,6 @@
+import { MotionPressable as Pressable } from '../motion';
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button, colors, Page, s } from '../ui';
 import type { TodoStore } from '../useTodos';
 export type AccountAction = 'verify' | 'reset' | 'delete';

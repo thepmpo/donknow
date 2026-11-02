@@ -1,6 +1,8 @@
+import { MotionProvider, MotionView } from './src/motion';
+import { MotionPressable as Pressable } from './src/motion';
 import { AuthScreen } from './src/screens/AuthScreen';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -37,18 +39,18 @@ function Shell() {
     <View style={styles.header}><Text style={styles.brand}>{!store.connection || settings || needsAuth ? 'duckduck' : tabs.find(item => item.id === tab)?.name}</Text><Text style={styles.storage}>{store.connection?.mode === 'cloud' ? '● 클라우드' : store.connection ? '체험 모드 · 이 기기에 저장' : '🦆'}</Text></View>
     {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'}]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
     {!!store.error && <View style={styles.errorBar}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
-    {!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
+    <MotionView testID="screen-transition" style={styles.content} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : tab}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
       {tab === 'calendar' && <CalendarScreen store={store} onAdd={onAdd} onEdit={onEdit} />}
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
       <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} onOpenTodos={() => setTab('todos')} onOpenTodo={onEdit} /></View>
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
-    </View>}
+    </View>}</MotionView>
     {store.connection && !settings && !needsAuth && <View style={styles.tabBar} accessibilityRole="tablist">{tabs.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{ selected: item.id === tab }} onPress={() => setTab(item.id)} style={styles.tab}>{item.id === 'duck' ? <Text style={styles.duckTab}>🦆</Text> : <Ionicons name={item.icon} size={24} color={item.id === tab ? colors.blue : palette.grey500} />}<Text style={[styles.tabLabel, item.id === tab && styles.selected]}>{item.name}</Text></Pressable>)}</View>}
     {editor && !needsAuth && !settings && <TodoEditor todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(null)} />}
   </KeyboardAvoidingView>;
 }
-export default function App() { return <SafeAreaProvider><SafeAreaView style={styles.safe}><StatusBar style="dark" /><Shell /></SafeAreaView></SafeAreaProvider>; }
+export default function App() { return <MotionProvider><SafeAreaProvider><SafeAreaView style={styles.safe}><StatusBar style="dark" /><Shell /></SafeAreaView></SafeAreaProvider></MotionProvider>; }
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg }, root: { flex: 1, width: '100%', maxWidth: 760, alignSelf: 'center', backgroundColor: colors.bg },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },

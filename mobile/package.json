@@ -38,7 +38,8 @@
     "test": "node --test src/*.test.ts",
     "test:e2e": "node e2e/app.mjs",
     "test:web-auth": "node e2e/web-auth.mjs",
-    "test:project": "node e2e/project.mjs"
+    "test:project": "node e2e/project.mjs",
+    "test:motion": "node e2e/motion.mjs"
   },
   "private": true
 }

@@ -74,3 +74,7 @@ Todo 편집에서 알림 시간을 저장하고 내정보에서 기기 알림을
 ## App Store 출시 준비 — 2026-10-30
 
 사용자 요청으로 iPhone 배포 보류를 해제했다. `eas.json`의 production 프로필은 기존 HTTPS API 주소를 기본값으로 포함하고 App Store 서명 빌드와 빌드 번호 증가를 설정한다. Apple/Expo 프로젝트·서명 연결은 아직 완료하지 않았다. Bundle ID `com.sjfieni.duckduck`은 등록 전 후보다. [출시 안내](../docs/ios-release.md)의 계정 연결·실기기 검증·심사 준비를 따른다. 기존 절의 미배포 설명은 당시 상태이며 서명 빌드 없이 iOS JS export만 통과했다.
+
+## 모션과 변경 기록
+
+공통 모션은 `src/motion.tsx`에서 관리하며 OS/browser의 동작 줄이기 설정을 실시간 반영한다. `npm run test:motion`은 먼저 export한 웹 번들에서 눌림·탭 페이드·빠른 이동 중 초안 유지·4초 완료 접힘·닫기·동작 줄이기·완료 취소를 확인한다. 기능 회귀 캡처는 동작 줄이기 상태로 고정해 중간 프레임이 남지 않게 한다. 변경 시 `docs/change-log.md`를 기록하고 인계 생성기를 실행하면 공개 `/project`의 14절에 포함된다.

@@ -1,5 +1,6 @@
+import { MotionPressable as Pressable } from '../motion';
 import React, { useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { dateKey, monthDays } from '../domain';
 import type { Todo } from '../domain';
 import type { TodoStore } from '../useTodos';

@@ -1,5 +1,6 @@
+import { MotionPressable as Pressable } from '../motion';
 import React from 'react';
-import { Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { dateKey } from '../domain';
 import type { Todo } from '../domain';
 import type { TodoStore } from '../useTodos';
@@ -11,7 +12,7 @@ export function TodosScreen({ store, onEdit, onAdd }: { store: TodoStore; onEdit
     <View style={styles.heading}><Text style={s.h1}>할 일</Text><Text style={styles.count}>{store.todos.filter(todo => !todo.done).length}</Text></View>
     <Text style={styles.hint}>좌우로 밀어 완료하거나 되돌려요</Text>
     {!store.visible.length && <View style={s.empty}><Text style={s.emptyText}>남은 할 일이 없어요.{ '\n' }가벼운 마음으로 하나씩 시작해요.</Text></View>}
-    {store.visible.map(todo => <TodoRow key={todo.id} todo={todo} pending={!!store.pending[todo.id]} busy={store.busyIds.includes(todo.id)} onToggle={() => { void store.update(todo.id, { done: !todo.done }); }} onEdit={() => onEdit(todo)} />)}
+    {store.visible.map(todo => <TodoRow key={todo.id} todo={todo} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]} busy={store.busyIds.includes(todo.id)} onToggle={() => { void store.update(todo.id, { done: !todo.done }); }} onEdit={() => onEdit(todo)} />)}
     <Pressable onPress={() => onAdd(dateKey(new Date()))} accessibilityRole="button" accessibilityLabel="할 일 추가" style={styles.add}><Text style={styles.plus}>＋</Text><Text style={styles.addText}>할 일 추가</Text><Text style={styles.arrow}>›</Text></Pressable>
   </Page>;
 }

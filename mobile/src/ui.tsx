@@ -1,5 +1,7 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { Animated, Modal, PanResponder, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
+import { MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
+import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, PanResponder, Platform, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { dateKey, validateDraft } from './domain';
 import type { Draft, Todo } from './domain';
@@ -8,30 +10,55 @@ import { colors, typography, spacing, radius } from './theme';
 export { colors } from './theme';
 export function Label({ children }: { children: React.ReactNode }) { return <Text style={s.label}>{children}</Text>; }
 export function Button({ title, onPress, disabled = false, quiet = false, loading = false, accessibilityLabel }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; loading?: boolean; accessibilityLabel?: string }) {
-  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
+  const reduced = useReducedMotion();
+  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
 export function Page({ children, refreshControl }: { children: React.ReactNode; refreshControl?: React.ReactElement }) {
-  return <ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={s.page}>{children}</ScrollView>;
+  return <MotionView style={{flex:1}} distance={0}><ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={s.page}>{children}</ScrollView></MotionView>;
 }
-export function TodoRow({ todo, pending = false, busy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; busy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
+export function TodoRow({ todo, pending = false, pendingUntil, busy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
+  const reduced = useReducedMotion();
+  const reducedRef = useRef(reduced); reducedRef.current = reduced;
+  const exit = useRef(new Animated.Value(1)).current;
+  const rowHeight = useRef(88);
+  const [collapsing, setCollapsing] = useState(false);
+  useEffect(() => {
+    exit.stopAnimation(); exit.setValue(1); setCollapsing(false);
+    if (!pending || !pendingUntil || reduced) return;
+    const remaining = Math.max(0, pendingUntil - Date.now());
+    const duration = Math.min(motion.feedback, remaining);
+    const timer = setTimeout(() => {
+      setCollapsing(true);
+      Animated.timing(exit, { toValue: 0, duration, useNativeDriver: false }).start();
+    }, Math.max(0, remaining - duration));
+    return () => { clearTimeout(timer); exit.stopAnimation(); };
+  }, [pending, pendingUntil, reduced, exit]);
   const offset = useRef(new Animated.Value(0)).current;
+  const checked = useRef(new Animated.Value(todo.done ? 1 : 0)).current;
+  useEffect(() => {
+    checked.stopAnimation();
+    if (reduced) { checked.setValue(todo.done ? 1 : 0); return; }
+    const animation = Animated.timing(checked, { toValue: todo.done ? 1 : 0, duration: motion.feedback, useNativeDriver: Platform.OS !== 'web' });
+    animation.start(); return () => animation.stop();
+  }, [todo.done, reduced, checked]);
   const onToggleRef = useRef(onToggle); onToggleRef.current = onToggle;
   const busyRef = useRef(busy); busyRef.current = busy;
   const suppressUntil = useRef(0);
   const swiping = useRef(false);
   function press(action?: () => void) { if (!swiping.current && Date.now() >= suppressUntil.current && !busyRef.current) action?.(); }
-  const reset = () => Animated.spring(offset, { toValue: 0, useNativeDriver: Platform.OS !== 'web', bounciness: 0 }).start();
+  const reset = () => { offset.stopAnimation(); if (reducedRef.current) offset.setValue(0); else Animated.timing(offset, { toValue: 0, duration: motion.feedback, useNativeDriver: Platform.OS !== 'web' }).start(); };
+  useEffect(() => () => offset.stopAnimation(), [offset]);
   const responder = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponderCapture: (_, gesture) => !busyRef.current && Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
-    onPanResponderGrant: () => { swiping.current = true; },
+    onPanResponderGrant: () => { offset.stopAnimation(); swiping.current = true; },
     onPanResponderMove: (_, gesture) => offset.setValue(Math.max(-95, Math.min(95, gesture.dx))),
     onPanResponderRelease: (_, gesture) => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); if (Math.abs(gesture.dx) >= 64 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4 && !busyRef.current) onToggleRef.current(); },
     onPanResponderTerminate: () => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); },
   }), [offset]);
-  return <View style={s.swipeWrap}>
+  return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View style={s.swipeBack}><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
-    <Animated.View {...responder.panHandlers} style={[s.todoRow, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy} onPress={() => press(onToggle)} hitSlop={8} style={[s.checkbox, todo.done && s.checked]}><Text style={s.checkText}>{todo.done ? '✓' : ''}</Text></Pressable>
+    <Animated.View onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}} {...responder.panHandlers} style={[s.todoRow, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
+      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy} onPress={() => press(onToggle)} hitSlop={8} style={[s.checkbox, todo.done && s.checked]}><Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text></Pressable>
       <Pressable disabled={!onEdit || busy} onPress={() => press(onEdit)} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} style={s.todoBody}>
         <Text style={[s.todoTitle, todo.done && !log && s.doneText]}>{todo.title}</Text>
         {!!todo.source && <Text style={s.todoDate}>{todo.source.provider === 'apple-reminders' ? '미리 알림' : todo.source.provider === 'google' && todo.source.externalId.includes(':tasks:') ? 'Google Tasks' : ({ google: 'Google', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일')}</Text>}
@@ -39,14 +66,15 @@ export function TodoRow({ todo, pending = false, busy = false, onToggle, onEdit,
       </Pressable>
       {pending || log ? <Pressable onPress={() => press(onToggle)} disabled={busy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onEdit ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : null}
     </Animated.View>
-  </View>;
+  </Animated.View>;
 }
 export function DateField({ value, onChange }: { value: string | null; onChange: (date: string | null) => void }) {
   const [open, setOpen] = useState(false);
   return <View><View style={s.dateField}><Label>예정일</Label>{Platform.OS === 'web' ? <TextInput accessibilityLabel="예정일 YYYY-MM-DD" placeholder="YYYY-MM-DD" maxLength={10} value={value ?? ''} onChangeText={text => onChange(text || null)} style={s.dateInput} /> : <Pressable accessibilityRole="button" accessibilityLabel="예정일 선택" onPress={() => {Keyboard.dismiss();setOpen(!open);}} style={s.datePick}><Text style={{ color: colors.blue }}>{value ?? '날짜 선택'}</Text></Pressable>}{value && <Pressable onPress={() => { onChange(null); setOpen(false); }} hitSlop={10} accessibilityRole="button" accessibilityLabel="날짜 해제"><Text style={s.muted}>해제</Text></Pressable>}</View>
     {open && Platform.OS !== 'web' && <DateTimePicker value={value ? new Date(value + 'T12:00:00') : new Date()} mode="date" display={Platform.OS === 'ios' ? 'spinner' : 'default'} locale="ko-KR" onChange={(event, date) => { if (Platform.OS !== 'ios') setOpen(false); if (event.type !== 'dismissed' && date) onChange(dateKey(date)); }} />}</View>;
 }
-export function TodoEditor({ todo, dueDate, store, onClose }: { todo?: Todo; dueDate: string | null; store: TodoStore; onClose: () => void }) {
+export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?: Todo; dueDate: string | null; store: TodoStore; onClose: () => void }) {
+  const {visible,close:onClose} = useModalDismiss(onDismiss);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
   const [alarm, setAlarm] = useState(!!todo?.reminderAt);
@@ -81,7 +109,7 @@ export function TodoEditor({ todo, dueDate, store, onClose }: { todo?: Todo; due
     }
   }
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
-  return <Modal transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
+  return <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
     <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={s.sheet}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><Button title="닫기" quiet disabled={saving} onPress={onClose} /></View><ScrollView keyboardShouldPersistTaps="handled" style={{flexShrink:1}}>
         <TextInput accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} autoFocus editable={!saving} style={s.editorInput} />

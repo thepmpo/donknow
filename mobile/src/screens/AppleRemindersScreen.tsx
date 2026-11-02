@@ -1,6 +1,7 @@
+import { MotionPressable as Pressable } from '../motion';
 import { reconcileApple } from '../apple-reconcile';
 import React, { useEffect, useRef, useState } from 'react';
-import { Platform, Pressable, Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 import { dateKey } from '../domain';
 import type { TodoStore } from '../useTodos';
 import { Button, Page, s } from '../ui';
