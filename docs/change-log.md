@@ -2,6 +2,13 @@
 
 구현 날짜와 배포 상태를 구분한다. 최신 항목을 위에 추가한다. 코드·동작을 바꾸면 이 파일과 공개 HTML을 함께 갱신한다.
 
+## 2026-11-02 — TestFlight 자동 제출 설정 수정
+
+- **원인:** 웹에서 EAS Submit을 켰을 때 production 제출 프로필에 App Store Connect 앱 ID가 없어 `Set ascAppId in the submit profile` 오류로 중단됐다. 실패 실행은 `12e5cc38-1cb8-438c-aa9c-1887e2fd6666`이다.
+- **수정:** `mobile/eas.json`의 `submit.production.ios.ascAppId`에 이미 확인한 앱 ID `6829597261`을 설정했다. 앞서 CLI 빌드에서 사용한 표준/면제 암호화 선택도 `mobile/app.json`의 `ITSAppUsesNonExemptEncryption: false`로 기록했다. 서버의 암호화 백업과 앱의 암호화 사용은 별개다.
+- **검증:** JSON 프로필/앱 식별자 일치와 Expo 공개 설정 해석을 확인했다. 실제 새 EAS 빌드·Apple 제출 성공은 재실행 후 확인해야 한다.
+- **재실행:** GitHub의 main 최신 코드로 Build from GitHub를 새로 시작한다. 실패한 이전 커밋을 그대로 Retry하면 새 설정이 들어가지 않을 수 있다. 프로필 production, 앱 폴더 mobile, iOS, 자동 제출 production을 사용한다.
+
 ## 2026-11-02 — 읽기 쉬운 HTML과 저녁 7시 자동 정리
 
 - **보기:** 확인한 TDS 색상과 글자·표면·버튼 원칙을 프로젝트 문서에도 적용했다. 현재 상태·최근 변경·사용 흐름·최신 화면·수정 요청을 앞쪽에 두고, 개발 구조·보안/설정·오류·검증·AI 전문 자료는 뒤로 옮겼다. 개발 본문은 펼쳐서 읽고, 기존 댓글·목차·전체 이미지와 지침은 유지한다.

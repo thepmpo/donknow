@@ -52,3 +52,7 @@ Expo에서 GitHub 저장소를 연결하는 경우 저장소는 `sjfieni/donknow
 ## 2026-11-02 사용자 확인 — 첫 빌드와 업로드
 
 사용자가 Codespaces에서 EAS 로그인과 Apple 서명 인증서/프로비저닝 프로필 설정을 진행했다. `production` iOS build `37a454bf-afdf-49aa-ab21-70fec36ba28a` (커밋 `400e9d5`)의 finished 및 IPA 생성을 확인했고, EAS Submit의 App Store Connect 업로드 성공 메시지를 공유했다. App Store 앱 ID는 `6829597261`이다. TestFlight 처리/설치·심사·공개 출시는 아직 확인되지 않았다. 이번 TDS 디자인 적용은 그 빌드 이후 변경이므로 새 iOS 빌드가 필요하다. 이 환경의 Expo API는 403으로 직접 계정 작업이 막혀 있어 사용자 실행 결과와 에이전트 직접 검증을 구분한다.
+
+## 웹 자동 제출 오류 수정
+
+웹 자동 제출은 대화형으로 앱을 고를 수 없어 `submit.production.ios.ascAppId`가 필요하다. 기존 Store 앱 ID `6829597261`을 프로필에 고정했다. 실패한 build `12e5cc38-1cb8-438c-aa9c-1887e2fd6666`의 동일 커밋 Retry 대신 최신 main으로 새 빌드를 시작한다. 이 수정은 제출 설정 보완이며 아직 새 빌드/업로드 성공 증거가 아니다. 기존 CLI 빌드에서 선택한 표준/면제 암호화는 `ios.infoPlist.ITSAppUsesNonExemptEncryption=false`로 기록했다.
