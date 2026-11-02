@@ -6,6 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTodos } from './src/useTodos';
 import { colors, TodoEditor } from './src/ui';
+import { typography, palette } from './src/theme';
 import type { Todo } from './src/domain';
 import { TodosScreen } from './src/screens/TodosScreen';
 import { CalendarScreen } from './src/screens/CalendarScreen';
@@ -34,7 +35,7 @@ function Shell() {
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
   return <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <View style={styles.header}><Text style={styles.brand}>{!store.connection || settings || needsAuth ? 'duckduck' : tabs.find(item => item.id === tab)?.name}</Text><Text style={styles.storage}>{store.connection?.mode === 'cloud' ? '● 클라우드' : store.connection ? '체험 모드 · 이 기기에 저장' : '🦆'}</Text></View>
-    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'}]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
+    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'}]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
     {!!store.error && <View style={styles.errorBar}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
     {!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
       {tab === 'calendar' && <CalendarScreen store={store} onAdd={onAdd} onEdit={onEdit} />}
@@ -43,9 +44,20 @@ function Shell() {
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
     </View>}
-    {store.connection && !settings && !needsAuth && <View style={styles.tabBar} accessibilityRole="tablist">{tabs.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{ selected: item.id === tab }} onPress={() => setTab(item.id)} style={styles.tab}>{item.id === 'duck' ? <Text style={styles.duckTab}>🦆</Text> : <Ionicons name={item.icon} size={23} color={item.id === tab ? colors.blue : '#9ba7b8'} />}<Text style={[styles.tabLabel, item.id === tab && styles.selected]}>{item.name}</Text></Pressable>)}</View>}
+    {store.connection && !settings && !needsAuth && <View style={styles.tabBar} accessibilityRole="tablist">{tabs.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{ selected: item.id === tab }} onPress={() => setTab(item.id)} style={styles.tab}>{item.id === 'duck' ? <Text style={styles.duckTab}>🦆</Text> : <Ionicons name={item.icon} size={24} color={item.id === tab ? colors.blue : palette.grey500} />}<Text style={[styles.tabLabel, item.id === tab && styles.selected]}>{item.name}</Text></Pressable>)}</View>}
     {editor && !needsAuth && !settings && <TodoEditor todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(null)} />}
   </KeyboardAvoidingView>;
 }
 export default function App() { return <SafeAreaProvider><SafeAreaView style={styles.safe}><StatusBar style="dark" /><Shell /></SafeAreaView></SafeAreaProvider>; }
-const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: colors.bg }, root: { flex: 1, width: '100%', maxWidth: 760, alignSelf: 'center', backgroundColor: colors.bg }, loading: { flex: 1, justifyContent: 'center', alignItems: 'center' }, header: { height: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 22, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: colors.line, gap: 8 }, brand: { fontSize: 15, color: colors.text, fontWeight: '600' }, storage: { fontSize: 9, color: '#899bb0' }, content: { flex: 1, minHeight: 0 }, hidden: { display: 'none' }, tabBar: { flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth, borderColor: colors.line, backgroundColor: '#fff', paddingTop: 10, paddingBottom: 7 }, tab: { flex: 1, minHeight: 50, alignItems: 'center', justifyContent: 'center', gap: 6 }, tabLabel: { fontSize: 10, color: '#9ba7b8' }, selected: { color: colors.blue, fontWeight: '600' }, duckTab: { fontSize: 23, lineHeight: 27 }, errorBar: { padding: 12, backgroundColor: '#fff0f2', flexDirection: 'row', gap: 10, alignItems: 'center' }, error: { flex: 1, color: '#c35e6e', fontSize: 11, lineHeight: 18 }, retry: { minHeight: 36, justifyContent: 'center' } });
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.bg }, root: { flex: 1, width: '100%', maxWidth: 760, alignSelf: 'center', backgroundColor: colors.bg },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  header: { minHeight: 60, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, paddingVertical: 12, gap: 12 },
+  brand: { ...typography.body, color: colors.text, fontWeight: '700', flexShrink: 1 }, storage: { ...typography.caption, color: colors.muted, flexShrink: 1, textAlign: 'right' },
+  content: { flex: 1, minHeight: 0 }, hidden: { display: 'none' },
+  tabBar: { flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth, borderColor: colors.line, backgroundColor: colors.white, paddingTop: 8, paddingBottom: 6 },
+  tab: { flex: 1, minHeight: 58, paddingHorizontal: 2, paddingVertical: 6, alignItems: 'center', justifyContent: 'center', gap: 6 },
+  tabLabel: { fontSize: 12, lineHeight: 18, color: colors.muted, textAlign: 'center' }, selected: { color: colors.blueText, fontWeight: '600' }, duckTab: { fontSize: 24, lineHeight: 28 },
+  errorBar: { paddingHorizontal: 20, paddingVertical: 12, backgroundColor: '#fff0f2', flexDirection: 'row', gap: 12, alignItems: 'center' },
+  error: { ...typography.caption, flex: 1, color: colors.danger }, retry: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' },
+});

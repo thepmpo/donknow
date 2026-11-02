@@ -31,4 +31,4 @@ export function AccountScreen({ store, kind, onClose }: { store: TodoStore; kind
     {!!message && <Text accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}{!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </Page>;
 }
-const styles = StyleSheet.create({ input: { color: colors.text, fontSize: 14, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line, borderRadius: 14, padding: 16, marginVertical: 16, minHeight: 50 }, confirm: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 18 }, message: { color: '#6283ae', fontSize: 12, lineHeight: 21, marginTop: 20 } });
+const styles = StyleSheet.create({ input: { color: colors.text, fontSize: 14, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line, borderRadius: 14, padding: 16, marginVertical: 16, minHeight: 50 }, confirm: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 18 }, message: { color: '#6283ae', fontSize: 13, lineHeight: 21, marginTop: 20 } });

@@ -1,13 +1,14 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Animated, Modal, PanResponder, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share } from 'react-native';
+import { Animated, Modal, PanResponder, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { dateKey, validateDraft } from './domain';
 import type { Draft, Todo } from './domain';
 import type { TodoStore } from './useTodos';
-export const colors = { bg: '#f7f8fa', text: '#263346', muted: '#8a98ab', blue: '#3182f6', line: '#e8edf3', pale: '#eaf2ff', white: '#ffffff' };
+import { colors, typography, spacing, radius } from './theme';
+export { colors } from './theme';
 export function Label({ children }: { children: React.ReactNode }) { return <Text style={s.label}>{children}</Text>; }
-export function Button({ title, onPress, disabled = false, quiet = false, accessibilityLabel }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; accessibilityLabel?: string }) {
-  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} disabled={disabled} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .65 : 1 }]}><Text style={[s.buttonText, quiet && { color: colors.blue }]}>{title}</Text></Pressable>;
+export function Button({ title, onPress, disabled = false, quiet = false, loading = false, accessibilityLabel }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; loading?: boolean; accessibilityLabel?: string }) {
+  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
 export function Page({ children, refreshControl }: { children: React.ReactNode; refreshControl?: React.ReactElement }) {
   return <ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={s.page}>{children}</ScrollView>;
@@ -88,7 +89,7 @@ export function TodoEditor({ todo, dueDate, store, onClose }: { todo?: Todo; due
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={setAlarm} disabled={saving} trackColor={{ true: colors.blue }} /></View>
         {alarm && <View><TextInput accessibilityLabel="알림 시간 HH:mm" value={alarmTime} onChangeText={setAlarmTime} placeholder="09:00" maxLength={5} style={s.dateInput} /><Text style={[s.muted, { marginVertical: 12 }]}>{store.reminders.supported ? store.reminders.enabled ? '선택한 시간에 이 기기에서 알려드려요.' : '내정보에서 기기 알림도 켜주세요.' : '웹에서는 시간을 저장해요. 알림은 아이폰에서 켤 수 있어요.'}</Text></View>}
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-        <Button title={saving ? '저장 중…' : '저장'} onPress={save} disabled={saving || !title.trim()} />
+        <Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} />
         {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} /><Text style={s.muted}>공유창에서 카카오톡을 선택하세요. 웹에서 공유창을 지원하지 않으면 내용을 복사해요. 저장된 내용이 공유돼요.</Text>{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
         {!!todo && <Pressable accessibilityRole="button" disabled={saving} onPress={remove} style={s.deleteButton}><Text style={s.deleteText}>할 일 삭제</Text></Pressable>}
       </ScrollView></View>
@@ -96,18 +97,21 @@ export function TodoEditor({ todo, dueDate, store, onClose }: { todo?: Todo; due
   </Modal>;
 }
 export const s = StyleSheet.create({
-  page: { padding: 24, paddingBottom: 40, flexGrow: 1 }, label: { color: colors.muted, fontSize: 12 }, muted: { color: colors.muted, fontSize: 11 },
-  h1: { color: colors.text, fontSize: 30, fontWeight: '700', letterSpacing: -1, marginBottom: 12 }, subtitle: { color: colors.muted, fontSize: 13, lineHeight: 21 },
-  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: '600' }, button: { backgroundColor: colors.blue, paddingHorizontal: 19, paddingVertical: 14, minHeight: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: '600' }, quietButton: { backgroundColor: colors.pale },
-  todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 17, gap: 14, minHeight: 78, borderBottomWidth: 1, borderBottomColor: colors.line },
-  swipeWrap: { overflow: 'hidden' }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#e0f1e8', padding: 20 }, swipeBackText: { color: '#409b73', fontSize: 12 },
-  checkbox: { width: 25, height: 25, borderRadius: 13, borderWidth: 1.5, borderColor: '#d5dfeb', alignItems: 'center', justifyContent: 'center' }, checked: { backgroundColor: colors.blue, borderColor: colors.blue }, checkText: { color: '#fff', fontSize: 16 },
-  todoBody: { flex: 1 }, todoTitle: { color: colors.text, fontSize: 15, lineHeight: 23 }, doneText: { color: '#a7b2c0', textDecorationLine: 'line-through' }, todoDate: { fontSize: 10, color: colors.muted, marginTop: 5 }, pendingText: { color: '#45a077', fontSize: 10, marginTop: 5 },
-  more: { minHeight: 44, minWidth: 35, justifyContent: 'center', alignItems: 'center' }, moreText: { fontSize: 23, color: colors.muted }, restore: { fontSize: 11, color: colors.blue },
-  dateField: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14 }, dateInput: { flex: 1, padding: 12, borderRadius: 10, backgroundColor: colors.bg, color: colors.text, fontSize: 13 }, datePick: { flex: 1, padding: 12, alignItems: 'flex-end' },
-  modalBackdrop: { flex: 1, backgroundColor: '#14233a66', justifyContent: 'flex-end' }, sheet: { maxHeight:'90%', backgroundColor: '#fff', padding: 24, paddingBottom: 38, borderTopLeftRadius: 28, borderTopRightRadius: 28, width: '100%', maxWidth: 600, alignSelf: 'center' }, sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 },
-  editorInput: { fontSize: 18, color: colors.text, backgroundColor: colors.bg, padding: 16, borderRadius: 14, minHeight: 58 }, error: { fontSize: 12, color: '#cb5667', lineHeight: 20, marginVertical: 12 }, deleteButton: { alignItems: 'center', padding: 18, marginTop: 10 }, deleteText: { fontSize: 12, color: '#cb6b78' },
-  empty: { alignItems: 'center', justifyContent: 'center', padding: 50, gap: 12 }, emptyText: { color: colors.muted, fontSize: 13, lineHeight: 22, textAlign: 'center' },
-  card: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line, borderRadius: 20, padding: 20, marginTop: 20 },
+  page: { padding: spacing.xl, paddingTop: spacing.xxl, paddingBottom: 40, flexGrow: 1 },
+  label: { ...typography.caption, color: colors.muted }, muted: { ...typography.caption, color: colors.muted },
+  h1: { ...typography.title, color: colors.text, marginBottom: spacing.md },
+  subtitle: { ...typography.detail, color: colors.muted },
+  sectionTitle: { ...typography.section, color: colors.text },
+  button: { backgroundColor: colors.blue, paddingHorizontal: 20, paddingVertical: 14, minHeight: 56, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center' },
+  buttonText: { ...typography.body, color: colors.white, fontWeight: '600', textAlign: 'center', flexShrink: 1 }, quietButton: { backgroundColor: colors.pale, minHeight: 48 },
+  todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 20, gap: spacing.lg, minHeight: 88, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
+  swipeWrap: { overflow: 'hidden', borderRadius: radius.small }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },
+  checkbox: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }, checked: { backgroundColor: colors.blue, borderColor: colors.blue }, checkText: { color: colors.white, fontSize: 18 },
+  todoBody: { flex: 1, minHeight: 44, justifyContent: 'center' }, todoTitle: { ...typography.body, color: colors.text }, doneText: { color: colors.subtle, textDecorationLine: 'line-through' }, todoDate: { ...typography.caption, color: colors.muted, marginTop: spacing.xs }, pendingText: { ...typography.caption, color: colors.blueText, marginTop: spacing.xs },
+  more: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }, moreText: { fontSize: 23, color: colors.muted }, restore: { ...typography.caption, color: colors.blueText },
+  dateField: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg, flexWrap: 'wrap' }, dateInput: { flex: 1, minHeight: 48, padding: spacing.md, borderRadius: radius.small, backgroundColor: colors.grouped, color: colors.text, ...typography.detail }, datePick: { flex: 1, minHeight: 44, padding: spacing.md, alignItems: 'flex-end', justifyContent: 'center' },
+  modalBackdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight:'90%', backgroundColor: colors.white, padding: spacing.xl, paddingBottom: 38, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, width: '100%', maxWidth: 600, alignSelf: 'center' }, sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xl },
+  editorInput: { ...typography.body, color: colors.text, backgroundColor: colors.grouped, padding: spacing.lg, borderRadius: radius.button, minHeight: 60 }, error: { ...typography.caption, color: colors.danger, marginVertical: spacing.md }, deleteButton: { alignItems: 'center', minHeight: 48, padding: 18, marginTop: 10 }, deleteText: { ...typography.detail, color: colors.danger },
+  empty: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 56, gap: spacing.md }, emptyText: { ...typography.detail, color: colors.muted, textAlign: 'center' },
+  card: { backgroundColor: colors.surface, borderRadius: radius.card, padding: spacing.xl, marginTop: spacing.xl },
 });

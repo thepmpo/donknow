@@ -34,6 +34,24 @@ await page.goto('https://duckduck-api.test/');
 await page.getByRole('button',{name:'화면 먼저 체험하기',exact:true}).click();
 await page.getByRole('tab',{name:'Todo 리스트',exact:true}).waitFor();
 assert.equal(await page.getByRole('tab').count(),5);assert.equal(await page.getByTestId(/^todo-/).count(),2);
+// Verify shared layout at phone widths and with enlarged text before screenshots.
+for(const width of [320,390,430]){
+ await page.setViewportSize({width,height:844});
+ for(const name of ['캘린더','Todo 리스트','duckduck','log','내정보']){
+  await page.getByRole('tab',{name,exact:true}).click();
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} overflow at ${width}`);
+  const tabBar=await page.getByRole('tablist').boundingBox();assert.ok(tabBar&&tabBar.y+tabBar.height<=845,'navigation stays inside viewport');
+  const enlargedFits=await page.evaluate(()=>{
+   const nodes=Array.from(document.querySelectorAll('[dir="auto"],input,textarea')).filter(el=>el.getBoundingClientRect().width>0);
+   const original=nodes.map(el=>({el,fontSize:el.style.fontSize,lineHeight:el.style.lineHeight}));
+   const sizes=nodes.map(el=>({font:parseFloat(getComputedStyle(el).fontSize),line:parseFloat(getComputedStyle(el).lineHeight)}));
+   nodes.forEach((el,i)=>{el.style.fontSize=sizes[i].font*1.6+'px';if(Number.isFinite(sizes[i].line))el.style.lineHeight=sizes[i].line*1.6+'px';});
+   const fits=document.documentElement.scrollWidth<=innerWidth;
+   original.forEach(({el,fontSize,lineHeight})=>{el.style.fontSize=fontSize;el.style.lineHeight=lineHeight;});return fits;
+  });assert.equal(enlargedFits,true,`${name} enlarged text overflow at ${width}`);
+ }
+}
+await page.setViewportSize({width:390,height:844});await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();
 await page.screenshot({path:join(artifacts,'mobile-todos.png')});
 await page.getByRole('button',{name:'할 일 추가',exact:true}).click();await page.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('아이폰 앱 확인하기');await page.getByRole('button',{name:'저장',exact:true}).click();
 await page.getByText('아이폰 앱 확인하기',{exact:true}).waitFor();assert.equal(await page.getByTestId(/^todo-/).count(),3);
