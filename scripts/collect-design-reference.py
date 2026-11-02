@@ -98,7 +98,7 @@ def main():
         time.sleep(0.25)
     if not pages:
         raise SystemExit('문서를 수집하지 못했습니다. 접근 제한을 우회하지 않습니다. 파일은 생성하지 않았습니다.')
-    output = Path(__file__).resolve().parents[1] / 'deliverables/toss-tds-reference.md'
+    output = Path.cwd() / 'deliverables/toss-tds-reference.md'
     output.parent.mkdir(exist_ok=True)
     report = [
         '# Toss TDS 공개 문서 수집본',
