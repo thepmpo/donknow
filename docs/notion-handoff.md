@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-03 · 한국 시간 · 기능 코드 701798b · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-03 · 한국 시간 · 기능 코드 47334b4 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -39,6 +39,15 @@
 ### 변경 기록
 
 구현 날짜와 배포 상태를 구분한다. 최신 항목을 위에 추가한다. 코드·동작을 바꾸면 이 파일과 공개 HTML을 함께 갱신한다.
+
+#### 2026-11-03 — 메모·글머리표·드래그 닫기·작은 X
+
+- **메모:** Todo와 캘린더에서 여는 할 일 상세, 덕 초안에 메모 공간을 추가했다. 저장 버튼으로 제목/날짜와 함께 계정별 Todo에 보관한다. 글자 수는 4,000자이며 기존 데이터는 메모가 없어도 읽을 수 있다. 개인 내보내기·암호화 백업에도 포함된다. Google 원본 메모를 수정하거나 붙여넣기 원문을 자동 저장하지 않는다.
+- **간단한 작성:** 별도 툴바 없이 줄 앞 `- `가 `• `로 바뀌고, Enter로 다음 글머리표를 이어 쓴다. 빈 글머리표에서 Enter를 누르면 목록을 끝낸다. 일반 문장 속 하이픈·날짜는 바꾸지 않는다. 긴 메모는 입력란이 늘어나며 외부 시트에서 스크롤한다.
+- **시트 조작:** Todo/캘린더 편집·기록 검색·대화 붙여넣기 시트의 손잡이를 아래로 끌어 닫는다. 본문 스크롤은 닫기 제스처로 가로채지 않는다. 저장 중에는 닫기를 막고, 닫자마자 새 시트를 열 때 이전 닫기 콜백이 새 화면을 닫지 않게 했다.
+- **X와 스크롤:** ‘닫기’ 글자를 작은 X로 바꿨다. 실제 터치 영역과 접근성 이름은 유지한다. 앱 스크롤 막대만 숨기고 스크롤 자체는 유지한다. 덕 자동 스크롤은 새 초안 추가 시에만 수행해 메모 편집 중 위치를 가로채지 않는다.
+- **호환성:** 메모를 무시하는 구버전 서버로 보내 사라지는 일을 막기 위해 저장 지원 여부를 확인한다. 이번에는 Render 서버를 먼저 최신 배포하고 iOS 빌드를 올려야 한다.
+- **검증:** 서버/단위 43개, 메모 길이/타입·계정 격리·완료 후 보존·내보내기·암호화 백업 복원·글머리표 실제 입력·캘린더 재조회·스크롤 가능/막대 숨김·드래그/X 닫기·구버전 서버 입력 보존을 확인했다. TypeScript·문법·웹 기능/모션·iOS JS 번들도 통과했다. 실제 기기 설치 검증과 공개 배포는 별도다.
 
 #### 2026-11-03 — Things를 참고한 간결한 Todo 목록
 
@@ -178,10 +187,12 @@ cc5c95f Fix native Expo font peer dependency and align SDK 58 patches
 79f1648 Reflect completion immediately and serialize background saves with undo rollback
 0ee2a2b Record immediate completion response and delayed-save validation in handoff
 701798b Compact Todo rows with Things-inspired density and record per-screen references
+2e2555f Publish compact Todo preview and updated project handoff
+47334b4 Add task notes, draggable sheets and compact close controls
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 701798b에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 47334b4에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -207,187 +218,192 @@ cc5c95f Fix native Expo font peer dependency and align SDK 58 patches
 ### 할 일
 파일: `artifacts/mobile-todos.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 27,021 bytes · SHA-256 `fec46de962747ae304bf3a3017c11feacd54a446284669d653bc33b01d39cae7`
-![artifacts/mobile-todos.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-todos.png)
+![artifacts/mobile-todos.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-todos.png)
 
 ### 캘린더
 파일: `artifacts/mobile-calendar.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 29,234 bytes · SHA-256 `177a54cfcdf2fd515b8050ca0852e25e0681c73dbbcff83e90324d7e61bac3ab`
-![artifacts/mobile-calendar.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-calendar.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,079 bytes · SHA-256 `b3950d2c9a3500dabedb568e0a2298dae4c12267084da9ca886905184bb51cff`
+![artifacts/mobile-calendar.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-calendar.png)
 
 ### 덕 첫 화면
 파일: `artifacts/mobile-duckduck.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 31,393 bytes · SHA-256 `8fe73071baedee27e47f8f960bb5b87e3290632ab9ca072eb4a1e41cf097234b`
-![artifacts/mobile-duckduck.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-duckduck.png)
+![artifacts/mobile-duckduck.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-duckduck.png)
 
 ### 완료 기록
 파일: `artifacts/mobile-log.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 29,165 bytes · SHA-256 `c443ed9c1987970d1a99df0a4bc80ad92613e589e773edbee8ba1965835bf1c8`
-![artifacts/mobile-log.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-log.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 29,337 bytes · SHA-256 `2b5008fb06d0ffbef261d4f0e5c572f90eab24ba2e7314f360184c30cea0b119`
+![artifacts/mobile-log.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-log.png)
 
 ### 내정보
 파일: `artifacts/mobile-profile.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 41,352 bytes · SHA-256 `912d882198aa94fffcae10f96a47ecc31a40f8c0092053030a9882ea39c798b1`
-![artifacts/mobile-profile.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-profile.png)
+![artifacts/mobile-profile.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-profile.png)
 
 ### mobile account settings
 파일: `artifacts/mobile-account-settings.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 38,638 bytes · SHA-256 `51353adf08bacb52889a974b7b50272d1fe7b0eeb2b76f98869ebcd83ef389b0`
-![artifacts/mobile-account-settings.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-account-settings.png)
+![artifacts/mobile-account-settings.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/mobile-apple-reminders.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 35,436 bytes · SHA-256 `4efde0cfda7a09db6bdf554ce4670db2cbbbe83be1e8788c7eba67fe06afd55d`
-![artifacts/mobile-apple-reminders.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-apple-reminders.png)
+![artifacts/mobile-apple-reminders.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-apple-reminders.png)
 
 ### 로그인
 파일: `artifacts/mobile-auth.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 33,810 bytes · SHA-256 `a61d036b4d67a3ec9008980bed2ae33a4c8ecd2b33a857587f723b8c5c3d17b9`
-![artifacts/mobile-auth.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-auth.png)
+![artifacts/mobile-auth.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-auth.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/mobile-completed-reference-fixture.png`
 분류: 모의 응답 테스트 화면 · 48,390 bytes · SHA-256 `5a02b0643158b232629d4aaa145559e1abb9323364b0ca3db9a59821314f95ac`
-![artifacts/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-completed-reference-fixture.png)
+![artifacts/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-completed-reference-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/mobile-duck-draft.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 32,756 bytes · SHA-256 `07c42ece7ed085e91f07e92a2f0fc33da9ef32392be40e67edacbdd648d06d66`
-![artifacts/mobile-duck-draft.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-duck-draft.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,944 bytes · SHA-256 `f440e766a6f2241659cf7368f6be9250dcd8e1755b36ad63fdc56d3399250bd9`
+![artifacts/mobile-duck-draft.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-duck-draft.png)
 
 ### 외부 기록 검색 · 테스트
 파일: `artifacts/mobile-external-search-fixture.png`
-분류: 모의 응답 테스트 화면 · 48,517 bytes · SHA-256 `18cac1ac3601cf9c100308c53c5a812183562cf4445d923484a13e70e71f055b`
-![artifacts/mobile-external-search-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-external-search-fixture.png)
+분류: 모의 응답 테스트 화면 · 47,942 bytes · SHA-256 `ff8db16a22964ab8324b82e1590e8265cfff0456c03fd1653a0276b7373a29a5`
+![artifacts/mobile-external-search-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-external-search-fixture.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/mobile-google-tasks-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,757 bytes · SHA-256 `b83890e5888ec00a7cb1cd8780b425ecd53850e829de1dd25a4507e266866333`
-![artifacts/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-google-tasks-fixture.png)
+![artifacts/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/mobile-kakao-paste.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 40,950 bytes · SHA-256 `d29d6204a1bab5aaf48efed696739d9f7a17daf0a66b4af69c5e62b15bf46539`
-![artifacts/mobile-kakao-paste.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-kakao-paste.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 40,602 bytes · SHA-256 `d82433b16639b51841b8a31ed07b8cf793251838f9b63a262713c4be78f6d4cf`
+![artifacts/mobile-kakao-paste.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/mobile-kakao-share.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 41,461 bytes · SHA-256 `5898934910665b95368a8f3ab350da21815bb6f6abc2313bce0e1faf093ace49`
-![artifacts/mobile-kakao-share.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-kakao-share.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 36,725 bytes · SHA-256 `1cead02ea4d63426f7136157deb0abf5c8257b279c43ce6289f19eac6643eabd`
+![artifacts/mobile-kakao-share.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-kakao-share.png)
+
+### 메모·글머리표·닫기 손잡이
+파일: `artifacts/mobile-notes-fixture.png`
+분류: 체험 데이터 메모/시트 검증 · 32,554 bytes · SHA-256 `72dcb6308153ead5c700e9769f184c9e090328645e5cdaaefa52b02daf6fc56e`
+![artifacts/mobile-notes-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-notes-fixture.png)
 
 ### mobile overview
 파일: `artifacts/mobile-overview.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 145,614 bytes · SHA-256 `0c4a7c633b3390d6c41352d549f6f6dbfde79824f4099ac10cf5bad62d361a80`
-![artifacts/mobile-overview.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-overview.png)
+![artifacts/mobile-overview.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-overview.png)
 
 ### mobile personal export
 파일: `artifacts/mobile-personal-export.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 48,909 bytes · SHA-256 `2e33d9dfd1ab3484bf5625881f76abb8ad2c07af28619f9b2c78b441bf164483`
-![artifacts/mobile-personal-export.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-personal-export.png)
+![artifacts/mobile-personal-export.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-personal-export.png)
 
 ### 기록 찾기
 파일: `artifacts/mobile-record-search.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 39,578 bytes · SHA-256 `bfc141ac1c24a13c0884fe8d470bdd8551e4f08836771720dd59119f6cc66145`
-![artifacts/mobile-record-search.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-record-search.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 39,008 bytes · SHA-256 `304176d6c7ce3d7a31ff4949f2bf67f6b08258fd476a92e7a7565d68a01eb626`
+![artifacts/mobile-record-search.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/mobile-reminder.png`
-분류: 네이티브 기반 웹의 격리 테스트 화면 · 33,361 bytes · SHA-256 `ee4eff45e04f8e5618c8c9ef857104937797ad48eba1ea06fa9352e87922577b`
-![artifacts/mobile-reminder.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-reminder.png)
+분류: 네이티브 기반 웹의 격리 테스트 화면 · 30,290 bytes · SHA-256 `c5ee3cb4ee3c6229440799aa3327e0994d1f9f660f52d73a2c4e18d5e581a20d`
+![artifacts/mobile-reminder.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/mobile-services.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 42,605 bytes · SHA-256 `5ef9548a736e66c490b96a1c6588d6f0860f38ce5d193aad9a5408365829c27e`
-![artifacts/mobile-services.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-services.png)
+![artifacts/mobile-services.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/mobile-task-sync-fixture.png`
 분류: 모의 응답 테스트 화면 · 50,472 bytes · SHA-256 `d5d799361ab0eee2a9fc7865b57fcdbc0f2b398fea3672b95c27c944b6fc0350`
-![artifacts/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-task-sync-fixture.png)
+![artifacts/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-task-sync-fixture.png)
 
 ### 한 화면에 8개 · 목록 밀도 확인
 파일: `artifacts/mobile-todo-density-fixture.png`
 분류: 체험 데이터 8개 목록 밀도 검증 · 40,033 bytes · SHA-256 `66094189b1e7b506fe195b099130a2ee18064b464ee44679cb4c56d7085e460a`
-![artifacts/mobile-todo-density-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-todo-density-fixture.png)
+![artifacts/mobile-todo-density-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-todo-density-fixture.png)
 
 ### mobile verification
 파일: `artifacts/mobile-verification.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,768 bytes · SHA-256 `e9a54fdd43d7c0f8817eb08302dadea23f8017980f9969affcda57b56137bbad`
-![artifacts/mobile-verification.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/mobile-verification.png)
+![artifacts/mobile-verification.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/mobile-verification.png)
 
 ### calendar
 파일: `artifacts/calendar.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 67,096 bytes · SHA-256 `eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351`
-![artifacts/calendar.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/calendar.png)
+![artifacts/calendar.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/calendar.png)
 
 ### duckduck
 파일: `artifacts/duckduck.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 53,117 bytes · SHA-256 `f773dfd7a01bf87c0deaabe2f3c9751bb6c6bd5cf883e830e1df6687c6b863b3`
-![artifacts/duckduck.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/duckduck.png)
+![artifacts/duckduck.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/duckduck.png)
 
 ### features overview
 파일: `artifacts/features-overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 133,916 bytes · SHA-256 `a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba`
-![artifacts/features-overview.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/features-overview.png)
+![artifacts/features-overview.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/features-overview.png)
 
 ### log
 파일: `artifacts/log.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 43,986 bytes · SHA-256 `5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea`
-![artifacts/log.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/log.png)
+![artifacts/log.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/log.png)
 
 ### overview
 파일: `artifacts/overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 137,266 bytes · SHA-256 `108db53c7dee5028aa39c2e147e46df6e1f75e523b535aecdcdf4a89daaee73d`
-![artifacts/overview.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/overview.png)
+![artifacts/overview.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/overview.png)
 
 ### polish overview
 파일: `artifacts/polish-overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 92,820 bytes · SHA-256 `32526ebc62dbdd7cc29df1ef44fda820df843d2f17a52cce19f15b702785edef`
-![artifacts/polish-overview.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/polish-overview.png)
+![artifacts/polish-overview.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/polish-overview.png)
 
 ### profile
 파일: `artifacts/profile.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 80,270 bytes · SHA-256 `373274654c0efb441423218ea34ac8a68548ba52121bc3acb366cd4bb800e184`
-![artifacts/profile.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/profile.png)
+![artifacts/profile.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/profile.png)
 
 ### todos
 파일: `artifacts/todos.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 57,566 bytes · SHA-256 `8edebde479223a9cf2377144ccf88ac1125c9b7852603c8f9300b3965065f3bc`
-![artifacts/todos.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/artifacts/todos.png)
+![artifacts/todos.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/artifacts/todos.png)
 
 ### android icon background
 파일: `mobile/assets/android-icon-background.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 17,549 bytes · SHA-256 `fb139c2dee362ebf2070e23b96da6fc0d43f8492de38b8af1fd7223e19b5861d`
-![mobile/assets/android-icon-background.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/mobile/assets/android-icon-background.png)
+![mobile/assets/android-icon-background.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/mobile/assets/android-icon-background.png)
 
 ### android icon foreground
 파일: `mobile/assets/android-icon-foreground.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 78,796 bytes · SHA-256 `9e3d0315a33c6799de601dd34cd8bf8cc3a8d16f3bf75592baec2ceb7240b391`
-![mobile/assets/android-icon-foreground.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/mobile/assets/android-icon-foreground.png)
+![mobile/assets/android-icon-foreground.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/mobile/assets/android-icon-foreground.png)
 
 ### android icon monochrome
 파일: `mobile/assets/android-icon-monochrome.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 4,140 bytes · SHA-256 `6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83`
-![mobile/assets/android-icon-monochrome.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/mobile/assets/android-icon-monochrome.png)
+![mobile/assets/android-icon-monochrome.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/mobile/assets/android-icon-monochrome.png)
 
 ### favicon
 파일: `mobile/assets/favicon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 1,129 bytes · SHA-256 `a4e030697a7571b3e95d31860e4da55d2f98e5e861e2b55e414f45a8556828ba`
-![mobile/assets/favicon.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/mobile/assets/favicon.png)
+![mobile/assets/favicon.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/mobile/assets/favicon.png)
 
 ### icon
 파일: `mobile/assets/icon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 393,493 bytes · SHA-256 `119462bb78eb240a65c869fc067ee599639b3cb5a41953f25c07b17d2a8c7e0f`
-![mobile/assets/icon.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/mobile/assets/icon.png)
+![mobile/assets/icon.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/mobile/assets/icon.png)
 
 ### splash icon
 파일: `mobile/assets/splash-icon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 17,547 bytes · SHA-256 `5f4c0a732b6325bf4071d9124d2ae67e037cb24fcc9c482ef82bea742109a3b8`
-![mobile/assets/splash-icon.png](https://raw.githubusercontent.com/sjfieni/donknow/701798b93d7fd4f4c4f932c32da7fec47fe8bf66/mobile/assets/splash-icon.png)
+![mobile/assets/splash-icon.png](https://raw.githubusercontent.com/sjfieni/donknow/47334b401c375901ee088e6c1764a5f907c0efbc/mobile/assets/splash-icon.png)
 
 
 ## 6. 댓글로 수정 요청하기
 
-공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 36개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
+공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 37개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
 
 - 각 절/이미지의 수정 요청 버튼으로 위치를 지정할 수 있습니다.
 - 댓글은 서버 DB에 저장되며 작성자만 수정·삭제·반영 확인할 수 있습니다.
@@ -425,7 +441,7 @@ cc5c95f Fix native Expo font peer dependency and align SDK 58 patches
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/sjfieni/donknow
 - 전체 소스 다운로드: https://github.com/sjfieni/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/sjfieni/donknow/tree/701798b93d7fd4f4c4f932c32da7fec47fe8bf66
+- 기능 기준 커밋: https://github.com/sjfieni/donknow/tree/47334b401c375901ee088e6c1764a5f907c0efbc
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -453,6 +469,7 @@ React Native/Expo SDK 58 + TypeScript로 실제 네이티브 컴포넌트를 사
 | docs/change-log.md | 변경 날짜·검증·배포 상태, 이 HTML에 직접 포함 |
 | mobile/src/useTodos.ts | 계정/저장소/할 일 상태, 실패 보존, 완료 4초 처리 |
 | mobile/src/domain.ts | 데이터 검증, 날짜·월 그리드·제목 검색 |
+| mobile/src/NotesField.tsx · mobile/src/notes.ts | 메모 입력·글머리표·글자 수 검증 |
 | mobile/src/screens/DuckScreen.tsx | 입력/붙여넣기→초안→Todo |
 | mobile/src/screens/RecordSearchSheet.tsx | 저장된 기록 및 외부 Google Tasks 검색 |
 | mobile/src/screens/IntegrationsScreen.tsx | 범위 선택, OAuth, 자료·완료 참고 조회, 가져오기·점검 |
@@ -547,7 +564,7 @@ GitHub 자동 백업은 현재 비밀 설정과 활성화가 필요한 준비 �
 
 ## 15. 검증과 실행 명령
 
-이번 기능 보완에서 **테스트 40개 통과**, TypeScript 검사/문법 검사 통과, 실제 Expo 웹 번들의 브라우저 기능 테스트 통과, iOS 번들 생성 통과, 운영 이미지의 네이티브 CA/TLS·로그인 보호·저장·서명 백업/복원·재시작 통과를 확인했습니다. 새 변경 후에는 결과를 재확인합니다.
+최근 메모 확장에서 **서버/단위 테스트 43개**, TypeScript/문법, 실제 Expo 웹 기능·모션 테스트와 iOS JS 번들이 통과했습니다. 메모의 저장·소유권·백업 보존과 글머리표·드래그/X 닫기도 검증했습니다. 운영 이미지의 CA/TLS·서명 백업/복원·재시작은 앞선 변경에서 검증한 기록이며 이번에 컨테이너 전체를 다시 빌드한 것은 아닙니다. 실제 iPhone 설치와 OS 동작 검증은 별도입니다. 새 변경 후에는 관련 결과를 재확인합니다.
 
 ```sh
 npm ci
@@ -662,6 +679,12 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 - 캘린더 기본 구성/정보 배치는 Fantastical을, Todo 목록 밀도와 조작은 Things를 참고한다. 공통 색상·글자·버튼 등 시각 언어는 확인한 토스 가이드를 함께 따른다. 현재 앱을 동일하게 복제했다고 주장하지 않는다.
 - Todo의 짧은 기본 행은 약 60pt, 제목/날짜·출처 두 줄로 구성한다. 빈 메타데이터 공간을 만들지 않고, 큰 글자와 긴 제목에서는 자연스럽게 높아진다. 실제 터치 영역 44pt와 즉시 체크·4초 되돌리기를 유지한다.
+
+## 메모·상세 시트 — 2026-11-03
+
+- Todo.notes는 선택적 최대 4,000자 문자열이다. 할 일/캘린더 상세와 덕 초안에서 입력하고 기존 저장 동작으로 보관한다. 줄 앞 `- `를 글머리표로 변환하고, 원문 대화는 자동 복사·저장하지 않는다. Google 원본 메모로 자동 전송하지 않는다.
+- 메모 API 변경은 서버 배포를 먼저 하고 클라이언트를 갱신한다. 구버전 서버에 메모가 조용히 버려지지 않도록 capability 확인을 유지한다. 계정 격리·내보내기·백업의 메모 보존을 검증한다.
+- 편집/검색/붙여넣기 시트는 손잡이로 아래로 끌어 닫고 작은 X를 사용한다. 본문 스크롤과 구분하고, 막대만 숨기며 스크롤 기능·44pt 터치·접근성 이름을 유지한다. 저장 중 닫기와 이전 닫기 콜백의 새 시트 간섭을 막는다.
 
 
 ## 18. 전체 참고 문서
@@ -789,6 +812,10 @@ Google Tasks 완료 상태 동기화(기본 꺼짐, 쓰기 권한·별도 선택
 ##### 화면별 참고 앱과 목록 밀도
 
 2026-11-03 사용자가 캘린더는 Fantastical의 기본 구성, Todo는 Things의 목록과 조작감을 토스 디자인 가이드와 함께 참고하라고 지정했다. 3개 정도만 보여 답답한 Todo를 우선 개선했다. 기존 최소 88pt 행을 약 60pt로 줄이고, 날짜/출처를 한 줄로 묶고 빈 메타데이터 줄을 없앴다. Todo 상단과 추가 버튼도 작게 정리했다. 캘린더 자체의 Fantastical식 상세 재구성은 방향만 기록했으며 이번에 월 그리드를 다시 설계한 것은 아니다.
+
+##### 메모와 상세 시트 — 2026-11-03
+
+Todo/캘린더 할 일 상세와 덕 초안은 아래에 메모를 쓸 수 있다. 메모는 저장 버튼으로 계정별 Todo에 함께 저장하며 Google 원본에 자동 쓰지 않는다. `- ` 글머리표·Enter 이어쓰기/빈 항목 종료를 지원한다. 손잡이 드래그/X로 시트를 닫고, 막대 없이 스크롤한다. 저장 중 닫기는 막으며 메모를 저장하지 않고 닫는 동작은 기존 편집 취소처럼 처리한다. 별도 날짜별 메모나 독립 메모 앱/Google 일정 원본 편집을 새로 만든 것은 아니다.
 
 ### 原文 / docs/test-deployment.md
 
@@ -1397,6 +1424,10 @@ Expo에서 GitHub 저장소를 연결하는 경우 저장소는 `sjfieni/donknow
 #### SDK 의존성 검사 로그
 
 build `96d90e45-22aa-41f7-8cd0-9f0c421cd7de`에서 보고한 peer/패치 불일치를 수정했다: expo 58.0.22, 알림 58.1.7, RN 0.88.1, expo-font 직접 선언 58.0.11. 잠금 파일도 함께 갱신했다. expo doctor의 단일 단계 실패 로그를 전체 빌드/업로드 성공 여부와 혼동하지 않는다. 빌드 Finished와 자동 제출 성공은 각각 확인해야 하며, Submission이 없다면 웹 시작 화면의 EAS Submit 체크와 production 제출 프로필을 확인한다. Expo API가 막힌 이 작업 환경에서는 모든 온라인 doctor 항목 통과를 주장하지 않는다.
+
+#### 2026-11-03 실제 테스트 피드백 반영
+
+사용자가 테스트 후 체크 반응 지연과 Todo 밀도·메모·시트 닫기 개선을 요청했다. 정확히 어떤 빌드로 테스트했는지는 전달되지 않았으므로 특정 TestFlight 빌드 설치를 단정하지 않는다. 초기 계정·서명·업로드 단계는 이미 마쳤으므로 반복 가입/테스터 초대 대신 최신 코드의 빌드·업데이트를 안내한다. 메모 기능은 서버 capability/API 변경이 있어 Render 서버를 먼저 최신 배포하고 새 iOS 빌드/업로드를 진행한다. 기존 Google Tasks/Calendar 원본 메모 편집을 추가한 것은 아니다.
 
 ### 原文 / docs/design-guide.md
 
