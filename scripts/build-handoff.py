@@ -17,7 +17,7 @@ images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
 (ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
@@ -242,7 +242,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ## 13. 외부 HTML에서 댓글로 수정 요청하기
 
-공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 35개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
+공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 {{COUNT}}개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
 
 - 각 절/이미지의 수정 요청 버튼으로 위치를 지정할 수 있습니다.
 - 댓글은 서버 DB에 저장되며 작성자만 수정·삭제·반영 확인할 수 있습니다.
@@ -291,7 +291,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 '''
 history = subprocess.check_output(['git','log','--reverse','--format=%h %s'],cwd=ROOT,text=True).strip()
 gallery = []
-labels={'mobile-todos':'할 일','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
+labels={'mobile-todos':'할 일','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
 for item in manifest:
     name=labels.get(Path(item['path']).stem,Path(item['path']).stem.replace('-',' '))
     gallery += [f"### {name}", f"파일: `{item['path']}`", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']

@@ -13,14 +13,14 @@ export function Button({ title, onPress, disabled = false, quiet = false, loadin
   const reduced = useReducedMotion();
   return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
-export function Page({ children, refreshControl }: { children: React.ReactNode; refreshControl?: React.ReactElement }) {
-  return <MotionView style={{flex:1}} distance={0}><ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={s.page}>{children}</ScrollView></MotionView>;
+export function Page({ children, refreshControl, compact = false }: { children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
+  return <MotionView style={{flex:1}} distance={0}><ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,compact&&{paddingTop:16}]}>{children}</ScrollView></MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();
   const reducedRef = useRef(reduced); reducedRef.current = reduced;
   const exit = useRef(new Animated.Value(1)).current;
-  const rowHeight = useRef(88);
+  const rowHeight = useRef(60);
   const [collapsing, setCollapsing] = useState(false);
   useEffect(() => {
     exit.stopAnimation(); exit.setValue(1); setCollapsing(false);
@@ -56,14 +56,16 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
     onPanResponderRelease: (_, gesture) => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); if (Math.abs(gesture.dx) >= 64 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4 && !toggleBlocked.current) onToggleRef.current(); },
     onPanResponderTerminate: () => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); },
   }), [offset]);
+  const source = todo.source ? (todo.source.provider === 'apple-reminders' ? '미리 알림' : todo.source.provider === 'google' && todo.source.externalId.includes(':tasks:') ? 'Google Tasks' : ({ google: 'Google', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일')) : '';
+  const date = log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : '';
+  const detail = [date, source].filter(Boolean).join(' · ');
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View style={s.swipeBack}><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
     <Animated.View onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}} {...responder.panHandlers} style={[s.todoRow, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy && !canToggleWhileBusy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy && !canToggleWhileBusy} onPress={() => press(onToggle, true)} hitSlop={8} style={[s.checkbox, todo.done && s.checked]}><Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text></Pressable>
+      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy && !canToggleWhileBusy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy && !canToggleWhileBusy} onPress={() => press(onToggle, true)} hitSlop={9} style={[s.checkbox, todo.done && s.checked]}><Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text></Pressable>
       <Pressable disabled={!onEdit || busy} onPress={() => press(onEdit)} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} style={s.todoBody}>
-        <Text style={[s.todoTitle, todo.done && !log && s.doneText]}>{todo.title}</Text>
-        {!!todo.source && <Text style={s.todoDate}>{todo.source.provider === 'apple-reminders' ? '미리 알림' : todo.source.provider === 'google' && todo.source.externalId.includes(':tasks:') ? 'Google Tasks' : ({ google: 'Google', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일')}</Text>}
-        {pending ? <Text style={s.pendingText}>완료 · 4초 후 log로 이동</Text> : <Text style={s.todoDate}>{log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : ''}</Text>}
+        <Text numberOfLines={2} style={[s.todoTitle, todo.done && !log && s.doneText]}>{todo.title}</Text>
+        {pending ? <Text style={s.pendingText}>완료 · 4초 후 log로 이동</Text> : !!detail && <Text numberOfLines={1} style={s.todoDate}>{detail}</Text>}
       </Pressable>
       {pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onEdit ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : null}
     </Animated.View>
@@ -133,10 +135,10 @@ export const s = StyleSheet.create({
   sectionTitle: { ...typography.section, color: colors.text },
   button: { backgroundColor: colors.blue, paddingHorizontal: 20, paddingVertical: 14, minHeight: 56, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center' },
   buttonText: { ...typography.body, color: colors.white, fontWeight: '600', textAlign: 'center', flexShrink: 1 }, quietButton: { backgroundColor: colors.pale, minHeight: 48 },
-  todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 20, gap: spacing.lg, minHeight: 88, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
-  swipeWrap: { overflow: 'hidden', borderRadius: radius.small }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },
-  checkbox: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, borderColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }, checked: { backgroundColor: colors.blue, borderColor: colors.blue }, checkText: { color: colors.white, fontSize: 18 },
-  todoBody: { flex: 1, minHeight: 44, justifyContent: 'center' }, todoTitle: { ...typography.body, color: colors.text }, doneText: { color: colors.subtle, textDecorationLine: 'line-through' }, todoDate: { ...typography.caption, color: colors.muted, marginTop: spacing.xs }, pendingText: { ...typography.caption, color: colors.blueText, marginTop: spacing.xs },
+  todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 6, gap: spacing.md, minHeight: 60, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
+  swipeWrap: { overflow: 'hidden' }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },
+  checkbox: { width: 26, height: 26, borderRadius: 8, borderWidth: 1.5, borderColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }, checked: { backgroundColor: colors.blue, borderColor: colors.blue }, checkText: { color: colors.white, fontSize: 18 },
+  todoBody: { flex: 1, minHeight: 44, justifyContent: 'center' }, todoTitle: { ...typography.list, color: colors.text }, doneText: { color: colors.subtle, textDecorationLine: 'line-through' }, todoDate: { ...typography.caption, color: colors.muted, marginTop: 2 }, pendingText: { ...typography.caption, color: colors.blueText, marginTop: 2 },
   more: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }, moreText: { fontSize: 23, color: colors.muted }, restore: { ...typography.caption, color: colors.blueText },
   dateField: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg, flexWrap: 'wrap' }, dateInput: { flex: 1, minHeight: 48, padding: spacing.md, borderRadius: radius.small, backgroundColor: colors.grouped, color: colors.text, ...typography.detail }, datePick: { flex: 1, minHeight: 44, padding: spacing.md, alignItems: 'flex-end', justifyContent: 'center' },
   modalBackdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight:'90%', backgroundColor: colors.white, padding: spacing.xl, paddingBottom: 38, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, width: '100%', maxWidth: 600, alignSelf: 'center' }, sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xl },

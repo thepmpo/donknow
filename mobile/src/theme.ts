@@ -22,6 +22,7 @@ export const typography = {
   section: { fontSize: 20, lineHeight: 29, fontWeight: '600' },
   body: { fontSize: 17, lineHeight: 25.5 },
   detail: { fontSize: 15, lineHeight: 22.5 },
+  list: { fontSize: 16, lineHeight: 24 },
   caption: { fontSize: 13, lineHeight: 19.5 },
 } satisfies Record<string, TextStyle>;
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const;
