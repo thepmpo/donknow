@@ -4,7 +4,7 @@ import { parseTodos, sampleTodos, validateDraft } from './domain';
 import type { Connection, Draft, Todo } from './domain';
 export const CONNECTION_KEY = 'duckduck.mobile.connection.v1';
 const DEMO_KEY = 'duckduck.mobile.demo.todos.v1';
-export type Patch = Partial<Pick<Todo, 'title' | 'done' | 'dueDate' | 'reminderAt'>>;
+export type Patch = Partial<Pick<Todo, 'title' | 'done' | 'dueDate' | 'reminderAt' | 'notes'>>;
 export interface Repository {
   list(): Promise<Todo[]>;
   create(draft: Draft): Promise<Todo>;
@@ -13,11 +13,19 @@ export interface Repository {
 }
 export function createRepository(connection: Connection): Repository {
   if (connection.mode === 'cloud') {
-    const call = (path = '', method = 'GET', body?: unknown) => request(connection.baseUrl, '/api/todos' + path, method, body);
+    const baseUrl = connection.baseUrl;
+    const call = (path = '', method = 'GET', body?: unknown) => request(baseUrl, '/api/todos' + path, method, body);
+    let notesSupported = false;
+    async function requireNotes() {
+      if (notesSupported) return;
+      const capabilities = await request(baseUrl, '/api/capabilities') as { todoNotes?: boolean };
+      if (!capabilities.todoNotes) throw new Error('메모 저장을 지원하는 최신 서버가 필요해요. 입력한 내용은 그대로 두고 다시 시도해주세요.');
+      notesSupported = true;
+    }
     return {
       list: async () => parseTodos(await call()),
-      create: async draft => parseTodos([await call('', 'POST', validateDraft(draft))])[0],
-      update: async (id, patch) => parseTodos([await call('/' + encodeURIComponent(id), 'PATCH', patch)])[0],
+      create: async draft => { if (draft.notes) await requireNotes(); return parseTodos([await call('', 'POST', validateDraft(draft))])[0]; },
+      update: async (id, patch) => { if (patch.notes !== undefined) await requireNotes(); return parseTodos([await call('/' + encodeURIComponent(id), 'PATCH', patch)])[0]; },
       remove: async id => { await call('/' + encodeURIComponent(id), 'DELETE'); },
     };
   }

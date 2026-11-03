@@ -1,4 +1,5 @@
-import { MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
+import {NotesField} from './NotesField';
+import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, PanResponder, Platform, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
@@ -13,8 +14,11 @@ export function Button({ title, onPress, disabled = false, quiet = false, loadin
   const reduced = useReducedMotion();
   return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
+export function CloseButton({onPress,disabled=false}:{onPress:()=>void;disabled?:boolean}) {
+  return <Pressable accessibilityRole="button" accessibilityLabel="닫기" disabled={disabled} onPress={onPress} style={{width:44,minHeight:44,alignItems:'center',justifyContent:'center',opacity:disabled ? 0.4 : 1}}><Text style={{fontSize:24,lineHeight:28,color:colors.muted}}>×</Text></Pressable>;
+}
 export function Page({ children, refreshControl, compact = false }: { children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
-  return <MotionView style={{flex:1}} distance={0}><ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,compact&&{paddingTop:16}]}>{children}</ScrollView></MotionView>;
+  return <MotionView style={{flex:1}} distance={0}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,compact&&{paddingTop:16}]}>{children}</ScrollView></MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();
@@ -80,6 +84,7 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
   const {visible,close:onClose} = useModalDismiss(onDismiss);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
+  const [notes,setNotes] = useState(todo?.notes ?? '');
   const [alarm, setAlarm] = useState(!!todo?.reminderAt);
   const originalTime = todo?.reminderAt ? new Date(todo.reminderAt) : null;
   const [alarmTime, setAlarmTime] = useState(originalTime ? `${String(originalTime.getHours()).padStart(2, '0')}:${String(originalTime.getMinutes()).padStart(2, '0')}` : '09:00');
@@ -90,8 +95,8 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
     try {
       let reminderAt: string | null = null;
       if (alarm) { if (!date || !/^([01]\d|2[0-3]):[0-5]\d$/.test(alarmTime)) throw new Error('예정일과 알림 시간을 확인해주세요.'); reminderAt = new Date(`${date}T${alarmTime}:00`).toISOString(); if (Date.parse(reminderAt) <= Date.now() && reminderAt !== todo?.reminderAt) throw new Error('알림은 미래 시간으로 정해주세요.'); }
-      const draft: Draft = validateDraft({ title, dueDate: date, reminderAt, category: todo?.category ?? '일상' });
-      const ok = todo ? await store.update(todo.id, { title: draft.title, dueDate: date, reminderAt: draft.reminderAt }) : await store.add(draft);
+      const draft: Draft = validateDraft({ title, notes, dueDate: date, reminderAt, category: todo?.category ?? '일상' });
+      const ok = todo ? await store.update(todo.id, { title: draft.title, dueDate: date, reminderAt: draft.reminderAt, notes: draft.notes }) : await store.add(draft);
       if (ok) onClose(); else setError('저장하지 못했어요. 연결을 확인하고 다시 시도해주세요.');
     } catch (e) { setError(e instanceof Error ? e.message : '입력 내용을 확인해주세요.'); }
     finally { setSaving(false); }
@@ -114,16 +119,16 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
     <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={s.sheet}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><Button title="닫기" quiet disabled={saving} onPress={onClose} /></View><ScrollView keyboardShouldPersistTaps="handled" style={{flexShrink:1}}>
+      <DraggableSheet visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><CloseButton disabled={saving} onPress={onClose} /></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}}>
         <TextInput accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} autoFocus editable={!saving} style={s.editorInput} />
-        <DateField value={date} onChange={setDate} />
+        <DateField value={date} onChange={setDate} /><NotesField value={notes} onChange={setNotes} disabled={saving} />
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={setAlarm} disabled={saving} trackColor={{ true: colors.blue }} /></View>
         {alarm && <View><TextInput accessibilityLabel="알림 시간 HH:mm" value={alarmTime} onChangeText={setAlarmTime} placeholder="09:00" maxLength={5} style={s.dateInput} /><Text style={[s.muted, { marginVertical: 12 }]}>{store.reminders.supported ? store.reminders.enabled ? '선택한 시간에 이 기기에서 알려드려요.' : '내정보에서 기기 알림도 켜주세요.' : '웹에서는 시간을 저장해요. 알림은 아이폰에서 켤 수 있어요.'}</Text></View>}
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
         <Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} />
         {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} /><Text style={s.muted}>공유창에서 카카오톡을 선택하세요. 웹에서 공유창을 지원하지 않으면 내용을 복사해요. 저장된 내용이 공유돼요.</Text>{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
         {!!todo && <Pressable accessibilityRole="button" disabled={saving} onPress={remove} style={s.deleteButton}><Text style={s.deleteText}>할 일 삭제</Text></Pressable>}
-      </ScrollView></View>
+      </ScrollView></DraggableSheet>
     </KeyboardAvoidingView>
   </Modal>;
 }

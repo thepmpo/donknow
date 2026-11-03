@@ -17,7 +17,7 @@ images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
 (ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
@@ -104,6 +104,7 @@ React Native/Expo SDK 58 + TypeScript로 실제 네이티브 컴포넌트를 사
 | docs/change-log.md | 변경 날짜·검증·배포 상태, 이 HTML에 직접 포함 |
 | mobile/src/useTodos.ts | 계정/저장소/할 일 상태, 실패 보존, 완료 4초 처리 |
 | mobile/src/domain.ts | 데이터 검증, 날짜·월 그리드·제목 검색 |
+| mobile/src/NotesField.tsx · mobile/src/notes.ts | 메모 입력·글머리표·글자 수 검증 |
 | mobile/src/screens/DuckScreen.tsx | 입력/붙여넣기→초안→Todo |
 | mobile/src/screens/RecordSearchSheet.tsx | 저장된 기록 및 외부 Google Tasks 검색 |
 | mobile/src/screens/IntegrationsScreen.tsx | 범위 선택, OAuth, 자료·완료 참고 조회, 가져오기·점검 |
@@ -198,7 +199,7 @@ GitHub 자동 백업은 현재 비밀 설정과 활성화가 필요한 준비 �
 
 ## 11. 검증 결과와 재현
 
-이번 기능 보완에서 **테스트 40개 통과**, TypeScript 검사/문법 검사 통과, 실제 Expo 웹 번들의 브라우저 기능 테스트 통과, iOS 번들 생성 통과, 운영 이미지의 네이티브 CA/TLS·로그인 보호·저장·서명 백업/복원·재시작 통과를 확인했습니다. 새 변경 후에는 결과를 재확인합니다.
+최근 메모 확장에서 **서버/단위 테스트 43개**, TypeScript/문법, 실제 Expo 웹 기능·모션 테스트와 iOS JS 번들이 통과했습니다. 메모의 저장·소유권·백업 보존과 글머리표·드래그/X 닫기도 검증했습니다. 운영 이미지의 CA/TLS·서명 백업/복원·재시작은 앞선 변경에서 검증한 기록이며 이번에 컨테이너 전체를 다시 빌드한 것은 아닙니다. 실제 iPhone 설치와 OS 동작 검증은 별도입니다. 새 변경 후에는 관련 결과를 재확인합니다.
 
 ```sh
 npm ci
@@ -291,7 +292,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 '''
 history = subprocess.check_output(['git','log','--reverse','--format=%h %s'],cwd=ROOT,text=True).strip()
 gallery = []
-labels={'mobile-todos':'할 일','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
+labels={'mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
 for item in manifest:
     name=labels.get(Path(item['path']).stem,Path(item['path']).stem.replace('-',' '))
     gallery += [f"### {name}", f"파일: `{item['path']}`", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']

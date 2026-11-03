@@ -28,7 +28,7 @@ export function CalendarScreen({ store, onAdd, onEdit }: { store: TodoStore; onA
   const tasks = store.todos.filter(todo => todo.dueDate === selected);
   function shift(offset: number) { const next = new Date(month.getFullYear(), month.getMonth() + offset, 1); setMonth(next); setSelected(dateKey(next)); }
   function today() { const date = new Date(); setMonth(new Date(date.getFullYear(), date.getMonth(), 1)); setSelected(dateKey(date)); }
-  return <ScrollView contentContainerStyle={{ paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
+  return <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
     <View style={styles.toolbar}><Pressable style={styles.nav} onPress={() => shift(-1)} accessibilityRole="button" accessibilityLabel="이전 달"><Text style={styles.chevron}>‹</Text></Pressable><Text style={styles.month}>{new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long' }).format(month)}</Text><Pressable style={styles.nav} onPress={() => shift(1)} accessibilityRole="button" accessibilityLabel="다음 달"><Text style={styles.chevron}>›</Text></Pressable><Pressable onPress={today} accessibilityRole="button" style={styles.nav}><Text style={styles.today}>오늘</Text></Pressable></View>
     <View style={styles.weekdays}>{['일', '월', '화', '수', '목', '금', '토'].map((day, index) => <Text key={day} style={[styles.weekday, { color: index === 0 ? colors.danger : index === 6 ? colors.blueText : colors.muted }]}>{day}</Text>)}</View>
     <View style={styles.grid}>{monthDays(month).map(date => {

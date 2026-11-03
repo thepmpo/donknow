@@ -1,7 +1,7 @@
 import { MotionProvider, MotionView } from './src/motion';
 import { MotionPressable as Pressable } from './src/motion';
 import { AuthScreen } from './src/screens/AuthScreen';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -28,9 +28,10 @@ function Shell() {
   const store = useTodos();
   const [tab, setTab] = useState<Tab>('todos');
   const [settings, setSettings] = useState(false);
-  const [editor, setEditor] = useState<{ todo?: Todo; date: string | null } | null>(null);
-  const onAdd = (date: string | null) => setEditor({ date });
-  const onEdit = (todo: Todo) => setEditor({ todo, date: todo.dueDate });
+  const editorSequence = useRef(0);
+  const [editor, setEditor] = useState<{ instance:number; todo?: Todo; date: string | null } | null>(null);
+  const onAdd = (date: string | null) => setEditor({ instance:++editorSequence.current, date });
+  const onEdit = (todo: Todo) => setEditor({ instance:++editorSequence.current, todo, date: todo.dueDate });
   const [duckSession, setDuckSession] = useState(0);
   useEffect(() => { setEditor(null); setDuckSession(current => current + 1); setTab('todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
   const needsAuth = store.connection?.mode === 'cloud' && !store.user;
@@ -47,7 +48,7 @@ function Shell() {
       {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
     </View>}</MotionView>
     {store.connection && !settings && !needsAuth && <View style={styles.tabBar} accessibilityRole="tablist">{tabs.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{ selected: item.id === tab }} onPress={() => setTab(item.id)} style={styles.tab}>{item.id === 'duck' ? <Text style={styles.duckTab}>🦆</Text> : <Ionicons name={item.icon} size={24} color={item.id === tab ? colors.blue : palette.grey500} />}<Text style={[styles.tabLabel, item.id === tab && styles.selected]}>{item.name}</Text></Pressable>)}</View>}
-    {editor && !needsAuth && !settings && <TodoEditor todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(null)} />}
+    {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView>;
 }
 export default function App() { return <MotionProvider><SafeAreaProvider><SafeAreaView style={styles.safe}><StatusBar style="dark" /><Shell /></SafeAreaView></SafeAreaProvider></MotionProvider>; }

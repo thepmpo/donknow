@@ -85,3 +85,5 @@ export function validDate(value) {
   return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 export function validTitle(value) { return typeof value === 'string' && !!value.trim() && value.trim().length <= 120; }
+
+export function validNotes(value) { return typeof value === 'string' && value.length <= 4000; }

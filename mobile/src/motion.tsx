@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet } from 'react-native';
+import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
 
 export const motion = { pressIn: 90, pressOut: 140, page: 180, feedback: 180, sheet: 240 } as const;
@@ -82,4 +82,20 @@ export function useModalDismiss(onDismiss: () => void) {
     else timer.current = setTimeout(finish, 350);
   }
   return { visible, close };
+}
+
+export function DraggableSheet({children,style,onDismiss,disabled=false,visible=true}:{children:React.ReactNode;style?:ViewProps['style'];onDismiss:()=>void;disabled?:boolean;visible?:boolean}) {
+  const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current;
+  const current=useRef({reduced,disabled,onDismiss});current.current={reduced,disabled,onDismiss};
+  const reset=()=>{offset.stopAnimation();if(current.current.reduced)offset.setValue(0);else Animated.timing(offset,{toValue:0,duration:motion.pressOut,useNativeDriver:native}).start();};
+  useLayoutEffect(()=>{if(visible){offset.stopAnimation();offset.setValue(0);}},[visible,offset]);
+  const responder=useRef(PanResponder.create({
+    onMoveShouldSetPanResponderCapture:(_,gesture)=>!current.current.disabled&&gesture.dy>6&&Math.abs(gesture.dy)>Math.abs(gesture.dx)*1.3,
+    onPanResponderGrant:()=>{offset.stopAnimation();Keyboard.dismiss();},
+    onPanResponderMove:(_,gesture)=>offset.setValue(Math.max(0,Math.min(360,gesture.dy))),
+    onPanResponderRelease:(_,gesture)=>{if(!current.current.disabled&&(gesture.dy>72||(gesture.dy>30&&gesture.vy>.7)))current.current.onDismiss();else reset();},
+    onPanResponderTerminate:reset,
+  })).current;
+  useEffect(()=>{if(disabled){offset.stopAnimation();offset.setValue(0);}return()=>offset.stopAnimation();},[disabled,offset]);
+  return <Animated.View style={[style,{transform:[{translateY:offset}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
 }

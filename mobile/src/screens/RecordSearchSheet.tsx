@@ -1,11 +1,11 @@
-import { useModalDismiss } from '../motion';
+import { DraggableSheet, useModalDismiss } from '../motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from '../motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { searchTodos } from '../domain';
 import type { Todo } from '../domain';
 import type { TodoStore } from '../useTodos';
-import { Button, colors, s } from '../ui';
+import { CloseButton, Button, colors, s } from '../ui';
 type ExternalItem = { id: string; title: string; dueDate: string | null; completed: boolean; listTitle: string };
 type Filter = 'all' | 'open' | 'done';
 const filters: { id: Filter; title: string }[] = [{ id: 'all', title: '전체' }, { id: 'open', title: '미완료' }, { id: 'done', title: '완료' }];
@@ -45,14 +45,14 @@ export function RecordSearchSheet({ store, onClose: onDismiss, onOpenTodo }: { s
   }
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={()=>onClose()}>
     <KeyboardAvoidingView style={styles.backdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={styles.sheet}>
-        <View style={styles.heading}><Text style={s.sectionTitle}>할 일과 기록 찾기</Text><Button title="닫기" quiet onPress={()=>onClose()} /></View>
+      <DraggableSheet visible={visible} style={styles.sheet} onDismiss={()=>onClose()}>
+        <View style={styles.heading}><Text style={s.sectionTitle}>할 일과 기록 찾기</Text><CloseButton onPress={()=>onClose()} /></View>
         <Text style={styles.note}>덕에 저장한 제목으로 찾아요. 연결한 Google Tasks도 따로 검색할 수 있어요. 완료 기록은 참고만 해요.</Text>
         <TextInput accessibilityLabel="할 일과 기록 검색" placeholder="예: 회의 자료" value={query} onChangeText={changeQuery} maxLength={120} autoCorrect={false} returnKeyType="search" style={styles.input} />
         <View style={styles.filters} accessibilityRole="tablist">{filters.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={`${item.title} 기록`} accessibilityState={{ selected: item.id === filter }} onPress={() => { setFilter(item.id); setLimit(30); setMessage(''); }} style={[styles.filter, item.id === filter && styles.active]}><Text style={{ color: item.id === filter ? colors.blue : colors.muted }}>{item.title}</Text></Pressable>)}</View>
         <Text accessibilityLiveRegion="polite" style={styles.note}>{query.trim() ? `${results.length}개의 저장된 기록` : '찾고 싶은 할 일의 단어를 입력해주세요.'}</Text>
         {store.user ? <Button title={searching ? 'Google Tasks 검색 중…' : 'Google Tasks에서 찾기'} quiet disabled={!query.trim() || searching || !!importing} onPress={() => { void searchExternal(); }} /> : <Text style={styles.note}>외부 기록 검색은 클라우드 계정과 Google Tasks 연결 후 사용할 수 있어요.</Text>}
-        <ScrollView style={{ flexShrink: 1 }} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 16 }}>
+        <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} style={{ flexShrink: 1 }} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 16 }}>
           {!!query.trim() && !results.length && <Text style={styles.empty}>일치하는 기록이 없어요. 다른 단어로 찾아보세요.</Text>}
           {results.slice(0, limit).map(todo => <View key={todo.id} style={styles.result}>
             <Text style={styles.title}>{todo.title}</Text>
@@ -70,7 +70,7 @@ export function RecordSearchSheet({ store, onClose: onDismiss, onOpenTodo }: { s
           {(results.length > limit || remoteResults.length > limit) && <Button title="기록 더 보기" quiet onPress={() => setLimit(current => current + 30)} />}
         </ScrollView>
         {!!message && <Text accessibilityLiveRegion="polite" style={styles.note}>{message}</Text>}
-      </View>
+      </DraggableSheet>
     </KeyboardAvoidingView>
   </Modal>;
 }

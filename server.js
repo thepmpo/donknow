@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
 import { realpath } from 'node:fs/promises';
 import { isIP } from 'node:net';
-import { openStore, validDate, validTitle } from './server/store.js';
+import { openStore, validDate, validTitle, validNotes } from './server/store.js';
 if (!process.env.PUBLIC_ORIGIN && process.env.RENDER_EXTERNAL_URL) process.env.PUBLIC_ORIGIN = process.env.RENDER_EXTERNAL_URL;
 if (process.env.NODE_ENV === 'production') { try { const origin=new URL(process.env.PUBLIC_ORIGIN); if(origin.protocol!=='https:'||origin.origin!==process.env.PUBLIC_ORIGIN||origin.username||origin.password)throw new Error(); } catch { throw new Error('Production requires PUBLIC_ORIGIN as an exact HTTPS origin'); } }
 const root = fileURLToPath(new URL('.', import.meta.url));
@@ -106,8 +106,9 @@ const server = http.createServer(async (req, res) => {
       if (path === '/api/todos' && req.method === 'GET') return send(200, store.list(session.user.id));
       if (path === '/api/todos' && req.method === 'POST') {
         const body = await json(req);
+        if (!validNotes(body.notes ?? '')) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' });
         if (!validTitle(body.title) || !validDate(body.dueDate ?? null) || !validReminder(body.reminderAt ?? null)) return send(400, { error: '할 일 제목과 날짜를 확인해주세요.' });
-        const todo = store.create(session.user.id, { title: body.title.trim(), category: ['일상', '업무', '건강'].includes(body.category) ? body.category : '일상', dueDate: body.dueDate ?? null, reminderAt: body.reminderAt ?? null });
+        const todo = store.create(session.user.id, { title: body.title.trim(), category: ['일상', '업무', '건강'].includes(body.category) ? body.category : '일상', dueDate: body.dueDate ?? null, reminderAt: body.reminderAt ?? null, notes: body.notes ?? '' });
         return send(201, todo);
       }
       if (path.startsWith('/api/todos/')) {
@@ -119,6 +120,7 @@ const server = http.createServer(async (req, res) => {
           if ('title' in body) { if (!validTitle(body.title)) return send(400, { error: '할 일을 120자 이내로 적어주세요.' }); patch.title = body.title.trim(); }
           if ('dueDate' in body) { if (!validDate(body.dueDate)) return send(400, { error: '날짜를 확인해주세요.' }); patch.dueDate = body.dueDate; }
           if ('reminderAt' in body) { if (!validReminder(body.reminderAt)) return send(400, { error: '알림 시간을 확인해주세요.' }); patch.reminderAt = body.reminderAt; }
+          if ('notes' in body) { if (!validNotes(body.notes)) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' }); patch.notes = body.notes; }
           if ('done' in body) { if (typeof body.done !== 'boolean') return send(400, { error: '완료 상태가 올바르지 않아요.' }); patch.done = body.done; }
           if (!Object.keys(patch).length) return send(400, { error: '변경할 내용이 없어요.' });
           const saved=store.update(userId,id,patch);taskSync.wake();return send(200,saved);
