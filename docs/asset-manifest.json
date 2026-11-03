@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-11-02",
-  "codeCommit": "cc5c95f753928bbada88d4493d3d3bbeaa29ff9c",
+  "generatedAt": "2026-11-03",
+  "codeCommit": "79f164862ac33c8328c97e99bcdb5ec3d4e65a0a",
   "imageCount": 35,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 29358,
-      "sha256": "34a2c42fec7637f00fafb95d8f394f6490a5abab2a586de7fcbb067b3da316c2",
+      "bytes": 29436,
+      "sha256": "764f3b619c9d5122fa87653efc69141879bfae6498bb3ce736ac5440f808f031",
       "import_path": "images/artifacts__mobile-todos.png"
     },
     {
       "path": "artifacts/mobile-calendar.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 29215,
-      "sha256": "1822884fc4e1bd2ec6e109335e11381586da9b7900882c6509769bfcaaab5b3f",
+      "bytes": 29234,
+      "sha256": "177a54cfcdf2fd515b8050ca0852e25e0681c73dbbcff83e90324d7e61bac3ab",
       "import_path": "images/artifacts__mobile-calendar.png"
     },
     {
@@ -27,8 +27,8 @@
     {
       "path": "artifacts/mobile-log.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 30992,
-      "sha256": "ee7c6e15fd25b8be9574fd342e3c43fbe63ee024f62abc013f8fb061f45d2986",
+      "bytes": 30894,
+      "sha256": "59fbce22fd716f6bb79f650d3424624bf2b2aed52a3c1fe900f2f9d043f5dd1c",
       "import_path": "images/artifacts__mobile-log.png"
     },
     {
@@ -69,8 +69,8 @@
     {
       "path": "artifacts/mobile-duck-draft.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 32719,
-      "sha256": "bddb1f89bc1652e32daaded77493e8a050c348ddba9e0a71a0daef1783b6a6fc",
+      "bytes": 32760,
+      "sha256": "049963230143fc83d02dbf6f2f949fe4c760f008b537dc6ccebd21b615e3e2d6",
       "import_path": "images/artifacts__mobile-duck-draft.png"
     },
     {
@@ -97,8 +97,8 @@
     {
       "path": "artifacts/mobile-kakao-share.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 39676,
-      "sha256": "3cdb864b1b544e77ba81d3f25871e5aad10c672974534c60fca4676c0b4faedb",
+      "bytes": 39773,
+      "sha256": "6a3820b4d8de50d5504d98ba291be8815cd25ba7ff30cd1393f7c7ac5efaa13e",
       "import_path": "images/artifacts__mobile-kakao-share.png"
     },
     {
@@ -118,15 +118,15 @@
     {
       "path": "artifacts/mobile-record-search.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 39532,
-      "sha256": "c0ce93cd8f5da8bde2cf4fcb53e9f9f42ac3563d31e57e03b8db2ab8110fb141",
+      "bytes": 39578,
+      "sha256": "bfc141ac1c24a13c0884fe8d470bdd8551e4f08836771720dd59119f6cc66145",
       "import_path": "images/artifacts__mobile-record-search.png"
     },
     {
       "path": "artifacts/mobile-reminder.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 31956,
-      "sha256": "5aa6f60f177b4222424771b9f5a94cd05595b257c522be881089fca7c1750ffd",
+      "bytes": 31988,
+      "sha256": "72b98c0756db938732ebd794c28a4a63882e547dc509ba9b735545a08548c9ec",
       "import_path": "images/artifacts__mobile-reminder.png"
     },
     {
