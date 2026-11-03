@@ -1,5 +1,19 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-03:start -->
+### 2026-11-03 — 당일 저장된 작업
+
+실제 정리: 19:52 KST. 새 저장 작업 4개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [ef27acd](https://github.com/sjfieni/donknow/commit/ef27acd7ae6f1cbeec47e35ee2c9af431dc7b91f) · 11-03 10:10 · Reflect completion immediately and serialize background saves with undo rollback
+
+- [c2a861f](https://github.com/sjfieni/donknow/commit/c2a861f8a15e41b0146071d8a5c18a82e5a323d7) · 11-03 10:58 · Compact Todo rows with Things-inspired density and record per-screen references
+
+- [e368930](https://github.com/sjfieni/donknow/commit/e368930ef29434c9d4fecbbc58ba7a020f45f65a) · 11-03 11:44 · Add task notes, draggable sheets and compact close controls
+
+- [1e50d9e](https://github.com/sjfieni/donknow/commit/1e50d9e528eb789639cfbc10cc59250573d7882a) · 11-03 11:52 · Record commit identity migration and preserve daily update checkpoint
+<!-- daily:2026-11-03:end -->
+
 <!-- daily:2026-11-02:start -->
 ### 2026-11-02 — 당일 저장된 작업
 
