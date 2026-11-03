@@ -16,7 +16,7 @@ export function Button({ title, onPress, disabled = false, quiet = false, loadin
 export function Page({ children, refreshControl }: { children: React.ReactNode; refreshControl?: React.ReactElement }) {
   return <MotionView style={{flex:1}} distance={0}><ScrollView keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={s.page}>{children}</ScrollView></MotionView>;
 }
-export function TodoRow({ todo, pending = false, pendingUntil, busy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
+export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();
   const reducedRef = useRef(reduced); reducedRef.current = reduced;
   const exit = useRef(new Animated.Value(1)).current;
@@ -43,28 +43,29 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, onT
   }, [todo.done, reduced, checked]);
   const onToggleRef = useRef(onToggle); onToggleRef.current = onToggle;
   const busyRef = useRef(busy); busyRef.current = busy;
+  const toggleBlocked = useRef(busy && !canToggleWhileBusy); toggleBlocked.current = busy && !canToggleWhileBusy;
   const suppressUntil = useRef(0);
   const swiping = useRef(false);
-  function press(action?: () => void) { if (!swiping.current && Date.now() >= suppressUntil.current && !busyRef.current) action?.(); }
+  function press(action?: () => void, toggle = false) { if (!swiping.current && Date.now() >= suppressUntil.current && !(toggle ? toggleBlocked.current : busyRef.current)) action?.(); }
   const reset = () => { offset.stopAnimation(); if (reducedRef.current) offset.setValue(0); else Animated.timing(offset, { toValue: 0, duration: motion.feedback, useNativeDriver: Platform.OS !== 'web' }).start(); };
   useEffect(() => () => offset.stopAnimation(), [offset]);
   const responder = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponderCapture: (_, gesture) => !busyRef.current && Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
+    onMoveShouldSetPanResponderCapture: (_, gesture) => !toggleBlocked.current && Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
     onPanResponderGrant: () => { offset.stopAnimation(); swiping.current = true; },
     onPanResponderMove: (_, gesture) => offset.setValue(Math.max(-95, Math.min(95, gesture.dx))),
-    onPanResponderRelease: (_, gesture) => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); if (Math.abs(gesture.dx) >= 64 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4 && !busyRef.current) onToggleRef.current(); },
+    onPanResponderRelease: (_, gesture) => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); if (Math.abs(gesture.dx) >= 64 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4 && !toggleBlocked.current) onToggleRef.current(); },
     onPanResponderTerminate: () => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); },
   }), [offset]);
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View style={s.swipeBack}><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
     <Animated.View onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}} {...responder.panHandlers} style={[s.todoRow, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy} onPress={() => press(onToggle)} hitSlop={8} style={[s.checkbox, todo.done && s.checked]}><Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text></Pressable>
+      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy && !canToggleWhileBusy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy && !canToggleWhileBusy} onPress={() => press(onToggle, true)} hitSlop={8} style={[s.checkbox, todo.done && s.checked]}><Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text></Pressable>
       <Pressable disabled={!onEdit || busy} onPress={() => press(onEdit)} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} style={s.todoBody}>
         <Text style={[s.todoTitle, todo.done && !log && s.doneText]}>{todo.title}</Text>
         {!!todo.source && <Text style={s.todoDate}>{todo.source.provider === 'apple-reminders' ? '미리 알림' : todo.source.provider === 'google' && todo.source.externalId.includes(':tasks:') ? 'Google Tasks' : ({ google: 'Google', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일')}</Text>}
         {pending ? <Text style={s.pendingText}>완료 · 4초 후 log로 이동</Text> : <Text style={s.todoDate}>{log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : ''}</Text>}
       </Pressable>
-      {pending || log ? <Pressable onPress={() => press(onToggle)} disabled={busy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onEdit ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : null}
+      {pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onEdit ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : null}
     </Animated.View>
   </Animated.View>;
 }

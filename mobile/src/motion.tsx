@@ -49,7 +49,12 @@ export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...pro
   };
   useEffect(() => { if (reduced || disabled) { scale.stopAnimation(); scale.setValue(1); setPressed(false); } return () => scale.stopAnimation(); }, [reduced, disabled, scale]);
   const resolved = StyleSheet.flatten(typeof style === 'function' ? style({pressed}) : style);
-  return <AnimatedPressable {...props} disabled={disabled}
+  return <AnimatedPressable {...props}
+    aria-checked={props['aria-checked'] ?? props.accessibilityState?.checked}
+    aria-selected={props['aria-selected'] ?? props.accessibilityState?.selected}
+    aria-expanded={props['aria-expanded'] ?? props.accessibilityState?.expanded}
+    aria-busy={props['aria-busy'] ?? props.accessibilityState?.busy}
+    disabled={disabled}
     onPressIn={event => { setPressed(true); animate(0.98, motion.pressIn); onPressIn?.(event); }}
     onPressOut={event => { setPressed(false); animate(1, motion.pressOut); onPressOut?.(event); }}
     style={[resolved, { transform: typeof resolved?.transform === 'string' ? resolved.transform : [...(resolved?.transform ?? []), { scale }] }]} />;

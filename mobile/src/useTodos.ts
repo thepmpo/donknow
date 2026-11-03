@@ -11,7 +11,12 @@ const message = (error: unknown) => error instanceof Error ? error.message : '�
 export function useTodos() {
   const [user, setUser] = useState<auth.User | null>(null);
   const [connection, setConnection] = useState<Connection | null>(null);
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, commitTodos] = useState<Todo[]>([]);
+  const todosRef = useRef<Todo[]>([]);
+  const setTodos = useCallback((value: Todo[] | ((current: Todo[]) => Todo[])) => {
+    const next = typeof value === 'function' ? value(todosRef.current) : value;
+    todosRef.current = next; commitTodos(next);
+  }, []);
   const [pending, setPending] = useState<Record<string, number>>({});
   const reminderOwner = connection?.mode === 'demo' ? 'demo' : user && connection?.mode === 'cloud' ? connection.baseUrl + ':' + user.id : null;
   const reminders = useReminders(todos, reminderOwner);
@@ -20,6 +25,10 @@ export function useTodos() {
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState('');
   const [busyIds, setBusyIds] = useState<string[]>([]);
+  const [completionIds, setCompletionIds] = useState<string[]>([]);
+  const writes = useRef(0);
+  type CompletionWrite = { confirmed: Todo; confirmedUntil: number | null; done: boolean; until: number | null; revision: number; promise?: Promise<boolean> };
+  const completions = useRef(new Map<string, CompletionWrite>());
   const repo = useRef<Repository | null>(null);
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const busy = useRef(new Set<string>());
@@ -48,7 +57,7 @@ export function useTodos() {
       } catch (e) { if (active) setError(message(e)); }
       finally { if (active) setLoading(false); }
     })();
-    return () => { active = false; clearTimers(); };
+    return () => { active = false; generation.current++; completions.current.clear(); clearTimers(); };
   }, [clearTimers]);
   useEffect(() => {
     const subscription = AppState.addEventListener('change', state => {
@@ -69,39 +78,92 @@ export function useTodos() {
       const repository = createRepository(checked);
       const data = checked.mode === 'cloud' && !account ? [] : await repository.list();
       await AsyncStorage.setItem(CONNECTION_KEY, JSON.stringify(checked));
-      generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); return true;
+      generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setLoading(false); return true;
     } catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
   }
   async function refresh() {
     if (!repo.current || connectingRef.current || busy.current.size) return;
-    const version = generation.current; setLoading(true);
-    try { const data = await repo.current.list(); if (version === generation.current) { setTodos(data); setError(''); } }
+    const version = generation.current, readRevision = writes.current; setLoading(true);
+    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { setTodos(data); setError(''); } }
     catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); } }
-    finally { setLoading(false); }
+    finally { if (version === generation.current) setLoading(false); }
   }
   async function mutate<T>(key: string, operation: (repository: Repository) => Promise<T>): Promise<T | null> {
     if (!repo.current || busy.current.has(key) || connectingRef.current || loading) return null;
-    const version = generation.current; busy.current.add(key); setBusyIds([...busy.current]);
+    const version = generation.current; writes.current++; busy.current.add(key); setBusyIds([...busy.current]);
     try { const result = await operation(repo.current); if (version !== generation.current) return null; setError(''); return result; }
     catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); } return null; }
-    finally { busy.current.delete(key); setBusyIds([...busy.current]); }
+    finally { if (version === generation.current) { busy.current.delete(key); setBusyIds([...busy.current]); } }
   }
   async function add(draft: Draft): Promise<Todo | null> {
     const saved = await mutate('create', repository => repository.create(draft));
     if (saved) setTodos(current => [...current, saved]); return saved;
   }
+  function completionDeadline(id: string, until: number | null) {
+    const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id);
+    if (until && until > Date.now()) {
+      setPending(current => ({ ...current, [id]: until }));
+      timers.current.set(id, setTimeout(() => {
+        setPending(current => { const next = { ...current }; delete next[id]; return next; }); timers.current.delete(id);
+      }, until - Date.now()));
+    } else setPending(current => { const next = { ...current }; delete next[id]; return next; });
+  }
+  async function updateCompletion(id: string, done: boolean): Promise<boolean> {
+    const repository = repo.current;
+    const before = todosRef.current.find(todo => todo.id === id);
+    let entry = completions.current.get(id);
+    if (!repository || !before || connectingRef.current || (busy.current.has(id) && !entry)) return false;
+    const version = generation.current;
+    writes.current++;
+    if (!entry) {
+      entry = { confirmed: before, confirmedUntil: pending[id] ?? null, done, until: null, revision: 0 };
+      completions.current.set(id, entry); busy.current.add(id);
+      setBusyIds([...busy.current]); setCompletionIds([...completions.current.keys()]);
+    }
+    entry.done = done; entry.until = done ? Date.now() + COMPLETION_DELAY : null; entry.revision++;
+    const optimistic: Todo = { ...before, done, completedAt: done ? (before.done && before.completedAt ? before.completedAt : new Date().toISOString()) : null };
+    setTodos(current => current.map(todo => todo.id === id ? optimistic : todo));
+    completionDeadline(id, entry.until); setError('');
+    if (entry.promise) return entry.promise;
+    const job = entry;
+    job.promise = (async () => {
+      try {
+        while (version === generation.current && completions.current.get(id) === job) {
+          const revision = job.revision, target = job.done, until = job.until;
+          const saved = await repository.update(id, { done: target });
+          if (version !== generation.current || completions.current.get(id) !== job) return false;
+          job.confirmed = saved; job.confirmedUntil = until;
+          if (revision !== job.revision) continue; // An undo is newer than this response.
+          setTodos(current => current.map(todo => todo.id === id ? saved : todo));
+          setError(''); return true;
+        }
+        return false;
+      } catch (e) {
+        if (version === generation.current && completions.current.get(id) === job) {
+          if (e instanceof auth.AuthRequiredError) expireSession();
+          else {
+            setTodos(current => current.map(todo => todo.id === id ? job.confirmed : todo));
+            completionDeadline(id, job.confirmedUntil);
+          }
+          setError(message(e));
+        }
+        return false;
+      } finally {
+        if (version === generation.current && completions.current.get(id) === job) {
+          completions.current.delete(id); busy.current.delete(id);
+          setCompletionIds([...completions.current.keys()]); setBusyIds([...busy.current]);
+        }
+      }
+    })();
+    return job.promise;
+  }
   async function update(id: string, patch: Patch): Promise<boolean> {
+    if (typeof patch.done === 'boolean' && Object.keys(patch).length === 1) return updateCompletion(id, patch.done);
     const saved = await mutate(id, repository => repository.update(id, patch));
     if (!saved) return false;
     setTodos(current => current.map(todo => todo.id === id ? saved : todo));
-    if (patch.done !== undefined) {
-      const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id);
-      if (patch.done) {
-        setPending(current => ({ ...current, [id]: Date.now() + COMPLETION_DELAY }));
-        timers.current.set(id, setTimeout(() => { setPending(current => { const next = { ...current }; delete next[id]; return next; }); timers.current.delete(id); }, COMPLETION_DELAY));
-      } else setPending(current => { const next = { ...current }; delete next[id]; return next; });
-    }
+    if (patch.done !== undefined) completionDeadline(id, patch.done ? Date.now() + COMPLETION_DELAY : null);
     return true;
   }
   async function remove(id: string): Promise<boolean> {
@@ -110,7 +172,7 @@ export function useTodos() {
     return !!removed;
   }
   function expireSession() {
-    generation.current++; repo.current = null; clearTimers(); setPending({}); setTodos([]); setUser(null);
+    generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
   }
   async function authenticate(email: string, password: string, register: boolean): Promise<boolean> {
     if (connection?.mode !== 'cloud' || connectingRef.current || busy.current.size) return false;
@@ -119,7 +181,7 @@ export function useTodos() {
       const account = await auth.authenticate(connection.baseUrl, email, password, register);
       const repository = createRepository(connection);
       generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);
-      const data = await repository.list(); setTodos(data); return true;
+      const data = await repository.list(); setTodos(data); setLoading(false); return true;
     } catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
   }
@@ -142,6 +204,6 @@ export function useTodos() {
     catch (e) { setError(message(e)); return false; }
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
-  return { connection, user, reminders, notice, setNotice, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending), pending, loading, connecting, busyIds, error, setError, connect, refresh, add, update, remove };
+  return { connection, user, reminders, notice, setNotice, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;
