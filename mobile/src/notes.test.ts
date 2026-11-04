@@ -16,3 +16,5 @@ test('notes validation preserves old todos and rejects invalid/oversized note fi
  assert.equal(parseTodos([{id:'old',title:'기존 할 일',done:false,dueDate:null}]).length,1);
  assert.throws(()=>parseTodos([{id:'bad',title:'할 일',done:false,notes:42}]));
 });
+
+test('continued bullet caret stays after the bullet for insertion in the middle of a note',()=>{const r=formatNoteEdit('• 첫 줄\n마지막','• 첫 줄\n\n마지막');assert.equal(r.text,'• 첫 줄\n• \n마지막');assert.equal(r.caret,8);assert.equal(formatNoteEdit('-','- ').caret,2);});

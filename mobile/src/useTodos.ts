@@ -181,7 +181,7 @@ export function useTodos() {
       const account = await auth.authenticate(connection.baseUrl, email, password, register);
       const repository = createRepository(connection);
       generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);
-      const data = await repository.list(); setTodos(data); setLoading(false); return true;
+      try{const data = await repository.list();setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
     } catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
   }

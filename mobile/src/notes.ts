@@ -3,6 +3,8 @@ export function formatNoteEdit(previous: string, input: string): { text: string;
   let text = input.replace(/^([\t ]*)- /gm, '$1• ');
   let first = 0;
   while (first < previous.length && first < input.length && previous[first] === input[first]) first++;
+  // Adjacent newlines share a prefix: prefer the end of the preceding bullet.
+  if(first>0&&input[first]==='\n'&&previous[first-1]==='\n'&&/^([\t ]*)[•-] .+/.test(previous.slice(previous.lastIndexOf('\n',first-2)+1,first-1)))first--;
   // Continue a bullet only for a single inserted Enter, not for a paste/IME edit.
   if (input.length === previous.length + 1 && input[first] === '\n' && input.slice(first + 1) === previous.slice(first)) {
     const start = previous.lastIndexOf('\n', first - 1) + 1;
@@ -17,5 +19,5 @@ export function formatNoteEdit(previous: string, input: string): { text: string;
       }
     }
   }
-  return { text: text.slice(0, MAX_NOTES_LENGTH) };
+  return { text: text.slice(0, MAX_NOTES_LENGTH),...(text!==input?{caret:Math.min(text.length,first+Math.max(0,input.length-previous.length))}:{}) };
 }

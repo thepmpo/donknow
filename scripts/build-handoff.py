@@ -206,7 +206,7 @@ GitHub 자동 백업은 현재 비밀 설정과 활성화가 필요한 준비 �
 
 ## 11. 검증 결과와 재현
 
-최근 비서 확장에서 **서버/단위 테스트 52개**, TypeScript/문법, 실제 Expo 웹 기능·모션 테스트와 iOS JS 번들이 통과했습니다. 메모·소유권·백업 보존·글머리표·드래그/X 닫기와 새 작업 20종의 확인 경계·중복 방지·권한/연결 변경·네이버 어댑터·AI 동의/제안을 검증했습니다. 공급자 모의 검증은 실계정 발송 성공과 다릅니다. 운영 이미지의 CA/TLS·서명 백업/복원·재시작은 앞선 변경에서 검증한 기록이며 이번에 컨테이너 전체를 다시 빌드한 것은 아닙니다. 실제 iPhone 설치와 OS 동작 검증은 별도입니다. 새 변경 후에는 관련 결과를 재확인합니다.
+최근 비서 확장에서 **서버/단위 테스트 53개**, TypeScript/문법, 실제 Expo 웹 기능·모션 테스트와 iOS JS 번들이 통과했습니다. 메모·소유권·백업 보존·글머리표·드래그/X 닫기와 새 작업 20종의 확인 경계·중복 방지·권한/연결 변경·네이버 어댑터·AI 동의/제안을 검증했습니다. 공급자 모의 검증은 실계정 발송 성공과 다릅니다. 운영 이미지의 CA/TLS·서명 백업/복원·재시작은 앞선 변경에서 검증한 기록이며 이번에 컨테이너 전체를 다시 빌드한 것은 아닙니다. 실제 iPhone 설치와 OS 동작 검증은 별도입니다. 새 변경 후에는 관련 결과를 재확인합니다.
 
 ```sh
 npm ci
@@ -299,7 +299,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 '''
 history = subprocess.check_output(['git','log','--reverse','--format=%h %s'],cwd=ROOT,text=True).strip()
 gallery = []
-labels={'mobile-assistant-action-fixture':'비서 초안 확인과 Todo 실행 · 테스트','mobile-assistant-ai-fixture':'AI 근거·Todo 제안 · 모의 응답','mobile-completion-countdown-fixture':'완료 5→1 카운트다운 · 체험 화면','mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
+labels={'mobile-calendar-events-fixture':'일정·할 일 분리와 시간 표시 · 테스트','mobile-assistant-action-fixture':'비서 초안 확인과 Todo 실행 · 테스트','mobile-assistant-ai-fixture':'AI 근거·Todo 제안 · 모의 응답','mobile-completion-countdown-fixture':'완료 5→1 카운트다운 · 체험 화면','mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
 for item in manifest:
     name=labels.get(Path(item['path']).stem,Path(item['path']).stem.replace('-',' '))
     gallery += [f"### {name}", f"파일: `{item['path']}`", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']
