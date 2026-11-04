@@ -1,139 +1,139 @@
 {
   "generatedAt": "2026-11-04",
-  "codeCommit": "f920d8f3bedbb84544e5d2b3c0503d133f7883e4",
-  "imageCount": 41,
+  "codeCommit": "b7afa930e6658772a46de0bc104f1c15b8eecd2e",
+  "imageCount": 42,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 27002,
-      "sha256": "f82096429a3e969c64478e0c79064191698c7355429e9f8f0fe7d52848526389",
+      "bytes": 25597,
+      "sha256": "33ef24929bd6519f4c68ef2d8bc596741ef7b29263bb17f409364d7114dbb086",
       "import_path": "images/artifacts__mobile-todos.png"
     },
     {
       "path": "artifacts/mobile-calendar.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 39110,
-      "sha256": "6b6abfe18d8319c308f30587118650adc590a8f728d30d161ec3768ba0c2ef1b",
+      "bytes": 37718,
+      "sha256": "f31cef095087eaea46c3bba45ce9fc16d58ecf5e25372e9d444b5d0aecb87131",
       "import_path": "images/artifacts__mobile-calendar.png"
     },
     {
       "path": "artifacts/mobile-duckduck.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 32213,
-      "sha256": "b68480cd8076bf0e13b5d63b50f3353381e95855d0583c22288fc08ae09a59a8",
+      "bytes": 31130,
+      "sha256": "d128b655841db27e68ff2b75cdbc0251fd5bc2f51e9fef7f43b270969446ac23",
       "import_path": "images/artifacts__mobile-duckduck.png"
     },
     {
       "path": "artifacts/mobile-log.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 30039,
-      "sha256": "00be8f660e5675937ed2eb8edb47b62449bef02da3e3ad6e0362054008f39443",
+      "bytes": 28069,
+      "sha256": "237c61baab6caa102705f19436cb019411b3603c1175fa11e91c5876a52c1f5b",
       "import_path": "images/artifacts__mobile-log.png"
     },
     {
       "path": "artifacts/mobile-profile.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 41944,
-      "sha256": "81f76ddb44625ff8c80a6cb1d35e67ec0512dd358ed9c76ecdba21637699b994",
+      "bytes": 45198,
+      "sha256": "41ad47c9e93589e3c091b924550e48eee602f863c7ccc3b896c7067796b06f21",
       "import_path": "images/artifacts__mobile-profile.png"
     },
     {
       "path": "artifacts/mobile-account-settings.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 39008,
-      "sha256": "037496c468d95d2d6f38c386e4acd58b67d044709224f1481392dc692890ea73",
+      "bytes": 45935,
+      "sha256": "16bb756695a79df542fd66f4205f6680a1c719ba7365af7c27eebf1a7a96769d",
       "import_path": "images/artifacts__mobile-account-settings.png"
     },
     {
       "path": "artifacts/mobile-apple-reminders.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 36049,
-      "sha256": "c031b924ed9416beb3fc283eb27d9e891c8640215d8d8180086669a85e803d0a",
+      "bytes": 34240,
+      "sha256": "e593c913e5fb134409aca999bd05c83a5ca6b57eb0b48feb095294c2c4534b74",
       "import_path": "images/artifacts__mobile-apple-reminders.png"
     },
     {
       "path": "artifacts/mobile-assistant-action-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 36391,
-      "sha256": "9197758dacf5ce052a4b0f5ab8ba8da49ebb83742ee04ba2b5340e97e35ee058",
+      "bytes": 36227,
+      "sha256": "ed649eb1dd2148be1808a4acc3b35e0cc18b2eabe929ceb71a43d17285b4d727",
       "import_path": "images/artifacts__mobile-assistant-action-fixture.png"
     },
     {
       "path": "artifacts/mobile-assistant-ai-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 49809,
-      "sha256": "dee273b9185af5f2cdd7bf4ae1cc098483044f9d0653b76141d7dc67d2ea3368",
+      "bytes": 49673,
+      "sha256": "985e7f4a7d754050d90d377867e3b34da832c66e07756e409b48dbe5d0f03827",
       "import_path": "images/artifacts__mobile-assistant-ai-fixture.png"
     },
     {
       "path": "artifacts/mobile-auth.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 33025,
-      "sha256": "4512fc413f5ae67d57c13210059d713a177a68e663dee7436171c8b006165088",
+      "bytes": 35110,
+      "sha256": "ca4e199a3010ae315fe20d2143661bdbcff23ee2848b627388f71b8526152b59",
       "import_path": "images/artifacts__mobile-auth.png"
     },
     {
       "path": "artifacts/mobile-calendar-events-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 28963,
-      "sha256": "32a37e97e5bea106ab1bee3be2353a34253be26724079872a47ece5882c67179",
+      "bytes": 28984,
+      "sha256": "4dd7e2027edd8274d930a30106840b2bf7e8805cfaa15a950e46764f3ea03ecf",
       "import_path": "images/artifacts__mobile-calendar-events-fixture.png"
     },
     {
       "path": "artifacts/mobile-completed-reference-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 54309,
-      "sha256": "3d868c45f3a46e8823f74c7921d916951a4624621a5d670300c9480c9009ef85",
+      "bytes": 49035,
+      "sha256": "7237cd528f21dc88aab7a62799ad48453f58cd7547d8159d0c53f0e515daf26c",
       "import_path": "images/artifacts__mobile-completed-reference-fixture.png"
     },
     {
       "path": "artifacts/mobile-completion-countdown-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 28621,
-      "sha256": "ad95fc676bcb18049f397da848dd115f916b16d2b791ebc3c827bd514a80fdc9",
+      "bytes": 27099,
+      "sha256": "4599e17c58650eccdd88823d946ffe974214dea918fd944d0669e45e43638042",
       "import_path": "images/artifacts__mobile-completion-countdown-fixture.png"
     },
     {
       "path": "artifacts/mobile-duck-draft.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 35949,
-      "sha256": "58ec5978249dd8a2acf667eb62c8078b17d7c3761f730df5b6c75ddab91b2ea1",
+      "bytes": 34251,
+      "sha256": "1284d12a0ff8b2a19a65b9d0cc8ffbefbc546efaa8b558cca61c8686c7481e89",
       "import_path": "images/artifacts__mobile-duck-draft.png"
     },
     {
       "path": "artifacts/mobile-external-search-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 47230,
-      "sha256": "656ae5316235283d3f2e1b24486cce3b4546e7133b25eca4e29d9101c2b5e951",
+      "bytes": 47437,
+      "sha256": "0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8",
       "import_path": "images/artifacts__mobile-external-search-fixture.png"
     },
     {
       "path": "artifacts/mobile-google-tasks-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 53682,
-      "sha256": "87cd5b44f229533b91515d141df79b1d9252a046115713e7c37c933b410d463a",
+      "bytes": 48713,
+      "sha256": "e25032a713a1c31367e120551c9f7d6557ac768bf2d4accfe24ab92381003613",
       "import_path": "images/artifacts__mobile-google-tasks-fixture.png"
     },
     {
       "path": "artifacts/mobile-kakao-paste.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 39579,
-      "sha256": "ea707f208d56d06484af0c710a0c57be6463464a96fe40287bbc7b7f3b8279d3",
+      "bytes": 38324,
+      "sha256": "95bcf78accaced5fcf428e11020fe9a9d94359a4ca1912845bb8fc490ed370c5",
       "import_path": "images/artifacts__mobile-kakao-paste.png"
     },
     {
       "path": "artifacts/mobile-kakao-share.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 27347,
-      "sha256": "c95d31312bff4ae87b4a5757165c25cdc86ff4113261e1091bf1baf2939d1043",
+      "bytes": 30586,
+      "sha256": "565db0f6232270aaa931dfae9f8a7ef41ebe260a8d5bfa7662668d493ba2ed28",
       "import_path": "images/artifacts__mobile-kakao-share.png"
     },
     {
       "path": "artifacts/mobile-notes-fixture.png",
       "category": "체험 데이터 메모/시트 검증",
-      "bytes": 25969,
-      "sha256": "6f2de2183b876cc69fb6990c05d14e1d6e539c733b8c72fdd7621fce9cd4e8a2",
+      "bytes": 22156,
+      "sha256": "623263e51a27d21edf011fc9ec347fdbfdc08d128bae3d5e8bb8f8e4f51e3b91",
       "import_path": "images/artifacts__mobile-notes-fixture.png"
     },
     {
@@ -146,36 +146,36 @@
     {
       "path": "artifacts/mobile-personal-export.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 49664,
-      "sha256": "9446c649f567ae7793b665f61b9096e83b76e4be985caf89c4bfba956d8d948a",
+      "bytes": 53350,
+      "sha256": "8cc8ffb91a2ac3e7e50e1d1b2bebc1ab5181f0337c5aa2f529b5faf4f9c30093",
       "import_path": "images/artifacts__mobile-personal-export.png"
     },
     {
       "path": "artifacts/mobile-record-search.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 37902,
-      "sha256": "66b27c19b0c9f5396348b6da004a8cdf50a2f6748cf3fc306b21d9a4f3f53674",
+      "bytes": 37515,
+      "sha256": "f13bb3c62139a2be4320d9c4c13cb010249fff8baa8caf8a0a918dd11d162ae0",
       "import_path": "images/artifacts__mobile-record-search.png"
     },
     {
       "path": "artifacts/mobile-reminder.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 25979,
-      "sha256": "42164efd80145bb45f45fa42f705289d472aec31a8c5c902903697c9252dc27d",
+      "bytes": 22017,
+      "sha256": "848d6011bcdf833dd4765ab6007314e12d55b01439c70b741a8ca6c81699b96d",
       "import_path": "images/artifacts__mobile-reminder.png"
     },
     {
       "path": "artifacts/mobile-services.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 43285,
-      "sha256": "40b18333712878e25fc3f2b320e94fce2f16e7390b759ffd65212f8e99df8ea8",
+      "bytes": 47383,
+      "sha256": "4d37f89c8accf0919692dfb3dbebbbc70b35229cd7ad228098209e32071b3380",
       "import_path": "images/artifacts__mobile-services.png"
     },
     {
       "path": "artifacts/mobile-task-sync-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 51217,
-      "sha256": "c3cc637635a1f4ac7fb79452a8d32da96734fedc8c5752d787ef3277d1337abf",
+      "bytes": 53956,
+      "sha256": "11890b0d015d30567c6c0cc074fb30e71cc4106bf5297dde61bc9b1559d71afc",
       "import_path": "images/artifacts__mobile-task-sync-fixture.png"
     },
     {
@@ -188,8 +188,8 @@
     {
       "path": "artifacts/mobile-verification.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 38545,
-      "sha256": "ba85e22d91cac908cbc273513653f231a9ac10bac6a2fd9ffba5ea44e463575e",
+      "bytes": 36930,
+      "sha256": "74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34",
       "import_path": "images/artifacts__mobile-verification.png"
     },
     {
@@ -198,6 +198,13 @@
       "bytes": 67096,
       "sha256": "eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351",
       "import_path": "images/artifacts__calendar.png"
+    },
+    {
+      "path": "artifacts/design-guide-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 221764,
+      "sha256": "7faaa6481917a734c6612802bc59b269038816adb86a6c2f1cfadb6fde59f09e",
+      "import_path": "images/artifacts__design-guide-fixture.png"
     },
     {
       "path": "artifacts/duckduck.png",
