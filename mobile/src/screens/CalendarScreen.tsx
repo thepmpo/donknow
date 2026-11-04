@@ -1,12 +1,19 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {ScreenHeading} from '../ScreenHeading';
+import {layout} from '../theme';
 import { MotionPressable as Pressable } from '../motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Platform, Modal, PanResponder, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { dateKey, monthDays } from '../domain';
 import type { Todo } from '../domain';
 import type { TodoStore } from '../useTodos';
 import { typography } from '../theme';
 import { colors, TodoRow } from '../ui';
 export function CalendarScreen({ store, onAdd, onEdit }: { store: TodoStore; onAdd: (date: string) => void; onEdit: (todo: Todo) => void }) {
+  const insets=useSafeAreaInsets();
+  const [monthPicker,setMonthPicker]=useState(false);
+  const [pickerDate,setPickerDate]=useState(new Date());
   const [view,setView]=useState<'month'|'week'>('month');
   const [selected, setSelected] = useState(dateKey(new Date()));
   const [month, setMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -27,16 +34,17 @@ export function CalendarScreen({ store, onAdd, onEdit }: { store: TodoStore; onA
   async function importEvent(id:string){setImporting(id);try{await store.featureRequest('/api/integrations/google/import','POST',{ids:[id]});await store.refresh();}catch(e){setIntegrationError(e instanceof Error?e.message:'추가하지 못했어요.');}finally{setImporting(null);}}
   const tasks = store.todos.filter(todo => todo.dueDate === selected);
   function shift(offset: number) { const next = new Date(month.getFullYear(), month.getMonth() + offset, 1); setMonth(next); setSelected(dateKey(next)); }
-  const selectedRef=useRef(selected);selectedRef.current=selected;
-  function moveDay(offset:number){const date=new Date(selectedRef.current+'T12:00:00');date.setDate(date.getDate()+offset);setSelected(dateKey(date));setMonth(new Date(date.getFullYear(),date.getMonth(),1));}
-  const swipe=useMemo(()=>PanResponder.create({onMoveShouldSetPanResponderCapture:(_,g)=>Math.abs(g.dx)>20&&Math.abs(g.dx)>Math.abs(g.dy)*1.6,onPanResponderRelease:(_,g)=>{if(Math.abs(g.dx)>55)moveDay(g.dx<0?1:-1);}}),[]);
+  const monthRef=useRef(month);monthRef.current=month;
+  const swipe=useMemo(()=>PanResponder.create({onMoveShouldSetPanResponderCapture:(_,g)=>Math.abs(g.dx)>20&&Math.abs(g.dx)>Math.abs(g.dy)*1.6,onPanResponderRelease:(_,g)=>{if(Math.abs(g.dx)>55){const current=monthRef.current;const next=new Date(current.getFullYear(),current.getMonth()+(g.dx<0?1:-1),1);setMonth(next);setSelected(dateKey(next));}}}),[]);
   const weekStart=new Date(selected+'T12:00:00');weekStart.setDate(weekStart.getDate()-weekStart.getDay());
   const days=view==='month'?monthDays(month):Array.from({length:7},(_,i)=>{const d=new Date(weekStart);d.setDate(d.getDate()+i);return d;});
   const occurs=(event:typeof external[number],day:string)=>event.dueDate===day||!!(event.dueDate&&event.endDate&&event.dueDate<day&&(event.endDate>day||(!event.allDay&&event.endDate===day&&!!event.endAt&&Date.parse(event.endAt)>Date.parse(day+'T00:00:00+09:00'))));
   const dailyEvents=externalOnly.filter(e=>occurs(e,selected));
   function today() { const date = new Date(); setMonth(new Date(date.getFullYear(), date.getMonth(), 1)); setSelected(dateKey(date)); }
-  return <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
-    <View style={styles.toolbar}><Pressable style={styles.nav} onPress={() => shift(-1)} accessibilityRole="button" accessibilityLabel="이전 달"><Text style={styles.chevron}>‹</Text></Pressable><Text style={styles.month}>{new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long' }).format(month)}</Text><Pressable style={styles.nav} onPress={() => shift(1)} accessibilityRole="button" accessibilityLabel="다음 달"><Text style={styles.chevron}>›</Text></Pressable><Pressable onPress={today} accessibilityRole="button" style={styles.nav}><Text style={styles.today}>오늘</Text></Pressable></View>
+  return <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: layout.navigationHeight+insets.bottom+layout.sectionGap }} keyboardShouldPersistTaps="handled">
+    <ScreenHeading title="캘린더"/>
+    <View style={styles.toolbar}><Pressable style={styles.nav} onPress={() => shift(-1)} accessibilityRole="button" accessibilityLabel="이전 달"><Text style={styles.chevron}>‹</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="년월 선택" style={{flex:1,minHeight:44,justifyContent:'center'}} onPress={()=>{setPickerDate(month);setMonthPicker(true);}}><Text style={styles.month}>{new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long' }).format(month)}⌄</Text></Pressable><Pressable style={styles.nav} onPress={() => shift(1)} accessibilityRole="button" accessibilityLabel="다음 달"><Text style={styles.chevron}>›</Text></Pressable><Pressable onPress={today} accessibilityRole="button" style={styles.nav}><Text style={styles.today}>오늘</Text></Pressable></View>
+    <Modal visible={monthPicker} transparent animationType="slide" onRequestClose={()=>setMonthPicker(false)}><View style={{flex:1,justifyContent:'flex-end',backgroundColor:'#00000055'}}><View style={{backgroundColor:colors.white,padding:layout.sheetInset,borderTopLeftRadius:24,borderTopRightRadius:24,gap:16}}><Text style={styles.agendaTitle}>이동할 년·월</Text>{Platform.OS==='web'?<View style={{flexDirection:'row',gap:12}}>{[true,false].map(year=>React.createElement('select',{key:String(year),'aria-label':year?'이동할 년':'이동할 월',value:year?pickerDate.getFullYear():pickerDate.getMonth(),onChange:(e:React.ChangeEvent<HTMLSelectElement>)=>setPickerDate(new Date(year?Number(e.target.value):pickerDate.getFullYear(),year?pickerDate.getMonth():Number(e.target.value),1)),style:{padding:12,fontSize:18}},...Array.from({length:year?201:12},(_,i)=>{const v=year?1900+i:i;return React.createElement('option',{key:v,value:v},String(year?v:v+1)+(year?'년':'월'));})))}</View>:<DateTimePicker value={pickerDate} mode="date" display="spinner" locale="ko-KR" minimumDate={new Date(1900,0,1)} maximumDate={new Date(2100,11,31)} onChange={(_,date)=>{if(date)setPickerDate(date);}}/>}<Pressable accessibilityRole="button" accessibilityLabel="선택한 년월로 이동" onPress={()=>{const next=new Date(pickerDate.getFullYear(),pickerDate.getMonth(),1);setMonth(next);setSelected(dateKey(next));setMonthPicker(false);}} style={{padding:16,backgroundColor:colors.pale,borderRadius:16}}><Text style={styles.today}>이동</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="년월 선택 닫기" style={{padding:12}} onPress={()=>setMonthPicker(false)}><Text style={styles.today}>취소</Text></Pressable></View></View></Modal>
     <View style={{flexDirection:'row',paddingHorizontal:20,gap:12}}>{(['month','week'] as const).map(v=><Pressable key={v} accessibilityRole="button" accessibilityLabel={v==='month'?'월 보기':'주 보기'} onPress={()=>setView(v)} style={{padding:12}}><Text style={{color:view===v?colors.blue:colors.muted}}>{v==='month'?'월':'주'}</Text></Pressable>)}</View>
     <View style={styles.weekdays}>{['일', '월', '화', '수', '목', '금', '토'].map((day, index) => <Text key={day} style={[styles.weekday, { color: index === 0 ? colors.danger : index === 6 ? colors.blueText : colors.muted }]}>{day}</Text>)}</View>
     <View testID="calendar-date-grid" {...swipe.panHandlers} style={styles.grid}>{days.map(date => {
@@ -62,7 +70,7 @@ export function CalendarScreen({ store, onAdd, onEdit }: { store: TodoStore; onA
   </ScrollView>;
 }
 const styles = StyleSheet.create({
-  toolbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 20, gap: 4 }, nav: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
+  toolbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: layout.pageInset, paddingVertical: 4, gap: 4 }, nav: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   chevron: { color: colors.secondary, fontSize: 28 }, month: { ...typography.section, flex: 1, color: colors.text, fontWeight: '700' }, today: { ...typography.caption, color: colors.blueText, fontWeight: '600' },
   weekdays: { flexDirection: 'row', paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: colors.line }, weekday: { width: '14.285714%', ...typography.caption, textAlign: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap' }, day: { width: '14.285714%', borderBottomWidth: StyleSheet.hairlineWidth, borderColor: colors.line, alignItems: 'center', paddingTop: 8, paddingHorizontal: 3, gap: 4, overflow: 'hidden' }, selected: { backgroundColor: colors.pale, borderRadius: 12 },

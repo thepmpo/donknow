@@ -1,3 +1,6 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ScreenHeading} from '../ScreenHeading';
+import {layout} from '../theme';
 import {AssistantSheet} from './AssistantSheet';
 import {NotesField} from '../NotesField';
 import { DraggableSheet, MotionView, useReducedMotion } from '../motion';
@@ -13,6 +16,7 @@ import { CloseButton, Button, colors, DateField } from '../ui';
 type Card = { id: number; title: string; notes: string; dueDate: string | null; saved: boolean; saving: boolean };
 export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStore; onOpenTodos: () => void; onOpenTodo: (todo: Todo) => void }) {
   const reduced = useReducedMotion();
+  const insets=useSafeAreaInsets();
   const searchSequence=useRef(0);
   const [searching, setSearching] = useState<number|null>(null);
   const [assistantOpen,setAssistantOpen]=useState(false);
@@ -51,7 +55,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
       else setStatus('추가하지 못했어요. 연결과 날짜를 확인하고 다시 시도해주세요.');
     } finally { savingIds.current.delete(card.id); change(card.id, { saving: false }); }
   }
-  return <View style={styles.screen}>
+  return <View style={[styles.screen,{paddingBottom:layout.navigationHeight+insets.bottom+layout.pageTop}]}><ScreenHeading embedded title="덕"/>
     {!cards.length ? <View style={styles.welcome}><Text style={styles.duck}>🦆</Text><Text style={styles.greeting}>무엇을 도와드릴까요?</Text><Text style={styles.welcomeNote}>떠오른 일을 편하게 적어주세요.</Text></View> : <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} ref={scroll} contentContainerStyle={styles.conversation} keyboardShouldPersistTaps="handled" onContentSizeChange={() => {if(scrollOnNextContent.current){scrollOnNextContent.current=false;scroll.current?.scrollToEnd({animated:!reduced});}}}>
       {cards.map(card => <MotionView key={card.id} style={styles.card}><View style={styles.cardHeading}><Text style={styles.cardLabel}>{card.saved ? 'Todo에 담았어요' : '할 일로 정리하기'}</Text>{!card.saved && <Pressable accessibilityRole="button" accessibilityLabel="초안 버리기" disabled={card.saving} onPress={() => { setCards(current => current.filter(item => item.id !== card.id)); setStatus(''); }} style={styles.dismiss}><Text style={styles.cardLabel}>버리기</Text></Pressable>}</View>{card.saved ? <Text style={styles.cardTitle}>{card.title}</Text> : <TextInput accessibilityLabel="정리한 할 일" value={card.title} onChangeText={title => change(card.id, { title })} editable={!card.saving} maxLength={120} multiline style={styles.draftInput} placeholder="할 일을 적어주세요" />}{!card.saved && <DateField value={card.dueDate} onChange={dueDate => { if (!card.saving) change(card.id, { dueDate }); }} />}{!card.saved&&<NotesField label="초안 메모" value={card.notes} onChange={notes=>change(card.id,{notes})} disabled={card.saving}/>}{card.saved&&!!card.notes&&<Text style={styles.status}>{card.notes}</Text>}<Button title={card.saved ? '추가 완료 ✓' : card.saving ? '추가 중…' : 'Todo 리스트에 추가'} loading={card.saving} onPress={() => { void transfer(card); }} disabled={card.saved || card.saving || !card.title.trim() || store.busyIds.includes('create')} />{card.saved && <Button title="Todo 보기 →" quiet onPress={onOpenTodos} />}</MotionView>)}
     </ScrollView>}
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
   draftInput: { ...typography.body, color: colors.text, minHeight: 56, paddingVertical: 12, borderBottomWidth: 1, borderColor: colors.line },
   backdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight: '90%', backgroundColor: colors.white, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24, paddingBottom: 36 },
   pasteInput: { ...typography.detail, borderWidth: 1, borderColor: colors.line, borderRadius: 16, padding: 16, color: colors.text, minHeight: 64, backgroundColor: colors.surface },
-  screen: { flex: 1, paddingHorizontal: 24, paddingBottom: 16 }, welcome: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 32, minHeight: 200 },
+  screen: { flex: 1, paddingTop:layout.pageTop,paddingHorizontal: layout.pageInset, paddingBottom: 16 }, welcome: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 32, minHeight: 200 },
   duck: { fontSize: 56, marginBottom: 24 }, greeting: { ...typography.heading, color: colors.text, textAlign: 'center' },
   conversation: { paddingVertical: 24, gap: 20 }, card: { borderRadius: 24, padding: 24, backgroundColor: colors.surface, gap: 12 },
   cardLabel: { ...typography.caption, color: colors.muted }, cardTitle: { ...typography.body, color: colors.text, fontWeight: '600' }, status: { ...typography.caption, color: colors.muted, paddingVertical: 12 },

@@ -1,13 +1,14 @@
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, PanResponder, Platform, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { COMPLETION_FADE_DURATION, dateKey, validateDraft } from './domain';
+import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, dateKey, validateDraft } from './domain';
 import type { Draft, Todo } from './domain';
 import type { TodoStore } from './useTodos';
-import { colors, typography, spacing, radius } from './theme';
+import { colors, typography, spacing, radius, layout } from './theme';
 export { colors } from './theme';
 export function Label({ children }: { children: React.ReactNode }) { return <Text style={s.label}>{children}</Text>; }
 export function Button({ title, onPress, disabled = false, quiet = false, loading = false, accessibilityLabel }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; loading?: boolean; accessibilityLabel?: string }) {
@@ -18,7 +19,8 @@ export function CloseButton({onPress,disabled=false}:{onPress:()=>void;disabled?
   return <Pressable accessibilityRole="button" accessibilityLabel="닫기" disabled={disabled} onPress={onPress} style={{width:44,minHeight:44,alignItems:'center',justifyContent:'center',opacity:disabled ? 0.4 : 1}}><Text style={{fontSize:24,lineHeight:28,color:colors.muted}}>×</Text></Pressable>;
 }
 export function Page({ children, refreshControl, compact = false }: { children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
-  return <MotionView style={{flex:1}} distance={0}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,compact&&{paddingTop:16}]}>{children}</ScrollView></MotionView>;
+  const insets=useSafeAreaInsets();
+  return <MotionView style={{flex:1}} distance={0}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:layout.navigationHeight+insets.bottom+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();
@@ -26,10 +28,10 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const exit = useRef(new Animated.Value(1)).current;
   const rowHeight = useRef(60);
   const [collapsing, setCollapsing] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(COMPLETION_DELAY / 1000);
   useEffect(() => {
     if (!pending || !pendingUntil) return;
-    const tick = () => setCountdown(Math.max(0, Math.min(5, Math.ceil((pendingUntil - COMPLETION_FADE_DURATION - Date.now()) / 1000))));
+    const tick = () => setCountdown(Math.max(0, Math.min(COMPLETION_DELAY / 1000, Math.ceil((pendingUntil - COMPLETION_FADE_DURATION - Date.now()) / 1000))));
     tick();
     const timer = setInterval(tick, 50);
     return () => clearInterval(timer);
@@ -127,7 +129,7 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
     <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <DraggableSheet visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><CloseButton disabled={saving} onPress={onClose} /></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}}>
+      <DraggableSheet visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><CloseButton disabled={saving} onPress={onClose} /></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
         <TextInput accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} autoFocus editable={!saving} style={s.editorInput} />
         <DateField value={date} onChange={setDate} /><NotesField value={notes} onChange={setNotes} disabled={saving} />
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={setAlarm} disabled={saving} trackColor={{ true: colors.blue }} /></View>
@@ -143,7 +145,7 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
 export const s = StyleSheet.create({
   page: { padding: spacing.xl, paddingTop: spacing.xxl, paddingBottom: 40, flexGrow: 1 },
   label: { ...typography.caption, color: colors.muted }, muted: { ...typography.caption, color: colors.muted },
-  h1: { ...typography.title, color: colors.text, marginBottom: spacing.md },
+  h1: { ...typography.heading, color: colors.text, marginBottom: spacing.md },
   subtitle: { ...typography.detail, color: colors.muted },
   sectionTitle: { ...typography.section, color: colors.text },
   button: { backgroundColor: colors.blue, paddingHorizontal: 20, paddingVertical: 14, minHeight: 56, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center' },

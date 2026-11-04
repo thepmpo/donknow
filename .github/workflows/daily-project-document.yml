@@ -28,7 +28,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/daily-updates.md docs/daily-update-state.json docs/notion-handoff.md docs/asset-manifest.json public/project.html public/project-assets
+          git add docs/daily-updates.md docs/daily-update-state.json docs/notion-handoff.md docs/asset-manifest.json public/project.html public/design-guide.html public/project-assets
           if ! git diff --cached --quiet; then
             git commit -m 'docs: daily project update [skip ci]'
             git push origin HEAD:main

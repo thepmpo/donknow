@@ -1,3 +1,4 @@
+import {ScreenHeading} from '../ScreenHeading';
 import { MotionPressable as Pressable, MotionModal as Modal } from '../motion';
 import { DataExportPanel } from './DataExportPanel';
 import { AppleRemindersScreen } from './AppleRemindersScreen';
@@ -36,7 +37,7 @@ export function ProfileScreen({ store, onConnection }: { store: TodoStore; onCon
   if (apple) return <AppleRemindersScreen store={store} onClose={() => setApple(false)} />;
   if (accountAction) return <AccountScreen kind={accountAction} store={store} onClose={() => setAccountAction(null)} />;
   if (provider) return <IntegrationsScreen store={store} initialProvider={provider} onClose={() => {setProvider(null);void refreshServices();}} />;
-  return <Page><Text style={s.label}>나의 공간</Text><Text style={[s.h1, { marginTop: 16 }]}>내정보</Text><Text style={s.subtitle}>나에게 맞는 하루를 준비해요.</Text>
+  return <Page><ScreenHeading embedded title="내정보"/><Text style={s.label}>나의 공간</Text><Text style={s.subtitle}>나에게 맞는 하루를 준비해요.</Text>
     <View style={[s.card, styles.profile]}><Text style={styles.avatar}>{Array.from(name)[0]}</Text><View style={{ flex: 1 }}><Text style={s.sectionTitle}>{name}</Text><Text style={[s.muted, { marginTop: 7 }]}>덕과 함께, 하나씩</Text></View><Pressable accessibilityRole="button" accessibilityLabel="표시 이름 편집" onPress={() => { setDraft(name); setEditing(true); }} style={{ padding: 10 }}><Text style={styles.link}>편집</Text></Pressable></View>
     <View style={styles.stats}>{[['전체 할 일', store.todos.length], ['완료한 일', store.todos.filter(todo => todo.done).length], ['남은 일', store.todos.filter(todo => !todo.done).length]].map(([label, count]) => <View key={label} style={styles.stat}><Text style={styles.statNumber}>{count}</Text><Text style={s.muted}>{label}</Text></View>)}</View>
     <Button title="아이폰 미리 알림 가져오기" quiet onPress={() => setApple(true)} />

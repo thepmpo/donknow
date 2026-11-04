@@ -27,3 +27,10 @@ export const typography = {
 } satisfies Record<string, TextStyle>;
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const;
 export const radius = { small: 12, button: 16, card: 24, sheet: 28 } as const;
+
+// Single layout contract shared by every tab and editor.
+export const layout = {
+  pageInset: 24, pageTop: 16, headerHeight: 48,
+  navigationHeight: 72, sectionGap: 24, actionGap: 16,
+  sheetInset: 24, titleBottom: 16,
+} as const;
