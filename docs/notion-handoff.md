@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-04 · 한국 시간 · 기능 코드 f920d8f · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-05 · 한국 시간 · 기능 코드 f920d8f · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -161,6 +161,18 @@
 ### 매일 개발 정리
 
 
+##### 2026-11-05 — 당일 저장된 작업
+
+실제 정리: 02:53 KST. 새 저장 작업 3개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [25a9165](https://github.com/sjfieni/donknow/commit/25a916552d9979f6d970d9ddc2d45615a26af6f4) · 11-04 16:32 · Count completed tasks down from five before fading out
+
+- [aac818e](https://github.com/sjfieni/donknow/commit/aac818ebd39163b0709a810c9854fb9b1818c175) · 11-04 17:50 · Add consent-based AI assistant and confirmed cross-service actions
+
+- [f920d8f](https://github.com/sjfieni/donknow/commit/f920d8f3bedbb84544e5d2b3c0503d133f7883e4) · 11-04 18:01 · Refine calendar gestures, event agenda, glass navigation and input UX
+
+
+
 ##### 2026-11-03 — 당일 저장된 작업
 
 실제 정리: 19:52 KST. 새 저장 작업 4개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -257,6 +269,7 @@ daad527 Publish notes and sheet interaction preview in project handoff
 aac818e Add consent-based AI assistant and confirmed cross-service actions
 7fcfab3 Publish assistant action guide, verification and preview screens
 f920d8f Refine calendar gestures, event agenda, glass navigation and input UX
+67df1f8 Update project handoff for calendar and input polish
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
