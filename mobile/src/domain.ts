@@ -6,7 +6,8 @@ export type Todo = {
 };
 export type Draft = { title: string; dueDate: string | null; category: Category; reminderAt?: string | null; notes?: string };
 export type Connection = { mode: 'demo' } | { mode: 'cloud'; baseUrl: string };
-export const COMPLETION_DELAY = 4000;
+export const COMPLETION_DELAY = 5000;
+export const COMPLETION_FADE_DURATION = 350;
 export function dateKey(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }

@@ -4,7 +4,7 @@ import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, PanResponder, Platform, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { dateKey, validateDraft } from './domain';
+import { COMPLETION_FADE_DURATION, dateKey, validateDraft } from './domain';
 import type { Draft, Todo } from './domain';
 import type { TodoStore } from './useTodos';
 import { colors, typography, spacing, radius } from './theme';
@@ -26,11 +26,19 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const exit = useRef(new Animated.Value(1)).current;
   const rowHeight = useRef(60);
   const [collapsing, setCollapsing] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  useEffect(() => {
+    if (!pending || !pendingUntil) return;
+    const tick = () => setCountdown(Math.max(0, Math.min(5, Math.ceil((pendingUntil - COMPLETION_FADE_DURATION - Date.now()) / 1000))));
+    tick();
+    const timer = setInterval(tick, 50);
+    return () => clearInterval(timer);
+  }, [pending, pendingUntil]);
   useEffect(() => {
     exit.stopAnimation(); exit.setValue(1); setCollapsing(false);
     if (!pending || !pendingUntil || reduced) return;
     const remaining = Math.max(0, pendingUntil - Date.now());
-    const duration = Math.min(motion.feedback, remaining);
+    const duration = Math.min(COMPLETION_FADE_DURATION, remaining);
     const timer = setTimeout(() => {
       setCollapsing(true);
       Animated.timing(exit, { toValue: 0, duration, useNativeDriver: false }).start();
@@ -69,7 +77,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
       <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: todo.done, disabled: busy && !canToggleWhileBusy }} accessibilityLabel={`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy && !canToggleWhileBusy} onPress={() => press(onToggle, true)} hitSlop={9} style={[s.checkbox, todo.done && s.checked]}><Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text></Pressable>
       <Pressable disabled={!onEdit || busy} onPress={() => press(onEdit)} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} style={s.todoBody}>
         <Text numberOfLines={2} style={[s.todoTitle, todo.done && !log && s.doneText]}>{todo.title}</Text>
-        {pending ? <Text style={s.pendingText}>완료 · 4초 후 log로 이동</Text> : !!detail && <Text numberOfLines={1} style={s.todoDate}>{detail}</Text>}
+        {pending ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `완료 · ${countdown}초 후 log로 이동` : '완료 · log로 이동'}</Text> : !!detail && <Text numberOfLines={1} style={s.todoDate}>{detail}</Text>}
       </Pressable>
       {pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onEdit ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : null}
     </Animated.View>

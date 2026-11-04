@@ -43,7 +43,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | log | 완료한 할 일 모아보기와 미완료로 되돌리기. 내정보 바로 왼쪽 |
 | 내정보 | 계정·이메일 인증·암호 재설정·삭제, 서비스 연결, 알림, 저장/백업 안내, 개인 데이터 내보내기 |
 
-체크·미완료 복원은 서버 응답 전에 화면에 즉시 반영하고, 저장은 뒤에서 진행합니다. 완료된 항목은 누른 시점부터 약 **4초** 동안 되돌릴 수 있게 남긴 뒤 리스트에서 숨깁니다. 저장 중에도 되돌릴 수 있고, 늦은 이전 응답/목록은 최신 선택을 덮어쓰지 않습니다. 실패하면 마지막 서버 확인 상태로 복원하고 오류를 알립니다. 완료 여부는 log에서도 복원할 수 있습니다.
+체크·미완료 복원은 서버 응답 전에 화면에 즉시 반영하고, 저장은 뒤에서 진행합니다. 완료된 항목은 누른 시점부터 약 **5초** 동안 되돌릴 수 있게 남긴 뒤 350ms 동안 옅어지며 접힌 후 리스트에서 숨깁니다. 5→4→3→2→1을 매초 표시하고 0은 표시하지 않습니다. 저장 중에도 되돌릴 수 있고, 늦은 이전 응답/목록은 최신 선택을 덮어쓰지 않습니다. 실패하면 마지막 서버 확인 상태로 복원하고 오류를 알립니다. 완료 여부는 log에서도 복원할 수 있습니다.
 
 외부 서비스의 **미완료 항목만** 선택해 가져옵니다. **완료 기록은 접근·조회·검색할 수 있지만 신규 Todo로 가져오지 않습니다.** 덕에 이미 가져온 항목의 상태를 동기화하는 것은 이 규칙과 별개입니다.
 
@@ -102,7 +102,7 @@ React Native/Expo SDK 58 + TypeScript로 실제 네이티브 컴포넌트를 사
 | mobile/e2e/motion.mjs | 실제 웹 번들의 모션·취소·선호 설정 검증 |
 | mobile/app.json · mobile/eas.json | Expo 프로젝트 연결, iOS Bundle ID와 배포 프로필 |
 | docs/change-log.md | 변경 날짜·검증·배포 상태, 이 HTML에 직접 포함 |
-| mobile/src/useTodos.ts | 계정/저장소/할 일 상태, 실패 보존, 완료 4초 처리 |
+| mobile/src/useTodos.ts | 계정/저장소/할 일 상태, 실패 보존, 완료 5초 처리 |
 | mobile/src/domain.ts | 데이터 검증, 날짜·월 그리드·제목 검색 |
 | mobile/src/NotesField.tsx · mobile/src/notes.ts | 메모 입력·글머리표·글자 수 검증 |
 | mobile/src/screens/DuckScreen.tsx | 입력/붙여넣기→초안→Todo |
@@ -215,7 +215,7 @@ npm run build:container
 npm run test:container
 ```
 
-웹 테스트는 실제 Expo 번들을 격리된 테스트 API와 공급자 응답에 연결합니다. native PanResponder 스와이프, 4초 처리, 계정 분리/만료, 실패 보존, 검색, 이메일/암호 재설정, 완료 참고, 동기화 선택, 내 데이터 JSON 다운로드를 확인합니다. 원격 DB 프로토콜 테스트는 실제 libSQL HTTP 클라이언트를 로컬 서버에 연결합니다. 실제 사용자 데이터/메일/API를 시험용으로 변경하지 않습니다.
+웹 테스트는 실제 Expo 번들을 격리된 테스트 API와 공급자 응답에 연결합니다. native PanResponder 스와이프, 5초 처리, 계정 분리/만료, 실패 보존, 검색, 이메일/암호 재설정, 완료 참고, 동기화 선택, 내 데이터 JSON 다운로드를 확인합니다. 원격 DB 프로토콜 테스트는 실제 libSQL HTTP 클라이언트를 로컬 서버에 연결합니다. 실제 사용자 데이터/메일/API를 시험용으로 변경하지 않습니다.
 
 iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. 아이폰 기기와 계정 승인이 필요한 항목은 아래 운영 문서의 체크리스트로 남겨두었습니다.
 
@@ -223,7 +223,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack과 자동 할 일 추출은 보류이며 iPhone 출시는 진행 중입니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/4초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack과 자동 할 일 추출은 보류이며 iPhone 출시는 진행 중입니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/5초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
 다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 현재 업로드된 첫 빌드의 소스는 400e9d5라서 최신 디자인/모션이 포함되지 않았습니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 
@@ -292,7 +292,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 '''
 history = subprocess.check_output(['git','log','--reverse','--format=%h %s'],cwd=ROOT,text=True).strip()
 gallery = []
-labels={'mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
+labels={'mobile-completion-countdown-fixture':'완료 5→1 카운트다운 · 체험 화면','mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
 for item in manifest:
     name=labels.get(Path(item['path']).stem,Path(item['path']).stem.replace('-',' '))
     gallery += [f"### {name}", f"파일: `{item['path']}`", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']

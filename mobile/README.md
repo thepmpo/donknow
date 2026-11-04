@@ -1,6 +1,6 @@
 # duckduck iPhone 앱
 
-React Native + Expo SDK 58 + TypeScript로 만든 iPhone 앱 기반입니다. 기존 HTML을 WebView에 넣지 않고 React Native 화면으로 구현했습니다. 현재 다섯 탭, Todo 편집·예정일 선택, 좌우 스와이프, 완료 후 4초 동안 되돌리기, log, 캘린더, 덕에서 Todo로 추가하는 흐름을 제공합니다.
+React Native + Expo SDK 58 + TypeScript로 만든 iPhone 앱 기반입니다. 기존 HTML을 WebView에 넣지 않고 React Native 화면으로 구현했습니다. 현재 다섯 탭, Todo 편집·예정일 선택, 좌우 스와이프, 완료 후 5초 동안 되돌리기, log, 캘린더, 덕에서 Todo로 추가하는 흐름을 제공합니다.
 
 ## 개발 환경
 
@@ -37,7 +37,7 @@ npm run test:e2e
 npm run test:web-auth
 ```
 
-`test:e2e`는 먼저 생성한 `dist-web`의 실제 React Native Web 번들을 Chromium으로 실행합니다. 기본 브라우저 경로는 `/usr/bin/chromium`이며 `PLAYWRIGHT_CHROMIUM_EXECUTABLE`로 바꿀 수 있습니다. 실제 Node API 서버를 임시 데이터 폴더와 임의 포트에 실행하고, 테스트 HTTPS origin의 요청만 그 서버에 전달합니다. 서버의 실제 개발 데이터와 기기의 실제 설정을 건드리지 않습니다. 스와이프·4초 타이머·log 복원·캘린더·덕→Todo·회원가입·로그인·계정별 서버 저장·새로고침 후 로그인 유지·로그아웃·다른 계정 분리·세션 만료·실패 복구를 확인합니다. test:web-auth는 기존 웹 UI에서도 쿠키 로그인과 계정 분리를 검증합니다. 이것은 iOS 기기에서 수행한 테스트는 아닙니다.
+`test:e2e`는 먼저 생성한 `dist-web`의 실제 React Native Web 번들을 Chromium으로 실행합니다. 기본 브라우저 경로는 `/usr/bin/chromium`이며 `PLAYWRIGHT_CHROMIUM_EXECUTABLE`로 바꿀 수 있습니다. 실제 Node API 서버를 임시 데이터 폴더와 임의 포트에 실행하고, 테스트 HTTPS origin의 요청만 그 서버에 전달합니다. 서버의 실제 개발 데이터와 기기의 실제 설정을 건드리지 않습니다. 스와이프·5초 타이머·log 복원·캘린더·덕→Todo·회원가입·로그인·계정별 서버 저장·새로고침 후 로그인 유지·로그아웃·다른 계정 분리·세션 만료·실패 복구를 확인합니다. test:web-auth는 기존 웹 UI에서도 쿠키 로그인과 계정 분리를 검증합니다. 이것은 iOS 기기에서 수행한 테스트는 아닙니다.
 
 검증 산출물은 `dist-ios/`, `dist-web/`에 생성하며 Git에서는 제외합니다. iOS export의 `.hbc`는 Hermes 번들이며 아이폰 설치 파일(`.ipa`)이 아닙니다.
 
@@ -77,4 +77,4 @@ Todo 편집에서 알림 시간을 저장하고 내정보에서 기기 알림을
 
 ## 모션과 변경 기록
 
-공통 모션은 `src/motion.tsx`에서 관리하며 OS/browser의 동작 줄이기 설정을 실시간 반영한다. `npm run test:motion`은 먼저 export한 웹 번들에서 눌림·탭 페이드·빠른 이동 중 초안 유지·4초 완료 접힘·닫기·동작 줄이기·완료 취소를 확인한다. 기능 회귀 캡처는 동작 줄이기 상태로 고정해 중간 프레임이 남지 않게 한다. 변경 시 `docs/change-log.md`를 기록하고 인계 생성기를 실행하면 공개 `/project`의 최근 변경 절에 포함된다.
+공통 모션은 `src/motion.tsx`에서 관리하며 OS/browser의 동작 줄이기 설정을 실시간 반영한다. `npm run test:motion`은 먼저 export한 웹 번들에서 눌림·탭 페이드·빠른 이동 중 초안 유지·5→1초 카운트다운 후 350ms 페이드·접힘·닫기·동작 줄이기·완료 취소를 확인한다. 기능 회귀 캡처는 동작 줄이기 상태로 고정해 중간 프레임이 남지 않게 한다. 변경 시 `docs/change-log.md`를 기록하고 인계 생성기를 실행하면 공개 `/project`의 최근 변경 절에 포함된다.

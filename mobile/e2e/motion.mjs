@@ -22,7 +22,14 @@ try{
  assert.equal(await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).inputValue(),'탭을 바꿔도 유지되는 초안');
  await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();
  await page.evaluate(()=>{window.__collapse=[];const el=document.querySelector('[data-testid="completion-motion-demo-2"]');window.__collapseInitial=el.getBoundingClientRect().height;const observer=new MutationObserver(()=>{if(el.style.height)window.__collapse.push(el.getBoundingClientRect().height);});observer.observe(el,{attributes:true,attributeFilter:['style']});});
- await page.getByRole('checkbox',{name:'팀 회의 자료 준비하기 완료하기',exact:true}).click();await page.waitForTimeout(3000);assert.equal(await page.getByTestId('todo-demo-2').count(),1);
+ await page.getByRole('checkbox',{name:'팀 회의 자료 준비하기 완료하기',exact:true}).click();const counter=page.getByTestId('completion-countdown-demo-2');
+ for(const seconds of [5,4,3,2,1]){
+  await page.getByText(`완료 · ${seconds}초 후 log로 이동`,{exact:true}).waitFor();
+  assert.equal(await page.getByTestId('completion-motion-demo-2').evaluate(el=>Number(getComputedStyle(el).opacity)),1,'countdown stays fully visible through 1');
+  if(seconds===3)await page.screenshot({path:resolve(new URL('../../artifacts/mobile-completion-countdown-fixture.png',import.meta.url).pathname)});
+ }
+ await page.waitForTimeout(400);assert.match(await counter.innerText(),/1초/,'1 remains readable before fade');
+ await page.waitForFunction(()=>{const el=document.querySelector('[data-testid="completion-motion-demo-2"]');return el&&Number(getComputedStyle(el).opacity)<1&&Number(getComputedStyle(el).opacity)>0;});
  await page.getByTestId('todo-demo-2').waitFor({state:'detached'});assert.ok(await page.evaluate(()=>window.__collapse.some(h=>h>0&&h<window.__collapseInitial-1)),'completion row collapses at deadline');
  await page.getByRole('button',{name:'할 일 추가',exact:true}).click();await page.getByRole('textbox',{name:'할 일 제목',exact:true}).waitFor();
  const close=page.getByRole('button',{name:'닫기',exact:true});assert.equal(await close.innerText(),'×');const closeBox=await close.boundingBox();assert.ok(closeBox.width>=44&&closeBox.height>=44);
@@ -31,7 +38,7 @@ try{
  await page.emulateMedia({reducedMotion:'reduce'});await page.waitForTimeout(100);await watchTransition();await page.getByRole('tab',{name:'log',exact:true}).click();await page.waitForTimeout(220);assert.ok(await page.evaluate(()=>window.__motionSamples.every(v=>v===1)),'reduced motion skips page fade');
  const reducedTab=page.getByRole('tab',{name:'log',exact:true});const rb=await reducedTab.boundingBox();await page.mouse.move(rb.x+rb.width/2,rb.y+rb.height/2);await page.mouse.down();await page.waitForTimeout(120);assert.equal(await reducedTab.evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).a),1);await page.mouse.up();
  await page.getByRole('button',{name:'팀 회의 자료 준비하기 되돌리기',exact:true}).click();await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();
- await page.getByRole('checkbox',{name:'팀 회의 자료 준비하기 완료하기',exact:true}).click();await page.waitForTimeout(120);await page.getByRole('button',{name:'팀 회의 자료 준비하기 되돌리기',exact:true}).click();await page.waitForTimeout(4100);assert.equal(await page.getByTestId('todo-demo-2').count(),1,'undo cancels removal');
+ await page.getByRole('checkbox',{name:'팀 회의 자료 준비하기 완료하기',exact:true}).click();await page.waitForTimeout(120);await page.getByRole('button',{name:'팀 회의 자료 준비하기 되돌리기',exact:true}).click();await page.waitForTimeout(5500);assert.equal(await page.getByTestId('todo-demo-2').count(),1,'undo cancels removal');
  // Density regression: eight ordinary items fit on a standard phone, six on a shorter phone.
  const dense=await browser.newPage({viewport:{width:390,height:844}});await dense.emulateMedia({reducedMotion:'reduce'});
  await dense.addInitScript(()=>{const today=new Date().toISOString().slice(0,10);localStorage.setItem('duckduck.mobile.demo.todos.v1',JSON.stringify(Array.from({length:8},(_,i)=>({id:'density-'+i,title:['오늘 할 일 정리','회의 자료 보내기','이메일 답장하기','운동 30분 하기','책 읽기','장보기','일정 확인하기','하루 기록하기'][i],done:false,dueDate:today,category:'일상',createdAt:new Date().toISOString()}))));});
@@ -39,5 +46,5 @@ try{
  const rowSizes=await dense.getByTestId(/^todo-density-/).evaluateAll(items=>items.map(item=>item.getBoundingClientRect().height));assert.ok(rowSizes.every(height=>height>=44&&height<=64),'compact rows preserve touch size');
  let navigation=await dense.getByRole('tablist').boundingBox(),last=await dense.getByTestId('todo-density-7').boundingBox();assert.ok(last.y+last.height<=navigation.y,'eight tasks visible without scrolling');
  await dense.screenshot({path:'/tmp/duckduck-compact-todos.png'});await dense.setViewportSize({width:390,height:667});navigation=await dense.getByRole('tablist').boundingBox();last=await dense.getByTestId('todo-density-5').boundingBox();assert.ok(last.y+last.height<=navigation.y,'six tasks visible on short screen');await dense.close();
- assert.deepEqual(errors,[]);console.log('PASS: drag-to-dismiss and accessible X, button press/release, tab fade, rapid navigation preserves draft, four-second collapse, live reduced-motion preference, undo cancels expiry; compact phone list density');
+ assert.deepEqual(errors,[]);console.log('PASS: drag-to-dismiss and accessible X, button press/release, tab fade, rapid navigation preserves draft, five-to-one countdown then fade and collapse, live reduced-motion preference, undo cancels expiry; compact phone list density');
 }finally{await browser?.close();await new Promise(done=>server.close(done));}

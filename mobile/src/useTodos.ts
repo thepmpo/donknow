@@ -3,7 +3,7 @@ import * as auth from './auth';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COMPLETION_DELAY, serverUrl, visibleTodos } from './domain';
+import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos } from './domain';
 import type { Connection, Draft, Todo } from './domain';
 import { CONNECTION_KEY, createRepository } from './repository';
 import type { Patch, Repository } from './repository';
@@ -121,7 +121,7 @@ export function useTodos() {
       completions.current.set(id, entry); busy.current.add(id);
       setBusyIds([...busy.current]); setCompletionIds([...completions.current.keys()]);
     }
-    entry.done = done; entry.until = done ? Date.now() + COMPLETION_DELAY : null; entry.revision++;
+    entry.done = done; entry.until = done ? Date.now() + COMPLETION_DELAY + COMPLETION_FADE_DURATION : null; entry.revision++;
     const optimistic: Todo = { ...before, done, completedAt: done ? (before.done && before.completedAt ? before.completedAt : new Date().toISOString()) : null };
     setTodos(current => current.map(todo => todo.id === id ? optimistic : todo));
     completionDeadline(id, entry.until); setError('');
@@ -163,7 +163,7 @@ export function useTodos() {
     const saved = await mutate(id, repository => repository.update(id, patch));
     if (!saved) return false;
     setTodos(current => current.map(todo => todo.id === id ? saved : todo));
-    if (patch.done !== undefined) completionDeadline(id, patch.done ? Date.now() + COMPLETION_DELAY : null);
+    if (patch.done !== undefined) completionDeadline(id, patch.done ? Date.now() + COMPLETION_DELAY + COMPLETION_FADE_DURATION : null);
     return true;
   }
   async function remove(id: string): Promise<boolean> {
