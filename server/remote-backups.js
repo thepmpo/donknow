@@ -49,6 +49,7 @@ export async function restoreRemoteBackup({file,env=process.env,remoteFactory}){
   // Recovery restores data, not old login capabilities or delayed external side effects.
   const names=new Set(data.tables.map(table=>table.name));
   for(const name of ['sessions','oauth_states','account_actions','task_sync'])if(names.has(name))db.exec('DELETE FROM '+identifier(name));
+  if(names.has('assistant_actions'))db.exec("UPDATE assistant_actions SET status='restored-cancelled' WHERE status IN ('pending','running')");
   if(names.has('mail_outbox'))db.exec("UPDATE mail_outbox SET payload='',status='restored-cancelled' WHERE status IN ('pending','processing')");
   if(names.has('integrations')){const box=await secretBox('',key.toString('base64'),'');for(const row of db.prepare('SELECT user_id,provider,payload FROM integrations').all()){const payload=box.open(row.payload);if(payload.taskSyncEnabled)db.prepare('UPDATE integrations SET payload=? WHERE user_id=? AND provider=?').run(box.seal({...payload,taskSyncEnabled:false}),row.user_id,row.provider);}}
 

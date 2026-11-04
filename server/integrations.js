@@ -1,15 +1,19 @@
+import {createNaverMail} from './naver-mail.js';
+import {createProviderActions,mailText} from './provider-actions.js';
 import { randomBytes, createHash, randomUUID } from 'node:crypto';
 import { fail } from './secrets.js';
 const definitions = {
-  google: { name: 'Google', prefix: 'GOOGLE', auth: 'https://accounts.google.com/o/oauth2/v2/auth', token: 'https://oauth2.googleapis.com/token', features: ['calendar', 'gmail', 'drive', 'tasks', 'tasksWrite'] },
-  slack: { name: 'Slack', prefix: 'SLACK', auth: 'https://slack.com/oauth/v2/authorize', token: 'https://slack.com/api/oauth.v2.access', features: ['channels', 'messages'] },
-  notion: { name: 'Notion', prefix: 'NOTION', auth: 'https://api.notion.com/v1/oauth/authorize', token: 'https://api.notion.com/v1/oauth/token', features: ['pages'] },
+  google: { name: 'Google', prefix: 'GOOGLE', auth: 'https://accounts.google.com/o/oauth2/v2/auth', token: 'https://oauth2.googleapis.com/token', features: ['calendar', 'gmail', 'drive', 'tasks', 'tasksWrite', 'gmailModify', 'gmailSend', 'calendarWrite', 'driveContent', 'driveWrite'] },
+  slack: { name: 'Slack', prefix: 'SLACK', auth: 'https://slack.com/oauth/v2/authorize', token: 'https://slack.com/api/oauth.v2.access', features: ['channels', 'messages', 'messagesWrite'] },
+  notion: { name: 'Notion', prefix: 'NOTION', auth: 'https://api.notion.com/v1/oauth/authorize', token: 'https://api.notion.com/v1/oauth/token', features: ['pages', 'pagesWrite'] },
 };
-const googleScopes = { tasksWrite: 'https://www.googleapis.com/auth/tasks', tasks: 'https://www.googleapis.com/auth/tasks.readonly', calendar: 'https://www.googleapis.com/auth/calendar.readonly', gmail: 'https://www.googleapis.com/auth/gmail.readonly', drive: 'https://www.googleapis.com/auth/drive.metadata.readonly' };
+const readFeatures = ['calendar','gmail','drive','tasks','channels','messages','pages'];
+const googleScopes = { gmailModify:'https://www.googleapis.com/auth/gmail.modify', gmailSend:'https://www.googleapis.com/auth/gmail.send', calendarWrite:'https://www.googleapis.com/auth/calendar.events', driveContent:'https://www.googleapis.com/auth/drive.readonly', driveWrite:'https://www.googleapis.com/auth/drive.file', tasksWrite: 'https://www.googleapis.com/auth/tasks', tasks: 'https://www.googleapis.com/auth/tasks.readonly', calendar: 'https://www.googleapis.com/auth/calendar.readonly', gmail: 'https://www.googleapis.com/auth/gmail.readonly', drive: 'https://www.googleapis.com/auth/drive.metadata.readonly' };
 const expiresAt = seconds => { if(seconds==null)return null;const value=Number(seconds);if(!Number.isFinite(value)||value<=0||value>31536000)throw fail(502,'서비스 인증 유효시간을 확인하지 못했어요.');return Date.now()+value*1000; };
 const title = (value, fallback = '제목 없음') => (typeof value === 'string' && value.trim() ? value.trim() : fallback).slice(0, 120);
 export function createIntegrations(store, env = process.env, fetcher = fetch) {
   const locks = new Map();
+  const naver=createNaverMail(store,env);
   function settings(provider) {
     const definition = definitions[provider]; if (!definition) throw fail(404, '지원하지 않는 서비스예요.');
     const clientId = env[definition.prefix + '_CLIENT_ID'], clientSecret = env[definition.prefix + '_CLIENT_SECRET'];
@@ -21,10 +25,15 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     let value; try { value = await response.json(); } catch { throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
     if (!response.ok || (slack && value.ok === false)) {
       if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw fail(409, '서비스 연결을 다시 승인해주세요.');
+      if(response.status===412)throw fail(409,'원본이 동시에 바뀌었어요. 새 초안에서 다시 확인해주세요.');
+      if(response.status===403)throw fail(403,'이 작업의 외부 서비스 권한을 확인해주세요.');
+      if(response.status===404)throw fail(404,'외부 서비스에서 대상을 찾지 못했어요.');
+      if(response.status===400)throw fail(400,'외부 서비스가 작업 내용을 거절했어요.');
       if (value.error === 'not_in_channel') throw fail(409, 'Slack 채널에 연결한 앱을 먼저 초대해주세요.');
       if (response.status === 429 || value.error === 'ratelimited') throw fail(429, '외부 서비스 요청이 많아요. 잠시 후 다시 시도해주세요.');
       throw fail(502, '외부 서비스 요청을 완료하지 못했어요. 권한과 연결 설정을 확인해주세요.');
     }
+    if(value&&typeof value==='object'&&response.headers.get('etag'))Object.defineProperty(value,'__etag',{value:response.headers.get('etag')});
     return value;
   }
   async function exchange(provider, parameters) {
@@ -54,14 +63,16 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     start(userId, provider, features, native = false) {
       const config = settings(provider); if (!config.configured) throw fail(503, '관리자가 이 서비스의 OAuth 앱을 등록하면 연결할 수 있어요.');
       if (!store.account(userId)?.emailVerified) throw fail(403, '이메일 인증을 먼저 완료해주세요.');
-      let selected = provider === 'google' ? features : config.features;
+      let selected = provider === 'google' || (Array.isArray(features) && features.length) ? features : config.features.filter(f=>readFeatures.includes(f));
       if (!Array.isArray(selected) || !selected.length || selected.some(feature => !config.features.includes(feature))) throw fail(400, '연결할 기능을 선택해주세요.');
-      if(provider==='google'&&selected.includes('tasksWrite'))selected=[...new Set([...selected,'tasks'])];
+      if(provider==='google'){const dependencies={tasksWrite:'tasks',gmailModify:'gmail',gmailSend:'gmail',calendarWrite:'calendar',driveContent:'drive',driveWrite:'drive'};selected=[...new Set([...selected,...selected.flatMap(f=>dependencies[f]?[dependencies[f]]:[])])];}
+      if(provider==='slack'&&selected.includes('messagesWrite'))selected=[...new Set([...selected,'channels','messages'])];
+      if(provider==='notion'&&selected.includes('pagesWrite'))selected=[...new Set([...selected,'pages'])];
       const verifier = randomBytes(32).toString('base64url');
       const state = store.createOAuthState(userId, provider, { verifier, features: [...new Set(selected)], native });
       const url = new URL(config.auth); url.searchParams.set('client_id', config.clientId); url.searchParams.set('redirect_uri', config.callback); url.searchParams.set('response_type', 'code'); url.searchParams.set('state', state);
       if (provider === 'google') { url.searchParams.set('scope', ['openid','email',...selected.map(feature => googleScopes[feature])].join(' ')); url.searchParams.set('access_type', 'offline'); url.searchParams.set('prompt', 'consent'); url.searchParams.set('code_challenge', createHash('sha256').update(verifier).digest('base64url')); url.searchParams.set('code_challenge_method', 'S256'); }
-      if (provider === 'slack') url.searchParams.set('scope', 'channels:read,channels:history,groups:read,groups:history');
+      if (provider === 'slack') url.searchParams.set('scope', 'channels:read,channels:history,groups:read,groups:history'+(selected.includes('messagesWrite')?',chat:write':''));
       if (provider === 'notion') url.searchParams.set('owner', 'user');
       return { url: url.toString() };
     },
@@ -77,7 +88,8 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(provider==='google'){const profile=await providerRequest('https://openidconnect.googleapis.com/v1/userinfo',{headers:{Authorization:'Bearer '+value.access_token}});if(typeof profile.sub!=='string')throw fail(502,'Google 계정을 확인하지 못했어요.');accountId=profile.sub;label=typeof profile.email==='string'?profile.email:'Google 계정';}
       else if(provider==='slack'){accountId=value.team?.id;label=title(value.team?.name,'Slack 워크스페이스');}
       else{accountId=value.workspace_id;label=title(value.workspace_name,'Notion 워크스페이스');}
-      const features = provider === 'google' && typeof value.scope === 'string' ? state.features.filter(feature => (value.scope.split(' ').includes(googleScopes[feature]) || (feature==='tasks' && value.scope.split(' ').includes(googleScopes.tasksWrite)))) : state.features;
+      const features = provider === 'google' && typeof value.scope === 'string' ? state.features.filter(feature => {const scopes=value.scope.split(' ');return scopes.includes(googleScopes[feature])||(feature==='tasks'&&scopes.includes(googleScopes.tasksWrite))||(feature==='gmail'&&scopes.includes(googleScopes.gmailModify))||(feature==='calendar'&&scopes.includes(googleScopes.calendarWrite))||(feature==='drive'&&scopes.includes(googleScopes.driveContent));}) : provider==='google'?state.features.filter(f=>readFeatures.includes(f)):state.features;
+      if(provider==='slack'&&(typeof value.scope!=='string'||!value.scope.split(',').includes('chat:write'))){const i=features.indexOf('messagesWrite');if(i>=0)features.splice(i,1);}
       if (!features.length) throw fail(403, '선택한 정보에 대한 읽기 권한이 승인되지 않았어요.');
       const connectionId=accountId && previous?.accountId===accountId ? previous.connectionId : randomUUID();
       store.clearResourceCache(state.userId,provider);
@@ -87,7 +99,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     async resources(userId, provider, feature, channel, cursor, taskStatus = 'incomplete', month) {
       if (!['incomplete', 'completed'].includes(taskStatus)) throw fail(400, '조회할 완료 상태를 확인해주세요.');
       if (cursor && (typeof cursor !== 'string' || cursor.length > 3000)) throw fail(400, '페이지 정보를 확인해주세요.');
-      const config = settings(provider); if (feature === 'tasksWrite' || !config.features.includes(feature)) throw fail(400, '지원하지 않는 자료 종류예요.');
+      const config = settings(provider); if (!readFeatures.includes(feature) || !config.features.includes(feature)) throw fail(400, '지원하지 않는 자료 종류예요.');
       const record = await token(userId, provider); if (!record.features.includes(feature)) throw fail(403, '이 기능의 읽기 권한을 추가로 승인해주세요.');
       const headers = { Authorization: 'Bearer ' + record.accessToken }; let items = [], nextCursor = null;
       if (provider === 'google' && feature === 'calendar') {
@@ -122,7 +134,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (provider === 'slack' && feature === 'messages') {
         if (typeof channel !== 'string' || !/^[CG][A-Z0-9]{8,30}$/.test(channel)) throw fail(400, 'Slack 채널을 선택해주세요.');
         const value = await providerRequest('https://slack.com/api/conversations.history?' + new URLSearchParams({ channel, limit: '50', ...(cursor ? { cursor } : {}) }), { headers }, true);
-        items = (value.messages ?? []).filter(item => typeof item.text === 'string' && item.text.trim()).map(item => ({ id: `message:${channel}:${item.ts}`, title: title(item.text), dueDate: null, kind: 'message' })); nextCursor = value.response_metadata?.next_cursor || null;
+        items = (value.messages ?? []).filter(item => typeof item.text === 'string' && item.text.trim()).map(item => ({ id: `message:${channel}:${item.ts}`, title: title(item.text), text:item.text.slice(0,8000), dueDate: null, kind: 'message' })); nextCursor = value.response_metadata?.next_cursor || null;
       }
       if (provider === 'notion') {
         const value = await providerRequest('https://api.notion.com/v1/search', { method: 'POST', headers: { ...headers, 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' }, body: JSON.stringify({ page_size: 50, ...(cursor ? { start_cursor: cursor } : {}), filter: { property: 'object', value: 'page' }, sort: { direction: 'descending', timestamp: 'last_edited_time' } }) });
@@ -132,6 +144,17 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(feature!=='channels' && !(feature==='tasks'&&!channel))items=items.map(item=>({...item,id:(record.connectionId??'legacy')+':'+item.id}));
       if (feature !== 'channels' && !(feature === 'tasks' && !channel)) store.cacheResources(userId, provider, items);
       return { items, hasMore: !!nextCursor, nextCursor, limit: feature === 'gmail' ? 20 : 50 };
+    },
+    naver,
+    async inspect(user,operation,args){return operation.startsWith('naver.')?naver.inspect(user,operation,args):createProviderActions({store,token,request:providerRequest}).inspect(user,operation,args);},
+    async execute(user,operation,args,preview,actionId){return operation.startsWith('naver.')?naver.execute(user,operation,args,preview,actionId):createProviderActions({store,token,request:providerRequest}).execute(user,operation,args,preview,actionId);},
+    async readSource(userId,provider,id) {
+      const record=await token(userId,provider);const prefix=(record.connectionId??'legacy')+':';if(!id.startsWith(prefix))throw fail(409,'연결한 계정이 바뀌었어요.');const source=id.slice(prefix.length);const headers={Authorization:'Bearer '+record.accessToken};let result;
+      if(provider==='google'&&source.startsWith('gmail:')&&record.features.includes('gmail')){const v=await providerRequest('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encodeURIComponent(source.slice(6))+'?format=full',{headers});result={text:mailText(v),title:v.payload?.headers?.find(h=>h.name.toLowerCase()==='subject')?.value??'메일',id:source.slice(6)};}
+      else if(provider==='google'&&source.startsWith('drive:')&&record.features.includes('driveContent')){const file=await providerRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(source.slice(6))+'?fields=id,name,description,mimeType',{headers});let text=file.description??'';if(['text/plain','application/vnd.google-apps.document'].includes(file.mimeType)){const path=file.mimeType==='text/plain'?'/'+encodeURIComponent(source.slice(6))+'?alt=media':'/'+encodeURIComponent(source.slice(6))+'/export?mimeType=text%2Fplain';const response=await fetcher('https://www.googleapis.com/drive/v3/files'+path,{headers,signal:AbortSignal.timeout(10000)});if(!response.ok)throw fail(502,'파일 본문을 읽지 못했어요.');const reader=response.body.getReader();const chunks=[];let size=0;try{while(size<32000){const part=await reader.read();if(part.done)break;chunks.push(Buffer.from(part.value).subarray(0,32000-size));size+=part.value.length;}}finally{await reader.cancel();}text=Buffer.concat(chunks).toString('utf8');}result={id:source.slice(6),title:file.name,text:text.slice(0,8000),partial:true,notice:'일반 텍스트·Google 문서는 본문 일부, 다른 파일은 설명만 조회해요.'};}
+      else if(provider==='notion'&&source.startsWith('page:')&&record.features.includes('pages')){const v=await providerRequest('https://api.notion.com/v1/blocks/'+encodeURIComponent(source.slice(5))+'/children?page_size=50',{headers:{...headers,'Notion-Version':'2025-09-03'}});result={id:source.slice(5),text:(v.results??[]).map(b=>(b[b.type]?.rich_text??[]).map(t=>t.plain_text??t.text?.content??'').join('')).join('\n').slice(0,8000),partial:!!v.has_more};}
+      else throw fail(400,'이 자료의 상세 읽기는 지원되지 않거나 추가 권한이 필요해요.');
+      if(store.connection(userId,provider)?.connectionId!==record.connectionId)throw fail(409,'연결한 계정이 바뀌었어요.');return result;
     },
     async googleTask(userId,todo,desired,guard=()=>true) {
       const record=await token(userId,'google');
@@ -178,6 +201,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     },
     import(userId, provider, ids) { settings(provider); if (!store.connection(userId, provider)) throw fail(409, '서비스를 먼저 연결해주세요.'); if (!Array.isArray(ids) || !ids.length || ids.length > 20 || ids.some(id => typeof id !== 'string' || id.length > 250)) throw fail(400, '최대 20개의 자료를 선택해주세요.'); return store.importResources(userId, provider, [...new Set(ids)]); },
     async disconnect(userId, provider) {
+      if(provider==='naver')return naver.disconnect(userId);
       const record = store.connection(userId, provider); if (!record) return { revoked: true };
       const config = settings(provider); let revoked = false;
       try {

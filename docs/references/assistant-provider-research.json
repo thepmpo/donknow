@@ -1,0 +1,152 @@
+{
+  "checkedAt": "2026-11-04",
+  "note": "공식 Google API discovery 정의. 실계정 호출 검증이 아님.",
+  "services": [
+    {
+      "service": "gmail",
+      "source": "https://raw.githubusercontent.com/googleapis/google-api-nodejs-client/main/discovery/gmail-v1.json",
+      "methods": {
+        "modify": {
+          "description": "Modifies the labels and the Classification Label values on the specified message. For administrators modifying message for users in their organization, requests require authorization with a [service account](https://developers.google.com/identity/protocols/OAuth2ServiceAccount) that has [domain-wide delegation authority](https://developers.google.com/identity/protocols/OAuth2ServiceAccount#delegatingauthority) to impersonate users with the `https://www.googleapis.com/auth/gmail.modify.restricted` scope.",
+          "httpMethod": "POST",
+          "path": "gmail/v1/users/{userId}/messages/{id}/modify",
+          "scopes": [
+            "https://mail.google.com/",
+            "https://www.googleapis.com/auth/gmail.modify"
+          ]
+        },
+        "send": {
+          "description": "Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. For more information, see [Create and send email messages](https://developers.google.com/workspace/gmail/api/guides/sending).",
+          "httpMethod": "POST",
+          "path": "gmail/v1/users/{userId}/messages/send",
+          "scopes": [
+            "https://mail.google.com/",
+            "https://www.googleapis.com/auth/gmail.addons.current.action.compose",
+            "https://www.googleapis.com/auth/gmail.compose",
+            "https://www.googleapis.com/auth/gmail.modify",
+            "https://www.googleapis.com/auth/gmail.send"
+          ]
+        }
+      }
+    },
+    {
+      "service": "calendar",
+      "source": "https://raw.githubusercontent.com/googleapis/google-api-nodejs-client/main/discovery/calendar-v3.json",
+      "methods": {
+        "insert": {
+          "description": "Creates an event.",
+          "httpMethod": "POST",
+          "path": "calendars/{calendarId}/events",
+          "scopes": [
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.app.created",
+            "https://www.googleapis.com/auth/calendar.events",
+            "https://www.googleapis.com/auth/calendar.events.owned"
+          ]
+        },
+        "patch": {
+          "description": "Updates an event. This method supports patch semantics.",
+          "httpMethod": "PATCH",
+          "path": "calendars/{calendarId}/events/{eventId}",
+          "scopes": [
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.app.created",
+            "https://www.googleapis.com/auth/calendar.events",
+            "https://www.googleapis.com/auth/calendar.events.owned"
+          ]
+        }
+      }
+    },
+    {
+      "service": "drive",
+      "source": "https://raw.githubusercontent.com/googleapis/google-api-nodejs-client/main/discovery/drive-v3.json",
+      "methods": {
+        "create": {
+          "description": " Creates a file. For more information, see [Create and manage files](https://developers.google.com/workspace/drive/api/guides/create-file). This method supports an */upload* URI and accepts uploaded media with the following characteristics: - *Maximum file size:* 5,120 GB - *Accepted Media MIME types:* `*/*` (Specify a valid MIME type, rather than the literal `*/*` value. The literal `*/*` is only used to indicate that any valid MIME type can be uploaded. For more information, see [Google Workspace and Google Drive supported MIME types](https://developers.google.com/workspace/drive/api/guides/mime-types).) For more information on uploading files, see [Upload file data](https://developers.google.com/workspace/drive/api/guides/manage-uploads). Apps creating shortcuts with the `create` method must specify the MIME type `application/vnd.google-apps.shortcut`. Apps should specify a file extension in the `name` property when inserting files with the API. For example, an operation to insert a JPEG file should specify something like `\"name\": \"cat.jpg\"` in the metadata. Subsequent `GET` requests include the read-only `fileExtension` property populated with the extension originally specified in the `name` property. When a Google Drive user requests to download a file, or when the file is downloaded through the sync client, Drive builds a full filename (with extension) based on the name. In cases where the extension is missing, Drive attempts to determine the extension based on the file's MIME type.",
+          "httpMethod": "POST",
+          "path": "files",
+          "scopes": [
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/drive.appdata",
+            "https://www.googleapis.com/auth/drive.file"
+          ]
+        },
+        "update": {
+          "description": " Updates a file's metadata, content, or both. When calling this method, only populate fields in the request that you want to modify. When updating fields, some fields might be changed automatically, such as `modifiedDate`. This method supports patch semantics. This method supports an */upload* URI and accepts uploaded media with the following characteristics: - *Maximum file size:* 5,120 GB - *Accepted Media MIME types:* `*/*` (Specify a valid MIME type, rather than the literal `*/*` value. The literal `*/*` is only used to indicate that any valid MIME type can be uploaded. For more information, see [Google Workspace and Google Drive supported MIME types](https://developers.google.com/workspace/drive/api/guides/mime-types).) For more information on uploading files, see [Upload file data](https://developers.google.com/workspace/drive/api/guides/manage-uploads).",
+          "httpMethod": "PATCH",
+          "path": "files/{fileId}",
+          "scopes": [
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/drive.appdata",
+            "https://www.googleapis.com/auth/drive.file",
+            "https://www.googleapis.com/auth/drive.metadata",
+            "https://www.googleapis.com/auth/drive.scripts"
+          ]
+        }
+      }
+    },
+    {
+      "service": "tasks",
+      "source": "https://raw.githubusercontent.com/googleapis/google-api-nodejs-client/main/discovery/tasks-v1.json",
+      "methods": {
+        "insert": {
+          "description": "Creates a new task on the specified task list. Tasks assigned from Docs or Chat Spaces cannot be inserted from Tasks Public API; they can only be created by assigning them from Docs or Chat Spaces. A user can have up to 20,000 non-hidden tasks per list and up to 100,000 tasks in total at a time.",
+          "httpMethod": "POST",
+          "path": "tasks/v1/lists/{tasklist}/tasks",
+          "scopes": [
+            "https://www.googleapis.com/auth/tasks"
+          ]
+        },
+        "patch": {
+          "description": "Updates the specified task. This method supports patch semantics.",
+          "httpMethod": "PATCH",
+          "path": "tasks/v1/lists/{tasklist}/tasks/{task}",
+          "scopes": [
+            "https://www.googleapis.com/auth/tasks"
+          ]
+        }
+      }
+    },
+    {
+      "service": "slack",
+      "source": "https://raw.githubusercontent.com/slackapi/node-slack-sdk/main/packages/web-api/src/methods.ts",
+      "symbolsFound": {
+        "chat.postMessage": true,
+        "chat.update": true,
+        "conversations.history": true
+      }
+    },
+    {
+      "service": "notion",
+      "module": "pages",
+      "source": "https://raw.githubusercontent.com/makenotion/notion-sdk-js/main/src/api-endpoints/pages.ts",
+      "symbolsFound": {
+        "CreatePage": true,
+        "UpdatePage": true,
+        "createPage": true,
+        "updatePage": true
+      }
+    },
+    {
+      "service": "notion",
+      "module": "blocks",
+      "source": "https://raw.githubusercontent.com/makenotion/notion-sdk-js/main/src/api-endpoints/blocks.ts",
+      "symbolsFound": {
+        "AppendBlockChildren": true,
+        "ListBlockChildren": true,
+        "appendBlockChildren": true,
+        "listBlockChildren": true
+      }
+    }
+  ],
+  "blockedSources": [
+    {
+      "url": "https://pickle.com/",
+      "reason": "환경 네트워크 정책 403. 본문 미열람; 구체 기능을 추정하지 않음."
+    },
+    {
+      "url": "https://help.naver.com/service/5632",
+      "reason": "환경 네트워크 정책 403. 현재 계정별 IMAP/SMTP 사용 조건은 실계정 확인 필요."
+    }
+  ]
+}

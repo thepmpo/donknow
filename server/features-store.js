@@ -1,3 +1,4 @@
+import { actionStore } from './action-store.js';
 import { commentsStore } from './comments-store.js';
 import { taskSyncStore } from './sync-store.js';
 import { randomInt, randomBytes, randomUUID, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
@@ -33,6 +34,7 @@ export async function featureStore(db, directory, env = process.env) {
   }
   return {
     ...taskSyncStore(db),
+    ...actionStore(db,box),
     ...commentsStore(db),
     account, findAccountId: findId,
     queueAccountMail(userId, purpose) {

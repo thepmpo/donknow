@@ -29,6 +29,7 @@ export async function verifyRemoteBackup({ file, env = process.env }) {
     for (const name of ['users', 'todos', 'crypto_metadata', 'integrations']) if (!names.has(name)) throw new Error('Required application table is missing');
     for (const name of ['sessions', 'oauth_states', 'account_actions', 'task_sync']) if (names.has(name) && count(name)) throw new Error('Restored database contains active capabilities');
     if (names.has('mail_outbox') && db.prepare("SELECT 1 FROM mail_outbox WHERE status IN ('pending','processing') LIMIT 1").get()) throw new Error('Restored database contains pending mail');
+    if(names.has('assistant_actions')&&db.prepare("SELECT 1 FROM assistant_actions WHERE status IN ('pending','running') LIMIT 1").get())throw new Error('Restored database contains actionable assistant drafts');
     const box = await secretBox('', configuredTokenKey(target).toString('base64'), '');
     for (const row of db.prepare('SELECT payload FROM integrations').all()) if (box.open(row.payload).taskSyncEnabled) throw new Error('Restored external synchronization must be disabled');
     for (const row of db.prepare('SELECT id,data FROM todos').all()) {

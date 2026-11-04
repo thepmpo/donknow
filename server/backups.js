@@ -69,7 +69,7 @@ export async function restoreBackup({ file, targetDirectory, tokenKeyFile }) {
     if (check.prepare('PRAGMA integrity_check').get().integrity_check !== 'ok' || !check.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='users'").get()) throw new Error('Backup database is invalid'); } finally { check.close(); }
   // Never replace a live directory or a pre-existing database.
   await mkdir(targetDirectory, { recursive: false, mode: 0o700 });
-  try { await copyFile(file, join(targetDirectory, 'duckduck.sqlite'), constants.COPYFILE_EXCL); await chmod(join(targetDirectory, 'duckduck.sqlite'), 0o600); await writeFile(join(targetDirectory, '.token-key'), key, { flag: 'wx', mode: 0o600 }); }
+  try { await copyFile(file, join(targetDirectory, 'duckduck.sqlite'), constants.COPYFILE_EXCL); await chmod(join(targetDirectory, 'duckduck.sqlite'), 0o600); const restored=new DatabaseSync(join(targetDirectory,'duckduck.sqlite'));try{if(restored.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='assistant_actions'").get())restored.exec("UPDATE assistant_actions SET status='restored-cancelled' WHERE status IN ('pending','running')");}finally{restored.close();} await writeFile(join(targetDirectory, '.token-key'), key, { flag: 'wx', mode: 0o600 }); }
   catch (error) { throw new Error('Restore did not complete; inspect the new target directory before retrying', { cause: error }); }
   return { restored: true };
 }

@@ -1,7 +1,8 @@
+import {AssistantSheet} from './AssistantSheet';
 import {NotesField} from '../NotesField';
 import { DraggableSheet, MotionView, useReducedMotion } from '../motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from '../motion';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { RecordSearchSheet } from './RecordSearchSheet';
 import type { Todo } from '../domain';
@@ -14,6 +15,10 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
   const reduced = useReducedMotion();
   const searchSequence=useRef(0);
   const [searching, setSearching] = useState<number|null>(null);
+  const [assistantOpen,setAssistantOpen]=useState(false);
+  const [assistantMessage,setAssistantMessage]=useState('');
+  const [assistantEnabled,setAssistantEnabled]=useState(false);
+  useEffect(()=>{let active=true;setAssistantEnabled(false);if(store.user&&store.connection?.mode==='cloud')void store.featureRequest('/api/assistant/status').then(value=>{if(active)setAssistantEnabled(!!(value as {enabled?:boolean}).enabled);}).catch(()=>{});return()=>{active=false;};},[store.user?.id,store.connection?.mode]);
   const [input, setInput] = useState('');
   const [cards, setCards] = useState<Card[]>([]);
   const [status, setStatus] = useState('');
@@ -32,6 +37,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
   const savingIds = useRef(new Set<number>());
   function send() {
     const title = input.trim(); if (!title) return;
+    if(assistantEnabled){setAssistantMessage(title);setAssistantOpen(true);setInput('');return;}
     scrollOnNextContent.current=true;
     setCards(current => [...current, { id: Date.now() + Math.random(), title, dueDate: dateKey(new Date()), notes: '', saved: false, saving: false }]); setInput(''); setStatus('');
   }
@@ -50,7 +56,8 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
       {cards.map(card => <MotionView key={card.id} style={styles.card}><View style={styles.cardHeading}><Text style={styles.cardLabel}>{card.saved ? 'Todo에 담았어요' : '할 일로 정리하기'}</Text>{!card.saved && <Pressable accessibilityRole="button" accessibilityLabel="초안 버리기" disabled={card.saving} onPress={() => { setCards(current => current.filter(item => item.id !== card.id)); setStatus(''); }} style={styles.dismiss}><Text style={styles.cardLabel}>버리기</Text></Pressable>}</View>{card.saved ? <Text style={styles.cardTitle}>{card.title}</Text> : <TextInput accessibilityLabel="정리한 할 일" value={card.title} onChangeText={title => change(card.id, { title })} editable={!card.saving} maxLength={120} multiline style={styles.draftInput} placeholder="할 일을 적어주세요" />}{!card.saved && <DateField value={card.dueDate} onChange={dueDate => { if (!card.saving) change(card.id, { dueDate }); }} />}{!card.saved&&<NotesField label="초안 메모" value={card.notes} onChange={notes=>change(card.id,{notes})} disabled={card.saving}/>}{card.saved&&!!card.notes&&<Text style={styles.status}>{card.notes}</Text>}<Button title={card.saved ? '추가 완료 ✓' : card.saving ? '추가 중…' : 'Todo 리스트에 추가'} loading={card.saving} onPress={() => { void transfer(card); }} disabled={card.saved || card.saving || !card.title.trim() || store.busyIds.includes('create')} />{card.saved && <Button title="Todo 보기 →" quiet onPress={onOpenTodos} />}</MotionView>)}
     </ScrollView>}
     {!!status && <Text accessibilityLiveRegion="polite" style={styles.status}>{status}</Text>}
-    <View style={styles.shortcuts}><Pressable accessibilityRole="button" accessibilityLabel="할 일과 기록 찾기" onPress={() => setSearching(++searchSequence.current)} style={styles.shortcut}><Text style={styles.shortcutText}>기록 찾기</Text></Pressable><Text style={styles.cardLabel}>·</Text><Pressable accessibilityRole="button" accessibilityLabel="카카오톡 대화 붙여넣기" onPress={() => setPasting(true)} style={styles.shortcut}><Text style={styles.shortcutText}>대화 붙여넣기</Text></Pressable></View>
+    <View style={styles.shortcuts}><Pressable accessibilityRole="button" accessibilityLabel="덕 AI 비서 열기" onPress={()=>{setAssistantMessage('');setAssistantOpen(true);}} style={styles.shortcut}><Text style={styles.shortcutText}>비서</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="할 일과 기록 찾기" onPress={() => setSearching(++searchSequence.current)} style={styles.shortcut}><Text style={styles.shortcutText}>기록 찾기</Text></Pressable><Text style={styles.cardLabel}>·</Text><Pressable accessibilityRole="button" accessibilityLabel="카카오톡 대화 붙여넣기" onPress={() => setPasting(true)} style={styles.shortcut}><Text style={styles.shortcutText}>대화 붙여넣기</Text></Pressable></View>
+    {assistantOpen&&<AssistantSheet initialMessage={assistantMessage} store={store} onClose={()=>setAssistantOpen(false)} onOpenTodos={onOpenTodos}/>}
     {searching && <RecordSearchSheet key={searching} store={store} onClose={() => setSearching(current=>current===searching?null:current)} onOpenTodo={onOpenTodo} />}
     <Modal visible={pasting} transparent animationType="slide" onRequestClose={closePaste}>
       <KeyboardAvoidingView style={styles.backdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}><DraggableSheet visible={pasting} style={styles.sheet} onDismiss={closePaste}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 14 }}>
@@ -63,7 +70,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
       </ScrollView></DraggableSheet></KeyboardAvoidingView>
     </Modal>
     <View style={styles.composer}><TextInput accessibilityLabel="덕에게 이야기하기" value={input} onChangeText={setInput} maxLength={120} placeholder="덕에게 이야기하기" placeholderTextColor={colors.muted} style={styles.input} onSubmitEditing={send} returnKeyType="send" /><Pressable accessibilityRole="button" accessibilityLabel="덕에게 보내기" disabled={!input.trim()} onPress={send} style={[styles.send, !input.trim() && { opacity: .4 }]}><Text style={styles.sendText}>↑</Text></Pressable></View>
-    <Text style={styles.note}>지금은 직접 적고 확인해요 · AI 대화는 준비 중이에요.</Text>
+    <Text style={styles.note}>직접 적어 Todo로 담거나, 비서에서 연결한 자료로 요청해보세요.</Text>
   </View>;
 }
 const styles = StyleSheet.create({

@@ -31,7 +31,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
-**AI API 연결은 보류, 아이폰 App Store 출시는 진행 중**입니다. 첫 서명 빌드의 App Store Connect 업로드는 사용자 확인까지 마쳤고, 이후 디자인·모션을 수정했으므로 새 빌드가 필요합니다. 외부 AI가 연결됐다고 표현하지 않으며 AI가 대화를 이해/자동 추출/기록 추천하는 척하지 않습니다. 현재 덕은 입력·붙여넣기·초안 편집·수동 확인·기록 검색을 제공합니다.
+**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 기존 기능 빌드의 Apple 업로드는 사용자 확인했고 이번 확장은 별도 서버 배포와 새 iOS 빌드가 필요합니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
 ## 2. 사용자가 정한 IA와 동작
 
@@ -57,16 +57,18 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | Google Tasks 읽기 | 실사용 확인 | 사용자가 미완료 가져오기·완료 조회·외부 검색 확인 |
 | 선택적 완료 동기화 | 실사용 확인 | 사용자 계정에서 켜기·완료 전송·미완료 복원 전송 성공. 다른 사용자는 기본 꺼짐 |
 | Google 캘린더 | 구현·기본 실사용 확인 | 사용자가 API/권한 설정 후 기본 동작 확인. 일반 사용자 OAuth 검증은 별개 |
-| Gmail·Drive | 구현·기본 실사용 확인 | 사용자가 기본 동작 확인. Gmail 본문/Drive 파일 본문 전체 읽기는 하지 않음 |
-| Notion | 실사용 확인 | 연결·페이지 조회·Todo 가져오기 사용자 확인 |
-| Slack | 구현, 실제 연결 보류 | 사용자 후속 요청 전 활성화하지 않음 |
+| Gmail·Drive | 기존 읽기 실사용 확인, 새 상세 읽기·제한 쓰기 구현 | 메일 본문 일부·읽음·답장·발송, 텍스트 파일 생성/수정. 새 권한·서버 배포와 실계정 확인 필요 |
+| Notion | 기존 읽기 실사용 확인, 쓰기 구현·모의 검증 | 하위 페이지 생성·내용 추가·제목 수정. 콘텐츠 capability/대상 페이지 접근과 재승인 필요 |
+| Slack | 읽기·전송·자기 메시지 수정 구현 | 보류 해제. chat:write 승인과 실계정 검증 필요 |
 | 아이폰 미리 알림 | 읽기·가져오기·완료 참고·수동 양방향 상태 맞추기 구현 | 실제 아이폰 권한/ID/상태 확인 필요 |
 | 기기 알림 | 미래 시간·권한·예약·변경·취소 구현 | 실제 아이폰 잠금/재실행/권한 검증 필요 |
 | 개인 데이터 내보내기 | 웹 다운로드·네이티브 파일 공유 구현 | 웹 실동작 테스트, 네이티브 공유는 기기 확인 필요 |
 | 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 정기 schedule 성공은 아직 미확인 |
 | iPhone 출시 | 첫 IPA 생성·App Store Connect 업로드 성공 | build 37a454bf-afdf-49aa-ab21-70fec36ba28a / 소스 400e9d5. TestFlight 설치·심사·공개는 미확인 |
 | 최신 디자인·모션 | 구현·웹/타입/iOS JS 검증 통과 | source 5d096f2 이후. Render 최신 배포 및 새 iOS 서명 빌드 반영 확인 필요 |
-| AI·범용 붙여넣기 추출 | 보류/백로그 | 아직 AI 연결·자동 추출을 구현하지 않음 |
+| AI 비서 | 동의 기반 자료 분석·근거·작업 제안 구현 | AI 키/모델/명시적 활성화 필요. 모의 응답 검증과 실제 모델 호출은 구분 |
+| 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
+| 범용 붙여넣기 자동 추출 | 별도 백로그 | 기존 수동 붙여넣기 유지 |
 
 **GitHub에 저장된 최신 기능이 Render에 자동으로 배포되지는 않습니다.** Render의 자동 배포는 꺼져 있습니다. 이번 확장 기능은 최신 커밋으로 수동 배포한 후 실제 화면에서 확인해야 합니다. 에이전트의 공개 사이트 직접 접속은 환경 네트워크 제한으로 막힌 적이 있으므로 사용자 확인과 자동 검증을 혼동하지 않습니다.
 
@@ -117,7 +119,10 @@ React Native/Expo SDK 58 + TypeScript로 실제 네이티브 컴포넌트를 사
 | server.js | HTTP·보안·세션·라우팅·Render 시작 |
 | server/database.js, store.js | SQLite/Turso 선택, 사용자별 저장 |
 | server/features-store.js | 인증 메일 큐·OAuth·암호화 연결·중복 가져오기 |
-| server/integrations.js | Google/Slack/Notion 어댑터·권한·외부 읽기/조건부 Tasks 변경 |
+| server/integrations.js | Google/Slack/Notion 어댑터·선택 권한·자료 읽기·외부 작업 연결 |
+| server/assistant.js, provider-actions.js, action-store.js | AI 분석·고정 작업 카탈로그·암호화 미리보기·확인 후 한 번 실행 |
+| server/naver-mail.js | 기본 비활성화된 고정 TLS IMAP/SMTP 어댑터 |
+| mobile/src/screens/AssistantSheet.tsx | 자료/동의 선택·대화·작업 초안/미리보기·실행 기록 |
 | server/sync-store.js, task-sync.js | 영속 전송 대기열·최신 revision·재시도·5개씩 상태 읽기 |
 | server/secrets.js | AES-GCM 암호화·HMAC·안정적인 키 유도 |
 | server/backups.js | 로컬 SQLite의 검증/서명 백업·새 폴더 복원 |
@@ -151,6 +156,8 @@ React Native/Expo SDK 58 + TypeScript로 실제 네이티브 컴포넌트를 사
 | GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET | 웹 OAuth ID/보안 비밀 |
 | SLACK_CLIENT_ID / SLACK_CLIENT_SECRET | Slack OAuth |
 | NOTION_CLIENT_ID / NOTION_CLIENT_SECRET | Notion OAuth |
+| AI_ENABLED / OPENAI_API_KEY / OPENAI_MODEL | 서버 AI 명시적 활성화·비밀 키·모델 ID, 기본 비활성화 |
+| NAVER_MAIL_ENABLED | 실계정 조건 확인 후 네이버 IMAP/SMTP를 켜는 서버 플래그 |
 | NOTION_BASIC_AUTH | 프록시용 불투명 Basic 값이 필요한 환경의 선택지 |
 | PUBLIC_ORIGIN | 명시적 HTTPS 원본. 없으면 Render 주소를 읽음 |
 | RENDER_EXTERNAL_URL | Render가 제공하는 공개 주소 |
@@ -199,7 +206,7 @@ GitHub 자동 백업은 현재 비밀 설정과 활성화가 필요한 준비 �
 
 ## 11. 검증 결과와 재현
 
-최근 메모 확장에서 **서버/단위 테스트 43개**, TypeScript/문법, 실제 Expo 웹 기능·모션 테스트와 iOS JS 번들이 통과했습니다. 메모의 저장·소유권·백업 보존과 글머리표·드래그/X 닫기도 검증했습니다. 운영 이미지의 CA/TLS·서명 백업/복원·재시작은 앞선 변경에서 검증한 기록이며 이번에 컨테이너 전체를 다시 빌드한 것은 아닙니다. 실제 iPhone 설치와 OS 동작 검증은 별도입니다. 새 변경 후에는 관련 결과를 재확인합니다.
+최근 비서 확장에서 **서버/단위 테스트 52개**, TypeScript/문법, 실제 Expo 웹 기능·모션 테스트와 iOS JS 번들이 통과했습니다. 메모·소유권·백업 보존·글머리표·드래그/X 닫기와 새 작업 20종의 확인 경계·중복 방지·권한/연결 변경·네이버 어댑터·AI 동의/제안을 검증했습니다. 공급자 모의 검증은 실계정 발송 성공과 다릅니다. 운영 이미지의 CA/TLS·서명 백업/복원·재시작은 앞선 변경에서 검증한 기록이며 이번에 컨테이너 전체를 다시 빌드한 것은 아닙니다. 실제 iPhone 설치와 OS 동작 검증은 별도입니다. 새 변경 후에는 관련 결과를 재확인합니다.
 
 ```sh
 npm ci
@@ -223,9 +230,9 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack과 자동 할 일 추출은 보류이며 iPhone 출시는 진행 중입니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/5초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 범용 붙여넣기 자동 추출은 별도 백로그이며 iPhone 출시는 진행 중입니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/5초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
-다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 현재 업로드된 첫 빌드의 소스는 400e9d5라서 최신 디자인/모션이 포함되지 않았습니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
+다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 정확한 설치 번호는 미확인입니다. 이번 비서 확장은 새 서버 배포와 iOS 빌드가 필요합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 
 실제 작업에는 연결된 GitHub 저장소 소스와 필요한 도구/계정 접근이 추가로 필요합니다. 문서를 읽는 것만으로 코드·계정 권한이 자동 제공되지 않습니다. 읽기/브라우저 도구가 없어 문서를 열지 못하면 HTML 파일 또는 본문을 요청하세요. 로그인 비밀번호·토큰은 채팅으로 요청하지 말고, 계정 인증은 사용자가 해당 서비스의 보안 화면에서 수행하게 하세요. 접근 실패를 서비스 장애로 단정하지 마세요.
 
@@ -239,7 +246,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 4. 반복 구현하지 않는다. 이미 통과한 Google Tasks 읽기 흐름과 세션/저장 보호를 유지한다.
 5. 수정 요청을 요청→결정→변경 파일→검증→배포 상태로 기록한다. 사용자 계정/데이터를 추정하거나 강제로 덮어쓰지 않는다.
 6. 댓글 답글/알림을 자동으로 보내거나 백그라운드 감시를 하고 있다고 말하지 않는다. 사용자 요청이 있을 때 확인하고 대화로 결과를 보고한다.
-7. AI·Slack·범용 붙여넣기 자동 추출의 보류와 무료 우선 조건을 유지한다. 아이폰 출시는 사용자 요청으로 진행 중이다. 도구/계정/하드웨어로 막힌 항목은 정확하게 밝힌다.
+7. AI·Slack 구현 보류 해제와 별도의 키/권한 활성화 상태를 구분한다. 범용 붙여넣기 자동 추출은 별도 백로그이며 무료 우선 조건을 유지한다. 아이폰 출시는 사용자 요청으로 진행 중이다. 도구/계정/하드웨어로 막힌 항목은 정확하게 밝힌다.
 
 ## 13. 외부 HTML에서 댓글로 수정 요청하기
 
@@ -292,7 +299,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 '''
 history = subprocess.check_output(['git','log','--reverse','--format=%h %s'],cwd=ROOT,text=True).strip()
 gallery = []
-labels={'mobile-completion-countdown-fixture':'완료 5→1 카운트다운 · 체험 화면','mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
+labels={'mobile-assistant-action-fixture':'비서 초안 확인과 Todo 실행 · 테스트','mobile-assistant-ai-fixture':'AI 근거·Todo 제안 · 모의 응답','mobile-completion-countdown-fixture':'완료 5→1 카운트다운 · 체험 화면','mobile-todos':'할 일','mobile-notes-fixture':'메모·글머리표·닫기 손잡이','mobile-todo-density-fixture':'한 화면에 8개 · 목록 밀도 확인','mobile-calendar':'캘린더','mobile-duckduck':'덕 첫 화면','mobile-log':'완료 기록','mobile-profile':'내정보','mobile-record-search':'기록 찾기','mobile-duck-draft':'할 일 초안','mobile-auth':'로그인','mobile-services':'서비스 연결','mobile-reminder':'알림 설정','mobile-kakao-paste':'대화 붙여넣기','mobile-kakao-share':'공유','mobile-apple-reminders':'아이폰 미리 알림','mobile-task-sync-fixture':'Google 완료 동기화 · 테스트','mobile-google-tasks-fixture':'Google 가져오기 · 테스트','mobile-completed-reference-fixture':'완료 기록 참고 · 테스트','mobile-external-search-fixture':'외부 기록 검색 · 테스트'}
 for item in manifest:
     name=labels.get(Path(item['path']).stem,Path(item['path']).stem.replace('-',' '))
     gallery += [f"### {name}", f"파일: `{item['path']}`", f"분류: {item['category']} · {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`", f"![{item['path']}]({RAW+item['path']})", '']
@@ -431,7 +438,7 @@ for chunk in chunks[1:]:
     heading,body_part=chunk.split('</h2>',1)
     number=int(re.match(r'<h2 id="section-(\d+)">',heading)[1])+1
     if number==2:
-        body_part='<p class="status-intro">Google·Notion 연결과 백업 복원은 확인했어요. 지금은 최신 디자인·모션을 아이폰에서 확인하고 출시를 준비하는 단계예요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
+        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했으며 키·쓰기 권한·새 서버/아이폰 빌드 확인이 남아 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
     if number==3:
         change_count=[0]
         def fold_change(match):
