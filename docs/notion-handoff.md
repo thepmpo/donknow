@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-05 · 한국 시간 · 기능 코드 b7afa93 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-06 · 한국 시간 · 기능 코드 b7afa93 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -183,6 +183,20 @@
 ### 매일 개발 정리
 
 
+##### 2026-11-06 — 당일 저장된 작업
+
+실제 정리: 02:56 KST. 새 저장 작업 4개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [b7afa93](https://github.com/sjfieni/donknow/commit/b7afa930e6658772a46de0bc104f1c15b8eecd2e) · 11-04 19:22 · Unify page layout and calendar navigation; automate TestFlight builds
+
+- [7e97f7d](https://github.com/sjfieni/donknow/commit/7e97f7df02b71fa47fbff65749cb3595de77f1a5) · 11-04 19:22 · Publish shared design guide and release automation instructions
+
+- [7ed343d](https://github.com/sjfieni/donknow/commit/7ed343d12845c0a86679658ad6f74068957c142f) · 11-05 12:02 · Assess Workspace Studio as an optional future Todo integration
+
+- [b5c7d54](https://github.com/sjfieni/donknow/commit/b5c7d547575512c0eb266875f400c6dac7bb92e0) · 11-05 12:03 · Embed integration research and assistant guides in full handoff
+
+
+
 ##### 2026-11-05 — 당일 저장된 작업
 
 실제 정리: 02:53 KST. 새 저장 작업 3개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -294,10 +308,12 @@ f920d8f Refine calendar gestures, event agenda, glass navigation and input UX
 67df1f8 Update project handoff for calendar and input polish
 b7afa93 Unify page layout and calendar navigation; automate TestFlight builds
 7e97f7d Publish shared design guide and release automation instructions
+6c1a579 docs: daily project update [skip ci]
 7ed343d Assess Workspace Studio as an optional future Todo integration
 50735e9 Include Studio evaluation in project handoff
 b5c7d54 Embed integration research and assistant guides in full handoff
 1e50ab6 Refresh full research appendix
+d1be345 Merge daily documentation update with layout and build automation
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
