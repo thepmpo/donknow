@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-04 · 한국 시간 · 기능 코드 b7afa93 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-05 · 한국 시간 · 기능 코드 b7afa93 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -41,6 +41,14 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-05 — Workspace Studio 적합성 검토
+
+- 사용자 요청으로 핵심 개발을 우선하고 Studio는 이후 선택적 통합 후보로 기록했다. 앱 기능과 자동 빌드 동작은 바꾸지 않았다.
+- 사용자 제공 공식 도움말, 공개 Chat 요약 가이드, JSON Resume 맞춤 단계의 README·manifest·실행 코드를 읽었다. 실제 외부 HTTPS/OAuth/출력 변수 사례는 확인했지만 계정 설치·실행은 하지 않았다.
+- 공식 웹훅·맞춤 단계 문서/발표와 기사 사이트는 네트워크 정책 403으로 미열람이다. 기사를 다수 읽었거나 웹훅 방향·요금제·상용 배포 조건을 확인했다고 주장하지 않는다. AI Studio/Data Studio 자료는 다른 제품이므로 제외했다.
+- 결론은 직접 서비스 연결을 유지하고, 수요가 생기면 Studio 결과→덕 초안→사용자 확인→Todo의 작은 실증을 검토하는 것이다. 평가와 출처는 `docs/workspace-studio-evaluation.md`에 정리했다.
+
 
 #### 2026-11-04 — 공통 디자인 계약과 TestFlight 자동화
 
@@ -273,6 +281,8 @@ aac818e Add consent-based AI assistant and confirmed cross-service actions
 f920d8f Refine calendar gestures, event agenda, glass navigation and input UX
 67df1f8 Update project handoff for calendar and input polish
 b7afa93 Unify page layout and calendar navigation; automate TestFlight builds
+7e97f7d Publish shared design guide and release automation instructions
+7ed343d Assess Workspace Studio as an optional future Todo integration
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -965,6 +975,10 @@ Todo/캘린더 할 일 상세와 덕 초안은 아래에 메모를 쓸 수 있�
 #### 비서에서 Todo와 실행까지 — 2026-11-04
 
 AI·Slack 구현 보류를 해제한다. 목표는 대화로 메일/문서/일정/기존 할 일을 읽고 근거가 붙은 오늘 할 일 카드를 제안해 Todo 목록에 보여주는 것이다. 읽고 답하는 비서에 더해 사용자가 확인한 작업을 실행한다. 실제 쓰기/발송은 제안과 분리해 미리보기에서 승인해야 한다. 오늘 제안은 최근 일부 자료 기준이고 완료 기록은 참고용이다. AI 키나 쓰기 권한 없이 연결됐다고 하지 않는다. 네이버는 별도 IMAP/SMTP 설정 경로이며 기본 비활성화다. 피클 사이트는 사용자 링크를 받았으나 네트워크 차단으로 본문 미열람이다.
+
+#### Workspace Studio 검토 — 2026-11-05
+
+사용자는 덕의 핵심 기능을 먼저 만들고 Workspace Studio 도입은 나중에 검토하기로 했다. 직접 연동을 대체하거나 필수 Google 플로우 설정을 요구하지 않는다. 후보는 기존 업무 자동화 결과를 덕의 Todo 초안으로 받는 선택적 연결이다. 공식 문서/공개 개발 사례의 근거·접근 제한·계정/비용/권한 미확인은 `docs/workspace-studio-evaluation.md`에 기록한다. 실제 커넥터·웹훅을 구현하거나 계정에 설치한 상태는 아니다.
 
 ### 原文 / docs/test-deployment.md
 
