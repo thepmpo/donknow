@@ -325,7 +325,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()
