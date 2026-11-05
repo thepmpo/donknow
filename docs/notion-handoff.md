@@ -283,6 +283,8 @@ f920d8f Refine calendar gestures, event agenda, glass navigation and input UX
 b7afa93 Unify page layout and calendar navigation; automate TestFlight builds
 7e97f7d Publish shared design guide and release automation instructions
 7ed343d Assess Workspace Studio as an optional future Todo integration
+50735e9 Include Studio evaluation in project handoff
+b5c7d54 Embed integration research and assistant guides in full handoff
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -841,6 +843,181 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 原文 / docs/workspace-studio-evaluation.md
+
+### Google Workspace Studio — 덕 도입 검토
+
+조사일: 2026-11-05 (한국 시간). 결론은 **덕의 핵심 기능을 먼저 완성하고, Studio는 선택적 업무 자동화 연결 후보로 보류**한다. 실제 커넥터·웹훅 수신 API·Studio 설치는 이번에 구현하지 않았다.
+
+#### 1. 무엇을 확인했나
+
+공식 도움말은 사용자가 이 대화에 붙여넣은 본문으로 읽었다. 공식 문서/발표 페이지 및 기사 사이트에 직접 접속하면 이 환경의 프록시 정책이 403으로 차단한다. 따라서 관련 기사 여러 개를 읽고 교차 검증했다고 주장하지 않는다. 대신 허용된 공개 GitHub에서 실제 개발 가이드와 manifest/Apps Script 코드를 조사했다. 외부 코드는 실행하거나 계정에 설치하지 않았다.
+
+| 자료 | 실제 열람 | 확인한 내용과 한계 |
+|---|---|---|
+| [Google 공식: 플로우로 서드 파티 서비스에서 작업하기(베타)](https://support.google.com/workspace-studio/answer/16658279) | 사용자 제공 본문 | 서비스 연결·권한 승인·Marketplace·관리자 제한·서비스별 구독 필요 가능성·테스트 실행의 실제 쓰기. 커넥터를 외부 앱에 제공하는 SDK/API 설명은 없음 |
+| [Google Chat Unread Messages Brief 개발 가이드](https://github.com/meteatamel/google-chat-unread-brief) | README 전체 | 일정 기반/사용자 요청 기반 Chat 요약을 Apps Script 맞춤 단계와 Studio로 구성하는 예시. 설치·테스트 배포·OAuth·플로우 설정 절차가 필요. 작성자의 실사용 설명이며 우리가 실행 검증한 것이 아님 |
+| [JSON Resume Connect 개발 가이드](https://github.com/ismailkattakath/jsonresume-connect) | README·manifest·주요 실행 코드 | Studio 맞춤 단계에서 외부 서비스 OAuth 연결, HTTPS 요청, 스키마 확인, Drive 문서 생성과 출력 변수 반환을 구현한 독립 프로젝트. Google 공식 보증 제품이 아니며 작성자의 실측 수치는 공식 사양으로 취급하지 않음 |
+| [JSON Resume Connect manifest](https://github.com/ismailkattakath/jsonresume-connect/blob/main/src/appsscript.json) | 코드 확인 | addOns.flows, script.external_request, drive.file, 외부 호출 허용 목록을 실제로 선언 |
+| [JSON Resume Connect 실행 코드](https://github.com/ismailkattakath/jsonresume-connect/blob/main/src/JsonResumeToDoc.gs) | 코드 확인 | UrlFetchApp.fetch로 외부 OAuth/자료 API 호출, event.workflow.actionInvocation.inputs 읽기, AddOnsResponseService로 출력 변수 반환 |
+| [google-wss-flows](https://github.com/dceoy/google-wss-flows) | README | 뉴스/시장 요약 프롬프트 모음이며 보관된 저장소. 프롬프트 사례일 뿐 서비스 성능·공식 지원·상용 안정성의 근거로 사용하지 않음 |
+
+Google 공식 add-ons-samples/apps-script-samples 저장소도 살펴봤으나 이번 검색에서 해당 Studio 맞춤 단계 샘플은 찾지 못했다. AI Studio·Data Studio 폴더는 다른 제품이라 증거에서 제외했다. 검색 결과 수나 작은 공개 프로젝트 수를 시장 점유율·성숙도 지표로 사용하지 않는다.
+
+#### 2. 덕에 적합한 부분
+
+- 이미 Studio로 업무를 자동화하는 사용자는 그 결과를 덕의 할 일 초안으로 가져오면 중복 입력을 줄일 수 있다.
+- 정해진 시간의 요약·조건 충족 이벤트처럼 반복 업무를 Studio에 맡기고, 덕은 사람의 확인·우선순위·Todo 상태와 완료 기록을 담당하는 분리가 가능하다.
+- 전달 형식을 제목·예정일·출처 링크·외부 이벤트 ID 같은 구조화 데이터로 좁히면 이메일 전체를 반복 수집하거나 같은 내용을 AI에 다시 보내는 일을 줄일 여지가 있다. 실제 비용 절감 규모는 검증하지 않았다.
+- 덕의 기존 Todo/실행 카탈로그와 별도로 어댑터를 두면 Google 계정/Studio를 쓰지 않는 일반 아이폰 사용자에게 설정을 강요하지 않을 수 있다.
+
+#### 3. 핵심 기반으로 삼기에는 맞지 않는 부분
+
+- 보내준 공식 문서는 Studio 내부 플로우의 연결을 설명한다. 덕이 모든 Studio 커넥터를 가져다 쓰는 공개 SDK/API가 있다고 확인되지 않았다.
+- 일반 사용자가 ‘덕 설치→연결 버튼→로그인’만으로 쓰게 하는 목표에, 별도 플로우 작성·맞춤 단계 설치를 필수로 추가하면 설정 부담이 커진다. 개발자 설정과 사용자의 연결을 구분해야 한다.
+- Studio, Google 계정, 서드 파티, 덕 사이의 권한·관리자 정책·연결 해제·실패 지점이 추가된다. 외부 서비스에 이미 준 권한이 덕으로 자동 이전되지 않는다.
+- ‘지금 오늘 할 일 알려줘’ 같은 대화형 최신 조회와 Studio의 예약/이벤트 플로우는 다르다. 지연·실행 한도·이벤트 순서를 확인하기 전 실시간 응답의 핵심 경로로 두지 않는다.
+- Beta라는 사실은 공식 본문에서 확인된다. 현재 요금제/개인 계정 지원/쿼터/Marketplace 공개 조건은 이번 자료만으로 확정할 수 없다. 무료·무제한·모든 사용자 지원으로 소개하지 않는다.
+
+#### 4. 검토할 연결 형태
+
+우선순위 후보는 **Studio 맞춤 단계 → 덕의 제한된 초안 수신 API → 사용자 확인 → Todo**다. 공개 코드에서 맞춤 단계의 외부 HTTPS 호출은 관찰했지만 덕 계정 인증·실제 Studio 실행은 추가 검증해야 한다.
+
+```mermaid
+flowchart LR
+  A[기존 Studio 플로우] --> B[덕 맞춤 단계 후보]
+  B --> C[사용자 계정에 귀속된 초안]
+  C --> D[덕에서 근거와 날짜 확인]
+  D --> E[Todo에 추가]
+```
+
+예: ‘특정 메일을 받은 경우’라는 기존 플로우가 작업 제목·기한·원문 링크를 덕에 보내고, 사용자는 덕에서 확인해 Todo로 저장한다. 이는 설계 예시이지 이미 동작하는 연결이 아니다. Studio가 추출한 값도 신뢰할 수 없는 입력으로 검증한다.
+
+덕→Studio 호출은 별도 후보다. [웹훅 연결 공식 문서](https://support.google.com/workspace-studio/answer/16521900)의 본문을 읽지 못했기 때문에 방향·인증·허용 payload를 확정하지 않았다. **‘웹훅이 있다’는 제목만으로 Studio→덕의 일반 HTTP 전송까지 지원한다고 가정하지 않는다.** 앞선 대화에서 그 경로를 제안한 것은 검토 가능성이지 확인된 제품 기능이 아니다.
+
+#### 5. 작은 실증을 하기 전 확인할 것
+
+| 항목 | 합격 조건 |
+|---|---|
+| 계정/요금제 | 실제 대상 사용자 계정에서 Studio 사용 가능 여부와 필요한 비용 확인 |
+| 배포 | 개인용 테스트 설치와 타 사용자 배포/Marketplace 심사 조건을 구분해 확인 |
+| 로그인 | 사용자가 API 키를 복사하지 않고 덕 계정에 연결하는 위임 인증 설계. 현재 덕 로그인 구현만으로 외부 OAuth 공급자 기능이 생기는 것은 아님 |
+| 권한 | 초안 추가 같은 최소 권한, 연결별 폐기, 다른 사용자/조직 자료 수신 방지 |
+| 재실행 | 외부 이벤트 ID로 중복 방지, 타임아웃·재시도에도 중복 Todo가 생기지 않는지 확인 |
+| 데이터 | 원문 전체 대신 최소 필드 전달, 출처/날짜/사용자 확인 보존, 연결 해제 시 중지 |
+| 품질 | 기한·담당자·완료 상태를 오해하지 않고, 완료 기록을 새 할 일로 중복 추출하지 않기 |
+| 제품 가치 | 직접 Google/Slack/Notion 연결에 비해 사용자가 절약하는 단계/시간을 실제로 확인 |
+
+실증은 시험 계정과 하나의 흐름만 사용한다. 자동 메일 발송·원본 상태 변경은 실증에 포함하지 않는다. 문서의 테스트 실행도 실제 작업을 수행하므로 일반 고객 데이터를 시험용으로 쓰지 않는다.
+
+#### 6. 비용 판단
+
+사용자가 제공한 공식 문서는 유료 서드 파티에는 해당 서비스 구독이 필요할 수 있다고 설명한다. 이 문서만으로 Studio 자체의 현재 제공 요금제나 추가 실행료를 확정할 수는 없다. Apps Script/외부 API/덕 서버의 한도와 운영비도 별개다. 이미 적절한 서비스를 구독한 사용자는 활용 가치가 있을 수 있지만 덕을 쓰기 위해 별도 구독을 필수로 요구하는 설계는 현재 무료 우선 방향과 맞지 않는다.
+
+#### 7. 결정과 남은 조사
+
+**지금:** 덕의 직접 연결·오늘 할 일 제안·Todo·확인 후 실행·테스트 자동화를 먼저 완성한다. Studio를 필수 의존성으로 추가하지 않는다.
+
+**이후:** Studio를 이미 쓰는 사용자의 수요가 확인되면 ‘초안 추가’ 한 기능만 검증한다. 계정/요금제·배포·최소 권한·중복 방지를 확인한 뒤 선택적 통합으로 도입 여부를 판단한다.
+
+공식 웹훅/맞춤 단계 문서의 최신 본문, 독립 기사/리뷰의 교차 확인, 실제 계정·플로우 실행은 미완료다. 이번 평가는 사용자 제공 공식 본문과 실제 열람한 공개 구현을 바탕으로 한 조건부 제품 판단이다.
+
+### 原文 / docs/assistant-actions.md
+
+### 덕 비서 — 읽고 제안하고 Todo로 보여주고 실행하기
+
+기준: 2026-11-04. 사용자 요청으로 기존 AI·Slack 구현 보류를 해제했다. 보류 해제가 실계정 쓰기 테스트·자동 발송·유료 서비스 활성화를 허용한다는 뜻은 아니다. 개발·검증에는 임시 계정과 공급자 모의 응답만 사용한다.
+
+#### 사용자에게 보이는 흐름
+
+덕 탭의 비서를 열고 사용할 자료를 선택한다. 자료 확인은 서버가 연결한 사용자 계정으로 읽는다. AI 분석은 별도 동의를 선택한 뒤 요청한다. AI가 활성화된 서버에서는 덕의 메인 입력도 비서 요청 화면으로 이어진다. AI가 미설정이면 기존 수동 Todo 초안 입력이 유지되고, 비서의 직접 작업은 AI 없이도 사용할 수 있다.
+
+오늘 해야 할 일을 요청하면 날짜·본문·기존 Todo와 완료 기록을 근거로 답변과 작업 초안을 제안한다. AI 답변만 보여주는 것이 아니라 Todo 추가 초안으로 이어지고, 사용자가 확인해 실행한 Todo는 실제 Todo 목록에 나타난다. 실행할 수 없는 불완전한 대상이나 근거를 가진 제안은 제거한다. 완료 자료는 참고용이며 신규 할 일로 재추출하지 않도록 모델 지침과 제안 검증을 적용했다. 모델의 추론·우선순위가 항상 정확하다는 보장은 아니므로 근거와 내용 확인이 필요하다.
+
+외부 자료의 지시는 신뢰하지 않는 데이터로 다루고, AI 응답을 직접 함수 실행으로 연결하지 않는다. 제안→서버 미리보기→사용자 확인→한 번 실행의 경계를 유지한다. 외부 수정과 발송은 채팅 요청만으로 바로 수행되지 않는다.
+
+#### 현재 구현한 기능과 범위
+
+| 서비스 | 읽기 | 확인 후 실행 | 실제 연결 확인 범위 |
+|---|---|---|---|
+| Gmail | 최근 받은편지함, 텍스트 본문 일부 | 읽음/미읽음, 새 메일, 원본 스레드 답장 | 기존 읽기만 사용자 확인. 새 쓰기는 공급자 모의 테스트 |
+| Google Calendar | 기본 캘린더 월별·일정 | 기본 캘린더 시간 지정 일정 생성·수정 | 기존 읽기 확인. 초대 참석자 추가·발송은 구현하지 않음 |
+| Google Tasks | 목록·미완료·완료 참고 | 생성, 제목·메모·예정일·완료 상태 수정 | 기존 완료 동기화는 사용자 확인. 새 수동 쓰기는 모의 테스트 |
+| Google Drive | 파일 이름, 추가 권한 시 일반 텍스트/Google Docs 본문 일부 | 일반 텍스트 파일 생성·내용 교체, 허용한 파일 이름 수정 | 파일 전체 형식 편집·폴더 공유·권한 변경·파일 삭제는 구현하지 않음 |
+| Slack | 접근 가능한 채널·최근 메시지 | 메시지 전송/스레드 답장, 연결한 덕 앱이 작성한 메시지 수정 | 공식 SDK 정의와 모의 응답 확인. 실계정/관리자 승인 필요 |
+| Notion | 승인한 페이지 제목·최상위 블록 일부 | 하위 페이지 생성, 내용 추가, 제목 수정 | 기존 읽기 확인. 새 쓰기는 모의 테스트. 임의 데이터베이스 속성·블록 전체 교체는 미구현 |
+| 덕 Todo | 본인 미완료·최근 완료 기록 참고 | 생성, 제목·메모·예정일·완료 상태 수정 | 실제 임시 서버 API와 브라우저에서 미리보기·확인·저장 검증 |
+| 네이버 메일 | 받은편지함 최근 20개, 선택한 메일 텍스트 일부 | 읽음/미읽음, 새 메일, 원본 답장 | 고정 IMAP·SMTP 호스트의 어댑터 모의 테스트. 공식 도움말 접근 차단 및 실계정 미확인으로 기본 비활성화 |
+
+상세 자료는 일부만 읽는다. Gmail 5개, Calendar/Drive 각 8개, Google Tasks 첫 3개 목록에서 각 상태 최대 8개, Slack 첫 3개 접근 가능한 채널에서 각 8개 메시지, Notion 최근 5개 페이지의 첫 단계 블록 최대 50개다. 전체 파일·첨부·하위 블록·전체 이력을 읽었다고 표시하면 안 된다. 응답에는 조회 제한과 오류를 포함한다. Drive는 일반 텍스트와 Google 문서만 본문 일부를 읽으며 다른 형식은 설명만 사용한다. 네이버는 1MiB 초과 원본 메일 본문을 거부한다.
+
+#### 원본 변경과 발송 처리
+
+- 작업 인자는 서버 카탈로그로 제한한다. 임의 URL·헤더·사용자 ID·받는 사람 헤더 삽입을 허용하지 않는다.
+- 작업에는 사용자 소유권, 원본 대상, 발송 수신자와 본문, 연결 ID 및 읽어온 원본 버전을 포함한다. 초안은 10분 유효하며 확인 API가 저장된 인자를 사용한다. 클라이언트가 확인 시 인자를 바꿀 수 없다.
+- Gmail 답장은 원본 Reply-To/From과 Message-ID/스레드를 확인한다. 단일 수신자의 일반 텍스트 메일만 지원하며 첨부·참조/숨은참조는 지원하지 않는다.
+- Google Tasks·Calendar와 Drive 수정은 원본 버전을 읽고 조건부 쓰기를 적용한다. Notion과 Slack은 재조회 비교지만 해당 작업의 원자적 조건부 갱신을 보장하지 않는다. 외부에서 동시에 바뀌면 마지막 조회 이후 경합 가능성이 남는다.
+- 확인은 DB에서 pending→running을 한 번만 선점한다. 성공 상태 재확인은 결과만 반환하며 원본에 다시 요청하지 않는다. running은 중복 실행하지 않는다. 네트워크/서버 응답 불명확 상태는 unknown으로 남기며 자동 재발송하지 않는다.
+- 미리보기와 실행 대상이 바뀌거나 권한을 회수하거나 계정을 다시 연결하면 멈춘다. 120초 이상 남은 running은 unknown으로 처리한다. Slack 신규 전송과 Calendar 생성에는 작업 ID를 공급자 중복 방지 ID로 사용하지만 모든 공급자의 exactly-once 전송을 보장하지 않는다.
+- SMTP 접수 성공은 수신자의 수신/열람 보장이 아니다. 네이버 연결 해제는 서버의 암호화된 자격 증명을 삭제하며 네이버 앱 비밀번호 폐기는 사용자가 별도로 한다.
+- 원격·로컬 백업 복원은 pending/running 비서 작업을 취소해 옛 발송 초안을 다시 실행하지 않는다. 작업 본문·대상은 기존 암호화 키로 DB에 암호화 저장하며 7일이 지난 기록은 다음 비서 기록 요청 때 정리한다. 개인 내보내기에는 본인 작업만 포함한다.
+- 기존 Google 자동 완료 동기화와 비서의 명시적 외부 수정은 별개다. 직접 Google Tasks를 변경해도 가져온 덕 Todo 사본은 기존 동기화 정책/다시 읽기를 따른다. 자동 동기화의 opt-in을 변경하지 않는다.
+
+#### 운영 설정 — 코드 구현과 활성화는 별개
+
+서버를 먼저 배포해야 새 비서 API를 사용할 수 있다. iPhone에는 새 EAS 빌드·제출이 필요하며 이전 TestFlight 바이너리는 변경되지 않는다.
+
+AI는 기본 비활성화다. Render 서버에 `OPENAI_API_KEY`(비밀값), `OPENAI_MODEL`(실제 사용할 모델 ID), `AI_ENABLED=true`를 설정해야 한다. 키를 채팅/Git/EXPO_PUBLIC 변수에 넣지 않는다. 이 변경은 키 생성·유료 가입·실제 AI 과금을 자동 활성화하지 않았다. 외부 AI API의 사용량 비용은 앱 사용자가 가진 ChatGPT 구독과 별개일 수 있다. 서버는 OpenAI Responses API를 고정 URL로 호출하고 `store:false`를 사용한다. 이것이 모든 공급자 보관 정책을 없앤다는 뜻은 아니다. AI에는 사용자가 선택한 자료와 덕의 관련 Todo를 보내되 본문은 자료당 최대 2,000자·전체 최대 24,000자로 제한하며, OAuth 토큰·네이버 앱 비밀번호는 보내지 않는다.
+
+Google 연결 화면에서 `gmailModify`, `gmailSend`, `calendarWrite`, `driveContent`, `driveWrite`, `tasksWrite`를 필요한 만큼 선택하고 다시 승인한다. Gmail 쓰기·Drive 본문 읽기 같은 민감/제한 범위는 Google 앱 동의 화면과 검증/테스트 사용자 조건 확인이 필요하다. 현재 테스트 앱을 모든 사용자에게 바로 공개했다고 말하지 않는다.
+
+Slack 개발 앱의 OAuth scope에 `chat:write`를 추가하고 덕에서 재승인해야 한다. 기존 읽기 연결에는 쓰기 권한을 자동 부여하지 않는다. 메시지 읽기에는 기존 channels/groups 읽기 권한과 접근 가능한 채널만 사용하며 앱을 임의 채널에 자동 가입시키지 않는다.
+
+Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상 페이지 접근을 허용하고 덕의 Notion 쓰기 선택으로 재승인한다. 실제 capability의 최종 판단은 Notion 서버에 있으며 덕의 선택값만으로 권한이 생기지 않는다.
+
+네이버는 `NAVER_MAIL_ENABLED=true`로 명시적으로 켜야 한다. 사용자는 덕 비서의 네이버 설정에서 네이버 메일 주소와 앱 비밀번호를 HTTPS로 입력한다. 서버는 `imap.naver.com:993`, `smtp.naver.com:465`만 사용하고 TLS 검증을 유지한다. 임의 호스트 설정은 없다. 계정별 IMAP·SMTP 허용 및 앱 비밀번호 발급 조건을 실제 네이버 설정에서 확인해야 한다. 현재 환경에는 TCP 접근 허용도 없어서 실제 메일 서버 접속·발송을 검증하지 않았다.
+
+#### API와 이어받기
+
+- `GET /api/assistant/status`: AI 준비 여부와 작업 카탈로그
+- `POST /api/assistant/context`: 선택한 공급자 자료와 본인 Todo 조회. AI 호출 없음
+- `POST /api/assistant/chat`: 사용자 동의 후 AI 답변/근거/작업 제안. 실제 쓰기 없음
+- `POST /api/assistant/actions`: 검증한 실행 미리보기 저장
+- `GET /api/assistant/actions`, `GET /api/assistant/actions/:id`: 본인 실행 기록/상태
+- `POST /api/assistant/actions/:id/confirm`: 저장된 미리보기 확인·한 번 실행
+- `DELETE /api/assistant/actions/:id`: 미실행 초안 취소
+- `GET/POST/DELETE /api/integrations/naver`: 네이버 연결 상태/연결/해제
+- `GET /api/integrations/naver/resources`: 받은편지함 일부
+- `GET /api/integrations/google|notion/detail?id=...`: 연결 ID로 묶은 자료 상세 읽기
+
+구현은 `server/assistant.js`, `server/provider-actions.js`, `server/action-store.js`, `server/naver-mail.js`, `mobile/src/screens/AssistantSheet.tsx`를 읽는다. 사용자 요청이 AI·Slack 보류보다 최신이며, 범용 붙여넣기 자동 추출·날씨는 이번 기능과 별개다. 모든 메서드/권한은 [조사 기록](https://github.com/thepmpo/donknow/blob/main/docs/references/assistant-provider-research.json)에 공식 Google API discovery와 Slack/Notion SDK 근거를 남겼다.
+
+#### 피클 참고의 확인 범위
+
+사용자가 제시한 사이트는 https://pickle.com/ 이다. 이 환경의 네트워크 정책이 403으로 차단해 본문을 읽지 못했다. 피클의 구체 기능·디자인·권한·제품 구조를 학습했다고 주장하지 않는다. 사용자가 설명한 비서 개념을 포함하되 덕은 근거→할 일 카드→Todo→실행까지 이어지는 방향을 명시했다. 공식 사이트를 실제 열람할 수 있을 때 별도의 근거 있는 비교가 필요하다.
+
+### 原文 / docs/testflight-automation.md
+
+### iPhone 테스트 자동 빌드·제출
+
+`.github/workflows/ios-testflight.yml`은 main의 실제 앱 코드 변경과 수동 workflow_dispatch에 반응한다. 문서·e2e·단위 테스트만 바뀌면 빌드하지 않는다. npm 잠금 파일로 모바일 의존성을 설치하고 타입 검사를 통과한 후 EAS production iOS 빌드를 요청하며 성공한 EAS 빌드는 자동으로 App Store Connect에 제출된다. App Store 공개 배포는 하지 않는다.
+
+#### 한 번만 등록
+
+1. https://expo.dev/settings/access-tokens 에서 thepmpo 계정의 토큰을 만든다.
+2. https://github.com/thepmpo/donknow/settings/secrets/actions 에서 `EXPO_TOKEN` 이름의 repository secret으로 등록한다. 토큰을 채팅·Git·문서에 붙이지 않는다.
+3. https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml 에서 수동 실행하거나 앱 코드 변경을 main에 반영한다.
+
+이미 EAS에 저장된 배포 인증서·프로비저닝 프로파일·App Store Connect API 키와 ascAppId를 사용한다. production의 autoIncrement와 remote 버전 소스를 유지한다. 토큰/인증서가 유효한 한 반복 로그인·테스터 재초대가 필요하지 않다. 갱신·회수된 자격 증명이나 Apple 약관·권한 변경은 별도 대응이 필요하다.
+
+#### 상태의 의미
+
+GitHub Actions는 `--no-wait`로 빌드 요청 후 종료해 EAS 대기 시간 동안 GitHub 실행 시간을 소모하지 않는다. 따라서 초록 체크는 빌드 요청 접수이지 IPA 생성·Apple 업로드 성공이 아니다. 실제 상태는 https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds 에서 확인하고, Apple 처리 후 https://appstoreconnect.apple.com/apps/6829597261/testflight/ios 에서 TestFlight 가능 여부를 확인한다.
+
+EAS/GitHub의 기존 무료 한도를 사용하며 플랜을 올리지 않는다. 앱 코드가 반영될 때마다 빌드를 요청하므로 변경을 모아 커밋하고 무료 빌드 한도를 확인한다. 제출 실패나 EAS 장애는 Expo 로그를 확인한다. 토큰을 아직 등록하지 않았다면 명확한 오류로 중단한다. 이 저장소에 토큰을 등록하거나 실제 workflow 실행 성공을 확인한 것은 아니다.
+
+서버 변경은 서버 배포가 별도로 필요하다. 디자인 가이드는 `/design-guide`, 인계 문서는 `/project`이다.
 
 ### 原文 / docs/product-direction.md
 
