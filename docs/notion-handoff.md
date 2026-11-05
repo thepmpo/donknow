@@ -183,6 +183,18 @@
 ### 매일 개발 정리
 
 
+##### 2026-11-05 — 당일 저장된 작업
+
+실제 정리: 02:53 KST. 새 저장 작업 3개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [25a9165](https://github.com/sjfieni/donknow/commit/25a916552d9979f6d970d9ddc2d45615a26af6f4) · 11-04 16:32 · Count completed tasks down from five before fading out
+
+- [aac818e](https://github.com/sjfieni/donknow/commit/aac818ebd39163b0709a810c9854fb9b1818c175) · 11-04 17:50 · Add consent-based AI assistant and confirmed cross-service actions
+
+- [f920d8f](https://github.com/sjfieni/donknow/commit/f920d8f3bedbb84544e5d2b3c0503d133f7883e4) · 11-04 18:01 · Refine calendar gestures, event agenda, glass navigation and input UX
+
+
+
 ##### 2026-11-03 — 당일 저장된 작업
 
 실제 정리: 19:52 KST. 새 저장 작업 4개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -285,6 +297,7 @@ b7afa93 Unify page layout and calendar navigation; automate TestFlight builds
 7ed343d Assess Workspace Studio as an optional future Todo integration
 50735e9 Include Studio evaluation in project handoff
 b5c7d54 Embed integration research and assistant guides in full handoff
+1e50ab6 Refresh full research appendix
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.

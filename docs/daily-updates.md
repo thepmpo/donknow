@@ -1,5 +1,17 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-05:start -->
+### 2026-11-05 — 당일 저장된 작업
+
+실제 정리: 02:53 KST. 새 저장 작업 3개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [25a9165](https://github.com/sjfieni/donknow/commit/25a916552d9979f6d970d9ddc2d45615a26af6f4) · 11-04 16:32 · Count completed tasks down from five before fading out
+
+- [aac818e](https://github.com/sjfieni/donknow/commit/aac818ebd39163b0709a810c9854fb9b1818c175) · 11-04 17:50 · Add consent-based AI assistant and confirmed cross-service actions
+
+- [f920d8f](https://github.com/sjfieni/donknow/commit/f920d8f3bedbb84544e5d2b3c0503d133f7883e4) · 11-04 18:01 · Refine calendar gestures, event agenda, glass navigation and input UX
+<!-- daily:2026-11-05:end -->
+
 <!-- daily:2026-11-03:start -->
 ### 2026-11-03 — 당일 저장된 작업
 
