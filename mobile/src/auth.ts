@@ -4,7 +4,7 @@ export type User = { id: string; email: string; emailVerified: boolean };
 export class AuthRequiredError extends Error { constructor() { super('다시 로그인해주세요.'); } }
 const storageKey = (origin: string) => 'duckduck.session.' + Array.from(origin).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 export async function request(baseUrl: string, path: string, method = 'GET', body?: unknown): Promise<unknown> {
-  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||path==='/api/assistant/chat'?60000:15000);
+  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||path==='/api/assistant/chat'||path==='/api/assistant/context'?60000:15000);
   try {
     const token = Platform.OS === 'web' ? null : await SecureStore.getItemAsync(storageKey(baseUrl));
     const response = await fetch(baseUrl + path, { method, credentials: 'include', signal: controller.signal,

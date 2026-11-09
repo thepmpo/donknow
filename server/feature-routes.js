@@ -1,9 +1,11 @@
+import {createWeather} from './weather.js';
 import {createAssistant} from './assistant.js';
 import { fail } from './secrets.js';
 const validEmail = value => typeof value === 'string' && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
 export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress) {
   const assistant=createAssistant(store,integrations);
+  const weather=createWeather();
   return {
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
@@ -33,6 +35,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },
     async private(req, path, url, user, json, send) {
+      if(path==='/api/weather'&&req.method==='GET'){if(limited('weather:'+user.id))throw fail(429,'잠시 후 다시 확인해주세요.');send(200,await weather(url.searchParams.get('city')));return true;}
       if(path==='/api/assistant/status'&&req.method==='GET'){send(200,assistant.status(user.id));return true;}
       if(path==='/api/assistant/actions'&&req.method==='GET'){send(200,{actions:store.assistantActions(user.id)});return true;}
       if(path==='/api/assistant/actions'&&req.method==='POST'){if(limited('assistant-prepare:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const body=await json(req);send(201,await assistant.prepare(user.id,body.operation,body.args));return true;}

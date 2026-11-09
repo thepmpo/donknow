@@ -71,7 +71,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | 최신 디자인·모션 | 구현·웹/타입/iOS JS 검증 통과 | source 5d096f2 이후. Render 최신 배포 및 새 iOS 서명 빌드 반영 확인 필요 |
 | AI 비서 | 동의 기반 자료 분석·근거·작업 제안 구현 | AI 키/모델/명시적 활성화 필요. 모의 응답 검증과 실제 모델 호출은 구분 |
 | 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
-| 범용 붙여넣기 자동 추출 | 별도 백로그 | 기존 수동 붙여넣기 유지 |
+| 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장, 실제 AI 가동은 서버 설정 필요 |
+| 날씨·오늘 브리핑 | 도시별 날씨·Todo와 선택한 외부 최근 자료 통합 | 모의 응답·웹 검증. 실제 날씨 API 접근과 최신 서버 배포 필요 |
 
 **GitHub에 저장된 최신 기능이 Render에 자동으로 배포되지는 않습니다.** Render의 자동 배포는 꺼져 있습니다. 이번 확장 기능은 최신 커밋으로 수동 배포한 후 실제 화면에서 확인해야 합니다. 에이전트의 공개 사이트 직접 접속은 환경 네트워크 제한으로 막힌 적이 있으므로 사용자 확인과 자동 검증을 혼동하지 않습니다.
 
@@ -325,7 +326,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()

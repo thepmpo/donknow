@@ -35,9 +35,15 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: mobile/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            mobile/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
       - run: npm ci --prefix mobile --no-audit --no-fund
       - run: npm --prefix mobile run typecheck
+      - run: npm --prefix mobile run export:ios -- --max-workers 2
       - name: Build iOS and automatically submit to App Store Connect
         working-directory: mobile
         run: npx --yes eas-cli@27.4.1 build --platform ios --profile production --auto-submit --non-interactive --no-wait

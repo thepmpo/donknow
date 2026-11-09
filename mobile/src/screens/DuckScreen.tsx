@@ -1,3 +1,5 @@
+import {pasteTodos} from '../paste-todos';
+import {TodaySheet} from './TodaySheet';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ScreenHeading} from '../ScreenHeading';
 import {layout} from '../theme';
@@ -21,6 +23,8 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
   const [searching, setSearching] = useState<number|null>(null);
   const [assistantOpen,setAssistantOpen]=useState(false);
   const [assistantMessage,setAssistantMessage]=useState('');
+  const [assistantPaste,setAssistantPaste]=useState('');
+  const [todayOpen,setTodayOpen]=useState(false);
   const [assistantEnabled,setAssistantEnabled]=useState(false);
   useEffect(()=>{let active=true;setAssistantEnabled(false);if(store.user&&store.connection?.mode==='cloud')void store.featureRequest('/api/assistant/status').then(value=>{if(active)setAssistantEnabled(!!(value as {enabled?:boolean}).enabled);}).catch(()=>{});return()=>{active=false;};},[store.user?.id,store.connection?.mode]);
   const [input, setInput] = useState('');
@@ -29,8 +33,9 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
   const [pasting, setPasting] = useState(false);
   const [conversation, setConversation] = useState('');
   const [task, setTask] = useState('');
+  const [pasteHint,setPasteHint]=useState('');
   const scrollOnNextContent=useRef(false);
-  function closePaste() { setPasting(false); setConversation(''); setTask(''); }
+  function closePaste() { setPasting(false); setConversation(''); setTask('');setPasteHint(''); }
   function prepareTask() {
     if (!task.trim()) return;
     scrollOnNextContent.current=true;
@@ -41,7 +46,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
   const savingIds = useRef(new Set<number>());
   function send() {
     const title = input.trim(); if (!title) return;
-    if(assistantEnabled){setAssistantMessage(title);setAssistantOpen(true);setInput('');return;}
+    if(assistantEnabled){setAssistantPaste('');setAssistantMessage(title);setAssistantOpen(true);setInput('');return;}
     scrollOnNextContent.current=true;
     setCards(current => [...current, { id: Date.now() + Math.random(), title, dueDate: dateKey(new Date()), notes: '', saved: false, saving: false }]); setInput(''); setStatus('');
   }
@@ -60,14 +65,19 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
       {cards.map(card => <MotionView key={card.id} style={styles.card}><View style={styles.cardHeading}><Text style={styles.cardLabel}>{card.saved ? 'Todo에 담았어요' : '할 일로 정리하기'}</Text>{!card.saved && <Pressable accessibilityRole="button" accessibilityLabel="초안 버리기" disabled={card.saving} onPress={() => { setCards(current => current.filter(item => item.id !== card.id)); setStatus(''); }} style={styles.dismiss}><Text style={styles.cardLabel}>버리기</Text></Pressable>}</View>{card.saved ? <Text style={styles.cardTitle}>{card.title}</Text> : <TextInput accessibilityLabel="정리한 할 일" value={card.title} onChangeText={title => change(card.id, { title })} editable={!card.saving} maxLength={120} multiline style={styles.draftInput} placeholder="할 일을 적어주세요" />}{!card.saved && <DateField value={card.dueDate} onChange={dueDate => { if (!card.saving) change(card.id, { dueDate }); }} />}{!card.saved&&<NotesField label="초안 메모" value={card.notes} onChange={notes=>change(card.id,{notes})} disabled={card.saving}/>}{card.saved&&!!card.notes&&<Text style={styles.status}>{card.notes}</Text>}<Button title={card.saved ? '추가 완료 ✓' : card.saving ? '추가 중…' : 'Todo 리스트에 추가'} loading={card.saving} onPress={() => { void transfer(card); }} disabled={card.saved || card.saving || !card.title.trim() || store.busyIds.includes('create')} />{card.saved && <Button title="Todo 보기 →" quiet onPress={onOpenTodos} />}</MotionView>)}
     </ScrollView>}
     {!!status && <Text accessibilityLiveRegion="polite" style={styles.status}>{status}</Text>}
-    <View style={styles.shortcuts}><Pressable accessibilityRole="button" accessibilityLabel="덕 AI 비서 열기" onPress={()=>{setAssistantMessage('');setAssistantOpen(true);}} style={styles.shortcut}><Text style={styles.shortcutText}>비서</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="할 일과 기록 찾기" onPress={() => setSearching(++searchSequence.current)} style={styles.shortcut}><Text style={styles.shortcutText}>기록 찾기</Text></Pressable><Text style={styles.cardLabel}>·</Text><Pressable accessibilityRole="button" accessibilityLabel="카카오톡 대화 붙여넣기" onPress={() => setPasting(true)} style={styles.shortcut}><Text style={styles.shortcutText}>대화 붙여넣기</Text></Pressable></View>
-    {assistantOpen&&<AssistantSheet initialMessage={assistantMessage} store={store} onClose={()=>setAssistantOpen(false)} onOpenTodos={onOpenTodos}/>}
+    <View style={styles.shortcuts}><Pressable accessibilityRole="button" accessibilityLabel="오늘의 브리핑 열기" onPress={()=>setTodayOpen(true)} style={styles.shortcut}><Text style={styles.shortcutText}>오늘 브리핑</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="덕 AI 비서 열기" onPress={()=>{setAssistantPaste('');setAssistantMessage('');setAssistantOpen(true);}} style={styles.shortcut}><Text style={styles.shortcutText}>비서</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="할 일과 기록 찾기" onPress={() => setSearching(++searchSequence.current)} style={styles.shortcut}><Text style={styles.shortcutText}>기록 찾기</Text></Pressable><Text style={styles.cardLabel}>·</Text><Pressable accessibilityRole="button" accessibilityLabel="카카오톡 대화 붙여넣기" onPress={() => setPasting(true)} style={styles.shortcut}><Text style={styles.shortcutText}>대화 붙여넣기</Text></Pressable></View>
+    {todayOpen&&<TodaySheet store={store} onClose={()=>setTodayOpen(false)}/>}
+    {assistantOpen&&<AssistantSheet pastedText={assistantPaste} initialMessage={assistantMessage} store={store} onClose={()=>{setAssistantOpen(false);setAssistantPaste('');}} onOpenTodos={onOpenTodos}/>}
     {searching && <RecordSearchSheet key={searching} store={store} onClose={() => setSearching(current=>current===searching?null:current)} onOpenTodo={onOpenTodo} />}
     <Modal visible={pasting} transparent animationType="slide" onRequestClose={closePaste}>
       <KeyboardAvoidingView style={styles.backdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}><DraggableSheet visible={pasting} style={styles.sheet} onDismiss={closePaste}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 14 }}>
         <View style={styles.cardHeading}><Text style={styles.cardTitle}>대화에서 할 일 만들기</Text><CloseButton onPress={closePaste}/></View>
-        <Text style={styles.status}>복사한 대화를 붙여넣고, 필요한 할 일을 아래에 적어주세요. 지금은 직접 정리하는 방식이에요.</Text>
+        <Text style={styles.status}>어떤 서비스의 글이든 붙여넣어주세요. 목록은 초안으로 나누고, 대화는 AI에 동의한 뒤 분석할 수 있어요.</Text>
         <TextInput accessibilityLabel="복사한 카카오톡 대화" value={conversation} onChangeText={setConversation} multiline maxLength={10000} placeholder="길게 눌러 대화 붙여넣기" style={styles.pasteInput} />
+        <Button title="목록에서 할 일 초안 나누기" disabled={!conversation.trim()} quiet onPress={()=>{const titles=pasteTodos(conversation);if(!titles.length){setPasteHint('추출할 목록을 찾지 못했어요. 직접 정리하거나 AI 분석을 이용해주세요.');return;}scrollOnNextContent.current=true;setCards(current=>[...current,...titles.map(title=>({id:Date.now()+Math.random(),title,notes:'',dueDate:null,saved:false,saving:false}))]);closePaste();setStatus('최대 20개 목록을 초안으로 나눴어요. 제목과 날짜를 확인하고 필요한 항목만 추가해주세요.');}}/>
+        <Text accessibilityLiveRegion="polite" style={styles.status}>{pasteHint}</Text>
+        <Text style={styles.status}>줄 앞 - 또는 번호, 빈 체크박스 목록을 최대 20개 추출해요. 완료 체크는 제외하고 날짜는 직접 확인해요. 일반 문장은 아래에서 직접 정리하거나 AI로 분석해주세요.</Text>
+        {assistantEnabled&&<Button title="붙여넣은 내용 AI 분석 준비" disabled={!conversation.trim()} quiet onPress={()=>{setAssistantPaste(conversation);setAssistantMessage('붙여넣은 내용에서 미완료 할 일을 개별 Todo 초안으로 제안해줘. 완료 기록과 기존 Todo는 제외하고 날짜가 불명확하면 null로 남겨줘.');closePaste();setAssistantOpen(true);}}/>}
         <TextInput accessibilityLabel="대화에서 정리한 할 일" value={task} onChangeText={setTask} maxLength={120} placeholder="예: 금요일까지 회의 자료 보내기" style={styles.pasteInput} />
         <Text style={styles.status}>대화 원문은 이 화면에서만 사용하며 닫으면 지워져요. Todo에는 확인한 할 일만 저장돼요.</Text>
         <Button title="할 일 확인하기" disabled={!task.trim()} onPress={prepareTask} />
