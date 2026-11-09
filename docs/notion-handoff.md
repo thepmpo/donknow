@@ -42,6 +42,117 @@
 
 ### 변경 기록
 
+#### 2026-11-09 — Figma 저해상도 와이어프레임 초안
+
+- 연결된 Figma 파일 https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265 에 캘린더 8, Todo 목록 9, 편집 8, 덕 비서 12, 로그 4, 내정보·연결 12, 인증·시스템 10, 공통 6개로 총 69개 프레임을 만들었다. 편집 가능한 텍스트·자동 레이아웃·공통 컴포넌트와 소스 토큰을 사용했다.
+- 기존 5개 탭, 3초 완료/350ms 페이드, 원본 변경 전 확인을 유지했다. 일정 작성·수정과 네이버 설정은 비서 안, 연동 기록은 기존 비서/연결 패널에 유지했다. iOS 시스템 한글 글꼴은 Figma 가용성 때문에 Noto Sans KR로 대체한 구조안이다.
+- 상세 화면 구조·전체 목록·노드 ID·검증 범위는 docs/figma-wireframes.md, docs/figma-wireframe-inventory.json, docs/figma-wireframe-state.json과 artifacts/duckduck-wireframe-map.html에 저장했다.
+- 생성 구조와 캘린더·Todo 목록 스크린샷을 확인했으나 Starter MCP 호출 한도로 추가 편집/전체 검수가 중단됐다. C01 다음 달 선택 강조 중복, C04 년월 시트 하단 위치 수정과 나머지 6개 구역 시각 검수, 빈 화면 구조 페이지 작성이 남았다. 최종 완성 검수로 보고하지 않는다.
+- 앱 소스·동작 변경, GitHub push, Render 배포, 새 TestFlight 빌드, 실제 외부 계정 쓰기는 하지 않았다. 공개 HTML은 로컬 생성본만 갱신하며 운영 사이트 반영은 별도다.
+
+##### 와이어프레임 보존·후속 검수 — 2026-11-09
+
+기존 **69개 화면은 유지하고 중복 생성하지 않는다.** 후속 작업은 저장된 노드 ID를 대조한 뒤 해당 노드만 수정한다. 앱 기능·소스는 변경하지 않는다.
+
+- [Figma 전체 와이어프레임](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265)
+- [저장소 화면 구조 HTML](https://github.com/thepmpo/donknow/blob/main/artifacts/duckduck-wireframe-map.html) — 원본 파일을 보존한다.
+- [전체 화면 인벤토리](https://github.com/thepmpo/donknow/blob/main/docs/figma-wireframe-inventory.json)
+- [기존 Figma 노드 ID와 작업 상태](https://github.com/thepmpo/donknow/blob/main/docs/figma-wireframe-state.json)
+
+이번 후속 확인에서도 Figma Starter MCP 호출 한도 오류가 반환됐다. 한도 해제 시점은 확인되지 않았고 캔버스 변경은 수행하지 않았다. 한도가 허용되는 후속 작업에서 아래 순서로 진행한다. 예약 실행이나 백그라운드 감시는 설정하지 않았다.
+
+###### 남은 세 가지 수정
+
+- [ ] C01 월간 예시: 다음 달 9일의 선택 강조·예시 이벤트 중복 제거. 기존 C01 프레임 `4:8`을 수정한다.
+- [ ] C04 년·월 시트: 행 높이에 맞춰 시트 바닥 위치를 다시 계산하고 취소 버튼 잘림 수정. 기존 C04 프레임 `4:259`를 수정한다.
+- [ ] 기존 `00 · Screen inventory` 페이지 `0:1`에 화면 구조와 기존 69개 화면 목록을 작성. 화면 프레임을 새로 만들지 않는다.
+
+###### 전체 검수 항목
+
+- [ ] 기존 69개 화면 ID가 모두 존재하며 중복·삭제가 없는지 확인.
+- [ ] 캘린더 수정 후 월 그리드·선택일·년월 시트 스크린샷 재검수.
+- [ ] Todo 편집, 덕 비서, 로그, 내정보·연결, 인증·시스템, 공통 상태의 6개 구역 시각 검수.
+- [ ] 텍스트 잘림·겹침, 긴 시트 스크롤, 키보드 회피, 하단 탭·safe area 보호 여백 확인.
+- [ ] 날짜·시간 스피너, 메모 220pt, 3→2→1초와 350ms 페이드 상태 표현, 동작 줄이기 설명 확인.
+- [ ] 기존 5개 탭·연결 권한·원본 변경 전 확인·연동 기록 위치와 소스 일치 여부 확인.
+- [ ] 편집 가능한 레이어·컴포넌트·토큰과 Noto Sans KR 대체 글꼴을 확인하고 검수 근거를 기록.
+
+현재는 **69개 생성 완료 / 전체 검수 대기**다. 문서 생성·저장과 GitHub 반영·운영 Render `/project` 배포는 구분하며, 운영 배포 성공을 추정하지 않는다.
+
+###### 기존 69개 화면 목록
+
+| ID | 화면·상태 | 화면군 | 소스 |
+| --- | --- | --- | --- |
+| [C01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-8) | 월간 · 일정 표시 | 01 / 캘린더 | CalendarScreen.tsx |
+| [C02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-144) | 주간 보기 | 01 / 캘린더 | CalendarScreen.tsx |
+| [C03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-212) | 선택일 · 아젠다 스크롤 | 01 / 캘린더 | CalendarScreen.tsx |
+| [C04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-259) | 년·월 이동 시트 | 01 / 캘린더 | CalendarScreen.tsx |
+| [C05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-304) | 일정 없음 | 01 / 캘린더 | CalendarScreen.tsx |
+| [C06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-340) | 일정 연결 오류 | 01 / 캘린더 | CalendarScreen.tsx |
+| [C07](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-382) | 일정 작성 · 비서 작업 | 01 / 캘린더 | AssistantSheet.tsx · calendar.create |
+| [C08](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-432) | 일정 수정 · 대상 선택 | 01 / 캘린더 | AssistantSheet.tsx · calendar.update |
+| [T01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-482) | 기본 목록 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-532) | 완료 직후 · 3초 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-582) | 카운트다운 · 2초 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-632) | 카운트다운 · 1초 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-682) | 실행 취소 · 복원 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-726) | 페이드 · 350ms | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T07](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-771) | 완료 후 목록 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T08](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-814) | 빈 목록 | 02 / Todo 리스트 | TodosScreen.tsx · ui.tsx/TodoRow |
+| [T09](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-847) | 저장 실패 · 복구 | 02 / Todo 리스트 | App.tsx · useTodos.ts |
+| [E01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-896) | 새 할 일 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-948) | 수정 · 상단 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1000) | 수정 · 하단 액션 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1051) | 날짜 선택 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1099) | 시간 선택 · 스크롤 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1145) | 메모 입력 · 키보드 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E07](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1197) | 저장 중 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [E08](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1244) | 입력·저장 오류 | 03 / Todo 작성·수정 | ui.tsx/TodoEditor · NotesField.tsx |
+| [A01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1297) | 덕 기본 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1335) | 수동 초안 · 확인 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1378) | 연결 서비스·동의 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1430) | 기본 대화 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1481) | 작업 제안 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1529) | 직접 작업 작성 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A07](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1585) | 실행 전 확인 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A08](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1634) | 분석·실행 중 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A09](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1677) | AI 미설정 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A10](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1726) | 실패·결과 불확실 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A11](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1772) | 대화 붙여넣기 | 04 / 덕·AI 비서 | DuckScreen.tsx · AssistantSheet.tsx |
+| [A12](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1821) | 저장·외부 기록 검색 | 04 / 덕·AI 비서 | RecordSearchSheet.tsx |
+| [L01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1878) | 완료 활동 기록 | 05 / 로그 | LogScreen.tsx |
+| [L02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1919) | 완료 기록 없음 | 05 / 로그 | LogScreen.tsx |
+| [L03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-1950) | 연동 작업 실행 기록 | 05 / 로그 | AssistantSheet.tsx |
+| [L04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2000) | 동기화 전송 기록 | 05 / 로그 | TaskSyncPanel.tsx |
+| [P01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2045) | 내정보 · 상단 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2090) | 내정보 · 알림·데이터 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2132) | 내정보 · 계정 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2175) | Google 읽기·연결 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2216) | Google 쓰기·동기화 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2253) | Google 자료·가져오기 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P07](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2297) | Slack 연결·권한 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P08](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2336) | Notion 연결·권한 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P09](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2378) | 네이버 별도 연결 | 06 / 내정보·연결 | AssistantSheet.tsx |
+| [P10](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2431) | 연결 해제 확인 | 06 / 내정보·연결 | ProfileScreen.tsx · IntegrationsScreen.tsx |
+| [P11](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2464) | 미리 알림 · 선택 가져오기 | 06 / 내정보·연결 | AppleRemindersScreen.tsx |
+| [P12](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2503) | 미리 알림 · 원본 변경 | 06 / 내정보·연결 | AppleRemindersScreen.tsx |
+| [R01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2547) | 로그인 | 07 / 인증·시스템 | AuthScreen.tsx · AccountScreen.tsx |
+| [R02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2576) | 회원가입 | 07 / 인증·시스템 | AuthScreen.tsx · AccountScreen.tsx |
+| [R03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2600) | 서버 연결·체험 | 07 / 인증·시스템 | ConnectionScreen.tsx |
+| [R04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2623) | 초기·서버 기동 로딩 | 07 / 인증·시스템 | App.tsx · useTodos.ts |
+| [R05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2641) | 로그인 오류 | 07 / 인증·시스템 | AuthScreen.tsx · AccountScreen.tsx |
+| [R06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2666) | 로그인 후 목록 오류 | 07 / 인증·시스템 | App.tsx · useTodos.ts |
+| [R07](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2700) | 이메일 인증 | 07 / 인증·시스템 | AuthScreen.tsx · AccountScreen.tsx |
+| [R08](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2741) | 비밀번호 재설정 | 07 / 인증·시스템 | AuthScreen.tsx · AccountScreen.tsx |
+| [R09](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2769) | 계정 삭제 | 07 / 인증·시스템 | AuthScreen.tsx · AccountScreen.tsx |
+| [R10](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2809) | 서비스 미연결·오류 | 07 / 인증·시스템 | IntegrationsScreen.tsx |
+| [U01](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2850) | 하단 내비게이션 | 08 / 공통 내비게이션·오버레이 | App.tsx · ScreenHeading.tsx · theme.ts |
+| [U02](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2891) | 시트 · 닫기·스크롤 | 08 / 공통 내비게이션·오버레이 | motion.tsx/DraggableSheet · ui.tsx |
+| [U03](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2938) | 표시 이름 모달 | 08 / 공통 내비게이션·오버레이 | ProfileScreen.tsx |
+| [U04](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-2981) | 개인정보 안내 모달 | 08 / 공통 내비게이션·오버레이 | ProfileScreen.tsx |
+| [U05](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-3021) | 공유창 · 시스템 | 08 / 공통 내비게이션·오버레이 | ui.tsx/shareTodo |
+| [U06](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-3067) | 공통 버튼 상태 | 08 / 공통 내비게이션·오버레이 | theme.ts · ui.tsx · motion.tsx |
+
 #### 2026-11-05 — Workspace Studio 적합성 검토
 
 - 사용자 요청으로 핵심 개발을 우선하고 Studio는 이후 선택적 통합 후보로 기록했다. 앱 기능과 자동 빌드 동작은 바꾸지 않았다.
@@ -341,6 +452,7 @@ d1be345 Merge daily documentation update with layout and build automation
 aa65cea docs: daily project update [skip ci]
 cca087c docs: daily project update [skip ci]
 e706615 docs: daily project update [skip ci]
+8c84686 docs: daily project update [skip ci]
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
