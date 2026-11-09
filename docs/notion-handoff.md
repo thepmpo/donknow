@@ -42,6 +42,13 @@
 
 ### 변경 기록
 
+#### 2026-11-09 — 현재 앱 기준 대조 요청
+
+- 문서 설명보다 최신 mobile/ 코드와 현재 TestFlight를 우선한다. origin/main 확인 후 앱 기준 d1be345와 HEAD ede1f9c의 mobile/ diff가 없음을 확인했다. TestFlight 버전1.0.0은 사용자 확인, 빌드 번호·기기 화면은 아직 미확인이다.
+- 기존 C01/T01/A01/L01/P01 및 Todo 완료·편집/시트 상태를 코드와 비교했다. 실제 문구·순서·행 높이·safe area·하단 탭·입력/버튼·모달 닫기 차이는 [현재 UI 대조표](https://github.com/thepmpo/donknow/blob/main/docs/current-ui-comparison.md)에 기록했다.
+- Figma MCP 호출 한도가 여전히 차단되어 기존69개를 수정·삭제·재생성하지 않았다. `현재 앱과 차이` 메모는 적용 대기, `Current baseline` 표시와 `Proposed` 복제는 아직 수행하지 않았다. 실기기 대조 후 baseline 확정, 그 뒤 해당 화면만 Proposed로 복제한다.
+- 앱 기능·코드·원본 화면 구조 HTML은 변경하지 않았다. 문서 생성과 GitHub 저장은 운영 /project 배포와 구분한다.
+
 #### 2026-11-09 — Figma 저해상도 와이어프레임 초안
 
 - 연결된 Figma 파일 https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265 에 캘린더 8, Todo 목록 9, 편집 8, 덕 비서 12, 로그 4, 내정보·연결 12, 인증·시스템 10, 공통 6개로 총 69개 프레임을 만들었다. 편집 가능한 텍스트·자동 레이아웃·공통 컴포넌트와 소스 토큰을 사용했다.
@@ -453,6 +460,7 @@ aa65cea docs: daily project update [skip ci]
 cca087c docs: daily project update [skip ci]
 e706615 docs: daily project update [skip ci]
 8c84686 docs: daily project update [skip ci]
+ede1f9c docs: preserve 69 Figma wireframes and pending review checklist
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
