@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-09 · 한국 시간 · 기능 코드 b7afa93 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-10 · 한국 시간 · 기능 코드 b7afa93 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -301,6 +301,16 @@
 ### 매일 개발 정리
 
 
+##### 2026-11-10 — 당일 저장된 작업
+
+실제 정리: 05:36 KST. 새 저장 작업 2개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [ede1f9c](https://github.com/sjfieni/donknow/commit/ede1f9c35d6dd0fe9af2a2f720fb731e883abf99) · 11-09 11:01 · docs: preserve 69 Figma wireframes and pending review checklist
+
+- [fcb481b](https://github.com/sjfieni/donknow/commit/fcb481b0c416379bddc323e876ac1cbe7298e543) · 11-09 12:18 · docs: compare current mobile UI with existing wireframes
+
+
+
 ##### 2026-11-09 — 당일 저장된 작업
 
 실제 정리: 01:35 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -461,6 +471,7 @@ cca087c docs: daily project update [skip ci]
 e706615 docs: daily project update [skip ci]
 8c84686 docs: daily project update [skip ci]
 ede1f9c docs: preserve 69 Figma wireframes and pending review checklist
+fcb481b docs: compare current mobile UI with existing wireframes
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.

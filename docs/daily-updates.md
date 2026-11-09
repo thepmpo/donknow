@@ -1,5 +1,15 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-10:start -->
+### 2026-11-10 — 당일 저장된 작업
+
+실제 정리: 05:36 KST. 새 저장 작업 2개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [ede1f9c](https://github.com/sjfieni/donknow/commit/ede1f9c35d6dd0fe9af2a2f720fb731e883abf99) · 11-09 11:01 · docs: preserve 69 Figma wireframes and pending review checklist
+
+- [fcb481b](https://github.com/sjfieni/donknow/commit/fcb481b0c416379bddc323e876ac1cbe7298e543) · 11-09 12:18 · docs: compare current mobile UI with existing wireframes
+<!-- daily:2026-11-10:end -->
+
 <!-- daily:2026-11-09:start -->
 ### 2026-11-09 — 당일 저장된 작업
 
