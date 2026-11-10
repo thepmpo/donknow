@@ -2,12 +2,13 @@
   "upstream": "https://github.com/GreenSheep01201/claw-empire",
   "version": "2.0.4",
   "baseCommit": "66a24ea7df2435ef897c48c147deb7ec572c01c2",
-  "policyCommit": "ee9e90883c3cff73db25d92d3721c4c28ed59467",
-  "patchSha256": "ac65780175901ab37b0eb62b71203fc0bb8d3bc33eaafdea8fd3deaaef0fbeb7",
-  "apiTests": 247,
-  "policyTests": 44,
+  "policyCommit": "a7c8b011a6df6d9a50e26671bb974bff91197df1",
+  "patchSha256": "95966bede7b823030c5afab704331cca05f3f5031b7ea0a3ec6dc220e2625f0b",
+  "apiTests": 252,
+  "policyTests": 49,
   "realModelsCalled": false,
   "workersEnabled": false,
   "officialCodexVersion": "0.167.0",
-  "officialCodexSha256": "cdcb45aaa01d0f14e298985e09465aebccd47f64ecd298aea44814af7b62bbda"
+  "officialCodexSha256": "cdcb45aaa01d0f14e298985e09465aebccd47f64ecd298aea44814af7b62bbda",
+  "knowledgeEnabled": true
 }

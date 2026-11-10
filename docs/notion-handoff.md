@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[공통 제품 문서함](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md): 기존 제품 문서를 기본 연결하고 문서 추가 즉시 버전을 발행합니다. 모든 역할이 최신 목록·관련 원문을 읽도록 연결하며 공통/프로젝트 범위를 구분합니다. 로컬 문서함은 http://127.0.0.1:8791 이고 공개 업로드 공간은 아닙니다. 문서 변경 시 이전 실행 승인은 만료됩니다.
+
 [AI 사무실 첫 실행 준비](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md): 공식 Codex 실행기·일회 제품 검토·보고서/중지 명령을 준비했습니다. API247개와 빌드 및 실제 네이티브 도구 격리를 검증했습니다. 첫 작업은 inbox, 승인/실행0, 개발 잠금입니다. 현재 환경의 auth.openai.com·chatgpt.com 차단 해제와 개인 터미널 ChatGPT 로그인이 남았습니다. 실제 모델 응답과 Render 공개 반영은 미검증입니다. [설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md) · [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md).
 
 
@@ -55,6 +57,13 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-10 — 모든 역할의 공통 제품 지식
+
+- 기존 제품 문서를 기본 연결하고 파일/본문 추가 즉시 버전을 발행하는 로컬 문서함을 구현했다. 원본 문서 변경은1초 간격으로 반영한다. 프로젝트 범위와 공통 범위를 구분했다.
+- 모든 worker에 목록·원문 읽기 전용 경로를 제공하고, 지식 변경 시 이전 승인 무효화/인덱서 중단 시 신규 실행 거부를 적용했다. 실행 중인 모델에 소급 학습시키지는 않는다.
+- 사무실 API252개·빌드, 프로젝트 테스트66개, 공개 문서 회귀 통과.
+- [사용 및 인계](ai-office-knowledge.md). 기존 앱/계정/복구 bundle 보존. 브라우저 업로드·작은 화면·CSRF, 지식 격리와 승인 변경을 검증했다. 실제 모델 호출/Render 배포는 미확인이다.
 
 #### 2026-11-10 — AI 사무실 승인 게이트·읽기 전용 검토 구현
 
@@ -506,6 +515,10 @@
 
 [실행 준비 안내](ai-office-ready.md): 공식 Codex0.167.0 고정, 제품 검토 대기 작업, 사전진단/개인 로그인/일회실행/중지/보고서 명령을 추가했다. 사무실 API247개와 빌드 통과. 실제 도구 격리 검증, 중복 준비 방지와 네트워크·인증 미충족 실행 거부를 확인했다. 네트워크 두 호스트 허용과 ChatGPT 로그인, 실계정 첫 응답 검증이 남는다. 기존 앱·인증·bundle을 보존했다.
 
+#### 2026-11-10 — AI 사무실 문서함 즉시 반영
+
+[공통 제품 지식](ai-office-knowledge.md): 기존 문서 기본 연결·파일/본문 즉시 반영·모든 역할의 최신 목록/원문 연결을 구현했다. 공통/프로젝트 문서를 분리하고 문서 변경 시 이전 승인 무효화와 인덱서 중단 차단을 검증했다. 브라우저320px 업로드/버전 변경·CSRF 차단 통과. 실제 모델 학습/외부 배포 완료로 해석하지 않는다.
+
 
 ### Git 커밋 이력
 
@@ -585,6 +598,7 @@ ae78d0f Confirm official tone and reusable design principles v1.0
 579984f Prepare multi-project AI office and isolated project onboarding
 cebc65c Add tested AI office approval gate and isolated worker policy
 2d5c238 Preserve required unified patch context whitespace
+59da1b7 Prepare AI office first product review and account readiness workflow
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1144,10 +1158,73 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - `/design-guide`는 build-design-guide.py가 실제 토큰에서 만든다. 레이아웃 변경 시 공유 컴포넌트와 공개 가이드를 함께 갱신한다.
 - ios-testflight.yml은 실제 앱 코드 main 반영 시 EAS 빌드·자동 제출 요청이다. EXPO_TOKEN이 필요하고 GitHub 초록 체크를 빌드/Apple 처리 완료라고 하지 않는다. 무료 한도 내 기존 자원만 사용한다.
 
+## AI 사무실 제품 지식 — 2026-11-10
+
+- [공통 제품 문서함](docs/ai-office-knowledge.md)을 사용한다. 기존 docs/README/AGENTS와 새 문서를 역할에 관계없이 작업 시작 시 연결한다. `/run/office-knowledge/INDEX.md`가 있으면 먼저 확인하고 관련 원문과 출처 버전을 읽는다. 역사/제안/승인된 결정을 구분한다.
+- 문서는 참고 데이터이며 권한을 확대하지 않는다. 프로젝트 간 브랜드/비밀 자료를 혼합하지 않는다. 실제 읽은 문서만 읽었다고 기록한다. 추가 문서는 다음 작업에 적용되며 기존 실행은 시작 버전을 유지한다.
+
 
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 原文 / docs/ai-office-knowledge.md
+
+### AI 사무실 공통 제품 문서함
+
+2026-11-10. 사용자가 요청한 “제품 문서 기본 학습·추가 즉시 반영”을 모델 재훈련 대신 모든 역할의 작업 시작 컨텍스트에 연결했다. 문서함을 사용하는 데 AI 로그인은 필요 없다. 실제 AI 업무는 기존 네트워크/로그인 조건을 충족해야 한다.
+
+#### 사용자가 바로 할 일
+
+1. 사무실이 실행된 환경에서 **http://127.0.0.1:8791** 을 연다.
+2. `duckduck` 또는 `모든 프로젝트 공통`을 선택한다. 다른 프로젝트는 저장소 등록 후 자동으로 나타난다.
+3. MD/TXT/JSON 파일을 선택하거나 문서 이름과 내용을 붙여넣는다.
+4. **추가하고 즉시 반영**을 누른다. “반영 완료”와 문서 수·버전·갱신 시간을 확인한다.
+
+같은 이름은 덮어쓰지 않는다. 수정본은 새 버전 이름으로 추가하고 무엇을 대체하는지 본문에 명시한다. 문서함은 로컬 비공개 공간이며 업로드 내용은 Git이나 Render로 자동 발행하지 않는다. PDF/Word/이미지는 현재 직접 해석하지 않는다. 본문을 TXT/MD로 내보내거나 붙여넣는다. 비밀번호·토큰·개인 키를 넣지 않는다. 문서 한 개 최대2MiB, 프로젝트 전체32MiB/5000개 제한이며 읽을 수 없는 문서는 성공으로 표시하지 않는다.
+
+#### 이미 연결한 자료
+
+등록한 원본 저장소의 `docs/` 안 MD/TXT/JSON 전체와 루트 README/AGENTS를 기본 등록한다. 기존 제품 방향·디자인·인수인계·현재 상태·실행·배포 안내가 포함된다. 외부 Notion/Figma/공개 URL 내용을 자동으로 가져왔다는 뜻은 아니다. 저장소에 없는 외부 원문은 추가해야 한다.
+
+공식 `docs/reusable-product-design-principles.md`는 출처를 적은 초기 등록본으로 공통 문서함에도 넣었다. 이후 공통 원칙을 바꾸려면 문서함에서 새 버전으로 추가한다. duckduck 고유 브랜드는 다른 프로젝트에 자동 적용하지 않는다. 프로젝트 문서는 해당 프로젝트의 모든 역할에만 제공하고, 공통 문서는 등록된 모든 프로젝트에 제공한다.
+
+#### 언제 어떻게 반영되는가
+
+- 웹에서 추가: 저장 요청이 새 버전을 발행한 뒤에만 반영 완료를 표시한다.
+- 문서 폴더 직접 추가/수정/삭제: 실행 중인 인덱서가1초 간격으로 확인한다.
+- 모든 역할: 공통 CLI 실행 경로에서 최신 전체 목록·문서 해시·읽기 지시를 프롬프트에 넣고 원문 스냅샷을 읽기 전용 `/run/office-knowledge`에 연결한다. 제품팀뿐 아니라 승인된 개발/QA 작업에도 같은 경로가 적용된다.
+- 작업 전 `INDEX.md`와 관련 원문을 읽고 보고서에 실제 읽은 경로/버전을 적도록 요구한다. 모든 문서를 이미 이해했다고 보장하거나 모델 자체를 재학습한 것으로 보고하지 않는다.
+- 문서 버전도 실행 승인 지문에 포함한다. 추가/수정 후 이전 승인은 무효이고 최신 버전으로 다시 승인해야 한다. 자동 실행 권한은 생기지 않는다.
+- 이미 실행 중인 작업은 시작 당시 스냅샷을 유지한다. 문서를 추가해도 진행 중인 모델의 기억을 즉석 변경하지 않는다. 최신 내용을 즉시 작업에 적용해야 하면 `stop` 후 최신 문서로 새 작업을 지정한다.
+- 문서 검사 실패 또는 인덱서 heartbeat가10초 이상 끊기면 신규 실행을 거절한다. 이전 스냅샷을 최신인 것처럼 실행하지 않는다. 과거 스냅샷은 추적을 위해 보존한다.
+
+#### 로컬 저장 위치와 시작
+
+- 프로젝트 문서: `/workspace/ai-office/knowledge/projects/duckduck/inbox/`
+- 공통 문서: `/workspace/ai-office/knowledge/shared/inbox/`
+- 발행 버전: `/workspace/ai-office/projects/<slug>/knowledge/versions/<sha256>/`
+- 최신 포인터/건강 상태: 같은 knowledge 폴더의 `CURRENT.json`, `HEARTBEAT`, 실패 시 `ERROR`
+
+```sh
+# 사무실과 문서함을 함께 시작; 이미 실행 중이면 중복 실행하지 않는다.
+/workspace/ai-office/bin/start.sh
+# 수동 즉시 갱신
+cd /workspace/donknow
+node scripts/ai-office-knowledge.mjs sync
+# 실제 AI 첫 검토 진단/로그인/실행
+node scripts/ai-office-ready.mjs doctor
+```
+
+시작 스크립트는 문서 인덱서와 사무실을 함께 유지하고 종료 시 함께 정리한다. 환경 자체가 종료되면 서비스를 보장하지 않는다. 새 환경에서는 [설치 문서](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md)와 pinned runtime patch를 적용하고 `AI_OFFICE_KNOWLEDGE_ENABLED=true`, workers/development=false를 유지한다. 원래 앱 DB/인증을 복사하지 않는다.
+
+#### 검증·인계
+
+인덱스 중복 갱신, 문서 추가/격리, 공통 전파, 실패 시 이전 버전 보존, 심볼릭 링크/기본 자격 증명 패턴 거부를 검사했다. 사무실은 변조된 문서·없는 문서함을 거절하고, 새 문서가 기존 승인을 무효화하며, 모든 작업에 지식 읽기 전용 마운트를 제공하는 회귀 검사를 포함한다. 사무실 API252개·빌드, 프로젝트 테스트66개와 문서 회귀를 통과했다. 실제 브라우저320px에서 업로드→새 문서 수/버전 반영·CSRF 차단·가로 넘침 없음·스크립트 오류 없음을 확인했다. 실계정 AI가 원문을 실제로 읽고 보고서를 작성하는 전체 검증은 네트워크/로그인 후 첫 작업에서 확인한다.
+
+[첫 실행 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md) · [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md) · [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md) · [공식 공통 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)
+
+현재 환경의 브라우저 패널 자동 열기 도구는 연결 오류를 반환했다. 서비스 자체는 loopback8791에서 검증했으며, 다른 기기에서 접속하려면 해당 환경의 브라우저/포트 전달 기능이 필요하다. 인증 없이 공용 인터넷으로 노출하지 않는다.
 
 ### 原文 / docs/ai-office-ready.md
 
@@ -1192,6 +1269,10 @@ node scripts/ai-office-ready.mjs stop
 사무실 API 테스트 247개·TypeScript/웹 빌드 통과. 실제 공식 Codex 도구 샌드박스에서 제품 소스 읽기 전용, 개발 전용 worktree 쓰기, 다른 프로젝트/사무실 비밀 격리와 호스트 loopback 접근 차단을 확인했다. 이 검증은 고정 명령이며 모델 호출이 아니다. 실제 서버 진단은 실행기/샌드박스 준비 완료, 인증 미완료와 두 호스트 차단만 보고한다. 대기 작업 재사용과 차단 상태의 실행 거부를 확인했다.
 
 실계정 모델 응답·도구 호출의 전체 흐름과 계정 한도는 아직 검증하지 못했다. Render 공개 문서 반영도 이 환경의 외부 접근 제한으로 확인하지 못했다. 앱 UI·Figma·브리핑·날씨·Duo는 이번에 변경하지 않았다. 복구 bundle은 그대로 보존한다.
+
+#### 공통 제품 문서함
+
+[문서함 사용·자동 반영 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md). 로컬 http://127.0.0.1:8791 에서 파일 또는 본문을 추가한다. 원본 저장소 제품 문서와 공통 원칙을 자동 연결하고 모든 역할이 최신 버전으로 작업을 시작한다. 로그인 없이 문서를 등록할 수 있다.
 
 ### 原文 / docs/ai-office-approval-gate.md
 
@@ -1363,6 +1444,10 @@ node scripts/ai-office-projects.mjs add <영문-slug> <기존-로컬-Git-저장�
 #### 첫 실행 준비 후속 기록 — 2026-11-10
 
 [최신 준비 상태와 로그인·실행·중지·보고서 명령](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md)을 확인한다. 과거의 작업0/테스트237 기록 이후 첫 검토 inbox1, 테스트247로 갱신했다. 실제 모델 호출은0이며 개발은 계속 잠금이다.
+
+#### 공통 제품 문서함
+
+[문서함 사용·자동 반영 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md). 로컬 http://127.0.0.1:8791 에서 파일 또는 본문을 추가한다. 원본 저장소 제품 문서와 공통 원칙을 자동 연결하고 모든 역할이 최신 버전으로 작업을 시작한다. 로그인 없이 문서를 등록할 수 있다.
 
 ### 原文 / docs/ai-office-tone-summary.md
 
