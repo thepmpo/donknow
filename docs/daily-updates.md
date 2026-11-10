@@ -1,5 +1,53 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-10:start -->
+### 2026-11-10 — 당일 저장된 작업
+
+실제 정리: 05:36 KST. 새 저장 작업 2개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [ede1f9c](https://github.com/sjfieni/donknow/commit/ede1f9c35d6dd0fe9af2a2f720fb731e883abf99) · 11-09 11:01 · docs: preserve 69 Figma wireframes and pending review checklist
+
+- [fcb481b](https://github.com/sjfieni/donknow/commit/fcb481b0c416379bddc323e876ac1cbe7298e543) · 11-09 12:18 · docs: compare current mobile UI with existing wireframes
+<!-- daily:2026-11-10:end -->
+
+<!-- daily:2026-11-09:start -->
+### 2026-11-09 — 당일 저장된 작업
+
+실제 정리: 01:35 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+이 실행 구간에 새로 저장된 작업이 없습니다. 이전 작업과 최신 수동 변경 기록은 유지합니다.
+<!-- daily:2026-11-09:end -->
+
+<!-- daily:2026-11-08:start -->
+### 2026-11-08 — 당일 저장된 작업
+
+실제 정리: 01:15 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+이 실행 구간에 새로 저장된 작업이 없습니다. 이전 작업과 최신 수동 변경 기록은 유지합니다.
+<!-- daily:2026-11-08:end -->
+
+<!-- daily:2026-11-07:start -->
+### 2026-11-07 — 당일 저장된 작업
+
+실제 정리: 02:19 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+이 실행 구간에 새로 저장된 작업이 없습니다. 이전 작업과 최신 수동 변경 기록은 유지합니다.
+<!-- daily:2026-11-07:end -->
+
+<!-- daily:2026-11-06:start -->
+### 2026-11-06 — 당일 저장된 작업
+
+실제 정리: 02:56 KST. 새 저장 작업 4개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [b7afa93](https://github.com/sjfieni/donknow/commit/b7afa930e6658772a46de0bc104f1c15b8eecd2e) · 11-04 19:22 · Unify page layout and calendar navigation; automate TestFlight builds
+
+- [7e97f7d](https://github.com/sjfieni/donknow/commit/7e97f7df02b71fa47fbff65749cb3595de77f1a5) · 11-04 19:22 · Publish shared design guide and release automation instructions
+
+- [7ed343d](https://github.com/sjfieni/donknow/commit/7ed343d12845c0a86679658ad6f74068957c142f) · 11-05 12:02 · Assess Workspace Studio as an optional future Todo integration
+
+- [b5c7d54](https://github.com/sjfieni/donknow/commit/b5c7d547575512c0eb266875f400c6dac7bb92e0) · 11-05 12:03 · Embed integration research and assistant guides in full handoff
+<!-- daily:2026-11-06:end -->
+
 <!-- daily:2026-11-05:start -->
 ### 2026-11-05 — 당일 저장된 작업
 
