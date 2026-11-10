@@ -13,9 +13,9 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-- [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 설명·선택지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 원칙 v0.1](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
+- [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
 - 사용자 확인: GitHub/Render 기준 f76172d, iPhone build and submit 성공, TestFlight **1.0.0 (12)**. 아래 예전 날짜의 빌드/배포 미확인 기록은 당시 상태입니다. 에이전트가 Apple/Render 대시보드를 직접 검증한 것과 구분합니다. 실모델·실계정 가동은 아직 완료되지 않았습니다.
-- 톤앤톤 합의 전 앱 디자인 일괄 변경 금지. 원칙은 **v0.1 후보**이며 사용자 선택·승인 범위/버전 기록 후 공식 v1.0으로 만듭니다. 현재는 앱·Figma 변경 없이 문서만 작성했습니다.
+- 사용자가 추천안 **A + ② + 가**를 공식 확정했습니다(2026-11-10): **차분하고 친근한 비서 · 필요할 때 담당 역할 표시 · 오리는 인사/완료 순간에 가볍게 표현**. RP-01~RP-12는 공식 v1.0입니다. 초기 초안 A + ① + 가보다 최신 승인이 우선합니다. [디자인 가이드](/design-guide)와 원칙 문서에 승인 범위를 기록했습니다. 앱·Figma·새 수치/시안은 이번에 변경하지 않습니다.
 - 붙여넣기 Todo는 덕 채팅의 AI 후보→사용자 확인→추가 방향입니다. 브리핑·날씨는 정한 시간에 덕 채팅으로 오는 자동화 방향이며 후속 간략 문서 전 구현/현재 코드 수정 금지입니다.
 - [Figma 69개 기존 화면](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265)과 [저장된 검수 목록](https://github.com/thepmpo/donknow/blob/main/docs/figma-wireframes.md)은 유지합니다. Current baseline 교정/Proposed 분리는 미완료입니다. 이번 metadata 요청도 Starter 한도로 실패했습니다.
 - Apple iPhone Duo의 `Duo 우측 내비게이션`/`DuoTrailingNavigation`은 [상세 분석 3절](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)에 기록만 했습니다. 일반 iPhone 하단 유지, Duo 접힘/펼침 우측 이동·상태 보존·공식 API 검증이 필요하며 **“Duo 진행” 전 코드 수정 금지**입니다.
@@ -41,7 +41,7 @@
 | 개인 데이터 내보내기 | 웹 다운로드·네이티브 파일 공유 구현 | 웹 실동작 테스트, 네이티브 공유는 기기 확인 필요 |
 | 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 정기 schedule 성공은 아직 미확인 |
 | iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 2026-11-10 iPhone Actions 성공 사용자 확인. 에이전트 독립 검증·App Store 공개와 구분 |
-| 최신 디자인·모션 | 기존 구현 유지, 새 톤 합의 대기 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
+| 최신 디자인·모션 | 기존 구현 유지, 새 톤 공식 확정 v1.0 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
 | AI 비서 | 동의 기반 자료 분석·근거·작업 제안 구현 | AI 키/모델/명시적 활성화 필요. 모의 응답 검증과 실제 모델 호출은 구분 |
 | 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
 | 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장, 실제 AI 가동은 서버 설정 필요 |
@@ -52,6 +52,13 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-10 — 톤앤톤 추천안 공식 확정
+
+- 사용자가 최신 추천안 A + ② + 가를 승인했다. 차분하고 친근한 비서·필요할 때 역할 표시·오리는 인사/완료 순간에 가볍게 표현을 공식 기준으로 확정했다. 초기 초안의 A + ① + 가보다 이번 승인이 우선한다.
+- 디자인 가이드·쉬운 설명·상세 분석·재사용 원칙 RP-01~RP-12를 공식 v1.0으로 갱신하고 인수인계/공개 문서 생성 소스에 반영했다. 새 화면/수치/구현을 일괄 승인한 것으로 확대하지 않는다.
+- 앱·서버·Figma69개·브리핑·날씨·Duo·인증/데이터·복구 bundle은 보존한다. 이번 작업은 문서 반영이며 Render 공개 반영 여부는 Git 저장과 구분한다.
+
 
 #### 2026-11-10 — AI 사무실 대화 분석과 톤 합의 문서
 
@@ -340,6 +347,13 @@
 
 ### 매일 개발 정리
 
+##### 2026-11-10 — 수동 기록: 톤앤톤 공식 승인
+
+- 사용자가 최신 추천안 A + ② + 가를 승인했다. 차분하고 친근한 비서·필요할 때 역할 표시·오리는 인사/완료 순간에 가볍게 표현을 공식 기준으로 확정했다. 초기 초안의 A + ① + 가보다 이번 승인이 우선한다.
+- 디자인 가이드·쉬운 설명·상세 분석·재사용 원칙 RP-01~RP-12를 공식 v1.0으로 갱신하고 인수인계/공개 문서 생성 소스에 반영했다. 새 화면/수치/구현을 일괄 승인한 것으로 확대하지 않는다.
+- 앱·서버·Figma69개·브리핑·날씨·Duo·인증/데이터·복구 bundle은 보존한다. 이번 작업은 문서 반영이며 Render 공개 반영 여부는 Git 저장과 구분한다.
+
+
 ##### 2026-11-10 — 수동 기록: AI 사무실 대화·톤앤톤 분석
 
 - 첨부 텍스트 전체684줄을 읽고 직접 사용자 선호·이전 AI 추천·현재 코드·새 디자인 후보를 분리했다. [15개 영역 상세 분석](ai-office-ux-analysis.md), [쉬운 설명·선택지](ai-office-tone-summary.md), [재사용 원칙 v0.1](reusable-product-design-principles.md)을 작성했다. 원문 전체는 공개하지 않았다.
@@ -525,6 +539,7 @@ fcb481b docs: compare current mobile UI with existing wireframes
 9bb2e26 Refresh public project handoff with verified implementation and activation limits
 c1c5d31 docs: daily project update [skip ci]
 f76172d Merge origin/main preserving functional completion and wireframe documentation
+3234c04 Document AI office preferences, tone options and reusable approval principles
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -698,7 +713,7 @@ f76172d Merge origin/main preserving functional completion and wireframe documen
 
 ### design guide fixture
 파일: `artifacts/design-guide-fixture.png`
-분류: 모의 응답 테스트 화면 · 221,764 bytes · SHA-256 `7faaa6481917a734c6612802bc59b269038816adb86a6c2f1cfadb6fde59f09e`
+분류: 모의 응답 테스트 화면 · 344,204 bytes · SHA-256 `45292d13eb99355b062d8973b139810be5f40e3924a43eb006715272b4b1ad64`
 ![artifacts/design-guide-fixture.png](https://raw.githubusercontent.com/sjfieni/donknow/1c75e511c9f3ac301703cd863110d8dcedacaa13/artifacts/design-guide-fixture.png)
 
 ### duckduck
@@ -1093,7 +1108,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 덕의 느낌을 함께 정하기 — 쉬운 설명
 
-2026-11-10 · 검토용 초안. [상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md) · [다른 프로젝트용 공통 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md).
+2026-11-10 · 공식 확정 v1.0. [상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md) · [다른 프로젝트용 공통 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md).
 
 #### 제가 이해한 원하는 느낌
 
@@ -1103,7 +1118,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 #### 덕에 적용하고 싶은 점
 
-사용자에게는 여러 AI 직원을 관리하는 일 대신 덕 하나와 편하게 이야기하는 경험을 주는 쪽을 제안해요. 내부에서는 제품·디자인·UX·QA 역할로 나눠 검토할 수 있지만, 모든 역할을 앱 화면에 펼쳐놓을 필요는 없어요. 이 역할 노출 정도는 함께 정하고 싶어요.
+사용자에게는 여러 AI 직원을 관리하는 일 대신 덕 하나와 편하게 이야기하는 경험을 주는 쪽을 제안해요. 내부에서는 제품·디자인·UX·QA 역할로 나눠 검토할 수 있지만, 모든 역할을 앱 화면에 펼쳐놓을 필요는 없어요. 역할은 필요할 때만 표시하는 것으로 확정했어요.
 
 덕 채팅에 내용을 붙여넣으면 AI가 할 일 후보를 정리하고, 사용자가 제목과 날짜를 고쳐 필요한 것만 Todo에 추가하는 흐름이 중심이에요. “덕이 제안한 일”과 “실제로 추가한 일”도 분명히 구별해요. 초안은 쉽게 버릴 수 있고, 외부 발송은 내용을 확인한 뒤에만 실행돼요.
 
@@ -1115,13 +1130,13 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 #### 가져오지 않을 부분과 이유
 
-게임형 사무실·직원 수·다른 서비스의 캐릭터·로고를 그대로 가져오지는 않아요. 지금은 그 외형을 선택하신 근거가 없고, 덕의 간단한 Todo와 달력을 복잡하게 만들 수 있기 때문이에요. 오리는 유지하되 얼마나 귀엽고 자주 움직일지는 선택을 받은 뒤 정해요.
+게임형 사무실·직원 수·다른 서비스의 캐릭터·로고를 그대로 가져오지는 않아요. 지금은 그 외형을 선택하신 근거가 없고, 덕의 간단한 Todo와 달력을 복잡하게 만들 수 있기 때문이에요. 오리는 인사·완료 같은 순간에 가볍게 표현하는 것으로 확정했어요.
 
 “AI가 다 알아서 완료”, “비용 0원” 같은 약속도 하지 않아요. 실제 저장과 발송은 결과가 확인돼야 하고, 외부 권한과 비용은 별개예요. 다른 프로젝트의 Flutter·Supabase 구조와 친구 공개 정책도 덕으로 옮기지 않아요.
 
-#### 지금 함께 선택할 세 가지
+#### 공식 확정한 세 가지
 
-제 추천 조합은 **A + ① + 가**예요. 선택 전에는 어떤 조합도 확정하지 않아요.
+사용자가 최신 추천안 **A + ② + 가**를 공식 확정했어요. 차분하고 친근한 비서, 필요할 때 역할 표시, 오리는 인사·완료 순간에 가볍게 표현해요. 초기 초안의 A + ① + 가보다 이 승인이 우선해요. 아래 대안은 비교 기록이며 다시 선택할 필요는 없어요.
 
 | 항목 | 선택지 | 차이 |
 |---|---|---|
@@ -1129,9 +1144,9 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 | AI 역할 노출 | ① 덕 하나만 보이기 / ② 필요할 때 담당 역할 표시 / ③ 직원별로 보이기 | 복잡함과 역할 투명성 사이의 선택이에요. ③의 조직·직원 UI는 별도 기획이 필요해요. |
 | 오리 표현 | 가. 인사·완료 같은 순간만 / 나. 작은 표정 반응을 자주 / 다. 사무실·움직임까지 | 기존 오리는 유지해요. 새로운 표정·자산·움직임은 합의 후 검토해요. |
 
-선택은 예를 들어 “A, ②, 가. 덕은 친근하지만 설명은 짧게”처럼 알려주시면 돼요. 채팅 말투는 일단 지금처럼 짧고 담백한 존댓말을 추천하지만, 더 편한 말투를 원하시면 같이 정할 수 있어요.
+말투도 짧고 담백한 존댓말을 기준으로 해요. 필요한 역할은 보조로 알려주되, 사용자에게는 덕 하나와 편하게 이야기하는 경험을 유지해요.
 
-이 선택을 받은 뒤 공식 원칙으로 정리하고, 실제 앱과 맞춘 Figma Current baseline을 확인한 다음 승인 범위의 Proposed를 비교할 계획이에요. 현재 69개 원본을 다시 만들거나 앱을 한꺼번에 바꾸지 않아요. Apple iPhone Duo도 “Duo 진행” 전까지 기록만 유지해요.
+이번 선택을 공식 원칙 v1.0으로 정리했어요. 이후에는 실제 앱과 맞춘 Figma Current baseline을 확인한 다음 승인 범위의 Proposed를 비교할 계획이에요. 현재 69개 원본을 다시 만들거나 앱을 한꺼번에 바꾸지 않아요. Apple iPhone Duo도 “Duo 진행” 전까지 기록만 유지해요.
 
 #### 기록·운영 확인
 
@@ -1141,8 +1156,22 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### AI 사무실 대화 분석과 duckduck UX 명세 초안
 
-문서 ID: DD-UX-2026-11-10 · 버전 0.1 · 작성일 2026-11-10 KST.
-상태: **분석 완료 / 톤앤톤 사용자 합의 대기 / 앱·Figma 변경 금지**.
+문서 ID: DD-UX-2026-11-10 · 버전 1.0 · 작성일 2026-11-10 KST.
+상태: **분석 완료 / 추천안 공식 확정 v1.0 / 이번 변경은 문서 반영만**.
+
+#### 공식 승인 — 2026-11-10 · v1.0
+
+승인 근거: 사용자 요청 “추천안으로 공식 확정하고 디자인 가이드와 인수인계 문서에 반영해줘”. 바로 앞 대화의 최신 추천안 **A + ② + 가**를 확정한다. 초기 분석 초안의 A + ① + 가 추천보다 이번 승인이 우선한다.
+
+- **톤:** 차분하고 친근한 비서. 짧고 담백한 존댓말로 목적·현재 상태·다음 행동을 전달한다.
+- **역할 표시:** 기본 대화 상대는 덕 하나다. 검토·설명에 필요할 때만 담당 역할을 보조 표시한다. 직원별 화면·다수 캐릭터·조직 관리를 기본 경험으로 만들지 않는다.
+- **오리:** 기존 오리를 유지하며 인사·완료 같은 의미 있는 순간에 가볍게 표현한다. 상시 움직임·게임형 사무실·새 캐릭터 자산은 이번 승인 범위가 아니다.
+- **실행 원칙:** AI는 근거와 후보를 제안하고, 사용자가 내용을 확인한 뒤 실행한다. 제안·확인 대기·실제 성공·실패·결과 불확실을 구분한다.
+- **재사용:** RP-01~RP-12를 공식 공통 원칙 v1.0으로 확정한다. 다른 프로젝트는 브랜드·색·토큰·IA를 별도 정의하며 duckduck 고유 값을 그대로 강제하지 않는다.
+
+승인은 디자인 방향·공통 원칙과 문서 반영에 한정한다. 앱 일괄 변경·Figma 교정 완료·새 수치/시안 승인·AI 직원 도구 도입을 뜻하지 않는다. 현재 코드 토큰은 유지하며 실제 적용은 Current baseline 검수 후 변경 범위/시안으로 구체화한다. 브리핑·날씨는 후속 간략 문서 대기, Duo는 “Duo 진행” 전 구현 금지를 유지한다.
+
+
 코드 기준: [main f76172d](https://github.com/thepmpo/donknow/commit/f76172d058568f1bd27d21f44dc8115edce5ab64). 현재 앱을 바꾸는 명세가 아니라, 합의할 후보와 기존에 보존할 계약을 나눈 문서다.
 
 빠른 이동: [쉬운 설명·선택지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md) · [다른 프로젝트용 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md) · [현재 UI 대조](https://github.com/thepmpo/donknow/blob/main/docs/current-ui-comparison.md) · [AI 실행 경계](https://github.com/thepmpo/donknow/blob/main/docs/assistant-actions.md) · [디자인 가이드](https://github.com/thepmpo/donknow/blob/main/docs/design-guide.md) · [전체 인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md).
@@ -1355,7 +1384,7 @@ UI P에서 확인 화면에는 무엇을 바꾸는지, 어느 계정/대상인�
 
 [재사용 원칙 문서](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)에 RP-01~RP-12로 분리했다. 목적·사람의 결정권·근거·되돌릴 수 있는 진행·정확한 상태·승인된 디자인 인계·접근성·계정 경계를 제품 종류와 무관하게 적용한다. duckduck의 파랑/오리/5탭/3초나 DAYWIT의 친구 정책은 공통 규칙이 아니다.
 
-합의 전에는 v0.1 후보이며, 확정 후 승인 범위·문서 버전·변경 이력과 함께 v1.0 공식 원칙으로 승격한다. 이번에 사용자가 직접 정한 보호 조건은 지금부터 유효하되 새 시각 톤의 승인을 대신하지 않는다.
+2026-11-10 사용자 승인으로 RP-01~RP-12와 톤 A + ② + 가를 v1.0 공식 원칙으로 승격했다. 이하 과거 분석의 I/P는 도출 과정 또는 아직 확정하지 않은 화면 세부안이다. 톤 확정은 전체 화면·수치·기능 제안의 일괄 승인이 아니다.
 
 #### 12. 가져오지 않을 브랜드 고유 요소
 
@@ -1436,8 +1465,8 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 - [x] 첨부 전체 읽기, 파일 크기·해시·직접 사용자 발언 위치 기록.
 - [x] 기존 코드·디자인 토큰/동작·문서와 신규 선호 구분.
 - [x] 사용자 보고: Render f76172d, Actions 성공, TestFlight 1.0.0 (12). 에이전트 독립 검증과 분리.
-- [ ] 사용자 톤 후보·캐릭터 정도·AI 역할 노출 방식 합의.
-- [ ] 합의된 원칙만 승인 범위/버전/날짜와 함께 공식 v1.0 승격.
+- [x] 사용자 최신 추천안 A + ② + 가 공식 승인(2026-11-10).
+- [x] 승인한 톤과 RP-01~RP-12를 공식 v1.0으로 승격하고 범위/날짜/승인 발언 기록.
 - [ ] Claw-Empire/Pixel Agents 외형을 비교할 경우 실제 이미지·공식 자료 확보 후 별도 조사. 현재 도구 설치·계정 연결 안 함.
 
 ##### B. Figma
@@ -1474,7 +1503,7 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 - [ ] 접힘·펼침 우측 내비·탭/입력/편집/스크롤 연속성·힌지/키보드 검수 계획 승인.
 - [ ] iPad·일반 iPhone 세로/가로·큰 글자에서 오판/회귀 없음 확인.
 
-다음 AI는 분석 문서와 쉬운 요약을 먼저 읽고 **사용자가 선택한 부분만** 승인 기록에 반영한다. 아직 간략 문서가 오지 않은 브리핑·날씨와 보류된 Duo를 앞서 구현하지 않는다. 사용자와 합의한 뒤 대표 흐름의 작은 시안부터 검토하고 앱 수정은 그 이후다.
+다음 AI는 분석 문서와 쉬운 요약을 먼저 읽고 **사용자가 선택한 A + ② + 가와 공식 공통 원칙만** 승인 기록에 반영한다. 아직 간략 문서가 오지 않은 브리핑·날씨와 보류된 Duo를 앞서 구현하지 않는다. 사용자와 합의한 뒤 대표 흐름의 작은 시안부터 검토하고 앱 수정은 그 이후다.
 
 #### 검증·공개 반영 추적 — 2026-11-10
 
@@ -1486,10 +1515,10 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 
 ### 재사용 가능한 제품·AI 협업 디자인 원칙
 
-문서 ID: RP-DESIGN · 버전 0.1 · 상태: **공식화 후보, 사용자 톤앤톤 합의 대기**.
+문서 ID: RP-DESIGN · 버전 1.0 · 상태: **사용자 공식 승인 · 2026-11-10**.
 근거: [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md) · [사용자 확인용 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md).
 
-이 문서는 다른 프로젝트에 복사할 수 있는 계약 초안이다. 사용자에게 이미 승인된 데이터 보존·권한·작업 범위는 즉시 지키며, 새 미감/캐릭터/화면 구조는 합의 후 v1.0으로 확정한다. 이 문서 저장이나 Git push를 디자인 승인으로 간주하지 않는다.
+이 문서는 다른 프로젝트에서도 재사용할 공식 공통 원칙이다. 2026-11-10 사용자의 추천안 공식 확정 요청으로 RP-01~RP-12와 아래 톤을 승인했다. 개별 프로젝트의 시안·토큰 변경·구현 범위는 별도로 정의한다. Git push 자체가 승인 근거인 것은 아니다.
 
 | ID | 원칙 | 구현 계약 | 검수 질문 |
 |---|---|---|---|
@@ -1523,9 +1552,21 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 - 사용자 승인 범위/문서 버전/일시/근거:
 - 개발 담당 인계/미확정 항목/재검토 조건:
 
-#### 공식화 절차
+#### 승인 기록과 이후 적용 절차
 
-현재 승인 기록: 새 시각 톤에 대한 사용자 승인 없음. 이번 요청의 보호 조건과 채팅/예약 기능 방향은 [상세 분석 3절](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)에 기록한다.
+#### 공식 승인 — 2026-11-10 · v1.0
+
+승인 근거: 사용자 요청 “추천안으로 공식 확정하고 디자인 가이드와 인수인계 문서에 반영해줘”. 바로 앞 대화의 최신 추천안 **A + ② + 가**를 확정한다. 초기 분석 초안의 A + ① + 가 추천보다 이번 승인이 우선한다.
+
+- **톤:** 차분하고 친근한 비서. 짧고 담백한 존댓말로 목적·현재 상태·다음 행동을 전달한다.
+- **역할 표시:** 기본 대화 상대는 덕 하나다. 검토·설명에 필요할 때만 담당 역할을 보조 표시한다. 직원별 화면·다수 캐릭터·조직 관리를 기본 경험으로 만들지 않는다.
+- **오리:** 기존 오리를 유지하며 인사·완료 같은 의미 있는 순간에 가볍게 표현한다. 상시 움직임·게임형 사무실·새 캐릭터 자산은 이번 승인 범위가 아니다.
+- **실행 원칙:** AI는 근거와 후보를 제안하고, 사용자가 내용을 확인한 뒤 실행한다. 제안·확인 대기·실제 성공·실패·결과 불확실을 구분한다.
+- **재사용:** RP-01~RP-12를 공식 공통 원칙 v1.0으로 확정한다. 다른 프로젝트는 브랜드·색·토큰·IA를 별도 정의하며 duckduck 고유 값을 그대로 강제하지 않는다.
+
+승인은 디자인 방향·공통 원칙과 문서 반영에 한정한다. 앱 일괄 변경·Figma 교정 완료·새 수치/시안 승인·AI 직원 도구 도입을 뜻하지 않는다. 현재 코드 토큰은 유지하며 실제 적용은 Current baseline 검수 후 변경 범위/시안으로 구체화한다. 브리핑·날씨는 후속 간략 문서 대기, Duo는 “Duo 진행” 전 구현 금지를 유지한다.
+
+기존 보호 조건과 채팅/예약 기능 방향은 [상세 분석 3절](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)에 기록한다. 아래 절차의 톤 선택·원칙 공식화는 이번에 완료했으며 화면별 적용은 후속 단계다.
 
 1. 사용자가 쉬운 요약의 톤·친근함·역할 노출 수준을 선택한다.
 2. 선택한 범위와 미결정 항목을 문서에 기록한다. “전체 승인”으로 확대하지 않는다.
@@ -1534,11 +1575,13 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 5. 구현 중 정책/흐름 변경은 제품 검토로 돌린다. 새 변경이 기존 승인을 자동 상속하지 않는다.
 6. 테스트·최종 검수·배포 결과를 붙이고 다음 프로젝트에서 재사용한다.
 
-문서 이력: 2026-11-10 v0.1, 첨부 대화 전수 분석과 duckduck 현재 계약으로부터 초안 작성. 앱 디자인/실제 AI 직원 조직 도입은 수행하지 않았다.
+문서 이력: 2026-11-10 v1.0, 사용자 최신 추천안 승인과 RP-01~RP-12 공식화. 같은 날 v0.1은 분석 초안으로 보존하며 최신 승인이 우선한다. v0.1에서는 첨부 대화 전수 분석과 duckduck 현재 계약으로부터 초안 작성. 앱 디자인/실제 AI 직원 조직 도입은 수행하지 않았다.
 
 ### 原文 / docs/current-ui-comparison.md
 
 ### 현재 UI·기능 통합 대조 — 2026-11-10
+
+2026-11-10 후속 승인: 최신 추천안 A + ② + 가(차분한 비서·필요 시 역할 표시·오리는 의미 있는 순간에 가볍게 표현)를 공식 v1.0으로 확정했다. 아래 합의 대기 기록은 승인 전 상태이며 [디자인 가이드](https://github.com/thepmpo/donknow/blob/main/docs/design-guide.md)의 최신 승인 범위가 우선한다. 앱/Figma와 개별 시안·토큰은 이번에 변경하지 않는다.
 
 2026-11-10 사용자 최신 확인: Render f76172d·TestFlight1.0.0(12). 아래 빌드 번호 미확인/서버 배포 필요 설명은 각 브랜치 당시 기록이다. [AI 사무실/톤 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)과 [쉬운 선택지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md)를 추가했으며 시각 톤 합의 전 앱/Figma 변경은 없다. 브리핑·날씨는 후속 간략 문서 전 코드 유지, DuoTrailingNavigation은 “Duo 진행” 전 기록만 유지한다.
 
@@ -2572,6 +2615,21 @@ expo-blur를 새로 추가했으므로 기존 TestFlight 앱에서 OTA만으로 
 ### 原文 / docs/design-guide.md
 
 ### duckduck 디자인 적용 기준
+
+#### 공식 승인 — 2026-11-10 · v1.0
+
+승인 근거: 사용자 요청 “추천안으로 공식 확정하고 디자인 가이드와 인수인계 문서에 반영해줘”. 바로 앞 대화의 최신 추천안 **A + ② + 가**를 확정한다. 초기 분석 초안의 A + ① + 가 추천보다 이번 승인이 우선한다.
+
+- **톤:** 차분하고 친근한 비서. 짧고 담백한 존댓말로 목적·현재 상태·다음 행동을 전달한다.
+- **역할 표시:** 기본 대화 상대는 덕 하나다. 검토·설명에 필요할 때만 담당 역할을 보조 표시한다. 직원별 화면·다수 캐릭터·조직 관리를 기본 경험으로 만들지 않는다.
+- **오리:** 기존 오리를 유지하며 인사·완료 같은 의미 있는 순간에 가볍게 표현한다. 상시 움직임·게임형 사무실·새 캐릭터 자산은 이번 승인 범위가 아니다.
+- **실행 원칙:** AI는 근거와 후보를 제안하고, 사용자가 내용을 확인한 뒤 실행한다. 제안·확인 대기·실제 성공·실패·결과 불확실을 구분한다.
+- **재사용:** RP-01~RP-12를 공식 공통 원칙 v1.0으로 확정한다. 다른 프로젝트는 브랜드·색·토큰·IA를 별도 정의하며 duckduck 고유 값을 그대로 강제하지 않는다.
+
+승인은 디자인 방향·공통 원칙과 문서 반영에 한정한다. 앱 일괄 변경·Figma 교정 완료·새 수치/시안 승인·AI 직원 도구 도입을 뜻하지 않는다. 현재 코드 토큰은 유지하며 실제 적용은 Current baseline 검수 후 변경 범위/시안으로 구체화한다. 브리핑·날씨는 후속 간략 문서 대기, Duo는 “Duo 진행” 전 구현 금지를 유지한다.
+
+공식 원칙: [재사용 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md) · [쉬운 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md) · [분석과 근거](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md). 아래 기존 수치·동작 계약은 별도 변경 없이 보존한다.
+
 
 #### 목록 밀도와 화면 참고 기준 — 2026-11-03
 

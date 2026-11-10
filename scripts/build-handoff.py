@@ -36,9 +36,9 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-- [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 설명·선택지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 원칙 v0.1](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
+- [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
 - 사용자 확인: GitHub/Render 기준 f76172d, iPhone build and submit 성공, TestFlight **1.0.0 (12)**. 아래 예전 날짜의 빌드/배포 미확인 기록은 당시 상태입니다. 에이전트가 Apple/Render 대시보드를 직접 검증한 것과 구분합니다. 실모델·실계정 가동은 아직 완료되지 않았습니다.
-- 톤앤톤 합의 전 앱 디자인 일괄 변경 금지. 원칙은 **v0.1 후보**이며 사용자 선택·승인 범위/버전 기록 후 공식 v1.0으로 만듭니다. 현재는 앱·Figma 변경 없이 문서만 작성했습니다.
+- 사용자가 추천안 **A + ② + 가**를 공식 확정했습니다(2026-11-10): **차분하고 친근한 비서 · 필요할 때 담당 역할 표시 · 오리는 인사/완료 순간에 가볍게 표현**. RP-01~RP-12는 공식 v1.0입니다. 초기 초안 A + ① + 가보다 최신 승인이 우선합니다. [디자인 가이드](/design-guide)와 원칙 문서에 승인 범위를 기록했습니다. 앱·Figma·새 수치/시안은 이번에 변경하지 않습니다.
 - 붙여넣기 Todo는 덕 채팅의 AI 후보→사용자 확인→추가 방향입니다. 브리핑·날씨는 정한 시간에 덕 채팅으로 오는 자동화 방향이며 후속 간략 문서 전 구현/현재 코드 수정 금지입니다.
 - [Figma 69개 기존 화면](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265)과 [저장된 검수 목록](https://github.com/thepmpo/donknow/blob/main/docs/figma-wireframes.md)은 유지합니다. Current baseline 교정/Proposed 분리는 미완료입니다. 이번 metadata 요청도 Starter 한도로 실패했습니다.
 - Apple iPhone Duo의 `Duo 우측 내비게이션`/`DuoTrailingNavigation`은 [상세 분석 14절](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)에 기록만 했습니다. 일반 iPhone 하단 유지, Duo 접힘/펼침 우측 이동·상태 보존·공식 API 검증이 필요하며 **“Duo 진행” 전 코드 수정 금지**입니다.
@@ -78,7 +78,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | 개인 데이터 내보내기 | 웹 다운로드·네이티브 파일 공유 구현 | 웹 실동작 테스트, 네이티브 공유는 기기 확인 필요 |
 | 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 정기 schedule 성공은 아직 미확인 |
 | iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 2026-11-10 iPhone Actions 성공 사용자 확인. 에이전트 독립 검증·App Store 공개와 구분 |
-| 최신 디자인·모션 | 기존 구현 유지, 새 톤 합의 대기 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
+| 최신 디자인·모션 | 기존 구현 유지, 새 톤 공식 확정 v1.0 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
 | AI 비서 | 동의 기반 자료 분석·근거·작업 제안 구현 | AI 키/모델/명시적 활성화 필요. 모의 응답 검증과 실제 모델 호출은 구분 |
 | 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
 | 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장, 실제 AI 가동은 서버 설정 필요 |
@@ -452,7 +452,7 @@ for chunk in chunks[1:]:
     heading,body_part=chunk.split('</h2>',1)
     number=int(re.match(r'<h2 id="section-(\d+)">',heading)[1])+1
     if number==2:
-        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했으며 실제 AI·쓰기 권한 가동은 남아 있어요. 사용자가 확인한 최신 기준은 Render f76172d·TestFlight 1.0.0 (12)예요. 톤 합의 문서는 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
+        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했으며 실제 AI·쓰기 권한 가동은 남아 있어요. 사용자가 확인한 최신 기준은 Render f76172d·TestFlight 1.0.0 (12)예요. 공식 톤 원칙은 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
     if number==3:
         change_count=[0]
         def fold_change(match):
@@ -478,7 +478,7 @@ feedback = r'''<section id="feedback" class="feedback"><h2>댓글 · 수정 요�
 <label>댓글 상태<select id="feedback-filter"><option value="all">전체</option><option value="open">열린 요청</option><option value="resolved">반영 확인</option></select></label><button id="feedback-refresh" type="button">댓글 새로고침</button><button id="feedback-copy" type="button">AI에 전달할 댓글 복사</button><textarea id="feedback-copy-text" aria-label="AI에 전달할 요청" readonly hidden></textarea><p><a href="/api/project/comments?status=open">AI에게 전달할 열린 댓글 목록(JSON)</a></p><div id="feedback-list"></div><button id="feedback-more" type="button" hidden>댓글 더 보기</button></section><script src="/project-comments.js" defer></script>'''
 project = re.sub(r'<h1>duckduck — 제품.*?</h1>', '', project, count=1)
 project = project.replace('실제 Notion에 생성된 페이지가 아니라 <strong>한 페이지 가져오기 원본</strong>입니다.', '외부에서 읽고 댓글로 수정 요청을 남길 수 있는 프로젝트 문서입니다.')
-hero='<header class="project-hero"><span class="eyebrow">DUCKDUCK PROJECT</span><h1>덕과 함께 만드는 하루</h1><p>지금까지 만든 것, 바뀐 것, 다음에 할 일을 한곳에서 확인하세요.</p><div class="hero-meta"><span>문서 갱신 '+DATE+'</span><a href="#section-2">최근 변경 보기 →</a></div><div class="overview-cards"><a href="#section-1"><span>현재 상태</span><strong>TestFlight 1.0.0 (12)</strong><small>사용자 확인 · 새 톤 합의 대기</small></a><a href="#section-4"><span>화면 미리보기</span><strong>다섯 탭을 한눈에</strong><small>할 일 · 캘린더 · 덕 · log · 내정보</small></a><a href="#feedback"><span>함께 다듬기</span><strong>수정할 점을 남겨주세요</strong><small>문서 위치와 연결되는 댓글</small></a></div></header>'
+hero='<header class="project-hero"><span class="eyebrow">DUCKDUCK PROJECT</span><h1>덕과 함께 만드는 하루</h1><p>지금까지 만든 것, 바뀐 것, 다음에 할 일을 한곳에서 확인하세요.</p><div class="hero-meta"><span>문서 갱신 '+DATE+'</span><a href="#section-2">최근 변경 보기 →</a></div><div class="overview-cards"><a href="#section-1"><span>현재 상태</span><strong>TestFlight 1.0.0 (12)</strong><small>사용자 확인 · 새 톤 공식 확정 v1.0</small></a><a href="#section-4"><span>화면 미리보기</span><strong>다섯 탭을 한눈에</strong><small>할 일 · 캘린더 · 덕 · log · 내정보</small></a><a href="#feedback"><span>함께 다듬기</span><strong>수정할 점을 남겨주세요</strong><small>문서 위치와 연결되는 댓글</small></a></div></header>'
 # Add the hero after the top utility nav, not inside the sidebar's navigation.
 marker='<button id="feedback-selection" type="button">선택한 문장에 댓글</button></nav>'
 project=project.replace(marker,marker+hero,1)

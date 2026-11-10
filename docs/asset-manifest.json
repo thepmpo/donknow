@@ -209,8 +209,8 @@
     {
       "path": "artifacts/design-guide-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 221764,
-      "sha256": "7faaa6481917a734c6612802bc59b269038816adb86a6c2f1cfadb6fde59f09e",
+      "bytes": 344204,
+      "sha256": "45292d13eb99355b062d8973b139810be5f40e3924a43eb006715272b4b1ad64",
       "import_path": "images/artifacts__design-guide-fixture.png"
     },
     {
