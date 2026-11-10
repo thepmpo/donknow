@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-10 · 한국 시간 · 기능 코드 1c75e51 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-11 · 한국 시간 · 기능 코드 1c75e51 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -376,6 +376,28 @@
 
 ### 매일 개발 정리
 
+
+##### 2026-11-11 — 당일 저장된 작업
+
+실제 정리: 02:37 KST. 새 저장 작업 8개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [1c75e51](https://github.com/sjfieni/donknow/commit/1c75e511c9f3ac301703cd863110d8dcedacaa13) · 11-09 17:41 · Add paste Todo drafts, daily briefing and city weather with validated release gates
+
+- [3234c04](https://github.com/sjfieni/donknow/commit/3234c04834a6d13af87f43629cc57a5b7bc2fd39) · 11-10 14:56 · Document AI office preferences, tone options and reusable approval principles
+
+- [ae78d0f](https://github.com/sjfieni/donknow/commit/ae78d0f111c444eda4e2d692a1c7e92bded395b8) · 11-10 15:43 · Confirm official tone and reusable design principles v1.0
+
+- [579984f](https://github.com/sjfieni/donknow/commit/579984f72202d24dbf1b4daccb318b866ab1b086) · 11-10 15:54 · Prepare multi-project AI office and isolated project onboarding
+
+- [cebc65c](https://github.com/sjfieni/donknow/commit/cebc65c732fdf0535326010457d94214e62c2927) · 11-10 16:47 · Add tested AI office approval gate and isolated worker policy
+
+- [2d5c238](https://github.com/sjfieni/donknow/commit/2d5c238184cc4a3034a35d3271a1f2a0e4c2abdd) · 11-10 16:47 · Preserve required unified patch context whitespace
+
+- [59da1b7](https://github.com/sjfieni/donknow/commit/59da1b77a9275f2b0b29cc6fd73b5d455e3426af) · 11-10 17:14 · Prepare AI office first product review and account readiness workflow
+
+- [52f91d5](https://github.com/sjfieni/donknow/commit/52f91d54806054e8b3651fd9f8ae735fb3f4fcb4) · 11-10 17:30 · Add live shared product knowledge inbox for all AI office roles
+
+
 ##### 2026-11-10 — 수동 기록: 사무실 승인·격리 게이트
 
 - 사용자 다음 단계 요청에 따라 별도 Claw-Empire 사무실에 작업/프로젝트/담당자/기준HEAD/인계서 해시를 묶는10분 승인·철회·단일 실행을 구현했다. 읽기 전용 제품 source, 승인된 개발 worktree만 쓰기, 원본/공용 Git 읽기 전용, 회의·API·OAuth·직접 spawn·설치·자동 merge/push 우회를 차단한다.
@@ -599,6 +621,7 @@ ae78d0f Confirm official tone and reusable design principles v1.0
 cebc65c Add tested AI office approval gate and isolated worker policy
 2d5c238 Preserve required unified patch context whitespace
 59da1b7 Prepare AI office first product review and account readiness workflow
+52f91d5 Add live shared product knowledge inbox for all AI office roles
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
