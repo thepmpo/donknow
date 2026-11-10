@@ -36,6 +36,9 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[여러 프로젝트 AI 사무실 초기 구동 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md): Claw-Empire 별도 환경에서 실제 화면을 띄우고 duckduck 소스 사본을 수동배정 프로젝트로 등록했습니다. DAYWIT/다른 프로젝트는 주소 제공 후 추가할 수 있습니다. 모델 연결·업무 실행은0이며 읽기 전용 제품 검토/승인된 개발 실행 게이트는 검증 전입니다. 앱 UI와 별도 도구이며 초기 화면을 실업무 완료로 해석하지 않습니다.
+
+
 - [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
 - 사용자 확인: GitHub/Render 기준 f76172d, iPhone build and submit 성공, TestFlight **1.0.0 (12)**. 아래 예전 날짜의 빌드/배포 미확인 기록은 당시 상태입니다. 에이전트가 Apple/Render 대시보드를 직접 검증한 것과 구분합니다. 실모델·실계정 가동은 아직 완료되지 않았습니다.
 - 사용자가 추천안 **A + ② + 가**를 공식 확정했습니다(2026-11-10): **차분하고 친근한 비서 · 필요할 때 담당 역할 표시 · 오리는 인사/완료 순간에 가볍게 표현**. RP-01~RP-12는 공식 v1.0입니다. 초기 초안 A + ① + 가보다 최신 승인이 우선합니다. [디자인 가이드](/design-guide)와 원칙 문서에 승인 범위를 기록했습니다. 앱·Figma·새 수치/시안은 이번에 변경하지 않습니다.
@@ -336,7 +339,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()

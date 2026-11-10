@@ -13,6 +13,9 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[여러 프로젝트 AI 사무실 초기 구동 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md): Claw-Empire 별도 환경에서 실제 화면을 띄우고 duckduck 소스 사본을 수동배정 프로젝트로 등록했습니다. DAYWIT/다른 프로젝트는 주소 제공 후 추가할 수 있습니다. 모델 연결·업무 실행은0이며 읽기 전용 제품 검토/승인된 개발 실행 게이트는 검증 전입니다. 앱 UI와 별도 도구이며 초기 화면을 실업무 완료로 해석하지 않습니다.
+
+
 - [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
 - 사용자 확인: GitHub/Render 기준 f76172d, iPhone build and submit 성공, TestFlight **1.0.0 (12)**. 아래 예전 날짜의 빌드/배포 미확인 기록은 당시 상태입니다. 에이전트가 Apple/Render 대시보드를 직접 검증한 것과 구분합니다. 실모델·실계정 가동은 아직 완료되지 않았습니다.
 - 사용자가 추천안 **A + ② + 가**를 공식 확정했습니다(2026-11-10): **차분하고 친근한 비서 · 필요할 때 담당 역할 표시 · 오리는 인사/완료 순간에 가볍게 표현**. RP-01~RP-12는 공식 v1.0입니다. 초기 초안 A + ① + 가보다 최신 승인이 우선합니다. [디자인 가이드](/design-guide)와 원칙 문서에 승인 범위를 기록했습니다. 앱·Figma·새 수치/시안은 이번에 변경하지 않습니다.
@@ -52,6 +55,14 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-10 — 여러 프로젝트 AI 사무실 초기 구동
+
+- 사용자 요청에 따라 duckduck과 이후 DAYWIT/다른 프로젝트를 필요에 따라 연결하는 별도 AI 사무실 기반을 준비했다. DAYWIT 주소는 나중에 받으며 다른 프로젝트 추가가 가능한 등록 도구를 보존했다.
+- Claw-Empire2.0.4 pinned source를 별도 복제·설치·빌드하고 한국어 실제 화면/health200·브라우저 오류0을 확인했다. duckduck은 원본이 아닌 격리 소스 사본을 수동 배정으로 등록하고 사본의 push를 비활성화했다.
+- 직원 모델 연결0·업무0·자동배정false·YOLO false로 시작한다. 실제 AI 작업/과금·승인 게이트 완성은 아직 아니며 제품팀 읽기 전용·승인 후 개발 실행 검증 뒤 활성화해야 한다.
+- 앱/서버/Figma/브리핑/날씨/운영 인증·데이터·복구 bundle은 보존했다. 자세한 상태·실행/등록 명령·남은 작업은 ai-office-setup.md에 기록했다.
+
 
 #### 2026-11-10 — 톤앤톤 추천안 공식 확정
 
@@ -347,6 +358,14 @@
 
 ### 매일 개발 정리
 
+##### 2026-11-10 — 수동 기록: AI 사무실 초기 구동
+
+- 사용자 요청에 따라 duckduck과 이후 DAYWIT/다른 프로젝트를 필요에 따라 연결하는 별도 AI 사무실 기반을 준비했다. DAYWIT 주소는 나중에 받으며 다른 프로젝트 추가가 가능한 등록 도구를 보존했다.
+- Claw-Empire2.0.4 pinned source를 별도 복제·설치·빌드하고 한국어 실제 화면/health200·브라우저 오류0을 확인했다. duckduck은 원본이 아닌 격리 소스 사본을 수동 배정으로 등록하고 사본의 push를 비활성화했다.
+- 직원 모델 연결0·업무0·자동배정false·YOLO false로 시작한다. 실제 AI 작업/과금·승인 게이트 완성은 아직 아니며 제품팀 읽기 전용·승인 후 개발 실행 검증 뒤 활성화해야 한다.
+- 앱/서버/Figma/브리핑/날씨/운영 인증·데이터·복구 bundle은 보존했다. 자세한 상태·실행/등록 명령·남은 작업은 ai-office-setup.md에 기록했다.
+
+
 ##### 2026-11-10 — 수동 기록: 톤앤톤 공식 승인
 
 - 사용자가 최신 추천안 A + ② + 가를 승인했다. 차분하고 친근한 비서·필요할 때 역할 표시·오리는 인사/완료 순간에 가볍게 표현을 공식 기준으로 확정했다. 초기 초안의 A + ① + 가보다 이번 승인이 우선한다.
@@ -540,6 +559,7 @@ fcb481b docs: compare current mobile UI with existing wireframes
 c1c5d31 docs: daily project update [skip ci]
 f76172d Merge origin/main preserving functional completion and wireframe documentation
 3234c04 Document AI office preferences, tone options and reusable approval principles
+ae78d0f Confirm official tone and reusable design principles v1.0
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1103,6 +1123,69 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 原文 / docs/ai-office-setup.md
+
+### 여러 프로젝트를 맡기는 AI 사무실 — 초기 구동 기록
+
+2026-11-10 · 대상: duckduck + 이후 DAYWIT/다른 프로젝트.
+
+#### 사용자 결정
+
+한 사무실을 여러 프로젝트에 필요에 따라 사용한다. DAYWIT 주소는 나중에 제공하며, 지금은 특정 두 저장소에 고정하지 않고 다른 프로젝트도 연결 가능한 구조로 만든다. 제품팀이 먼저 UX·디자인·마케팅·정책을 검토하고 사용자가 승인한 인계서만 개발팀으로 넘긴다. 앱에 AI 사무실을 넣는 작업과 별도이며 duckduck 앱 UI를 사무실 화면으로 바꾸지 않는다.
+
+#### 이번에 실제 완료한 것
+
+- [Claw-Empire upstream](https://github.com/GreenSheep01201/claw-empire), v2.0.4 / commit `66a24ea7df2435ef897c48c147deb7ec572c01c2`의 README·설정·프로젝트 API·자동 배정 초기값을 확인하고 별도 `/workspace/ai-office-runtime`에 복제했다. 설치 스크립트를 무조건 실행하거나 기존 AGENTS/AI 설정에 덮어쓰지 않았다.
+- 잠금 파일로 의존성을 설치하고 TypeScript/Vite production build를 통과했다. 의존성 lifecycle scripts는 실행하지 않았다. 현재 설치 도구는 pnpm11.25.0이며 upstream packageManager 권장은10.30.1이다. 기존 앱 Node/Expo 설정은 변경하지 않았다.
+- 별도 `/workspace/ai-office/state/office.sqlite`와 새로운 사무실 전용 암호화/로컬 인증 설정을 준비했다. 새 사무실의 로컬 비밀 설정만0600으로 생성했으며 원래 앱의 키/DB/토큰을 복사·재생성하지 않았다.
+- 한국어·회사명 `프로젝트 AI 사무실`로 서버와 실제 화면을 띄웠다. 내부 주소 `http://127.0.0.1:8790`, health200과 브라우저 오류0을 확인했다. 공개 호스팅 주소나 사용자 컴퓨터에 설치된 서비스가 아니다.
+- duckduck 소스를 `/workspace/ai-office/projects/duckduck/source`에 별도 복제했다. 사무실 프로젝트에는 source 외에 project.json·HANDOFF.md를 두고 수동 배정으로 등록했다. 사본의 push remote는 `DISABLED_PENDING_APPROVAL`이다. 원본 저장소·운영 데이터·인증 설정·복구 bundle은 보존했다.
+- 새 프로젝트를 같은 방식으로 등록하는 [프로젝트 등록 도구](https://github.com/thepmpo/donknow/blob/main/scripts/ai-office-projects.mjs)를 보존했다. 저장소별 사본·기준 커밋·인계 문서·승인 상태를 분리하고 기존 등록을 덮어쓰지 않는다.
+
+#### 아직 완료하지 않은 것 — 작동하는 AI 조직과 구분
+
+화면의14개 직원은 도구 기본 캐릭터다. 현재 모델은 직원에서 모두 분리했고 담당자0·업무0이며 자동 배정/YOLO/자동 업데이트를 껐다. UI에서 Codex 설치는 감지되지만 `로그인되지 않음`으로 표시됐다. 실제 AI 업무·과금 호출은 수행하지 않았다.
+
+**수동 배정/담당자0은 승인 순서를 준비하는 초기 상태이며, 모든 내부 모델 실행 경로를 보호하는 완성된 승인 게이트가 아니다.** 실제 업무를 넣기 전에 제품팀 읽기 전용 실행과 사용자 승인 후 개발팀 실행을 강제하는 경계를 구현·검증해야 한다. 프롬프트만으로 제품팀의 쓰기 금지를 보장하지 않는다. 모델 연결 후 바로 `$` 전사 지시를 넣으면 도구 기본 자동 위임이 작동할 수 있으므로 이 검증 전에는 실행하지 않는다.
+
+DAYWIT 연결은 주소 제공 전까지 보류이며 가상 저장소/연결을 만들지 않았다. 사용자에게 비밀키/비밀번호를 채팅으로 요구하지 않는다. 실제 AI 도구의 정상 로그인과 권한은 해당 도구의 보안 인증 흐름에서 진행한다. 무료 도구와 모델 사용 비용은 별개이며 새 유료 자원은 활성화하지 않았다.
+
+#### 실행과 프로젝트 추가
+
+현재 환경의 시작 명령:
+
+```sh
+sh /workspace/ai-office/bin/start.sh
+```
+
+등록 확인/추가(서버가 실행 중일 때):
+
+```sh
+node scripts/ai-office-projects.mjs status
+node scripts/ai-office-projects.mjs add <영문-slug> <기존-로컬-Git-저장소-절대경로> <표시이름>
+```
+
+예: DAYWIT 주소를 받은 뒤 별도 경로에 저장소를 받고 `daywit`이라는 slug로 등록한다. 이 명령은 로컬 소스 사본·수동배정 프로젝트를 만들며 모델 호출·직원 실행·원본 push는 하지 않는다. 현재 도구는 이 환경의 `/workspace/ai-office`·loopback8790을 기본으로 하며, 사용자 Mac/영구 서버에 옮길 때 경로·설치를 별도로 준비해야 한다. 서버 중단/환경 교체 후 자동 복구·영구 운영은 아직 구성하지 않았다.
+
+#### 운영 흐름과 다음 단계
+
+1. 사용할 장소(현재 클라우드/사용자 컴퓨터/전용 서버)와 사무실 상태 보관 방식을 정한다.
+2. 제품팀/개발팀 역할·공통 기준·프로젝트별 정책 읽기 범위를 정한다. duckduck은 공식 톤 v1.0을 유지하고 다른 프로젝트에는 고유 정책을 따로 둔다.
+3. 제품팀 실행은 읽기 전용 sandbox, 개발은 승인 인계서 버전·내용 해시·프로젝트·기준 커밋을 확인한 격리 작업 공간에서만 허용하도록 검증한다. 단계 우회/다른 프로젝트 승인 재사용을 막는다.
+4. 모델을 안전한 인증 흐름으로 연결하고 작은 제품 진단1건부터 실행한다. 보고서 근거·사용자 승인·개발·QA·최종 검수·병합/배포를 구분한다.
+5. DAYWIT/추가 저장소가 제공되면 프로젝트를 등록한다. 프로젝트 간 코드·자료·정책·승인을 섞지 않는다.
+
+#### 검증 기록
+
+- upstream production build 통과.
+- health200·실제 Chromium 화면 로딩·브라우저 오류0.
+- 원래 앱 source 무변경, 사본 push 비활성화 확인.
+- 수동 배정·자동 배정false·YOLO false·모델 연결0·업무0 확인.
+- 잘못된 slug와 이미 등록된 프로젝트 추가 요청 거절 확인.
+- 사무실 screenshot: 현재 작업 공간 `/workspace/ai-office/office-preview.png`. 이것은 실제 초기 사무실 화면이지 AI 업무 성공 증거가 아니다.
+
+연결 자료: [대화 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md) · [공식 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md) · [덕 디자인 가이드](https://github.com/thepmpo/donknow/blob/main/docs/design-guide.md) · [전체 인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md).
 
 ### 原文 / docs/ai-office-tone-summary.md
 
