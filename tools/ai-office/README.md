@@ -25,3 +25,5 @@ vendor에서 `AI_OFFICE_POLICY_ENABLED=false pnpm exec vitest run --config serve
 실제 Codex 모델/인증/네트워크/도구의 전체 실행은 이 테스트와 별개이며 아직 확인 전이다. 정상 보안 로그인과 작은 격리된 검수 작업을 확인하기 전 workers를 켜지 않는다.
 
 자세한 사용법·제한: [승인 게이트 운영 안내](../../docs/ai-office-approval-gate.md).
+
+패치 파일은 unified diff 문맥 줄의 공백도 형식 일부다. `.gitattributes`는 이 경로의 patch 아티팩트만 일반 소스 공백 검사에서 제외한다. 원본 TypeScript는 Prettier/검증을 유지하며 패치의 바이트·SHA-256·정확한 재현 검사는 별도로 통과해야 한다. 문맥 공백을 일괄 제거하면 패치가 손상될 수 있다.

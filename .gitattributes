@@ -1,0 +1,2 @@
+# Unified patches require leading-space context lines, including otherwise blank lines.
+/tools/ai-office/*.patch -whitespace
