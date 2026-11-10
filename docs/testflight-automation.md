@@ -1,5 +1,7 @@
 # iPhone 테스트 자동 빌드·제출
 
+2026-11-10 사용자 확인: f76172d 기준 iPhone workflow 성공, 현재 TestFlight 1.0.0 (12). 에이전트의 EAS/Apple 독립 검증과 구분한다. 아래 초기 등록/미확인 설명은 당시 상태이며 이미 등록된 인증 설정을 재생성하지 않는다. 이번 톤 분석은 문서 변경뿐이므로 새 iOS 빌드를 요청하지 않는다.
+
 `.github/workflows/ios-testflight.yml`은 main의 실제 앱 코드 변경과 수동 workflow_dispatch에 반응한다. 문서·e2e·단위 테스트만 바뀌면 빌드하지 않는다. 루트/모바일 잠금 파일로 의존성을 설치하고 서버 문법·단위/API 테스트·모바일 타입 검사·iOS JS export를 통과한 후 EAS production iOS 빌드를 요청하며 성공한 EAS 빌드는 자동으로 App Store Connect에 제출된다. App Store 공개 배포는 하지 않는다.
 
 ## 한 번만 등록
