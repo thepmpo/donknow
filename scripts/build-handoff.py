@@ -36,7 +36,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-[여러 프로젝트 AI 사무실 초기 구동 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md): Claw-Empire 별도 환경에서 실제 화면을 띄우고 duckduck 소스 사본을 수동배정 프로젝트로 등록했습니다. DAYWIT/다른 프로젝트는 주소 제공 후 추가할 수 있습니다. [승인 게이트 운영 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md): 작업·프로젝트·담당자·커밋·인계서 해시/10분 승인과 단일 실행, 제품 읽기 전용·개발 worktree 쓰기 경계를 구현했습니다. 사무실 API237개·빌드·실제 OS 파일 격리 smoke를 통과했고 실제 서버에 정책을 적용했습니다. 모델/업무/승인은0이며 workersEnabled:false를 유지합니다. 실제 Codex 인증·모델/도구의 전체 실행은 아직 검증 전입니다. 앱 UI와 별도 도구이며 초기 화면을 실업무 완료로 해석하지 않습니다.
+[AI 사무실 첫 실행 준비](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md): 공식 Codex 실행기·일회 제품 검토·보고서/중지 명령을 준비했습니다. API247개와 빌드 및 실제 네이티브 도구 격리를 검증했습니다. 첫 작업은 inbox, 승인/실행0, 개발 잠금입니다. 현재 환경의 auth.openai.com·chatgpt.com 차단 해제와 개인 터미널 ChatGPT 로그인이 남았습니다. 실제 모델 응답과 Render 공개 반영은 미검증입니다. [설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md) · [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md).
 
 
 - [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
@@ -339,7 +339,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()

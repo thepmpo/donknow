@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-[여러 프로젝트 AI 사무실 초기 구동 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md): Claw-Empire 별도 환경에서 실제 화면을 띄우고 duckduck 소스 사본을 수동배정 프로젝트로 등록했습니다. DAYWIT/다른 프로젝트는 주소 제공 후 추가할 수 있습니다. [승인 게이트 운영 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md): 작업·프로젝트·담당자·커밋·인계서 해시/10분 승인과 단일 실행, 제품 읽기 전용·개발 worktree 쓰기 경계를 구현했습니다. 사무실 API237개·빌드·실제 OS 파일 격리 smoke를 통과했고 실제 서버에 정책을 적용했습니다. 모델/업무/승인은0이며 workersEnabled:false를 유지합니다. 실제 Codex 인증·모델/도구의 전체 실행은 아직 검증 전입니다. 앱 UI와 별도 도구이며 초기 화면을 실업무 완료로 해석하지 않습니다.
+[AI 사무실 첫 실행 준비](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md): 공식 Codex 실행기·일회 제품 검토·보고서/중지 명령을 준비했습니다. API247개와 빌드 및 실제 네이티브 도구 격리를 검증했습니다. 첫 작업은 inbox, 승인/실행0, 개발 잠금입니다. 현재 환경의 auth.openai.com·chatgpt.com 차단 해제와 개인 터미널 ChatGPT 로그인이 남았습니다. 실제 모델 응답과 Render 공개 반영은 미검증입니다. [설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md) · [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md).
 
 
 - [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
@@ -502,6 +502,10 @@
 
 매일 한국 시간 19:00에 GitHub에 저장된 작업을 모읍니다. 아직 자동 실행 결과를 확인하지 않았습니다. GitHub 예약은 지연될 수 있으며, 채팅에만 있는 내용은 자동으로 수집하지 않습니다. 늦게 저장된 작업은 다음 실행에서 포함합니다.
 
+#### 2026-11-10 — AI 사무실 첫 실행 준비
+
+[실행 준비 안내](ai-office-ready.md): 공식 Codex0.167.0 고정, 제품 검토 대기 작업, 사전진단/개인 로그인/일회실행/중지/보고서 명령을 추가했다. 사무실 API247개와 빌드 통과. 실제 도구 격리 검증, 중복 준비 방지와 네트워크·인증 미충족 실행 거부를 확인했다. 네트워크 두 호스트 허용과 ChatGPT 로그인, 실계정 첫 응답 검증이 남는다. 기존 앱·인증·bundle을 보존했다.
+
 
 ### Git 커밋 이력
 
@@ -579,6 +583,8 @@ f76172d Merge origin/main preserving functional completion and wireframe documen
 3234c04 Document AI office preferences, tone options and reusable approval principles
 ae78d0f Confirm official tone and reusable design principles v1.0
 579984f Prepare multi-project AI office and isolated project onboarding
+cebc65c Add tested AI office approval gate and isolated worker policy
+2d5c238 Preserve required unified patch context whitespace
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1143,6 +1149,50 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 原文 / docs/ai-office-ready.md
+
+### AI 사무실 첫 실행 준비
+
+2026-11-10 기준. 앱과 별도인 사무실이며 실제 AI 호출은 아직 하지 않았다.
+
+#### 준비된 상태
+
+- 공식 Codex CLI 0.167.0을 독립 설치하고 네이티브 실행 파일 SHA256을 고정했다. 플랫폼 인증/앱 인증은 복사하지 않는다.
+- duckduck 첫 제품 검토 작업 하나를 inbox에 준비했다. 재준비해도 중복 생성하지 않는다. 기획 담당자만 Codex로 설정했으며 로그인 완료를 뜻하지 않는다.
+- 대상 소스 기준은 `2d5c238184cc4a3034a35d3271a1f2a0e4c2abdd`. 원본 대신 분리된 읽기 전용 사본을 검토한다.
+- 제품 검토만 일회 승인할 수 있다. 개발 실행은 별도 잠금이며 자동 코드 변경·병합·푸시는 하지 않는다.
+- 작업/담당자/프롬프트/소스와 실행기 해시가 바뀌면 재검증한다. 종료 출력이 완전히 기록된 뒤 완료된 최종 보고서만 사람 검토 상태로 전달한다. 실패·부분 응답은 성공으로 표시하지 않는다.
+- 다른 프로젝트는 저장소 주소를 받은 뒤 별도 등록한다. DAYWIT은 아직 등록하지 않았다.
+
+#### 지금 필요한 외부 조건
+
+환경 네트워크에서 `auth.openai.com`, `chatgpt.com` 접속이 proxy CONNECT 403으로 차단된다. 두 호스트 허용과 사용자의 일반 ChatGPT 로그인이 필요하다. 개인 토큰·비밀번호를 채팅에 보내지 않는다. 로그인은 아래 명령을 개인 대화형 터미널에서 실행한다. 로그인 코드를 채팅/공개 로그로 복사하지 않는다. 계정에서 실제 모델 사용 가능 여부와 사용 한도는 로그인 후 첫 실행에서 확인한다.
+
+#### 실행 명령
+
+저장소 `/workspace/donknow`에서:
+
+```sh
+node scripts/ai-office-ready.mjs doctor
+node scripts/ai-office-ready.mjs login
+node scripts/ai-office-ready.mjs start --confirm
+node scripts/ai-office-ready.mjs report
+```
+
+`start --confirm`은 준비된 첫 읽기 전용 검토만 승인한다. 사전 진단이 실패하면 권한을 발급하거나 작업을 시작하지 않는다. 실행 직후 신규 작업 잠금을 복원하며 이미 승인한 자식 작업만 계속 실행한다. 보고서를 확인한 뒤 개발할 후보를 사용자가 선택한다.
+
+```sh
+node scripts/ai-office-ready.mjs stop
+```
+
+중지는 해당 작업을 취소하고 신규 실행을 잠근다. 런타임 잠금만으로 기존 프로세스를 중지했다고 해석하지 않는다. 새 환경에는 먼저 [설치 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md)와 [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md)를 적용한다. 런타임 패치는 `tools/ai-office/runtime-policy.json`의 정확한 기반/해시를 확인한다. 로컬 비밀 설정과 SQLite는 Git에 넣지 않는다.
+
+#### 검증과 남은 검증
+
+사무실 API 테스트 247개·TypeScript/웹 빌드 통과. 실제 공식 Codex 도구 샌드박스에서 제품 소스 읽기 전용, 개발 전용 worktree 쓰기, 다른 프로젝트/사무실 비밀 격리와 호스트 loopback 접근 차단을 확인했다. 이 검증은 고정 명령이며 모델 호출이 아니다. 실제 서버 진단은 실행기/샌드박스 준비 완료, 인증 미완료와 두 호스트 차단만 보고한다. 대기 작업 재사용과 차단 상태의 실행 거부를 확인했다.
+
+실계정 모델 응답·도구 호출의 전체 흐름과 계정 한도는 아직 검증하지 못했다. Render 공개 문서 반영도 이 환경의 외부 접근 제한으로 확인하지 못했다. 앱 UI·Figma·브리핑·날씨·Duo는 이번에 변경하지 않았다. 복구 bundle은 그대로 보존한다.
+
 ### 原文 / docs/ai-office-approval-gate.md
 
 ### AI 사무실 — 읽기 전용 제품 검토·승인 후 개발 게이트
@@ -1241,6 +1291,10 @@ node scripts/ai-office-approval.mjs revoke <task-id>
 
 다음 단계는 실제 모델의 안전한 인증과 좁은 검수 작업이다. 이는 아직 수행하지 않았다. 사용자에게 비밀키/비밀번호를 채팅으로 요구하지 않으며 유료 모델/플랜을 자동 활성화하지 않는다.
 
+#### 첫 실행 준비 후속 기록 — 2026-11-10
+
+[최신 준비 상태와 로그인·실행·중지·보고서 명령](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md)을 확인한다. 과거의 작업0/테스트237 기록 이후 첫 검토 inbox1, 테스트247로 갱신했다. 실제 모델 호출은0이며 개발은 계속 잠금이다.
+
 ### 原文 / docs/ai-office-setup.md
 
 ### 여러 프로젝트를 맡기는 AI 사무실 — 초기 구동 기록
@@ -1305,6 +1359,10 @@ node scripts/ai-office-projects.mjs add <영문-slug> <기존-로컬-Git-저장�
 - 사무실 screenshot: 현재 작업 공간 `/workspace/ai-office/office-preview.png`. 이것은 실제 초기 사무실 화면이지 AI 업무 성공 증거가 아니다.
 
 연결 자료: [대화 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md) · [공식 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md) · [덕 디자인 가이드](https://github.com/thepmpo/donknow/blob/main/docs/design-guide.md) · [전체 인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md).
+
+#### 첫 실행 준비 후속 기록 — 2026-11-10
+
+[최신 준비 상태와 로그인·실행·중지·보고서 명령](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md)을 확인한다. 과거의 작업0/테스트237 기록 이후 첫 검토 inbox1, 테스트247로 갱신했다. 실제 모델 호출은0이며 개발은 계속 잠금이다.
 
 ### 原文 / docs/ai-office-tone-summary.md
 

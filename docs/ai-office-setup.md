@@ -60,3 +60,7 @@ node scripts/ai-office-projects.mjs add <영문-slug> <기존-로컬-Git-저장�
 - 사무실 screenshot: 현재 작업 공간 `/workspace/ai-office/office-preview.png`. 이것은 실제 초기 사무실 화면이지 AI 업무 성공 증거가 아니다.
 
 연결 자료: [대화 분석](ai-office-ux-analysis.md) · [공식 원칙](reusable-product-design-principles.md) · [덕 디자인 가이드](design-guide.md) · [전체 인계](notion-handoff.md).
+
+## 첫 실행 준비 후속 기록 — 2026-11-10
+
+[최신 준비 상태와 로그인·실행·중지·보고서 명령](ai-office-ready.md)을 확인한다. 과거의 작업0/테스트237 기록 이후 첫 검토 inbox1, 테스트247로 갱신했다. 실제 모델 호출은0이며 개발은 계속 잠금이다.

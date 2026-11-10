@@ -93,3 +93,7 @@ node scripts/ai-office-approval.mjs revoke <task-id>
 - 검토한 upstream66a24ea 위에 patch가 정확히 적용되고 모든 변경 파일이 일치하는지 별도 clone으로 검증했다. runtime-policy.json에 SHA-256과 로컬 policy commit28baa44를 기록했다. upstream 프로젝트에는 push하지 않았다.
 
 다음 단계는 실제 모델의 안전한 인증과 좁은 검수 작업이다. 이는 아직 수행하지 않았다. 사용자에게 비밀키/비밀번호를 채팅으로 요구하지 않으며 유료 모델/플랜을 자동 활성화하지 않는다.
+
+## 첫 실행 준비 후속 기록 — 2026-11-10
+
+[최신 준비 상태와 로그인·실행·중지·보고서 명령](ai-office-ready.md)을 확인한다. 과거의 작업0/테스트237 기록 이후 첫 검토 inbox1, 테스트247로 갱신했다. 실제 모델 호출은0이며 개발은 계속 잠금이다.
