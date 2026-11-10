@@ -1,0 +1,1582 @@
+diff --git a/scripts/office-sandbox-smoke.ts b/scripts/office-sandbox-smoke.ts
+new file mode 100644
+index 0000000..179ea28
+--- /dev/null
++++ b/scripts/office-sandbox-smoke.ts
+@@ -0,0 +1,145 @@
++/** Host containment check only: fixture permissions, shell probes, no AI calls or real account state. */
++import assert from "node:assert/strict";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { execFileSync, spawnSync } from "node:child_process";
++import { DatabaseSync } from "node:sqlite";
++import {
++  configureOfficePolicy,
++  prepareOfficeTask,
++  approveOfficeTask,
++  officeSandboxCommand,
++  officeWorkerEnvironment,
++} from "../server/office-policy.ts";
++
++const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "office-os-containment-"));
++const projects = path.join(temporary, "projects");
++const wrapper = path.join(projects, "fixture-project");
++const source = path.join(wrapper, "source");
++const otherProject = path.join(projects, "other-project");
++const fakeProviderHome = path.join(temporary, "fixture-provider-home");
++const database = new DatabaseSync(":memory:");
++const envKeys = [
++  "AI_OFFICE_POLICY_ENABLED",
++  "AI_OFFICE_WORKERS_ENABLED",
++  "AI_OFFICE_PROJECTS_ROOT",
++  "AI_OFFICE_PROVIDER_AUTH_DIR",
++];
++const previous = Object.fromEntries(envKeys.map((key) => [key, process.env[key]]));
++function git(...args: string[]): void {
++  execFileSync("git", args, { cwd: source, stdio: "pipe", timeout: 10000 });
++}
++function addTask(taskId: string, phase: "product" | "development"): void {
++  database
++    .prepare(
++      "INSERT INTO tasks VALUES (?, 'fixture task', 'fixture-only scope', 'general', 'fixture-agent', 'fixture-project', NULL, 'planning', 'development', NULL)",
++    )
++    .run(taskId);
++  const preview = prepareOfficeTask(taskId, phase);
++  approveOfficeTask(taskId, preview.digest, true);
++}
++const readOnlyScript = `
++set -eu
++test "$(cat "$1/README.md")" = "fixture source"
++if printf forbidden 2>/dev/null > "$1/must-not-write.txt"; then echo 'FAIL: product source writable'; exit 41; fi
++test ! -e "$3/other-project-sentinel.txt"
++test ! -e "$4/HANDOFF.md"
++test ! -e /workspace/ai-office-runtime/.env
++test ! -e /workspace/ai-office/state/office.sqlite
++test "$(cat "$HOME/.codex/auth.json")" = 'fixture-not-credential'
++printf 'ephemeral cache' > "$HOME/.codex/fixture-cache.txt"
++if printf forbidden 2>/dev/null > "$HOME/.codex/auth.json"; then echo 'FAIL: auth fixture writable'; exit 44; fi
++printf 'PASS: product source readable and read-only; other project, wrapper handoff, office secrets and database absent\n'
++`;
++const developmentScript = `
++set -eu
++test "$(cat "$1/README.md")" = "fixture source"
++printf 'approved fixture edit' > "$2/approved-worker-output.txt"
++test "$(cat "$2/approved-worker-output.txt")" = 'approved fixture edit'
++if printf forbidden 2>/dev/null > "$1/must-not-write.txt"; then echo 'FAIL: development main source writable'; exit 42; fi
++if printf forbidden 2>/dev/null > "$1/.git/must-not-write.txt"; then echo 'FAIL: common git metadata writable'; exit 43; fi
++test ! -e "$3/other-project-sentinel.txt"
++test ! -e "$4/HANDOFF.md"
++test ! -e /workspace/ai-office-runtime/.env
++test ! -e /workspace/ai-office/state/office.sqlite
++printf 'ephemeral cache' > "$HOME/.codex/fixture-cache.txt"
++if printf forbidden 2>/dev/null > "$HOME/.codex/auth.json"; then echo 'FAIL: auth fixture writable'; exit 45; fi
++printf 'PASS: only approved development worktree writable; source and common git metadata read-only; other project and office state absent\n'
++`;
++function runProbe(taskId: string, cwd: string, script: string): void {
++  const launch = officeSandboxCommand(taskId, "codex", cwd);
++  const index = launch.args.indexOf("codex");
++  assert.ok(index > 0, "sandbox command must contain the expected CLI boundary");
++  assert.equal(launch.args[0], "bwrap");
++  // Replace the entire model CLI tail with fixed shell assertions. Nothing invokes codex or a model.
++  const result = spawnSync(
++    launch.args[0],
++    [
++      ...launch.args.slice(1, index),
++      "/bin/sh",
++      "-c",
++      script,
++      "office-fixture-smoke",
++      source,
++      cwd,
++      otherProject,
++      wrapper,
++    ],
++    { cwd, env: officeWorkerEnvironment(process.env), encoding: "utf8", timeout: 15000 },
++  );
++  if (result.error || result.status !== 0) {
++    // Fixed shell probe has no credentials; do not emit raw environment or backend configuration.
++    throw new Error(
++      `office_os_containment_failed: exit=${result.status ?? "none"}, spawn=${result.error?.name ?? "none"}; ${String(result.stderr ?? "").slice(0, 600)}`,
++    );
++  }
++  process.stdout.write(result.stdout);
++}
++try {
++  fs.mkdirSync(source, { recursive: true });
++  fs.mkdirSync(otherProject, { recursive: true });
++  fs.mkdirSync(path.join(fakeProviderHome, ".codex"), { recursive: true });
++  fs.writeFileSync(path.join(fakeProviderHome, ".codex", "auth.json"), "fixture-not-credential", { mode: 0o600 });
++  fs.writeFileSync(path.join(wrapper, "HANDOFF.md"), "Fixture approval only; never a real user approval or task.");
++  fs.writeFileSync(path.join(otherProject, "other-project-sentinel.txt"), "must remain invisible");
++  fs.writeFileSync(path.join(source, "README.md"), "fixture source");
++  git("init", "-b", "main");
++  git("config", "user.name", "Fixture");
++  git("config", "user.email", "fixture@example.test");
++  git("add", ".");
++  git("commit", "-m", "fixture baseline");
++  database.exec(`CREATE TABLE projects (id TEXT PRIMARY KEY, project_path TEXT, core_goal TEXT);
++    CREATE TABLE agents (id TEXT PRIMARY KEY, department_id TEXT, role TEXT, cli_provider TEXT);
++    CREATE TABLE tasks (id TEXT PRIMARY KEY,title TEXT,description TEXT,task_type TEXT,assigned_agent_id TEXT,project_id TEXT,project_path TEXT,department_id TEXT,workflow_pack_key TEXT,base_branch TEXT);`);
++  database.prepare("INSERT INTO projects VALUES ('fixture-project', ?, 'isolated fixture')").run(wrapper);
++  database.exec("INSERT INTO agents VALUES ('fixture-agent','planning','team_leader','codex')");
++  process.env.AI_OFFICE_POLICY_ENABLED = "true";
++  process.env.AI_OFFICE_WORKERS_ENABLED = "true";
++  process.env.AI_OFFICE_PROJECTS_ROOT = projects;
++  process.env.AI_OFFICE_PROVIDER_AUTH_DIR = fakeProviderHome;
++  configureOfficePolicy(database);
++  const productTask = "product-fixture-task",
++    developmentTask = "develop-fixture-task";
++  addTask(productTask, "product");
++  runProbe(productTask, source, readOnlyScript);
++  addTask(developmentTask, "development");
++  const working = path.join(source, ".climpire-worktrees", developmentTask.slice(0, 8));
++  fs.mkdirSync(path.dirname(working));
++  git("worktree", "add", "-b", "fixture-development", working);
++  runProbe(developmentTask, working, developmentScript);
++  assert.equal(fs.readFileSync(path.join(working, "approved-worker-output.txt"), "utf8"), "approved fixture edit");
++  assert.equal(fs.existsSync(path.join(source, "must-not-write.txt")), false);
++  assert.equal(fs.existsSync(path.join(source, ".git", "must-not-write.txt")), false);
++  console.log("PASS: exact office sandbox mount construction verified without model calls or real office state");
++} catch (error: any) {
++  console.error(`FAIL: ${error.code || error.message || "office sandbox smoke failed"}`);
++  process.exitCode = 1;
++} finally {
++  database.close();
++  for (const key of envKeys) {
++    if (previous[key] === undefined) delete process.env[key];
++    else process.env[key] = previous[key];
++  }
++  fs.rmSync(temporary, { recursive: true, force: true });
++}
+diff --git a/server/modules/workflow/agents/cli-runtime.ts b/server/modules/workflow/agents/cli-runtime.ts
+index 35e0ed1..67e10d5 100644
+--- a/server/modules/workflow/agents/cli-runtime.ts
++++ b/server/modules/workflow/agents/cli-runtime.ts
+@@ -1,3 +1,10 @@
++import {
++  officePolicyEnabled,
++  officeSandboxCommand,
++  officeWorkerEnvironment,
++  claimOfficeTask,
++  finishOfficeTask,
++} from "../../../office-policy.ts";
+ import fs from "node:fs";
+ import os from "node:os";
+ import path from "node:path";
+@@ -226,18 +233,25 @@ export function createCliRuntimeTools(deps: CliRuntimeDeps) {
+     model?: string,
+     reasoningLevel?: string,
+   ): ChildProcess {
++    const officeLaunch = officePolicyEnabled()
++      ? officeSandboxCommand(taskId, provider, projectPath, model, reasoningLevel)
++      : null;
++    if (officeLaunch)
++      prompt =
++        "[Office policy] Use only this task workspace. Product review is read-only. Development may edit/test the approved worktree only. Do not git commit/merge/push, install tools or access other projects. Return evidence and a diff/report; host-side final acceptance is separate.\n\n" +
++        prompt;
+     clearCliOutputDedup(taskId);
+     // Save prompt for debugging
+     const promptPath = path.join(logsDir, `${taskId}.prompt.txt`);
+     fs.writeFileSync(promptPath, prompt, "utf8");
+ 
+-    const args = buildAgentArgs(provider, model, reasoningLevel);
++    const args = officeLaunch?.args ?? buildAgentArgs(provider, model, reasoningLevel);
+     const logStream = fs.createWriteStream(logPath, { flags: "a" });
+     const { safeWrite, safeEnd } = createSafeLogStreamOps(logStream);
+     safeWrite(`\n===== task run start ${new Date().toISOString()} | provider=${provider} =====\n`);
+ 
+     // Remove CLAUDECODE env var to prevent "nested session" detection
+-    const cleanEnv = { ...process.env };
++    const cleanEnv = officePolicyEnabled() ? officeWorkerEnvironment(process.env) : { ...process.env };
+     delete cleanEnv.CLAUDECODE;
+     delete cleanEnv.CLAUDE_CODE;
+     cleanEnv.PATH = withCliPathFallback(String(cleanEnv.PATH ?? process.env.PATH ?? ""));
+@@ -246,14 +260,25 @@ export function createCliRuntimeTools(deps: CliRuntimeDeps) {
+     cleanEnv.CI = "1";
+     if (!cleanEnv.TERM) cleanEnv.TERM = "dumb";
+ 
+-    const child = spawn(args[0], args.slice(1), {
+-      cwd: projectPath,
+-      env: cleanEnv,
+-      shell: process.platform === "win32",
+-      stdio: ["pipe", "pipe", "pipe"],
+-      detached: process.platform !== "win32",
+-      windowsHide: true,
+-    });
++    if (officeLaunch) claimOfficeTask(taskId, officeLaunch.policy.digest);
++    let child: ChildProcess;
++    try {
++      child = spawn(args[0], args.slice(1), {
++        cwd: projectPath,
++        env: cleanEnv,
++        shell: process.platform === "win32",
++        stdio: ["pipe", "pipe", "pipe"],
++        detached: process.platform !== "win32",
++        windowsHide: true,
++      });
++    } catch (error) {
++      finishOfficeTask(taskId, false);
++      safeEnd();
++      try {
++        fs.unlinkSync(promptPath);
++      } catch {}
++      throw error;
++    }
+ 
+     let finished = false;
+     let idleTimer: ReturnType<typeof setTimeout> | null = null;
+@@ -316,6 +341,7 @@ export function createCliRuntimeTools(deps: CliRuntimeDeps) {
+     activeProcesses.set(taskId, child);
+ 
+     child.on("error", (err) => {
++      finishOfficeTask(taskId, false);
+       finished = true;
+       clearRunTimers();
+       detachOutputListeners();
+@@ -351,7 +377,8 @@ export function createCliRuntimeTools(deps: CliRuntimeDeps) {
+     child.stdout?.on("data", stdoutListener);
+     child.stderr?.on("data", stderrListener);
+ 
+-    child.on("close", () => {
++    child.on("close", (exitCode) => {
++      finishOfficeTask(taskId, exitCode === 0);
+       finished = true;
+       clearRunTimers();
+       detachOutputListeners();
+diff --git a/server/modules/workflow/agents/providers/api-provider-tools.ts b/server/modules/workflow/agents/providers/api-provider-tools.ts
+index cbf349a..e7f4aa2 100644
+--- a/server/modules/workflow/agents/providers/api-provider-tools.ts
++++ b/server/modules/workflow/agents/providers/api-provider-tools.ts
+@@ -1,3 +1,4 @@
++import { blockOfficeUnscopedExecution } from "../../../../office-policy.ts";
+ import fs from "node:fs";
+ import path from "node:path";
+ import type { ChildProcess } from "node:child_process";
+@@ -195,6 +196,7 @@ export function createApiProviderTools(deps: CreateApiProviderToolsDeps) {
+     apiModel?: string | null,
+     safeWriteOverride?: (text: string) => boolean,
+   ): Promise<void> {
++    blockOfficeUnscopedExecution();
+     const safeWrite = safeWriteOverride ?? createSafeLogStreamOps(logStream).safeWrite;
+ 
+     if (!apiProviderId) {
+diff --git a/server/modules/workflow/agents/providers/http-agent-tools.ts b/server/modules/workflow/agents/providers/http-agent-tools.ts
+index cd99313..4799042 100644
+--- a/server/modules/workflow/agents/providers/http-agent-tools.ts
++++ b/server/modules/workflow/agents/providers/http-agent-tools.ts
+@@ -1,3 +1,4 @@
++import { blockOfficeUnscopedExecution } from "../../../../office-policy.ts";
+ import fs from "node:fs";
+ import path from "node:path";
+ import { randomUUID } from "node:crypto";
+@@ -97,6 +98,7 @@ export function createHttpAgentTools(deps: CreateHttpAgentToolsDeps) {
+     preferredAccountId?: string | null,
+     safeWriteOverride?: (text: string) => boolean,
+   ): Promise<void> {
++    blockOfficeUnscopedExecution();
+     const safeWrite = safeWriteOverride ?? createSafeLogStreamOps(logStream).safeWrite;
+     const modelConfig = getProviderModelConfig();
+     const defaultRawModel = modelConfig.copilot?.model || "github-copilot/gpt-4o";
+@@ -203,6 +205,7 @@ export function createHttpAgentTools(deps: CreateHttpAgentToolsDeps) {
+     preferredAccountId?: string | null,
+     safeWriteOverride?: (text: string) => boolean,
+   ): Promise<void> {
++    blockOfficeUnscopedExecution();
+     const safeWrite = safeWriteOverride ?? createSafeLogStreamOps(logStream).safeWrite;
+     const modelConfig = getProviderModelConfig();
+     const defaultRawModel = modelConfig.antigravity?.model || "google/antigravity-gemini-2.5-pro";
+diff --git a/server/modules/workflow/core/cli-tools.ts b/server/modules/workflow/core/cli-tools.ts
+index 87e312a..36f7945 100644
+--- a/server/modules/workflow/core/cli-tools.ts
++++ b/server/modules/workflow/core/cli-tools.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled, blockOfficeUnscopedExecution } from "../../../office-policy.ts";
+ import os from "node:os";
+ import path from "node:path";
+ 
+@@ -51,6 +52,7 @@ export function createCliTools(deps: CreateCliToolsDeps) {
+     reasoningLevel?: string,
+     opts: { noTools?: boolean } = {},
+   ): string[] {
++    if (officePolicyEnabled()) blockOfficeUnscopedExecution();
+     const { noTools = false } = opts;
+     switch (provider) {
+       case "codex": {
+diff --git a/server/modules/workflow/core/one-shot-runner.ts b/server/modules/workflow/core/one-shot-runner.ts
+index d648e17..a56fdb7 100644
+--- a/server/modules/workflow/core/one-shot-runner.ts
++++ b/server/modules/workflow/core/one-shot-runner.ts
+@@ -1,3 +1,4 @@
++import { blockOfficeUnscopedExecution } from "../../../office-policy.ts";
+ import fs from "node:fs";
+ import path from "node:path";
+ import { spawn } from "node:child_process";
+@@ -83,6 +84,7 @@ export function createOneShotRunner(deps: CreateOneShotRunnerDeps) {
+     prompt: string,
+     opts: OneShotRunOptions = {},
+   ): Promise<OneShotRunResult> {
++    blockOfficeUnscopedExecution();
+     const provider = agent.cli_provider || "claude";
+     const timeoutMs = opts.timeoutMs ?? 180_000;
+     const projectPath = opts.projectPath || process.cwd();
+diff --git a/server/modules/workflow/core/project-context-tools.ts b/server/modules/workflow/core/project-context-tools.ts
+index 37b27c3..5c3fa41 100644
+--- a/server/modules/workflow/core/project-context-tools.ts
++++ b/server/modules/workflow/core/project-context-tools.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled } from "../../../office-policy.ts";
+ import fs from "node:fs";
+ import path from "node:path";
+ import { execFileSync } from "node:child_process";
+@@ -278,6 +279,10 @@ export function createProjectContextTools(deps: CreateProjectContextToolsDeps) {
+   }
+ 
+   function generateProjectContext(projectPath: string): string {
++    if (officePolicyEnabled()) {
++      if (fs.existsSync(path.join(projectPath, "source", ".git"))) projectPath = path.join(projectPath, "source");
++      return buildProjectContextContent(projectPath);
++    }
+     const climpireDir = path.join(projectPath, ".climpire");
+     const contextPath = path.join(climpireDir, "project-context.md");
+     const metaPath = path.join(climpireDir, "project-context.meta");
+@@ -409,6 +414,7 @@ export function createProjectContextTools(deps: CreateProjectContextToolsDeps) {
+   }
+ 
+   function ensureClaudeMd(projectPath: string, worktreePath: string): void {
++    if (officePolicyEnabled()) return;
+     if (fs.existsSync(path.join(projectPath, "CLAUDE.md"))) return;
+ 
+     const climpireDir = path.join(projectPath, ".climpire");
+diff --git a/server/modules/workflow/core/video-skill-bootstrap.ts b/server/modules/workflow/core/video-skill-bootstrap.ts
+index 504d7b9..a30372a 100644
+--- a/server/modules/workflow/core/video-skill-bootstrap.ts
++++ b/server/modules/workflow/core/video-skill-bootstrap.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled } from "../../../office-policy.ts";
+ import { execFileSync } from "node:child_process";
+ import { randomUUID } from "node:crypto";
+ 
+@@ -152,6 +153,7 @@ export type EnsureRemotionSkillResult =
+   | { state: "failed"; error: string };
+ 
+ export function ensureVideoPreprodRemotionBestPracticesSkill(args: EnsureRemotionSkillArgs): EnsureRemotionSkillResult {
++  if (officePolicyEnabled()) return { state: "skipped", reason: "office_policy_disabled_installs" };
+   const { db, nowMs, workflowPackKey, provider, taskId, appendTaskLog } = args;
+   const log = (kind: string, message: string) => {
+     if (!taskId || !appendTaskLog) return;
+diff --git a/server/modules/workflow/core/worktree/lifecycle.ts b/server/modules/workflow/core/worktree/lifecycle.ts
+index 228be68..1ef95ed 100644
+--- a/server/modules/workflow/core/worktree/lifecycle.ts
++++ b/server/modules/workflow/core/worktree/lifecycle.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled, requireOfficeWorker } from "../../../../office-policy.ts";
+ import fs from "node:fs";
+ import path from "node:path";
+ import { execFileSync } from "node:child_process";
+@@ -123,6 +124,12 @@ export function createWorktreeLifecycleTools(deps: CreateWorktreeLifecycleToolsD
+   }
+ 
+   function createWorktree(projectPath: string, taskId: string, agentName: string, baseBranch?: string): string | null {
++    if (officePolicyEnabled()) {
++      const permission = requireOfficeWorker(taskId)!;
++      if (permission.phase === "product") return permission.source;
++      projectPath = permission.source;
++      baseBranch = permission.head;
++    }
+     if (!ensureWorktreeBootstrapRepo(projectPath, taskId)) return null;
+     if (!isGitRepo(projectPath)) return null;
+ 
+diff --git a/server/modules/workflow/core/worktree/merge.ts b/server/modules/workflow/core/worktree/merge.ts
+index edbc725..36db131 100644
+--- a/server/modules/workflow/core/worktree/merge.ts
++++ b/server/modules/workflow/core/worktree/merge.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled } from "../../../../office-policy.ts";
+ import { execFileSync } from "node:child_process";
+ import { decryptSecret } from "../../../../oauth/helpers.ts";
+ import type { WorktreeInfo } from "./lifecycle.ts";
+@@ -32,6 +33,11 @@ export function createWorktreeMergeTools(deps: CreateWorktreeMergeToolsDeps) {
+     projectPath: string,
+     taskId: string,
+   ): { success: boolean; message: string; conflicts?: string[] } {
++    if (officePolicyEnabled())
++      return {
++        success: false,
++        message: "Office policy: automatic merge/push is disabled; separate final human acceptance required",
++      };
+     const info = taskWorktrees.get(taskId);
+     if (!info) return { success: false, message: "No worktree found for this task" };
+     const taskRow = db.prepare("SELECT title, description FROM tasks WHERE id = ?").get(taskId) as
+@@ -206,6 +212,11 @@ export function createWorktreeMergeTools(deps: CreateWorktreeMergeToolsDeps) {
+     taskId: string,
+     githubRepo: string,
+   ): { success: boolean; message: string; conflicts?: string[]; prUrl?: string } {
++    if (officePolicyEnabled())
++      return {
++        success: false,
++        message: "Office policy: automatic merge/push is disabled; separate final human acceptance required",
++      };
+     const info = taskWorktrees.get(taskId);
+     if (!info) return { success: false, message: "No worktree found for this task" };
+     const taskRow = db.prepare("SELECT title FROM tasks WHERE id = ?").get(taskId) as { title: string } | undefined;
+diff --git a/server/modules/workflow/orchestration/execution-start-task.ts b/server/modules/workflow/orchestration/execution-start-task.ts
+index ea17e10..b4e6944 100644
+--- a/server/modules/workflow/orchestration/execution-start-task.ts
++++ b/server/modules/workflow/orchestration/execution-start-task.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled, requireOfficeWorker } from "../../../office-policy.ts";
+ import path from "node:path";
+ import type { RuntimeContext } from "../../../types/runtime-context.ts";
+ import { getDepartmentPromptForPack } from "../packs/department-scope.ts";
+@@ -74,6 +75,14 @@ export function createExecutionStartTaskTools(deps: CreateExecutionStartTaskTool
+   } = deps;
+ 
+   function startTaskExecutionForAgent(taskId: string, execAgent: any, deptId: string | null, deptName: string): void {
++    if (officePolicyEnabled()) {
++      try {
++        requireOfficeWorker(taskId);
++      } catch {
++        appendTaskLog(taskId, "system", "Office policy blocked unapproved or locked automatic execution");
++        return;
++      }
++    }
+     const execName = execAgent.name_ko || execAgent.name;
+     const t = nowMs();
+     db.prepare(
+diff --git a/server/modules/workflow/orchestration/run-complete-handler.ts b/server/modules/workflow/orchestration/run-complete-handler.ts
+index e4facf7..dbc1ee7 100644
+--- a/server/modules/workflow/orchestration/run-complete-handler.ts
++++ b/server/modules/workflow/orchestration/run-complete-handler.ts
+@@ -1,3 +1,4 @@
++import { officePolicyEnabled } from "../../../office-policy.ts";
+ import fs from "node:fs";
+ import path from "node:path";
+ import {
+@@ -111,7 +112,7 @@ export function createRunCompleteHandler(deps: CreateRunCompleteHandlerDeps) {
+     } catch {
+       /* ignore */
+     }
+-    const isVideoPreprodTask = task.workflow_pack_key === "video_preprod";
++    const isVideoPreprodTask = task.workflow_pack_key === "video_preprod" && !officePolicyEnabled();
+     const isVideoFinalRenderTask = isVideoPreprodTask && /\[VIDEO_FINAL_RENDER\]/i.test(task.title);
+     const probeVideoArtifact = () => {
+       const videoArtifactSpec = resolveVideoArtifactSpecForTask(db as any, {
+@@ -144,12 +145,12 @@ export function createRunCompleteHandler(deps: CreateRunCompleteHandlerDeps) {
+         // Fallback: discover any .mp4 in worktree's video_output/ or out/ dirs
+         if (!sourceVideo) {
+           sourceVideo = discoverVideoArtifact(wtInfo.worktreePath!);
+-          if (sourceVideo) {
++          if (sourceVideo && !officePolicyEnabled()) {
+             appendTaskLog(taskId, "system", `Video artifact discovered via directory scan in worktree: ${sourceVideo}`);
+           }
+         }
+ 
+-        if (sourceVideo) {
++        if (sourceVideo && !officePolicyEnabled()) {
+           try {
+             const destVideo = path.join(outputRoot, videoArtifactSpec.relativePath);
+             fs.mkdirSync(path.dirname(destVideo), { recursive: true });
+diff --git a/server/office-policy-hooks.test.ts b/server/office-policy-hooks.test.ts
+new file mode 100644
+index 0000000..1f34d74
+--- /dev/null
++++ b/server/office-policy-hooks.test.ts
+@@ -0,0 +1,125 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { execFileSync } from "node:child_process";
++const gate = vi.hoisted(() => ({ enabled: true, blocked: false, source: "", head: "", phase: "product" }));
++vi.mock("./office-policy.ts", () => ({
++  officePolicyEnabled: () => gate.enabled,
++  blockOfficeUnscopedExecution: () => {
++    if (gate.enabled) throw Error("office_unscoped_execution_blocked");
++  },
++  requireOfficeWorker: () => {
++    if (gate.blocked) throw Error("office_approval_required");
++    return { source: gate.source, head: gate.head, phase: gate.phase };
++  },
++}));
++import { createWorktreeLifecycleTools } from "./modules/workflow/core/worktree/lifecycle.ts";
++import { createWorktreeMergeTools } from "./modules/workflow/core/worktree/merge.ts";
++import { createProjectContextTools } from "./modules/workflow/core/project-context-tools.ts";
++import { createOneShotRunner } from "./modules/workflow/core/one-shot-runner.ts";
++import { createCliTools } from "./modules/workflow/core/cli-tools.ts";
++import { createApiProviderTools } from "./modules/workflow/agents/providers/api-provider-tools.ts";
++import { createHttpAgentTools } from "./modules/workflow/agents/providers/http-agent-tools.ts";
++import { createExecutionStartTaskTools } from "./modules/workflow/orchestration/execution-start-task.ts";
++import { ensureVideoPreprodRemotionBestPracticesSkill } from "./modules/workflow/core/video-skill-bootstrap.ts";
++let dir: string;
++const git = (...args: string[]) =>
++  execFileSync("git", args, { cwd: gate.source, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
++beforeEach(() => {
++  dir = fs.mkdtempSync(path.join(os.tmpdir(), "office-hooks-"));
++  gate.source = path.join(dir, "source");
++  fs.mkdirSync(gate.source);
++  gate.enabled = true;
++  gate.blocked = false;
++  gate.phase = "product";
++  git("init");
++  git("config", "user.name", "Fixture");
++  git("config", "user.email", "fixture@example.test");
++  fs.writeFileSync(path.join(gate.source, "README.md"), "fixture source");
++  git("add", ".");
++  git("commit", "-m", "fixture");
++  gate.head = git("rev-parse", "HEAD");
++});
++afterEach(() => fs.rmSync(dir, { recursive: true, force: true }));
++describe("office policy hooks before model, source writes and publication", () => {
++  it("product returns existing source without Git/bootstrap/worktree creation", () => {
++    const lifecycle = createWorktreeLifecycleTools({ appendTaskLog: vi.fn(), taskWorktrees: new Map() });
++    expect(lifecycle.createWorktree(path.join(dir, "must-not-init"), "abcdefgh-001", "fixture")).toBe(gate.source);
++    expect(fs.existsSync(path.join(dir, "must-not-init"))).toBe(false);
++    expect(fs.existsSync(path.join(gate.source, ".climpire-worktrees"))).toBe(false);
++    expect(git("status", "--porcelain")).toBe("");
++  });
++  it("unapproved worktree creation rejects before modifying any directory", () => {
++    gate.blocked = true;
++    const lifecycle = createWorktreeLifecycleTools({ appendTaskLog: vi.fn(), taskWorktrees: new Map() });
++    expect(() => lifecycle.createWorktree(path.join(dir, "must-not-init"), "abcdefgh-001", "fixture")).toThrow(
++      "office_approval_required",
++    );
++    expect(fs.existsSync(path.join(dir, "must-not-init"))).toBe(false);
++  });
++  it("approved development uses pinned source HEAD instead of caller base branch", () => {
++    gate.phase = "development";
++    const lifecycle = createWorktreeLifecycleTools({ appendTaskLog: vi.fn(), taskWorktrees: new Map() });
++    const worktree = lifecycle.createWorktree(dir, "abcdefgh-001", "fixture", "non-existent-unapproved-base");
++    expect(worktree).toContain(".climpire-worktrees/abcdefgh");
++    expect(execFileSync("git", ["-C", worktree!, "rev-parse", "HEAD"], { encoding: "utf8" }).trim()).toBe(gate.head);
++    expect(fs.existsSync(path.join(dir, ".git"))).toBe(false);
++  });
++  it("context preflight and CLAUDE.md never write source in office mode", () => {
++    const tools = createProjectContextTools({
++      db: { prepare: () => ({ get: () => null, all: () => [] }) },
++      isGitRepo: () => true,
++      taskWorktrees: new Map(),
++    } as any);
++    tools.generateProjectContext(gate.source);
++    tools.ensureClaudeMd(gate.source, path.join(dir, "not-a-worktree"));
++    expect(fs.existsSync(path.join(gate.source, ".climpire"))).toBe(false);
++    expect(fs.existsSync(path.join(dir, "not-a-worktree"))).toBe(false);
++  });
++  it("automatic and API merge/PR paths return before git writes", () => {
++    const touched = vi.fn();
++    const tools = createWorktreeMergeTools({
++      db: { prepare: touched },
++      taskWorktrees: new Map(),
++      appendTaskLog: touched,
++      cleanupWorktree: touched,
++      resolveLang: () => "",
++      pickL: () => "",
++      l: () => "",
++    } as any);
++    expect(tools.mergeWorktree(gate.source, "abcdefgh-001").success).toBe(false);
++    expect(tools.mergeToDevAndCreatePR(gate.source, "abcdefgh-001", "other/repo").success).toBe(false);
++    expect(touched).not.toHaveBeenCalled();
++    expect(git("status", "--porcelain")).toBe("");
++  });
++  it("one-shot meeting and generic dangerous CLI arguments cannot bypass task gate", async () => {
++    const runner = createOneShotRunner({} as any);
++    await expect(runner.runAgentOneShot({} as any, "fixture")).rejects.toThrow("office_unscoped_execution_blocked");
++    expect(() => createCliTools({ nowMs: Date.now, cliOutputDedupWindowMs: 1000 }).buildAgentArgs("codex")).toThrow(
++      "office_unscoped_execution_blocked",
++    );
++  });
++  it("direct API and OAuth provider execution stop before network or token lookups", async () => {
++    const api = createApiProviderTools({} as any),
++      http = createHttpAgentTools({} as any),
++      signal = new AbortController().signal;
++    await expect(api.executeApiProviderAgent("", gate.source, {} as any, signal)).rejects.toThrow(
++      "office_unscoped_execution_blocked",
++    );
++    await expect(http.executeCopilotAgent("", gate.source, {} as any, signal)).rejects.toThrow(
++      "office_unscoped_execution_blocked",
++    );
++    await expect(http.executeAntigravityAgent("", {} as any, signal)).rejects.toThrow(
++      "office_unscoped_execution_blocked",
++    );
++  });
++  it("automatic delegation rejects before task state changes and video installers do not run", () => {
++    gate.blocked = true;
++    const log = vi.fn(),
++      tools = createExecutionStartTaskTools({ appendTaskLog: log } as any);
++    expect(() => tools.startTaskExecutionForAgent("abcdefgh-001", {}, null, "")).not.toThrow();
++    expect(log).toHaveBeenCalledOnce();
++    expect(ensureVideoPreprodRemotionBestPracticesSkill({} as any).state).toBe("skipped");
++  });
++});
+diff --git a/server/office-policy-launch.test.ts b/server/office-policy-launch.test.ts
+new file mode 100644
+index 0000000..b4493e3
+--- /dev/null
++++ b/server/office-policy-launch.test.ts
+@@ -0,0 +1,98 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { EventEmitter } from "node:events";
++import { PassThrough } from "node:stream";
++const stubs = vi.hoisted(() => ({ spawn: vi.fn(), claim: vi.fn(), finish: vi.fn(), sandbox: vi.fn() }));
++vi.mock("node:child_process", async (original) => ({
++  ...(await original<typeof import("node:child_process")>()),
++  spawn: stubs.spawn,
++}));
++vi.mock("./office-policy.ts", async (original) => ({
++  ...(await original<typeof import("./office-policy.ts")>()),
++  officePolicyEnabled: () => true,
++  officeSandboxCommand: stubs.sandbox,
++  claimOfficeTask: stubs.claim,
++  finishOfficeTask: stubs.finish,
++}));
++import { createCliRuntimeTools } from "./modules/workflow/agents/cli-runtime.ts";
++let dir: string;
++beforeEach(() => {
++  vi.clearAllMocks();
++  dir = fs.mkdtempSync(path.join(os.tmpdir(), "office-launch-"));
++  vi.spyOn(fs, "createWriteStream").mockImplementation(() => new PassThrough() as any);
++  stubs.sandbox.mockReturnValue({
++    args: ["bwrap", "--ro-bind", "source", "source", "codex", "exec", "--json"],
++    policy: { digest: "bound-fixture-digest" },
++  });
++});
++afterEach(() => {
++  vi.restoreAllMocks();
++  fs.rmSync(dir, { recursive: true, force: true });
++});
++const runtime = () =>
++  createCliRuntimeTools({
++    logsDir: dir,
++    clearCliOutputDedup: vi.fn(),
++    buildAgentArgs: () => {
++      throw Error("unsafe generic builder called");
++    },
++    activeProcesses: new Map(),
++    normalizeStreamChunk: (v: Buffer) => v.toString(),
++    shouldSkipDuplicateCliOutput: () => false,
++    broadcast: vi.fn(),
++    TASK_RUN_IDLE_TIMEOUT_MS: 0,
++    TASK_RUN_HARD_TIMEOUT_MS: 0,
++    appendTaskLog: vi.fn(),
++    createSubtaskFromCli: vi.fn(),
++    completeSubtaskFromCli: vi.fn(),
++  } as any);
++function child() {
++  return Object.assign(new EventEmitter(), {
++    pid: 12345,
++    stdin: new PassThrough(),
++    stdout: new PassThrough(),
++    stderr: new PassThrough(),
++    unref: vi.fn(),
++    kill: vi.fn(),
++  });
++}
++describe("final task spawn approval boundary without actual workers", () => {
++  it("claims once before sandbox process spawn, sanitizes secrets and consumes on close", () => {
++    const proc = child();
++    stubs.spawn.mockReturnValue(proc);
++    vi.stubEnv("API_AUTH_TOKEN", "private-office-fixture");
++    vi.stubEnv("OPENAI_API_KEY", "private-provider-fixture");
++    runtime().spawnCliAgent("task-001", "codex", "review only", dir, path.join(dir, "run.log"));
++    expect(stubs.claim).toHaveBeenCalledExactlyOnceWith("task-001", "bound-fixture-digest");
++    expect(stubs.claim.mock.invocationCallOrder[0]).toBeLessThan(stubs.spawn.mock.invocationCallOrder[0]);
++    const [command, , options] = stubs.spawn.mock.calls[0];
++    expect(command).toBe("bwrap");
++    expect(options.env.API_AUTH_TOKEN).toBeUndefined();
++    expect(options.env.OPENAI_API_KEY).toBeUndefined();
++    proc.emit("close", 0);
++    expect(stubs.finish).toHaveBeenCalledWith("task-001", true);
++    vi.unstubAllEnvs();
++  });
++  it("sandbox rejection never claims a permission or spawns a process", () => {
++    stubs.sandbox.mockImplementation(() => {
++      throw Error("office_os_sandbox_unavailable");
++    });
++    expect(() => runtime().spawnCliAgent("task-001", "codex", "", dir, path.join(dir, "run.log"))).toThrow(
++      "office_os_sandbox_unavailable",
++    );
++    expect(stubs.claim).not.toHaveBeenCalled();
++    expect(stubs.spawn).not.toHaveBeenCalled();
++  });
++  it("synchronous process failure closes the claimed permission and removes debug prompt", () => {
++    stubs.spawn.mockImplementation(() => {
++      throw Error("fixture spawn unavailable");
++    });
++    expect(() => runtime().spawnCliAgent("task-001", "codex", "", dir, path.join(dir, "run.log"))).toThrow(
++      "fixture spawn unavailable",
++    );
++    expect(stubs.finish).toHaveBeenCalledWith("task-001", false);
++    expect(fs.existsSync(path.join(dir, "task-001.prompt.txt"))).toBe(false);
++  });
++});
+diff --git a/server/office-policy.test.ts b/server/office-policy.test.ts
+new file mode 100644
+index 0000000..b3010ee
+--- /dev/null
++++ b/server/office-policy.test.ts
+@@ -0,0 +1,398 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { DatabaseSync } from "node:sqlite";
++import { execFileSync, spawnSync } from "node:child_process";
++import express from "express";
++import request from "supertest";
++import {
++  configureOfficePolicy,
++  prepareOfficeTask,
++  approveOfficeTask,
++  inspectOfficeTask,
++  requireOfficeWorker,
++  claimOfficeTask,
++  finishOfficeTask,
++  revokeOfficeTask,
++  officeCliArgs,
++  officeWorkerEnvironment,
++  officeSandboxCommand,
++  installOfficePolicyRoutes,
++  blockOfficeUnscopedExecution,
++} from "./office-policy.ts";
++
++vi.mock("node:child_process", async (importOriginal) => ({
++  ...(await importOriginal<typeof import("node:child_process")>()),
++  spawnSync: vi.fn(),
++}));
++let tmp: string, root: string, wrapper: string, source: string, database: DatabaseSync;
++const taskId = "12345678-1234-1234-1234-123456789012";
++function git(...args: string[]): string {
++  return execFileSync("git", args, { cwd: source, encoding: "utf8", stdio: "pipe" }).trim();
++}
++function prepare(phase: "product" | "development" = "product") {
++  return prepareOfficeTask(taskId, phase);
++}
++function approve(phase: "product" | "development" = "product") {
++  const p = prepare(phase);
++  return approveOfficeTask(taskId, p.digest, true);
++}
++function code(fn: () => unknown, expected: string) {
++  expect(fn).toThrowError(expected);
++}
++function app() {
++  const application = express();
++  application.use(express.json());
++  application.use((req, res, next) =>
++    req.headers["x-standard-auth"] === "fixture" ? next() : res.status(401).json({ error: "standard_auth_required" }),
++  );
++  installOfficePolicyRoutes(application, database);
++  application.use((_req, res) => res.json({ reached: true }));
++  return application;
++}
++beforeEach(() => {
++  tmp = fs.mkdtempSync(path.join(os.tmpdir(), "office-policy-"));
++  root = path.join(tmp, "projects");
++  wrapper = path.join(root, "one");
++  source = path.join(wrapper, "source");
++  fs.mkdirSync(source, { recursive: true });
++  fs.writeFileSync(path.join(wrapper, "HANDOFF.md"), "Approved handoff content, pending owner decision.");
++  git("init", "-b", "main");
++  git("config", "user.name", "Fixture");
++  git("config", "user.email", "fixture@example.test");
++  fs.writeFileSync(path.join(source, "README.md"), "source");
++  git("add", ".");
++  git("commit", "-m", "base");
++  database = new DatabaseSync(":memory:");
++  database.exec(
++    `CREATE TABLE projects (id TEXT PRIMARY KEY, project_path TEXT, core_goal TEXT); CREATE TABLE agents (id TEXT PRIMARY KEY, department_id TEXT, role TEXT, cli_provider TEXT); CREATE TABLE tasks (id TEXT PRIMARY KEY,title TEXT,description TEXT,task_type TEXT,assigned_agent_id TEXT,project_id TEXT,project_path TEXT,department_id TEXT,workflow_pack_key TEXT,base_branch TEXT);`,
++  );
++  database.prepare("INSERT INTO projects VALUES ('project',?,'goal')").run(wrapper);
++  database.exec("INSERT INTO agents VALUES ('agent','planning','team_leader','codex')");
++  database
++    .prepare(
++      "INSERT INTO tasks VALUES (?,'title','description','general','agent','project',NULL,'planning','development',NULL)",
++    )
++    .run(taskId);
++  vi.stubEnv("AI_OFFICE_POLICY_ENABLED", "true");
++  vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "false");
++  vi.stubEnv("AI_OFFICE_PROJECTS_ROOT", root);
++  vi.stubEnv("AI_OFFICE_OWNER_KEY", "fixture-owner-key");
++  const auth = path.join(tmp, "provider-home", ".codex");
++  fs.mkdirSync(auth, { recursive: true });
++  fs.writeFileSync(path.join(auth, "auth.json"), '{"fixture":true}');
++  vi.stubEnv("AI_OFFICE_PROVIDER_AUTH_DIR", path.dirname(auth));
++  vi.mocked(spawnSync).mockReset();
++  vi.mocked(spawnSync).mockReturnValue({ status: 1 } as any);
++  configureOfficePolicy(database);
++});
++afterEach(() => {
++  database.close();
++  fs.rmSync(tmp, { recursive: true, force: true });
++  vi.unstubAllEnvs();
++});
++
++describe("owner-approved office task lifecycle", () => {
++  it("fails closed without approval or master switch and requires explicit expected digest", () => {
++    code(() => inspectOfficeTask(taskId), "office_approval_required");
++    const p = prepare();
++    code(() => inspectOfficeTask(taskId), "office_approval_required");
++    code(() => approveOfficeTask(taskId, p.digest, false), "office_confirmation_required");
++    code(() => approveOfficeTask(taskId, "0".repeat(64), true), "office_digest_mismatch");
++    approveOfficeTask(taskId, p.digest, true);
++    expect(inspectOfficeTask(taskId)?.phase).toBe("product");
++    code(() => requireOfficeWorker(taskId), "office_workers_disabled");
++  });
++  it("claims atomically once, rejects running changes and cannot reuse consumed approval", async () => {
++    const p = approve();
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    const results = await Promise.allSettled(
++      [0, 1, 2].map(() => Promise.resolve().then(() => claimOfficeTask(taskId, p.digest))),
++    );
++    expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
++    code(() => prepare(), "office_task_running");
++    code(() => revokeOfficeTask(taskId), "office_task_running");
++    finishOfficeTask(taskId, true);
++    code(() => claimOfficeTask(taskId, p.digest), "office_approval_required");
++    code(() => approveOfficeTask(taskId, p.digest, true), "office_approval_required");
++    expect(database.prepare("SELECT state FROM office_task_permissions").get()?.state).toBe("consumed");
++  });
++  it("revokes pending/approved permissions and records failed launches", () => {
++    let p = approve();
++    revokeOfficeTask(taskId);
++    code(() => requireOfficeWorker(taskId), "office_approval_required");
++    p = approve();
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    claimOfficeTask(taskId, p.digest);
++    finishOfficeTask(taskId, false);
++    expect(database.prepare("SELECT state FROM office_task_permissions").get()?.state).toBe("failed");
++    code(() => requireOfficeWorker(taskId), "office_approval_required");
++  });
++  it("expires pending and approved permissions after ten minutes", () => {
++    let p = prepare();
++    expect(p.expiresAt - Date.now()).toBeLessThanOrEqual(600000);
++    database.exec("UPDATE office_task_permissions SET expires_at=0");
++    code(() => approveOfficeTask(taskId, p.digest, true), "office_approval_expired");
++    p = approve();
++    database.exec("UPDATE office_task_permissions SET expires_at=0");
++    code(() => inspectOfficeTask(taskId), "office_approval_expired");
++  });
++  it.each(["title", "description", "task_type", "department_id", "base_branch"])(
++    "invalidates approval when task %s changes",
++    (field) => {
++      approve();
++      database.prepare(`UPDATE tasks SET ${field}=? WHERE id=?`).run("changed", taskId);
++      code(() => inspectOfficeTask(taskId), "office_approval_stale");
++    },
++  );
++  it("binds handoff, source HEAD, project goal and selected agent identity", () => {
++    approve();
++    fs.appendFileSync(path.join(wrapper, "HANDOFF.md"), "edited");
++    code(() => inspectOfficeTask(taskId), "office_approval_stale");
++    approve();
++    git("commit", "--allow-empty", "-m", "head moved");
++    code(() => inspectOfficeTask(taskId), "office_approval_stale");
++    approve();
++    database.exec("UPDATE projects SET core_goal='changed'");
++    code(() => inspectOfficeTask(taskId), "office_approval_stale");
++    approve();
++    database.exec("UPDATE agents SET role='junior'");
++    code(() => inspectOfficeTask(taskId), "office_approval_stale");
++    approve();
++    database.exec(
++      "INSERT INTO agents VALUES ('other','planning','junior','codex'); UPDATE tasks SET assigned_agent_id='other'",
++    );
++    code(() => inspectOfficeTask(taskId), "office_approval_stale");
++  });
++  it("rejects dirty source, missing agent, unbound project, unsupported pack and empty development handoff", () => {
++    fs.appendFileSync(path.join(source, "README.md"), "dirty");
++    code(() => prepare(), "office_source_dirty");
++    git("restore", "README.md");
++    database.exec("UPDATE tasks SET assigned_agent_id=NULL");
++    code(() => prepare(), "office_task_agent_required");
++    database.exec("UPDATE tasks SET assigned_agent_id='agent',workflow_pack_key='video_preprod'");
++    code(() => prepare(), "office_workflow_pack_blocked");
++    database.exec("UPDATE tasks SET workflow_pack_key='development',project_id=NULL");
++    code(() => prepare(), "office_task_project_required");
++    database.exec("UPDATE tasks SET project_id='project'");
++    fs.writeFileSync(path.join(wrapper, "HANDOFF.md"), "");
++    code(() => prepare("development"), "office_handoff_required");
++  });
++});
++
++describe("path and worker isolation", () => {
++  it("rejects task IDs, path mismatch, source/handoff symlinks and external gitdir", () => {
++    code(() => prepareOfficeTask("../escape", "product"), "office_invalid_task_id");
++    database.prepare("UPDATE tasks SET project_path=?").run(tmp);
++    code(() => prepare(), "office_task_path_mismatch");
++    database.exec("UPDATE tasks SET project_path=NULL");
++    fs.renameSync(path.join(wrapper, "HANDOFF.md"), path.join(tmp, "external.md"));
++    fs.symlinkSync(path.join(tmp, "external.md"), path.join(wrapper, "HANDOFF.md"));
++    code(() => prepare(), "office_invalid_handoff");
++    fs.unlinkSync(path.join(wrapper, "HANDOFF.md"));
++    fs.writeFileSync(path.join(wrapper, "HANDOFF.md"), "fixed");
++    fs.renameSync(source, path.join(tmp, "outside-source"));
++    fs.symlinkSync(path.join(tmp, "outside-source"), source);
++    code(() => prepare(), "office_source_outside_project");
++    fs.unlinkSync(source);
++    fs.renameSync(path.join(tmp, "outside-source"), source);
++    fs.renameSync(path.join(source, ".git"), path.join(tmp, "outside-git"));
++    fs.writeFileSync(path.join(source, ".git"), "gitdir: " + path.join(tmp, "outside-git") + "\n");
++    code(() => prepare(), "office_external_gitdir");
++  });
++  it("does not transplant an approval to another project or task", () => {
++    approve();
++    database.exec(
++      "INSERT INTO projects SELECT 'other',project_path,core_goal FROM projects WHERE id='project'; UPDATE tasks SET project_id='other'",
++    );
++    code(() => inspectOfficeTask(taskId), "office_approval_stale");
++    database.exec("UPDATE tasks SET project_id='project'");
++    const other = "other-task";
++    database
++      .prepare(
++        "INSERT INTO tasks SELECT ?,title,description,task_type,assigned_agent_id,project_id,project_path,department_id,workflow_pack_key,base_branch FROM tasks WHERE id=?",
++      )
++      .run(other, taskId);
++    code(() => inspectOfficeTask(other), "office_approval_required");
++  });
++  it("always removes yolo, disables multi-agent, and chooses read-only versus workspace-write", () => {
++    const product = officeCliArgs("product", "fixture-model", "high"),
++      development = officeCliArgs("development");
++    expect(product).toContain("read-only");
++    expect(development).toContain("workspace-write");
++    for (const args of [product, development]) {
++      expect(args).not.toContain("--yolo");
++      expect(args).not.toContain("--full-auto");
++      expect(args.slice(0, 3)).toEqual(["codex", "--disable", "multi_agent"]);
++      expect(args).toContain("sandbox_workspace_write.network_access=false");
++      expect(args).toContain("sandbox_workspace_write.exclude_slash_tmp=true");
++    }
++    const filtered = officeWorkerEnvironment({
++      PATH: "/usr/bin",
++      HOME: "/home/fixture",
++      USER: "fixture",
++      LC_ALL: "C",
++      HTTPS_PROXY: "http://fixture",
++      SSL_CERT_FILE: "/etc/ssl/cert.pem",
++      CODEX_HOME: "/unsafe",
++      OPENAI_API_KEY: "must-not-pass",
++      API_AUTH_TOKEN: "must-not-pass",
++      OAUTH_ENCRYPTION_SECRET: "must-not-pass",
++      INBOX_WEBHOOK_SECRET: "must-not-pass",
++      AI_OFFICE_OWNER_KEY: "must-not-pass",
++      NODE_OPTIONS: "--require unsafe",
++    });
++    expect(Object.keys(filtered).sort()).toEqual(
++      ["HOME", "HTTPS_PROXY", "LC_ALL", "PATH", "SSL_CERT_FILE", "USER"].sort(),
++    );
++  });
++  it("rejects alternate providers/cwd, unavailable OS sandbox and unscoped worker hooks without launching a model", () => {
++    approve();
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    code(() => officeSandboxCommand(taskId, "claude", source), "office_provider_not_supported");
++    code(() => officeSandboxCommand(taskId, "codex", wrapper), "office_product_cwd_mismatch");
++    code(() => blockOfficeUnscopedExecution(), "office_unscoped_execution_blocked");
++    code(() => officeSandboxCommand(taskId, "codex", source), "office_os_sandbox_unavailable");
++    expect(spawnSync).toHaveBeenCalledTimes(1);
++    expect(vi.mocked(spawnSync).mock.calls[0]?.[0]).toBe("bwrap");
++    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++    const launch = officeSandboxCommand(taskId, "codex", source);
++    expect(launch.args[0]).toBe("bwrap");
++    expect(launch.args).not.toContain(wrapper);
++    expect(launch.args).not.toContain("/workspace/ai-office/state");
++    expect(launch.args).toContain("read-only");
++  });
++  it("accepts only this task's exact approved development worktree and current HEAD", () => {
++    approve("development");
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    const working = path.join(source, ".climpire-worktrees", taskId.slice(0, 8));
++    fs.mkdirSync(path.dirname(working));
++    git("worktree", "add", "-b", "fixture", working);
++    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++    expect(officeSandboxCommand(taskId, "codex", working).args).toContain("--bind");
++    code(() => officeSandboxCommand(taskId, "codex", source), "office_development_cwd_mismatch");
++    const other = path.join(source, ".climpire-worktrees", "other-task");
++    fs.mkdirSync(other);
++    code(() => officeSandboxCommand(taskId, "codex", other), "office_development_cwd_mismatch");
++    execFileSync("git", ["commit", "--allow-empty", "-m", "worker moved"], { cwd: working, stdio: "pipe" });
++    code(() => officeSandboxCommand(taskId, "codex", working), "office_worktree_head_mismatch");
++  });
++  it("rejects provider homes with inherited configuration or another project path", () => {
++    approve();
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    const home = process.env.AI_OFFICE_PROVIDER_AUTH_DIR!;
++    fs.writeFileSync(path.join(home, ".codex", "config.toml"), "[mcp_servers.unsafe]");
++    code(() => officeSandboxCommand(taskId, "codex", source), "office_provider_home_not_fresh");
++    vi.stubEnv("AI_OFFICE_PROVIDER_AUTH_DIR", source);
++    code(() => officeSandboxCommand(taskId, "codex", source), "office_invalid_provider_home");
++  });
++  it("invalidates approval if source local Codex/MCP configuration appears", () => {
++    approve();
++    fs.mkdirSync(path.join(source, ".codex"));
++    fs.writeFileSync(path.join(source, ".codex", "config.toml"), "[mcp_servers.unsafe]");
++    code(() => inspectOfficeTask(taskId), "office_project_config_blocked");
++    code(() => prepare(), "office_project_config_blocked");
++  });
++  it("blocks worktree and ancestor local configuration before sandbox probing", () => {
++    approve("development");
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    const parent = path.join(source, ".climpire-worktrees"),
++      working = path.join(parent, taskId.slice(0, 8));
++    fs.mkdirSync(parent);
++    git("worktree", "add", "-b", "fixture-config", working);
++    fs.mkdirSync(path.join(working, ".codex"));
++    fs.writeFileSync(path.join(working, ".codex", "config.toml"), "[mcp_servers.unsafe]");
++    code(() => officeSandboxCommand(taskId, "codex", working), "office_project_config_blocked");
++    fs.rmSync(path.join(working, ".codex"), { recursive: true });
++    fs.mkdirSync(path.join(parent, ".codex"));
++    code(() => officeSandboxCommand(taskId, "codex", working), "office_project_config_blocked");
++    expect(spawnSync).not.toHaveBeenCalled();
++  });
++  it("mounts fresh provider home first and fails closed when project and host HOME overlap", () => {
++    approve();
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++    const launch = officeSandboxCommand(taskId, "codex", source);
++    expect(launch.args.indexOf(process.env.AI_OFFICE_PROVIDER_AUTH_DIR!)).toBeLessThan(launch.args.indexOf(source));
++    const home = vi.spyOn(os, "homedir").mockReturnValue(tmp);
++    try {
++      code(() => officeSandboxCommand(taskId, "codex", source), "office_home_project_overlap");
++    } finally {
++      home.mockRestore();
++    }
++  });
++  it("leaves upstream standard mode unaffected", () => {
++    vi.stubEnv("AI_OFFICE_POLICY_ENABLED", "false");
++    expect(inspectOfficeTask(taskId)).toBeNull();
++    expect(requireOfficeWorker(taskId)).toBeNull();
++    expect(() => blockOfficeUnscopedExecution()).not.toThrow();
++    expect(() => finishOfficeTask(taskId, true)).not.toThrow();
++  });
++});
++
++describe("authenticated approval API and direct-call denials", () => {
++  it("requires ordinary auth and a separate owner key; binds exact preview digest", async () => {
++    const a = app(),
++      base = `/api/office-policy/tasks/${taskId}`;
++    await request(a)
++      .post(base + "/prepare")
++      .set("x-office-owner-key", "fixture-owner-key")
++      .send({ phase: "product" })
++      .expect(401);
++    for (const owner of [undefined, "wrong"]) {
++      let r = request(a)
++        .post(base + "/prepare")
++        .set("x-standard-auth", "fixture");
++      if (owner) r = r.set("x-office-owner-key", owner);
++      const result = await r.send({ phase: "product" }).expect(403);
++      expect(JSON.stringify(result.body)).not.toContain("fixture-owner-key");
++    }
++    const preview = await request(a)
++      .post(base + "/prepare")
++      .set("x-standard-auth", "fixture")
++      .set("x-office-owner-key", "fixture-owner-key")
++      .send({ phase: "product" })
++      .expect(200);
++    await request(a)
++      .post(base + "/approve")
++      .set("x-standard-auth", "fixture")
++      .set("x-office-owner-key", "fixture-owner-key")
++      .send({ expectedDigest: preview.body.digest, confirmation: true })
++      .expect(200);
++    await request(a).post(`/api/tasks/${taskId}/run`).set("x-standard-auth", "fixture").expect(503);
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    await request(a).post(`/api/tasks/${taskId}/run`).set("x-standard-auth", "fixture").expect(200);
++    await request(a)
++      .post(base + "/revoke")
++      .set("x-standard-auth", "fixture")
++      .set("x-office-owner-key", "fixture-owner-key")
++      .expect(200);
++    await request(a).post(`/api/tasks/${taskId}/run`).set("x-standard-auth", "fixture").expect(403);
++  });
++  it("denies direct execution, merges, directives and install/update mutations", async () => {
++    const a = app();
++    for (const url of [
++      "/api/inbox",
++      "/api/messages",
++      "/api/github/clone",
++      "/api/skills/learn",
++      "/api/skills/unlearn",
++      "/api/update-apply",
++      "/api/update-auto-config",
++      `/api/tasks/${taskId}/merge`,
++      `/api/agents/agent/spawn`,
++    ])
++      await request(a).post(url).set("x-standard-auth", "fixture").send({}).expect(403);
++    const status = await request(a).get("/api/office-policy/status").set("x-standard-auth", "fixture").expect(200);
++    expect(status.body).toEqual({
++      enabled: true,
++      workersEnabled: false,
++      ownerConfigured: true,
++      permissionTtlMs: 600000,
++      automaticMerge: false,
++      unscopedExecution: false,
++      provider: "codex",
++    });
++  });
++});
+diff --git a/server/office-policy.ts b/server/office-policy.ts
+new file mode 100644
+index 0000000..c87857e
+--- /dev/null
++++ b/server/office-policy.ts
+@@ -0,0 +1,441 @@
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { createHash, timingSafeEqual } from "node:crypto";
++import { execFileSync, spawnSync } from "node:child_process";
++
++type Phase = "product" | "development";
++export type OfficePolicy = {
++  taskId: string;
++  projectId: string;
++  projectPath: string;
++  source: string;
++  phase: Phase;
++  digest: string;
++  head: string;
++  state: string;
++  expiresAt: number;
++};
++let database: any;
++const TTL = 10 * 60_000;
++export const officePolicyEnabled = () => process.env.AI_OFFICE_POLICY_ENABLED === "true";
++function fail(code: string, status = 403): never {
++  throw Object.assign(new Error(code), { code, status });
++}
++function db(): any {
++  if (!database) fail("office_policy_unconfigured", 503);
++  return database;
++}
++function id(value: unknown): string {
++  if (typeof value !== "string" || !/^[a-zA-Z0-9-]{1,64}$/.test(value)) fail("office_invalid_task_id", 400);
++  return value;
++}
++const inside = (candidate: string, root: string) => candidate === root || candidate.startsWith(root + path.sep);
++function real(value: string): string {
++  try {
++    return fs.realpathSync(value);
++  } catch {
++    return fail("office_path_missing");
++  }
++}
++function denyProjectConfiguration(directory: string): void {
++  try {
++    fs.lstatSync(path.join(directory, ".codex"));
++  } catch (error: any) {
++    if (error.code === "ENOENT") return;
++    fail("office_project_config_unreadable");
++  }
++  fail("office_project_config_blocked");
++}
++function git(source: string, ...args: string[]): string {
++  try {
++    return execFileSync("git", args, {
++      cwd: source,
++      encoding: "utf8",
++      stdio: ["ignore", "pipe", "pipe"],
++      timeout: 5000,
++    }).trim();
++  } catch {
++    return fail("office_git_validation_failed");
++  }
++}
++function digest(value: unknown): string {
++  return createHash("sha256").update(JSON.stringify(value)).digest("hex");
++}
++function same(a: unknown, b: unknown): boolean {
++  return (
++    typeof a === "string" &&
++    typeof b === "string" &&
++    Buffer.byteLength(a) === Buffer.byteLength(b) &&
++    timingSafeEqual(Buffer.from(a), Buffer.from(b))
++  );
++}
++function transaction<T>(fn: () => T): T {
++  db().exec("BEGIN IMMEDIATE");
++  try {
++    const result = fn();
++    db().exec("COMMIT");
++    return result;
++  } catch (e) {
++    db().exec("ROLLBACK");
++    throw e;
++  }
++}
++export function configureOfficePolicy(input: any): void {
++  database = input;
++  input.exec(`CREATE TABLE IF NOT EXISTS office_task_permissions (
++    task_id TEXT PRIMARY KEY, phase TEXT NOT NULL, digest TEXT NOT NULL, payload TEXT NOT NULL,
++    state TEXT NOT NULL, expires_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)`);
++}
++function current(taskId: string, phase: Phase): Omit<OfficePolicy, "state" | "expiresAt"> & { payload: string } {
++  id(taskId);
++  if (phase !== "product" && phase !== "development") fail("office_invalid_phase", 400);
++  const task = db().prepare("SELECT * FROM tasks WHERE id = ?").get(taskId);
++  if (!task?.project_id) fail("office_task_project_required");
++  const project = db().prepare("SELECT * FROM projects WHERE id = ?").get(task.project_id);
++  if (!project?.project_path) fail("office_project_missing");
++  const root = real(process.env.AI_OFFICE_PROJECTS_ROOT || "/workspace/ai-office/projects");
++  const projectPath = real(project.project_path);
++  if (projectPath === root || !inside(projectPath, root)) fail("office_project_outside_root");
++  const source = real(path.join(projectPath, "source"));
++  if (source === projectPath || !inside(source, projectPath)) fail("office_source_outside_project");
++  denyProjectConfiguration(source);
++  if (git(source, "rev-parse", "--show-toplevel") !== source) fail("office_source_not_repository_root");
++  const gitDir = real(git(source, "rev-parse", "--absolute-git-dir"));
++  if (!inside(gitDir, source) || gitDir === source) fail("office_external_gitdir");
++  if (git(source, "status", "--porcelain", "--untracked-files=no")) fail("office_source_dirty");
++  const head = git(source, "rev-parse", "HEAD");
++  if (task.project_path && ![projectPath, source].includes(real(task.project_path))) fail("office_task_path_mismatch");
++  if ((task.workflow_pack_key || "development") !== "development") fail("office_workflow_pack_blocked");
++  const handoff = real(path.join(projectPath, "HANDOFF.md"));
++  if (!inside(handoff, projectPath) || !fs.statSync(handoff).isFile() || fs.statSync(handoff).size > 65536)
++    fail("office_invalid_handoff");
++  const content = fs.readFileSync(handoff, "utf8");
++  if (phase === "development" && !content.trim()) fail("office_handoff_required");
++  const agent = task.assigned_agent_id
++    ? db().prepare("SELECT * FROM agents WHERE id = ?").get(task.assigned_agent_id)
++    : null;
++  if (!agent) fail("office_task_agent_required");
++  const fields = [
++    "id",
++    "title",
++    "description",
++    "task_type",
++    "assigned_agent_id",
++    "project_id",
++    "project_path",
++    "department_id",
++    "workflow_pack_key",
++    "base_branch",
++  ];
++  const snapshot = {
++    phase,
++    task: Object.fromEntries(fields.map((k) => [k, task[k] ?? null])),
++    project: { id: project.id, project_path: project.project_path, core_goal: project.core_goal },
++    agent: {
++      id: agent.id,
++      department_id: agent.department_id ?? null,
++      role: agent.role ?? null,
++      cli_provider: agent.cli_provider ?? null,
++    },
++    source,
++    head,
++    handoff: digest(content),
++    sourceCodexConfigAbsent: true,
++  };
++  return {
++    taskId,
++    projectId: project.id,
++    projectPath,
++    source,
++    phase,
++    digest: digest(snapshot),
++    head,
++    payload: JSON.stringify(snapshot),
++  };
++}
++export function prepareOfficeTask(taskId: string, phase: Phase): OfficePolicy {
++  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
++  return transaction(() => {
++    if (
++      db().prepare("SELECT state FROM office_task_permissions WHERE task_id = ?").get(id(taskId))?.state === "running"
++    )
++      fail("office_task_running", 409);
++    const p = current(taskId, phase),
++      now = Date.now(),
++      expiresAt = now + TTL;
++    db()
++      .prepare(
++        `INSERT INTO office_task_permissions VALUES (?, ?, ?, ?, 'pending', ?, ?) ON CONFLICT(task_id) DO UPDATE SET phase=excluded.phase,digest=excluded.digest,payload=excluded.payload,state='pending',expires_at=excluded.expires_at,updated_at=excluded.updated_at`,
++      )
++      .run(taskId, phase, p.digest, p.payload, expiresAt, now);
++    const { payload: _, ...result } = p;
++    return { ...result, state: "pending", expiresAt };
++  });
++}
++function inspect(taskId: string, states: string[]): OfficePolicy {
++  const row = db().prepare("SELECT * FROM office_task_permissions WHERE task_id = ?").get(id(taskId));
++  if (!row || !states.includes(row.state)) fail("office_approval_required");
++  if (row.expires_at <= Date.now()) fail("office_approval_expired", 409);
++  const p = current(taskId, row.phase);
++  if (!same(row.digest, p.digest) || row.payload !== p.payload) fail("office_approval_stale", 409);
++  const { payload: _, ...result } = p;
++  return { ...result, state: row.state, expiresAt: row.expires_at };
++}
++export function inspectOfficeTask(taskId: string): OfficePolicy | null {
++  return officePolicyEnabled() ? inspect(taskId, ["approved"]) : null;
++}
++export function requireOfficeWorker(taskId: string): OfficePolicy | null {
++  const p = inspectOfficeTask(taskId);
++  if (p && process.env.AI_OFFICE_WORKERS_ENABLED !== "true") fail("office_workers_disabled", 503);
++  return p;
++}
++export function approveOfficeTask(taskId: string, expectedDigest: string, confirmation: unknown): OfficePolicy {
++  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
++  if (confirmation !== true) fail("office_confirmation_required", 400);
++  return transaction(() => {
++    const p = inspect(taskId, ["pending"]);
++    if (!same(expectedDigest, p.digest)) fail("office_digest_mismatch", 409);
++    db()
++      .prepare("UPDATE office_task_permissions SET state='approved',updated_at=? WHERE task_id=? AND state='pending'")
++      .run(Date.now(), taskId);
++    return { ...p, state: "approved" };
++  });
++}
++export function revokeOfficeTask(taskId: string): void {
++  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
++  transaction(() => {
++    const row = db().prepare("SELECT state FROM office_task_permissions WHERE task_id = ?").get(id(taskId));
++    if (row?.state === "running") fail("office_task_running", 409);
++    db()
++      .prepare("UPDATE office_task_permissions SET state='revoked',updated_at=? WHERE task_id=?")
++      .run(Date.now(), taskId);
++  });
++}
++export function claimOfficeTask(taskId: string, expectedDigest: string): OfficePolicy {
++  return transaction(() => {
++    const p = requireOfficeWorker(taskId);
++    if (!p) fail("office_policy_disabled", 503);
++    if (!same(expectedDigest, p.digest)) fail("office_digest_mismatch", 409);
++    const result = db()
++      .prepare(
++        "UPDATE office_task_permissions SET state='running',updated_at=? WHERE task_id=? AND digest=? AND state='approved' AND expires_at>?",
++      )
++      .run(Date.now(), taskId, expectedDigest, Date.now());
++    if (result.changes !== 1) fail("office_approval_already_claimed", 409);
++    return { ...p, state: "running" };
++  });
++}
++export function finishOfficeTask(taskId: string, success: boolean): void {
++  if (!officePolicyEnabled()) return;
++  db()
++    .prepare("UPDATE office_task_permissions SET state=?,updated_at=? WHERE task_id=? AND state='running'")
++    .run(success ? "consumed" : "failed", Date.now(), id(taskId));
++}
++export function blockOfficeUnscopedExecution(): void {
++  if (officePolicyEnabled()) fail("office_unscoped_execution_blocked");
++}
++export function officeCliArgs(phase: Phase, model?: string, reasoning?: string): string[] {
++  if (!["product", "development"].includes(phase)) fail("office_invalid_phase", 400);
++  return [
++    "codex",
++    "--disable",
++    "multi_agent",
++    "--ask-for-approval",
++    "never",
++    "--sandbox",
++    phase === "product" ? "read-only" : "workspace-write",
++    "-c",
++    "sandbox_workspace_write.network_access=false",
++    "-c",
++    "sandbox_workspace_write.exclude_tmpdir_env_var=true",
++    "-c",
++    "sandbox_workspace_write.exclude_slash_tmp=true",
++    ...(model ? ["-m", model] : []),
++    ...(reasoning ? ["-c", `model_reasoning_effort=${JSON.stringify(reasoning)}`] : []),
++    "exec",
++    "--json",
++  ];
++}
++export function officeWorkerEnvironment(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
++  const keys = new Set([
++    "PATH",
++    "HOME",
++    "USER",
++    "LOGNAME",
++    "LANG",
++    "LANGUAGE",
++    "TZ",
++    "TERM",
++    "SHELL",
++    "TMPDIR",
++    "HTTP_PROXY",
++    "HTTPS_PROXY",
++    "ALL_PROXY",
++    "NO_PROXY",
++    "http_proxy",
++    "https_proxy",
++    "all_proxy",
++    "no_proxy",
++    "SSL_CERT_FILE",
++    "SSL_CERT_DIR",
++    "NODE_EXTRA_CA_CERTS",
++    "REQUESTS_CA_BUNDLE",
++    "CURL_CA_BUNDLE",
++  ]);
++  return Object.fromEntries(Object.entries(env).filter(([k]) => keys.has(k) || /^LC_[A-Z_]+$/.test(k)));
++}
++function providerHome(source: string): string {
++  const raw = process.env.AI_OFFICE_PROVIDER_AUTH_DIR;
++  if (!raw) fail("office_provider_home_required", 503);
++  const home = real(raw),
++    root = real(process.env.AI_OFFICE_PROJECTS_ROOT || "/workspace/ai-office/projects");
++  if (home === real(os.homedir()) || inside(home, root) || inside(source, home) || inside(home, source))
++    fail("office_invalid_provider_home");
++  if (fs.readdirSync(home).some((n) => n !== ".codex")) fail("office_provider_home_not_fresh");
++  const codex = path.join(home, ".codex");
++  if (real(codex) !== codex || fs.readdirSync(codex).some((n) => n !== "auth.json"))
++    fail("office_provider_home_not_fresh");
++  const auth = path.join(codex, "auth.json");
++  if (real(auth) !== auth || !fs.statSync(auth).isFile() || fs.statSync(auth).size > 524288)
++    fail("office_invalid_provider_auth");
++  return home;
++}
++export function officeSandboxCommand(
++  taskId: string,
++  provider: string,
++  cwd: string,
++  model?: string,
++  reasoning?: string,
++): { args: string[]; policy: OfficePolicy } {
++  const policy = requireOfficeWorker(taskId);
++  if (!policy) fail("office_policy_disabled", 503);
++  if (provider !== "codex") fail("office_provider_not_supported");
++  const working = real(cwd);
++  if (policy.phase === "product" && working !== policy.source) fail("office_product_cwd_mismatch");
++  if (policy.phase === "development") {
++    const parent = path.join(policy.source, ".climpire-worktrees"),
++      prefix = id(taskId).slice(0, 8),
++      name = path.basename(working);
++    if (path.dirname(working) !== parent || ![prefix, prefix + "-1", prefix + "-2", prefix + "-3"].includes(name))
++      fail("office_development_cwd_mismatch");
++    if (
++      git(working, "rev-parse", "HEAD") !== policy.head ||
++      real(git(working, "rev-parse", "--absolute-git-dir")) !== path.join(policy.source, ".git", "worktrees", name)
++    )
++      fail("office_worktree_head_mismatch");
++  }
++  for (let ancestor = working; inside(ancestor, policy.source); ancestor = path.dirname(ancestor)) {
++    denyProjectConfiguration(ancestor);
++    if (ancestor === policy.source) break;
++  }
++  const targetHome = real(os.homedir());
++  if (inside(policy.source, targetHome) || inside(targetHome, policy.source)) fail("office_home_project_overlap");
++  const authHome = providerHome(policy.source);
++  const probe = spawnSync("bwrap", ["--ro-bind", "/", "/", "--unshare-net", "/bin/true"], {
++    stdio: "ignore",
++    timeout: 5000,
++  });
++  if (probe.error || probe.status !== 0) fail("office_os_sandbox_unavailable", 503);
++  const args = ["bwrap", "--die-with-parent", "--new-session", "--unshare-pid", "--unshare-ipc", "--unshare-uts"];
++  for (const mount of ["/usr", "/bin", "/sbin", "/lib", "/lib64", "/opt", "/etc/ssl", "/etc/hosts", "/etc/resolv.conf"])
++    if (fs.existsSync(mount)) args.push("--ro-bind", mount, mount);
++  args.push(
++    "--proc",
++    "/proc",
++    "--dev",
++    "/dev",
++    "--tmpfs",
++    "/tmp",
++    "--tmpfs",
++    targetHome,
++    "--dir",
++    path.join(targetHome, ".codex"),
++    "--ro-bind",
++    path.join(authHome, ".codex", "auth.json"),
++    path.join(targetHome, ".codex", "auth.json"),
++    "--ro-bind",
++    policy.source,
++    policy.source,
++  );
++  if (policy.phase === "development") args.push("--bind", working, working);
++  args.push("--chdir", working, ...officeCliArgs(policy.phase, model, reasoning));
++  return { args, policy };
++}
++export function installOfficePolicyRoutes(app: any, input: any): void {
++  configureOfficePolicy(input);
++  const wrap = (fn: (req: any, res: any) => void) => (req: any, res: any) => {
++    try {
++      fn(req, res);
++    } catch (e: any) {
++      res.status(e.status || 500).json({ error: e.code || "office_policy_error" });
++    }
++  };
++  const owner = (req: any) => {
++    const key = process.env.AI_OFFICE_OWNER_KEY;
++    if (!key || !same(req.headers["x-office-owner-key"], key)) fail("office_owner_confirmation_required");
++  };
++  app.use((req: any, res: any, next: any) => {
++    if (!officePolicyEnabled() || ["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
++    const p = req.path.replace(/\/+$/, "");
++    if (
++      [
++        "/api/inbox",
++        "/api/messages",
++        "/api/github/clone",
++        "/api/skills/learn",
++        "/api/skills/unlearn",
++        "/api/update-apply",
++        "/api/update-auto-config",
++      ].includes(p) ||
++      /\/merge$/.test(p) ||
++      /^\/api\/agents\/[^/]+\/spawn$/.test(p)
++    )
++      return res.status(403).json({ error: "office_unscoped_execution_blocked" });
++    const run = /^\/api\/tasks\/([^/]+)\/run$/.exec(p);
++    if (run) {
++      try {
++        requireOfficeWorker(run[1]);
++      } catch (e: any) {
++        return res.status(e.status || 403).json({ error: e.code || "office_policy_error" });
++      }
++    }
++    next();
++  });
++  app.get(
++    "/api/office-policy/status",
++    wrap((_req, res) =>
++      res.json({
++        enabled: officePolicyEnabled(),
++        workersEnabled: process.env.AI_OFFICE_WORKERS_ENABLED === "true",
++        ownerConfigured: !!process.env.AI_OFFICE_OWNER_KEY,
++        permissionTtlMs: TTL,
++        automaticMerge: false,
++        unscopedExecution: false,
++        provider: "codex",
++      }),
++    ),
++  );
++  app.post(
++    "/api/office-policy/tasks/:id/prepare",
++    wrap((req, res) => {
++      owner(req);
++      res.json(prepareOfficeTask(req.params.id, req.body?.phase));
++    }),
++  );
++  app.post(
++    "/api/office-policy/tasks/:id/approve",
++    wrap((req, res) => {
++      owner(req);
++      res.json(approveOfficeTask(req.params.id, req.body?.expectedDigest, req.body?.confirmation));
++    }),
++  );
++  app.post(
++    "/api/office-policy/tasks/:id/revoke",
++    wrap((req, res) => {
++      owner(req);
++      revokeOfficeTask(req.params.id);
++      res.json({ revoked: true });
++    }),
++  );
++}
+diff --git a/server/server-main.ts b/server/server-main.ts
+index fb4c983..1b47125 100644
+--- a/server/server-main.ts
++++ b/server/server-main.ts
+@@ -1,3 +1,4 @@
++import { installOfficePolicyRoutes } from "./office-policy.ts";
+ import express from "express";
+ import { WebSocketServer, WebSocket } from "ws";
+ import type { BaseRuntimeContext, RuntimeContext } from "./types/runtime-context.ts";
+@@ -57,6 +58,7 @@ applyBaseSchema(db);
+ const oauthRuntime = initializeOAuthRuntime({ db, nowMs, runInTransaction });
+ applyTaskSchemaMigrations(db);
+ applyDefaultSeeds(db);
++installOfficePolicyRoutes(app, db);
+ 
+ const messageIdempotency = createMessageIdempotencyTools({
+   db,

@@ -1,5 +1,14 @@
 # 변경 기록
 
+## 2026-11-10 — AI 사무실 승인 게이트·읽기 전용 검토 구현
+
+- 사용자 다음 단계 요청에 따라 별도 Claw-Empire 사무실에 작업/프로젝트/담당자/기준HEAD/인계서 해시를 묶는10분 승인·철회·단일 실행을 구현했다. 읽기 전용 제품 source, 승인된 개발 worktree만 쓰기, 원본/공용 Git 읽기 전용, 회의·API·OAuth·직접 spawn·설치·자동 merge/push 우회를 차단한다.
+- 일반 세션과 별도의 운영자 확인을 요구하며 사무실/공급자 비밀값을 worker 환경으로 전달하지 않는다. 새 임시 HOME과 읽기 전용 인증 파일, 프로젝트 로컬 .codex 차단을 추가했다. 실제 모델은 호출하지 않았고 업무/승인/직원 모델 연결은0이다.
+- 사무실 API237개(신규 정책/훅/실행 경계34개 포함), production build, 가짜 자료+고정 셸의 실제 OS 마운트 smoke를 통과했다. 도구 샌드박스 내부 uid-map 제한과 호스트 실행 가능 경로를 구분해 서버를 정상 교체했으며 workersEnabled:false를 유지한다. 실제 Codex 인증/모델 전체 실행은 다음 검증 대상이다.
+- 재현 패치와 pinned upstream/SHA-256을 tools/ai-office에, 승인·적용 도구를 scripts에, 운영 상태/한계를 ai-office-approval-gate.md에 저장했다. 별도 clone에서 패치 정확한 재현을 검증했다. vendor에는 로컬 policy commit28baa44만 만들고 upstream push는 하지 않았다.
+- duckduck 앱/서버·Figma·브리핑·날씨·Duo·운영 데이터/인증·복구 bundle은 보존했다. 변경 전 사무실 DB 백업도 보존한다. GitHub 문서 저장과 Render 공개 반영은 구분한다.
+
+
 ## 2026-11-10 — 여러 프로젝트 AI 사무실 초기 구동
 
 - 사용자 요청에 따라 duckduck과 이후 DAYWIT/다른 프로젝트를 필요에 따라 연결하는 별도 AI 사무실 기반을 준비했다. DAYWIT 주소는 나중에 받으며 다른 프로젝트 추가가 가능한 등록 도구를 보존했다.

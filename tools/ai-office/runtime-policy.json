@@ -1,0 +1,11 @@
+{
+  "upstream": "https://github.com/GreenSheep01201/claw-empire",
+  "version": "2.0.4",
+  "baseCommit": "66a24ea7df2435ef897c48c147deb7ec572c01c2",
+  "policyCommit": "28baa4423c51ccdcd4c5fd84f2642dd7f8b684b1",
+  "patchSha256": "e1d95dc0cea754853d0bad9e28f1674549aead8e8219123369d2124d362aab8e",
+  "apiTests": 237,
+  "policyTests": 34,
+  "realModelsCalled": false,
+  "workersEnabled": false
+}
