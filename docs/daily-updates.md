@@ -1,5 +1,9 @@
 # 매일 개발 정리
 
+## 2026-11-11 — Mac 설치 완료 사용자 확인
+
+사용자가 수정 설치기의 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했다. [맥 인계 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 갱신했다. 다음 확인은2-start 화면, 본인 로그인, 실제 검토 응답 순서다. 설치 완료를 로그인/AI 가동 완료로 기록하지 않는다.
+
 ## 2026-11-11 — Mac 재개 검사기 수정
 
 사용자 재개 실패에서 검사기의 중첩 `/proc` 마운트 누락을 찾아 실제 Linux에서 재현·수정했다. 실제 bwrap를 포함한 설치/복구 검사41개가 통과했다. 별도 브랜치의 Ubuntu24.04 AppArmor CI는 다운로드 DNS 오류로 중단돼 main에 넣지 않았다. 최신 파일·남은 Mac 확인은 [맥 설치 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 따른다.

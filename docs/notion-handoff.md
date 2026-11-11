@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 Mac 재개 파일의 중첩 검사기에서 /proc 마운트 누락을 재현·수정하고 실제 격리를 포함한41개 검사를 통과했습니다. 별도 Ubuntu24.04 CI는 다운로드 DNS 오류로 미완료입니다. [최신 설치 이어하기·실패 기록·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. Mac 설치·로그인 성공은 아직 확인 대기입니다.
+2026-11-11 사용자가 Mac 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했습니다. 다음은2-start로 화면 열기이며 로그인·실제 AI 응답은 아직 확인 전입니다. [최신 Mac 상태·실패 이력·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. 별도 Ubuntu24.04 CI의 다운로드 DNS 실패 기록은 그대로 유지합니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
@@ -79,6 +79,11 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — 사용자 Mac 설치 완료 로그 확인
+
+- 사용자가 수정 재개 파일의 `Installation checked.` 및 첫 검토 대기 준비 완료 로그를 제공했다. [현재 Mac 상태와 다음 단계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 갱신했다.
+- 다음은2-start.command로 화면 열기다. 로그인·실제 AI 응답·Windows/클라우드 이전 성공으로 확대 해석하지 않는다. 코드/보안 설정/인증 변경 없이 문서만 기록했다. Render 공개 배포는 별도 미확인이다.
 
 #### 2026-11-11 — Mac 중첩 격리 검사기 결함 수정
 
@@ -456,6 +461,10 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — Mac 설치 완료 사용자 확인
+
+사용자가 수정 설치기의 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했다. [맥 인계 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 갱신했다. 다음 확인은2-start 화면, 본인 로그인, 실제 검토 응답 순서다. 설치 완료를 로그인/AI 가동 완료로 기록하지 않는다.
+
 #### 2026-11-11 — Mac 재개 검사기 수정
 
 사용자 재개 실패에서 검사기의 중첩 `/proc` 마운트 누락을 찾아 실제 Linux에서 재현·수정했다. 실제 bwrap를 포함한 설치/복구 검사41개가 통과했다. 별도 브랜치의 Ubuntu24.04 AppArmor CI는 다운로드 DNS 오류로 중단돼 main에 넣지 않았다. 최신 파일·남은 Mac 확인은 [맥 설치 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 따른다.
@@ -798,6 +807,7 @@ c76ed66 Balance office labels and speech at half the previous text size
 742cf52 Connect office recipients and team reviews with readable reports
 f9f0b4a Add read-only Mac sandbox diagnostics for Lima install failure
 a678c55 Resume Mac installation with scoped office AppArmor support
+9742e71 Fix Mac nested sandbox verification with a dedicated proc mount
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1621,6 +1631,12 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 ### Mac용 AI 사무실 준비 패키지
 
+#### 2026-11-11 최신 사용자 확인 — Mac 설치 완료
+
+사용자가 수정 재개 파일 실행 뒤 `Local office and first waiting review prepared; no login or model execution.` 및 `Installation checked.` 완료 로그를 제공했다. Mac 사무실 설치와 첫 검토 대기 준비까지 완료됐다는 사용자 실행 증거다. 아래의 설치 중단/확인 대기 기록은 이 완료 보고 이전의 이력이다. 개별 설치 검사 전체 로그는 별도로 전달받지 않았다.
+
+다음은 원래 `ai-office-macos` 폴더의 **2-start.command**를 열고 서버 창을 유지하는 단계다. [같은 Mac의 사무실](http://127.0.0.1:8790) 화면이 열리는지 확인한 다음3-login.command로 본인 ChatGPT 계정 로그인, 이후9-office-chat.command로 채팅을 연다. 화면 표시·로그인/authReady·실제 AI 업무 응답은 아직 확인 전이다. Windows/클라우드 데이터 이전이나 인증 복사는 수행하지 않았다. 설치·재개 파일을 반복해서 실행하도록 안내하지 않는다.
+
 #### 2026-11-11 설치 재개 v2 — 중첩 검사 오류 수정
 
 첫 재개 파일에서 사용자에게 `office_sandbox_repair_nested_probe_failed`가 발생했다. 검사기가 `/`를 읽기 전용으로 묶으면서 `/proc` 전용 마운트를 빠뜨린 결함을 별도 Linux에서 재현했다. 바깥 검사는 통과하지만 내부 bwrap가 uid_map을 만들지 못해 `Read-only file system`으로 실패했다. 실제 사무실 실행기는 이미 `--proc /proc`를 사용한다. 검사기도 동일하게 맞추니 중첩 실행과 읽기 전용 canary가 모두 통과했다. AppArmor 권한/전역 보안 설정을 추가로 완화한 수정이 아니다.
@@ -1651,7 +1667,7 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 다음 담당자는 사용자 진단 결과를 먼저 확인하고, 배포판 공식 제한 프로필 등 적용 범위를 검토한 뒤 실제 runner의 읽기 허용·쓰기 차단·네트워크 차단까지 검증한다. 첫 검사의 성공과 AI 실행 준비 완료를 구분한다. 이번 진단 도구는 모의 차단/중첩 실패/도구 없음·로그 비노출 및 bash 문법 검증을 통과했으며 사용자 Mac에서의 실행 결과는 대기다.
 
-2026-11-11 한국 시간. 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다.
+2026-11-11 한국 시간. 최초 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다. 이후 실제 설치 완료 확인은 최상단 기록을 우선한다.
 
 [Mac ZIP 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-macos.zip) · [패키지 안내](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/macos/README-MAC.txt) · [기존 설치·구조](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)
 

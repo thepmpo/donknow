@@ -1,5 +1,11 @@
 # Mac용 AI 사무실 준비 패키지
 
+## 2026-11-11 최신 사용자 확인 — Mac 설치 완료
+
+사용자가 수정 재개 파일 실행 뒤 `Local office and first waiting review prepared; no login or model execution.` 및 `Installation checked.` 완료 로그를 제공했다. Mac 사무실 설치와 첫 검토 대기 준비까지 완료됐다는 사용자 실행 증거다. 아래의 설치 중단/확인 대기 기록은 이 완료 보고 이전의 이력이다. 개별 설치 검사 전체 로그는 별도로 전달받지 않았다.
+
+다음은 원래 `ai-office-macos` 폴더의 **2-start.command**를 열고 서버 창을 유지하는 단계다. [같은 Mac의 사무실](http://127.0.0.1:8790) 화면이 열리는지 확인한 다음3-login.command로 본인 ChatGPT 계정 로그인, 이후9-office-chat.command로 채팅을 연다. 화면 표시·로그인/authReady·실제 AI 업무 응답은 아직 확인 전이다. Windows/클라우드 데이터 이전이나 인증 복사는 수행하지 않았다. 설치·재개 파일을 반복해서 실행하도록 안내하지 않는다.
+
 ## 2026-11-11 설치 재개 v2 — 중첩 검사 오류 수정
 
 첫 재개 파일에서 사용자에게 `office_sandbox_repair_nested_probe_failed`가 발생했다. 검사기가 `/`를 읽기 전용으로 묶으면서 `/proc` 전용 마운트를 빠뜨린 결함을 별도 Linux에서 재현했다. 바깥 검사는 통과하지만 내부 bwrap가 uid_map을 만들지 못해 `Read-only file system`으로 실패했다. 실제 사무실 실행기는 이미 `--proc /proc`를 사용한다. 검사기도 동일하게 맞추니 중첩 실행과 읽기 전용 canary가 모두 통과했다. AppArmor 권한/전역 보안 설정을 추가로 완화한 수정이 아니다.
@@ -30,7 +36,7 @@
 
 다음 담당자는 사용자 진단 결과를 먼저 확인하고, 배포판 공식 제한 프로필 등 적용 범위를 검토한 뒤 실제 runner의 읽기 허용·쓰기 차단·네트워크 차단까지 검증한다. 첫 검사의 성공과 AI 실행 준비 완료를 구분한다. 이번 진단 도구는 모의 차단/중첩 실패/도구 없음·로그 비노출 및 bash 문법 검증을 통과했으며 사용자 Mac에서의 실행 결과는 대기다.
 
-2026-11-11 한국 시간. 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다.
+2026-11-11 한국 시간. 최초 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다. 이후 실제 설치 완료 확인은 최상단 기록을 우선한다.
 
 [Mac ZIP 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-macos.zip) · [패키지 안내](../tools/ai-office/macos/README-MAC.txt) · [기존 설치·구조](ai-office-local-install.md) · [사무실 채팅·내 지시](ai-office-control.md)
 

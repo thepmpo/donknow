@@ -1,5 +1,10 @@
 # 변경 기록
 
+## 2026-11-11 — 사용자 Mac 설치 완료 로그 확인
+
+- 사용자가 수정 재개 파일의 `Installation checked.` 및 첫 검토 대기 준비 완료 로그를 제공했다. [현재 Mac 상태와 다음 단계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 갱신했다.
+- 다음은2-start.command로 화면 열기다. 로그인·실제 AI 응답·Windows/클라우드 이전 성공으로 확대 해석하지 않는다. 코드/보안 설정/인증 변경 없이 문서만 기록했다. Render 공개 배포는 별도 미확인이다.
+
 ## 2026-11-11 — Mac 중첩 격리 검사기 결함 수정
 
 - 사용자 설치 재개 실패 후 검사기의 `/proc` 마운트 누락을 실제 bwrap로 재현했다. 실제 실행기와 같은 `--proc /proc`를 적용해 uid_map 쓰기 실패를 고쳤으며 AppArmor 허용 범위는 그대로다.

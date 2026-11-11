@@ -36,7 +36,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 Mac 재개 파일의 중첩 검사기에서 /proc 마운트 누락을 재현·수정하고 실제 격리를 포함한41개 검사를 통과했습니다. 별도 Ubuntu24.04 CI는 다운로드 DNS 오류로 미완료입니다. [최신 설치 이어하기·실패 기록·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. Mac 설치·로그인 성공은 아직 확인 대기입니다.
+2026-11-11 사용자가 Mac 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했습니다. 다음은2-start로 화면 열기이며 로그인·실제 AI 응답은 아직 확인 전입니다. [최신 Mac 상태·실패 이력·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. 별도 Ubuntu24.04 CI의 다운로드 DNS 실패 기록은 그대로 유지합니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
