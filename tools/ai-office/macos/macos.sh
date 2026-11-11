@@ -46,6 +46,9 @@ else
   [[ "$transfer" =~ ^/tmp/office-control-[A-Za-z0-9]+$ ]] || exit 1
   limactl copy "$package_dir/install-control.py" "$vm:$transfer/install-control.py"
   limactl copy "$package_dir/control-payload.zip" "$vm:$transfer/control-payload.zip"
+  limactl copy "$package_dir/update-readability.py" "$vm:$transfer/update-readability.py"
+  limactl copy "$package_dir/readability.json" "$vm:$transfer/readability.json"
+  limactl shell "$vm" python3 "$transfer/update-readability.py" "$transfer/readability.json"
   limactl shell "$vm" python3 "$transfer/install-control.py" "$transfer/control-payload.zip"
   open_input(){
    access=$(limactl shell "$vm" cat /workspace/ai-office/state/control-access.key)

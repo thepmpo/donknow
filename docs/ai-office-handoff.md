@@ -52,3 +52,5 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 2026-11-11 추가: [사무실 채팅·내 지시](ai-office-control.md)는9번의8810 화면에서 제공한다. 기존 직원 채팅은 확인창으로 전달하며 자동 실행하지 않는다. 후속 업무는 원 보고서 digest와 parentTaskId를 기록한다. [Mac용 패키지](ai-office-macos.md)는 tools/ai-office/ai-office-macos.zip에 보관하며 요청 시 즉시 전달 가능하다. 실제 Mac 검증/기존 Windows 업무 이전은 미완료다.
 
 최신 Windows 실행은 **0-open-office.cmd 하나**다.2번→9번 수동 시작 안내는 이전 절차다. 주 서버 자동 시작/재사용, 구버전 gateway만 UID/실행 경로/소켓/pidfd로 검증해 교체하고 최소화한다. 사무실 상단 이름·대사 확대는 초기150%,100~200% 선택·브라우저 저장이며 소스 글꼴 수정과 구분한다. [새 시작·안전 경계·검증](ai-office-control.md).
+
+최신v2 글자 패치: 이름22px·대사24px로 이전v1의2배. 기존 장면 확대율은 유지한다.0번에서 SHA/idle 검사 후 최초 한 번 빌드한다. 원본과dist를 백업하고 실패하면 복구한다. [정확한 기준](ai-office-control.md).

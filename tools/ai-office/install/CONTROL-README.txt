@@ -21,3 +21,5 @@ AI 사무실 — 앞으로는 0-open-office.cmd 하나만 실행하세요.
 
 휴대폰 접속은 별도10-phone-connect.cmd입니다. 지금 설정하지 않아도 PC에서는 사용 가능합니다.
 https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md
+
+2026-11-11 추가: 이름22px·머리 위 대사24px로 이전 글자 자체의2배입니다.0번이 UI 패치를 자동 적용하고 첫 한 번 빌드하므로 기다려주세요. AI 업무 중이면 완료 후 적용하세요. 화면 확대 선택은 그대로 유지됩니다.

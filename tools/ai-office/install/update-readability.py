@@ -51,7 +51,7 @@ def update(runtime, state, payload, builder, idle=None):
         current = file.read_bytes()
         if digest(current) == entry['afterSha256']:
             continue
-        if digest(current) != entry['beforeSha256']:
+        if digest(current) not in entry.get('acceptedBeforeSha256', [entry['beforeSha256']]):
             raise RuntimeError('office_existing_ui_changes_preserved')
         originals[entry['path']] = current
         pending.append(entry)
@@ -75,7 +75,7 @@ def update(runtime, state, payload, builder, idle=None):
     try:
         for entry in pending:
             target = runtime / entry['path']
-            if digest(target.read_bytes()) != entry['beforeSha256']:
+            if target.read_bytes() != originals[entry['path']]:
                 raise RuntimeError('office_existing_ui_changes_preserved')
             target.write_bytes(entry['content'].encode('utf-8'))
             applied.append(entry)

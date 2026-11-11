@@ -46,6 +46,19 @@ class ReadabilityUpdateTest(unittest.TestCase):
         self.assertEqual((self.state / 'office.sqlite').read_bytes(), self.database_before)
         self.assertTrue(module.update(self.runtime, self.state, self.payload, self.build)['alreadyInstalled'])
 
+    def test_reviewed_prior_version_is_accepted_and_rollback_restores_actual_input(self):
+        for entry in self.payload['files']:
+            previous = 'reviewed prior version ' + entry['path']
+            (self.runtime / entry['path']).write_text(previous)
+            entry['acceptedBeforeSha256'] = [entry['beforeSha256'], module.digest(previous.encode())]
+        def fail(staging):
+            raise RuntimeError('build failed')
+        with self.assertRaisesRegex(RuntimeError, 'build failed'):
+            module.update(self.runtime, self.state, self.payload, fail)
+        for entry in self.payload['files']:
+            self.assertEqual((self.runtime / entry['path']).read_text(), 'reviewed prior version ' + entry['path'])
+        self.assertTrue(module.update(self.runtime, self.state, self.payload, self.build)['updated'])
+
     def test_running_review_is_refused_before_source_changes(self):
         with sqlite3.connect(self.state / 'office.sqlite') as db:
             db.execute("INSERT INTO tasks VALUES ('in_progress')")

@@ -24,11 +24,14 @@ if($null -eq $office){
 if($null -eq $office -or $office.app -ne 'Claw-Empire'){throw 'Main office did not start. Open its minimized server window to check the error. No reinstall or login reset was performed.'}
 $temp=(& wsl.exe --distribution Ubuntu --exec mktemp -d /tmp/office-control-XXXXXXXX | Out-String).Trim()
 if($LASTEXITCODE -ne 0 -or $temp -notmatch '^/tmp/office-control-[A-Za-z0-9]+$'){throw 'Cannot prepare input server installer.'}
-foreach($name in @('install-control.py','control-payload.zip','restart-control.py')){
+foreach($name in @('install-control.py','control-payload.zip','restart-control.py','update-readability.py','readability.json')){
     $data=[Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $PSScriptRoot $name)))
     $data | & wsl.exe --distribution Ubuntu --exec bash -lc "base64 --decode --ignore-garbage > $temp/$name"
     if($LASTEXITCODE -ne 0){throw 'Cannot transfer verified input server package.'}
 }
+Write-Host 'Checking the requested larger name and speech text. First application builds the UI; please wait.'
+& wsl.exe --distribution Ubuntu --exec python3 "$temp/update-readability.py" "$temp/readability.json"
+if($LASTEXITCODE -ne 0){throw 'Text update stopped safely. If AI work is running, wait until it ends and try again. Existing data and login were preserved.'}
 $installedText=(& wsl.exe --distribution Ubuntu --exec python3 "$temp/install-control.py" "$temp/control-payload.zip" | Out-String).Trim()
 if($LASTEXITCODE -ne 0){Write-Host $installedText;throw 'Input server installation stopped safely.'}
 $installed=$installedText|ConvertFrom-Json

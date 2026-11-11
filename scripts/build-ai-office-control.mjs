@@ -9,7 +9,7 @@ with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
  for name in [*manifest['files'],'manifest.json']: z.write(base/name,name)
 `,base,path.join(install,'control-payload.zip')],{stdio:'pipe'});
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
-root=pathlib.Path(sys.argv[1]); names=['0-open-office.cmd','restart-control.py','9-open-office.cmd','10-phone-connect.cmd','open-control.ps1','connect-phone.ps1','install-control.py','control-payload.zip','CONTROL-README.txt']
+root=pathlib.Path(sys.argv[1]); names=['update-readability.py','readability.json','0-open-office.cmd','restart-control.py','9-open-office.cmd','10-phone-connect.cmd','open-control.ps1','connect-phone.ps1','install-control.py','control-payload.zip','CONTROL-README.txt']
 with zipfile.ZipFile(root.parent/'ai-office-control.zip','w',zipfile.ZIP_DEFLATED) as z:
  for name in names: z.write(root/name,'ai-office-control/'+name)
 with zipfile.ZipFile(root.parent/'ai-office-windows.zip','w',zipfile.ZIP_DEFLATED) as z:
@@ -18,7 +18,7 @@ with zipfile.ZipFile(root.parent/'ai-office-windows.zip','w',zipfile.ZIP_DEFLATE
 `,install],{stdio:'pipe'});
 console.log('Control UI and Windows private-phone package built: '+manifest.packageId);
 const mac=path.join(repo,'tools/ai-office/macos');
-for(const name of ['macos.sh','install-control.py','repair-auth.py','control-payload.zip'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
+for(const name of ['macos.sh','install-control.py','repair-auth.py','control-payload.zip','update-readability.py','readability.json'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
 fs.writeFileSync(path.join(mac,'control-version.txt'),manifest.packageId+'\n');
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
 root=pathlib.Path(sys.argv[1])
@@ -26,3 +26,9 @@ with zipfile.ZipFile(root.parent/'ai-office-macos.zip','w',zipfile.ZIP_DEFLATED)
  for file in sorted(root.iterdir()):
   if file.is_file(): z.write(file,'ai-office-macos/'+file.name)
 `,mac],{stdio:'pipe'});
+
+execFileSync('python3',['-c',`import sys,zipfile,pathlib
+root=pathlib.Path(sys.argv[1])
+with zipfile.ZipFile(root.parent/'ai-office-readable-text.zip','w',zipfile.ZIP_DEFLATED) as z:
+ for name in ['8-larger-text.cmd','windows.ps1','update-readability.py','readability.json','READABLE-TEXT.txt']:z.write(root/name,'ai-office-readable-text/'+name)
+`,install],{stdio:'pipe'});

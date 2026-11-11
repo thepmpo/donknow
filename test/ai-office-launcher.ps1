@@ -2,7 +2,7 @@ $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
 $testRoot=Join-Path ([IO.Path]::GetTempPath()) ('office single launcher with spaces '+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $testRoot -Force > $null
-foreach($name in @('open-control.ps1','install-control.py','control-payload.zip','restart-control.py')){Copy-Item (Join-Path (Join-Path $repo 'tools/ai-office/install') $name) $testRoot -Force}
+foreach($name in @('open-control.ps1','install-control.py','control-payload.zip','restart-control.py','update-readability.py','readability.json')){Copy-Item (Join-Path (Join-Path $repo 'tools/ai-office/install') $name) $testRoot -Force}
 $global:mainReady=$false;$global:inputReady=$false;$global:oldStopped=$false;$global:spawns=@();$global:mode='old'
 function global:Start-Sleep {param($Seconds)}
 function global:Start-Process {param($FilePath,$ArgumentList,$WindowStyle) if($ArgumentList -contains '-RunMainServer'){$global:mainReady=$true};if($ArgumentList -contains '-RunServer'){$global:inputReady=$true};$global:spawns+=,@($FilePath,$ArgumentList,$WindowStyle)}

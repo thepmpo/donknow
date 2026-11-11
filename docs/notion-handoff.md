@@ -633,6 +633,11 @@
 - 사용자 불편에 따라 [0번 시작 파일](ai-office-control.md) 하나로 기존 사무실/채팅 자동 시작·재사용·창 최소화와 검증된 구버전 입력 서버만 교체하도록 구현했다. WSL 전체 종료/원래 모델 프로세스 종료를 없애고 새 gateway는 진행 중 HTTP를 마친 뒤 종료한다.
 - 사무실 canvas 기본150%·선택100~200%·브라우저 저장을 추가했고 실제 브라우저에서 크기 증가와 방/캐릭터 표시를 확인했다. 기존8번 글꼴 패치가 사용자 PC에 적용됐다고 주장하지 않는다. 설치·인증·DB·기존 작업·복구 bundle은 보존했다.
 
+##### 2026-11-11 — 이름·대사 자체2배
+
+- 사용자 요청에 따라 이름11→22px·말풍선12→24px로 변경하고 이름표·말풍선·직원 간격을 조정했다. 장면 확대율을 유지하므로 동일 확대율에서 글자가2배다. 최초 한 번 빌드 후0번 시작 파일에서 자동 적용/검사한다.
+- 초기/v1 소스만 허용하고 사용자 수정·실행 중 업무를 보존한다. 실패 시 실제 입력 소스로 복구한다. TypeScript/Vite와 실제 사무실 화면, Python/PowerShell 검증을 수행했다. [설치·수치·검증 경계](ai-office-control.md).
+
 
 ### Git 커밋 이력
 
@@ -724,6 +729,7 @@ eeda2a0 Merge daily project record while preserving local office setup documenta
 ba28041 Add private office request UI, report confirmation and phone access setup
 948d9f3 Connect in-office task chat and instruction history; prepare Mac launchers
 444498d Fix blank office scene by allowing Pixi texture workers in native proxy
+8617bc6 Simplify Windows office startup and add persistent scene text zoom
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1407,6 +1413,18 @@ state/control-requests/*.json은 private 요청·확인 기록이다. state/cont
 
 검증: 실제 PowerShell 엔진+모의 WSL/health로 꺼진 주 서버 시작·구버전 입력 교체·실행 중 서버 재사용·타 앱 보존·공백 경로·창 최소화를 검사했다(`test/ai-office-launcher.ps1`). Python은 UID/실행 파일/인수/소켓 검증이 다른 서버를 거부함을 검사한다. 실제 로컬 사무실 브라우저에서 방·캐릭터 표시, 초기150%와200% 선택의 canvas 크기 증가를 확인했다. Windows 사용자 PC 적용 성공·기존8번 글꼴 수정 적용·실계정 AI 호출은 확인하지 않았다.
 
+#### 2026-11-11 이름·대사 글자 자체를 두 배로
+
+사용자는 장면 확대 이후에도 **지금의 이름과 머리 위 대사 글자 자체를2배**로 요청했다. 원래 읽기 쉬움v1의 이름11px→22px, 말풍선12px→24px로 바꾼v2 패치를 배포한다. 장면 확대 비율은 그대로이므로 같은150%에서 실제 글자가 이전150%의2배다. 사무실 전체 확대 비율을 임의로 올리지 않는다. 이동 중 동적 이름7px→14px도 포함한다.
+
+이름표 높이18→34px, 역할·캐릭터와의 간격, 말풍선 줄바꿈/배경/padding, 직원 슬롯 가로100→180px·세로140→280px, 휴게실 높이140→360px, 최소 장면 폭600px를 함께 조정한다. 방은 기존 반응형 계산으로 더 적은 열에 배치될 수 있고 가로·세로 스크롤이 늘어난다. 원래3열을 유지하려고 글자를 다시 줄이지 않는다.
+
+최신 Windows 추가 파일의 **0-open-office.cmd 하나**가 서버 health 확인 후 UI 패치를 검사·적용한다. 최초 한 번 TypeScript/Vite 빌드가 필요하며 이미 적용됐으면 다시 빌드하지 않는다. 실행 중 업무/직원이 있으면 적용을 거부하고 종료 후 다시 실행하도록 안내한다. 기존 소스가 검토된 초기/v1 SHA가 아닌 사용자 수정이면 보존하고 중단한다. 소스5개와 이전dist를 개인 ui-backups에 백업하고 빌드/후속idle 검사 실패 시 실제 적용 전 원본으로 복구한다. DB·인증·키·요청 내역은 바꾸지 않는다. Mac 준비 패키지의9번도 같은 패치를 적용한다.
+
+검증: TypeScript·실제 Vite 빌드, 실제 로컬 앱 브라우저의22px 이름/방/캐릭터 표시, 설치기 기존/v1 입력 허용·멱등성·빌드 실패 원본 복구·작업 중 거부·DB/인증 보존 테스트, PowerShell 단일 시작 흐름을 확인했다. 사용자 Windows/Mac 기기에 적용한 결과는 별도다. 예전 ui-readability/preview.png는 v1 역사 이미지이며 이번v2 실제 크기의 증거로 쓰지 않는다.
+
+긴 진행 업무 제목(16자 한국어+아이콘의3줄 말풍선)과 휴게실 왼쪽 자리도 검수한다. 부서 이름 시작 y=164와 세로 슬롯280px로 위쪽 여백을 확보하고, 휴게실 말풍선 본문/텍스트를 방 경계 안으로 제한한다. 검수용 진행 상태는 브라우저의 모의 GET 응답이며 실제 DB/모델 업무가 아니다.
+
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
@@ -1443,6 +1461,8 @@ bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열
 ### 原文 / docs/ai-office-usage.md
 
 ### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
+
+최신 글자 크기v2: **이름22px·머리 위 대사24px**, 이전v1의2배다. 최신 추가 ZIP의0-open-office.cmd가 자동 적용하며 최초 한 번 화면 빌드가 필요하다. 아래11/12px와 기존 미리보기는v1 역사 기록이다.
 
 2026-11-11 최신 Windows 시작: 최초 설치·로그인 이후에는 [추가 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 **0-open-office.cmd 하나만** 실행한다. 사무실·채팅 서버 자동 시작/재사용·최소화와 기본150% 이름·대사 확대를 제공한다. [상세·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 아래의2번→9번 수동 시작은 이전 안내다.
 
@@ -1722,6 +1742,8 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 2026-11-11 추가: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)는9번의8810 화면에서 제공한다. 기존 직원 채팅은 확인창으로 전달하며 자동 실행하지 않는다. 후속 업무는 원 보고서 digest와 parentTaskId를 기록한다. [Mac용 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 tools/ai-office/ai-office-macos.zip에 보관하며 요청 시 즉시 전달 가능하다. 실제 Mac 검증/기존 Windows 업무 이전은 미완료다.
 
 최신 Windows 실행은 **0-open-office.cmd 하나**다.2번→9번 수동 시작 안내는 이전 절차다. 주 서버 자동 시작/재사용, 구버전 gateway만 UID/실행 경로/소켓/pidfd로 검증해 교체하고 최소화한다. 사무실 상단 이름·대사 확대는 초기150%,100~200% 선택·브라우저 저장이며 소스 글꼴 수정과 구분한다. [새 시작·안전 경계·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
+최신v2 글자 패치: 이름22px·대사24px로 이전v1의2배. 기존 장면 확대율은 유지한다.0번에서 SHA/idle 검사 후 최초 한 번 빌드한다. 원본과dist를 백업하고 실패하면 복구한다. [정확한 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 ### 原文 / docs/ai-office-knowledge.md
 
