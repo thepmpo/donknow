@@ -5,6 +5,7 @@ import {resolve,join,dirname,sep} from 'node:path';
 import {homedir} from 'node:os';
 import {execFileSync,spawnSync,spawn} from 'node:child_process';
 import {createOfficeClient} from './lib/ai-office-client.mjs';
+import {retainOnlyProviderAuth} from './lib/ai-office-auth.mjs';
 import {pilotPayload,validatePilot,textHash,readinessBlockers} from './lib/ai-office-pilot.mjs';
 const [command,...args]=process.argv.slice(2),projectName=args.find(v=>!v.startsWith('--'))??'duckduck';
 if(!/^[a-zA-Z0-9-]{1,50}$/.test(projectName))throw Error('office_project_name_required');
@@ -62,13 +63,16 @@ async function login(){
  if(textHash(readFileSync(binary))!==client.settings.runnerHash)throw Error('office_runner_hash_mismatch');
  if(!client.settings.providerHome||!existsSync(client.settings.providerHome))throw Error('office_scoped_auth_directory_required');
  const auth=realpathSync(client.settings.providerHome);if(auth===realpathSync(homedir())||!auth.startsWith(realpathSync(stateDir)+sep))throw Error('office_scoped_auth_directory_required');
+ if(existsSync(join(auth,'.codex/auth.json')))retainOnlyProviderAuth({providerHome:auth,stateDir});
  const policy=await api('/api/office-policy/status');if(policy.authReady)return {authReady:true,alreadyAuthenticated:true,workersEnabled:policy.workersEnabled};if(!policy.enabled||policy.workersEnabled||policy.developmentEnabled)throw Error('office_lock_workers_before_login');
  const env=Object.fromEntries(Object.entries(process.env).filter(([k])=>['PATH','HOME','USER','LANG','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy','SSL_CERT_FILE','SSL_CERT_DIR','NODE_EXTRA_CA_CERTS'].includes(k)));
  const argv=['--die-with-parent','--new-session','--unshare-pid','--unshare-ipc','--unshare-uts'];
  for(const dir of ['/usr','/bin','/sbin','/lib','/lib64','/opt','/etc/ssl','/etc/hosts','/etc/resolv.conf'])if(existsSync(dir))argv.push('--ro-bind',dir,dir);
  argv.push('--proc','/proc','--dev','/dev','--tmpfs','/tmp','--bind',auth,homedir(),'--ro-bind',bundle,'/run/office-provider','--chdir','/tmp','/run/office-provider/bin/codex','login','--device-auth');
  const result=await new Promise((resolve,reject)=>{const child=spawn('bwrap',argv,{env,stdio:'inherit'});child.on('error',reject);child.on('close',code=>resolve(code));});if(result!==0)throw Error('office_login_not_completed');
- const check=await api('/api/office-policy/runtime/check','POST',{}, {owner:true});return {authReady:check.authReady,workersEnabled:false,developmentEnabled:false};
+ retainOnlyProviderAuth({providerHome:auth,stateDir});
+ const check=await api('/api/office-policy/runtime/check','POST',{}, {owner:true});if(!check.authReady)throw Error('office_login_not_ready:'+check.reasonCodes.join(','));
+ return {authReady:true,workersEnabled:false,developmentEnabled:false};
 }
 try{
  if(command==='doctor')console.log(JSON.stringify(await doctor(),null,2));

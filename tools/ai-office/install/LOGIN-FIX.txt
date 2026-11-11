@@ -1,0 +1,19 @@
+AI 사무실 로그인 확인 오류 수정
+
+공식 Codex가 로그인 과정에서 .codex/tmp를 생성하여,
+사무실의 auth.json 전용 폴더 검사에 걸리는 문제를 수정합니다.
+
+1. 사무실 서버 창은 켜 둡니다.
+2. ZIP 압축을 풉니다.
+3. 7-fix-login.cmd를 실행합니다.
+4. 결과에서 authReady: true가 나오면 기존 설치 폴더의 4-first-review.cmd를 실행합니다.
+
+인증 파일, 암호화 키, DB, 사무실 설정을 삭제하거나 재생성하지 않습니다.
+임시 폴더는 같은 PC의 사무실 상태 폴더 아래 provider-cache-backups로 이동합니다.
+사무실 재설치나 서버 재시작은 필요하지 않습니다.
+비밀번호/토큰/로그인 코드를 채팅에 보내지 마세요.
+
+다른 설정 파일이 있거나 경로가 심볼릭 링크이면 보존하고 중단합니다.
+중단하거나 authReady가 false이면 결과의 오류 문구만 알려주세요.
+
+https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md

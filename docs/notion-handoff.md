@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[Windows 로그인 오류 수정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md): 공식 Codex가 만든 임시 폴더를 인증 실패로 오판한 문제를 재현해 독립 수정 ZIP을 준비했습니다. 인증/키/DB/worker 정책을 보존하고 임시 폴더만 백업합니다. 실제 PC의 인증·첫 AI 응답은 수정 후 확인 대기입니다.
+
 [주술회전 직원 테마](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-jjk-theme.md): 직원14명의 생성 스프라이트를 적용하고 실제 화면/PNG·복원/재적용을 확인했습니다. 역할·모델·업무는 유지하며 Windows 최신 패키지에 적용 경로를 추가했습니다. 실제 Windows/Mac 검증과 AI 업무 실행 성공을 뜻하지 않습니다.
 
 [Windows부터 AI 사무실 실행·Mac 경로·캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md): Windows WSL2 시작 패키지와 Mac Lima 경로를 준비했습니다. 실제 PC 설치/로그인/모델 응답은 미확인입니다. [인수인계 공식 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)은 문서뿐 아니라 실제 작업물과 검증 결과를 함께 전달하도록 정했습니다.
@@ -61,6 +63,12 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — 공식 Codex 로그인 임시 폴더 오판 수정
+
+- Windows 실제 진단의 office_provider_home_not_fresh를 공식 Codex0.167.0/가짜 인증/네트워크 차단으로 재현했다. 공식 CLI가 .codex/tmp를 생성해 사무실 auth-only 검사가 거부한 설치 도구 오류다.
+- [수정 ZIP/안내](ai-office-login-repair.md)를 추가했다. 기존33c3587 설치에서도 인증 파일·DB·키·설정·worker 정책은 유지하고 임시 폴더만 private 백업으로 이동한다. 로그인 성공 후 후처리와 진단도 추가했다.
+- 실제 CLI 재현 false→true/인증 바이트 보존, JS/Python 회귀와 PowerShell 호출 검증을 수행했다. Windows 실제 인증/AI 검토 성공은 사용자 결과 대기이며 fake-auth 진단으로 대체하지 않는다.
 
 #### 2026-11-11 — AI 사무실 주술회전 직원 테마
 
@@ -566,6 +574,10 @@
 
 [주술회전 테마](ai-office-jjk-theme.md): 직원14명의 외형/한국어 이름을 변경하고 원래 부서·직급·모델·업무를 보존했다. 원래 외형 백업/복원·14명/70개 PNG·실제 사무실 캡처를 확인했다. 최신 Windows 패키지 적용 버튼과 새 설치 기본값에 연결했다. 실제 PC 설치와 AI 로그인/업무 실행 검증으로 해석하지 않는다.
 
+#### 2026-11-11 — Windows 로그인 확인 오류
+
+[인증 보존 수정 파일](ai-office-login-repair.md): 공식 CLI의 .codex/tmp 생성으로 로그인 폴더 검사가 실패하는 문제를 재현했다. 인증/키/DB를 유지하고 임시 폴더만 백업한다. 실제 CLI 및 JS/Python/PowerShell 검증을 수행했고 사용자 PC의 수정 후 authReady·모델 응답은 미확인이다.
+
 
 ### Git 커밋 이력
 
@@ -650,6 +662,7 @@ cebc65c Add tested AI office approval gate and isolated worker policy
 f978196 docs: daily project update [skip ci]
 bdd0616 Prepare Windows and Mac office launchers and complete work handoff packages
 eeda2a0 Merge daily project record while preserving local office setup documentation
+33c3587 Apply reversible Jujutsu Kaisen character theme to the AI office
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1225,6 +1238,42 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 原文 / docs/ai-office-login-repair.md
+
+### Windows 사무실 로그인 확인 오류 수정
+
+2026-11-11. 사용자의 실제 Windows 설치에서 OpenAI 연결·실행기·격리는 준비됐으나 `office_provider_home_not_fresh`로 로그인 확인이 거부됐다.
+
+#### 지금 사용자가 할 일
+
+1. [로그인 수정 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-login-fix.zip)
+2. 압축을 풀고 **`7-fix-login.cmd`**를 실행한다. 사무실 서버 창은 켜 둔다.
+3. 결과에 **`authReady: true`**가 나오면 원래 설치 폴더의 **`4-first-review.cmd`**를 실행한다.
+4. 중단하거나 false가 나오면 오류 문구만 전달한다. 인증 파일·비밀번호·토큰·일회 코드를 전달하지 않는다.
+
+이 파일은 설치/업데이트/재로그인을 하지 않는다. 기존 Windows 사무실 소스33c3587에서도 독립 실행한다. 인증 파일, DB, 키, 프로젝트 소스·검토 대상 커밋과 승인 상태를 변경하지 않으므로 서버 재시작이나 사무실 재설치는 필요 없다. 개인 PC에서 수행한 수정/실제 AI 실행 성공은 사용자 진단으로 다시 확인한다.
+
+#### 확인한 원인
+
+공식 Codex0.167.0의 `login status` 명령을 가짜 인증 파일과 네트워크 차단 상태에서 실행해 `.codex/tmp/arg0-linux/` 및 lock/실행 shim을 생성하는 것을 재현했다. 기존 사무실은 `.codex/`에 auth.json 외 항목이 있으면 전부 거부하여, 이 정상 임시 폴더도 인증 실패로 잘못 분류했다. 사용자 계정 인증이 실제 유효하다는 뜻은 아니며 원래 진단이 토큰 검증까지 도달하지 못한 이유다.
+
+#### 수정과 보존 범위
+
+- 독립 Python 수정기는 사무실 전용 provider-home의 `.codex/tmp`만 `state/provider-cache-backups/` 아래 고유한 백업 폴더로 이동한다. 임시 파일을 삭제하지 않는다.
+- auth.json의 바이트/권한/위치, `.env`, 암호화 키, SQLite를 보존한다. 파일 내용을 출력하지 않고 이동 전후 해시 비교 결과만 내부 검사한다.
+- provider-home은 사무실 상태 폴더 안이어야 하며 심볼릭 링크/범위 밖 경로는 거부한다. 알 수 없는 config.toml/다른 파일이 있으면 덮거나 지우지 않고 중단한다.
+- worker에는 기존처럼 auth.json 하나만 읽기 전용 제공한다. 임시 폴더/설정/다른 프로젝트를 worker에 마운트하는 예외를 추가하지 않는다. vendor 정책과 pinned patch는 변경하지 않는다.
+- 새 root CLI는 개인 로그인 완료 후 같은 정리를 수행하고, authReady가 false이면 로그인 성공처럼 반환하지 않는다. Windows 최신3-login은 기존 소스를 쓰더라도 후처리와 진단을 수행한다.
+
+#### 검증
+
+- 실제 공식 CLI로 오류를 재현하고 가짜 인증 파일 바이트를 그대로 유지한 채 strict-auth 진단이 false→true로 바뀌는 것을 확인했다. 실제 계정/모델 호출은 수행하지 않았다.
+- JavaScript/Python 회귀는 원본 인증 바이트·권한·임시 폴더 백업·재실행 멱등성·범위 밖/심볼릭 링크/알 수 없는 설정 거부를 확인한다.
+- 실제 PowerShell 엔진에서 구문과 모의 WSL 호출을 확인했다. 로그인은 개인 대화형 WSL 실행을 유지하고 이후 독립 Python 수정/비밀값 없는 진단으로 이어진다.
+- Windows 실기기의 실제 authReady 및 첫 모델 응답은 수정 파일 실행 후 사용자 결과로 확인해야 한다. 네트워크 도달이나 fake-auth 진단 성공을 실제 로그인 성공으로 기록하지 않는다.
+
+[첫 실행](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md) · [Windows 설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)
+
 ### 原文 / docs/ai-office-jjk-theme.md
 
 ### AI 사무실 주술회전 캐릭터 테마
@@ -1347,6 +1396,10 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 #### 주술회전 테마 적용 — 2026-11-11
 
 사용자 요청으로 [직원14명 주술회전 테마](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-jjk-theme.md)를 추가했다. 최신 소스로 새 설치할 때 적용하며 서버 시작 후 `6-characters.cmd`로도 바꿀 수 있다. 기존 외형 백업/복원과 충돌 방지를 지원한다. 역할/모델/업무 실행 권한은 바꾸지 않는다.
+
+#### 로그인은 했는데 실행이 거부되는 경우
+
+`office_provider_home_not_fresh`는 [별도 로그인 수정 ZIP](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md)의 `7-fix-login.cmd`로 처리한다. 인증을 그대로 두고 공식 Codex의 임시 폴더만 백업한다. 서버를 켠 상태로 진단하고 authReady:true 후 검토를 실행한다. 재설치/키 재생성은 하지 않는다.
 
 ### 原文 / docs/ai-office-handoff.md
 
@@ -1506,6 +1559,10 @@ node scripts/ai-office-ready.mjs stop
 #### PC 먼저 실행 — 2026-11-11
 
 [Windows 시작 패키지·Mac 경로·캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md)을 준비했다. [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)는 문서/실제 작업물/검증 결과를 함께 전달한다. 로컬 설치는 별도 상태이며 기존 클라우드 인증/DB 자동 이전이 아니다. 실기기 설치/계정 실행은 아직 미확인이다.
+
+#### Windows 실사용 로그인 폴더 검사 오류 — 2026-11-11
+
+공식 Codex가 만든 .codex/tmp 때문에 auth-only 정책이 로그인을 거부하는 문제를 재현했다. [독립 수정 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md)는 인증/DB/키/설정을 유지하고 임시 폴더만 백업한다. authReady:true와 실제 모델 응답은 사용자 PC에서 다시 확인한다.
 
 ### 原文 / docs/ai-office-approval-gate.md
 

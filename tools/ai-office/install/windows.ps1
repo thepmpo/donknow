@@ -1,5 +1,5 @@
 # Run in normal Windows PowerShell. Only WSL installation itself may require elevation/reboot.
-param([ValidateSet('install','start','initialize','login','review','doctor','handoff','characters')][string]$Action='install')
+param([ValidateSet('install','start','initialize','login','review','doctor','handoff','characters','repair')][string]$Action='install')
 $ErrorActionPreference='Stop'
 if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) { throw 'WSL2 is required. https://learn.microsoft.com/windows/wsl/install' }
 if ($Action -eq 'install') {
@@ -15,9 +15,23 @@ if ! test -e /workspace/donknow; then git clone https://github.com/thepmpo/donkn
 test -f /workspace/donknow/tools/ai-office/install/linux.sh || { echo 'The installer is missing from this checkout. Existing files were preserved.' >&2; exit 1; }
 bash /workspace/donknow/tools/ai-office/install/linux.sh
 '@
+} elseif ($Action -eq 'repair') {
+    $repairFile=Join-Path $PSScriptRoot 'repair-auth.py'
+    $repairEncoded=[Convert]::ToBase64String([System.IO.File]::ReadAllBytes($repairFile))
+    & wsl.exe --distribution Ubuntu --exec bash -lc "echo $repairEncoded | base64 --decode | python3"
+    if ($LASTEXITCODE -ne 0) { throw 'Login repair stopped. Existing authentication was preserved.' }
+    & wsl.exe --distribution Ubuntu --exec /workspace/ai-office/bin/doctor.sh
+    if ($LASTEXITCODE -ne 0) { throw 'Repair finished; diagnosis could not connect. Keep the server window open.' }
+    exit 0
 } elseif ($Action -eq 'login') {
     & wsl.exe --distribution Ubuntu --exec /workspace/ai-office/bin/login.sh
     if ($LASTEXITCODE -ne 0) { throw 'Login did not complete. No code or token should be sent to chat.' }
+    $repairFile=Join-Path $PSScriptRoot 'repair-auth.py'
+    $repairEncoded=[Convert]::ToBase64String([System.IO.File]::ReadAllBytes($repairFile))
+    & wsl.exe --distribution Ubuntu --exec bash -lc "echo $repairEncoded | base64 --decode | python3"
+    if ($LASTEXITCODE -ne 0) { throw 'Login completed; authentication folder needs review. Do not delete authentication.' }
+    & wsl.exe --distribution Ubuntu --exec /workspace/ai-office/bin/doctor.sh
+    if ($LASTEXITCODE -ne 0) { throw 'Login completed; office diagnosis unavailable. Keep the server window open.' }
     exit 0
 } elseif ($Action -eq 'initialize') {
     $command = 'export PATH="/workspace/ai-office/toolchain/node/bin:$PATH"; cd /workspace/donknow; node scripts/ai-office-local.mjs initialize && node scripts/ai-office-ready.mjs prepare'

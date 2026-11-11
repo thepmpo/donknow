@@ -1,5 +1,11 @@
 # 변경 기록
 
+## 2026-11-11 — 공식 Codex 로그인 임시 폴더 오판 수정
+
+- Windows 실제 진단의 office_provider_home_not_fresh를 공식 Codex0.167.0/가짜 인증/네트워크 차단으로 재현했다. 공식 CLI가 .codex/tmp를 생성해 사무실 auth-only 검사가 거부한 설치 도구 오류다.
+- [수정 ZIP/안내](ai-office-login-repair.md)를 추가했다. 기존33c3587 설치에서도 인증 파일·DB·키·설정·worker 정책은 유지하고 임시 폴더만 private 백업으로 이동한다. 로그인 성공 후 후처리와 진단도 추가했다.
+- 실제 CLI 재현 false→true/인증 바이트 보존, JS/Python 회귀와 PowerShell 호출 검증을 수행했다. Windows 실제 인증/AI 검토 성공은 사용자 결과 대기이며 fake-auth 진단으로 대체하지 않는다.
+
 ## 2026-11-11 — AI 사무실 주술회전 직원 테마
 
 - 사용자 요청에 따라 직원14명의 외형/한국어 표시 이름을 고죠·이타도리·후시구로·노바라 등으로 변경했다. [매핑/에셋/복원 안내](ai-office-jjk-theme.md). 기존 직원 ID·부서·직급·모델·업무와 실행 잠금을 보존했다.

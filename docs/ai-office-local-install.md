@@ -66,3 +66,7 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 ## 주술회전 테마 적용 — 2026-11-11
 
 사용자 요청으로 [직원14명 주술회전 테마](ai-office-jjk-theme.md)를 추가했다. 최신 소스로 새 설치할 때 적용하며 서버 시작 후 `6-characters.cmd`로도 바꿀 수 있다. 기존 외형 백업/복원과 충돌 방지를 지원한다. 역할/모델/업무 실행 권한은 바꾸지 않는다.
+
+## 로그인은 했는데 실행이 거부되는 경우
+
+`office_provider_home_not_fresh`는 [별도 로그인 수정 ZIP](ai-office-login-repair.md)의 `7-fix-login.cmd`로 처리한다. 인증을 그대로 두고 공식 Codex의 임시 폴더만 백업한다. 서버를 켠 상태로 진단하고 authReady:true 후 검토를 실행한다. 재설치/키 재생성은 하지 않는다.

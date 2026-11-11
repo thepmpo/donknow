@@ -24,3 +24,5 @@ https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md
 https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md
 소스:
 https://github.com/thepmpo/donknow/tree/main/tools/ai-office/install
+
+로그인 후 office_provider_home_not_fresh가 나오면 7-fix-login.cmd를 실행하세요. 인증은 그대로 두고 Codex 임시 폴더만 백업합니다.

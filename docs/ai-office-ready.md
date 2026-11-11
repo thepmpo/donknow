@@ -47,3 +47,7 @@ node scripts/ai-office-ready.mjs stop
 ## PC 먼저 실행 — 2026-11-11
 
 [Windows 시작 패키지·Mac 경로·캐릭터 변경](ai-office-local-install.md)을 준비했다. [인수인계](ai-office-handoff.md)는 문서/실제 작업물/검증 결과를 함께 전달한다. 로컬 설치는 별도 상태이며 기존 클라우드 인증/DB 자동 이전이 아니다. 실기기 설치/계정 실행은 아직 미확인이다.
+
+## Windows 실사용 로그인 폴더 검사 오류 — 2026-11-11
+
+공식 Codex가 만든 .codex/tmp 때문에 auth-only 정책이 로그인을 거부하는 문제를 재현했다. [독립 수정 패키지](ai-office-login-repair.md)는 인증/DB/키/설정을 유지하고 임시 폴더만 백업한다. authReady:true와 실제 모델 응답은 사용자 PC에서 다시 확인한다.
