@@ -36,7 +36,7 @@ YAML
 else
  case "$action" in
  initialize) limactl shell "$vm" bash -lc 'export PATH="/workspace/ai-office/toolchain/node/bin:$PATH"; cd /workspace/donknow; node scripts/ai-office-local.mjs initialize && node scripts/ai-office-ready.mjs prepare';;
- start|login|review|doctor|handoff) limactl shell "$vm" "/workspace/ai-office/bin/$action.sh";;
- *) echo 'Actions: install start initialize login review doctor handoff' >&2; exit 1;;
+ start|login|review|doctor|handoff|characters) limactl shell "$vm" "/workspace/ai-office/bin/$action.sh";;
+ *) echo 'Actions: install start initialize login review doctor handoff characters' >&2; exit 1;;
  esac
 fi

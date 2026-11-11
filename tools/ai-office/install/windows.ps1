@@ -1,5 +1,5 @@
 # Run in normal Windows PowerShell. Only WSL installation itself may require elevation/reboot.
-param([ValidateSet('install','start','initialize','login','review','doctor','handoff')][string]$Action='install')
+param([ValidateSet('install','start','initialize','login','review','doctor','handoff','characters')][string]$Action='install')
 $ErrorActionPreference='Stop'
 if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) { throw 'WSL2 is required. https://learn.microsoft.com/windows/wsl/install' }
 if ($Action -eq 'install') {

@@ -14,14 +14,16 @@ if(cmd==='setup'){
  try{
   let ready=false;for(let n=0;n<60;n++){if(child.exitCode!==null)throw Error('office_setup_server_failed');try{const r=await fetch('http://127.0.0.1:8790/health',{signal:AbortSignal.timeout(1000)});if(r.ok){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,500));}
   if(!ready)throw Error('office_setup_server_timeout');
+  const firstInstall=!fs.existsSync(path.join(root,'state/local-initialized.json'));
   execFileSync(process.execPath,[fileURLToPath(import.meta.url),'initialize'],{stdio:'inherit'});
   execFileSync(process.execPath,[path.join(repo,'scripts/ai-office-ready.mjs'),'prepare'],{stdio:'inherit'});
+  if(firstInstall)execFileSync(process.execPath,[path.join(repo,'scripts/ai-office-theme.mjs'),'apply','jjk'],{stdio:'inherit'});
   console.log('Local office and first waiting review prepared; no login or model execution.');
  }finally{child.kill('SIGTERM');}
 }else if(cmd==='configure'){
  const result=ensureLocalConfig({metadata});
  const shell='#!/bin/sh\nset -eu\nexport PATH="/workspace/ai-office/toolchain/node/bin:$PATH"\ncd /workspace/donknow\n';
- const wrappers={'start.sh':'exec node scripts/start-ai-office.mjs\n','login.sh':'exec node scripts/ai-office-ready.mjs login\n','doctor.sh':'exec node scripts/ai-office-ready.mjs doctor\n','review.sh':'exec node scripts/ai-office-ready.mjs start --confirm\n','handoff.sh':'exec node scripts/ai-office-handoff.mjs\n'};
+ const wrappers={'characters.sh':'exec node scripts/ai-office-theme.mjs apply jjk\n','start.sh':'exec node scripts/start-ai-office.mjs\n','login.sh':'exec node scripts/ai-office-ready.mjs login\n','doctor.sh':'exec node scripts/ai-office-ready.mjs doctor\n','review.sh':'exec node scripts/ai-office-ready.mjs start --confirm\n','handoff.sh':'exec node scripts/ai-office-handoff.mjs\n'};
  for(const [name,tail] of Object.entries(wrappers)){const file=path.join(root,'bin',name),body=shell+tail;if(fs.existsSync(file)&&fs.readFileSync(file,'utf8')!==body)throw Error('office_existing_launcher_preserved:'+name);if(!fs.existsSync(file))fs.writeFileSync(file,body,{mode:0o700,flag:'wx'});}
  console.log(JSON.stringify({...result,workersEnabled:false,developmentEnabled:false}));
 }else if(cmd==='initialize'){

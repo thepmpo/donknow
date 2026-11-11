@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[주술회전 직원 테마](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-jjk-theme.md): 직원14명의 생성 스프라이트를 적용하고 실제 화면/PNG·복원/재적용을 확인했습니다. 역할·모델·업무는 유지하며 Windows 최신 패키지에 적용 경로를 추가했습니다. 실제 Windows/Mac 검증과 AI 업무 실행 성공을 뜻하지 않습니다.
+
 [Windows부터 AI 사무실 실행·Mac 경로·캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md): Windows WSL2 시작 패키지와 Mac Lima 경로를 준비했습니다. 실제 PC 설치/로그인/모델 응답은 미확인입니다. [인수인계 공식 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)은 문서뿐 아니라 실제 작업물과 검증 결과를 함께 전달하도록 정했습니다.
 
 [공통 제품 문서함](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md): 기존 제품 문서를 기본 연결하고 문서 추가 즉시 버전을 발행합니다. 모든 역할이 최신 목록·관련 원문을 읽도록 연결하며 공통/프로젝트 범위를 구분합니다. 로컬 문서함은 http://127.0.0.1:8791 이고 공개 업로드 공간은 아닙니다. 문서 변경 시 이전 실행 승인은 만료됩니다.
@@ -59,6 +61,12 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — AI 사무실 주술회전 직원 테마
+
+- 사용자 요청에 따라 직원14명의 외형/한국어 표시 이름을 고죠·이타도리·후시구로·노바라 등으로 변경했다. [매핑/에셋/복원 안내](ai-office-jjk-theme.md). 기존 직원 ID·부서·직급·모델·업무와 실행 잠금을 보존했다.
+- 투명 생성 시트와 전면/좌/우70개 PNG·해시를 저장하고 새 번호만 사용했다. 적용 전 원래 외형을 비공개 백업하며 사용자가 이후 선택한 외형/충돌 에셋은 덮지 않는다.
+- 현재 사무실에 적용해14명/70개 HTTP PNG·실제 canvas·브라우저 오류 없음과 복원/재적용을 확인했다. Windows ZIP에는6-characters.cmd를 추가했고 새 설치 기본 테마에 연결했다. 실제 Windows/Mac 기기 확인은 미완료다. 앱 UI/인증/실제 AI 업무는 변경하지 않았다.
 
 #### 2026-11-11 — Windows 우선 설치·Mac 실행 경로·작업물 인계
 
@@ -554,6 +562,10 @@
 
 [Windows/Mac 설치](ai-office-local-install.md)와 [문서+작업물+검증 인계](ai-office-handoff.md)를 준비했다. WSL2 Windows 시작/로그인 버튼 패키지와 Mac Lima 경로, 비밀 보존 설정 도구와 인계 수집기를 추가했다. 실제 PC 설치·계정 모델 실행은 미확인이다. 기존 클라우드 데이터/키와 원래 앱을 보존했고 직원 캐릭터 변경 경로를 확인했다.
 
+#### 2026-11-11 — 주술회전 직원 외형
+
+[주술회전 테마](ai-office-jjk-theme.md): 직원14명의 외형/한국어 이름을 변경하고 원래 부서·직급·모델·업무를 보존했다. 원래 외형 백업/복원·14명/70개 PNG·실제 사무실 캡처를 확인했다. 최신 Windows 패키지 적용 버튼과 새 설치 기본값에 연결했다. 실제 PC 설치와 AI 로그인/업무 실행 검증으로 해석하지 않는다.
+
 
 ### Git 커밋 이력
 
@@ -635,7 +647,9 @@ cebc65c Add tested AI office approval gate and isolated worker policy
 2d5c238 Preserve required unified patch context whitespace
 59da1b7 Prepare AI office first product review and account readiness workflow
 52f91d5 Add live shared product knowledge inbox for all AI office roles
+f978196 docs: daily project update [skip ci]
 bdd0616 Prepare Windows and Mac office launchers and complete work handoff packages
+eeda2a0 Merge daily project record while preserving local office setup documentation
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1211,6 +1225,58 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 原文 / docs/ai-office-jjk-theme.md
+
+### AI 사무실 주술회전 캐릭터 테마
+
+2026-11-11 사용자 요청으로 현재 사무실 직원14명의 외형과 한국어 표시 이름을 변경했다. 원본 직원 ID/영문 이름/부서/직급/모델/업무/실행 잠금은 유지했다. CEO 사용자 아바타는 직원 테마의 적용 대상에 포함하지 않았다. AI 생성 픽셀 스프라이트이며 원작 공식 게임 리소스를 가져온 것은 아니다.
+
+[실제 적용 화면](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/themes/jujutsu-kaisen/preview.png) · [원본 생성 시트](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/themes/jujutsu-kaisen/atlas.png)
+
+| 부서 | 기존 직원 → 캐릭터 |
+|---|---|
+| 기획 | Sage → 고죠 사토루, Clio → 나나미 켄토 |
+| 개발 | Nova → 이타도리 유지, Bolt → 후시구로 메구미, Aria → 옷코츠 유타 |
+| 디자인 | Luna → 쿠기사키 노바라, Pixel → 젠인 마키 |
+| 품질관리 | DORO → 판다, Lint → 이누마키 토게, Hawk → 이에이리 쇼코 |
+| 인프라보안 | Pipe → 후시구로 토우지, Vault → 게토 스구루 |
+| 운영 | Turbo → 료멘 스쿠나, Atlas → 토도 아오이 |
+
+#### PC에서 쓰기
+
+[최신 Windows 시작 패키지](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-windows.zip)를 사용한다. 새 사무실 설치 시 기본 적용하고, **서버를 켠 뒤 `6-characters.cmd`**로도 적용할 수 있다. 기존에 사용자 설정이 있는 설치는 setup이 반복해서 외형을 바꾸지 않는다. 이전 ZIP/소스를 받은 PC는 최신 스크립트와 테마 파일이 필요하며, 사용자 코드 변경을 무시하고 덮어쓰지 않는다.
+
+Linux/WSL에서:
+
+```sh
+cd /workspace/donknow
+node scripts/ai-office-theme.mjs apply jjk
+```
+
+Mac Lima는 최신 설치 후 `bash macos.sh characters`를 사용한다. 실제 Windows/Mac 기기 설치·화면 검증은 아직 미확인이며 현재 클라우드 Linux에서 적용·복구·PNG 제공·브라우저 캡처를 확인했다.
+
+#### 원래 외형으로 되돌리기
+
+적용 전에 `/workspace/ai-office/state/appearance-backups/jjk-<시각>.json`에 원래 `name_ko`/`sprite_number`를0600으로 보관한다. 기존 이미지 파일을 덮지 않고 새 번호9101~9114를 사용한다. 같은 번호의 다른 파일이 있으면 변경 전에 중단한다.
+
+```sh
+node scripts/ai-office-theme.mjs restore /workspace/ai-office/state/appearance-backups/jjk-<시각>.json
+```
+
+출력된 실제 백업 경로를 사용한다. 테마 적용 뒤 사용자가 다른 외형을 선택했다면 그 변경을 자동으로 덮지 않고 중단한다. 직원 대응이 없거나 중복되면 적용하지 않는다. 백업은 이 설치의 직원 ID에 대응하므로 다른 환경에 그대로 복원하지 않는다. 다른 환경은 테마 에셋/manifest를 적용하고 원래 영문 직원 이름을 대조한다.
+
+#### 에셋·검증
+
+- `tools/ai-office/themes/jujutsu-kaisen/theme.json`:14명 대응, 번호, 파일별 SHA256.
+- `atlas.png`: 생성한7열×6행 투명 시트. `sprites/`: 전면/좌/우 각 프레임 총70개 PNG.
+- 전면3개 파일은 같은 기본 자세다. 서로 다른 걷기/업무 애니메이션을 제작한 것으로 설명하지 않는다. 사무실에서 위치 이동과 방향 표시는 유지한다.
+- 각 프레임은 원본 시트를 분리·정렬하여96px 높이로 준비했다. 사무실의 원래 렌더 크기에 맞춰 표시된다.
+- production은 dist 정적 리소스를 제공하므로 public/sprites와 dist/sprites에 같은 해시의 파일을 연결한다. 이후 빌드는 public 파일을 다시 복사한다. 기존 파일이 다른 내용이면 덮어쓰지 않는다.
+- 실제 사무실에서14명 매핑,70개 PNG HTTP200/content-type, 브라우저 스크립트 오류 없음, 복원→재적용, 원래 부서/직급/업무/실행 잠금 보존을 확인했다.
+- [인수인계 생성기](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)는 새 PNG와 직원 sprite_number를 수집하므로 PC에서 클라우드로 옮길 때 에셋·코드·문서와 함께 인계한다. 인증·권한 자동 이전은 하지 않는다.
+
+이 변경은 AI 업무를 실행하거나 로그인하는 기능이 아니다. 외형이 바뀌어도 실계정 AI 응답 검증 상태는 달라지지 않는다.
+
 ### 原文 / docs/ai-office-local-install.md
 
 ### AI 사무실 — Windows 먼저, Mac도 준비
@@ -1277,6 +1343,10 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 현재 코드에서 경로와 처리 API를 확인했으며 이번 작업에서 직원 외형이나 기존 캐릭터 파일은 변경하지 않았다. 새 업로드 이미지의 실제 미리보기/투명 배경/방향·프레임은 사용자가 고른 파일로 확인한다. 다른 환경으로 옮길 때 사용자 등록 캐릭터 파일도 별도 전달해야 한다.
 
 [인수인계 패키지 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md) · [설치 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md) · [첫 실행](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md)
+
+#### 주술회전 테마 적용 — 2026-11-11
+
+사용자 요청으로 [직원14명 주술회전 테마](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-jjk-theme.md)를 추가했다. 최신 소스로 새 설치할 때 적용하며 서버 시작 후 `6-characters.cmd`로도 바꿀 수 있다. 기존 외형 백업/복원과 충돌 방지를 지원한다. 역할/모델/업무 실행 권한은 바꾸지 않는다.
 
 ### 原文 / docs/ai-office-handoff.md
 

@@ -1,0 +1,404 @@
+{
+  "version": 1,
+  "id": "jjk",
+  "name": "주술회전 캐릭터",
+  "generated": true,
+  "source": "atlas.png",
+  "columns": 7,
+  "rows": 6,
+  "staticIdleFrames": true,
+  "entries": [
+    {
+      "originalName": "Sage",
+      "label": "고죠 사토루",
+      "key": "gojo",
+      "spriteNumber": 9101,
+      "files": {
+        "D-1": {
+          "file": "sprites/9101-D-1.png",
+          "sha256": "ea1d906f925febe5cdbd6c9710360b4b8f122dd135b4fbc741ef8913ecf0db81"
+        },
+        "D-2": {
+          "file": "sprites/9101-D-2.png",
+          "sha256": "ea1d906f925febe5cdbd6c9710360b4b8f122dd135b4fbc741ef8913ecf0db81"
+        },
+        "D-3": {
+          "file": "sprites/9101-D-3.png",
+          "sha256": "ea1d906f925febe5cdbd6c9710360b4b8f122dd135b4fbc741ef8913ecf0db81"
+        },
+        "L-1": {
+          "file": "sprites/9101-L-1.png",
+          "sha256": "887cb187b25d11750d6b3096ce14d0d4605c45b2ccb03f2bad860f9c27555975"
+        },
+        "R-1": {
+          "file": "sprites/9101-R-1.png",
+          "sha256": "1c79cf1f28e533f1f6da2188c5fffac34e427bdf42a88bd2c7b13a8caaae141d"
+        }
+      }
+    },
+    {
+      "originalName": "Nova",
+      "label": "이타도리 유지",
+      "key": "yuji",
+      "spriteNumber": 9102,
+      "files": {
+        "D-1": {
+          "file": "sprites/9102-D-1.png",
+          "sha256": "b19897976cf643d1cddf5b162ca94d2d5269a9d62f6e006c352efa6a31cd1c13"
+        },
+        "D-2": {
+          "file": "sprites/9102-D-2.png",
+          "sha256": "b19897976cf643d1cddf5b162ca94d2d5269a9d62f6e006c352efa6a31cd1c13"
+        },
+        "D-3": {
+          "file": "sprites/9102-D-3.png",
+          "sha256": "b19897976cf643d1cddf5b162ca94d2d5269a9d62f6e006c352efa6a31cd1c13"
+        },
+        "L-1": {
+          "file": "sprites/9102-L-1.png",
+          "sha256": "1af591a914e57cefecf6d96ff3b865153ee0556421dbc9b5423190ff721512a9"
+        },
+        "R-1": {
+          "file": "sprites/9102-R-1.png",
+          "sha256": "fea44c9573bd8b1645d70b51adf091893a2b3c3a939a928ad807a7f9407c2bf4"
+        }
+      }
+    },
+    {
+      "originalName": "Bolt",
+      "label": "후시구로 메구미",
+      "key": "megumi",
+      "spriteNumber": 9103,
+      "files": {
+        "D-1": {
+          "file": "sprites/9103-D-1.png",
+          "sha256": "3a36de85c4678c851518fded7a4d3d9705192867b3c9c67e105e9eed342b64d7"
+        },
+        "D-2": {
+          "file": "sprites/9103-D-2.png",
+          "sha256": "3a36de85c4678c851518fded7a4d3d9705192867b3c9c67e105e9eed342b64d7"
+        },
+        "D-3": {
+          "file": "sprites/9103-D-3.png",
+          "sha256": "3a36de85c4678c851518fded7a4d3d9705192867b3c9c67e105e9eed342b64d7"
+        },
+        "L-1": {
+          "file": "sprites/9103-L-1.png",
+          "sha256": "b292280cefb6f9223dc697810c81636f4d479a4304d3a45526690ab48176b6aa"
+        },
+        "R-1": {
+          "file": "sprites/9103-R-1.png",
+          "sha256": "7b69dc2b494364ea79feb0aa3926fc1ed7a9c03bf36a03fe9b381a98a7953de0"
+        }
+      }
+    },
+    {
+      "originalName": "Luna",
+      "label": "쿠기사키 노바라",
+      "key": "nobara",
+      "spriteNumber": 9104,
+      "files": {
+        "D-1": {
+          "file": "sprites/9104-D-1.png",
+          "sha256": "4693a665c5c19a835d8520e85c26646f33435ea54b71b4aa1fdb1f5f8739c9a8"
+        },
+        "D-2": {
+          "file": "sprites/9104-D-2.png",
+          "sha256": "4693a665c5c19a835d8520e85c26646f33435ea54b71b4aa1fdb1f5f8739c9a8"
+        },
+        "D-3": {
+          "file": "sprites/9104-D-3.png",
+          "sha256": "4693a665c5c19a835d8520e85c26646f33435ea54b71b4aa1fdb1f5f8739c9a8"
+        },
+        "L-1": {
+          "file": "sprites/9104-L-1.png",
+          "sha256": "d4eb08096093d2f4753fa5280c061ad33745314ef6ee799be6e915beb4b83e74"
+        },
+        "R-1": {
+          "file": "sprites/9104-R-1.png",
+          "sha256": "a781a42c748ecd17ce4f66ef146a2a237ed89d7bef0cdb4116fbcede140f3af8"
+        }
+      }
+    },
+    {
+      "originalName": "Clio",
+      "label": "나나미 켄토",
+      "key": "nanami",
+      "spriteNumber": 9105,
+      "files": {
+        "D-1": {
+          "file": "sprites/9105-D-1.png",
+          "sha256": "6553e20c03530f369831cd26db9a2a4369e14e796ed575fc1f2f5938ad8cc330"
+        },
+        "D-2": {
+          "file": "sprites/9105-D-2.png",
+          "sha256": "6553e20c03530f369831cd26db9a2a4369e14e796ed575fc1f2f5938ad8cc330"
+        },
+        "D-3": {
+          "file": "sprites/9105-D-3.png",
+          "sha256": "6553e20c03530f369831cd26db9a2a4369e14e796ed575fc1f2f5938ad8cc330"
+        },
+        "L-1": {
+          "file": "sprites/9105-L-1.png",
+          "sha256": "9f1ad6833719550ce2864a408d55cda117a9ab91d60951b87e88e64ab430941f"
+        },
+        "R-1": {
+          "file": "sprites/9105-R-1.png",
+          "sha256": "7f5ff79c4b437337daed7ba25c614dc2e3005c29d1dd2a8b95a01e4f60230d00"
+        }
+      }
+    },
+    {
+      "originalName": "Pixel",
+      "label": "젠인 마키",
+      "key": "maki",
+      "spriteNumber": 9106,
+      "files": {
+        "D-1": {
+          "file": "sprites/9106-D-1.png",
+          "sha256": "bf85196f003e564b680e746310776f50360bec7fad7e7bcbb2dffc301574fa26"
+        },
+        "D-2": {
+          "file": "sprites/9106-D-2.png",
+          "sha256": "bf85196f003e564b680e746310776f50360bec7fad7e7bcbb2dffc301574fa26"
+        },
+        "D-3": {
+          "file": "sprites/9106-D-3.png",
+          "sha256": "bf85196f003e564b680e746310776f50360bec7fad7e7bcbb2dffc301574fa26"
+        },
+        "L-1": {
+          "file": "sprites/9106-L-1.png",
+          "sha256": "c5c2ddbe347a49f611c26c4ea72126c6ea1fd4b812987530b4078fcaf898b4f3"
+        },
+        "R-1": {
+          "file": "sprites/9106-R-1.png",
+          "sha256": "fe7df80e7eb44e4f2c1efe52e8bd99e0fa4ea55116bf0312e5431e68a1e4c017"
+        }
+      }
+    },
+    {
+      "originalName": "Aria",
+      "label": "옷코츠 유타",
+      "key": "yuta",
+      "spriteNumber": 9107,
+      "files": {
+        "D-1": {
+          "file": "sprites/9107-D-1.png",
+          "sha256": "b0d039255cfcd39660b4ca81a5ed4b5c2ee1401de2984e4de84a9401862dacb5"
+        },
+        "D-2": {
+          "file": "sprites/9107-D-2.png",
+          "sha256": "b0d039255cfcd39660b4ca81a5ed4b5c2ee1401de2984e4de84a9401862dacb5"
+        },
+        "D-3": {
+          "file": "sprites/9107-D-3.png",
+          "sha256": "b0d039255cfcd39660b4ca81a5ed4b5c2ee1401de2984e4de84a9401862dacb5"
+        },
+        "L-1": {
+          "file": "sprites/9107-L-1.png",
+          "sha256": "fdeec4d9c01497d0f053c76ccaf2195de6232a99abd6f80d83b1c7323773177d"
+        },
+        "R-1": {
+          "file": "sprites/9107-R-1.png",
+          "sha256": "2173afab7370eb60a9676072cb54661008fea8c7b88dbd7062e6d2640b579d1a"
+        }
+      }
+    },
+    {
+      "originalName": "DORO",
+      "label": "판다",
+      "key": "panda",
+      "spriteNumber": 9108,
+      "files": {
+        "D-1": {
+          "file": "sprites/9108-D-1.png",
+          "sha256": "08333742aebb6acb6cbe1feba0a98092c8e8673250cb3b47f458f48863541e3a"
+        },
+        "D-2": {
+          "file": "sprites/9108-D-2.png",
+          "sha256": "08333742aebb6acb6cbe1feba0a98092c8e8673250cb3b47f458f48863541e3a"
+        },
+        "D-3": {
+          "file": "sprites/9108-D-3.png",
+          "sha256": "08333742aebb6acb6cbe1feba0a98092c8e8673250cb3b47f458f48863541e3a"
+        },
+        "L-1": {
+          "file": "sprites/9108-L-1.png",
+          "sha256": "6f8f86293c566f1706d9bdb97e62a1b5d530e96fe5d5f64be5c05a1dbcc43ef6"
+        },
+        "R-1": {
+          "file": "sprites/9108-R-1.png",
+          "sha256": "1b81d905e4c04df443ee7ac464c913bbe67722b2497d750570a338ca53320767"
+        }
+      }
+    },
+    {
+      "originalName": "Lint",
+      "label": "이누마키 토게",
+      "key": "toge",
+      "spriteNumber": 9109,
+      "files": {
+        "D-1": {
+          "file": "sprites/9109-D-1.png",
+          "sha256": "b93816ebdcc237c11aa82da7d5ca44295384aabd66f37e2731e8fd056eeb8c8d"
+        },
+        "D-2": {
+          "file": "sprites/9109-D-2.png",
+          "sha256": "b93816ebdcc237c11aa82da7d5ca44295384aabd66f37e2731e8fd056eeb8c8d"
+        },
+        "D-3": {
+          "file": "sprites/9109-D-3.png",
+          "sha256": "b93816ebdcc237c11aa82da7d5ca44295384aabd66f37e2731e8fd056eeb8c8d"
+        },
+        "L-1": {
+          "file": "sprites/9109-L-1.png",
+          "sha256": "bdf46b2162c45a5d213c54445e232d9ffe1b7bb52a9391d3392053ae1e2cbe84"
+        },
+        "R-1": {
+          "file": "sprites/9109-R-1.png",
+          "sha256": "0cb05095f2f91c9f55e1bc5e456624e21643a64d9b4901da24b92f8527a51dc0"
+        }
+      }
+    },
+    {
+      "originalName": "Hawk",
+      "label": "이에이리 쇼코",
+      "key": "shoko",
+      "spriteNumber": 9110,
+      "files": {
+        "D-1": {
+          "file": "sprites/9110-D-1.png",
+          "sha256": "b8ef2835faf503c24f782fee4459004df334ddfe35c542c4f2f83a6e6ec984fd"
+        },
+        "D-2": {
+          "file": "sprites/9110-D-2.png",
+          "sha256": "b8ef2835faf503c24f782fee4459004df334ddfe35c542c4f2f83a6e6ec984fd"
+        },
+        "D-3": {
+          "file": "sprites/9110-D-3.png",
+          "sha256": "b8ef2835faf503c24f782fee4459004df334ddfe35c542c4f2f83a6e6ec984fd"
+        },
+        "L-1": {
+          "file": "sprites/9110-L-1.png",
+          "sha256": "d7573f35d38de182edebb02b207f2cb90bc057e2cfe0233f8b9fb2bb82c9de4c"
+        },
+        "R-1": {
+          "file": "sprites/9110-R-1.png",
+          "sha256": "c476c9075546f775883ad7c3a18b66a19a0c530add568f256bb05521e6169288"
+        }
+      }
+    },
+    {
+      "originalName": "Vault",
+      "label": "게토 스구루",
+      "key": "geto",
+      "spriteNumber": 9111,
+      "files": {
+        "D-1": {
+          "file": "sprites/9111-D-1.png",
+          "sha256": "e0a11b89ccad065965b4c4ea4e0451df6b62fac3b753be6a3975e31d6d3208a3"
+        },
+        "D-2": {
+          "file": "sprites/9111-D-2.png",
+          "sha256": "e0a11b89ccad065965b4c4ea4e0451df6b62fac3b753be6a3975e31d6d3208a3"
+        },
+        "D-3": {
+          "file": "sprites/9111-D-3.png",
+          "sha256": "e0a11b89ccad065965b4c4ea4e0451df6b62fac3b753be6a3975e31d6d3208a3"
+        },
+        "L-1": {
+          "file": "sprites/9111-L-1.png",
+          "sha256": "ed4faea944862c38e060d496f2280795c384f71cd021ef1d1889b3f1d53735e7"
+        },
+        "R-1": {
+          "file": "sprites/9111-R-1.png",
+          "sha256": "1471818edf60220ff8fd59431fc290017a2c979a7ee9900eb7e9e13b7905e218"
+        }
+      }
+    },
+    {
+      "originalName": "Pipe",
+      "label": "후시구로 토우지",
+      "key": "toji",
+      "spriteNumber": 9112,
+      "files": {
+        "D-1": {
+          "file": "sprites/9112-D-1.png",
+          "sha256": "2e529d30da9c53b4964fd024a6eda04d2f103e3bf441cec71aaa0f4f42ec7287"
+        },
+        "D-2": {
+          "file": "sprites/9112-D-2.png",
+          "sha256": "2e529d30da9c53b4964fd024a6eda04d2f103e3bf441cec71aaa0f4f42ec7287"
+        },
+        "D-3": {
+          "file": "sprites/9112-D-3.png",
+          "sha256": "2e529d30da9c53b4964fd024a6eda04d2f103e3bf441cec71aaa0f4f42ec7287"
+        },
+        "L-1": {
+          "file": "sprites/9112-L-1.png",
+          "sha256": "ddb4921ca4f3c2d923ff17815b3e9bfd6dd428842ee4188b36f3f30c79b21879"
+        },
+        "R-1": {
+          "file": "sprites/9112-R-1.png",
+          "sha256": "c79c94a681e683b79fa0d734a8a08a8df00794862c52a5c32438e3ab60b97b3f"
+        }
+      }
+    },
+    {
+      "originalName": "Turbo",
+      "label": "료멘 스쿠나",
+      "key": "sukuna",
+      "spriteNumber": 9113,
+      "files": {
+        "D-1": {
+          "file": "sprites/9113-D-1.png",
+          "sha256": "78dcecd2ba8df790b7f0b4347518e75d37a2ac9ac141e455622e22d3a9ddbfa6"
+        },
+        "D-2": {
+          "file": "sprites/9113-D-2.png",
+          "sha256": "78dcecd2ba8df790b7f0b4347518e75d37a2ac9ac141e455622e22d3a9ddbfa6"
+        },
+        "D-3": {
+          "file": "sprites/9113-D-3.png",
+          "sha256": "78dcecd2ba8df790b7f0b4347518e75d37a2ac9ac141e455622e22d3a9ddbfa6"
+        },
+        "L-1": {
+          "file": "sprites/9113-L-1.png",
+          "sha256": "6b7b773105ab21f793637f5293225e783d4570c20e72517689df87d706f99b7d"
+        },
+        "R-1": {
+          "file": "sprites/9113-R-1.png",
+          "sha256": "30195c3b215769726478615bcbcad738163827e85db185e36f23603ed5596cdf"
+        }
+      }
+    },
+    {
+      "originalName": "Atlas",
+      "label": "토도 아오이",
+      "key": "todo",
+      "spriteNumber": 9114,
+      "files": {
+        "D-1": {
+          "file": "sprites/9114-D-1.png",
+          "sha256": "4eaccc290e5d1a32e4eae3e267c3c6f513ffb9cdd355fd4f05780427eea14b1e"
+        },
+        "D-2": {
+          "file": "sprites/9114-D-2.png",
+          "sha256": "4eaccc290e5d1a32e4eae3e267c3c6f513ffb9cdd355fd4f05780427eea14b1e"
+        },
+        "D-3": {
+          "file": "sprites/9114-D-3.png",
+          "sha256": "4eaccc290e5d1a32e4eae3e267c3c6f513ffb9cdd355fd4f05780427eea14b1e"
+        },
+        "L-1": {
+          "file": "sprites/9114-L-1.png",
+          "sha256": "ea771ddea5a0ba2f16ed29cdea019e2e9d3a6034d277aedf3823beff83180796"
+        },
+        "R-1": {
+          "file": "sprites/9114-R-1.png",
+          "sha256": "785d6ed07d2c47edfe42ac13555460c1074c254e6e8a51550b2bbf5e1d1de234"
+        }
+      }
+    }
+  ]
+}
