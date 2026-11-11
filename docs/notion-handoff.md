@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-10 · 한국 시간 · 기능 코드 1c75e51 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-11 · 한국 시간 · 기능 코드 1c75e51 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -12,6 +12,8 @@
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 최신 사용자 확인으로 f76172d의 Render 배포와 TestFlight 1.0.0 (12)가 확인됐습니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
+
+[Windows부터 AI 사무실 실행·Mac 경로·캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md): Windows WSL2 시작 패키지와 Mac Lima 경로를 준비했습니다. 실제 PC 설치/로그인/모델 응답은 미확인입니다. [인수인계 공식 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)은 문서뿐 아니라 실제 작업물과 검증 결과를 함께 전달하도록 정했습니다.
 
 [공통 제품 문서함](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md): 기존 제품 문서를 기본 연결하고 문서 추가 즉시 버전을 발행합니다. 모든 역할이 최신 목록·관련 원문을 읽도록 연결하며 공통/프로젝트 범위를 구분합니다. 로컬 문서함은 http://127.0.0.1:8791 이고 공개 업로드 공간은 아닙니다. 문서 변경 시 이전 실행 승인은 만료됩니다.
 
@@ -57,6 +59,13 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — Windows 우선 설치·Mac 실행 경로·작업물 인계
+
+- 사용자가 PC에서 먼저 실행한 뒤 클라우드에 인계하는 흐름을 선택했다. [Windows 패키지/Mac 안내](ai-office-local-install.md), 잠금 기본값·독립 키·기존 DB 키 보존 설치 도구를 추가했다. Windows는 WSL2, Mac은 Lima Ubuntu에서 기존 Linux 격리 기능을 유지한다.
+- “인수인계서” 요청은 [인계 기준](ai-office-handoff.md)에 따라 문서+실제 Git bundle/소스/변경+검증 결과+작업자 설명을 제공하도록 기록했다. 인증·암호화 DB·실행 승인은 자동 이전하지 않는다.
+- 실제 PowerShell 구문/모의 WSL 호출·직접 대화형 로그인 전달, 셸 구문·설정/키 보존·인계 보안 테스트를 검증했다. Windows/macOS 실제 설치와 계정 AI 응답은 아직 미확인이다. 기존 클라우드/앱/UI/키/DB/캐릭터는 변경하지 않았다.
+- 직원 편집의 기본 캐릭터 변경과 2×2 스프라이트 업로드 기능을 코드에서 확인했다. 외형과 AI 능력/권한은 별개다. 실제 새 이미지 등록은 하지 않았다.
 
 #### 2026-11-10 — 모든 역할의 공통 제품 지식
 
@@ -519,6 +528,10 @@
 
 [공통 제품 지식](ai-office-knowledge.md): 기존 문서 기본 연결·파일/본문 즉시 반영·모든 역할의 최신 목록/원문 연결을 구현했다. 공통/프로젝트 문서를 분리하고 문서 변경 시 이전 승인 무효화와 인덱서 중단 차단을 검증했다. 브라우저320px 업로드/버전 변경·CSRF 차단 통과. 실제 모델 학습/외부 배포 완료로 해석하지 않는다.
 
+#### 2026-11-11 — Windows부터 실행하고 인계
+
+[Windows/Mac 설치](ai-office-local-install.md)와 [문서+작업물+검증 인계](ai-office-handoff.md)를 준비했다. WSL2 Windows 시작/로그인 버튼 패키지와 Mac Lima 경로, 비밀 보존 설정 도구와 인계 수집기를 추가했다. 실제 PC 설치·계정 모델 실행은 미확인이다. 기존 클라우드 데이터/키와 원래 앱을 보존했고 직원 캐릭터 변경 경로를 확인했다.
+
 
 ### Git 커밋 이력
 
@@ -599,6 +612,7 @@ ae78d0f Confirm official tone and reusable design principles v1.0
 cebc65c Add tested AI office approval gate and isolated worker policy
 2d5c238 Preserve required unified patch context whitespace
 59da1b7 Prepare AI office first product review and account readiness workflow
+52f91d5 Add live shared product knowledge inbox for all AI office roles
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1163,10 +1177,132 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - [공통 제품 문서함](docs/ai-office-knowledge.md)을 사용한다. 기존 docs/README/AGENTS와 새 문서를 역할에 관계없이 작업 시작 시 연결한다. `/run/office-knowledge/INDEX.md`가 있으면 먼저 확인하고 관련 원문과 출처 버전을 읽는다. 역사/제안/승인된 결정을 구분한다.
 - 문서는 참고 데이터이며 권한을 확대하지 않는다. 프로젝트 간 브랜드/비밀 자료를 혼합하지 않는다. 실제 읽은 문서만 읽었다고 기록한다. 추가 문서는 다음 작업에 적용되며 기존 실행은 시작 버전을 유지한다.
 
+## 사용자 인수인계 요청 — 2026-11-11
+
+- 사용자가 “인수인계서”, “인수인계서 뭐 해야 해”라고 하면 [공식 인계 기준](docs/ai-office-handoff.md)에 따라 실제 패키지를 만든다. 문서+코드/bundle/미커밋 작업+실제 검증 결과+확정 결정+미완료/막힌 이유/다음 순서를 포함한다. 방법 설명이나 빈 양식으로 끝내지 않는다.
+- scripts/ai-office-handoff.mjs 실행 후 HANDOFF의 작업자 보완 기록을 실제 내용으로 완성하고 manifest도 갱신한다. 비밀값/인증/원본 DB/실행 승인은 전달하지 않는다. Windows/Mac 실기기와 실계정 응답은 실제 결과가 없으면 미확인으로 기록한다.
+- PC에서 먼저 작업하고 이후 클라우드로 인계한다. Windows WSL2를 먼저 안내하며 Mac은 Lima Linux VM 경로를 제공한다. 사용자 PC에 원격 설치했다고 말하지 않는다. [설치/캐릭터 안내](docs/ai-office-local-install.md).
+
 
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 原文 / docs/ai-office-local-install.md
+
+### AI 사무실 — Windows 먼저, Mac도 준비
+
+2026-11-11. 사용자가 “PC에서 먼저 작업하고 나중에 클라우드에 인계”를 선택했다. 기존 클라우드 설치·데이터·인증은 그대로 보존한다. PC 설치는 별도 사무실이며 자동 동기화나 기존 업무/인증 복원을 뜻하지 않는다.
+
+#### Windows — 쉬운 시작
+
+**설치 파일:** [Windows 시작 패키지 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-windows.zip)
+
+##### 1. 처음 한 번: Ubuntu 준비
+
+Windows의 시작 메뉴에서 **PowerShell을 관리자 권한으로 실행**하고 아래 명령을 입력한다. 관리자 권한은 Windows의 WSL2 기능 설치에 필요하다. 사무실 프로그램은 이후 일반 권한으로 설치한다.
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+안내가 나오면 PC를 재시작한다. Ubuntu 창이 열리면 사용할 Linux 사용자 이름과 비밀번호를 정한다. 이 비밀번호는 PC 안 Ubuntu용이며 채팅에 보내지 않는다. 기존 Ubuntu가 있으면 초기화/재설치하지 않는다. WSL1이면 설치기가 중단하므로 기존 데이터를 백업한 뒤 [Microsoft 공식 WSL 안내](https://learn.microsoft.com/ko-kr/windows/wsl/install)를 따른다.
+
+##### 2. 사무실 설치
+
+시작 패키지 ZIP을 내려받아 압축을 푼다. **`1-install.cmd`**를 더블클릭한다. Ubuntu용 패키지 설치 때문에 비밀번호를 묻는 경우 Ubuntu 비밀번호를 그 창에 입력한다. 입력 중 글자가 보이지 않아도 정상이다. 명령 실행 정책 변경은 해당 PowerShell 프로세스에만 적용하며 PC 전체 설정을 바꾸지 않는다.
+
+설치기는 Node24·고정된 Claw-Empire/검증 패치·독립 Codex를 준비하고 테스트·빌드한다. 원래 앱 DB/키를 사용하지 않으며 사무실 전용 비밀 설정은 Ubuntu 안0600 파일에만 생성한다. 기존 DB가 있는데 키가 없으면 새 키를 만들어 덮지 않고 중단한다. 기존 소스나 설정이 다르면 보존하고 중단한다.
+
+##### 3. 화면 열기
+
+**`2-start.cmd`**를 더블클릭한다. 시작한 서버 창은 열어 둔다. 준비되면 Windows 기본 브라우저가 [내 PC 사무실](http://127.0.0.1:8790)을 연다. 지금 클라우드의 내부 주소를 사용자 PC에서 여는 것과 다르게 **PC 안에서 실제 서버를 실행한 뒤** 사용하는 주소다. 문서함은 [내 PC 문서함](http://127.0.0.1:8791)이다.
+
+서버 창을 닫거나 PC를 끄면 중지된다. 자동 시작 서비스·외부 공개·상시 클라우드 운영을 구성한 것은 아니다. 다른 프로그램이 같은 포트를 사용하거나 WSL localhost 전달이 꺼졌다면 오류를 확인하고 포트 전달을 수정해야 한다. 방화벽을 전부 끄거나 서비스를 공용 인터넷에 노출하지 않는다.
+
+##### 4. 본인 계정 로그인과 첫 업무
+
+서버가 켜진 상태에서 **`3-login.cmd`**를 더블클릭한다. 창에서 안내하는 공식 주소를 본인 브라우저로 열고 장치 코드를 입력한다. 코드·비밀번호·토큰을 채팅에 보내지 않는다. 일반 ChatGPT 웹 로그인만으로 사무실 인증이 복사되지는 않는다. 계정의 장치 로그인 허용·모델 사용 가능 여부/사용 한도는 실제 로그인에서 확인한다. 새 유료 플랜을 자동 가입하지 않는다.
+
+로그인 후 **`4-first-review.cmd`**를 실행하면 준비된 duckduck 읽기 전용 검토1건만 명시적으로 승인/실행한다. 이 버튼은 실제 모델 요청을 발생시키므로 계정 사용량을 소비할 수 있다. 코드 변경·개발·병합·배포는 잠금 상태다. 이미 실행한 작업은 중복 실행을 거절한다. 결과 확인은 실행 창에서 안내하는 `report` 명령 또는 사무실 업무 화면을 사용한다.
+
+오류가 나면 창을 닫기 전에 **오류 문구만** 알려준다. 로그인 코드/토큰이 보이는 화면은 채팅으로 공유하지 않는다. 설치/로그인이 실제로 완료됐는지는 진단과 응답으로 확인하며 버튼을 눌렀다는 이유만으로 성공 처리하지 않는다.
+
+#### Mac — 같은 보호 기능을 유지하는 경로
+
+macOS에서는 Linux 전용 bubblewrap을 네이티브 실행할 수 없으므로 **Lima의 별도 Ubuntu VM** 안에서 같은 사무실을 실행한다. Intel/x64와 Apple Silicon/arm64 실행기 경로·공식 바이너리 SHA256을 분리했다. VM은 기본적으로 Mac 폴더를 마운트하지 않고8790/8791만 localhost에 전달한다.
+
+1. [Lima 공식 설치 안내](https://lima-vm.io/docs/installation/)에 따라 Lima를 설치한다. Homebrew가 있으면 `brew install lima`.
+2. [Mac 설치 스크립트](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/install/macos.sh)를 내려받는다.
+3. 터미널에서 `bash macos.sh install`, 이후 `bash macos.sh start`를 실행한다.
+4. 다른 터미널에서 `bash macos.sh login`, 로그인 후 `bash macos.sh review`를 실행한다.
+
+VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 임의 초기화하지 않는다. Mac이 꺼지면 서버도 중지된다. 재부팅 후 Lima VM을 시작한 다음 사무실 start를 실행한다.
+
+#### 검증 범위 — “설치 가능 경로 준비”와 “기기에서 완료” 구분
+
+- Linux에서 설정 생성·재실행 키 보존·기존 DB 키 재생성 거부·잘못된 바이너리/설정 거부·인수인계 비밀 제외를 테스트했다.
+- 실제 PowerShell7.5.4 엔진으로 Windows 스크립트 구문을 검사하고 WSL 호출을 모의 실행해 설치/진단/로그인 인자를 확인했다. 로그인은 파이프 없이 WSL에 직접 연결하여 개인 대화형 입력을 유지한다.
+- Linux/Mac 셸 구문 검사 통과. x64/arm64 공식 Codex 패키지를 받아 네이티브 실행 파일 SHA256을 고정했다. arm64는 해시 검사이며 이 x64 환경에서 arm64 실행을 성공했다고 주장하지 않는다.
+- 현재 클라우드의 사무실·데이터·인증에는 설치기를 실행하지 않았다.
+- **실제 Windows WSL2·macOS Lima 설치, localhost 화면, 본인 로그인, 실제 모델 응답은 해당 PC에서 검증해야 한다.** 이 실행 환경에서는 Windows와 Mac을 직접 조작할 도구가 없다. 설치기가 OS 보호 기능을 끄거나 격리 검사를 성공으로 위장하지 않는다.
+
+#### 캐릭터 변경
+
+사무실 **직원관리 → 직원 수정 → 캐릭터 미리보기의 ▲/▼ → 저장**으로 기본 캐릭터를 바꿀 수 있다. 이름·역할·부서도 직원 편집 기능에서 조정한다. 새 이미지는 같은 편집 화면의 **캐릭터 스프라이트 → 4방향 스프라이트 시트 업로드(2×2 그리드) → 미리보기 → 등록 → 저장** 경로를 사용한다. 사진 한 장을 자동으로 완성된 움직이는 캐릭터로 바꾸는 기능이라고 설명하지 않는다. 외형 변경은 AI 모델/권한/업무 능력을 바꾸지 않는다.
+
+현재 코드에서 경로와 처리 API를 확인했으며 이번 작업에서 직원 외형이나 기존 캐릭터 파일은 변경하지 않았다. 새 업로드 이미지의 실제 미리보기/투명 배경/방향·프레임은 사용자가 고른 파일로 확인한다. 다른 환경으로 옮길 때 사용자 등록 캐릭터 파일도 별도 전달해야 한다.
+
+[인수인계 패키지 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md) · [설치 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md) · [첫 실행](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md)
+
+### 原文 / docs/ai-office-handoff.md
+
+### “인수인계서 만들어줘”의 공식 처리 기준
+
+2026-11-11 사용자 요청: 앞으로 “인수인계서”, “인수인계서 뭐 해야 해”라고 하면 방법 설명이나 빈 양식으로 끝내지 않고 **인수인계서 + 실제 작업물 + 검증 결과 + 남은 일**을 묶어 제공한다. PC에서 먼저 일하고 이후 클라우드 작업자가 이어가는 상황을 지원한다.
+
+#### AI 작업자가 해야 할 것
+
+1. 기존 사용자 지시·승인 범위·최신 소스와 작업 상태를 읽는다. 완료/미완료/미확인을 구분한다.
+2. 아래 생성기를 실행한다. 실제 검사 결과를 수집하며 실패한 검사는 실패로 남긴다.
+3. 생성한 `HANDOFF.md`의 **작업자 보완 기록**을 실제 내용으로 완성한다. 목표, 결정 이유, 파일/커밋, 테스트, 예외, 막힌 이유, 다음 순서와 사용자 선택을 구체적으로 적는다. 빈 양식을 완성본으로 제출하지 않는다.
+4. 내용을 보완한 뒤 `node scripts/ai-office-handoff.mjs finalize <생성한-폴더>`를 실행해 manifest SHA256과 ZIP을 갱신한다. 빈 보완 필드가 남으면 finalize는 거부한다. 문서·실제 작업물·검증 JSON/로그를 하나의 개인 전달 패키지로 묶어 다운로드 링크와 함께 전달한다. 원래 소스/DB/키/사용자 작업을 삭제하지 않는다.
+5. 다음 AI가 읽어야 할 순서와 첫 실행/검사 명령을 쉬운 말로 설명한다. 이전 AI의 기억이 자동 복제된다고 설명하지 않는다.
+
+```sh
+cd /workspace/donknow
+node scripts/ai-office-handoff.mjs
+# 모바일 타입/공개 문서 브라우저 검사까지 가능한 환경이라면
+node scripts/ai-office-handoff.mjs --full
+```
+
+Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/bin/handoff.sh`가 있다. 자동 생성만 한 상태는 `humanSummaryRequired:true`이며 AI 작업자가 반드시 보완한 뒤 최종 제출한다.
+
+#### 실제로 수집하는 파일
+
+- `HANDOFF.md`: 이어갈 기준·복구 순서와 작업자 보완 내용
+- `source.bundle`: 모든 로컬 Git ref. 새 폴더에 clone해서 확인할 수 있는 실제 Git 작업물
+- `source.tar`: HEAD 소스 파일 스냅샷
+- `worktree.patch`: 추적 파일의 미커밋 변경. 기존 작업 폴더에 무조건 덮지 않고 새 복구 사본에서 검사
+- `untracked/`: 비밀/DB/인증/대형 파일을 제외한 미추적 소스·문서·이미지 작업물
+- `office-records.json`: API가 실행 중이면 프로젝트·업무 내용/결과·직원/캐릭터 메타데이터. 권한/로그인 값 제외
+- `verification.json`, `verification/*.log`: 실행 명령·시간·실제 종료 코드·출력. 실행하지 않은 실기기/계정/배포는 성공으로 적지 않음
+- `excluded.json`: 제외 파일 목록. 원본은 삭제하지 않음
+- `manifest.json`: 파일별 SHA256·크기와 기준 커밋
+
+패키지는 `/workspace/ai-office/handoffs/<시각>/`와 같은 이름의 ZIP에 생성하며 Git/공개 사이트에 자동 게시하지 않는다. `.env`, 로그인 인증·토큰·암호화 키·SQLite 원본·작업 승인 권한은 기본 전달에서 제외한다. 공개 Git history에 비밀값이 있었던 저장소는 bundle 생성 전 별도 보안 검토가 필요하다. 새 설치의 키로 기존 암호화 DB를 열 수 있다고 설명하지 않는다.
+
+#### 클라우드로 옮길 때
+
+1. PC 쪽에서 최종 작업을 저장하고 인수인계 패키지를 만든다.
+2. 다음 작업자에게 패키지를 개인 전달한다. 코드가 GitHub main에 저장됐으면 저장소 링크·정확한 커밋도 함께 준다.
+3. 다음 작업자는 새 사본에서 manifest/커밋/패치를 확인하고 문서와 검증 결과를 읽는다. 완료 작업을 반복하지 않는다.
+4. 새 사무실을 공식 로그인으로 연결하고 프로젝트 ID/경로 차이를 대조한다. 이전 업무/승인/전송 대기 상태를 자동 재생하지 않는다.
+5. 기록 기반 인계와 DB 전체 이전을 구분한다. 전체 DB 이전이 필요하면 원래 암호화 키와 검증된 백업/복원 절차를 별도로 마련하고 비밀값을 채팅/문서/Git에 넣지 않는다.
+
+사용자 등록 캐릭터는 runtime의 새로 추가/변경된 PNG를 `office-assets/sprites/`에 수집하고 `office-assets.json`에 수집 상태를 기록한다. 삭제/누락/검사 실패는 미수집으로 남긴다. metadata만으로 이미지가 복원되지 않으므로 파일과 직원 sprite_number를 대조해 다음 설치의 충돌 없는 새 번호로 등록한다. 자동 덮어쓰기는 하지 않는다.
+
+[Windows/Mac 설치와 캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [현재 인계 문서](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md)
 
 ### 原文 / docs/ai-office-knowledge.md
 
@@ -1273,6 +1409,10 @@ node scripts/ai-office-ready.mjs stop
 #### 공통 제품 문서함
 
 [문서함 사용·자동 반영 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md). 로컬 http://127.0.0.1:8791 에서 파일 또는 본문을 추가한다. 원본 저장소 제품 문서와 공통 원칙을 자동 연결하고 모든 역할이 최신 버전으로 작업을 시작한다. 로그인 없이 문서를 등록할 수 있다.
+
+#### PC 먼저 실행 — 2026-11-11
+
+[Windows 시작 패키지·Mac 경로·캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md)을 준비했다. [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)는 문서/실제 작업물/검증 결과를 함께 전달한다. 로컬 설치는 별도 상태이며 기존 클라우드 인증/DB 자동 이전이 아니다. 실기기 설치/계정 실행은 아직 미확인이다.
 
 ### 原文 / docs/ai-office-approval-gate.md
 
@@ -1448,6 +1588,10 @@ node scripts/ai-office-projects.mjs add <영문-slug> <기존-로컬-Git-저장�
 #### 공통 제품 문서함
 
 [문서함 사용·자동 반영 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md). 로컬 http://127.0.0.1:8791 에서 파일 또는 본문을 추가한다. 원본 저장소 제품 문서와 공통 원칙을 자동 연결하고 모든 역할이 최신 버전으로 작업을 시작한다. 로그인 없이 문서를 등록할 수 있다.
+
+#### PC 먼저 실행 — 2026-11-11
+
+[Windows 시작 패키지·Mac 경로·캐릭터 변경](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md)을 준비했다. [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)는 문서/실제 작업물/검증 결과를 함께 전달한다. 로컬 설치는 별도 상태이며 기존 클라우드 인증/DB 자동 이전이 아니다. 실기기 설치/계정 실행은 아직 미확인이다.
 
 ### 原文 / docs/ai-office-tone-summary.md
 

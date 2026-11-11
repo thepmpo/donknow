@@ -10,5 +10,16 @@
   "workersEnabled": false,
   "officialCodexVersion": "0.167.0",
   "officialCodexSha256": "cdcb45aaa01d0f14e298985e09465aebccd47f64ecd298aea44814af7b62bbda",
-  "knowledgeEnabled": true
+  "knowledgeEnabled": true,
+  "policyTree": "ded7f7bfb5cb95943400f9e6d5a94465a05a3e57",
+  "linuxRunners": {
+    "x64": {
+      "triple": "x86_64-unknown-linux-musl",
+      "sha256": "cdcb45aaa01d0f14e298985e09465aebccd47f64ecd298aea44814af7b62bbda"
+    },
+    "arm64": {
+      "triple": "aarch64-unknown-linux-musl",
+      "sha256": "2fe94d848540ff2a6868c7ebcc494126a974aa409711676d14fa0379e49e6143"
+    }
+  }
 }

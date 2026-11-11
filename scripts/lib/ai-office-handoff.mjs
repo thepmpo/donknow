@@ -1,0 +1,19 @@
+import {execFileSync} from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+export const fileHash=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+export function allowedWorkFile(file){return !path.isAbsolute(file)&&!file.split(/[\\/]/).some(p=>p==='..'||p.startsWith('.env')||['.git','node_modules','.codex','state','logs'].includes(p))&&!/(?:secret|credential|auth\.json|\.pem$|\.key$|\.sqlite|\.db$|\.bundle$)/i.test(file)&&/\.(?:md|txt|json|js|mjs|cjs|ts|tsx|jsx|py|sh|ps1|cmd|bat|yml|yaml|html|css|svg|png|jpg|jpeg|webp|toml|lock)$/.test(file);}
+export function assertNoCredentials(data,known=[]){const text=Buffer.isBuffer(data)?data.toString('utf8'):String(data);if(known.some(v=>v.length>15&&text.includes(v))||/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\b(?:sk-proj-|ghp_)[A-Za-z0-9_-]{20,}|"(?:access_token|refresh_token)"\s*:\s*"[^"\s]{12,}"/.test(text))throw Error('handoff_possible_credential_refused');}
+export function handoffText({head,branch,dirty,checks,officeExported,excluded=[]}){
+ return `# AI 사무실 인수인계\n\n생성: ${new Date().toISOString()}\n\n## 다음 작업자에게\n이 문서와 실제 작업물·manifest.json·verification.json을 함께 확인한다. 이전 AI의 기억은 이전되지 않는다. 확인된 사실/결정/제안/미확인을 구분하고 미완료 작업부터 이어간다. 기존 데이터·인증·사용자 수정을 보존한다. 다른 프로젝트 브랜드나 권한을 가져오지 않는다.\n\n## 실제 소스\n- 커밋: ${head}\n- 브랜치: ${branch}\n- 미커밋 변경 존재: ${dirty}\n- source.bundle: 모든 로컬 Git ref의 복구 자료. 새 폴더에 clone하여 검사한다.\n- source.tar: HEAD 파일 스냅샷. worktree.patch: 추적 파일의 미커밋 변경. untracked/: 허용된 미추적 작업 파일. 패치는 새 복구 사본에서 git apply --check 후 적용하며 기존 작업 폴더에 무조건 덮어쓰지 않는다.\n\n## 검증 결과\n${checks.map(c=>`- ${c.command}: ${c.exitCode===0?'PASS':'FAIL/실행 불가'} (${c.at})`).join('\n')}\n실계정 AI 실행·로그인·Windows/macOS 실기기·TestFlight·공개 배포는 위 결과로 추정하지 않는다. 개별 로그와 실제 기기 결과를 대조한다.\n\n## AI 사무실 작업 기록\n${officeExported?'office-records.json에 업무·프로젝트·캐릭터 메타데이터를 담았다.':'사무실 API에 연결되지 않아 업무 기록은 미수집이다. 원본 상태는 보존했다.'}\n작업/직원 ID는 다른 설치와 달라질 수 있다. 읽고 대조하는 기록이지 DB 자동 복원 파일이 아니다. 권한·진행 상태를 자동 재생하지 않는다.\n\n## 확정 기준과 남은 일\nAGENTS.md, docs/notion-handoff.md, docs/remaining-activation.md, docs/design-guide.md와 최신 docs/daily-updates.md를 읽고 현재 코드와 대조한다. 최신 사용자 선택·승인 범위·미완료 작업·예외·막힌 이유를 확인하여 아래 보완 기록에 구체적으로 작성한다.\n\n### 작업자 보완 기록 — 제출 전에 작성 필수\n- 이번 작업의 목표/요청:\n- 완료한 실제 변경과 파일/커밋:\n- 확정한 결정과 승인 범위:\n- 미완료/막힌 이유/다음 작업 순서:\n- 사용자 확인이 필요한 부분:\n\n## 제외한 민감 자료\n.env, OAuth/장치 인증, 암호화 키, 원본 SQLite와 승인 권한은 내보내지 않았다. 새 설치는 공식 로그인으로 연결한다. 인수인계서만으로 기존 DB를 복호화하거나 실행 권한을 얻지 못한다.\n제외 파일 수: ${excluded.length}. 파일명은 excluded.json에서 확인한다. 원본 파일은 삭제하지 않았다.\n\n## 이전 순서\n1. manifest SHA256을 확인한다.\n2. source.bundle에서 새 사본을 만들고 커밋/패치/미추적 파일을 대조한다.\n3. 제품 문서·보완 기록·검증 결과를 읽는다.\n4. 새 환경에 사무실 설치 후 로그인하고 최신 소스와 문서를 등록한다.\n5. 완료 작업은 반복하지 않고 미완료 후보를 사용자 승인 범위 내에서 진행한다.\n\n이 패키지는 개인 전달용이며 자동 공개 게시하지 않는다.\n`;
+}
+
+export function collectOfficeSprites(runtime,save){
+let customSprites=0,spriteCollection='verified';
+try{
+ const names=new Set([...execFileSync('git',['-C',runtime,'ls-files','--others','--exclude-standard','-z','--','public/sprites'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).split('\0'),...execFileSync('git',['-C',runtime,'diff','--name-only','-z','HEAD','--','public/sprites'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).split('\0')].filter(Boolean));
+ for(const relative of names){if(!/^public\/sprites\/[0-9]+-(D-[123]|[LR]-1)\.png$/.test(relative))continue;const file=path.join(runtime,relative);if(!fs.existsSync(file)){spriteCollection='deleted_sprite_requires_review';continue;}if(fs.lstatSync(file).isSymbolicLink()||fs.statSync(file).size>8*1024*1024)throw Error('invalid_custom_sprite');const data=fs.readFileSync(file);if(data.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')throw Error('invalid_custom_sprite');save('office-assets/sprites/'+path.basename(file),data);customSprites++;}
+}catch{spriteCollection='unavailable_or_requires_review';}
+return {customSprites,spriteCollection};
+}
