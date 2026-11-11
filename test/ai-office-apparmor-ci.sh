@@ -9,8 +9,33 @@ source /etc/os-release
 [[ "$ID" == ubuntu && "$VERSION_ID" == 24.04 ]] || { echo 'Ubuntu 24.04 required.' >&2; exit 1; }
 [[ $(node --version) == v24.22.1 ]] || { echo 'Pinned Node version required.' >&2; exit 1; }
 
-sudo apt-get update
-sudo apt-get install -y --no-install-recommends bubblewrap apparmor
+# GitHub's Azure mirror list can have DNS failures. Use the official Ubuntu
+# HTTPS archives for this fixture only, retaining the distribution signing key.
+# Do not modify the runner's saved sources or bypass signature verification.
+office_apt_dir=$(mktemp -d)
+chmod 0755 "$office_apt_dir"
+office_apt_source="$office_apt_dir/ubuntu.sources"
+cat > "$office_apt_source" <<'APT'
+Types: deb
+URIs: https://archive.ubuntu.com/ubuntu
+Suites: noble noble-updates
+Components: main universe
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: https://security.ubuntu.com/ubuntu
+Suites: noble-security
+Components: main universe
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+APT
+chmod 0644 "$office_apt_source"
+office_apt_options=(-o "Dir::Etc::sourcelist=$office_apt_source" -o 'Dir::Etc::sourceparts=-' -o 'Acquire::Retries=0' -o 'Acquire::http::Timeout=15' -o 'Acquire::https::Timeout=15')
+trap 'rm -f "$office_apt_source"; rmdir "$office_apt_dir"' EXIT
+timeout 90s sudo apt-get "${office_apt_options[@]}" update
+timeout 60s sudo apt-get "${office_apt_options[@]}" install -y --no-install-recommends bubblewrap apparmor
+rm -f "$office_apt_source"
+rmdir "$office_apt_dir"
+trap - EXIT
 [[ $(cat /sys/module/apparmor/parameters/enabled) == Y ]] || { echo 'AppArmor kernel support is required.' >&2; exit 1; }
 sudo systemctl is-active --quiet apparmor || { echo 'AppArmor must already be active.' >&2; exit 1; }
 # Strengthen this throwaway VM to the user's observed restriction; never disable
