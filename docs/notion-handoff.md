@@ -621,6 +621,11 @@
 - 사무실 내부 채팅 패널, 기존 채팅→내용 확인 연결, 요청 원문 검색/상태 모아보기, 부모 보고서를 참고하는 후속 지시를 추가했다. 실행 중 업무/원 보고서는 변경하지 않는다. 기존 데이터·인증과 복구 bundle 보존.
 - [채팅 사용·검증](ai-office-control.md), [Mac 준비·실기기 미확인](ai-office-macos.md)에 설치 파일과 이어받기 기준을 기록했다. Mac Intel/Apple Silicon Lima .command ZIP은 준비했으나 실제 Mac 실행·Windows 업데이트·실모델 후속 응답은 사용자 기기에서 확인해야 한다. 문서 공개 배포는 GitHub 저장과 별도로 확인한다.
 
+##### 2026-11-11 — 사무실 빈 장면 복구
+
+- 메뉴만 뜨는 장면을 실제8810 프록시로 재현했다. Pixi의 blob worker가 CSP로 차단되는 것이 원인이며, 사무실 프록시에만 worker-src를 추가했다. canvas 존재만 검사한 이전 검증의 한계를 정정했다. [복구와 검증 기준](ai-office-control.md).
+- 업데이트는 주 사무실을 유지하고 입력 서버만 재시작한다. 기존 데이터·인증을 초기화하지 않는다.
+
 
 ### Git 커밋 이력
 
@@ -710,6 +715,7 @@ eeda2a0 Merge daily project record while preserving local office setup documenta
 41d3814 Retain observed Codex lock and log files without touching authentication
 08d01b1 Enlarge office labels and provide a task-safe Windows UI update
 ba28041 Add private office request UI, report confirmation and phone access setup
+948d9f3 Connect in-office task chat and instruction history; prepare Mac launchers
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1374,6 +1380,12 @@ state/control-requests/*.json은 private 요청·확인 기록이다. state/cont
 [맥용 준비 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)에도 같은 채팅·내 지시를 포함한다.
 
 이번 변경 검증: Node90개·Python20개 통과, 서버/웹/도구37개 문법 검사, 모바일 크기 모의 채팅 브라우저의 후속 지시·원문 검색·XSS·가로 넘침 검사, 실제 HTTP 프록시의 원래 채팅 전송 차단/확인창 전달 및 명시적 실행 검사, PowerShell 공백 경로 검사, 공개 문서 회귀 통과. 비밀 파일/값이 설치 ZIP에 없는지 검사했다. 실제 사용자 Windows 업데이트·실계정 추가 모델 응답·Mac 설치·폰 연결은 미확인이다. Render /project 확인은 현재 환경 프록시의 CONNECT403으로 실패했으며 GitHub 저장을 공개 배포 성공으로 간주하지 않는다.
+
+#### 2026-11-11 빈 사무실 화면 수정
+
+사용자 Windows에서 메뉴만 표시되고 사무실/캐릭터가 비는 증상을 새8810 프록시에서 재현했다. Pixi 텍스처 로딩이 사용하는 blob worker가 CSP에 막히면서 canvas 요소는 존재하나 장면이 그려지지 않았다. canvas 개수만 확인했던 앞선 화면 검증은 충분하지 않았다.
+
+사무실 HTML/자산 프록시에만 `worker-src 'self' blob:`을 허용했다. 채팅·확인·소유자 연결 화면의 CSP는 확대하지 않는다. HTTP 회귀 테스트는 사무실에만 이 정책이 적용됨을 검사한다. 수정 후에는 실제 브라우저 캡처에서 방·가구·직원까지 그려지는지 확인한다. API 테스트/모의 채팅만으로 시각 검증을 대체하지 않는다. 기존 업무/DB/인증/캐릭터 설정은 변경하지 않는다.
 
 ### 原文 / docs/ai-office-macos.md
 
