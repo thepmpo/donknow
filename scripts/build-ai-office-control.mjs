@@ -17,3 +17,12 @@ with zipfile.ZipFile(root.parent/'ai-office-windows.zip','w',zipfile.ZIP_DEFLATE
   if file.is_file() and file.suffix in ['.cmd','.ps1','.py','.json','.txt','.zip']: z.write(file,'ai-office-windows/'+file.name)
 `,install],{stdio:'pipe'});
 console.log('Control UI and Windows private-phone package built: '+manifest.packageId);
+const mac=path.join(repo,'tools/ai-office/macos');
+for(const name of ['macos.sh','install-control.py','repair-auth.py','control-payload.zip'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
+fs.writeFileSync(path.join(mac,'control-version.txt'),manifest.packageId+'\n');
+execFileSync('python3',['-c',`import sys,zipfile,pathlib
+root=pathlib.Path(sys.argv[1])
+with zipfile.ZipFile(root.parent/'ai-office-macos.zip','w',zipfile.ZIP_DEFLATED) as z:
+ for file in sorted(root.iterdir()):
+  if file.is_file(): z.write(file,'ai-office-macos/'+file.name)
+`,mac],{stdio:'pipe'});

@@ -31,7 +31,7 @@ if(-not $running){throw 'Input server did not start. Keep its error window open.
 if(-not $NoBrowser){
     $access=(& wsl.exe --distribution Ubuntu --exec cat /workspace/ai-office/state/control-access.key | Out-String).Trim()
     if($LASTEXITCODE -ne 0 -or $access -notmatch '^[a-f0-9]{64}$'){throw 'Private browser connection was not prepared.'}
-    Start-Process ('http://127.0.0.1:8810/desk#access='+$access)
+    Start-Process ('http://127.0.0.1:8810/#access='+$access)
     $access=$null
 }
 Write-Host 'Office input is ready. Keep both the main office and input-server windows open.'

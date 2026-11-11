@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+2026-11-11: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)를 사무실 안에 연결했습니다. 후속 요청은 이전 보고서와 연결된 별도 읽기 전용 업무이며 전체 원문/상태 검색을 제공합니다. [Mac용 준비 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 미리 제작했고 실제 Mac 설치/로그인은 미확인입니다.
+
 [업무 입력·보고서 확인·휴대폰 설정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md): 요청 입력/명시적 읽기 전용 실행/중지/보고서 확인 완료와 본인 전용 Tailscale Serve 추가 파일을 준비했습니다. 기존 미결 보고서를 읽고 제품 검토만 완료 처리하며 개발/배포는 승인하지 않습니다. Windows/실제 폰 연결과 새 모델 응답은 사용자 확인 대기입니다.
 
 [사무실 글자 확대·휴대폰·지시 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md): 이름/말풍선 크기를 개선하고 검토 종료 후 적용하는 UI 패키지를 준비했습니다. 사용자 PC의 ready/started는 확인됐고 첫 결과는 대기입니다. 외부 폰 접속과 범용 반복 요청 입력창은 아직 연결 전입니다.
@@ -614,6 +616,11 @@
 
 [업무 제어 추가](ai-office-control.md): 프로젝트별 요청 확인/명시적 제품 검토/진행/중지/보고서 확인 완료를 구현했다. 기존 review 보고서를 보여주며 개발·배포는 승인하지 않는다. Tailscale 본인 전용 Serve 설정 파일을 준비하고 실제 계정/폰 접속은 사용자 확인 대기로 기록했다. 기존 DB/인증/프로젝트와 원래 사무실 설치를 보존한다.
 
+##### 2026-11-11 — 사무실 채팅·내 지시와 Mac 준비
+
+- 사무실 내부 채팅 패널, 기존 채팅→내용 확인 연결, 요청 원문 검색/상태 모아보기, 부모 보고서를 참고하는 후속 지시를 추가했다. 실행 중 업무/원 보고서는 변경하지 않는다. 기존 데이터·인증과 복구 bundle 보존.
+- [채팅 사용·검증](ai-office-control.md), [Mac 준비·실기기 미확인](ai-office-macos.md)에 설치 파일과 이어받기 기준을 기록했다. Mac Intel/Apple Silicon Lima .command ZIP은 준비했으나 실제 Mac 실행·Windows 업데이트·실모델 후속 응답은 사용자 기기에서 확인해야 한다. 문서 공개 배포는 GitHub 저장과 별도로 확인한다.
+
 
 ### Git 커밋 이력
 
@@ -702,6 +709,7 @@ eeda2a0 Merge daily project record while preserving local office setup documenta
 34d5902 Preserve Codex login while backing up official temporary CLI artifacts
 41d3814 Retain observed Codex lock and log files without touching authentication
 08d01b1 Enlarge office labels and provide a task-safe Windows UI update
+ba28041 Add private office request UI, report confirmation and phone access setup
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1350,6 +1358,56 @@ state/control-requests/*.json은 private 요청·확인 기록이다. state/cont
 
 [Windows 설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [사용 흐름](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md) · [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md) · [Tailscale Serve 공식 안내](https://tailscale.com/docs/features/tailscale-serve)
 
+#### 2026-11-11 사무실 채팅과 내 지시
+
+최신 추가 파일의9-open-office.cmd는 사무실 화면을 연다. 상단 **사무실 채팅·내 지시**를 누르면 사무실을 떠나지 않고 업무 대화를 열 수 있다. 기존 직원 채팅의 메시지/업무/지시 전송도 게이트웨이에서 내용을 확인창으로 넘긴다. 이때 기존 자동 채팅 응답 경로는 호출하지 않고, 확인창에서 프로젝트와 내용을 확인한 뒤 실행한다. 직접8790 주소는 구버전 원래 화면이므로8810 시작 파일로 다시 열어야 한다.
+
+- 요청 작성 → 요청 내용 확인 → 확인하고 실행. 확인 전에는 초안만 생기고 모델을 호출하지 않는다.
+- **내 지시**에서 전체 요청 원문·상태·보고서를 모아 보고 내용 검색과 상태 필터를 사용한다. 기존 첫 검토도 표시하며, 과거 원문이 없는 업무는 제목만 보여준다.
+- **대화·추가 요청**을 누르면 해당 업무의 지시와 보고서를 대화로 읽고 후속 지시를 적는다. 이전 보고서가 도착한 review/done 업무만 이어갈 수 있다. 실행 중 업무에는 자동 끼워넣지 않는다. 새 업무 버튼으로 독립 요청을 작성한다.
+- 후속 업무는 새 task와 개인 ledger에 parentTaskId로 연결한다. 이전 보고서를 참고 자료로 포함하고 원 업무/보고서는 수정하지 않는다. 다른 프로젝트나 보고서 미도착/너무 긴 보고서는 거부한다. 초안 확인 이후 부모 보고서/상태가 바뀌면 실행을 거부하고 다시 확인한다.
+- 내 지시와 관계는 state/control-requests의 기존 버전별 원자 기록으로 남아 브라우저를 다시 열어도 유지된다. UI 임시 작성 중 문장은 서버 저장 전까지 보존을 보장하지 않는다. 기존 작성 문장이 있으면 직원 채팅에서 넘어온 새 문장으로 덮지 않는다.
+- 현재 읽기 전용 검토·조사·제안만 실행한다. 일반 대화용 별도 모델 호출, 자동 개발, 자동 배포, 임의 대기열은 구현하지 않았다. 보고서 확인 완료도 개발 승인이 아니다.
+
+업데이트할 때 **주 사무실 창은 유지하고 이전 입력 서버 창만 닫은 후** 최신 추가 ZIP의9번을 실행한다. 기존 데이터·인증을 재설정하거나1-install을 다시 실행할 필요가 없다.
+
+[맥용 준비 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)에도 같은 채팅·내 지시를 포함한다.
+
+이번 변경 검증: Node90개·Python20개 통과, 서버/웹/도구37개 문법 검사, 모바일 크기 모의 채팅 브라우저의 후속 지시·원문 검색·XSS·가로 넘침 검사, 실제 HTTP 프록시의 원래 채팅 전송 차단/확인창 전달 및 명시적 실행 검사, PowerShell 공백 경로 검사, 공개 문서 회귀 통과. 비밀 파일/값이 설치 ZIP에 없는지 검사했다. 실제 사용자 Windows 업데이트·실계정 추가 모델 응답·Mac 설치·폰 연결은 미확인이다. Render /project 확인은 현재 환경 프록시의 CONNECT403으로 실패했으며 GitHub 저장을 공개 배포 성공으로 간주하지 않는다.
+
+### 原文 / docs/ai-office-macos.md
+
+### Mac용 AI 사무실 준비 패키지
+
+2026-11-11 한국 시간. 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다.
+
+[Mac ZIP 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-macos.zip) · [패키지 안내](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/macos/README-MAC.txt) · [기존 설치·구조](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)
+
+#### 사용자가 받을 안내
+
+1. [Homebrew](https://brew.sh)와 [Lima](https://lima-vm.io/docs/installation/)를 설치한다. Lima 설치 명령은 `brew install lima`다.
+2. 압축을 풀고 `1-install.command`로 설치한다.
+3. `2-start.command`를 열어 유지하고, `3-login.command`에서 본인 ChatGPT 계정으로 로그인한다.
+4. `9-office-chat.command`를 열어 사무실 안의 **사무실 채팅·내 지시**를 사용한다. 이 서버 창도 유지한다.
+
+열기 차단 시 [Apple 공식 안내](https://support.apple.com/guide/mac-help/mh40616/mac)를 따른다. 운영체제 보안을 전체 해제하지 않는다. 터미널에서 `bash ` 다음 해당 파일을 끌어놓아 직접 실행할 수도 있다. 로그인 코드·토큰·비밀번호는 채팅으로 받지 않는다.
+
+#### 구현과 보존 기준
+
+- Intel x86_64 / Apple Silicon aarch64 Ubuntu 이미지를 나눈 기존 Lima 설치기를 사용한다. Linux bubblewrap 격리는 VM 안에서 유지한다. macOS 네이티브 bubblewrap으로 대체하지 않는다.
+- 새 VM은 4 CPU, 메모리6GiB, 디스크30GiB이며 Mac 폴더 마운트를 하지 않는다.8790/8791/8810은 localhost로 전달한다. 공용 바인딩이나 외부 휴대폰 연결은 포함하지 않는다.
+- 같은 이름의 기존 VM은 삭제·재생성하지 않는다. 기존 오래된 VM에8810 전달이 없으면 중단하고 별도로 확인한다. 다른 VM이나 Mac/Windows 설정을 변경하지 않는다.
+- 공통 입력 모듈은 ZIP manifest SHA 검증 후 버전 디렉터리에 설치한다. 로그인 후 기존 검증된 repair-auth.py를 사용하고 인증파일을 삭제하지 않는다. 이 복구는 실행 중 인증 프로세스/잠금이 있으면 중단한다.
+- 키는 VM 개인 상태에 보관하고 브라우저 연결 fragment로만 전달한다. 로그에 출력하지 않는다. 열려 있는 다른 버전/다른8810 서버는 덮거나 종료하지 않는다.
+- Windows 업무/문서/인증을 자동 이전하거나 양쪽 DB를 합치지 않는다. 새 Mac 설치는 별도 사무실이다. 기존 작업을 이어가려면 먼저 [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)와 안전한 이전 절차가 필요하다. 인증 파일을 ZIP에 넣지 않는다.
+- ZIP은 `node scripts/build-ai-office-control.mjs`로 공통 코드와 함께 갱신한다. macos/ 안의 .sh/.py/ZIP/version은 생성 복사본이고 원본은 install/ 및 control/이다. .command와 README는 수동 관리한다.
+
+#### 검증과 남은 확인
+
+bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열기·로그인/doctor 경로, 키 비출력, ZIP 실행 권한을 자동 검사한다. 공통 채팅·권한 경계는 별도 Node/HTTP/SQLite 및 모바일 크기 모의 브라우저 테스트를 통과한다.
+
+실제 Mac·Lima·가상화·Ubuntu 다운로드·호스트 포트 전달·공식 기기 로그인·실모델 응답은 확인하지 않았다. 패키지 준비/모의 검증을 실기기 설치 성공으로 보고하면 안 된다. 사용자 Mac에서 해당 순서로 확인한 결과를 이 문서와 일일 기록에 추가한다.
+
 ### 原文 / docs/ai-office-usage.md
 
 ### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
@@ -1624,6 +1682,8 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 #### 새 제어 모듈 인계
 
 [업무 입력/보고서/휴대폰 제어 모듈](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)의 소스·버전 해시·설치 패키지도 포함한다. control-requests의 사용자 요청·처리 기록은 개인 전달 범위에서 검토하되 control-access.key, private-access의 계정 연결과 API owner/OAuth 키는 자동 이전하지 않는다. 다음 환경에서 사용자 본인 인증으로 새로 연결한다. 실제 Windows/폰의 결과와 모의 테스트를 구분한다.
+
+2026-11-11 추가: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)는9번의8810 화면에서 제공한다. 기존 직원 채팅은 확인창으로 전달하며 자동 실행하지 않는다. 후속 업무는 원 보고서 digest와 parentTaskId를 기록한다. [Mac용 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 tools/ai-office/ai-office-macos.zip에 보관하며 요청 시 즉시 전달 가능하다. 실제 Mac 검증/기존 Windows 업무 이전은 미완료다.
 
 ### 原文 / docs/ai-office-knowledge.md
 

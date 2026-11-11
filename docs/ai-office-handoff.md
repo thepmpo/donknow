@@ -48,3 +48,5 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 ## 새 제어 모듈 인계
 
 [업무 입력/보고서/휴대폰 제어 모듈](ai-office-control.md)의 소스·버전 해시·설치 패키지도 포함한다. control-requests의 사용자 요청·처리 기록은 개인 전달 범위에서 검토하되 control-access.key, private-access의 계정 연결과 API owner/OAuth 키는 자동 이전하지 않는다. 다음 환경에서 사용자 본인 인증으로 새로 연결한다. 실제 Windows/폰의 결과와 모의 테스트를 구분한다.
+
+2026-11-11 추가: [사무실 채팅·내 지시](ai-office-control.md)는9번의8810 화면에서 제공한다. 기존 직원 채팅은 확인창으로 전달하며 자동 실행하지 않는다. 후속 업무는 원 보고서 digest와 parentTaskId를 기록한다. [Mac용 패키지](ai-office-macos.md)는 tools/ai-office/ai-office-macos.zip에 보관하며 요청 시 즉시 전달 가능하다. 실제 Mac 검증/기존 Windows 업무 이전은 미완료다.
