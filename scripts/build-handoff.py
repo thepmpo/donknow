@@ -34,6 +34,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 최신 사용자 확인으로 f76172d의 Render 배포와 TestFlight 1.0.0 (12)가 확인됐습니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-12 — 사무실 스킬·PDF·Gmail·업무관리
+
+[추천 스킬·PDF·Gmail·업무관리 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-capabilities.md)을 먼저 확인합니다. 문서고에서 공통·직무별 지침을 한 번에 연결하며, 다음에 새로 준비하는 업무에 실제 원문과 버전을 전달합니다. 보고서의 PDF 저장·인쇄와 선택한 PDF의 본인 Gmail 전송을 준비했습니다. Gmail은 Mac 사무실에서 직접 앱 비밀번호를 연결해야 하며 실제 계정 인증·수신은 미확인입니다. 업무관리 실행은 기존 안건의 내용 확인으로 연결하고, 삭제 대신 보관·복원을 제공해 보고서와 기록을 보존합니다. 팀장회의는 현재 개별 의견 수집 후 종합 제안이며 반복 상호 토론은 아직 아닙니다. 적용 파일·검증·남은 계정 단계는 위 안내에 기록합니다.
+
 ### 2026-11-12 최신 이어받기 — 이 채팅과 AI 사무실
 
 [양방향 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)을 공식 지침에 추가했습니다. 이 채팅의 작업자는 수정 전에 사무실이 GitHub main에 반영한 코드·문서·검증 기록을 확인합니다. 여기서 수정한 뒤에는 사무실에서 **최신 코드 받기가 필요한지 반드시 안내**합니다. Mac 안의 미게시 코드·채팅·보고서·추가 문서는 자동으로 공유되지 않으며, 실제 작업 사본의 변경과 검증을 확인한 인계가 필요합니다. 설치된 사무실 프로그램 업데이트와 프로젝트 코드 갱신도 구분합니다.
@@ -371,7 +375,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()
