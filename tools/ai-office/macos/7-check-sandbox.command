@@ -41,7 +41,7 @@ def probe(args):
     return {'status': 'passed' if result.returncode == 0 else 'blocked',
             'errors': [item for item in known if item in result.stderr]}
 
-outer = ['/usr/bin/bwrap', '--ro-bind', '/', '/', '--unshare-net']
+outer = ['/usr/bin/bwrap', '--ro-bind', '/', '/', '--proc', '/proc', '--unshare-net']
 report['outer_sandbox'] = probe(outer + ['/bin/true'])
 if report['outer_sandbox']['status'] == 'passed':
     report['nested_sandbox'] = probe(outer + outer + ['/bin/true'])
@@ -52,7 +52,7 @@ else:
 node = '/workspace/ai-office/toolchain/node/bin/node'
 if pathlib.Path(node).is_file():
     js = '''const fs=require('fs'),cp=require('child_process');
-const outer=['--ro-bind','/','/','--unshare-net'];
+const outer=['--ro-bind','/','/','--proc','/proc','--unshare-net'];
 const p=(a)=>{const r=cp.spawnSync('/usr/bin/bwrap',a,{timeout:10000});return r.status===0?'passed':'blocked_or_unavailable'};
 let label='unavailable';try{label=fs.readFileSync('/proc/self/attr/current','utf8').trim()}catch{}
 console.log(JSON.stringify({profile:label.startsWith('duckduck-office-node')?'office_profile':label==='unconfined'?'unconfined':'other_or_unavailable',outer:p([...outer,'/bin/true']),nested:p([...outer,'/usr/bin/bwrap',...outer,'/bin/true'])}));'''

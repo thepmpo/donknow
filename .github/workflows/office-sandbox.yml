@@ -1,0 +1,40 @@
+name: Office Ubuntu sandbox verification
+
+on:
+  push:
+    branches: [main, codex/mac-sandbox-verification]
+    paths:
+      - '.github/workflows/office-sandbox.yml'
+      - 'test/ai-office-apparmor-ci.sh'
+      - 'test/ai_office_sandbox_repair_test.py'
+      - 'tools/ai-office/install/repair-sandbox.py'
+      - 'tools/ai-office/install/linux.sh'
+      - 'tools/ai-office/install/verify-sandbox.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: office-sandbox-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ubuntu-apparmor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+      - name: Check repair regression tests
+        run: python3 -m unittest discover -s test -p 'ai_office_sandbox_repair_test.py'
+      - name: Verify the scoped profile on a real Ubuntu kernel
+        run: bash test/ai-office-apparmor-ci.sh
+      - name: Explain verification scope
+        if: always()
+        run: |
+          echo 'This job tests the application-specific AppArmor exception on a fresh Ubuntu 24.04 x64 runner. It does not log in, run AI tasks, modify an existing office, or prove Mac arm64 installation.' >> "$GITHUB_STEP_SUMMARY"

@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 import contextlib
 import io
+import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('office_sandbox_repair', ROOT / 'tools/ai-office/install/repair-sandbox.py')
@@ -141,7 +142,7 @@ class SandboxRepairTests(unittest.TestCase):
 
     def test_failed_nested_probe_rolls_back_only_new_profile(self):
         self.probes = [False, False]
-        with self.assertRaisesRegex(RuntimeError, 'nested_probe_failed'):
+        with self.assertRaisesRegex(RuntimeError, 'probe_failed_unknown'):
             self.subject.apply()
         self.assertFalse(self.path(repair.PROFILE_PATH).exists())
         self.assertEqual(self.path('/sys/kernel/security/apparmor/profiles').read_text(), '')
@@ -151,10 +152,16 @@ class SandboxRepairTests(unittest.TestCase):
         p = self.path(repair.PROFILE_PATH)
         p.write_text(repair.PROFILE)
         self.probes = [False, False]
-        with self.assertRaisesRegex(RuntimeError, 'nested_probe_failed'):
+        with self.assertRaisesRegex(RuntimeError, 'probe_failed_unknown'):
             self.subject.apply()
         self.assertEqual(p.read_text(), repair.PROFILE)
         self.assertFalse(any(c[1:2] == ['-R'] for c in self.calls))
+
+    @unittest.skipUnless(os.environ.get('OFFICE_TEST_REAL_SANDBOX') == '1', 'requires a host permitting real user namespaces')
+    def test_actual_probe_preserves_nested_proc_and_readonly_canary(self):
+        result = subprocess.run([shutil.which('node'), '-e', 'const requireOfficeProfile=false;\n' + repair.PROBE], capture_output=True, text=True, timeout=40)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), 'office_namespace_probe_passed')
 
     def test_unload_failure_preserves_profile_for_review(self):
         self.probes, self.fail_remove = [False, False], True
