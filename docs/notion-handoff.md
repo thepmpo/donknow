@@ -525,6 +525,68 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 ### 매일 개발 정리
 
+
+##### 2026-11-12 — 당일 저장된 작업
+
+실제 정리: 02:49 KST. 새 저장 작업 28개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [bdd0616](https://github.com/sjfieni/donknow/commit/bdd06166a0fc9d690368696cd617e3238bffc955) · 11-11 10:24 · Prepare Windows and Mac office launchers and complete work handoff packages
+
+- [33c3587](https://github.com/sjfieni/donknow/commit/33c3587e1103e2c9d8db0bd426f9084f2c236e87) · 11-11 10:34 · Apply reversible Jujutsu Kaisen character theme to the AI office
+
+- [34d5902](https://github.com/sjfieni/donknow/commit/34d5902958639d766e1db23bb31c581a2bff9135) · 11-11 11:50 · Preserve Codex login while backing up official temporary CLI artifacts
+
+- [41d3814](https://github.com/sjfieni/donknow/commit/41d3814462319ee118ee98fe53871c39f72117fc) · 11-11 11:57 · Retain observed Codex lock and log files without touching authentication
+
+- [08d01b1](https://github.com/sjfieni/donknow/commit/08d01b14d503a5bac4e0035e2959f3ac6264b39e) · 11-11 12:21 · Enlarge office labels and provide a task-safe Windows UI update
+
+- [ba28041](https://github.com/sjfieni/donknow/commit/ba28041104b3d8e629aad6a79272b457735ee006) · 11-11 13:19 · Add private office request UI, report confirmation and phone access setup
+
+- [948d9f3](https://github.com/sjfieni/donknow/commit/948d9f37686e3d43d5a2c291c7232f4ae9fb4ff8) · 11-11 13:54 · Connect in-office task chat and instruction history; prepare Mac launchers
+
+- [444498d](https://github.com/sjfieni/donknow/commit/444498d3992e38baddbe7bdeccbc564a44bfa1bc) · 11-11 14:02 · Fix blank office scene by allowing Pixi texture workers in native proxy
+
+- [8617bc6](https://github.com/sjfieni/donknow/commit/8617bc6d678200eddac00abc4ef294f382e2d1e5) · 11-11 14:14 · Simplify Windows office startup and add persistent scene text zoom
+
+- [ac2c5ab](https://github.com/sjfieni/donknow/commit/ac2c5ab6ee6663cdc4fcca7122a12fcf848499ec) · 11-11 14:31 · Double office name and speech text with safe automatic UI update
+
+- [c76ed66](https://github.com/sjfieni/donknow/commit/c76ed66329d2ad714943ccd007dca306d800bbde) · 11-11 14:52 · Balance office labels and speech at half the previous text size
+
+- [5642eab](https://github.com/sjfieni/donknow/commit/5642eab112e51d678f9a9e1ea56062d562ae242a) · 11-11 15:22 · Add shared office conversation with message types and honest runtime progress
+
+- [7d8704c](https://github.com/sjfieni/donknow/commit/7d8704cfbe507a9daeb26187de1571312c2ee294) · 11-11 16:39 · Reuse original office chat globally and fix report decisions stuck preparing
+
+- [742cf52](https://github.com/sjfieni/donknow/commit/742cf52f491ecd558b7bf51dac23ef5eacc56640) · 11-11 17:57 · Connect office recipients and team reviews with readable reports
+
+- [f9f0b4a](https://github.com/sjfieni/donknow/commit/f9f0b4a1bdd653c645d8e3fe3dbb59eb2ff6b9db) · 11-11 22:31 · Add read-only Mac sandbox diagnostics for Lima install failure
+
+- [a678c55](https://github.com/sjfieni/donknow/commit/a678c55a49c79ff86925cbbc97f5e21554e46a39) · 11-11 22:42 · Resume Mac installation with scoped office AppArmor support
+
+- [9742e71](https://github.com/sjfieni/donknow/commit/9742e71cf5981441293ad049000182f06afede4b) · 11-11 23:04 · Fix Mac nested sandbox verification with a dedicated proc mount
+
+- [7944058](https://github.com/sjfieni/donknow/commit/79440586e16e3765cd79ee0da9f46b6907270879) · 11-11 23:07 · Record user-confirmed Mac office installation completion
+
+- [18f59e7](https://github.com/sjfieni/donknow/commit/18f59e78bd7afa2de464c01c78e1987a4ac1de89) · 11-11 23:30 · Add one-click Mac office launcher preserving existing services
+
+- [1582eb8](https://github.com/sjfieni/donknow/commit/1582eb88f5179115e0fd2d6469f4fac6bbbf8ee4) · 11-11 23:46 · Add private phone access setup for the existing Mac office
+
+- [9210493](https://github.com/sjfieni/donknow/commit/921049306b77ff9eb073ada26ad050939250d1b5) · 11-12 00:13 · Connect approved office development, validation, publication and deployment
+
+- [f2e34a8](https://github.com/sjfieni/donknow/commit/f2e34a8faf0d5baa43af3293d9958ef1508b32db) · 11-12 01:07 · Document bidirectional AI office handoff and required sync reminders
+
+- [143d2ef](https://github.com/sjfieni/donknow/commit/143d2ef21216fab8986a8fa89686c8f842825de9) · 11-12 01:19 · Explain blocked AI office requests without retrying active work
+
+- [6a09988](https://github.com/sjfieni/donknow/commit/6a0998832c534cb8b9a32c0fde5a79179542fab1) · 11-12 01:19 · Document blocked office requests and meeting follow-up workflow
+
+- [11efaf2](https://github.com/sjfieni/donknow/commit/11efaf240a4de9f49521ee60c9708e3c326c4b9a) · 11-12 01:54 · Connect office role guides, report PDF and Gmail delivery, and safe task actions
+
+- [87e9758](https://github.com/sjfieni/donknow/commit/87e97580779f3a34b544f14d2b0b2ceb6874c644) · 11-12 01:58 · Align packaged control archives with distributed payload bytes
+
+- [11f2538](https://github.com/sjfieni/donknow/commit/11f2538c0652ca1992bfd9f58c783b345dd86416) · 11-12 01:59 · Document office skills, PDF Gmail delivery, task controls and verification
+
+- [5eca395](https://github.com/sjfieni/donknow/commit/5eca395d246a2d1978fbc9185502143dadcb2e0b) · 11-12 01:59 · Record verified office downloads and public documentation access limit
+
+
 #### 2026-11-12 — 필요한 스킬 묶음·PDF와 본인 Gmail·업무관리 연결
 
 [기능별 쉬운 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-capabilities.md)에 추천 스킬 한 번에 연결, PDF 저장, 선택한 PDF를 본인 Gmail로 보내기, 업무 실행 확인·보관/복원, 팀장회의의 실제 범위를 정리했다. 지침은 프로젝트별로 다음 새 업무에 실제 본문과 버전이 연결된다. 외부 스킬 전체 설치나 모델 재학습은 아니다.
@@ -930,6 +992,7 @@ f2e34a8 Document bidirectional AI office handoff and required sync reminders
 11efaf2 Connect office role guides, report PDF and Gmail delivery, and safe task actions
 87e9758 Align packaged control archives with distributed payload bytes
 11f2538 Document office skills, PDF Gmail delivery, task controls and verification
+5eca395 Record verified office downloads and public documentation access limit
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
