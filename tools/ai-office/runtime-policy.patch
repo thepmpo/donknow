@@ -2290,3 +2290,223 @@ index fb4c983..1b47125 100644
  
  const messageIdempotency = createMessageIdempotencyTools({
    db,
+diff --git a/src/components/office-view/buildScene-break-room.ts b/src/components/office-view/buildScene-break-room.ts
+index d8851ec..4cdc70c 100644
+--- a/src/components/office-view/buildScene-break-room.ts
++++ b/src/components/office-view/buildScene-break-room.ts
+@@ -183,20 +183,22 @@ export function buildBreakRoom({
+ 
+     const nameTag = new Text({
+       text: localeName(activeLocale, agent),
+-      style: new TextStyle({ fontSize: 6, fill: 0x4a3a2a, fontFamily: "system-ui, sans-serif" }),
++      style: new TextStyle({ fontSize: 11, fill: 0x4a3a2a, fontFamily: "system-ui, sans-serif" }),
+     });
+     nameTag.anchor.set(0.5, 0);
+-    const ntW = nameTag.width + 4;
++    const ntW = nameTag.width + 8;
++    const tagY = spotY + 2 + (index % 3) * 18;
++    const tagX = Math.max(brx + ntW / 2 + 4, Math.min(spotX, brx + brw - ntW / 2 - 4));
+     const ntBg = new Graphics();
+-    ntBg.roundRect(spotX - ntW / 2, spotY + 2, ntW, 9, 2).fill({ color: 0xffffff, alpha: 0.8 });
++    ntBg.roundRect(tagX - ntW / 2, tagY, ntW, 16, 2).fill({ color: 0xffffff, alpha: 0.8 });
+     breakRoom.addChild(ntBg);
+-    nameTag.position.set(spotX, spotY + 3);
++    nameTag.position.set(tagX, tagY + 2);
+     breakRoom.addChild(nameTag);
+   });
+ 
+   if (breakAgents.length > 0) {
+     const phase = Math.floor(Date.now() / 4000);
+-    const speakerCount = Math.min(2, breakAgents.length);
++    const speakerCount = Math.min(1, breakAgents.length);
+     for (let speakerIndex = 0; speakerIndex < speakerCount; speakerIndex++) {
+       const speakerIdx = (phase + speakerIndex) % breakAgents.length;
+       const agent = breakAgents[speakerIdx];
+@@ -209,11 +211,11 @@ export function buildBreakRoom({
+       const msg = chatPool[(seed + phase) % chatPool.length];
+       const bubbleText = new Text({
+         text: msg,
+-        style: new TextStyle({ fontSize: 7, fill: 0x333333, fontFamily: "system-ui, sans-serif" }),
++        style: new TextStyle({ fontSize: 12, fill: 0x333333, fontFamily: "system-ui, sans-serif", wordWrap: true, wordWrapWidth: 130, breakWords: true }),
+       });
+       bubbleText.anchor.set(0.5, 1);
+-      const bw = bubbleText.width + 10;
+-      const bh = bubbleText.height + 6;
++      const bw = bubbleText.width + 14;
++      const bh = bubbleText.height + 10;
+       const bubbleTop = spotY - TARGET_CHAR_H * 0.85 - bh - 4;
+ 
+       const bubbleG = new Graphics();
+@@ -229,7 +231,7 @@ export function buildBreakRoom({
+         .lineTo(spotX + 3, bubbleTop + bh)
+         .fill(0xfff8f0);
+       breakRoom.addChild(bubbleG);
+-      bubbleText.position.set(spotX, bubbleTop + bh - 3);
++      bubbleText.position.set(spotX, bubbleTop + bh - 5);
+       breakRoom.addChild(bubbleText);
+ 
+       const bubbleContainer = new Container();
+diff --git a/src/components/office-view/buildScene-department-agent.ts b/src/components/office-view/buildScene-department-agent.ts
+index 8075540..2c50212 100644
+--- a/src/components/office-view/buildScene-department-agent.ts
++++ b/src/components/office-view/buildScene-department-agent.ts
+@@ -137,17 +137,18 @@ export function renderDeskAgentAndSubClones({
+     const bubbleText = new Text({
+       text: `💬 ${txt}`,
+       style: new TextStyle({
+-        fontSize: 6.5,
++        fontSize: 12,
+         fill: 0x333333,
+         fontFamily: "system-ui, sans-serif",
+         wordWrap: true,
+-        wordWrapWidth: 85,
++        wordWrapWidth: 120,
++        breakWords: true,
+       }),
+     });
+     bubbleText.anchor.set(0.5, 1);
+-    const bw = Math.min(bubbleText.width + 8, 100);
+-    const bh = bubbleText.height + 6;
+-    const bubbleTop = charFeetY - TARGET_CHAR_H - bh - 6;
++    const bw = Math.min(bubbleText.width + 12, 132);
++    const bh = bubbleText.height + 10;
++    const bubbleTop = charFeetY - TARGET_CHAR_H - bh - 40;
+     const bubbleG = new Graphics();
+     bubbleG.roundRect(ax - bw / 2, bubbleTop, bw, bh, 4).fill(0xffffff);
+     bubbleG.roundRect(ax - bw / 2, bubbleTop, bw, bh, 4).stroke({ width: 1.2, color: themeAccent, alpha: 0.4 });
+@@ -157,7 +158,7 @@ export function renderDeskAgentAndSubClones({
+       .lineTo(ax + 3, bubbleTop + bh)
+       .fill(0xffffff);
+     room.addChild(bubbleG);
+-    bubbleText.position.set(ax, bubbleTop + bh - 3);
++    bubbleText.position.set(ax, bubbleTop + bh - 5);
+     room.addChild(bubbleText);
+   }
+ 
+diff --git a/src/components/office-view/buildScene-departments.ts b/src/components/office-view/buildScene-departments.ts
+index 9ebc849..c1583c3 100644
+--- a/src/components/office-view/buildScene-departments.ts
++++ b/src/components/office-view/buildScene-departments.ts
+@@ -166,13 +166,13 @@ export function buildDepartmentRooms({
+       const acol = agentIdx % COLS_PER_ROW;
+       const arow = Math.floor(agentIdx / COLS_PER_ROW);
+       const ax = rx + ROOM_PAD + acol * SLOT_W + SLOT_W / 2;
+-      const ay = ry + 38 + arow * SLOT_H;
++      const ay = ry + 64 + arow * SLOT_H;
+       const isWorking = agent.status === "working";
+       const isOffline = agent.status === "offline";
+       const isBreak = agent.status === "break";
+ 
+       const nameY = ay;
+-      const charFeetY = nameY + 24 + TARGET_CHAR_H;
++      const charFeetY = nameY + 34 + TARGET_CHAR_H;
+       const deskY = charFeetY - 8;
+ 
+       agentPosRef.current.set(agent.id, { x: ax, y: deskY });
+@@ -269,16 +269,16 @@ function renderAgentHeader(
+   const nameText = new Text({
+     text: localeName(activeLocale, agent),
+     style: new TextStyle({
+-      fontSize: 7,
++      fontSize: 11,
+       fill: 0x3a3a4a,
+       fontWeight: "bold",
+       fontFamily: "system-ui, sans-serif",
+     }),
+   });
+   nameText.anchor.set(0.5, 0);
+-  const nameTagW = nameText.width + 6;
++  const nameTagW = nameText.width + 10;
+   const nameTagBg = new Graphics();
+-  nameTagBg.roundRect(ax - nameTagW / 2, nameY, nameTagW, 12, 3).fill({ color: 0xffffff, alpha: 0.85 });
++  nameTagBg.roundRect(ax - nameTagW / 2, nameY, nameTagW, 18, 3).fill({ color: 0xffffff, alpha: 0.85 });
+   room.addChild(nameTagBg);
+   nameText.position.set(ax, nameY + 2);
+   room.addChild(nameText);
+@@ -286,15 +286,15 @@ function renderAgentHeader(
+   if (unread?.has(agent.id)) {
+     const bangBg = new Graphics();
+     const bangX = ax + nameTagW / 2 + 2;
+-    bangBg.circle(bangX, nameY + 6, 6).fill(0xff3333);
+-    bangBg.circle(bangX, nameY + 6, 6).stroke({ width: 1, color: 0xff0000, alpha: 0.6 });
++    bangBg.circle(bangX, nameY + 9, 6).fill(0xff3333);
++    bangBg.circle(bangX, nameY + 9, 6).stroke({ width: 1, color: 0xff0000, alpha: 0.6 });
+     room.addChild(bangBg);
+     const bangTxt = new Text({
+       text: "!",
+       style: new TextStyle({ fontSize: 8, fill: 0xffffff, fontWeight: "bold", fontFamily: "monospace" }),
+     });
+     bangTxt.anchor.set(0.5, 0.5);
+-    bangTxt.position.set(bangX, nameY + 6);
++    bangTxt.position.set(bangX, nameY + 9);
+     room.addChild(bangTxt);
+   }
+ 
+@@ -309,7 +309,7 @@ function renderAgentHeader(
+       },
+     ),
+     style: new TextStyle({
+-      fontSize: 6,
++      fontSize: 8,
+       fill: contrastTextColor(accent),
+       fontFamily: "system-ui, sans-serif",
+     }),
+@@ -317,9 +317,9 @@ function renderAgentHeader(
+   roleText.anchor.set(0.5, 0.5);
+   const roleTagW = roleText.width + 5;
+   const roleTagBg = new Graphics();
+-  roleTagBg.roundRect(ax - roleTagW / 2, nameY + 13, roleTagW, 9, 2).fill({ color: accent, alpha: 0.82 });
++  roleTagBg.roundRect(ax - roleTagW / 2, nameY + 19, roleTagW, 12, 2).fill({ color: accent, alpha: 0.82 });
+   room.addChild(roleTagBg);
+-  roleText.position.set(ax, nameY + 17.5);
++  roleText.position.set(ax, nameY + 25);
+   room.addChild(roleText);
+ }
+ 
+diff --git a/src/components/office-view/model.ts b/src/components/office-view/model.ts
+index a5a132f..aa5fcda 100644
+--- a/src/components/office-view/model.ts
++++ b/src/components/office-view/model.ts
+@@ -131,14 +131,14 @@ const CEO_SIZE = 44;
+ const DESK_W = 48;
+ const DESK_H = 26;
+ const SLOT_W = 100;
+-const SLOT_H = 120;
++const SLOT_H = 140;
+ const COLS_PER_ROW = 3;
+ const ROOM_PAD = 16;
+ const TILE = 20;
+ const CEO_SPEED = 7;
+ const DELIVERY_SPEED = 0.012;
+ 
+-const BREAK_ROOM_H = 110;
++const BREAK_ROOM_H = 140;
+ const BREAK_ROOM_GAP = 32;
+ const MAX_VISIBLE_SUB_CLONES_PER_AGENT = 3;
+ const SUB_CLONE_WAVE_SPEED = 0.04;
+diff --git a/src/components/office-view/useOfficeDeliveryEffects.ts b/src/components/office-view/useOfficeDeliveryEffects.ts
+index 020cc03..8dad4fb 100644
+--- a/src/components/office-view/useOfficeDeliveryEffects.ts
++++ b/src/components/office-view/useOfficeDeliveryEffects.ts
+@@ -302,17 +302,17 @@ export function useCeoOfficeCallAnimations({
+       const bubbleText = new Text({
+         text: line,
+         style: new TextStyle({
+-          fontSize: 7,
++          fontSize: 12,
+           fill: 0x2b2b2b,
+           fontFamily: "system-ui, sans-serif",
+           wordWrap: true,
+-          wordWrapWidth: 120,
++          wordWrapWidth: 160,
+           breakWords: true,
+         }),
+       });
+       bubbleText.anchor.set(0.5, 1);
+-      const bubbleW = Math.min(bubbleText.width + 12, 122);
+-      const bubbleH = bubbleText.height + 8;
++      const bubbleW = Math.min(bubbleText.width + 16, 176);
++      const bubbleH = bubbleText.height + 12;
+       const bubbleY = -62;
+ 
+       const bubbleBody = new Graphics();

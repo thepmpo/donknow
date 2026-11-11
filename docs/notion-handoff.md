@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[사무실 글자 확대·휴대폰·지시 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md): 이름/말풍선 크기를 개선하고 검토 종료 후 적용하는 UI 패키지를 준비했습니다. 사용자 PC의 ready/started는 확인됐고 첫 결과는 대기입니다. 외부 폰 접속과 범용 반복 요청 입력창은 아직 연결 전입니다.
+
 [Windows 로그인 오류 수정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md): 공식 Codex가 만든 임시/로그/잠금 보조 파일을 인증 실패로 오판한 문제를 확인해 v2 독립 수정 ZIP을 준비했습니다. 인증/키/DB/worker 정책을 보존하고 사용 중이 아닌 보조 파일만 백업합니다. 실제 PC의 인증·첫 AI 응답은 수정 후 확인 대기입니다.
 
 [주술회전 직원 테마](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-jjk-theme.md): 직원14명의 생성 스프라이트를 적용하고 실제 화면/PNG·복원/재적용을 확인했습니다. 역할·모델·업무는 유지하며 Windows 최신 패키지에 적용 경로를 추가했습니다. 실제 Windows/Mac 검증과 AI 업무 실행 성공을 뜻하지 않습니다.
@@ -63,6 +65,13 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — 사무실 글자 가독성·사용 흐름 정리
+
+- 사용자 요청으로 이름을11px·말풍선을12px로 키우고 헤더/좌석/휴게실/말풍선 간격을 조정했다. [사용 안내와 독립 UI 업데이트](ai-office-usage.md). 현재 사용자 PC의 첫 검토가 실행 중이므로 자동 적용/재시작하지 않는다.
+- UI 전용 변경/별도 staging 빌드/원본 백업·실패 복구·작업 실행 중 거부를 지원하는8-larger-text.cmd를 준비했다. DB/인증/업무/worker 권한은 변경하지 않는다.
+- vendor 웹76개·빌드, 데스크톱/390px 렌더, PowerShell 전송·업데이트 회귀를 검증했다. Windows 실제 적용과 외부 폰 접속은 미확인이다.
+- PC 전원만으로 외부 폰 접속이 되는 것은 아니며 비공개 연결/인증이 필요하다. 현재4-first-review는 첫 검토 전용이며 연출 말풍선/실제 결과를 구분하고 범용 요청 입력 UI는 남은 작업으로 기록했다.
 
 #### 2026-11-11 — 실제 Windows 로그인 보조 파일 처리 v2
 
@@ -588,6 +597,10 @@
 
 [로그인 수정 v2](ai-office-login-repair.md): 실제 PC의 tmp/log/auth.lock/auth.json.lock 목록을 반영했다. 인증 파일은 그대로 두고 사용 중이 아닌 보조 파일만 백업한다. 활성 프로세스/잠금·잘못된 경로/다른 설정을 거부하고 비밀 없는 reasonCode를 표시한다. PC의 인증 확인/모델 응답은 결과 대기다.
 
+#### 2026-11-11 — 이름/말풍선 확대·사용 흐름
+
+[사용 안내](ai-office-usage.md): 이름11px·말풍선12px와 간격 조정, 진행 중 검토를 건드리지 않는 UI 업데이트 파일을 준비했다. vendor 웹76개·빌드·데스크톱/390px 렌더와 업데이트/전송을 검증했다. Windows 적용·외부 폰 접속·범용 반복 요청 UI는 확인/연결 전이다. PC의 authReady/started는 확인됐지만 첫 실제 결과 보고서는 대기다.
+
 
 ### Git 커밋 이력
 
@@ -674,6 +687,7 @@ bdd0616 Prepare Windows and Mac office launchers and complete work handoff packa
 eeda2a0 Merge daily project record while preserving local office setup documentation
 33c3587 Apply reversible Jujutsu Kaisen character theme to the AI office
 34d5902 Preserve Codex login while backing up official temporary CLI artifacts
+41d3814 Retain observed Codex lock and log files without touching authentication
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1249,6 +1263,49 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 原文 / docs/ai-office-usage.md
+
+### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
+
+2026-11-11 사용자 질문에 대한 현재 기능 기준이다. 사용자 Windows에서는 ready:true/authReady:true와 첫 읽기 전용 검토 started:true가 확인됐다. 결과 보고서·실제 모델 응답 성공은 아직 받지 못했으며 시작 성공과 완료 성공을 구분한다.
+
+#### 이름·머리 위 말풍선
+
+[확대된 사무실 화면 미리보기](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/ui-readability/preview.png)
+
+기본 이름6~7px를11px, 휴식/업무/이동 말풍선을12px로 확대했다. 직급8px, 이름 배경18px, 직급 배경12px로 조정하고 캐릭터 헤더 간격을34px로 늘렸다. 업무 말풍선이 이름을 가리지 않게 위로 배치하고, 좌석 세로 간격120→140px·휴게실110→140px로 늘렸다. 휴게실 이름표는 교차 배치하고 연출 말풍선은 한 번에 하나씩 순환시켜 겹침을 줄였다.
+
+[Windows 글자 확대 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-readable-text.zip)을 압축 해제하고 **첫 AI 검토가 끝난 뒤 `8-larger-text.cmd`**를 실행한다. 완료 후 브라우저에서 **Ctrl+F5**를 누른다. 전체 설치/Windows 재시작/로그인 초기화는 필요 없다.
+
+업데이트는 정확한 전/후 SHA256을 가진 UI 소스5개만 대상으로 한다. 사용자 UI 수정/심볼릭 링크/손상된 파일은 보존하고 중단한다. tasks/agents/office_task_permissions를 읽기 전용으로 확인하고 실행 중인 업무가 있으면 적용하지 않는다. 빌드 도중 업무가 시작돼도 배포하지 않는다. 원래 소스와 dist는 private state/ui-backups에 보관하며 별도 staging 빌드가 성공한 뒤에만 dist를 교체한다. 빌드/검사 실패 시 원래 UI를 유지한다. DB·인증·키·업무·worker 권한은 변경하지 않는다.
+
+실제 PowerShell 구문/UTF-8 패키지 전달 모의 검사와 업데이트/멱등성·실행 중 거부·실패 복구·사용자 수정 보존·패키지 해시 검증을 통과했다. vendor 웹 테스트76개·빌드와1440px/390px 로컬 브라우저 렌더를 확인했다. 실제 Windows 패키지 실행/외부 휴대폰 접속 검증은 아직 미확인이다. 새 설치는 고정 runtime patch에 변경이 포함된다.
+
+#### 밖에서 휴대폰으로 보기
+
+현재 PC 설치 주소127.0.0.1:8790은 그 PC 전용이다. **PC가 켜져 있다는 것만으로 외부 휴대폰에서 접속되지는 않는다.** 아래 조건이 필요하다.
+
+- PC와 WSL·사무실 서버가 실행 중이어야 하며 PC가 절전/최대 절전 상태가 아니어야 한다.
+- PC와 휴대폰에 인증된 비공개 접속 경로를 설정해야 한다. 예: [Tailscale 공식 다운로드](https://tailscale.com/download). 계정/기기 접근 범위와 실제 무료 한도를 확인하고 새 유료 자원을 자동 활성화하지 않는다.
+- HTTPS 프록시, 필요한 API 인증/신뢰 원본, 본인 기기만 허용하는 접근 제어를 함께 확인해야 한다. 앱 API나 사무실 키를 공용 인터넷에 그대로 노출하지 않는다.
+
+이번 변경은 외부 접속을 설정한 것이 아니다. Tailscale 설치·계정 연결·프록시/원본 설정·외부 실제 폰 조회/조작·접근 차단 검증은 별도 남은 작업이다. 일반 네트워크 포트 전체 공개나 방화벽 해제를 해결책으로 제시하지 않는다. PC 종료 시 중단 없는 운영이 필요하면 이후 영구 클라우드 운영/데이터 보관을 별도로 준비한다.
+
+#### 매번 어떻게 지시하나
+
+현재 Windows 시작 패키지는 다음 흐름이다.
+
+1. PC를 켠 뒤2-start.cmd로 서버를 시작하고 브라우저에서 연다. 창을 닫거나 PC를 끄면 서버가 중지된다. 자동 상시 서비스는 아직 아니다.
+2. 정상 저장된 로그인은 재사용하며, 토큰 만료/계정 상태 등에 따라 다시 로그인이 필요할 수 있다. 매 작업마다 새로 로그인하는 설계는 아니다.
+3. 4-first-review.cmd는 **준비된 첫 제품 검토1건 전용**이다. 임의의 새 업무를 매번 만드는 범용 입력창은 아니다. 같은 작업을 반복해서 실행하지 않는다.
+4. 실제 응답/근거는 업무 관리의 해당 작업/보고서에서 확인한다. 결과가 없거나 실패하면 실패 원인을 확인하고 자동 완료로 처리하지 않는다.
+
+머리 위 문구에는 **휴식/회의 연출 문구**가 있다. 이것을 실제 AI들끼리 진행한 업무 대화/모델 응답으로 보고하지 않는다. 실제 작업에서는 업무 제목/진행 상태가 표시될 수 있다.
+
+현재 승인 정책은 범위 없는 직원 채팅/전사 메시지의 모델 자동 실행을 차단한다. 따라서 화면의 직원에게 자유롭게 말을 걸면 곧바로 다음 업무까지 실행된다고 안내하면 안 된다. 반복 요청용 **프로젝트 선택 → 요청 입력 → 읽기 전용/수정 범위 확인 → 명시적 실행 승인 → 진행/보고서 → 후속 작업** UI 연결이 남아 있다. 첫 실계정 응답/도구 흐름을 확인한 뒤 이 통로를 연결해야 한다. 사용자 승인 없는 개발·자동 병합·배포 잠금은 유지한다.
+
+[첫 실행](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md) · [Windows/Mac 설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)
+
 ### 原文 / docs/ai-office-login-repair.md
 
 ### Windows 사무실 로그인 확인 오류 수정
@@ -1420,6 +1477,10 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 
 `office_provider_home_not_fresh`는 [별도 로그인 수정 ZIP](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md)의 `7-fix-login.cmd`로 처리한다. 인증을 그대로 두고 공식 Codex의 임시·로그·잠금 보조 파일만 백업한다. 서버를 켠 상태로 진단하고 authReady:true 후 검토를 실행한다. 재설치/키 재생성은 하지 않는다.
 
+#### 사무실 사용 안내
+
+[글자 확대·외부 휴대폰 조건·평소 지시 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md)을 추가했다. 글자 업데이트는 실행 중인 첫 검토가 끝난 뒤 적용한다. 현재 외부 접속과 범용 반복 업무 입력창은 미구현이며 시작 성공을 실제 AI 완료로 해석하지 않는다.
+
 ### 原文 / docs/ai-office-handoff.md
 
 ### “인수인계서 만들어줘”의 공식 처리 기준
@@ -1582,6 +1643,10 @@ node scripts/ai-office-ready.mjs stop
 #### Windows 실사용 로그인 폴더 검사 오류 — 2026-11-11
 
 공식 Codex가 만든 .codex/tmp 때문에 auth-only 정책이 로그인을 거부하는 문제를 재현했다. [독립 수정 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md)는 인증/DB/키/설정을 유지하고 임시 폴더만 백업한다. authReady:true와 실제 모델 응답은 사용자 PC에서 다시 확인한다.
+
+#### 사무실 사용 안내
+
+[글자 확대·외부 휴대폰 조건·평소 지시 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md)을 추가했다. 글자 업데이트는 실행 중인 첫 검토가 끝난 뒤 적용한다. 현재 외부 접속과 범용 반복 업무 입력창은 미구현이며 시작 성공을 실제 AI 완료로 해석하지 않는다.
 
 ### 原文 / docs/ai-office-approval-gate.md
 

@@ -70,3 +70,7 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 ## 로그인은 했는데 실행이 거부되는 경우
 
 `office_provider_home_not_fresh`는 [별도 로그인 수정 ZIP](ai-office-login-repair.md)의 `7-fix-login.cmd`로 처리한다. 인증을 그대로 두고 공식 Codex의 임시·로그·잠금 보조 파일만 백업한다. 서버를 켠 상태로 진단하고 authReady:true 후 검토를 실행한다. 재설치/키 재생성은 하지 않는다.
+
+## 사무실 사용 안내
+
+[글자 확대·외부 휴대폰 조건·평소 지시 방법](ai-office-usage.md)을 추가했다. 글자 업데이트는 실행 중인 첫 검토가 끝난 뒤 적용한다. 현재 외부 접속과 범용 반복 업무 입력창은 미구현이며 시작 성공을 실제 AI 완료로 해석하지 않는다.

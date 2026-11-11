@@ -51,3 +51,7 @@ node scripts/ai-office-ready.mjs stop
 ## Windows 실사용 로그인 폴더 검사 오류 — 2026-11-11
 
 공식 Codex가 만든 .codex/tmp 때문에 auth-only 정책이 로그인을 거부하는 문제를 재현했다. [독립 수정 패키지](ai-office-login-repair.md)는 인증/DB/키/설정을 유지하고 임시 폴더만 백업한다. authReady:true와 실제 모델 응답은 사용자 PC에서 다시 확인한다.
+
+## 사무실 사용 안내
+
+[글자 확대·외부 휴대폰 조건·평소 지시 방법](ai-office-usage.md)을 추가했다. 글자 업데이트는 실행 중인 첫 검토가 끝난 뒤 적용한다. 현재 외부 접속과 범용 반복 업무 입력창은 미구현이며 시작 성공을 실제 AI 완료로 해석하지 않는다.

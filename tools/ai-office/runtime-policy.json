@@ -2,8 +2,8 @@
   "upstream": "https://github.com/GreenSheep01201/claw-empire",
   "version": "2.0.4",
   "baseCommit": "66a24ea7df2435ef897c48c147deb7ec572c01c2",
-  "policyCommit": "a7c8b011a6df6d9a50e26671bb974bff91197df1",
-  "patchSha256": "95966bede7b823030c5afab704331cca05f3f5031b7ea0a3ec6dc220e2625f0b",
+  "policyCommit": "932b5c3b9f4e8088f63d0742149820cde5b4d862",
+  "patchSha256": "b41edb1a37c2a6f297baa504b4446c2266ae64c4f411b5e296dde4de0121a05a",
   "apiTests": 252,
   "policyTests": 49,
   "realModelsCalled": false,
@@ -11,7 +11,7 @@
   "officialCodexVersion": "0.167.0",
   "officialCodexSha256": "cdcb45aaa01d0f14e298985e09465aebccd47f64ecd298aea44814af7b62bbda",
   "knowledgeEnabled": true,
-  "policyTree": "ded7f7bfb5cb95943400f9e6d5a94465a05a3e57",
+  "policyTree": "43d81b2d3a8783cb0e69f59fcd3d9e68b3e005c5",
   "linuxRunners": {
     "x64": {
       "triple": "x86_64-unknown-linux-musl",
@@ -21,5 +21,7 @@
       "triple": "aarch64-unknown-linux-musl",
       "sha256": "2fe94d848540ff2a6868c7ebcc494126a974aa409711676d14fa0379e49e6143"
     }
-  }
+  },
+  "webTests": 76,
+  "readabilityVersion": 1
 }

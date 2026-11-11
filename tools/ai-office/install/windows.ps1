@@ -1,5 +1,5 @@
 # Run in normal Windows PowerShell. Only WSL installation itself may require elevation/reboot.
-param([ValidateSet('install','start','initialize','login','review','doctor','handoff','characters','repair')][string]$Action='install')
+param([ValidateSet('install','start','initialize','login','review','doctor','handoff','characters','repair','readability')][string]$Action='install')
 $ErrorActionPreference='Stop'
 if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) { throw 'WSL2 is required. https://learn.microsoft.com/windows/wsl/install' }
 if ($Action -eq 'install') {
@@ -15,6 +15,18 @@ if ! test -e /workspace/donknow; then git clone https://github.com/thepmpo/donkn
 test -f /workspace/donknow/tools/ai-office/install/linux.sh || { echo 'The installer is missing from this checkout. Existing files were preserved.' >&2; exit 1; }
 bash /workspace/donknow/tools/ai-office/install/linux.sh
 '@
+} elseif ($Action -eq 'readability') {
+    $sourceDir=(& wsl.exe --distribution Ubuntu --exec mktemp -d /tmp/office-readable-XXXXXXXX | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or $sourceDir -notmatch '^/tmp/office-readable-[A-Za-z0-9]+$') { throw 'Cannot prepare office UI update.' }
+    foreach($name in @('update-readability.py','readability.json')) {
+        $local=Join-Path $PSScriptRoot $name
+        $data=[Convert]::ToBase64String([System.IO.File]::ReadAllBytes($local))
+        $data | & wsl.exe --distribution Ubuntu --exec bash -lc "base64 --decode --ignore-garbage > $sourceDir/$name"
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot copy reviewed UI package.' }
+    }
+    & wsl.exe --distribution Ubuntu --exec python3 "$sourceDir/update-readability.py" "$sourceDir/readability.json"
+    if ($LASTEXITCODE -ne 0) { throw 'UI update stopped. If a review is running, wait until it finishes.' }
+    exit 0
 } elseif ($Action -eq 'repair') {
     $repairFile=Join-Path $PSScriptRoot 'repair-auth.py'
     $repairEncoded=[Convert]::ToBase64String([System.IO.File]::ReadAllBytes($repairFile))
