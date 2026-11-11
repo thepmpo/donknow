@@ -44,3 +44,7 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 사용자 등록 캐릭터는 runtime의 새로 추가/변경된 PNG를 `office-assets/sprites/`에 수집하고 `office-assets.json`에 수집 상태를 기록한다. 삭제/누락/검사 실패는 미수집으로 남긴다. metadata만으로 이미지가 복원되지 않으므로 파일과 직원 sprite_number를 대조해 다음 설치의 충돌 없는 새 번호로 등록한다. 자동 덮어쓰기는 하지 않는다.
 
 [Windows/Mac 설치와 캐릭터 변경](ai-office-local-install.md) · [현재 인계 문서](notion-handoff.md)
+
+## 새 제어 모듈 인계
+
+[업무 입력/보고서/휴대폰 제어 모듈](ai-office-control.md)의 소스·버전 해시·설치 패키지도 포함한다. control-requests의 사용자 요청·처리 기록은 개인 전달 범위에서 검토하되 control-access.key, private-access의 계정 연결과 API owner/OAuth 키는 자동 이전하지 않는다. 다음 환경에서 사용자 본인 인증으로 새로 연결한다. 실제 Windows/폰의 결과와 모의 테스트를 구분한다.

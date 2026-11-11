@@ -36,6 +36,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+[업무 입력·보고서 확인·휴대폰 설정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md): 요청 입력/명시적 읽기 전용 실행/중지/보고서 확인 완료와 본인 전용 Tailscale Serve 추가 파일을 준비했습니다. 기존 미결 보고서를 읽고 제품 검토만 완료 처리하며 개발/배포는 승인하지 않습니다. Windows/실제 폰 연결과 새 모델 응답은 사용자 확인 대기입니다.
+
 [사무실 글자 확대·휴대폰·지시 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md): 이름/말풍선 크기를 개선하고 검토 종료 후 적용하는 UI 패키지를 준비했습니다. 사용자 PC의 ready/started는 확인됐고 첫 결과는 대기입니다. 외부 폰 접속과 범용 반복 요청 입력창은 아직 연결 전입니다.
 
 [Windows 로그인 오류 수정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md): 공식 Codex가 만든 임시/로그/잠금 보조 파일을 인증 실패로 오판한 문제를 확인해 v2 독립 수정 ZIP을 준비했습니다. 인증/키/DB/worker 정책을 보존하고 사용 중이 아닌 보조 파일만 백업합니다. 실제 PC의 인증·첫 AI 응답은 수정 후 확인 대기입니다.
@@ -349,7 +351,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/ai-office-control.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()
