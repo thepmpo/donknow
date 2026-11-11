@@ -1,5 +1,17 @@
 # Mac용 AI 사무실 준비 패키지
 
+## 2026-11-11 진단 확인 후 설치 재개
+
+사용자 진단에서 Ubuntu24.04, AppArmor 활성화, userns 제한1, 사용자 namespace clone1, 관련 bwrap 프로필 없음, userns/bwrap/net_admin 거부가 함께 확인됐다. [설치 이어하기 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-resume.zip)을 새 폴더에 풀고 **7-resume-install.command 하나**를 실행한다. 기존 `duckduck-office` VM이 없으면 새로 만들지 않고 멈춘다. 설치에 성공하면 원래 폴더의2-start→3-login→9-office-chat 순서로 진행한다.
+
+수정은 [Ubuntu의 앱별 namespace 허용 방식](https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces)에 따라 사무실 전용 `/workspace/ai-office/toolchain/node/bin/node`에만 `duckduck-office-node` 프로필을 연결한다. 일반 bwrap/bash/시스템 Node, 전역 sysctl, 방화벽이나 macOS 보안은 변경하지 않는다. Node는 범용 실행기이므로 같은 사용자 권한으로 이 전용 Node를 호출하는 다른 코드도 해당 namespace 허용을 사용할 수 있다. 이 규칙 자체가 승인된 업무만 식별하는 것은 아니며 업무 승인·파일/네트워크 격리는 별도로 계속 적용한다.
+
+설치기는 SHA 검증한 Node를 먼저 준비하고 그 Node에서 격리 검사를 실행한다. 같은 이름의 다른 프로필·기존 bwrap 프로필은 덮지 않는다. 새 프로필 적용/검사가 실패하면 자신이 추가한 규칙만 복구하며 기존 파일/인증/DB는 그대로 둔다. 공식 Codex를 설치한 다음 실제 CLI sandbox에서 임시 자료의 읽기 허용, 쓰기 차단, 다른 프로젝트/사무실 비밀 접근 차단, 호스트 loopback 네트워크 차단을 확인한다. 이 검사는 로그인·모델 요청·실제 업무 없이 수행한다. 이후 검사에서 실패하면 설치를 중단하며 이미 검증한 앱별 규칙이 남을 수 있다.
+
+최신 설치기는 ZIP 안에 Linux 설치기와 검사기를 함께 넣어 기존 VM으로 전달하므로, 첫 시도에서 받은 오래된 Git checkout을 덮거나 pull하지 않아도 재개한다. AppArmor가 없거나 기존 격리가 작동하는 Linux/WSL에서는 규칙을 추가하지 않는다. 재실행이 기존 편집 소스/서버/다른 정책과 충돌하면 보존 후 중단한다. `7-check-sandbox.command`의 일반 셸 bwrap 차단은 수정 후에도 정상적으로 남을 수 있으며 전용 Node 검사 결과를 별도로 본다.
+
+자동 회귀와 이 작업 환경에서 실제 Codex sandbox 검사를 수행했다. **사용자 Mac에서 프로필 적용·설치 완료·로그인·실모델 응답은 아직 확인 대기**다. GitHub 파일 갱신과 Render 공개 배포는 별개다.
+
 ## 2026-11-11 실제 Mac 설치 중단 — 확인 대기
 
 사용자 Apple Silicon Mac에서 Homebrew/Lima 2.3.0, 기존 duckduck-office Ubuntu VM 생성·SSH 연결·Ubuntu 패키지 설치까지 진행했다. 이후 `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`로 linux.sh의 첫 격리 검사에서 중단했다. 이 로그로 사무실 설치·로그인·실모델 실행 완료를 주장하지 않는다.

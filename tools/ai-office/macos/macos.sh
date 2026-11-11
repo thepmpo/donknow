@@ -2,14 +2,16 @@
 set -euo pipefail
 # Linux sandbox is retained in a dedicated VM on both Intel and Apple Silicon Macs.
 action=${1:-install}
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 package_dir=$(cd -- "$(dirname -- "$0")" && pwd)
 if [[ $(uname -s) != Darwin ]]; then echo 'This launcher is for macOS.' >&2; exit 1; fi
 if ! command -v limactl >/dev/null; then
  echo 'Install Lima first: brew install lima (https://lima-vm.io/docs/installation/)'; exit 1
 fi
 vm=duckduck-office
-if [[ "$action" == install ]]; then
+if [[ "$action" == install || "$action" == resume ]]; then
  if ! limactl list --format '{{.Name}}' | grep -Fx "$vm" >/dev/null 2>&1; then
+  if [[ "$action" == resume ]]; then echo '기존 사무실 VM을 찾지 못했습니다. 새로 만들거나 지우지 않았습니다.' >&2; exit 1; fi
   config_dir=$(mktemp -d -t duckduck-office)
   config="$config_dir/office.yaml"
   trap 'rm -f "$config"; rmdir "$config_dir"' EXIT
@@ -36,7 +38,15 @@ portForwards:
 YAML
   limactl start --name "$vm" "$config"
  else limactl start "$vm"; fi
- limactl shell "$vm" bash -lc 'set -euo pipefail; if ! test -d /workspace; then sudo install -d -o "$(id -u)" -g "$(id -g)" /workspace; fi; test -w /workspace; sudo apt-get update; sudo apt-get install -y git ca-certificates; if ! test -e /workspace/donknow; then git clone https://github.com/thepmpo/donknow /workspace/donknow; fi; bash /workspace/donknow/tools/ai-office/install/linux.sh'
+ limactl shell "$vm" bash -lc 'set -euo pipefail; if ! test -d /workspace; then sudo install -d -o "$(id -u)" -g "$(id -g)" /workspace; fi; test -w /workspace; sudo apt-get update; sudo apt-get install -y git ca-certificates; if ! test -e /workspace/donknow; then git clone https://github.com/thepmpo/donknow /workspace/donknow; fi'
+ # Ship the reviewed installer alongside the package. Existing checkout/auth/data
+ # remain unchanged even when the first attempt cloned an older main.
+ transfer=$(limactl shell "$vm" mktemp -d /tmp/office-install-XXXXXXXX)
+ [[ "$transfer" =~ ^/tmp/office-install-[A-Za-z0-9]+$ ]] || exit 1
+ for name in linux.sh repair-sandbox.py verify-sandbox.mjs; do
+  limactl copy "$package_dir/$name" "$vm:$transfer/$name"
+ done
+ limactl shell "$vm" bash "$transfer/linux.sh"
 else
  case "$action" in
  initialize) limactl shell "$vm" bash -lc 'export PATH="/workspace/ai-office/toolchain/node/bin:$PATH"; cd /workspace/donknow; node scripts/ai-office-local.mjs initialize && node scripts/ai-office-ready.mjs prepare';;
@@ -77,6 +87,6 @@ else
   limactl shell "$vm" python3 "$transfer/repair-auth.py"
   limactl shell "$vm" /workspace/ai-office/bin/doctor.sh;;
  start|review|doctor|handoff|characters) limactl shell "$vm" "/workspace/ai-office/bin/$action.sh";;
- *) echo 'Actions: install start initialize login review doctor handoff characters input' >&2; exit 1;;
+ *) echo 'Actions: install resume start initialize login review doctor handoff characters input' >&2; exit 1;;
  esac
 fi

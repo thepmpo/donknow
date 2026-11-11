@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 Mac 실제 설치는 Ubuntu 준비 후 bwrap 격리 검사 오류로 중단했습니다. [진단 파일·원인 후보·후속 검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 먼저 확인하세요. Mac 설치·로그인 성공으로 해석하지 않습니다.
+2026-11-11 Mac 진단으로 AppArmor 격리 권한 거부를 확인했습니다. 전용 Node 앱별 규칙과 실제 Codex 격리 검사를 포함한 [기존 설치 이어하기·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 준비했습니다. Mac 적용·설치·로그인 성공은 아직 확인 대기입니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
@@ -79,6 +79,13 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — Mac 앱별 격리 허용과 설치 재개
+
+- 사용자 진단으로 Ubuntu AppArmor의 userns/bwrap/net_admin 거부를 확인했다. [설치 재개 파일과 검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 추가했다.
+- 검증한 사무실 전용 Node에만 앱별 namespace 허용을 연결하고 일반 bwrap·전역 보안 설정을 유지한다. 기존/충돌 프로필은 보존하며 실패 시 새로 만든 규칙만 복구한다.
+- 기존 VM에 최신 설치기만 임시 전송한다. checkout·인증·DB를 덮지 않고 첫 사무실 구성 전에 실제 Codex의 읽기 허용·쓰기/네트워크 차단을 임시 데이터로 검사한다. 모델 호출은 없다.
+- 자동 회귀와 실제 Linux Codex 격리 검사를 통과했다. Mac 적용·설치·로그인 성공 및 Render 공개 반영은 사용자 결과 대기다.
 
 #### 2026-11-11 — Mac 설치 bwrap 오류 진단
 
@@ -443,6 +450,10 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — Mac 격리 오류 원인 확인·재개 패키지
+
+사용자 진단에서 AppArmor userns/bwrap/network capability 거부를 확인했다. 전용 Node 앱별 프로필과 실제 Codex 격리 검사를 포함한 [설치 이어하기 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 준비했다. 일반 격리 프로그램/전역 보호를 풀지 않고 기존 VM·checkout·인증·데이터를 보존한다. Linux 실제 sandbox 검사는 통과했으며 Mac 설치 재개 결과는 대기다.
+
 #### 2026-11-11 — Mac 설치 오류 후속
 
 사용자 Mac의 Lima VM 준비 후 bwrap `Failed RTM_NEWADDR` 오류로 설치가 중단됐다. [설정 변경 없는 진단과 다음 담당자 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 기록하고 `7-check-sandbox.command`/소형 진단 ZIP을 준비했다. AppArmor 원인 확정과 실제 Mac 격리·설치·로그인 성공은 사용자 진단 결과 후 확인한다. 안전한 격리 검사를 지우거나 시스템 보안을 끄지 않는다.
@@ -775,6 +786,7 @@ c76ed66 Balance office labels and speech at half the previous text size
 5642eab Add shared office conversation with message types and honest runtime progress
 7d8704c Reuse original office chat globally and fix report decisions stuck preparing
 742cf52 Connect office recipients and team reviews with readable reports
+f9f0b4a Add read-only Mac sandbox diagnostics for Lima install failure
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1597,6 +1609,18 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
+
+#### 2026-11-11 진단 확인 후 설치 재개
+
+사용자 진단에서 Ubuntu24.04, AppArmor 활성화, userns 제한1, 사용자 namespace clone1, 관련 bwrap 프로필 없음, userns/bwrap/net_admin 거부가 함께 확인됐다. [설치 이어하기 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-resume.zip)을 새 폴더에 풀고 **7-resume-install.command 하나**를 실행한다. 기존 `duckduck-office` VM이 없으면 새로 만들지 않고 멈춘다. 설치에 성공하면 원래 폴더의2-start→3-login→9-office-chat 순서로 진행한다.
+
+수정은 [Ubuntu의 앱별 namespace 허용 방식](https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces)에 따라 사무실 전용 `/workspace/ai-office/toolchain/node/bin/node`에만 `duckduck-office-node` 프로필을 연결한다. 일반 bwrap/bash/시스템 Node, 전역 sysctl, 방화벽이나 macOS 보안은 변경하지 않는다. Node는 범용 실행기이므로 같은 사용자 권한으로 이 전용 Node를 호출하는 다른 코드도 해당 namespace 허용을 사용할 수 있다. 이 규칙 자체가 승인된 업무만 식별하는 것은 아니며 업무 승인·파일/네트워크 격리는 별도로 계속 적용한다.
+
+설치기는 SHA 검증한 Node를 먼저 준비하고 그 Node에서 격리 검사를 실행한다. 같은 이름의 다른 프로필·기존 bwrap 프로필은 덮지 않는다. 새 프로필 적용/검사가 실패하면 자신이 추가한 규칙만 복구하며 기존 파일/인증/DB는 그대로 둔다. 공식 Codex를 설치한 다음 실제 CLI sandbox에서 임시 자료의 읽기 허용, 쓰기 차단, 다른 프로젝트/사무실 비밀 접근 차단, 호스트 loopback 네트워크 차단을 확인한다. 이 검사는 로그인·모델 요청·실제 업무 없이 수행한다. 이후 검사에서 실패하면 설치를 중단하며 이미 검증한 앱별 규칙이 남을 수 있다.
+
+최신 설치기는 ZIP 안에 Linux 설치기와 검사기를 함께 넣어 기존 VM으로 전달하므로, 첫 시도에서 받은 오래된 Git checkout을 덮거나 pull하지 않아도 재개한다. AppArmor가 없거나 기존 격리가 작동하는 Linux/WSL에서는 규칙을 추가하지 않는다. 재실행이 기존 편집 소스/서버/다른 정책과 충돌하면 보존 후 중단한다. `7-check-sandbox.command`의 일반 셸 bwrap 차단은 수정 후에도 정상적으로 남을 수 있으며 전용 Node 검사 결과를 별도로 본다.
+
+자동 회귀와 이 작업 환경에서 실제 Codex sandbox 검사를 수행했다. **사용자 Mac에서 프로필 적용·설치 완료·로그인·실모델 응답은 아직 확인 대기**다. GitHub 파일 갱신과 Render 공개 배포는 별개다.
 
 #### 2026-11-11 실제 Mac 설치 중단 — 확인 대기
 

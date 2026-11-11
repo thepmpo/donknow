@@ -1,5 +1,12 @@
 # 변경 기록
 
+## 2026-11-11 — Mac 앱별 격리 허용과 설치 재개
+
+- 사용자 진단으로 Ubuntu AppArmor의 userns/bwrap/net_admin 거부를 확인했다. [설치 재개 파일과 검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 추가했다.
+- 검증한 사무실 전용 Node에만 앱별 namespace 허용을 연결하고 일반 bwrap·전역 보안 설정을 유지한다. 기존/충돌 프로필은 보존하며 실패 시 새로 만든 규칙만 복구한다.
+- 기존 VM에 최신 설치기만 임시 전송한다. checkout·인증·DB를 덮지 않고 첫 사무실 구성 전에 실제 Codex의 읽기 허용·쓰기/네트워크 차단을 임시 데이터로 검사한다. 모델 호출은 없다.
+- 자동 회귀와 실제 Linux Codex 격리 검사를 통과했다. Mac 적용·설치·로그인 성공 및 Render 공개 반영은 사용자 결과 대기다.
+
 ## 2026-11-11 — Mac 설치 bwrap 오류 진단
 
 - 실제 Mac에서 Ubuntu 설치 후 격리 검사 `Failed RTM_NEWADDR`로 중단됨을 확인했다. AppArmor 제한이 유력하며 실제 원인은 사용자 VM 진단 결과를 기다린다.

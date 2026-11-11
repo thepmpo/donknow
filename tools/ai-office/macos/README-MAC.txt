@@ -21,6 +21,9 @@ Windows 업무·문서·로그인은 자동 복사되지 않습니다. 기존 Wi
 
 6-doctor.command: 준비 상태 확인
 7-check-sandbox.command: 설치 중 bwrap 오류가 나면 실행 환경만 진단. 설정·인증 변경 없음.
+7-resume-install.command: 진단한 Ubuntu24.04 격리 오류 수정 후 기존 설치 이어하기.
+  사무실 전용 Node에 앱별 보안 규칙을 추가하고 실제 Codex 격리를 검사합니다.
+  기존 VM이 없으면 새로 만들지 않습니다. 전체 보안 설정과 인증은 유지합니다.
 5-handoff.command: 인수인계 생성 (VM 안 /workspace/ai-office/handoffs)
 8-characters.command: 캐릭터 설정
 

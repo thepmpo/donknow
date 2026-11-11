@@ -22,7 +22,7 @@ class MacDiagnosticTests(unittest.TestCase):
             if str(path) == '/proc/self/attr/current': return 'unconfined\n'
             return '1\n'
         output = io.StringIO()
-        with patch('subprocess.run', run), patch('pathlib.Path.read_text', read), patch('pathlib.Path.exists', return_value=False), contextlib.redirect_stdout(output):
+        with patch('subprocess.run', run), patch('pathlib.Path.read_text', read), patch('pathlib.Path.exists', return_value=False), patch('pathlib.Path.is_file', return_value=False), contextlib.redirect_stdout(output):
             exec(compile(CODE, '<diagnostic>', 'exec'), {})
         rendered = output.getvalue()
         report = json.loads(rendered.split('--- OFFICE SANDBOX CHECK ---\n')[1].split('\n--- END CHECK ---')[0])

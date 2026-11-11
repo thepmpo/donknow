@@ -18,7 +18,7 @@ with zipfile.ZipFile(root.parent/'ai-office-windows.zip','w',zipfile.ZIP_DEFLATE
 `,install],{stdio:'pipe'});
 console.log('Control UI and Windows private-phone package built: '+manifest.packageId);
 const mac=path.join(repo,'tools/ai-office/macos');
-for(const name of ['macos.sh','install-control.py','repair-auth.py','control-payload.zip','update-readability.py','readability.json'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
+for(const name of ['macos.sh','linux.sh','repair-sandbox.py','verify-sandbox.mjs','install-control.py','repair-auth.py','control-payload.zip','update-readability.py','readability.json'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
 fs.writeFileSync(path.join(mac,'control-version.txt'),manifest.packageId+'\n');
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
 root=pathlib.Path(sys.argv[1])
@@ -27,6 +27,9 @@ with zipfile.ZipFile(root.parent/'ai-office-macos.zip','w',zipfile.ZIP_DEFLATED)
   if file.is_file(): z.write(file,'ai-office-macos/'+file.name)
 with zipfile.ZipFile(root.parent/'ai-office-mac-check.zip','w',zipfile.ZIP_DEFLATED) as z:
  z.write(root/'7-check-sandbox.command','ai-office-mac-check/7-check-sandbox.command')
+with zipfile.ZipFile(root.parent/'ai-office-mac-resume.zip','w',zipfile.ZIP_DEFLATED) as z:
+ for name in ['7-resume-install.command','macos.sh','linux.sh','repair-sandbox.py','verify-sandbox.mjs']:
+  z.write(root/name,'ai-office-mac-resume/'+name)
 `,mac],{stdio:'pipe'});
 
 execFileSync('python3',['-c',`import sys,zipfile,pathlib

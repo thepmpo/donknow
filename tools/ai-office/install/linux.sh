@@ -3,14 +3,11 @@ set -euo pipefail
 # Runs inside Windows WSL2 Ubuntu or the dedicated macOS Lima Ubuntu VM.
 if [[ $(uname -s) != Linux || $(id -u) == 0 ]]; then echo 'Run as your normal Ubuntu user, not root.' >&2; exit 1; fi
 repo=/workspace/donknow
+installer_dir=$(cd -- "$(dirname -- "$0")" && pwd)
 if [[ ! -f "$repo/tools/ai-office/runtime-policy.json" ]]; then echo 'Repository missing at /workspace/donknow' >&2; exit 1; fi
 if [[ ! -w /workspace ]]; then echo 'Keep existing permissions; /workspace must be writable by your Ubuntu user.' >&2; exit 1; fi
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl git bubblewrap xz-utils python3 make g++
-# Do not disable AppArmor, firewall or user namespace protections globally.
-if ! bwrap --ro-bind / / --unshare-net /bin/true; then
- echo 'Linux sandbox unavailable. Installation stopped without disabling OS protections. See local-install.md.' >&2; exit 1
-fi
 case $(uname -m) in x86_64) node_arch=x64;; aarch64|arm64) node_arch=arm64;; *) echo 'Unsupported CPU' >&2; exit 1;; esac
 node_version=v24.22.1
 toolchain=/workspace/ai-office/toolchain
@@ -27,6 +24,9 @@ if [[ ! -x "$toolchain/node/bin/node" ]]; then
 fi
 export PATH="$toolchain/node/bin:$PATH"
 [[ $(node -v) == "$node_version" ]] || { echo 'Existing Node version differs; preserved without replacement.' >&2; exit 1; }
+# Ubuntu permits user namespaces per application. Probe through the exact office
+# Node used by start/login/workers, never by granting generic bash/bwrap access.
+python3 "$installer_dir/repair-sandbox.py"
 meta="$repo/tools/ai-office/runtime-policy.json"
 base=$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1])).baseCommit' "$meta")
 expected_tree=$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1])).policyTree' "$meta")
@@ -49,6 +49,8 @@ if [[ "$fresh_runtime" == true ]]; then
  git -C "$runtime" -c user.name='AI Office Local Installer' -c user.email='local-office@localhost' commit -m 'Install verified office policy locally'
 fi
 npm --cache "$toolchain/npm-cache" install --prefix /workspace/ai-office/provider/official-codex --save-exact --ignore-scripts --no-audit --no-fund @openai/codex@0.167.0
+# Real official CLI sandbox, fixture data only; no login, model or office DB.
+node "$installer_dir/verify-sandbox.mjs"
 node "$repo/scripts/ai-office-local.mjs" configure
 # Browser regression and source handoff helpers use the project's locked dependencies.
 (cd "$repo"; npm --cache "$toolchain/npm-cache" ci --ignore-scripts --no-audit --no-fund)
