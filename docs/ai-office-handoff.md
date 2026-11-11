@@ -54,3 +54,5 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 최신 Windows 실행은 **0-open-office.cmd 하나**다.2번→9번 수동 시작 안내는 이전 절차다. 주 서버 자동 시작/재사용, 구버전 gateway만 UID/실행 경로/소켓/pidfd로 검증해 교체하고 최소화한다. 사무실 상단 이름·대사 확대는 초기150%,100~200% 선택·브라우저 저장이며 소스 글꼴 수정과 구분한다. [새 시작·안전 경계·검증](ai-office-control.md).
 
 최신v2 글자 패치: 이름22px·대사24px로 이전v1의2배. 기존 장면 확대율은 유지한다.0번에서 SHA/idle 검사 후 최초 한 번 빌드한다. 원본과dist를 백업하고 실패하면 복구한다. [정확한 기준](ai-office-control.md).
+
+최신 사용자 확정v3: v2 실제 적용 확인 후 이름/대사를 절반으로 요청했다. 최종 이름11px·대사12px와v1 배치를 사용하며 장면 확대 설정은 유지한다. 이전22/24px 요구는 대체됐다. [상세](ai-office-control.md).

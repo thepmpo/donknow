@@ -638,6 +638,10 @@
 - 사용자 요청에 따라 이름11→22px·말풍선12→24px로 변경하고 이름표·말풍선·직원 간격을 조정했다. 장면 확대율을 유지하므로 동일 확대율에서 글자가2배다. 최초 한 번 빌드 후0번 시작 파일에서 자동 적용/검사한다.
 - 초기/v1 소스만 허용하고 사용자 수정·실행 중 업무를 보존한다. 실패 시 실제 입력 소스로 복구한다. TypeScript/Vite와 실제 사무실 화면, Python/PowerShell 검증을 수행했다. [설치·수치·검증 경계](ai-office-control.md).
 
+##### 2026-11-11 — 실화면 크기 합의 반영(v3)
+
+- 사용자가v2가 실제 적용됐음을 확인했고 이름/대사가 너무 크다고 하여 절반인11/12px와 균형 있는v1 배치로 조정했다. 저장된 장면 확대율은 유지한다. 최신0번 시작 파일로 적용하며 데이터·인증은 보존한다. [최신 기준](ai-office-control.md).
+
 
 ### Git 커밋 이력
 
@@ -730,6 +734,7 @@ ba28041 Add private office request UI, report confirmation and phone access setu
 948d9f3 Connect in-office task chat and instruction history; prepare Mac launchers
 444498d Fix blank office scene by allowing Pixi texture workers in native proxy
 8617bc6 Simplify Windows office startup and add persistent scene text zoom
+ac2c5ab Double office name and speech text with safe automatic UI update
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1425,6 +1430,13 @@ state/control-requests/*.json은 private 요청·확인 기록이다. state/cont
 
 긴 진행 업무 제목(16자 한국어+아이콘의3줄 말풍선)과 휴게실 왼쪽 자리도 검수한다. 부서 이름 시작 y=164와 세로 슬롯280px로 위쪽 여백을 확보하고, 휴게실 말풍선 본문/텍스트를 방 경계 안으로 제한한다. 검수용 진행 상태는 브라우저의 모의 GET 응답이며 실제 DB/모델 업무가 아니다.
 
+
+#### 2026-11-11 사용자 실화면 확인 후 절반 조정(v3)
+
+사용자가 v2 적용 후 “이제 제대로 보이는데 너무 크다. 이름과 대화창을 절반 줄여도 될 것 같다”고 확인했다. 최신 확정값은 **이름11px·대사12px**이며 직전v2의22/24px에서 정확히 절반이다. 이름표·말풍선·직원 슬롯/휴게실 높이는 검증된v1 배치로 복원하고 화면 확대150% 기본값과 사용자 저장 비율은 바꾸지 않는다. 위v2의22/24px·확장 간격 설명은 당시 기록이다.
+
+최신 추가 파일의0-open-office.cmd가 기존v2/초기 원본 SHA만 확인해 동일한 백업·idle 검사·실패 시 복구 절차로 적용한다. 이미v1/v3 내용이면 빌드하지 않는다. 사용자가 직접 편집한 소스는 보존하고 중단한다. 사용자 요청/DB/인증/실행 권한에는 변경이 없다. 사용자 PC의v3 적용 확인은 대기다.
+
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
@@ -1461,6 +1473,8 @@ bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열
 ### 原文 / docs/ai-office-usage.md
 
 ### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
+
+**최신 사용자 확인v3:** 이름11px·머리 위 대사12px. 실제 적용된v2가 너무 크다는 피드백으로 절반 조정했으며 아래v2의22/24px는 이전 기록이다. 최신0번으로 적용하고 장면 확대 설정은 그대로 둔다.
 
 최신 글자 크기v2: **이름22px·머리 위 대사24px**, 이전v1의2배다. 최신 추가 ZIP의0-open-office.cmd가 자동 적용하며 최초 한 번 화면 빌드가 필요하다. 아래11/12px와 기존 미리보기는v1 역사 기록이다.
 
@@ -1744,6 +1758,8 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 최신 Windows 실행은 **0-open-office.cmd 하나**다.2번→9번 수동 시작 안내는 이전 절차다. 주 서버 자동 시작/재사용, 구버전 gateway만 UID/실행 경로/소켓/pidfd로 검증해 교체하고 최소화한다. 사무실 상단 이름·대사 확대는 초기150%,100~200% 선택·브라우저 저장이며 소스 글꼴 수정과 구분한다. [새 시작·안전 경계·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 최신v2 글자 패치: 이름22px·대사24px로 이전v1의2배. 기존 장면 확대율은 유지한다.0번에서 SHA/idle 검사 후 최초 한 번 빌드한다. 원본과dist를 백업하고 실패하면 복구한다. [정확한 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
+최신 사용자 확정v3: v2 실제 적용 확인 후 이름/대사를 절반으로 요청했다. 최종 이름11px·대사12px와v1 배치를 사용하며 장면 확대 설정은 유지한다. 이전22/24px 요구는 대체됐다. [상세](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 ### 原文 / docs/ai-office-knowledge.md
 
