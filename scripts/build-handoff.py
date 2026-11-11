@@ -36,6 +36,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+최신v4 사용자 정정: 별도 공용방 대신 캐릭터의 원래 대화하기 UI를 전체 대화에도 재사용합니다. 모드 선택 전송은 안건으로 이어지고 보고서는 에이전트 준비 없이 원문을 표시합니다. 알 수 없는 보고서kind/빈 선택지의 표시 버그를 고쳤으며 실제 사용자2건은 미열람입니다. [v4 사용·구현·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
 2026-11-11 공용방: 전체 직원의 실제 기록·내 요청·보고서를 한곳에서 보고 지시/질문/공지를 선택합니다. 실행 저장 상태와 실행기 연결·경과 시간·최근 활동을 구분합니다. 공지는 저장 후 이후 새 업무에서 참고하며 직원 읽음은 미확인입니다. 실제 실행은 검토 담당자1명이고 다자 자동 협업은 남아 있습니다. [사용·API·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 최신 Windows 사무실 시작: **0-open-office.cmd 하나**로 기존 사무실과 채팅을 자동 시작/재사용하고 서버 창은 최소화합니다. 이름·대사 확대는 초기150%, 상단에서100~200% 조절합니다. [다운로드·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 사용자 PC 적용 성공은 미확인입니다.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update only the five reviewed office UI files; preserve tasks, auth and data."""
+"""Update only the reviewed office UI files; preserve tasks, auth and data."""
 from contextlib import ExitStack
 import datetime
 import fcntl
@@ -13,9 +13,7 @@ import subprocess
 import sys
 import uuid
 
-FILES = {'src/components/office-view/' + name for name in (
-    'model.ts', 'buildScene-departments.ts', 'buildScene-department-agent.ts',
-    'buildScene-break-room.ts', 'useOfficeDeliveryEffects.ts')}
+FILES = {'src/App.tsx', 'src/app/useAppLabels.ts', 'src/components/ChatPanel.tsx', 'src/components/DecisionInboxModal.tsx', 'src/components/chat-panel/ChatComposer.tsx', 'src/components/chat-panel/model.ts', 'src/components/office-view/buildScene-break-room.ts', 'src/components/office-view/buildScene-department-agent.ts', 'src/components/office-view/buildScene-departments.ts', 'src/components/office-view/model.ts', 'src/components/office-view/useOfficeDeliveryEffects.ts'}
 
 
 def digest(data):

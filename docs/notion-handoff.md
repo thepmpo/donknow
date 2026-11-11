@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+최신v4 사용자 정정: 별도 공용방 대신 캐릭터의 원래 대화하기 UI를 전체 대화에도 재사용합니다. 모드 선택 전송은 안건으로 이어지고 보고서는 에이전트 준비 없이 원문을 표시합니다. 알 수 없는 보고서kind/빈 선택지의 표시 버그를 고쳤으며 실제 사용자2건은 미열람입니다. [v4 사용·구현·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
 2026-11-11 공용방: 전체 직원의 실제 기록·내 요청·보고서를 한곳에서 보고 지시/질문/공지를 선택합니다. 실행 저장 상태와 실행기 연결·경과 시간·최근 활동을 구분합니다. 공지는 저장 후 이후 새 업무에서 참고하며 직원 읽음은 미확인입니다. 실제 실행은 검토 담당자1명이고 다자 자동 협업은 남아 있습니다. [사용·API·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 최신 Windows 사무실 시작: **0-open-office.cmd 하나**로 기존 사무실과 채팅을 자동 시작/재사용하고 서버 창은 최소화합니다. 이름·대사 확대는 초기150%, 상단에서100~200% 조절합니다. [다운로드·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 사용자 PC 적용 성공은 미확인입니다.
@@ -650,6 +652,12 @@
 - 공지는 모델 호출 없이 개인 파일에 저장하고 이후 새 요청에 최근 공지를 참고자료로 전달한다. 전체 직원의 읽음·응답을 꾸미지 않는다. 작업의 저장 상태와 실행기 연결 여부·마지막 활동/경과 시간을 구분한다. 전체 AI 협업은 아직 실행하지 않으며 검토 담당자1명 범위를 유지한다.
 - [공용방·상태 기준·보존·검증](ai-office-control.md)에 API/저장/계정 경계와 Windows 실제 적용 미확인을 기록했다. 기존 DB/인증/글자 크기/날씨/브리핑과 복구 bundle은 유지했다.
 
+##### 2026-11-11 — 기존 대화하기 재사용·보고서 준비 중 버그
+
+- 사용자가 별도 공용방이 아니라 원래 캐릭터의 대화하기 화면을 전체로 원한다고 정정했다. native Header/메시지 말풍선/Composer를 재사용하고 전체/개별 대화, 모드 선택 전송→안건, 안건 결과 읽기를 연결했다. 별도 /desk는 기본 진입에서 제외했다.
+- 의사결정의 알 수 없는 보고서 종류+빈 선택지가 준비 중으로 보이는 버그를 수정했다. 원문 카드와 전용 확인 완료로 연결하며 실패 권한을 성공 보고서로 세지 않는다. 사용자 PC의 실제2건은 직접 확인하지 않았다.
+- [최신 화면·수정 근거·소스11개 설치·검증](ai-office-control.md)에 기록했다. 데이터/인증/실행 잠금·확정 글자 크기는 보존했다.
+
 
 ### Git 커밋 이력
 
@@ -744,6 +752,7 @@ ba28041 Add private office request UI, report confirmation and phone access setu
 8617bc6 Simplify Windows office startup and add persistent scene text zoom
 ac2c5ab Double office name and speech text with safe automatic UI update
 c76ed66 Balance office labels and speech at half the previous text size
+5642eab Add shared office conversation with message types and honest runtime progress
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1478,6 +1487,40 @@ state/control-requests/*.json은 private 요청·확인 기록이다. state/cont
 
 공용방 회귀 재실행: `node test/ai-office-room.browser.mjs`(mobile의 기존 playwright-core 의존성과 Chromium 필요, 다른 경로는 CHROMIUM_PATH 지정). Node93개·Python23개·PowerShell 시작 모의 검사·문서 회귀를 통과했다. 글자 패치가 실행 중 업무 때문에 거부된 경우에만 적용을 미루고 공용방/진행 UI는 계속 열도록 보완했다. 다른 소스/빌드 오류는 보존 후 중단한다. 업무를 중단해야만 새 공용방을 볼 수 있는 구조를 피하며 실제 Windows 적용 성공을 추정하지 않는다.
 
+#### 2026-11-11 사용자 정정 — 원래 ‘대화하기’ 채팅을 전체로(v4)
+
+사용자는 별도 /desk 공용방이 아니라 **캐릭터 클릭→대화하기로 열리는 기존 채팅 화면**을 전체 대화에도 재사용하고, 앞에서 지시/공지 등을 고른 메시지가 안건에 연결되는 방식을 원한다고 정정했다. 기존 별도 폼 중심 설명은 의도를 잘못 이해했다. v4는 native ChatPanel의 Header·ChatMessageList·ChatComposer를 그대로 재사용한다. /desk는 호환용으로 남기며 기본 진입은 아니다.
+
+##### 어디서 확인하는가
+
+- 최신0번 시작 파일을 열고 상단 **전체 대화**를 누른다. 원래 사무실의 전사 공지 버튼도 **전체 대화**로 표시된다. 두 버튼 모두 같은 원래 React 채팅을 연다. 별도 채팅 iframe을 띄우지 않는다.
+- 캐릭터의 **대화하기**는 같은 컴포넌트의 직원별 보기다. 그 안에서 전체 대화/해당 직원 대화를 전환한다. 전체는 기존 all 수신 필터로 개인 직원 메시지를 감추지 않고, 소유자가 볼 수 있는 실제 저장 메시지 전체와 확인되는 안건/실행/보고서 기록을 읽는다.
+- 기존 입력창에서 **대화 / 질문 / 업무 지시 / 공지**을 고르고 전송한다. 지시·질문은 안건 등록 후 담당자·범위를 확인해 실행한다. 실행하지 않고 닫으면 등록된 대기 안건으로 남는다. 공지는 확인 후 저장하며 전원 읽음/응답을 추정하지 않는다.
+- 채팅 안 **안건**에서 등록/실행 상태·담당·최근 활동·결과를 연다. 보고서를 읽고 확인 완료를 기록하거나 해당 안건에 추가 요청한다. 별도 화면으로 이동하지 않는다.
+- 직원별 지시·질문은 해당 직원의 Codex 실행 설정과 프로젝트 배정이 있을 때만 그 직원으로 묶는다. 미연결이면 다른 직원이 답한 척 넘기지 않고 연결 미확인을 안내한다. 전체 대화의 기본 담당자는 기존 제품 검토 담당자다. 단일 업무 실행·읽기 전용 범위·프로젝트 권한·변경 감지·CSRF/Origin·실행 확인을 유지한다. 직원 선택이 개발 권한이나 병렬 실행을 허용하지 않는다.
+- 실제 다른 사람의 로그인/대화 연결은 아직 없다. 미래 다중 사용자 메시지의 계정·권한 설계는 별도다. 지금의 전체 대화 표시는 기존 사무실 DB에 실제 저장된 메시지를 보는 것이며 참여자를 만들어 대화하지 않는다.
+
+##### 보고서가 ‘준비 중’으로만 보였던 원인과 수정
+
+이전 게이트웨이는 native가 모르는 office_report_ready 종류와 빈 options를 보냈다. 기존 DecisionInboxModal은 이 조합을 일반 의사결정 선택지가 준비 중인 것으로 표시했다. 또한 에이전트ID 없이 요약 안내문만 전달해 실제 보고서 본문으로 이어지지 않았다. 이는 표시 연결 버그이며, 보고서를 읽으려고 에이전트를 새로 준비하거나 회의를 시작할 이유가 없다.
+
+v4의 `office-report:<taskId>`는 전용 카드로 바로 **원문 전체**를 표시한다. 익숙한 project_review_ready 외형을 사용하되 이ID의 카드는 native 일반 회신/회의 선택지를 거치지 않는다. 서버는 review+비어 있지 않은 결과+product 권한 consumed가 확인되는 항목만 보고서 도착으로 분류한다. 실패/미확인 결과는 안건의 결과 기록으로 읽되 성공 보고서 도착 숫자에 넣지 않는다.
+
+확인 완료 버튼은 현재 tasks 결과가 카드에 표시한 원문과 같은지 다시 검사하고 현재 reportHash로 기존 /control-api/tasks/:id/accept만 호출한다. 서버의 트랜잭션/승인 snapshot/작업 상태·hash 재검사는 유지한다. 새 모델/팀장 회의/개발/병합/외부 발송은 호출하지 않는다. 본문이 바뀌거나 완료 조건이 맞지 않으면 다시 읽도록 안내한다. 사용자가 보고한 실제2건은 사용자 PC DB에 있어 이 환경에서 직접 읽지 않았으며 ‘2건 모두 성공 보고서’라고 단정하지 않는다.
+
+##### 설치·재생성·검증
+
+- 최신 추가 ZIP의0번은 기존 화면을 백업한 후 **검토된 UI 소스11개**를 해시 검사해 빌드한다. 글자11/12px·기존 확대 선택·업무/DB/인증/캐릭터 설정은 유지한다. 작업 중이면 native UI 적용을 보류하며 업무 완료 후0번을 다시 실행한다. 새 native 준비 신호가 없으면 기본 화면은 채팅이 적용된 척하지 않고 적용을 확인하라고 안내한다. 8790 직접 화면은 과거 호환 경로이므로 최신0번의8810을 사용한다.
+- `scripts/build-ai-office-native-chat.py`는 공개 upstream 기준66a24ea7df2435ef897c48c147deb7ec572c01c2의 변경 전 소스와 tools/ai-office/native-chat 템플릿을 사용해 readability.json을 만든다. 그 뒤 `node scripts/build-ai-office-control.mjs`로 Windows·Mac 준비 ZIP을 재생성한다. 임의 사용자 소스가 SHA와 다르면 보존 후 중단한다.
+- 실제 TypeScript/Vite 빌드, native 웹 테스트, Python의 백업/실패 복구/사용자 수정·실행 중 보호, Node의 보고서 본문·agent 연결·실패 권한 제외·명시적 담당자 검사, 원래 native 채팅 컴포넌트를 띄운 브라우저의 안건 등록·실행 확인·모의 보고서2건 원문 표시·확인 시 새 워크플로0건을 검증한다. 모의 보고서 검증은 실제 사용자 보고서/계정 AI 호출 성공으로 보고하지 않는다.
+
+
+v4 입력 의미 보완: **대화**는 state/control-chat에 소유자 메시지만 저장하며 안건/모델을 만들지 않는다. 대화 상대의 읽음·응답은 미확인이다. **질문·업무 지시**는 안건 등록 후 AI 실행을 확인하며, **공지**는 기존 프로젝트 공지 저장이다. Native 입력은 대화/질문/업무 지시/공지 네 가지를 제공하고 보고서는 안건과 의사결정에서 읽는다. 일반 대화 저장은 /control-api/chat-messages의 본인·CSRF/Origin 검증과 idempotent UUID를 사용하며 sender를 서버에서 소유자로 고정한다. 클라이언트가 직원으로 위장해 저장할 수 없다. 대화는 자동으로 모든 AI에 학습시키지 않는다. 검토 실행의 문서/공지/선택한 이전 안건 범위는 유지한다.
+
+회귀 브라우저 실행은 `AI_OFFICE_TEST_URL=http://127.0.0.1:<테스트포트> node test/ai-office-native.browser.mjs`다. 로컬 사무실의 실제 원래 UI를 읽되 변경/모델 실행은 전부 모의 응답으로 가로채고 native POST는 차단한다. 개인 시작 키는 로컬 개인 파일에서만 읽으며 외부 URL을 거부한다. 테스트 보고서2건은 모의 자료이며 사용자 실제 보고서의 검증으로 쓰지 않는다.
+
+같은 native 브라우저 회귀는 AI_OFFICE_TEST_MOBILE=1로390px 모드도 실행한다. 대화 전송 시 안건/모델0건, 지시 확인 전 모델0건, 확인 후 모의 실행1건, 보고서 확인 시 추가실행0건과 raw native POST0건을 검사한다. 실제 TypeScript/Vite 빌드·native 웹76개·Node95개·Python23개 및 PowerShell/문서 회귀를 통과한 파일만 커밋한다.
+
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
@@ -1513,7 +1556,10 @@ bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열
 
 ### 原文 / docs/ai-office-usage.md
 
+<!-- 최신 native 채팅에서는 대화=기록만, 질문/업무지시=안건, 공지=저장. -->
 ### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
+
+**최신v4:** 원래 캐릭터의 대화하기 화면을 전체 대화에도 사용한다. 상단 전체 대화 또는 캐릭터 대화하기→전체/개별 보기에서 입력 종류를 고르고 전송→안건 등록→실행 확인한다. 의사결정의 보고서는 에이전트 준비 없이 원문을 읽는다. 아래 별도 /desk 공용방 안내는 이전 접근이다. [최신 사용·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 **최신 사용 흐름:** 사무실 채팅·내 지시를 열면 전체 직원의 실제 대화 기록과 내 요청·결과를 공용방에서 본다. 입력 방식은 지시/질문/공지다. 지시·질문은 확인 후 검토 담당자가 실행하고 공지는 저장만 한다. 내 지시에서 실행 여부·담당·경과 시간·최근 활동을 본다. [공용방 상세](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
@@ -1805,6 +1851,8 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 최신 사용자 확정v3: v2 실제 적용 확인 후 이름/대사를 절반으로 요청했다. 최종 이름11px·대사12px와v1 배치를 사용하며 장면 확대 설정은 유지한다. 이전22/24px 요구는 대체됐다. [상세](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 최신 공용방: 사용자가 원한 것은 카카오톡 같은 직원 대화·지시 공간이다. 실제 messages와 요청/보고서 기록을 시간순으로 모으고 공지/지시/질문을 선택해 보낸다. 공지는 state/control-notices에 저장하고 다음 요청에만 참고자료로 포함한다. DB 상태와 native agents/active 실행기 연결을 구분하고 오래 새 기록이 없으면 미확인 상태를 알려준다. 실제 실행은 검토 담당자1명이며 전체 직원 자동 협업은 미구현이다. [API·화면·검증·다음 작업](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
+v4 최신 사용자 정정: 별도 /desk 방은 의도가 아니었다. 캐릭터 대화하기의 기존 native 채팅 컴포넌트를 전체 대화에도 사용하고 입력 모드→안건으로 연결했다. office-report:* 의사결정은 일반 회신/에이전트 준비를 거치지 않고 원문과 전용확인으로 표시한다. 기존 알 수 없는kind+options[]의 준비 중 표시가 원인이었다. 실제2건 내용은 사용자 PC에서만 확인 가능하다. UI 소스11개·고정 공개base+템플릿 재생성·보존 규칙은 [v4 문서](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)를 읽는다.
 
 ### 原文 / docs/ai-office-knowledge.md
 

@@ -1,0 +1,17 @@
+item.id.startsWith("office-report:") ? <div key={item.id} data-office-report-card className="rounded-xl border border-slate-600 bg-slate-800 p-4">
+  <h3 className="text-base font-semibold text-white">{item.projectName || item.agentNameKo || item.agentName || "검토 보고서"}</h3>
+  <p className="mb-3 text-xs text-slate-400">저장된 보고서 원문입니다. 읽는 데 에이전트 준비나 새 AI 실행은 필요하지 않습니다.</p>
+  <div className="max-h-96 overflow-y-auto rounded-lg bg-slate-900 p-3"><MessageContent content={item.requestContent}/></div>
+  <p role="status" className="my-2 text-sm text-amber-300">{officeReportNotices[item.id]}</p>
+  <button disabled={officeReportBusy===item.id||!item.taskId} className="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50" onClick={async()=>{
+    if(!item.taskId||!window.confirm("보고서를 읽고 확인 완료로 기록할까요? 새 개발·회의·AI 업무를 시작하지 않습니다."))return;
+    setOfficeReportBusy(item.id);
+    try{
+      const sessionResponse=await fetch('/control-api/session',{credentials:'same-origin',cache:'no-store'});if(!sessionResponse.ok)throw Error();const session=await sessionResponse.json();
+      const taskResponse=await fetch('/control-api/tasks',{credentials:'same-origin',cache:'no-store'});if(!taskResponse.ok)throw Error();const result=await taskResponse.json();const current=result.tasks.find((t:{id:string})=>t.id===item.taskId);
+      if(!current?.reportHash||current.result!==item.requestContent)throw Error();
+      const accepted=await fetch('/control-api/tasks/'+encodeURIComponent(item.taskId)+'/accept',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json','x-control-csrf':session.csrf},body:JSON.stringify({reportHash:current.reportHash,confirmation:true})});if(!accepted.ok)throw Error();
+      setOfficeReportNotices(old=>({...old,[item.id]:'보고서 확인을 기록했습니다.'}));onRefresh();
+    }catch{setOfficeReportNotices(old=>({...old,[item.id]:'보고서가 변경됐거나 완료 조건을 확인하지 못했습니다. 새로고침 후 다시 읽어주세요.'}));}finally{setOfficeReportBusy(null);}
+  }}>보고서 확인 완료</button>
+</div> :
