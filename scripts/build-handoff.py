@@ -36,7 +36,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 휴대폰 연결: [Mac용 10번 파일·쉬운 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 준비했습니다. 기존 사무실을 재사용하고 같은 Tailscale 계정에만 HTTPS로 연결합니다. 설정/호스트 모의15개 통과이며 실제 계정 로그인·HTTPS 동의·외부 폰 접속은 확인 전입니다. 코드 수정·배포 연결은 별도 후속 작업입니다.
+2026-11-11 휴대폰 연결: [Mac용 10번 파일·쉬운 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 준비했습니다. 기존 사무실을 재사용하고 같은 Tailscale 계정에만 HTTPS로 연결합니다. 설정/호스트 모의15개 통과이며 실제 계정 로그인·HTTPS 동의·외부 폰 접속은 확인 전입니다. 코드 수정·배포도 [별도 설치·권한·검증 문서](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)에 따라 연결했습니다. 전용 작업 사본 수정→실제 격리 검사→확인한 GitHub 반영→정확한 커밋의 Render 배포 순서이며, 사용자 Mac 적용·GitHub 로그인·Render 비밀 설정·실제 모델과 배포는 확인 전입니다. 기존 원본/인증/업무는 보존합니다.
 
 2026-11-11 최신 Mac: 설치·화면 열림·로그인 단계 완료는 사용자 보고이며 채팅 설치 로그도 확인했습니다. 이후에는 **0-open-office.command 하나**로 기존 환경과 사무실·문서함·채팅을 시작/재사용하고 브라우저를 엽니다. [시작 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip) · [사용법·현재 상태·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md). 재설치·로그인 초기화·자동 새 업무 실행은 하지 않습니다. 기존 수동 서버 창은 유지하며, 0번이 새로 켠 서버는 실행 창을 닫아도 유지됩니다. 새 시작 파일의 실제 Mac 실행·14명 연결 상태·실모델 응답은 확인 전입니다. 아래 예전 미확인 기록은 당시 상태이며 Ubuntu24.04 CI 다운로드 DNS 실패 이력도 보존합니다.
 

@@ -1,0 +1,112 @@
+name: AI office approved Render deployment
+run-name: AI office release ${{ inputs.request_id }}
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: Exact GitHub main commit approved in the AI office
+        required: true
+        type: string
+      request_id:
+        description: Office approval receipt ID
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: office-render-approved-deployment
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Require the approved main commit
+        env:
+          APPROVED_COMMIT: ${{ inputs.commit_sha }}
+          WORKFLOW_COMMIT: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import os,re
+          approved=os.environ['APPROVED_COMMIT']
+          if not re.fullmatch('[0-9a-f]{40}',approved) or approved!=os.environ['WORKFLOW_COMMIT']:
+              raise SystemExit('The approved commit must be this workflow main revision. Review again; no deployment was requested.')
+          PY
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            mobile/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - run: npm ci --prefix mobile --no-audit --no-fund
+      - run: npm --prefix mobile run typecheck
+      - run: npm --prefix mobile run export:web -- --max-workers 2
+      - run: npm --prefix mobile run test:e2e
+        env:
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE: /usr/bin/google-chrome
+      - run: npm --prefix mobile run test:web-auth
+        env:
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE: /usr/bin/google-chrome
+      - run: npm --prefix mobile run test:motion
+        env:
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE: /usr/bin/google-chrome
+      - run: npm --prefix mobile run export:ios -- --max-workers 2
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # No repository checkout or project commands run in this secret-bearing job.
+    steps:
+      - name: Deploy only the approved commit of the existing free service
+        env:
+          APPROVED_COMMIT: ${{ inputs.commit_sha }}
+          GH_READ_TOKEN: ${{ github.token }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json,os,re,time,urllib.request
+          commit=os.environ['APPROVED_COMMIT']; service='srv-dbgpc0ff3r2c73abc7e0'
+          if not re.fullmatch('[0-9a-f]{40}',commit): raise SystemExit('Invalid approved commit')
+          token=os.environ.get('RENDER_API_KEY','')
+          if not token: raise SystemExit('Add RENDER_API_KEY in repository Actions secrets. Never paste it into chat or source.')
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self,*args,**kwargs): return None
+          opener=urllib.request.build_opener(NoRedirect)
+          def request(url,token,data=None):
+              req=urllib.request.Request(url,data=None if data is None else json.dumps(data).encode(),headers={'Authorization':'Bearer '+token,'Accept':'application/json','Content-Type':'application/json','User-Agent':'duckduck-ai-office'})
+              try:
+                  with opener.open(req,timeout=30) as response:return json.load(response)
+              except Exception:raise SystemExit('Deployment API request did not complete. Inspect the provider; do not automatically retry a POST.')
+          head=request('https://api.github.com/repos/thepmpo/donknow/git/ref/heads/main',os.environ['GH_READ_TOKEN'])
+          if head.get('object',{}).get('sha')!=commit:raise SystemExit('GitHub main changed after approval. No deployment requested.')
+          base='https://api.render.com/v1/services/'+service
+          existing=request(base,token)
+          if existing.get('id')!=service or existing.get('repo','').removesuffix('.git')!='https://github.com/thepmpo/donknow' or existing.get('branch')!='main' or existing.get('serviceDetails',{}).get('plan')!='free':
+              raise SystemExit('Existing Render service does not match the approved repository, branch and free plan. Settings were preserved.')
+          result=request(base+'/deploys',token,{'commitId':commit,'clearCache':'do_not_clear'})
+          deploy_id=result.get('id','')
+          if not re.fullmatch('dep-[a-z0-9]+',deploy_id):raise SystemExit('Deployment response requires inspection; request was not repeated.')
+          print('Render accepted deployment '+deploy_id+' for '+commit+'. Live status is being checked.')
+          for attempt in range(60):
+              current=request(base+'/deploys/'+deploy_id,token)
+              actual=current.get('commit',{}).get('id')
+              if actual and actual!=commit:raise SystemExit('Deployment commit differs from the approved commit; inspect Render.')
+              status=current.get('status')
+              if status=='live' and actual==commit:
+                  with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as summary:
+                      summary.write('Render confirmed **Live** for `'+commit+'`.\n\nhttps://duckduck-test.onrender.com\n')
+                  print('Render confirmed Live for the approved commit.');break
+              if status in ['build_failed','update_failed','pre_deploy_failed','canceled','deactivated']:
+                  raise SystemExit('Render deployment ended with status '+status)
+              time.sleep(10)
+          else:raise SystemExit('Deployment was requested; Live was not confirmed within this check. Inspect Render before retrying.')
+          PY

@@ -49,6 +49,32 @@ YAML
  limactl shell "$vm" bash "$transfer/linux.sh"
 else
  case "$action" in
+ development)
+  bash "$0" open
+  transfer=$(limactl shell "$vm" mktemp -d /tmp/office-development-XXXXXXXX)
+  [[ "$transfer" =~ ^/tmp/office-development-[A-Za-z0-9]+$ ]] || exit 1
+  for name in enable-development.py update-development.py development-runtime.json restart-main.py restart-control.py start-services.py update-readability.py readability.json install-control.py control-payload.zip prepare-validation.mjs; do
+   limactl copy "$package_dir/$name" "$vm:$transfer/$name"
+  done
+  echo '코드 수정과 검증 기능을 연결합니다. 업무가 실행 중이면 변경하지 않고 기다립니다.'
+  limactl shell "$vm" python3 "$transfer/enable-development.py"
+  echo '자동 검사 도구를 준비합니다. 첫 다운로드가 끝날 때까지 기다려주세요.'
+  if ! limactl shell "$vm" /workspace/ai-office/toolchain/node/bin/node "$transfer/prepare-validation.mjs"; then
+   echo '코드 수정 연결은 적용됐지만 검사 도구 준비가 중단됐습니다. 13-prepare-tests.command로 이어서 준비해주세요.' >&2; exit 1
+  fi
+  bash "$0" open;;
+ github)
+  bash "$0" open
+  transfer=$(limactl shell "$vm" mktemp -d /tmp/office-github-XXXXXXXX)
+  [[ "$transfer" =~ ^/tmp/office-github-[A-Za-z0-9]+$ ]] || exit 1
+  limactl copy "$package_dir/connect-github.sh" "$vm:$transfer/connect-github.sh"
+  limactl shell "$vm" bash "$transfer/connect-github.sh";;
+ validation)
+  bash "$0" open
+  transfer=$(limactl shell "$vm" mktemp -d /tmp/office-validation-XXXXXXXX)
+  [[ "$transfer" =~ ^/tmp/office-validation-[A-Za-z0-9]+$ ]] || exit 1
+  limactl copy "$package_dir/prepare-validation.mjs" "$vm:$transfer/prepare-validation.mjs"
+  limactl shell "$vm" /workspace/ai-office/toolchain/node/bin/node "$transfer/prepare-validation.mjs";;
  open)
   if ! limactl list --format '{{.Name}}' | grep -Fx "$vm" >/dev/null; then
    echo '설치된 사무실을 찾지 못했습니다. 기존 환경을 지우거나 새로 만들지 않았습니다.' >&2; exit 1
@@ -127,6 +153,6 @@ else
   limactl shell "$vm" python3 "$transfer/repair-auth.py"
   limactl shell "$vm" /workspace/ai-office/bin/doctor.sh;;
  start|review|doctor|handoff|characters) limactl shell "$vm" "/workspace/ai-office/bin/$action.sh";;
- *) echo 'Actions: open install resume start initialize login review doctor handoff characters input' >&2; exit 1;;
+ *) echo 'Actions: open development github validation install resume start initialize login review doctor handoff characters input' >&2; exit 1;;
  esac
 fi

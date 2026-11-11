@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-11 · 한국 시간 · 기능 코드 1c75e51 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-12 · 한국 시간 · 기능 코드 1c75e51 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 휴대폰 연결: [Mac용 10번 파일·쉬운 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 준비했습니다. 기존 사무실을 재사용하고 같은 Tailscale 계정에만 HTTPS로 연결합니다. 설정/호스트 모의15개 통과이며 실제 계정 로그인·HTTPS 동의·외부 폰 접속은 확인 전입니다. 코드 수정·배포 연결은 별도 후속 작업입니다.
+2026-11-11 휴대폰 연결: [Mac용 10번 파일·쉬운 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 준비했습니다. 기존 사무실을 재사용하고 같은 Tailscale 계정에만 HTTPS로 연결합니다. 설정/호스트 모의15개 통과이며 실제 계정 로그인·HTTPS 동의·외부 폰 접속은 확인 전입니다. 코드 수정·배포도 [별도 설치·권한·검증 문서](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)에 따라 연결했습니다. 전용 작업 사본 수정→실제 격리 검사→확인한 GitHub 반영→정확한 커밋의 Render 배포 순서이며, 사용자 Mac 적용·GitHub 로그인·Render 비밀 설정·실제 모델과 배포는 확인 전입니다. 기존 원본/인증/업무는 보존합니다.
 
 2026-11-11 최신 Mac: 설치·화면 열림·로그인 단계 완료는 사용자 보고이며 채팅 설치 로그도 확인했습니다. 이후에는 **0-open-office.command 하나**로 기존 환경과 사무실·문서함·채팅을 시작/재사용하고 브라우저를 엽니다. [시작 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip) · [사용법·현재 상태·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md). 재설치·로그인 초기화·자동 새 업무 실행은 하지 않습니다. 기존 수동 서버 창은 유지하며, 0번이 새로 켠 서버는 실행 창을 닫아도 유지됩니다. 새 시작 파일의 실제 Mac 실행·14명 연결 상태·실모델 응답은 확인 전입니다. 아래 예전 미확인 기록은 당시 상태이며 Ubuntu24.04 CI 다운로드 DNS 실패 이력도 보존합니다.
 
@@ -81,6 +81,14 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — 승인한 코드 수정·검사·GitHub 반영·Render 배포 연결
+
+[개발 연결 파일·사용법·계정 단계·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 전역 잠금은 유지하고 승인한 작업만 전용 사본에서 수정한다. 최신 코드/문서 기준을 확인해 fast-forward로 맞추고, 변경 후 별도 격리 검사와 정확한 변경 확인을 거쳐 일반 push한다. 로컬 소스와 작업 사본을 보존하고 게시된 과거 사본도 영수증과 정확히 일치할 때만 다음 동기화에 허용한다. Render는 별도 승인한 정확한 main SHA와 기존 무료 서비스만 대상으로 하며 비밀이 있는 job에서 프로젝트 코드를 실행하지 않는다. 모바일 main 반영에 따른 기존 TestFlight 자동화 가능성을 확인창에 알린다.
+
+Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 서버 재시작·실패 복구를 제공하고 검사 도구를 이어서 준비한다. GitHub 공식 로그인12번, 검사 도구 재개13번을 제공한다. GitHub/Render 계정 연결·실제 모델 수정·사용자 기기/배포는 미확인이다. 이번 작업 자체로 Render/TestFlight를 배포하지 않았다. 공개 `/project` 읽기는 환경 프록시의 `Tunnel connection failed: 403 Forbidden`으로 확인하지 못했다. 생성 소스·공개 HTML 파일은 저장했으며 실제 공개 반영과 구분한다.
+
+검증: runtime API262개·웹76개, Python99개 중98개 통과(선택적 기존 bwrap1개 미실행), 개발 제어25개·업데이트11개·검사 준비8개, 실제 릴리스 격리 별도 통과. 타입/빌드·HTTP/CSRF·데스크톱/390px 모바일·기존 대화/회의·문법 검사 통과. 최종 Node 전체160개 중159개 통과·실제 격리 선택 검사1개는 별도 실행해 통과했다. 배포 ZIP9개의 CRC·내용·Mac 실행 권한과 제어 모듈 해시를 확인했다. 복구 bundle의 SHA-256은 그대로다.
 
 #### 2026-11-11 — Mac 사무실 휴대폰 비공개 연결
 
@@ -475,6 +483,14 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — 승인한 코드 수정·검사·GitHub 반영·Render 배포 연결
+
+[개발 연결 파일·사용법·계정 단계·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 전역 잠금은 유지하고 승인한 작업만 전용 사본에서 수정한다. 최신 코드/문서 기준을 확인해 fast-forward로 맞추고, 변경 후 별도 격리 검사와 정확한 변경 확인을 거쳐 일반 push한다. 로컬 소스와 작업 사본을 보존하고 게시된 과거 사본도 영수증과 정확히 일치할 때만 다음 동기화에 허용한다. Render는 별도 승인한 정확한 main SHA와 기존 무료 서비스만 대상으로 하며 비밀이 있는 job에서 프로젝트 코드를 실행하지 않는다. 모바일 main 반영에 따른 기존 TestFlight 자동화 가능성을 확인창에 알린다.
+
+Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 서버 재시작·실패 복구를 제공하고 검사 도구를 이어서 준비한다. GitHub 공식 로그인12번, 검사 도구 재개13번을 제공한다. GitHub/Render 계정 연결·실제 모델 수정·사용자 기기/배포는 미확인이다. 이번 작업 자체로 Render/TestFlight를 배포하지 않았다. 공개 `/project` 읽기는 환경 프록시의 `Tunnel connection failed: 403 Forbidden`으로 확인하지 못했다. 생성 소스·공개 HTML 파일은 저장했으며 실제 공개 반영과 구분한다.
+
+검증: runtime API262개·웹76개, Python99개 중98개 통과(선택적 기존 bwrap1개 미실행), 개발 제어25개·업데이트11개·검사 준비8개, 실제 릴리스 격리 별도 통과. 타입/빌드·HTTP/CSRF·데스크톱/390px 모바일·기존 대화/회의·문법 검사 통과. 최종 Node 전체160개 중159개 통과·실제 격리 선택 검사1개는 별도 실행해 통과했다. 배포 ZIP9개의 CRC·내용·Mac 실행 권한과 제어 모듈 해시를 확인했다. 복구 bundle의 SHA-256은 그대로다.
+
 #### 2026-11-11 — Mac 사무실 휴대폰 비공개 연결
 
 [휴대폰 연결 파일·사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 추가했다. 기존 Mac 사무실을 재사용하고 동일 Tailscale 계정으로 HTTPS 접속한다. 개인 소유자 설정과 기존 공유 경로를 검증하며 다른 경로·Funnel·계정 충돌은 덮지 않는다. 설정/호스트 모의15개와 ZIP 검증 통과. 실제 계정 로그인·HTTPS 동의·외부 휴대폰 접속은 사용자 확인 대기다. 코드 수정·배포 연결은 후속 작업이며 이번 휴대폰 파일이 해당 권한을 켜지 않는다. Render 배포는 하지 않았다.
@@ -836,6 +852,7 @@ a678c55 Resume Mac installation with scoped office AppArmor support
 9742e71 Fix Mac nested sandbox verification with a dedicated proc mount
 7944058 Record user-confirmed Mac office installation completion
 18f59e7 Add one-click Mac office launcher preserving existing services
+1582eb8 Add private phone access setup for the existing Mac office
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1415,6 +1432,8 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### AI 사무실 업무 입력·보고서 확인·휴대폰 비공개 접속
 
+**2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
+
 Mac에서 이미 설치·채팅 연결을 마쳤다면 [0번 파일 하나로 여는 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 사용합니다. 기존 서버·업무·로그인은 유지합니다.
 
 2026-11-11 사용자 요청: 외부 휴대폰 연결을 설정하고, 매번 명령창을 쓰지 않는 업무 입력창을 연결한다. 기존 첫 검토가 ‘미결 의사결정’으로 표시되는 이유와 결과 확인 방법도 제공한다.
@@ -1663,6 +1682,8 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 휴대폰에서 같은 사무실을 열려면 [맥 휴대폰 연결 안내와 10번 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 사용한다. 사용자 보고상 0번 시작은 정상 진행됐으며, 실제 외부 폰 접속은 별도 확인한다.
 
+[코드 수정·검증·배포 연결 11번 추가 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)도 준비했다. 최초 한 번 기능을 연결한 뒤 평소 시작은 계속 0번이다.
+
 #### 2026-11-11 최신 — 파일 하나로 매일 열기
 
 이미 설치와 채팅 연결을 마쳤다면 **0-open-office.command 하나**를 더블클릭한다. 꺼진 기존 Lima VM, 사무실·문서함·채팅 서버를 켜고 같은 Mac의 브라우저에서 사무실을 연다. 켜져 있는 서버와 진행 중인 업무는 그대로 사용한다.
@@ -1750,6 +1771,8 @@ bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열
 ### 原文 / docs/ai-office-usage.md
 
 <!-- 최신 native 채팅에서는 대화=기록만, 질문/업무지시=안건, 공지=저장. -->
+
+**2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
 
 Mac에서 이미 설치·채팅 연결을 마쳤다면 [0번 파일 하나로 여는 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 사용합니다. 기존 서버·업무·로그인은 유지합니다.
 
@@ -1990,6 +2013,8 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 
 ### “인수인계서 만들어줘”의 공식 처리 기준
 
+**2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
+
 2026-11-11 최신: [Mac 휴대폰 비공개 연결](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)의 파일·정확한 검증·미확인 계정 단계를 함께 인계한다. 사용자 Mac 0번 정상 진행 보고와 실제 외부 접속/모델 응답은 구분한다.
 
 2026-11-11 사용자 요청: 앞으로 “인수인계서”, “인수인계서 뭐 해야 해”라고 하면 방법 설명이나 빈 양식으로 끝내지 않고 **인수인계서 + 실제 작업물 + 검증 결과 + 남은 일**을 묶어 제공한다. PC에서 먼저 일하고 이후 클라우드 작업자가 이어가는 상황을 지원한다.
@@ -2189,6 +2214,8 @@ node scripts/ai-office-ready.mjs stop
 ### 原文 / docs/ai-office-approval-gate.md
 
 ### AI 사무실 — 읽기 전용 제품 검토·승인 후 개발 게이트
+
+**2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
 
 2026-11-10 · 구현/격리 테스트 완료 · **실제 모델 실행은 잠금 유지**.
 

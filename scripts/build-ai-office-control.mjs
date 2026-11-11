@@ -1,8 +1,9 @@
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
 const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),base=path.join(repo,'tools/ai-office/control'),install=path.join(repo,'tools/ai-office/install');
 const macOnly=process.argv.includes('--mac-only');
-if(!macOnly)fs.copyFileSync(path.join(repo,'scripts/lib/ai-office-client.mjs'),path.join(base,'lib/ai-office-client.mjs'));
-const files={};for(const name of ['lib/access.mjs','lib/ai-office-client.mjs','lib/controller.mjs','lib/team.mjs','server.mjs','ui.html'])files[name]=createHash('sha256').update(fs.readFileSync(path.join(base,name))).digest('hex');
+fs.writeFileSync(path.join(install,'README-DEVELOPMENT.txt'),fs.readFileSync(path.join(repo,'tools/ai-office/macos/README-DEVELOPMENT.txt'),'utf8').replaceAll('.command','.cmd'));
+if(!macOnly){fs.copyFileSync(path.join(repo,'scripts/lib/ai-office-client.mjs'),path.join(base,'lib/ai-office-client.mjs'));fs.copyFileSync(path.join(repo,'scripts/lib/ai-office-knowledge.mjs'),path.join(base,'lib/knowledge.mjs'));}
+const files={};for(const name of ['lib/access.mjs','lib/ai-office-client.mjs','lib/controller.mjs','lib/team.mjs','lib/development.mjs','lib/knowledge.mjs','lib/releases.mjs','lib/release-validation.mjs','server.mjs','ui.html'].sort())files[name]=createHash('sha256').update(fs.readFileSync(path.join(base,name))).digest('hex');
 const manifest={version:1,packageId:createHash('sha256').update(JSON.stringify(files)).digest('hex'),files};
 if(!macOnly){
 fs.writeFileSync(path.join(base,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
@@ -12,17 +13,17 @@ with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
  for name in [*manifest['files'],'manifest.json']: z.write(base/name,name)
 `,base,path.join(install,'control-payload.zip')],{stdio:'pipe'});
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
-root=pathlib.Path(sys.argv[1]); names=['update-readability.py','readability.json','0-open-office.cmd','restart-control.py','9-open-office.cmd','10-phone-connect.cmd','open-control.ps1','connect-phone.ps1','install-control.py','control-payload.zip','CONTROL-README.txt']
+root=pathlib.Path(sys.argv[1]); names=['README-DEVELOPMENT.txt','11-enable-development.cmd','12-connect-github.cmd','13-prepare-tests.cmd','development-tools.ps1','enable-development.py','update-development.py','development-runtime.json','restart-main.py','start-services.py','connect-github.sh','prepare-validation.mjs','update-readability.py','readability.json','0-open-office.cmd','restart-control.py','9-open-office.cmd','10-phone-connect.cmd','open-control.ps1','connect-phone.ps1','install-control.py','control-payload.zip','CONTROL-README.txt']
 with zipfile.ZipFile(root.parent/'ai-office-control.zip','w',zipfile.ZIP_DEFLATED) as z:
  for name in names: z.write(root/name,'ai-office-control/'+name)
 with zipfile.ZipFile(root.parent/'ai-office-windows.zip','w',zipfile.ZIP_DEFLATED) as z:
  for file in sorted(root.iterdir()):
-  if file.is_file() and file.suffix in ['.cmd','.ps1','.py','.json','.txt','.zip']: z.write(file,'ai-office-windows/'+file.name)
+  if file.is_file() and (file.suffix in ['.cmd','.ps1','.py','.json','.txt','.zip'] or file.name in ['connect-github.sh','prepare-validation.mjs']): z.write(file,'ai-office-windows/'+file.name)
 `,install],{stdio:'pipe'});
 console.log('Control UI and Windows private-phone package built: '+manifest.packageId);
 }else if(JSON.parse(fs.readFileSync(path.join(base,'manifest.json'),'utf8')).packageId!==manifest.packageId){throw Error('Control sources changed; run the full package build first.');}
 const mac=path.join(repo,'tools/ai-office/macos');
-for(const name of ['macos.sh','start-services.py','linux.sh','repair-sandbox.py','verify-sandbox.mjs','install-control.py','repair-auth.py','control-payload.zip','update-readability.py','readability.json'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
+for(const name of ['macos.sh','start-services.py','phone-config.py','connect-phone-mac.sh','enable-development.py','update-development.py','development-runtime.json','restart-main.py','restart-control.py','connect-github.sh','prepare-validation.mjs','linux.sh','repair-sandbox.py','verify-sandbox.mjs','install-control.py','repair-auth.py','control-payload.zip','update-readability.py','readability.json'])fs.copyFileSync(path.join(install,name),path.join(mac,name));
 fs.writeFileSync(path.join(mac,'control-version.txt'),manifest.packageId+'\n');
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
 root=pathlib.Path(sys.argv[1])
@@ -32,6 +33,12 @@ with zipfile.ZipFile(root.parent/'ai-office-macos.zip','w',zipfile.ZIP_DEFLATED)
 with zipfile.ZipFile(root.parent/'ai-office-mac-open.zip','w',zipfile.ZIP_DEFLATED) as z:
  for name in ['0-open-office.command','macos.sh','start-services.py','README-MAC.txt']:
   z.write(root/name,'ai-office-mac-open/'+name)
+with zipfile.ZipFile(root.parent/'ai-office-mac-phone.zip','w',zipfile.ZIP_DEFLATED) as z:
+ for name in ['0-open-office.command','10-phone-connect.command','macos.sh','start-services.py','connect-phone-mac.sh','phone-config.py','README-PHONE-MAC.txt']:
+  z.write(root/name,'ai-office-mac-phone/'+name)
+with zipfile.ZipFile(root.parent/'ai-office-mac-development.zip','w',zipfile.ZIP_DEFLATED) as z:
+ for name in ['0-open-office.command','11-enable-development.command','12-connect-github.command','13-prepare-tests.command','macos.sh','start-services.py','enable-development.py','update-development.py','development-runtime.json','restart-main.py','restart-control.py','connect-github.sh','prepare-validation.mjs','update-readability.py','readability.json','install-control.py','control-payload.zip','control-version.txt','README-DEVELOPMENT.txt']:
+  z.write(root/name,'ai-office-mac-development/'+name)
 with zipfile.ZipFile(root.parent/'ai-office-mac-check.zip','w',zipfile.ZIP_DEFLATED) as z:
  z.write(root/'7-check-sandbox.command','ai-office-mac-check/7-check-sandbox.command')
 with zipfile.ZipFile(root.parent/'ai-office-mac-resume.zip','w',zipfile.ZIP_DEFLATED) as z:

@@ -17,7 +17,7 @@ if(command==='status'){
  if(probe.status!==0){const clone=spawnSync('git',['clone','--no-hardlinks','--',original,copy],{stdio:'ignore'});if(clone.status!==0)throw Error('Isolated repository clone failed');}
  const disabled=spawnSync('git',['-C',copy,'remote','set-url','--push','origin','DISABLED_PENDING_APPROVAL']);if(disabled.status!==0)throw Error('Could not disable push');
  const baseline=spawnSync('git',['-C',copy,'rev-parse','HEAD'],{encoding:'utf8'}).stdout.trim();
- const policy={name,slug,source:original,isolatedSource:copy,baseline,stage:'product-review',developmentApproval:null,automaticExecution:false,automaticMerge:false,automaticPublish:false};
+ const policy={name,slug,source:copy,originalSource:original,isolatedSource:copy,baseline,stage:'product-review',developmentApproval:null,automaticExecution:false,automaticMerge:false,automaticPublish:false};
  await writeFile(join(destination,'project.json'),JSON.stringify(policy,null,2)+'\n');
  await writeFile(join(destination,'HANDOFF.md'),'# '+name+' — 제품 검토 및 개발 인계\n\n현재 단계: 제품 검토 준비. 승인된 인계서 없음.\n\n## 문제/목표\n아직 사용자가 작업을 지정하지 않았습니다.\n\n## 기존 기준\nsource/의 정책·문서를 먼저 읽습니다. source는 격리된 사본입니다.\n\n## 제품팀 결과\n근거, UX/UI 후보, 마케팅 메시지, 유지 조건, 예외, 완료 조건을 작성합니다.\n\n## 사용자 승인\n문서 버전·승인 범위·사용자 승인 원문·날짜를 기록합니다. 승인 전 개발 실행 금지.\n\n## 개발팀\n승인된 범위만 별도 브랜치에서 구현하고 QA 결과를 보고합니다. 병합·배포는 별도 확인합니다.\n');
  const result=await api('/api/projects','POST',{name,project_path:destination,core_goal:'제품팀의 UX·디자인·마케팅·정책 검토 → 사용자 승인 → 승인된 인계서만 개발팀 실행. 코드·정책·승인·기록은 이 프로젝트 안에서 분리. 자동 실행/병합/배포 금지.',assignment_mode:'manual',agent_ids:[],create_path_if_missing:false});

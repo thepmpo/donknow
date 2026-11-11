@@ -955,10 +955,10 @@ index 0000000..b4493e3
 +});
 diff --git a/server/office-policy.test.ts b/server/office-policy.test.ts
 new file mode 100644
-index 0000000..8aa9a3c
+index 0000000..ce40fa9
 --- /dev/null
 +++ b/server/office-policy.test.ts
-@@ -0,0 +1,564 @@
+@@ -0,0 +1,769 @@
 +import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 +import fs from "node:fs";
 +import os from "node:os";
@@ -984,6 +984,7 @@ index 0000000..8aa9a3c
 +  blockOfficeUnscopedExecution,
 +  diagnoseOfficeProvider,
 +  unlockOfficeProductWorkers,
++  unlockOfficeDevelopmentTask,
 +  lockOfficeWorkers,
 +} from "./office-policy.ts";
 +
@@ -1260,6 +1261,78 @@ index 0000000..8aa9a3c
 +    execFileSync("git", ["commit", "--allow-empty", "-m", "worker moved"], { cwd: working, stdio: "pipe" });
 +    code(() => officeSandboxCommand(taskId, "codex", working), "office_worktree_head_mismatch");
 +  });
++  it("mounts only the exact server Node bundle readonly for development, never adjacent office state", () => {
++    const toolchain = "/workspace/ai-office/toolchain/node",
++      binary = toolchain + "/bin/node";
++    const descriptor = Object.getOwnPropertyDescriptor(process, "execPath")!;
++    const originalRealpath = fs.realpathSync.bind(fs),
++      originalStat = fs.statSync.bind(fs);
++    const realpath = vi
++      .spyOn(fs, "realpathSync")
++      .mockImplementation(((file: any, options: any) =>
++        [toolchain, binary].includes(String(file)) ? String(file) : originalRealpath(file, options)) as any);
++    const stats = vi
++      .spyOn(fs, "statSync")
++      .mockImplementation(((file: any, options: any) =>
++        String(file) === binary ? { isFile: () => true } : originalStat(file, options)) as any);
++    Object.defineProperty(process, "execPath", { ...descriptor, value: binary });
++    try {
++      approve("development");
++      vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++      const working = path.join(source, ".climpire-worktrees", taskId.slice(0, 8));
++      fs.mkdirSync(path.dirname(working));
++      git("worktree", "add", "-b", "fixture-node", working);
++      vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++      const args = officeSandboxCommand(taskId, "codex", working).args;
++      expect(args.slice(args.indexOf(toolchain) - 1, args.indexOf(toolchain) + 2)).toEqual([
++        "--ro-bind",
++        toolchain,
++        toolchain,
++      ]);
++      expect(args.indexOf(toolchain)).toBeLessThan(args.indexOf("--bind"));
++      expect(args).not.toContain("/workspace/ai-office");
++      expect(args).not.toContain("/workspace/ai-office/toolchain");
++      expect(args).not.toContain("/workspace/ai-office/state");
++      approve("product");
++      expect(officeSandboxCommand(taskId, "codex", source).args).not.toContain(toolchain);
++    } finally {
++      Object.defineProperty(process, "execPath", descriptor);
++      stats.mockRestore();
++      realpath.mockRestore();
++    }
++  });
++  it("rejects a dedicated Node bundle or binary symlink escape", () => {
++    const toolchain = "/workspace/ai-office/toolchain/node",
++      binary = toolchain + "/bin/node";
++    const descriptor = Object.getOwnPropertyDescriptor(process, "execPath")!;
++    const originalRealpath = fs.realpathSync.bind(fs);
++    Object.defineProperty(process, "execPath", { ...descriptor, value: binary });
++    approve("development");
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    const working = path.join(source, ".climpire-worktrees", taskId.slice(0, 8));
++    fs.mkdirSync(path.dirname(working));
++    git("worktree", "add", "-b", "fixture-node-escape", working);
++    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++    try {
++      for (const escaped of [toolchain, binary]) {
++        const realpath = vi
++          .spyOn(fs, "realpathSync")
++          .mockImplementation(((file: any, options: any) =>
++            String(file) === escaped
++              ? tmp
++              : [toolchain, binary].includes(String(file))
++                ? String(file)
++                : originalRealpath(file, options)) as any);
++        try {
++          code(() => officeSandboxCommand(taskId, "codex", working), "office_node_toolchain_path_requires_review");
++        } finally {
++          realpath.mockRestore();
++        }
++      }
++    } finally {
++      Object.defineProperty(process, "execPath", descriptor);
++    }
++  });
 +  it("rejects provider homes with inherited configuration or another project path", () => {
 +    approve();
 +    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
@@ -1374,6 +1447,7 @@ index 0000000..8aa9a3c
 +      enabled: true,
 +      workersEnabled: false,
 +      developmentEnabled: true,
++      developmentTaskUnlockAvailable: true,
 +      runnerConfigured: true,
 +      authReady: true,
 +      reasonCodes: [],
@@ -1383,6 +1457,136 @@ index 0000000..8aa9a3c
 +      unscopedExecution: false,
 +      provider: "codex",
 +    });
++  });
++});
++
++describe("one-task development admission without global unlock", () => {
++  beforeEach(() => {
++    vi.stubEnv("AI_OFFICE_DEVELOPMENT_ENABLED", "false");
++    database.exec("ALTER TABLE tasks ADD COLUMN status TEXT DEFAULT 'inbox'");
++    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++  });
++
++  function otherTask(phase: "product" | "development") {
++    const other = "87654321-other-task";
++    database
++      .prepare(
++        "INSERT INTO tasks SELECT ?,title,description,task_type,assigned_agent_id,project_id,project_path,department_id,workflow_pack_key,base_branch,status FROM tasks WHERE id=?",
++      )
++      .run(other, taskId);
++    const policy = prepareOfficeTask(other, phase);
++    approveOfficeTask(other, policy.digest, true);
++    return other;
++  }
++
++  it("requires owner authentication, exact approved development scope and explicit confirmation", async () => {
++    const a = app(),
++      url = `/api/office-policy/tasks/${taskId}/development-unlock`;
++    let policy = approve();
++    await request(a)
++      .post(url)
++      .set("x-standard-auth", "fixture")
++      .send({ expectedDigest: policy.digest, confirmation: true })
++      .expect(403);
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_development_approval_required");
++    policy = approve("development");
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, false), "office_confirmation_required");
++    code(() => unlockOfficeDevelopmentTask(taskId, "0".repeat(64), true), "office_digest_mismatch");
++    const result = await request(a)
++      .post(url)
++      .set("x-standard-auth", "fixture")
++      .set("x-office-owner-key", "fixture-owner-key")
++      .send({ expectedDigest: policy.digest, confirmation: true })
++      .expect(200);
++    expect(result.body).toEqual({
++      taskId,
++      phase: "development",
++      scoped: true,
++      workersEnabled: false,
++      developmentEnabled: false,
++      expiresAt: policy.expiresAt,
++    });
++    expect(process.env.AI_OFFICE_WORKERS_ENABLED).toBe("false");
++    expect(process.env.AI_OFFICE_DEVELOPMENT_ENABLED).toBe("false");
++    expect(requireOfficeWorker(taskId)?.phase).toBe("development");
++  });
++
++  it.each(["product", "development"] as const)(
++    "blocks another already approved %s task while the scoped grant is armed",
++    (phase) => {
++      const other = otherTask(phase),
++        policy = approve("development");
++      unlockOfficeDevelopmentTask(taskId, policy.digest, true);
++      code(() => requireOfficeWorker(other), "office_scoped_development_task_mismatch");
++      code(() => unlockOfficeProductWorkers(true), "office_scoped_development_pending");
++      code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_scoped_development_pending");
++      expect(requireOfficeWorker(taskId)?.taskId).toBe(taskId);
++    },
++  );
++
++  it("consumes admission exactly once and leaves global switches locked", () => {
++    const policy = approve("development");
++    unlockOfficeDevelopmentTask(taskId, policy.digest, true);
++    expect(claimOfficeTask(taskId, policy.digest).state).toBe("running");
++    code(() => claimOfficeTask(taskId, policy.digest), "office_approval_required");
++    finishOfficeTask(taskId, false);
++    const fresh = approve("development");
++    code(() => requireOfficeWorker(taskId), "office_workers_disabled");
++    expect(fresh.digest).toBe(policy.digest);
++    expect(process.env.AI_OFFICE_WORKERS_ENABLED).toBe("false");
++  });
++
++  it("clears admission on explicit lock, reprepare, revoke and policy reinitialization", () => {
++    for (const [clear, reason] of [
++      [() => lockOfficeWorkers(), "office_workers_disabled"],
++      [() => prepare("development"), "office_approval_required"],
++      [() => revokeOfficeTask(taskId), "office_approval_required"],
++      [() => configureOfficePolicy(database), "office_workers_disabled"],
++    ] as const) {
++      const policy = approve("development");
++      unlockOfficeDevelopmentTask(taskId, policy.digest, true);
++      clear();
++      code(() => requireOfficeWorker(taskId), reason);
++    }
++  });
++
++  it("rejects stale scope and expired permission before admission", () => {
++    let policy = approve("development");
++    database.exec("UPDATE tasks SET description='changed'");
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_approval_stale");
++    policy = approve("development");
++    database.exec("UPDATE office_task_permissions SET expires_at=0");
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_approval_expired");
++    expect(process.env.AI_OFFICE_WORKERS_ENABLED).toBe("false");
++  });
++
++  it("requires idle runtime and successful sandbox before admission", () => {
++    const policy = approve("development");
++    database.exec("UPDATE tasks SET status='in_progress'");
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_wait_for_running_task");
++    database.exec("UPDATE tasks SET status='inbox'");
++    database.exec("UPDATE office_task_permissions SET state='running'");
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_wait_for_running_task");
++    database.exec("UPDATE office_task_permissions SET state='approved'");
++    vi.mocked(spawnSync).mockReturnValue({ status: 1 } as any);
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_os_sandbox_unavailable");
++    code(() => requireOfficeWorker(taskId), "office_workers_disabled");
++    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
++    code(() => unlockOfficeDevelopmentTask(taskId, policy.digest, true), "office_global_workers_must_remain_locked");
++  });
++
++  it("expires its in-memory capability without opening global workers", () => {
++    const policy = approve("development");
++    unlockOfficeDevelopmentTask(taskId, policy.digest, true);
++    const clock = vi.spyOn(Date, "now").mockReturnValue(policy.expiresAt + 1);
++    try {
++      code(() => requireOfficeWorker(taskId), "office_approval_expired");
++      // A product unlock can no longer see an active scoped grant after expiry.
++      expect(unlockOfficeProductWorkers(true).workersEnabled).toBe(true);
++      lockOfficeWorkers();
++    } finally {
++      clock.mockRestore();
++    }
 +  });
 +});
 +
@@ -1497,38 +1701,39 @@ index 0000000..8aa9a3c
 +  expect(process.env.AI_OFFICE_WORKERS_ENABLED).toBe("false");
 +});
 +
-+
 +describe("live knowledge approval binding", () => {
 +  it("new documents invalidate an old approval for every role", () => {
 +    vi.stubEnv("AI_OFFICE_KNOWLEDGE_ENABLED", "true");
 +    const publish = (text: string) => {
 +      const sha = (value: string) => createHash("sha256").update(value).digest("hex");
-+      const documents = [{path:"product/docs/product.md",sha256:sha(text),bytes:Buffer.byteLength(text)}];
-+      const revision=sha(JSON.stringify(documents)),directory=path.join(wrapper,"knowledge","versions",revision);
-+      fs.mkdirSync(path.join(directory,"product","docs"),{recursive:true});
-+      fs.writeFileSync(path.join(directory,"product/docs/product.md"),text);
-+      fs.writeFileSync(path.join(directory,"INDEX.md"),"catalog");
-+      fs.writeFileSync(path.join(directory,"manifest.json"),JSON.stringify({revision,documents}));
-+      fs.writeFileSync(path.join(wrapper,"knowledge/CURRENT.json"),JSON.stringify({revision}));
-+      fs.writeFileSync(path.join(wrapper,"knowledge/HEARTBEAT"),String(Date.now()));
++      const documents = [{ path: "product/docs/product.md", sha256: sha(text), bytes: Buffer.byteLength(text) }];
++      const revision = sha(JSON.stringify(documents)),
++        directory = path.join(wrapper, "knowledge", "versions", revision);
++      fs.mkdirSync(path.join(directory, "product", "docs"), { recursive: true });
++      fs.writeFileSync(path.join(directory, "product/docs/product.md"), text);
++      fs.writeFileSync(path.join(directory, "INDEX.md"), "catalog");
++      fs.writeFileSync(path.join(directory, "manifest.json"), JSON.stringify({ revision, documents }));
++      fs.writeFileSync(path.join(wrapper, "knowledge/CURRENT.json"), JSON.stringify({ revision }));
++      fs.writeFileSync(path.join(wrapper, "knowledge/HEARTBEAT"), String(Date.now()));
 +    };
-+    publish("original product");approve();
++    publish("original product");
++    approve();
 +    vi.stubEnv("AI_OFFICE_WORKERS_ENABLED", "true");
-+    vi.mocked(spawnSync).mockReturnValue({status:0} as any);
-+    const command=officeSandboxCommand(taskId,"codex",source);
-+    const mountIndex=command.args.indexOf("/run/office-knowledge");
++    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
++    const command = officeSandboxCommand(taskId, "codex", source);
++    const mountIndex = command.args.indexOf("/run/office-knowledge");
 +    expect(mountIndex).toBeGreaterThan(1);
-+    expect(command.args[mountIndex-2]).toBe("--ro-bind");
++    expect(command.args[mountIndex - 2]).toBe("--ro-bind");
 +    publish("newly added product decision");
-+    expect(()=>inspectOfficeTask(taskId)).toThrow("office_approval_stale");
++    expect(() => inspectOfficeTask(taskId)).toThrow("office_approval_stale");
 +  });
 +});
 diff --git a/server/office-policy.ts b/server/office-policy.ts
 new file mode 100644
-index 0000000..f80dd70
+index 0000000..48ffa06
 --- /dev/null
 +++ b/server/office-policy.ts
-@@ -0,0 +1,566 @@
+@@ -0,0 +1,644 @@
 +import { officeKnowledge } from "./office-knowledge.ts";
 +import fs from "node:fs";
 +import os from "node:os";
@@ -1549,6 +1754,9 @@ index 0000000..f80dd70
 +  expiresAt: number;
 +};
 +let database: any;
++// This short-lived capability exists only in the current server process. It
++// admits one exact approved task without opening either global execution flag.
++let developmentTaskGrant: { taskId: string; digest: string; expiresAt: number } | null = null;
 +const TTL = 10 * 60_000;
 +export const officePolicyEnabled = () => process.env.AI_OFFICE_POLICY_ENABLED === "true";
 +function fail(code: string, status = 403): never {
@@ -1615,6 +1823,7 @@ index 0000000..f80dd70
 +}
 +export function configureOfficePolicy(input: any): void {
 +  database = input;
++  developmentTaskGrant = null;
 +  input.exec(`CREATE TABLE IF NOT EXISTS office_task_permissions (
 +    task_id TEXT PRIMARY KEY, phase TEXT NOT NULL, digest TEXT NOT NULL, payload TEXT NOT NULL,
 +    state TEXT NOT NULL, expires_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)`);
@@ -1696,6 +1905,7 @@ index 0000000..f80dd70
 +  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
 +  if (confirmation !== true) fail("office_confirmation_required", 400);
 +  if (process.env.AI_OFFICE_DEVELOPMENT_ENABLED === "true") fail("office_development_must_remain_locked");
++  if (currentDevelopmentGrant()) fail("office_scoped_development_pending", 409);
 +  officeRunner();
 +  validateChatGptAuth();
 +  probeOfficeSandbox();
@@ -1705,7 +1915,42 @@ index 0000000..f80dd70
 +export function lockOfficeWorkers(): { workersEnabled: false; developmentEnabled: boolean } {
 +  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
 +  process.env.AI_OFFICE_WORKERS_ENABLED = "false";
++  developmentTaskGrant = null;
 +  return { workersEnabled: false, developmentEnabled: process.env.AI_OFFICE_DEVELOPMENT_ENABLED === "true" };
++}
++function currentDevelopmentGrant(): typeof developmentTaskGrant {
++  if (developmentTaskGrant && developmentTaskGrant.expiresAt <= Date.now()) developmentTaskGrant = null;
++  return developmentTaskGrant;
++}
++export function unlockOfficeDevelopmentTask(taskId: string, expectedDigest: string, confirmation: unknown) {
++  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
++  if (confirmation !== true) fail("office_confirmation_required", 400);
++  if (process.env.AI_OFFICE_WORKERS_ENABLED === "true" || process.env.AI_OFFICE_DEVELOPMENT_ENABLED === "true")
++    fail("office_global_workers_must_remain_locked", 409);
++  if (currentDevelopmentGrant()) fail("office_scoped_development_pending", 409);
++  if (
++    db().prepare("SELECT 1 FROM office_task_permissions WHERE state='running' LIMIT 1").get() ||
++    db().prepare("SELECT 1 FROM tasks WHERE status='in_progress' LIMIT 1").get()
++  )
++    fail("office_wait_for_running_task", 409);
++  const policy = inspect(taskId, ["approved"]);
++  if (policy.phase !== "development") fail("office_development_approval_required", 409);
++  if (!same(expectedDigest, policy.digest)) fail("office_digest_mismatch", 409);
++  officeRunner();
++  validateChatGptAuth();
++  probeOfficeSandbox();
++  // Validation above may take time: admission never extends the approval TTL.
++  const finalPolicy = inspect(taskId, ["approved"]);
++  if (!same(finalPolicy.digest, expectedDigest)) fail("office_digest_mismatch", 409);
++  developmentTaskGrant = { taskId, digest: finalPolicy.digest, expiresAt: finalPolicy.expiresAt };
++  return {
++    taskId,
++    phase: "development" as const,
++    scoped: true,
++    workersEnabled: false,
++    developmentEnabled: false,
++    expiresAt: finalPolicy.expiresAt,
++  };
 +}
 +function current(taskId: string, phase: Phase): Omit<OfficePolicy, "state" | "expiresAt"> & { payload: string } {
 +  id(taskId);
@@ -1781,7 +2026,7 @@ index 0000000..f80dd70
 +}
 +export function prepareOfficeTask(taskId: string, phase: Phase): OfficePolicy {
 +  if (!officePolicyEnabled()) fail("office_policy_disabled", 503);
-+  return transaction(() => {
++  const result = transaction(() => {
 +    if (
 +      db().prepare("SELECT state FROM office_task_permissions WHERE task_id = ?").get(id(taskId))?.state === "running"
 +    )
@@ -1797,6 +2042,8 @@ index 0000000..f80dd70
 +    const { payload: _, ...result } = p;
 +    return { ...result, state: "pending", expiresAt };
 +  });
++  if (developmentTaskGrant?.taskId === taskId) developmentTaskGrant = null;
++  return result;
 +}
 +function inspect(taskId: string, states: string[]): OfficePolicy {
 +  const row = db().prepare("SELECT * FROM office_task_permissions WHERE task_id = ?").get(id(taskId));
@@ -1812,6 +2059,17 @@ index 0000000..f80dd70
 +}
 +export function requireOfficeWorker(taskId: string): OfficePolicy | null {
 +  const p = inspectOfficeTask(taskId);
++  const grant = currentDevelopmentGrant();
++  if (grant) {
++    if (
++      p?.phase !== "development" ||
++      grant.taskId !== taskId ||
++      !same(grant.digest, p.digest) ||
++      grant.expiresAt !== p.expiresAt
++    )
++      fail("office_scoped_development_task_mismatch", 409);
++    return p;
++  }
 +  if (p && process.env.AI_OFFICE_WORKERS_ENABLED !== "true") fail("office_workers_disabled", 503);
 +  if (p?.phase === "development" && process.env.AI_OFFICE_DEVELOPMENT_ENABLED !== "true")
 +    fail("office_development_disabled", 503);
@@ -1838,9 +2096,10 @@ index 0000000..f80dd70
 +      .prepare("UPDATE office_task_permissions SET state='revoked',updated_at=? WHERE task_id=?")
 +      .run(Date.now(), taskId);
 +  });
++  if (developmentTaskGrant?.taskId === taskId) developmentTaskGrant = null;
 +}
 +export function claimOfficeTask(taskId: string, expectedDigest: string): OfficePolicy {
-+  return transaction(() => {
++  const result = transaction(() => {
 +    const p = requireOfficeWorker(taskId);
 +    if (!p) fail("office_policy_disabled", 503);
 +    if (!same(expectedDigest, p.digest)) fail("office_digest_mismatch", 409);
@@ -1852,6 +2111,8 @@ index 0000000..f80dd70
 +    if (result.changes !== 1) fail("office_approval_already_claimed", 409);
 +    return { ...p, state: "running" };
 +  });
++  if (developmentTaskGrant?.taskId === taskId) developmentTaskGrant = null;
++  return result;
 +}
 +export function finishOfficeTask(taskId: string, success: boolean): void {
 +  if (!officePolicyEnabled()) return;
@@ -1928,6 +2189,16 @@ index 0000000..f80dd70
 +    fail("office_invalid_provider_auth");
 +  return home;
 +}
++function developmentNodeToolchain(): string | null {
++  // Local installers run the server with this verified, dedicated Node. The
++  // bundle contains node/npm libraries, not the adjacent private office state.
++  const root = "/workspace/ai-office/toolchain/node";
++  const binary = path.join(root, "bin", "node");
++  if (process.execPath !== binary) return null;
++  if (real(root) !== root || real(binary) !== binary || !fs.statSync(binary).isFile())
++    fail("office_node_toolchain_path_requires_review");
++  return root;
++}
 +export function officeSandboxCommand(
 +  taskId: string,
 +  provider: string,
@@ -1982,7 +2253,11 @@ index 0000000..f80dd70
 +    policy.source,
 +    policy.source,
 +  );
-+  if (policy.phase === "development") args.push("--bind", working, working);
++  if (policy.phase === "development") {
++    const nodeToolchain = developmentNodeToolchain();
++    if (nodeToolchain) args.push("--ro-bind", nodeToolchain, nodeToolchain);
++    args.push("--bind", working, working);
++  }
 +  const knowledge = officeKnowledge(policy.projectPath);
 +  if (knowledge) args.push("--ro-bind", knowledge.directory, "/run/office-knowledge");
 +  args.push("--ro-bind", runner.bundle, "/run/office-provider");
@@ -2042,6 +2317,7 @@ index 0000000..f80dd70
 +        workersEnabled: process.env.AI_OFFICE_WORKERS_ENABLED === "true",
 +        knowledgeEnabled: process.env.AI_OFFICE_KNOWLEDGE_ENABLED === "true",
 +        developmentEnabled: process.env.AI_OFFICE_DEVELOPMENT_ENABLED === "true",
++        developmentTaskUnlockAvailable: true,
 +        ...diagnoseOfficeProvider(),
 +        ownerConfigured: !!process.env.AI_OFFICE_OWNER_KEY,
 +        permissionTtlMs: TTL,
@@ -2070,6 +2346,13 @@ index 0000000..f80dd70
 +    wrap((req, res) => {
 +      owner(req);
 +      res.json(lockOfficeWorkers());
++    }),
++  );
++  app.post(
++    "/api/office-policy/tasks/:id/development-unlock",
++    wrap((req, res) => {
++      owner(req);
++      res.json(unlockOfficeDevelopmentTask(req.params.id, req.body?.expectedDigest, req.body?.confirmation));
 +    }),
 +  );
 +  app.post(

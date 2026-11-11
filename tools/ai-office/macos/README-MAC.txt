@@ -25,7 +25,9 @@ Mac을 종료하거나 잠자기로 두면 AI 업무가 계속 실행된다고 �
 6. 9-office-chat.command를 열어 채팅 연결을 마칩니다. 이 서버 창도 켜두세요.
 7. 다음부터는 0-open-office.command 하나만 사용합니다.
 전체 대화에서 요청 → 내용 확인 → 실행 순서입니다.
-현재는 읽기 전용 검토·조사·제안이 가능하고 개발·배포는 잠겨 있습니다.
+기본 질문은 검토·조사·제안입니다. 11번으로 개발 연결을 적용하면 코드 수정 모드를 사용합니다.
+11번은 검사 도구도 함께 준비합니다. 실제 GitHub 연결은 12번 공식 로그인으로 진행합니다.
+수정 내용·검사 결과를 확인한 뒤 GitHub 반영과 운영 사이트 배포를 각각 선택합니다.
 
 한 번에 열기 ZIP에는 0번과 시작에 필요한 파일만 들어 있습니다.
 처음 설치할 때는 전체 Mac ZIP을 사용하세요.
@@ -43,13 +45,17 @@ Mac을 종료하거나 잠자기로 두면 AI 업무가 계속 실행된다고 �
 5-handoff.command: 인수인계 생성 (VM 안 /workspace/ai-office/handoffs)
 8-characters.command: 캐릭터 설정
 9-office-chat.command: 채팅 최초 설정 및 명시적 업데이트
+10-phone-connect.command: 본인 Tailscale 계정으로 휴대폰 연결
+11-enable-development.command: 승인한 코드 수정·검사·반영 기능 연결
+12-connect-github.command: GitHub 공식 로그인
+13-prepare-tests.command: 검사 도구 준비가 중단된 경우 재개
 
 기존 VM·데이터·로그인은 초기화하지 않습니다. 0번은 VM이 없으면 새로 만들지 않습니다.
 Windows 업무·문서·로그인은 Mac에 자동 복사되지 않습니다. 이전이 필요하면 인수인계를 요청하세요.
 Lima VM의 8790,8791,8810은 같은 Mac에서만 여는 주소입니다.
-외부·휴대폰 연결은 이 패키지에 포함하지 않습니다.
+휴대폰 연결은 10번 안내와 같은 Tailscale 계정이 필요합니다.
 비밀번호·토큰·로그인 코드는 채팅에 보내지 마세요.
 
 설치·화면·로그인 단계 완료는 사용자 보고가 있습니다.
-이번 0번의 실제 Mac 실행과 실모델 답변은 아직 확인 전입니다.
+0번 정상 진행은 사용자 보고가 있습니다. 새 개발 연결·외부 폰·실모델 답변은 별도 확인해야 합니다.
 사용법·검증·최신 상태: https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md

@@ -2,6 +2,8 @@
 
 휴대폰에서 같은 사무실을 열려면 [맥 휴대폰 연결 안내와 10번 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 사용한다. 사용자 보고상 0번 시작은 정상 진행됐으며, 실제 외부 폰 접속은 별도 확인한다.
 
+[코드 수정·검증·배포 연결 11번 추가 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)도 준비했다. 최초 한 번 기능을 연결한 뒤 평소 시작은 계속 0번이다.
+
 ## 2026-11-11 최신 — 파일 하나로 매일 열기
 
 이미 설치와 채팅 연결을 마쳤다면 **0-open-office.command 하나**를 더블클릭한다. 꺼진 기존 Lima VM, 사무실·문서함·채팅 서버를 켜고 같은 Mac의 브라우저에서 사무실을 연다. 켜져 있는 서버와 진행 중인 업무는 그대로 사용한다.

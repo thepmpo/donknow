@@ -1,5 +1,7 @@
 # AI 사무실 — 읽기 전용 제품 검토·승인 후 개발 게이트
 
+**2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
+
 2026-11-10 · 구현/격리 테스트 완료 · **실제 모델 실행은 잠금 유지**.
 
 [초기 사무실](ai-office-setup.md) · [공식 제품 원칙](reusable-product-design-principles.md) · [재현 패치](../tools/ai-office/README.md) · [운영자 승인 도구](../scripts/ai-office-approval.mjs).
