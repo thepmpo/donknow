@@ -88,6 +88,16 @@
 
 ### 변경 기록
 
+#### 2026-11-12 — 사무실 요청 시작 실패 이유와 회의 후 추가 요청 안내
+
+사용자는 새 요청을 실행할 때 팀장회의가 아직 진행 중이었다고 확인했다. 진행 중 업무가 있으면 새 검토를 막는 기존 동작과, 여러 시작 실패를 같은 문구로 보여주던 UI 문제를 코드로 확인했다. 사용자 Mac의 실제 오류 코드는 받지 않았으므로 해당 실패 원인을 확정하지 않는다. 화면은 진행 중 업무, 로그인·실행 준비, 실행 설정, 바뀐 요청·이전 보고서, 실행 결과 확인 필요를 구분해 다음 행동을 안내한다.
+
+기존 서버의 단일 업무·명시적 실행 확인·읽기 전용 검토·권한 검증은 유지한다. 진행 중 업무로 막힌 초안은 보존하며, 회의가 끝나도 자동 대기열이나 자동 재실행은 없다. 회의 수정안을 받아보려면 **종합 보고서 보기 → 이 안건에 추가 요청**으로 실제 보고서를 연결한 뒤 질문한다. 이때 읽기 전용 검토가 적절하며, 문장에 회의를 언급하는 것만으로 보고서가 첨부되지는 않는다.
+
+적용은 회의와 실행 중 업무가 끝난 뒤 [최신 Mac 업데이트 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip)의 **11-enable-development.command**를 실행한다. Windows는 [제어 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 같은 번호 `.cmd`를 사용한다. 프로젝트의 **최신 코드 받기**만으로 설치된 사무실 프로그램은 갱신되지 않는다. [요청·보고서 사용 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
+검증: 루트 자동 테스트161개 중160개 통과·실제 release 격리 선택 검사1개 건너뜀(이번 실행기 변경 없음), 문법37개 통과. 포함된 제어 회귀12개 통과. 회의 업무로 차단될 때 실행 권한을 준비하지 않고 같은 초안을 유지하며, 회의 종료 후 명시적으로 다시 실행해야 한 번만 시작함을 검증했다. 데스크톱·390px 모바일 브라우저에서 원인별 안내, 초안·입력 보존, 자동 재실행 없음, 같은 요청의 명시적 재시도를 통과했다. TypeScript·Vite 빌드, UI/설치·업데이트 Python 회귀26개, 갱신 ZIP5개의 CRC·UI 소스 해시 검사도 통과했다. 검증 환경에서 최초 전용 updater 명령은 고정 pnpm 경로 부재로 중단됐고 원본을 보존했다. 동일 업데이트 함수에 환경의 pnpm 빌더를 연결해 타입·빌드·백업·교체를 검증했다. 최초 브라우저 대상8810은 이전 입력 화면이어서 iframe 검사가 실패했으며, 네이티브 UI가 제공되는18821에서 PC·모바일 검사를 완료했다. 사용자 Mac 데이터·인증 조회와 실제 모델 실행은 하지 않았다. Render 자동 배포는 꺼져 있으며 이번 수정의 공개 배포·실기기 적용은 별도 확인이다.
+
 #### 2026-11-12 — 이 채팅과 AI 사무실의 양방향 이어받기 확정
 
 사용자는 여기서 수정한 뒤 사무실 갱신이 필요하다는 안내를 매번 요구했고, 사무실의 수정도 이 채팅 작업자가 알고 이어가야 한다고 확인했다. [공통 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)과 AGENTS 지침을 추가했다. 작업 전 GitHub 최신 main·실제 diff·변경/검증 기록을 먼저 확인하고, 작업 후 프로젝트 최신 코드 받기와 사무실 프로그램 업데이트를 구분해 안내한다. 현재 자동 감시/실시간 대화 공유를 새로 구현한 것은 아니다.
@@ -499,6 +509,14 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 ### 매일 개발 정리
 
+#### 2026-11-12 — 사무실 요청 시작 실패 이유 구분
+
+팀장회의 중 새 요청을 실행하지 못한 상황을 사용자가 확인했다. 실제 Mac 오류 코드는 미확인이다. 코드에서 확인한 문제는 진행 중 업무·로그인/실행 준비·실행 설정·바뀐 요청/보고서·실행 결과 확인 필요를 모두 같은 오류로 보여주던 UI였다. 각 사유에 맞는 다음 행동을 표시하도록 고쳤으며 기존 서버 검증과 읽기 전용 범위는 유지한다.
+
+진행 중 업무로 막힌 초안은 그대로 두고 종료 후 사용자가 다시 실행한다. 자동 대기열·재실행은 없다. 회의 수정안을 질문하려면 **종합 보고서 보기 → 이 안건에 추가 요청**으로 실제 보고서를 연결한다. 회의를 문장으로 언급하는 것만으로는 보고서가 첨부되지 않는다. [자세한 사용 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
+회의 종료 후 [최신 Mac 업데이트 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip)의 **11-enable-development.command**로 사무실 프로그램을 갱신해야 한다. 프로젝트 **최신 코드 받기**만으로는 적용되지 않는다. 제어 회귀12개 통과; 데스크톱·390px 모바일 브라우저, TypeScript·Vite 빌드, UI/설치·업데이트 Python 회귀26개, 갱신 ZIP5개 검사를 통과했다. 사용자 Mac 데이터·인증 조회나 실제 모델 실행은 하지 않았으며 Render 자동 배포는 꺼져 있다. 실제 Mac 적용·공개 배포는 별도 확인이다.
+
 #### 2026-11-12 — 이 채팅과 AI 사무실의 양방향 이어받기 확정
 
 사용자는 여기서 수정한 뒤 사무실 갱신이 필요하다는 안내를 매번 요구했고, 사무실의 수정도 이 채팅 작업자가 알고 이어가야 한다고 확인했다. [공통 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)과 AGENTS 지침을 추가했다. 작업 전 GitHub 최신 main·실제 diff·변경/검증 기록을 먼저 확인하고, 작업 후 프로젝트 최신 코드 받기와 사무실 프로그램 업데이트를 구분해 안내한다. 현재 자동 감시/실시간 대화 공유를 새로 구현한 것은 아니다.
@@ -880,6 +898,8 @@ a678c55 Resume Mac installation with scoped office AppArmor support
 18f59e7 Add one-click Mac office launcher preserving existing services
 1582eb8 Add private phone access setup for the existing Mac office
 9210493 Connect approved office development, validation, publication and deployment
+f2e34a8 Document bidirectional AI office handoff and required sync reminders
+143d2ef Explain blocked AI office requests without retrying active work
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1613,6 +1633,18 @@ Windows는 [최신 제어 패키지](https://github.com/thepmpo/donknow/raw/refs
 ### 原文 / docs/ai-office-control.md
 
 ### AI 사무실 업무 입력·보고서 확인·휴대폰 비공개 접속
+
+#### 2026-11-12 — 회의 중 새 요청이 시작되지 않을 때
+
+사용자는 요청 실행 실패 당시 팀장회의가 아직 진행 중이었다고 확인했다. 사무실은 다른 업무가 실행 중이면 새 검토를 시작하지 않는다. 실제 Mac 오류 응답은 확인하지 못했으므로 그 실패의 정확한 코드는 미확인이다. 기존 화면이 진행 중 업무·로그인·권한 등을 한 문구로 표시하던 문제를 고쳐, 진행 중 업무, 로그인·실행 준비, 실행 설정, 바뀐 요청·이전 보고서, 실행 결과 확인 필요를 구분해 안내한다.
+
+1. 진행 중 업무로 막혔다면 **안건**에서 현재 업무와 회의를 확인하고 끝날 때까지 기다린다. 등록한 요청이 자동으로 실행되지는 않으며, 같은 확인창에서 사용자가 다시 실행해야 한다.
+2. 회의 내용을 바탕으로 수정안을 받아보려면 회의가 끝난 뒤 **종합 보고서 보기 → 이 안건에 추가 요청**을 누르고 원하는 질문을 적는다. 이 버튼이 실제 보고서를 새 요청에 연결한다. 문장에 “팀장회의에서 나온 내용”이라고 쓰는 것만으로 회의 보고서 전체가 첨부되지는 않는다.
+3. 수정안을 읽고 결정하려는 요청은 **질문·읽기 전용 검토**가 적절하다. 실제 코드 변경은 별도의 코드 수정 흐름이다. 다른 실패 사유가 표시되면 해당 안내에 따라 상태를 확인하며, 결과가 미확인인 요청을 반복 실행하지 않는다.
+
+새 안내를 적용하려면 회의와 실행 중 업무가 끝난 뒤 [최신 Mac 업데이트 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip)을 새 폴더에 풀고 **11-enable-development.command**를 실행한다. Windows는 [최신 제어 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 **11-enable-development.cmd**를 사용한다. 프로젝트의 **최신 코드 받기**만으로 설치된 사무실 프로그램은 바뀌지 않는다.
+
+기존 서버의 실행·권한·변경 감지 검증은 그대로이며 자동 대기열·자동 재실행은 추가하지 않았다. 제어 회귀12개에서 차단 전 권한 준비 없음, 초안 보존, 회의 종료만으로 실행하지 않음, 같은 초안의 명시적 재시도1회 실행을 검증했다. 데스크톱·390px 모바일 브라우저, TypeScript·Vite 빌드, UI/설치·업데이트 Python 회귀26개, 갱신 ZIP5개 검사를 통과했다. 사용자 Mac 데이터·인증 조회나 실제 모델 실행은 하지 않았다. Render 자동 배포는 꺼져 있으며 실기기 적용·공개 배포는 별도 확인한다.
 
 **2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
 
