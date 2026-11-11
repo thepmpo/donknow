@@ -49,6 +49,46 @@ YAML
  limactl shell "$vm" bash "$transfer/linux.sh"
 else
  case "$action" in
+ open)
+  if ! limactl list --format '{{.Name}}' | grep -Fx "$vm" >/dev/null; then
+   echo '설치된 사무실을 찾지 못했습니다. 기존 환경을 지우거나 새로 만들지 않았습니다.' >&2; exit 1
+  fi
+  status=$(limactl list "$vm" --format '{{.Status}}')
+  case "$status" in
+   Running) ;;
+   Stopped) echo '사무실을 켜고 있어요. 잠시 기다려주세요.'; limactl start "$vm";;
+   *) echo '사무실 환경 상태를 확인하지 못했습니다. 기존 환경은 유지합니다.' >&2; exit 1;;
+  esac
+  transfer=$(limactl shell "$vm" mktemp -d /tmp/office-open-XXXXXXXX)
+  [[ "$transfer" =~ ^/tmp/office-open-[A-Za-z0-9]+$ ]] || exit 1
+  limactl copy "$package_dir/start-services.py" "$vm:$transfer/start-services.py"
+  echo '사무실과 채팅을 여는 중입니다. 이미 켜져 있으면 그대로 사용합니다.'
+  limactl shell "$vm" python3 "$transfer/start-services.py"
+  # Guest readiness does not guarantee Mac port forwarding is ready yet.
+  forwarded=false
+  for attempt in {1..30}; do
+   if main_health=$(curl --fail --silent --max-time 2 http://127.0.0.1:8790/health) &&
+      chat_health=$(curl --fail --silent --max-time 2 http://127.0.0.1:8810/health); then
+    if ! printf '%s' "$main_health" | grep -Eq '"app"[[:space:]]*:[[:space:]]*"Claw-Empire"' ||
+       ! printf '%s' "$chat_health" | grep -Eq '"app"[[:space:]]*:[[:space:]]*"AI-Office-Control"'; then
+     echo '같은 주소에서 다른 프로그램이 확인되어 보존 후 중단했습니다.' >&2; exit 1
+    fi
+    forwarded=true; break
+   fi
+   sleep 1
+  done
+  if [[ "$forwarded" != true ]]; then
+   echo '사무실은 실행했지만 Mac 화면 연결을 확인하지 못했습니다. 환경을 지우지 말고 이 메시지를 알려주세요.' >&2; exit 1
+  fi
+  access=$(limactl shell "$vm" cat /workspace/ai-office/state/control-access.key)
+  [[ "$access" =~ ^[a-f0-9]{64}$ ]] || { echo '사무실 연결 키를 확인하지 못했습니다.' >&2; exit 1; }
+  if ! open "http://127.0.0.1:8810/#access=$access" >/dev/null 2>&1; then
+   unset access
+   echo '사무실은 켜졌지만 브라우저를 열지 못했습니다. 기본 브라우저를 확인한 뒤 0번을 다시 열어주세요.' >&2; exit 1
+  fi
+  unset access
+  echo '사무실을 열었어요. 다음에도 0-open-office.command 하나만 여세요.'
+  echo '이번에 새로 켠 서버는 이 창을 닫아도 유지됩니다. 기존 서버 창은 실행 중인 업무가 끝날 때까지 그대로 두세요.';;
  initialize) limactl shell "$vm" bash -lc 'export PATH="/workspace/ai-office/toolchain/node/bin:$PATH"; cd /workspace/donknow; node scripts/ai-office-local.mjs initialize && node scripts/ai-office-ready.mjs prepare';;
  input)
   curl --fail --silent --max-time 3 http://127.0.0.1:8790/health | grep -q 'Claw-Empire' || { echo '먼저 2-start.command로 사무실을 켜주세요.' >&2; exit 1; }
@@ -87,6 +127,6 @@ else
   limactl shell "$vm" python3 "$transfer/repair-auth.py"
   limactl shell "$vm" /workspace/ai-office/bin/doctor.sh;;
  start|review|doctor|handoff|characters) limactl shell "$vm" "/workspace/ai-office/bin/$action.sh";;
- *) echo 'Actions: install resume start initialize login review doctor handoff characters input' >&2; exit 1;;
+ *) echo 'Actions: open install resume start initialize login review doctor handoff characters input' >&2; exit 1;;
  esac
 fi

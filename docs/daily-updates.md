@@ -1,5 +1,13 @@
 # 매일 개발 정리
 
+## 2026-11-11 — Mac 사무실을 파일 하나로 열기
+
+사용자가 매번 여러 파일을 열지 않도록 `0-open-office.command`와 [소형 시작 패키지](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip)를 준비한다. 기존 Lima VM과 설치된 사무실·문서함·채팅을 시작/재사용하고 브라우저를 연다. 재설치·업데이트·로그인·새 AI 업무는 자동 실행하지 않는다. 새 서버는 백그라운드에서 유지하며 기존 수동 서버 창과 진행 업무는 보존한다.
+
+Mac 설치·화면 열림·로그인 단계 완료와 채팅 설치 로그는 사용자 보고로 기록했다. 전체 직원 14명의 연결 상태·실모델 응답·새 0번의 실제 Mac 실행은 확인 전이다. 자동 검증과 실기기 확인을 구분하며 [상세 사용법과 인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 갱신한다. Render 공개 배포는 수행하지 않았다.
+
+검증: 새 실행 검사 17개 통과(호스트 모의9·실제 Linux 임시 서버8), Python 전체58개 중57개 통과·선택적 bwrap1개 미실행, 문법37개·공개 문서 회귀1개·ZIP 내용/CRC/실행권한 확인 통과. 실제 사용자 Mac의 0번 실행은 다음 확인이다.
+
 ## 2026-11-11 — Mac 설치 완료 사용자 확인
 
 사용자가 수정 설치기의 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했다. [맥 인계 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 갱신했다. 다음 확인은2-start 화면, 본인 로그인, 실제 검토 응답 순서다. 설치 완료를 로그인/AI 가동 완료로 기록하지 않는다.

@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 사용자가 Mac 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했습니다. 다음은2-start로 화면 열기이며 로그인·실제 AI 응답은 아직 확인 전입니다. [최신 Mac 상태·실패 이력·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. 별도 Ubuntu24.04 CI의 다운로드 DNS 실패 기록은 그대로 유지합니다.
+2026-11-11 최신 Mac: 설치·화면 열림·로그인 단계 완료는 사용자 보고이며 채팅 설치 로그도 확인했습니다. 이후에는 **0-open-office.command 하나**로 기존 환경과 사무실·문서함·채팅을 시작/재사용하고 브라우저를 엽니다. [시작 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip) · [사용법·현재 상태·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md). 재설치·로그인 초기화·자동 새 업무 실행은 하지 않습니다. 기존 수동 서버 창은 유지하며, 0번이 새로 켠 서버는 실행 창을 닫아도 유지됩니다. 새 시작 파일의 실제 Mac 실행·14명 연결 상태·실모델 응답은 확인 전입니다. 아래 예전 미확인 기록은 당시 상태이며 Ubuntu24.04 CI 다운로드 DNS 실패 이력도 보존합니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
@@ -79,6 +79,14 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — Mac 사무실 한 번에 열기
+
+- `0-open-office.command` 하나로 기존 Lima VM, 설치된 사무실·문서함·채팅 서버를 시작하거나 재사용하고 브라우저를 여는 경로를 추가한다. [Mac 시작 파일과 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md).
+- 기존 로그인·업무·설치 파일을 보존한다. 재설치·화면 업데이트·자동 업무 실행은 하지 않는다. 새로 시작하는 서버는 백그라운드에서 실행하며, 이미 켜진 수동 서버 창은 계속 유지한다.
+- 사용자 Mac의 설치 완료·화면 열림·로그인 단계 완료·채팅 설치 로그를 최신 인계에 반영한다. 이번 0번의 실기기 실행·직원 14명 연결 상태·실제 모델 응답은 확인 대기다. Render 공개 배포는 수행하지 않았다.
+
+검증: 새 실행 검사 17개 통과(호스트 모의9·실제 Linux 임시 서버8), Python 전체58개 중57개 통과·선택적 bwrap1개 미실행, 문법37개·공개 문서 회귀1개·ZIP 내용/CRC/실행권한 확인 통과. 실제 사용자 Mac의 0번 실행은 다음 확인이다.
 
 #### 2026-11-11 — 사용자 Mac 설치 완료 로그 확인
 
@@ -461,6 +469,14 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — Mac 사무실을 파일 하나로 열기
+
+사용자가 매번 여러 파일을 열지 않도록 `0-open-office.command`와 [소형 시작 패키지](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip)를 준비한다. 기존 Lima VM과 설치된 사무실·문서함·채팅을 시작/재사용하고 브라우저를 연다. 재설치·업데이트·로그인·새 AI 업무는 자동 실행하지 않는다. 새 서버는 백그라운드에서 유지하며 기존 수동 서버 창과 진행 업무는 보존한다.
+
+Mac 설치·화면 열림·로그인 단계 완료와 채팅 설치 로그는 사용자 보고로 기록했다. 전체 직원 14명의 연결 상태·실모델 응답·새 0번의 실제 Mac 실행은 확인 전이다. 자동 검증과 실기기 확인을 구분하며 [상세 사용법과 인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 갱신한다. Render 공개 배포는 수행하지 않았다.
+
+검증: 새 실행 검사 17개 통과(호스트 모의9·실제 Linux 임시 서버8), Python 전체58개 중57개 통과·선택적 bwrap1개 미실행, 문법37개·공개 문서 회귀1개·ZIP 내용/CRC/실행권한 확인 통과. 실제 사용자 Mac의 0번 실행은 다음 확인이다.
+
 #### 2026-11-11 — Mac 설치 완료 사용자 확인
 
 사용자가 수정 설치기의 설치 검사 완료와 첫 검토 대기 준비 로그를 제공했다. [맥 인계 기록](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 갱신했다. 다음 확인은2-start 화면, 본인 로그인, 실제 검토 응답 순서다. 설치 완료를 로그인/AI 가동 완료로 기록하지 않는다.
@@ -808,6 +824,7 @@ c76ed66 Balance office labels and speech at half the previous text size
 f9f0b4a Add read-only Mac sandbox diagnostics for Lima install failure
 a678c55 Resume Mac installation with scoped office AppArmor support
 9742e71 Fix Mac nested sandbox verification with a dedicated proc mount
+7944058 Record user-confirmed Mac office installation completion
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1387,6 +1404,8 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### AI 사무실 업무 입력·보고서 확인·휴대폰 비공개 접속
 
+Mac에서 이미 설치·채팅 연결을 마쳤다면 [0번 파일 하나로 여는 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 사용합니다. 기존 서버·업무·로그인은 유지합니다.
+
 2026-11-11 사용자 요청: 외부 휴대폰 연결을 설정하고, 매번 명령창을 쓰지 않는 업무 입력창을 연결한다. 기존 첫 검토가 ‘미결 의사결정’으로 표시되는 이유와 결과 확인 방법도 제공한다.
 
 #### Windows에서 바로 진행
@@ -1631,11 +1650,27 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 ### Mac용 AI 사무실 준비 패키지
 
-#### 2026-11-11 최신 사용자 확인 — Mac 설치 완료
+#### 2026-11-11 최신 — 파일 하나로 매일 열기
 
-사용자가 수정 재개 파일 실행 뒤 `Local office and first waiting review prepared; no login or model execution.` 및 `Installation checked.` 완료 로그를 제공했다. Mac 사무실 설치와 첫 검토 대기 준비까지 완료됐다는 사용자 실행 증거다. 아래의 설치 중단/확인 대기 기록은 이 완료 보고 이전의 이력이다. 개별 설치 검사 전체 로그는 별도로 전달받지 않았다.
+이미 설치와 채팅 연결을 마쳤다면 **0-open-office.command 하나**를 더블클릭한다. 꺼진 기존 Lima VM, 사무실·문서함·채팅 서버를 켜고 같은 Mac의 브라우저에서 사무실을 연다. 켜져 있는 서버와 진행 중인 업무는 그대로 사용한다.
 
-다음은 원래 `ai-office-macos` 폴더의 **2-start.command**를 열고 서버 창을 유지하는 단계다. [같은 Mac의 사무실](http://127.0.0.1:8790) 화면이 열리는지 확인한 다음3-login.command로 본인 ChatGPT 계정 로그인, 이후9-office-chat.command로 채팅을 연다. 화면 표시·로그인/authReady·실제 AI 업무 응답은 아직 확인 전이다. Windows/클라우드 데이터 이전이나 인증 복사는 수행하지 않았다. 설치·재개 파일을 반복해서 실행하도록 안내하지 않는다.
+1. [맥 한 번에 열기 ZIP 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip).
+2. **새 폴더에 압축을 푼다.** 폴더 안의 파일들은 함께 보관한다.
+3. **0-open-office.command**를 더블클릭한다. 다음부터도 이 파일 하나만 연다.
+
+로그인·직원 연결은 매번 다시 할 필요가 없다. 다만 로그인이 만료됐을 때는 공식 로그인 절차가 필요하다. 0번은 이미 설치한 사무실을 여는 파일이며, 설치·화면 업데이트·새 업무 실행을 자동으로 하지 않는다. 처음 설치하는 사람은 아래의 최초 설정 순서를 한 번 진행한다.
+
+0번이 새로 켠 서버는 백그라운드에서 실행되므로 완료 후 0번 터미널 창을 닫아도 유지된다. **기존 2번·9번 창에서 실행 중인 서버는 그대로 재사용하므로 그 창은 닫지 않는다.** 해당 업무를 마치고 다음에 Mac을 켰을 때부터 0번만 사용하면 된다. Mac을 종료하거나 잠자기 상태로 두면 AI 업무가 계속 실행된다고 보장하지 않는다. 외부 휴대폰 연결은 이번 파일에 포함하지 않는다.
+
+##### 현재 확인된 사용자 Mac 상태
+
+- 수정 설치기 실행 뒤 `Local office and first waiting review prepared; no login or model execution.` 및 `Installation checked.` 로그를 제공했다. 사무실 설치와 첫 검토 대기 준비가 완료됐다는 사용자 실행 증거다.
+- 이후 사무실 화면이 열렸고 공식 로그인 단계를 마쳤다고 사용자가 답했다. 에이전트가 사용자 Mac의 `authReady`를 직접 조회한 결과는 아니다.
+- UI 빌드와 채팅 설치 로그를 제공했다. 기존 인증·업무 변경 없음, 제어 모듈 버전은 `580f3aa357a7a9bb4a314b71101890b2eefd8ce1c6b7fa7d2ed9dc85b4dcd52c`로 표시됐다.
+- 전체 직원 연결 안내 뒤 완료했다고 답했지만, 실제 14명 연결 상태와 모델 응답은 아직 전달받지 않았다. 설치·로그인 보고를 실제 AI 업무 성공으로 확대 해석하지 않는다.
+- 이번 0번의 사용자 Mac 실행 결과는 대기다. Windows/클라우드 데이터 이전이나 인증 복사는 수행하지 않았다.
+
+아래의 실패·확인 대기 기록은 당시 이력이다. 이미 설치를 마친 사용자에게 설치·재개 파일을 반복 실행하도록 안내하지 않는다.
 
 #### 2026-11-11 설치 재개 v2 — 중첩 검사 오류 수정
 
@@ -1643,7 +1678,7 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 최신 [설치 이어하기 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-resume.zip)을 **새 폴더**에 풀고7-resume-install.command를 실행한다. 이미 설치한 Node는 재사용하며 이전 시도의 새 규칙은 실패 복구 절차를 거쳤다. 같은 이름의 다른 프로필은 여전히 보존 후 중단한다. 이제 실패하면 프로필 연결/외부 격리/중첩 격리/쓰기 차단 중 어떤 단계인지 안전한 오류 코드로 구분한다.
 
-기존13개 모의 테스트만으로 실제 중첩 마운트 결함을 잡지 못했음을 기록한다. `OFFICE_TEST_REAL_SANDBOX=1` 회귀로 실제 bwrap를 포함한 설치/복구 검사41개가 모두 통과했다. 공개 저장소의 별도 `codex/mac-sandbox-verification` 브랜치에는 Ubuntu24.04 CI를 준비했지만, [두 번째 실행](https://github.com/thepmpo/donknow/actions/runs/43034493297)도 Ubuntu 저장소 DNS 오류로 bubblewrap 설치 전에 중단됐다. 따라서 AppArmor 실제 Ubuntu CI 검증은 완료되지 않았으며 CI 변경은 main에 넣지 않고 해당 브랜치에 보존한다. Mac의 최신 파일 실행 결과도 아직 대기다.
+기존13개 모의 테스트만으로 실제 중첩 마운트 결함을 잡지 못했음을 기록한다. `OFFICE_TEST_REAL_SANDBOX=1` 회귀로 실제 bwrap를 포함한 설치/복구 검사41개가 모두 통과했다. 공개 저장소의 별도 `codex/mac-sandbox-verification` 브랜치에는 Ubuntu24.04 CI를 준비했지만, [두 번째 실행](https://github.com/thepmpo/donknow/actions/runs/43034493297)도 Ubuntu 저장소 DNS 오류로 bubblewrap 설치 전에 중단됐다. 따라서 AppArmor 실제 Ubuntu CI 검증은 완료되지 않았으며 CI 변경은 main에 넣지 않고 해당 브랜치에 보존한다. 이 기록 당시 Mac의 재개 파일 실행 결과는 대기였으며, 이후 설치 완료는 최상단 사용자 확인에 기록했다.
 
 #### 2026-11-11 진단 확인 후 설치 재개
 
@@ -1655,7 +1690,7 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 최신 설치기는 ZIP 안에 Linux 설치기와 검사기를 함께 넣어 기존 VM으로 전달하므로, 첫 시도에서 받은 오래된 Git checkout을 덮거나 pull하지 않아도 재개한다. AppArmor가 없거나 기존 격리가 작동하는 Linux/WSL에서는 규칙을 추가하지 않는다. 재실행이 기존 편집 소스/서버/다른 정책과 충돌하면 보존 후 중단한다. `7-check-sandbox.command`의 일반 셸 bwrap 차단은 수정 후에도 정상적으로 남을 수 있으며 전용 Node 검사 결과를 별도로 본다.
 
-자동 회귀와 이 작업 환경에서 실제 Codex sandbox 검사를 수행했다. **사용자 Mac에서 프로필 적용·설치 완료·로그인·실모델 응답은 아직 확인 대기**다. GitHub 파일 갱신과 Render 공개 배포는 별개다.
+자동 회귀와 이 작업 환경에서 실제 Codex sandbox 검사를 수행했다. **이 기록 당시 사용자 Mac의 프로필 적용·설치 완료·로그인·실모델 응답은 확인 대기**였다. 이후 설치와 로그인에 대한 사용자 보고는 최상단을 따른다. GitHub 파일 갱신과 Render 공개 배포는 별개다.
 
 #### 2026-11-11 실제 Mac 설치 중단 — 확인 대기
 
@@ -1671,12 +1706,13 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 [Mac ZIP 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-macos.zip) · [패키지 안내](https://github.com/thepmpo/donknow/blob/main/tools/ai-office/macos/README-MAC.txt) · [기존 설치·구조](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)
 
-#### 사용자가 받을 안내
+#### 처음 설치할 때만 진행하는 순서
 
 1. [Homebrew](https://brew.sh)와 [Lima](https://lima-vm.io/docs/installation/)를 설치한다. Lima 설치 명령은 `brew install lima`다.
 2. 압축을 풀고 `1-install.command`로 설치한다.
 3. `2-start.command`를 열어 유지하고, `3-login.command`에서 본인 ChatGPT 계정으로 로그인한다.
-4. `9-office-chat.command`를 열어 사무실 안의 **사무실 채팅·내 지시**를 사용한다. 이 서버 창도 유지한다.
+4. `9-office-chat.command`를 열어 채팅 연결을 마친다. 사무실의 **전체 대화**에서 지시·질문·공지를 보낸다. 이 최초 서버 창도 유지한다.
+5. 설정을 마친 다음부터는 **0-open-office.command 하나**로 연다. 최신 전체 Mac ZIP에도 0번이 포함돼 있다.
 
 열기 차단 시 [Apple 공식 안내](https://support.apple.com/guide/mac-help/mh40616/mac)를 따른다. 운영체제 보안을 전체 해제하지 않는다. 터미널에서 `bash ` 다음 해당 파일을 끌어놓아 직접 실행할 수도 있다. 로그인 코드·토큰·비밀번호는 채팅으로 받지 않는다.
 
@@ -1684,21 +1720,25 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 - Intel x86_64 / Apple Silicon aarch64 Ubuntu 이미지를 나눈 기존 Lima 설치기를 사용한다. Linux bubblewrap 격리는 VM 안에서 유지한다. macOS 네이티브 bubblewrap으로 대체하지 않는다.
 - 새 VM은 4 CPU, 메모리6GiB, 디스크30GiB이며 Mac 폴더 마운트를 하지 않는다.8790/8791/8810은 localhost로 전달한다. 공용 바인딩이나 외부 휴대폰 연결은 포함하지 않는다.
+- 0번은 `duckduck-office`라는 기존 VM만 시작하며 없으면 중단한다. VM을 새로 만들거나 기존 설치·UI·제어 모듈·인증·DB를 덮지 않는다. 로그인·모델 호출·직원 연결·업무 승인을 실행하지 않는다.
 - 같은 이름의 기존 VM은 삭제·재생성하지 않는다. 기존 오래된 VM에8810 전달이 없으면 중단하고 별도로 확인한다. 다른 VM이나 Mac/Windows 설정을 변경하지 않는다.
 - 공통 입력 모듈은 ZIP manifest SHA 검증 후 버전 디렉터리에 설치한다. 로그인 후 기존 검증된 repair-auth.py를 사용하고 인증파일을 삭제하지 않는다. 이 복구는 실행 중 인증 프로세스/잠금이 있으면 중단한다.
+- 0번의 서비스 시작은 잠금으로 중복 실행을 막고 상태를 확인한 뒤 브라우저를 연다. 알 수 없는 포트 사용자는 보존 후 중단한다. 새로 시작한 서버의 로그는 `/workspace/ai-office/state/launcher/start.log`와 `control.log`에 개인 권한(폴더0700·파일0600)으로 보관하며 원문을 자동 출력하지 않는다. PID와 시작 시각 기록은 시작 지연 중의 중복 실행을 막는다.
 - 키는 VM 개인 상태에 보관하고 브라우저 연결 fragment로만 전달한다. 로그에 출력하지 않는다. 열려 있는 다른 버전/다른8810 서버는 덮거나 종료하지 않는다.
 - Windows 업무/문서/인증을 자동 이전하거나 양쪽 DB를 합치지 않는다. 새 Mac 설치는 별도 사무실이다. 기존 작업을 이어가려면 먼저 [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)와 안전한 이전 절차가 필요하다. 인증 파일을 ZIP에 넣지 않는다.
-- ZIP은 `node scripts/build-ai-office-control.mjs`로 공통 코드와 함께 갱신한다. macos/ 안의 .sh/.py/ZIP/version은 생성 복사본이고 원본은 install/ 및 control/이다. .command와 README는 수동 관리한다.
+- ZIP은 `node scripts/build-ai-office-control.mjs`로 공통 코드와 함께 갱신한다. 제어 모듈 변경이 없는 Mac 패키지만 갱신할 때는 `--mac-only`를 사용한다. macos/ 안의 .sh/.py/ZIP/version은 생성 복사본이고 원본은 install/ 및 control/이다. .command와 README는 수동 관리한다.
 
 #### 검증과 남은 확인
 
 bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열기·로그인/doctor 경로, 키 비출력, ZIP 실행 권한을 자동 검사한다. 공통 채팅·권한 경계는 별도 Node/HTTP/SQLite 및 모바일 크기 모의 브라우저 테스트를 통과한다.
 
-실제 Mac·Lima·가상화·Ubuntu 다운로드·호스트 포트 전달·공식 기기 로그인·실모델 응답은 확인하지 않았다. 패키지 준비/모의 검증을 실기기 설치 성공으로 보고하면 안 된다. 사용자 Mac에서 해당 순서로 확인한 결과를 이 문서와 일일 기록에 추가한다.
+0번 검증은 Mac 호스트 모의 검사 9개와 실제 Linux 임시 서버 검사 8개, 총 17개를 통과했다. 중복 클릭·실행 창 종료 후 유지·기존 PID 재사용·DB/키 보존·포트 충돌·문서함 누락·브라우저 오류 시 키 비출력을 확인했다. 설치/복구 전체 Python 회귀는 58개 중 57개 통과, 이번 변경과 무관한 선택적 실제 bwrap 검사 1개는 실행하지 않았다. `npm run check`의 37개 문법 검사, 공개 문서 회귀 1개, ZIP의 원본 일치·CRC·실행 권한 검사도 통과했다. 이번 0번의 실제 Mac 실행과 실모델 응답은 아직 확인하지 않았다. 설치·화면·로그인에 대한 사용자 보고는 최상단과 구분해 기록한다. 자동 검사 통과를 사용자 Mac 실기기 성공으로 보고하지 않는다. GitHub 패키지 저장과 Render 공개 배포도 구분하며 이번 작업에서 Render를 배포하지 않았다.
 
 ### 原文 / docs/ai-office-usage.md
 
 <!-- 최신 native 채팅에서는 대화=기록만, 질문/업무지시=안건, 공지=저장. -->
+
+Mac에서 이미 설치·채팅 연결을 마쳤다면 [0번 파일 하나로 여는 방법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 사용합니다. 기존 서버·업무·로그인은 유지합니다.
 
 **최신v5:** 직원 연결 상태→전체 직원 연결로 현재 프로젝트의 직원 실행을 준비한다. 받는 사람에서 직원/팀장/팀장회의를 고르고 질문·지시를 보낸다. 회의는 참여자와 최대 작업 수를 확인한 뒤 실행한다. 보고서는 결론·할 일·내 결정부터 읽고 원문/근거는 펼친다. 실제 기기의 연결·답변은 적용 후 확인해야 한다. [상세](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 ### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
@@ -1999,6 +2039,15 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 v4 최신 사용자 정정: 별도 /desk 방은 의도가 아니었다. 캐릭터 대화하기의 기존 native 채팅 컴포넌트를 전체 대화에도 사용하고 입력 모드→안건으로 연결했다. office-report:* 의사결정은 일반 회신/에이전트 준비를 거치지 않고 원문과 전용확인으로 표시한다. 기존 알 수 없는kind+options[]의 준비 중 표시가 원인이었다. 실제2건 내용은 사용자 PC에서만 확인 가능하다. UI 소스11개·고정 공개base+템플릿 재생성·보존 규칙은 [v4 문서](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)를 읽는다.
 
 v5 최신: 직원/팀장 지정, 전체 연결 버튼, 승인된 팀장 최대6명+종합1건의 실제 순차 검토를 구현했다. 설정 준비와 개별 실제 답변 성공을 구분한다. OAuth/API 계정·기존 Codex 모델은 보존한다. 쉬운 보고 UI는 원문을 보존하고 결론/행동/결정부터 보여주며, 새로운 요약을 지어내지 않는다. source UI는13개/게이트웨이 모듈은6개다. 실제 사용자 인증/14명 응답/실회의는 이 환경에서 검증하지 않았다. [v5 상세·테스트·재시작 처리](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
+
+#### 2026-11-11 최신 Mac 시작과 이어갈 확인
+
+매일 열기는 **0-open-office.command 하나**다. [소형 시작 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip)과 전체 Mac ZIP에 포함한다. [현재 Mac 상태·사용법·보존 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 먼저 읽는다. 최초 설치·로그인·채팅 설정 뒤 사용하는 실행 파일이며, 기존 Lima VM과 설치한 서버만 시작/재사용한다. 재설치·화면 업데이트·모델 호출·업무 승인은 하지 않는다.
+
+사용자는 Mac 설치 완료 로그, 화면 열림, 로그인 단계 완료, UI·제어 모듈 설치 로그를 제공했다. 전체 직원 연결 안내에도 완료했다고 답했다. 그러나 `authReady` 직접 조회·실제 14명 연결 상태·실모델 응답·0번 실기기 실행은 아직 확인 전이다. 이전 문서의 “Mac 설치 미확인”은 당시 기록이며 최신 사용자 보고보다 우선하지 않는다. Windows 사무실과 Mac 사무실의 데이터/인증을 합치지 않았다.
+
+0번이 새로 시작한 서버는 백그라운드로 유지한다. 이미 2번·9번 터미널에서 실행 중인 서버는 재사용하며 그 창을 닫으면 기존 작업이 중단될 수 있다. 실행 중인 창을 한꺼번에 닫게 안내하지 않는다. 다음 확인은 사용자 Mac에서 0번으로 화면이 열리는지, 전체 대화에서 명시적으로 실행한 질문에 실제 답변이 도착하는지다. 답변 확인 전 “전체 AI 직원 가동 완료”라고 기록하지 않는다. Render 공개 배포는 별도로 남아 있다.
 
 ### 原文 / docs/ai-office-knowledge.md
 
