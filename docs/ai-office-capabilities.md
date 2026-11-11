@@ -103,6 +103,6 @@
 | 설치·업데이트·패키지 | Python30개 통과, 배포 ZIP5개 CRC·UI/제어 소스 해시 일치 |
 | 문서 | `/project`·인계 문서 생성, 댓글·일일 집계 회귀와 새 문서 링크 확인 |
 
-사용자 Mac 업데이트 적용, 사용자의 Google 앱 비밀번호 연결, 실제 Gmail 수신과 이번 변경 적용 후 실계정 모델 응답은 자동 검사와 별개로 아직 확인하지 않았습니다. 사용자 데이터·인증을 초기화하거나 실제 메일을 임의로 보내지 않았습니다. Render 자동 배포는 꺼져 있으며 GitHub 반영을 공개 사이트 배포 완료로 기록하지 않습니다.
+사용자 Mac 업데이트 적용, 사용자의 Google 앱 비밀번호 연결, 실제 Gmail 수신과 이번 변경 적용 후 실계정 모델 응답은 자동 검사와 별개로 아직 확인하지 않았습니다. 사용자 데이터·인증을 초기화하거나 실제 메일을 임의로 보내지 않았습니다. Render 자동 배포는 꺼져 있으며 GitHub 반영을 공개 사이트 배포 완료로 기록하지 않습니다. 이번 `/project` 확인 요청은 환경 프록시의 `403 Forbidden`으로 차단되어 공개 반영 여부를 확인하지 못했습니다. Mac 업데이트 ZIP과 이 문서의 GitHub 원본은 HTTP 200 및 저장소 파일과의 바이트 일치를 확인했습니다.
 
 다음 작업자는 `tools/ai-office/control/lib/role-guides.mjs`, `report-mail.mjs`, `task-archive.mjs`, 제어 서버 라우트와 `tools/ai-office/native-chat/`를 함께 확인합니다. 사용자 Mac의 로컬 보고서·설정·진행 중 업무는 이 저장소만으로 읽을 수 없습니다. [변경 기록](change-log.md) · [일일 기록](daily-updates.md) · [전체 인수인계](notion-handoff.md) · [공통 이어받기 기준](ai-office-shared-work.md).

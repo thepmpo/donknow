@@ -533,7 +533,7 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 업무관리의 콘솔에만 남던 실행·삭제 실패를 바로잡아 실행은 기존 요청의 확인창, 삭제는 보고서·로그·메시지를 보존하는 보관과 복원으로 연결했다. 실행 중·승인 남음·미완료 회의는 보관하지 않는다. 협업은 기존 최대6명 순차 의견+종합1회이며 반복 상호 토론으로 설명하지 않는다.
 
-업무가 끝난 뒤 [Mac11번 업데이트](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip) 또는 [Windows11번 업데이트](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)를 적용하고, 별도로 전체 대화의 코드 수정에서 최신 코드 받기로 프로젝트 기록을 동기화한다. 지침7·메일10·쉬운 보고서7·보관5·제어14개, TypeScript·Vite 빌드 통과. PC·390px 모바일 브라우저, 루트187개 통과·선택 검사1개 건너뜀, 문법37개, Python30개, ZIP5개 CRC·내용 해시 검증을 완료했다. 공개 문서를 생성하고 댓글·일일 집계 회귀와 새 문서 링크를 확인했다. 실기기 적용·Google 앱 비밀번호·실제 Gmail 수신은 미확인이고 Render 자동 배포는 꺼져 있다.
+업무가 끝난 뒤 [Mac11번 업데이트](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip) 또는 [Windows11번 업데이트](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)를 적용하고, 별도로 전체 대화의 코드 수정에서 최신 코드 받기로 프로젝트 기록을 동기화한다. 지침7·메일10·쉬운 보고서7·보관5·제어14개, TypeScript·Vite 빌드 통과. PC·390px 모바일 브라우저, 루트187개 통과·선택 검사1개 건너뜀, 문법37개, Python30개, ZIP5개 CRC·내용 해시 검증을 완료했다. 공개 문서를 생성하고 댓글·일일 집계 회귀와 새 문서 링크를 확인했다. 실기기 적용·Google 앱 비밀번호·실제 Gmail 수신은 미확인이고 Render 자동 배포는 꺼져 있다. GitHub main 일반 push와 Mac ZIP·사용 안내 원본 HTTP 200/파일 일치를 확인했다. Render `/project` 조회는 환경 프록시403으로 차단되어 공개 반영 여부는 미확인이다.
 
 #### 2026-11-12 — 사무실 요청 시작 실패 이유 구분
 
@@ -929,6 +929,7 @@ f2e34a8 Document bidirectional AI office handoff and required sync reminders
 6a09988 Document blocked office requests and meeting follow-up workflow
 11efaf2 Connect office role guides, report PDF and Gmail delivery, and safe task actions
 87e9758 Align packaged control archives with distributed payload bytes
+11f2538 Document office skills, PDF Gmail delivery, task controls and verification
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1619,7 +1620,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 | 설치·업데이트·패키지 | Python30개 통과, 배포 ZIP5개 CRC·UI/제어 소스 해시 일치 |
 | 문서 | `/project`·인계 문서 생성, 댓글·일일 집계 회귀와 새 문서 링크 확인 |
 
-사용자 Mac 업데이트 적용, 사용자의 Google 앱 비밀번호 연결, 실제 Gmail 수신과 이번 변경 적용 후 실계정 모델 응답은 자동 검사와 별개로 아직 확인하지 않았습니다. 사용자 데이터·인증을 초기화하거나 실제 메일을 임의로 보내지 않았습니다. Render 자동 배포는 꺼져 있으며 GitHub 반영을 공개 사이트 배포 완료로 기록하지 않습니다.
+사용자 Mac 업데이트 적용, 사용자의 Google 앱 비밀번호 연결, 실제 Gmail 수신과 이번 변경 적용 후 실계정 모델 응답은 자동 검사와 별개로 아직 확인하지 않았습니다. 사용자 데이터·인증을 초기화하거나 실제 메일을 임의로 보내지 않았습니다. Render 자동 배포는 꺼져 있으며 GitHub 반영을 공개 사이트 배포 완료로 기록하지 않습니다. 이번 `/project` 확인 요청은 환경 프록시의 `403 Forbidden`으로 차단되어 공개 반영 여부를 확인하지 못했습니다. Mac 업데이트 ZIP과 이 문서의 GitHub 원본은 HTTP 200 및 저장소 파일과의 바이트 일치를 확인했습니다.
 
 다음 작업자는 `tools/ai-office/control/lib/role-guides.mjs`, `report-mail.mjs`, `task-archive.mjs`, 제어 서버 라우트와 `tools/ai-office/native-chat/`를 함께 확인합니다. 사용자 Mac의 로컬 보고서·설정·진행 중 업무는 이 저장소만으로 읽을 수 없습니다. [변경 기록](https://github.com/thepmpo/donknow/blob/main/docs/change-log.md) · [일일 기록](https://github.com/thepmpo/donknow/blob/main/docs/daily-updates.md) · [전체 인수인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md) · [공통 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md).
 

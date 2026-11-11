@@ -378,7 +378,7 @@
 <p><a href="https://github.com/thepmpo/donknow/blob/main/docs/ai-office-capabilities.md">기능별 쉬운 안내</a>에 추천 스킬 한 번에 연결, PDF 저장, 선택한 PDF를 본인 Gmail로 보내기, 업무 실행 확인·보관/복원, 팀장회의의 실제 범위를 정리했다. 지침은 프로젝트별로 다음 새 업무에 실제 본문과 버전이 연결된다. 외부 스킬 전체 설치나 모델 재학습은 아니다.</p>
 <p>사용자는 Gmail을 선택했으며 아직 실제 계정을 연결한 것은 아니다. 최초 설정은 Mac의0번으로 연 사무실에서만 받고 Google16자리 앱 비밀번호를 로컬 암호화 저장한다. 저장한 PDF를 선택·확인해야 발송하며 자동 완료메일은 미구현이다. 서버 접수와 실제 수신은 구분하고 결과 미확인 자동 재전송은 하지 않는다.</p>
 <p>업무관리의 콘솔에만 남던 실행·삭제 실패를 바로잡아 실행은 기존 요청의 확인창, 삭제는 보고서·로그·메시지를 보존하는 보관과 복원으로 연결했다. 실행 중·승인 남음·미완료 회의는 보관하지 않는다. 협업은 기존 최대6명 순차 의견+종합1회이며 반복 상호 토론으로 설명하지 않는다.</p>
-<p>업무가 끝난 뒤 <a href="https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip">Mac11번 업데이트</a> 또는 <a href="https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip">Windows11번 업데이트</a>를 적용하고, 별도로 전체 대화의 코드 수정에서 최신 코드 받기로 프로젝트 기록을 동기화한다. 지침7·메일10·쉬운 보고서7·보관5·제어14개, TypeScript·Vite 빌드 통과. PC·390px 모바일 브라우저, 루트187개 통과·선택 검사1개 건너뜀, 문법37개, Python30개, ZIP5개 CRC·내용 해시 검증을 완료했다. 공개 문서를 생성하고 댓글·일일 집계 회귀와 새 문서 링크를 확인했다. 실기기 적용·Google 앱 비밀번호·실제 Gmail 수신은 미확인이고 Render 자동 배포는 꺼져 있다.</p>
+<p>업무가 끝난 뒤 <a href="https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip">Mac11번 업데이트</a> 또는 <a href="https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip">Windows11번 업데이트</a>를 적용하고, 별도로 전체 대화의 코드 수정에서 최신 코드 받기로 프로젝트 기록을 동기화한다. 지침7·메일10·쉬운 보고서7·보관5·제어14개, TypeScript·Vite 빌드 통과. PC·390px 모바일 브라우저, 루트187개 통과·선택 검사1개 건너뜀, 문법37개, Python30개, ZIP5개 CRC·내용 해시 검증을 완료했다. 공개 문서를 생성하고 댓글·일일 집계 회귀와 새 문서 링크를 확인했다. 실기기 적용·Google 앱 비밀번호·실제 Gmail 수신은 미확인이고 Render 자동 배포는 꺼져 있다. GitHub main 일반 push와 Mac ZIP·사용 안내 원본 HTTP 200/파일 일치를 확인했다. Render <code>/project</code> 조회는 환경 프록시403으로 차단되어 공개 반영 여부는 미확인이다.</p>
 </div></details><details class="change-entry"><summary id="subsection-47">2026-11-12 — 사무실 요청 시작 실패 이유 구분</summary><div class="change-content">
 <p>팀장회의 중 새 요청을 실행하지 못한 상황을 사용자가 확인했다. 실제 Mac 오류 코드는 미확인이다. 코드에서 확인한 문제는 진행 중 업무·로그인/실행 준비·실행 설정·바뀐 요청/보고서·실행 결과 확인 필요를 모두 같은 오류로 보여주던 UI였다. 각 사유에 맞는 다음 행동을 표시하도록 고쳤으며 기존 서버 검증과 읽기 전용 범위는 유지한다.</p>
 <p>진행 중 업무로 막힌 초안은 그대로 두고 종료 후 사용자가 다시 실행한다. 자동 대기열·재실행은 없다. 회의 수정안을 질문하려면 <strong>종합 보고서 보기 → 이 안건에 추가 요청</strong>으로 실제 보고서를 연결한다. 회의를 문장으로 언급하는 것만으로는 보고서가 첨부되지 않는다. <a href="https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md">자세한 사용 안내</a>.</p>
@@ -627,7 +627,8 @@ f2e34a8 Document bidirectional AI office handoff and required sync reminders
 143d2ef Explain blocked AI office requests without retrying active work
 6a09988 Document blocked office requests and meeting follow-up workflow
 11efaf2 Connect office role guides, report PDF and Gmail delivery, and safe task actions
-87e9758 Align packaged control archives with distributed payload bytes</code></pre>
+87e9758 Align packaged control archives with distributed payload bytes
+11f2538 Document office skills, PDF Gmail delivery, task controls and verification</code></pre>
 <p>- 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.</p>
 <p>- 이번 확장 코드: 1c75e51에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.</p>
 <p>- 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.</p>
@@ -1144,7 +1145,7 @@ npm run test:container</code></pre>
 <tr><td>설치·업데이트·패키지</td><td>Python30개 통과, 배포 ZIP5개 CRC·UI/제어 소스 해시 일치</td></tr>
 <tr><td>문서</td><td><code>/project</code>·인계 문서 생성, 댓글·일일 집계 회귀와 새 문서 링크 확인</td></tr>
 </tbody></table></div>
-<p>사용자 Mac 업데이트 적용, 사용자의 Google 앱 비밀번호 연결, 실제 Gmail 수신과 이번 변경 적용 후 실계정 모델 응답은 자동 검사와 별개로 아직 확인하지 않았습니다. 사용자 데이터·인증을 초기화하거나 실제 메일을 임의로 보내지 않았습니다. Render 자동 배포는 꺼져 있으며 GitHub 반영을 공개 사이트 배포 완료로 기록하지 않습니다.</p>
+<p>사용자 Mac 업데이트 적용, 사용자의 Google 앱 비밀번호 연결, 실제 Gmail 수신과 이번 변경 적용 후 실계정 모델 응답은 자동 검사와 별개로 아직 확인하지 않았습니다. 사용자 데이터·인증을 초기화하거나 실제 메일을 임의로 보내지 않았습니다. Render 자동 배포는 꺼져 있으며 GitHub 반영을 공개 사이트 배포 완료로 기록하지 않습니다. 이번 <code>/project</code> 확인 요청은 환경 프록시의 <code>403 Forbidden</code>으로 차단되어 공개 반영 여부를 확인하지 못했습니다. Mac 업데이트 ZIP과 이 문서의 GitHub 원본은 HTTP 200 및 저장소 파일과의 바이트 일치를 확인했습니다.</p>
 <p>다음 작업자는 <code>tools/ai-office/control/lib/role-guides.mjs</code>, <code>report-mail.mjs</code>, <code>task-archive.mjs</code>, 제어 서버 라우트와 <code>tools/ai-office/native-chat/</code>를 함께 확인합니다. 사용자 Mac의 로컬 보고서·설정·진행 중 업무는 이 저장소만으로 읽을 수 없습니다. <a href="https://github.com/thepmpo/donknow/blob/main/docs/change-log.md">변경 기록</a> · <a href="https://github.com/thepmpo/donknow/blob/main/docs/daily-updates.md">일일 기록</a> · <a href="https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md">전체 인수인계</a> · <a href="https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md">공통 이어받기 기준</a>.</p>
 <h3 id="subsection-138">原文 / docs/ai-office-role-guides.md</h3>
 <h3 id="subsection-139">사무실 추천 업무 지침(스킬)</h3>
