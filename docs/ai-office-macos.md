@@ -1,5 +1,15 @@
 # Mac용 AI 사무실 준비 패키지
 
+## 2026-11-11 실제 Mac 설치 중단 — 확인 대기
+
+사용자 Apple Silicon Mac에서 Homebrew/Lima 2.3.0, 기존 duckduck-office Ubuntu VM 생성·SSH 연결·Ubuntu 패키지 설치까지 진행했다. 이후 `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`로 linux.sh의 첫 격리 검사에서 중단했다. 이 로그로 사무실 설치·로그인·실모델 실행 완료를 주장하지 않는다.
+
+[진단 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-check.zip)를 풀고 `7-check-sandbox.command` 하나를 실행한다. 기존 실행 중인 VM에만 접속하며 없거나 꺼져 있으면 중단한다. 배포판/보안 제한 값/관련 패키지/공식 프로필 존재/일반·중첩 bwrap 검사/최근 관련 거부 여부만 출력한다. 로그 원문·사용자 경로·키·인증/DB는 읽어 출력하지 않는다. journalctl은 `sudo -n`으로 비대화형 읽기만 시도하고 접근 불가는 미확인으로 표시한다. 설치·VM 생성/삭제·프로필 변경·모델 호출은 없다.
+
+동일 증상은 [Ubuntu 공식 이슈2069526](https://bugs.launchpad.net/bugs/2069526)와 [opam5968의 보안 담당자 설명](https://github.com/ocaml/opam/issues/5968)에 보고돼 있다. AppArmor 사용자 namespace 제한이 유력하나 사용자 VM의 진단 결과 전에는 확정하지 않는다. 공식 `bwrap-userns-restrict`는 자식의 capability를 제한하므로 첫 검사만 복구해도 중첩 Codex sandbox가 실패할 수 있다. 전역 sysctl/AppArmor 비활성화, bwrap 무제한 프로필, 검사 제거, VM 삭제를 안내하지 않는다. 최신 upstream 프로필은 ABI 차이도 있어 그대로 설치하지 않는다.
+
+다음 담당자는 사용자 진단 결과를 먼저 확인하고, 배포판 공식 제한 프로필 등 적용 범위를 검토한 뒤 실제 runner의 읽기 허용·쓰기 차단·네트워크 차단까지 검증한다. 첫 검사의 성공과 AI 실행 준비 완료를 구분한다. 이번 진단 도구는 모의 차단/중첩 실패/도구 없음·로그 비노출 및 bash 문법 검증을 통과했으며 사용자 Mac에서의 실행 결과는 대기다.
+
 2026-11-11 한국 시간. 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다.
 
 [Mac ZIP 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-macos.zip) · [패키지 안내](../tools/ai-office/macos/README-MAC.txt) · [기존 설치·구조](ai-office-local-install.md) · [사무실 채팅·내 지시](ai-office-control.md)

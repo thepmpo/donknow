@@ -36,6 +36,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+2026-11-11 Mac 실제 설치는 Ubuntu 준비 후 bwrap 격리 검사 오류로 중단했습니다. [진단 파일·원인 후보·후속 검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 먼저 확인하세요. Mac 설치·로그인 성공으로 해석하지 않습니다.
+
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 최신v4 사용자 정정: 별도 공용방 대신 캐릭터의 원래 대화하기 UI를 전체 대화에도 재사용합니다. 모드 선택 전송은 안건으로 이어지고 보고서는 에이전트 준비 없이 원문을 표시합니다. 알 수 없는 보고서kind/빈 선택지의 표시 버그를 고쳤으며 실제 사용자2건은 미열람입니다. [v4 사용·구현·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).

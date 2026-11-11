@@ -20,6 +20,7 @@ Windows 업무·문서·로그인은 자동 복사되지 않습니다. 기존 Wi
 파일·폴더 이름에 공백이 있어도 동작하도록 준비했습니다.
 
 6-doctor.command: 준비 상태 확인
+7-check-sandbox.command: 설치 중 bwrap 오류가 나면 실행 환경만 진단. 설정·인증 변경 없음.
 5-handoff.command: 인수인계 생성 (VM 안 /workspace/ai-office/handoffs)
 8-characters.command: 캐릭터 설정
 

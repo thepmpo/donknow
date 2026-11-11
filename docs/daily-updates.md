@@ -1,5 +1,9 @@
 # 매일 개발 정리
 
+## 2026-11-11 — Mac 설치 오류 후속
+
+사용자 Mac의 Lima VM 준비 후 bwrap `Failed RTM_NEWADDR` 오류로 설치가 중단됐다. [설정 변경 없는 진단과 다음 담당자 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 기록하고 `7-check-sandbox.command`/소형 진단 ZIP을 준비했다. AppArmor 원인 확정과 실제 Mac 격리·설치·로그인 성공은 사용자 진단 결과 후 확인한다. 안전한 격리 검사를 지우거나 시스템 보안을 끄지 않는다.
+
 <!-- daily:2026-11-11:start -->
 ### 2026-11-11 — 당일 저장된 작업
 
@@ -192,7 +196,7 @@
 ### 2026-11-11 — 사무실 채팅·내 지시와 Mac 준비
 
 - 사무실 내부 채팅 패널, 기존 채팅→내용 확인 연결, 요청 원문 검색/상태 모아보기, 부모 보고서를 참고하는 후속 지시를 추가했다. 실행 중 업무/원 보고서는 변경하지 않는다. 기존 데이터·인증과 복구 bundle 보존.
-- [채팅 사용·검증](ai-office-control.md), [Mac 준비·실기기 미확인](ai-office-macos.md)에 설치 파일과 이어받기 기준을 기록했다. Mac Intel/Apple Silicon Lima .command ZIP은 준비했으나 실제 Mac 실행·Windows 업데이트·실모델 후속 응답은 사용자 기기에서 확인해야 한다. 문서 공개 배포는 GitHub 저장과 별도로 확인한다.
+- [채팅 사용·검증](ai-office-control.md), [Mac 준비·실기기 미확인](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)에 설치 파일과 이어받기 기준을 기록했다. Mac Intel/Apple Silicon Lima .command ZIP은 준비했으나 실제 Mac 실행·Windows 업데이트·실모델 후속 응답은 사용자 기기에서 확인해야 한다. 문서 공개 배포는 GitHub 저장과 별도로 확인한다.
 
 ### 2026-11-11 — 사무실 빈 장면 복구
 

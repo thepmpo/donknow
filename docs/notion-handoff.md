@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+2026-11-11 Mac 실제 설치는 Ubuntu 준비 후 bwrap 격리 검사 오류로 중단했습니다. [진단 파일·원인 후보·후속 검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 먼저 확인하세요. Mac 설치·로그인 성공으로 해석하지 않습니다.
+
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 최신v4 사용자 정정: 별도 공용방 대신 캐릭터의 원래 대화하기 UI를 전체 대화에도 재사용합니다. 모드 선택 전송은 안건으로 이어지고 보고서는 에이전트 준비 없이 원문을 표시합니다. 알 수 없는 보고서kind/빈 선택지의 표시 버그를 고쳤으며 실제 사용자2건은 미열람입니다. [v4 사용·구현·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
@@ -77,6 +79,12 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — Mac 설치 bwrap 오류 진단
+
+- 실제 Mac에서 Ubuntu 설치 후 격리 검사 `Failed RTM_NEWADDR`로 중단됨을 확인했다. AppArmor 제한이 유력하며 실제 원인은 사용자 VM 진단 결과를 기다린다.
+- [Mac 진단 파일과 후속 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 추가했다. 기존 VM/데이터/인증을 보존하고 일반·중첩 격리를 구분해 검사하며 모델 호출/보안 설정 변경은 없다.
+- 진단 모의 검사3개, Mac 실행기2개 및 bash 문법/ZIP 실행 권한 검증. 실제 Mac 진단·수정 성공과 Render 공개 반영은 아직 확인 전이다.
 
 #### 2026-11-11 — 업무 입력창·보고서 확인·휴대폰 비공개 설정
 
@@ -435,6 +443,10 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — Mac 설치 오류 후속
+
+사용자 Mac의 Lima VM 준비 후 bwrap `Failed RTM_NEWADDR` 오류로 설치가 중단됐다. [설정 변경 없는 진단과 다음 담당자 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)을 기록하고 `7-check-sandbox.command`/소형 진단 ZIP을 준비했다. AppArmor 원인 확정과 실제 Mac 격리·설치·로그인 성공은 사용자 진단 결과 후 확인한다. 안전한 격리 검사를 지우거나 시스템 보안을 끄지 않는다.
+
 
 ##### 2026-11-11 — 당일 저장된 작업
 
@@ -627,7 +639,7 @@
 ##### 2026-11-11 — 사무실 채팅·내 지시와 Mac 준비
 
 - 사무실 내부 채팅 패널, 기존 채팅→내용 확인 연결, 요청 원문 검색/상태 모아보기, 부모 보고서를 참고하는 후속 지시를 추가했다. 실행 중 업무/원 보고서는 변경하지 않는다. 기존 데이터·인증과 복구 bundle 보존.
-- [채팅 사용·검증](ai-office-control.md), [Mac 준비·실기기 미확인](ai-office-macos.md)에 설치 파일과 이어받기 기준을 기록했다. Mac Intel/Apple Silicon Lima .command ZIP은 준비했으나 실제 Mac 실행·Windows 업데이트·실모델 후속 응답은 사용자 기기에서 확인해야 한다. 문서 공개 배포는 GitHub 저장과 별도로 확인한다.
+- [채팅 사용·검증](ai-office-control.md), [Mac 준비·실기기 미확인](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)에 설치 파일과 이어받기 기준을 기록했다. Mac Intel/Apple Silicon Lima .command ZIP은 준비했으나 실제 Mac 실행·Windows 업데이트·실모델 후속 응답은 사용자 기기에서 확인해야 한다. 문서 공개 배포는 GitHub 저장과 별도로 확인한다.
 
 ##### 2026-11-11 — 사무실 빈 장면 복구
 
@@ -762,6 +774,7 @@ ac2c5ab Double office name and speech text with safe automatic UI update
 c76ed66 Balance office labels and speech at half the previous text size
 5642eab Add shared office conversation with message types and honest runtime progress
 7d8704c Reuse original office chat globally and fix report decisions stuck preparing
+742cf52 Connect office recipients and team reviews with readable reports
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1584,6 +1597,16 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
+
+#### 2026-11-11 실제 Mac 설치 중단 — 확인 대기
+
+사용자 Apple Silicon Mac에서 Homebrew/Lima 2.3.0, 기존 duckduck-office Ubuntu VM 생성·SSH 연결·Ubuntu 패키지 설치까지 진행했다. 이후 `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`로 linux.sh의 첫 격리 검사에서 중단했다. 이 로그로 사무실 설치·로그인·실모델 실행 완료를 주장하지 않는다.
+
+[진단 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-check.zip)를 풀고 `7-check-sandbox.command` 하나를 실행한다. 기존 실행 중인 VM에만 접속하며 없거나 꺼져 있으면 중단한다. 배포판/보안 제한 값/관련 패키지/공식 프로필 존재/일반·중첩 bwrap 검사/최근 관련 거부 여부만 출력한다. 로그 원문·사용자 경로·키·인증/DB는 읽어 출력하지 않는다. journalctl은 `sudo -n`으로 비대화형 읽기만 시도하고 접근 불가는 미확인으로 표시한다. 설치·VM 생성/삭제·프로필 변경·모델 호출은 없다.
+
+동일 증상은 [Ubuntu 공식 이슈2069526](https://bugs.launchpad.net/bugs/2069526)와 [opam5968의 보안 담당자 설명](https://github.com/ocaml/opam/issues/5968)에 보고돼 있다. AppArmor 사용자 namespace 제한이 유력하나 사용자 VM의 진단 결과 전에는 확정하지 않는다. 공식 `bwrap-userns-restrict`는 자식의 capability를 제한하므로 첫 검사만 복구해도 중첩 Codex sandbox가 실패할 수 있다. 전역 sysctl/AppArmor 비활성화, bwrap 무제한 프로필, 검사 제거, VM 삭제를 안내하지 않는다. 최신 upstream 프로필은 ABI 차이도 있어 그대로 설치하지 않는다.
+
+다음 담당자는 사용자 진단 결과를 먼저 확인하고, 배포판 공식 제한 프로필 등 적용 범위를 검토한 뒤 실제 runner의 읽기 허용·쓰기 차단·네트워크 차단까지 검증한다. 첫 검사의 성공과 AI 실행 준비 완료를 구분한다. 이번 진단 도구는 모의 차단/중첩 실패/도구 없음·로그 비노출 및 bash 문법 검증을 통과했으며 사용자 Mac에서의 실행 결과는 대기다.
 
 2026-11-11 한국 시간. 사용자 요청: 나중에 “맥용 줘”라고 하면 즉시 전달할 설치 묶음을 미리 보관한다.
 

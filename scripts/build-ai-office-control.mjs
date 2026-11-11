@@ -25,6 +25,8 @@ root=pathlib.Path(sys.argv[1])
 with zipfile.ZipFile(root.parent/'ai-office-macos.zip','w',zipfile.ZIP_DEFLATED) as z:
  for file in sorted(root.iterdir()):
   if file.is_file(): z.write(file,'ai-office-macos/'+file.name)
+with zipfile.ZipFile(root.parent/'ai-office-mac-check.zip','w',zipfile.ZIP_DEFLATED) as z:
+ z.write(root/'7-check-sandbox.command','ai-office-mac-check/7-check-sandbox.command')
 `,mac],{stdio:'pipe'});
 
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
