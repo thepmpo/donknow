@@ -1,5 +1,7 @@
 # AI 사무실 — Windows 먼저, Mac도 준비
 
+2026-11-11 최신 Windows 시작: 최초 설치·로그인 이후에는 [추가 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 **0-open-office.cmd 하나만** 실행한다. 사무실·채팅 서버 자동 시작/재사용·최소화와 기본150% 이름·대사 확대를 제공한다. [상세·보존·검증](ai-office-control.md). 아래의2번→9번 수동 시작은 이전 안내다.
+
 2026-11-11. 사용자가 “PC에서 먼저 작업하고 나중에 클라우드에 인계”를 선택했다. 기존 클라우드 설치·데이터·인증은 그대로 보존한다. PC 설치는 별도 사무실이며 자동 동기화나 기존 업무/인증 복원을 뜻하지 않는다.
 
 ## Windows — 쉬운 시작

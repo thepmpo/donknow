@@ -1,5 +1,7 @@
 # AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
 
+2026-11-11 최신 Windows 시작: 최초 설치·로그인 이후에는 [추가 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 **0-open-office.cmd 하나만** 실행한다. 사무실·채팅 서버 자동 시작/재사용·최소화와 기본150% 이름·대사 확대를 제공한다. [상세·보존·검증](ai-office-control.md). 아래의2번→9번 수동 시작은 이전 안내다.
+
 2026-11-11 사용자 질문에 대한 현재 기능 기준이다. 후속 [업무 입력·보고서 확인·휴대폰 설정 파일](ai-office-control.md)을 추가했다. 아래의 범용 입력창 미연결 기록은 추가 파일 적용 전 상태이며 현재 입력창은 읽기 전용 요청을 지원한다. 사용자 Windows에서는 ready:true/authReady:true와 첫 읽기 전용 검토 started:true가 확인됐다. 결과 보고서·실제 모델 응답 성공은 아직 받지 못했으며 시작 성공과 완료 성공을 구분한다.
 
 ## 이름·머리 위 말풍선

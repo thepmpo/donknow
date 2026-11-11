@@ -9,7 +9,7 @@ with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
  for name in [*manifest['files'],'manifest.json']: z.write(base/name,name)
 `,base,path.join(install,'control-payload.zip')],{stdio:'pipe'});
 execFileSync('python3',['-c',`import sys,zipfile,pathlib
-root=pathlib.Path(sys.argv[1]); names=['9-open-office.cmd','10-phone-connect.cmd','open-control.ps1','connect-phone.ps1','install-control.py','control-payload.zip','CONTROL-README.txt']
+root=pathlib.Path(sys.argv[1]); names=['0-open-office.cmd','restart-control.py','9-open-office.cmd','10-phone-connect.cmd','open-control.ps1','connect-phone.ps1','install-control.py','control-payload.zip','CONTROL-README.txt']
 with zipfile.ZipFile(root.parent/'ai-office-control.zip','w',zipfile.ZIP_DEFLATED) as z:
  for name in names: z.write(root/name,'ai-office-control/'+name)
 with zipfile.ZipFile(root.parent/'ai-office-windows.zip','w',zipfile.ZIP_DEFLATED) as z:

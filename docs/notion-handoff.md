@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+최신 Windows 사무실 시작: **0-open-office.cmd 하나**로 기존 사무실과 채팅을 자동 시작/재사용하고 서버 창은 최소화합니다. 이름·대사 확대는 초기150%, 상단에서100~200% 조절합니다. [다운로드·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 사용자 PC 적용 성공은 미확인입니다.
+
 2026-11-11: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)를 사무실 안에 연결했습니다. 후속 요청은 이전 보고서와 연결된 별도 읽기 전용 업무이며 전체 원문/상태 검색을 제공합니다. [Mac용 준비 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 미리 제작했고 실제 Mac 설치/로그인은 미확인입니다.
 
 [업무 입력·보고서 확인·휴대폰 설정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md): 요청 입력/명시적 읽기 전용 실행/중지/보고서 확인 완료와 본인 전용 Tailscale Serve 추가 파일을 준비했습니다. 기존 미결 보고서를 읽고 제품 검토만 완료 처리하며 개발/배포는 승인하지 않습니다. Windows/실제 폰 연결과 새 모델 응답은 사용자 확인 대기입니다.
@@ -626,6 +628,11 @@
 - 메뉴만 뜨는 장면을 실제8810 프록시로 재현했다. Pixi의 blob worker가 CSP로 차단되는 것이 원인이며, 사무실 프록시에만 worker-src를 추가했다. canvas 존재만 검사한 이전 검증의 한계를 정정했다. [복구와 검증 기준](ai-office-control.md).
 - 업데이트는 주 사무실을 유지하고 입력 서버만 재시작한다. 기존 데이터·인증을 초기화하지 않는다.
 
+##### 2026-11-11 — 시작 간소화·이름과 대사 확대
+
+- 사용자 불편에 따라 [0번 시작 파일](ai-office-control.md) 하나로 기존 사무실/채팅 자동 시작·재사용·창 최소화와 검증된 구버전 입력 서버만 교체하도록 구현했다. WSL 전체 종료/원래 모델 프로세스 종료를 없애고 새 gateway는 진행 중 HTTP를 마친 뒤 종료한다.
+- 사무실 canvas 기본150%·선택100~200%·브라우저 저장을 추가했고 실제 브라우저에서 크기 증가와 방/캐릭터 표시를 확인했다. 기존8번 글꼴 패치가 사용자 PC에 적용됐다고 주장하지 않는다. 설치·인증·DB·기존 작업·복구 bundle은 보존했다.
+
 
 ### Git 커밋 이력
 
@@ -716,6 +723,7 @@ eeda2a0 Merge daily project record while preserving local office setup documenta
 08d01b1 Enlarge office labels and provide a task-safe Windows UI update
 ba28041 Add private office request UI, report confirmation and phone access setup
 948d9f3 Connect in-office task chat and instruction history; prepare Mac launchers
+444498d Fix blank office scene by allowing Pixi texture workers in native proxy
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1387,6 +1395,18 @@ state/control-requests/*.json은 private 요청·확인 기록이다. state/cont
 
 사무실 HTML/자산 프록시에만 `worker-src 'self' blob:`을 허용했다. 채팅·확인·소유자 연결 화면의 CSP는 확대하지 않는다. HTTP 회귀 테스트는 사무실에만 이 정책이 적용됨을 검사한다. 수정 후에는 실제 브라우저 캡처에서 방·가구·직원까지 그려지는지 확인한다. API 테스트/모의 채팅만으로 시각 검증을 대체하지 않는다. 기존 업무/DB/인증/캐릭터 설정은 변경하지 않는다.
 
+#### 2026-11-11 시작 파일 하나와 이름·대사 확대
+
+[최신 Windows 추가 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)을 압축 해제하고 **0-open-office.cmd 하나**를 실행한다. 최초 설치·로그인은 기존 절차로 완료되어 있어야 한다.9번도 같은 open-control.ps1을 호출하므로 수동2번 실행이 더 이상 필수는 아니다. 설치/로그인/외부 계정 설정을 자동 재실행하지 않는다.
+
+-8790이 건강한 주 사무실이면 재사용하고, 꺼져 있으면 기존 start.sh를 최소화된 PowerShell 자식 창에서 시작해 health를 기다린다.8810도 같은 버전이면 재사용한다. 시작 안내 창은 정상 시 자동으로 닫히며 서버 창2개는 최소화되어 유지된다. Windows 시작프로그램/백그라운드 서비스로 등록한 것은 아니다.
+- 구버전 입력 서버 교체는 restart-control.py로 확인한다.127.0.0.1:8810 LISTEN inode, 본인 UID, pinned Node 실제 실행 파일, 정확한 control/launch.mjs 인수, 해당 프로세스의 socket FD를 모두 확인한다. 하나만 일치할 때 pidfd를 열어 다시 검사하고 SIGTERM을 보낸다. 타 프로세스나 검증 실패 시 보존하고 중단한다.8790/모델 프로세스나 WSL 전체를 종료하지 않는다. SIGKILL/권한 확대/프로세스 이름 일괄 종료를 하지 않는다.
+- 새 입력 서버는 SIGTERM 후 새 HTTP 요청을 거부하고 websocket을 닫으며 이미 처리 중인 요청을 마친 후 종료한다.10초 안에 끝나지 않으면 강제 종료하지 않고 안내한다. 아주 오래된 기존 버전의 종료 동작은 해당 버전의 Node 기본 동작이며 실행 중인 요청의 응답이 끊길 수 있다. 실행 불명 요청은 재실행하지 말고 내 지시 상태를 확인한다.
+- 사무실 상단 **이름·대사 확대**에서100/125/150/175/200%를 고른다. 초기150%이며 같은 원본 브라우저 localStorage에 저장한다. 사무실 canvas만 확대하므로 채팅/인증 설정은 변경하지 않는다. 작은 창에서는 방 전체를 보려면 가로·세로 스크롤이 필요하다.
+- 이것은 이름·말풍선이 포함된 장면 확대다. 이전8번의 소스 글꼴 수정이 사용자 PC에 적용됐다고 추정하지 않는다. 기본 이름11px·대사12px 소스 패치와 장면 확대는 별개다. 사용자가 장면을 크게 보고 싶다는 이번 요청은 재빌드 없이 반영한다.
+
+검증: 실제 PowerShell 엔진+모의 WSL/health로 꺼진 주 서버 시작·구버전 입력 교체·실행 중 서버 재사용·타 앱 보존·공백 경로·창 최소화를 검사했다(`test/ai-office-launcher.ps1`). Python은 UID/실행 파일/인수/소켓 검증이 다른 서버를 거부함을 검사한다. 실제 로컬 사무실 브라우저에서 방·캐릭터 표시, 초기150%와200% 선택의 canvas 크기 증가를 확인했다. Windows 사용자 PC 적용 성공·기존8번 글꼴 수정 적용·실계정 AI 호출은 확인하지 않았다.
+
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
@@ -1423,6 +1443,8 @@ bash 구문, 공백이 있는 폴더의 모의 Lima copy/shell·브라우저 열
 ### 原文 / docs/ai-office-usage.md
 
 ### AI 사무실 — 글자 크기·휴대폰·평소 지시 방법
+
+2026-11-11 최신 Windows 시작: 최초 설치·로그인 이후에는 [추가 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 **0-open-office.cmd 하나만** 실행한다. 사무실·채팅 서버 자동 시작/재사용·최소화와 기본150% 이름·대사 확대를 제공한다. [상세·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 아래의2번→9번 수동 시작은 이전 안내다.
 
 2026-11-11 사용자 질문에 대한 현재 기능 기준이다. 후속 [업무 입력·보고서 확인·휴대폰 설정 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)을 추가했다. 아래의 범용 입력창 미연결 기록은 추가 파일 적용 전 상태이며 현재 입력창은 읽기 전용 요청을 지원한다. 사용자 Windows에서는 ready:true/authReady:true와 첫 읽기 전용 검토 started:true가 확인됐다. 결과 보고서·실제 모델 응답 성공은 아직 받지 못했으며 시작 성공과 완료 성공을 구분한다.
 
@@ -1563,6 +1585,8 @@ node scripts/ai-office-theme.mjs restore /workspace/ai-office/state/appearance-b
 
 ### AI 사무실 — Windows 먼저, Mac도 준비
 
+2026-11-11 최신 Windows 시작: 최초 설치·로그인 이후에는 [추가 파일](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 **0-open-office.cmd 하나만** 실행한다. 사무실·채팅 서버 자동 시작/재사용·최소화와 기본150% 이름·대사 확대를 제공한다. [상세·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 아래의2번→9번 수동 시작은 이전 안내다.
+
 2026-11-11. 사용자가 “PC에서 먼저 작업하고 나중에 클라우드에 인계”를 선택했다. 기존 클라우드 설치·데이터·인증은 그대로 보존한다. PC 설치는 별도 사무실이며 자동 동기화나 기존 업무/인증 복원을 뜻하지 않는다.
 
 #### Windows — 쉬운 시작
@@ -1696,6 +1720,8 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 [업무 입력/보고서/휴대폰 제어 모듈](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)의 소스·버전 해시·설치 패키지도 포함한다. control-requests의 사용자 요청·처리 기록은 개인 전달 범위에서 검토하되 control-access.key, private-access의 계정 연결과 API owner/OAuth 키는 자동 이전하지 않는다. 다음 환경에서 사용자 본인 인증으로 새로 연결한다. 실제 Windows/폰의 결과와 모의 테스트를 구분한다.
 
 2026-11-11 추가: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)는9번의8810 화면에서 제공한다. 기존 직원 채팅은 확인창으로 전달하며 자동 실행하지 않는다. 후속 업무는 원 보고서 digest와 parentTaskId를 기록한다. [Mac용 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 tools/ai-office/ai-office-macos.zip에 보관하며 요청 시 즉시 전달 가능하다. 실제 Mac 검증/기존 Windows 업무 이전은 미완료다.
+
+최신 Windows 실행은 **0-open-office.cmd 하나**다.2번→9번 수동 시작 안내는 이전 절차다. 주 서버 자동 시작/재사용, 구버전 gateway만 UID/실행 경로/소켓/pidfd로 검증해 교체하고 최소화한다. 사무실 상단 이름·대사 확대는 초기150%,100~200% 선택·브라우저 저장이며 소스 글꼴 수정과 구분한다. [새 시작·안전 경계·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
 ### 原文 / docs/ai-office-knowledge.md
 

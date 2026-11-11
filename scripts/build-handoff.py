@@ -36,6 +36,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+최신 Windows 사무실 시작: **0-open-office.cmd 하나**로 기존 사무실과 채팅을 자동 시작/재사용하고 서버 창은 최소화합니다. 이름·대사 확대는 초기150%, 상단에서100~200% 조절합니다. [다운로드·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 사용자 PC 적용 성공은 미확인입니다.
+
 2026-11-11: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)를 사무실 안에 연결했습니다. 후속 요청은 이전 보고서와 연결된 별도 읽기 전용 업무이며 전체 원문/상태 검색을 제공합니다. [Mac용 준비 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 미리 제작했고 실제 Mac 설치/로그인은 미확인입니다.
 
 [업무 입력·보고서 확인·휴대폰 설정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md): 요청 입력/명시적 읽기 전용 실행/중지/보고서 확인 완료와 본인 전용 Tailscale Serve 추가 파일을 준비했습니다. 기존 미결 보고서를 읽고 제품 검토만 완료 처리하며 개발/배포는 승인하지 않습니다. Windows/실제 폰 연결과 새 모델 응답은 사용자 확인 대기입니다.
