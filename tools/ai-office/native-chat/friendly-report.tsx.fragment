@@ -1,0 +1,85 @@
+
+type FriendlyOfficeReportSection = { key: string; title: string; paragraphs: string[]; hiddenParagraphs?: number };
+/** Read explicit report labels only. This parser never generates a conclusion or rewrites facts. */
+function parseFriendlyOfficeReport(content: string): { sections: FriendlyOfficeReportSection[]; olderFormat: boolean; technicalHidden: boolean } {
+  const labels: Record<string, { key: string; title: string }> = {
+    "한 줄 결론": { key: "conclusion", title: "한 줄 결론" },
+    "한줄 결론": { key: "conclusion", title: "한 줄 결론" },
+    "결론": { key: "conclusion", title: "결론" },
+    "핵심 결론": { key: "conclusion", title: "핵심 결론" },
+    "쉽게 말하면": { key: "conclusion", title: "쉽게 말하면" },
+    "지금 할 일": { key: "actions", title: "지금 할 일" },
+    "다음 할 일": { key: "actions", title: "다음 할 일" },
+    "다음 행동": { key: "actions", title: "다음 행동" },
+    "추천 행동": { key: "actions", title: "추천 행동" },
+    "우선 할 일": { key: "actions", title: "우선 할 일" },
+    "내가 결정할 것": { key: "decisions", title: "내가 결정할 것" },
+    "사용자가 결정할 것": { key: "decisions", title: "사용자가 결정할 것" },
+    "사용자 결정": { key: "decisions", title: "사용자 결정" },
+    "결정이 필요한 것": { key: "decisions", title: "결정이 필요한 것" },
+    "선택이 필요한 것": { key: "decisions", title: "선택이 필요한 것" },
+    "다음 선택지": { key: "options", title: "다음 선택지" },
+    "아직 확인하지 못한 것": { key: "unknown", title: "아직 확인하지 못한 것" },
+    "확인하지 못한 것": { key: "unknown", title: "확인하지 못한 것" },
+    "미확인": { key: "unknown", title: "보고서에 적힌 미확인 내용" },
+    "확인 필요": { key: "unknown", title: "확인이 필요한 내용" },
+    "완료되어 제외한 일": { key: "completed", title: "보고서에 적힌 완료 항목" },
+    "근거": { key: "technical", title: "근거" },
+    "읽은 문서·버전": { key: "technical", title: "읽은 문서·버전" },
+    "읽은 문서": { key: "technical", title: "읽은 문서" },
+    "기술 근거": { key: "technical", title: "기술 근거" },
+    "상세 근거": { key: "technical", title: "상세 근거" },
+  };
+  const labelNames = Object.keys(labels).sort((a, b) => b.length - a.length);
+  const escaped = labelNames.map(label => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  // Some old outputs put bold section labels in one paragraph. Split only those known labels.
+  const normalized = content.replace(new RegExp("(?=\\*\\*(?:" + escaped + ")[：:]?\\*\\*)", "g"), "\n\n");
+  const found = new Map<string, FriendlyOfficeReportSection>();
+  let current: { key: string; title: string } | null = null;
+  let buffer: string[] = [];
+  let technicalHidden = false;
+  const opaque = (text: string) => /\b[a-f0-9]{16,}\b|(?:\/workspace\/|\/run\/|(?:^|\s)(?:src|docs|server|mobile)\/[\w./-]+)|\b(?:Revision|sha256|sourceHead|permissionDigest)\b/i.test(text);
+  function flush() {
+    const text = buffer.join("\n").trim(); buffer = [];
+    if (!text || !current) return;
+    if (current.key === "technical") { technicalHidden = true; return; }
+    // Keep a mixed technical paragraph intact in the original rather than cutting away qualifiers.
+    const paragraphs = text.split(/\n\s*\n/).map(value => value.trim()).filter(Boolean);
+    for (const paragraph of paragraphs) {
+      if (opaque(paragraph)) { technicalHidden = true; const section: FriendlyOfficeReportSection = found.get(current.key) || { key: current.key, title: current.title, paragraphs: [] }; section.hiddenParagraphs = (section.hiddenParagraphs || 0) + 1; found.set(current.key, section); continue; }
+      const section = found.get(current.key) || { key: current.key, title: current.title, paragraphs: [] };
+      section.paragraphs.push(paragraph); found.set(current.key, section);
+    }
+  }
+  for (const line of normalized.split(/\r?\n/)) {
+    const plain = line.replace(/^\s*#{1,6}\s*/, "").replace(/^\s*\d+[.)]\s+/, "").replace(/\*\*/g, "").trim();
+    const label = labelNames.find(name => plain === name || plain.startsWith(name + ":") || plain.startsWith(name + "："));
+    if (label) {
+      flush(); current = labels[label];
+      const rest = plain.slice(label.length).replace(/^[：:]\s*/, "").trim();
+      if (rest) buffer.push(rest);
+    } else if (current) buffer.push(line);
+  }
+  flush();
+  const order = ["conclusion", "actions", "decisions", "options", "unknown", "completed"];
+  return { sections: order.flatMap(key => found.has(key) ? [found.get(key)!] : []), olderFormat: !found.has("conclusion") || !found.has("actions"), technicalHidden };
+}
+
+export function FriendlyOfficeReport({ content, taskTitle }: { content: string; taskTitle?: string }) {
+  const report = parseFriendlyOfficeReport(content);
+  return <section aria-label="읽기 쉬운 보고서" className="min-w-0 space-y-4 text-sm leading-7">
+    {taskTitle && <p className="break-words text-base font-semibold">{taskTitle}</p>}
+    {report.olderFormat && <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm leading-6" role="note">이전 보고서라 핵심이 따로 정리되어 있지 않아요. 원문은 아래에서 볼 수 있어요.</p>}
+    {report.sections.map(section => <section key={section.key} aria-label={section.title} className="min-w-0 rounded-xl border border-slate-500/30 p-3">
+      <h4 className="mb-2 text-base font-semibold">{section.title}</h4>
+      <div className="space-y-3 break-words">{!!section.hiddenParagraphs && <p className="text-sm leading-6 opacity-80">이 항목은 설명과 조건이 함께 있어요. 빠뜨리지 않도록 아래 원문에서 확인해주세요.</p>}{section.paragraphs.map((paragraph, index) => <div key={index} className="min-w-0 [overflow-wrap:anywhere]"><MessageContent content={paragraph}/></div>)}</div>
+    </section>)}
+    {!report.sections.length && <p className="text-sm leading-6">아직 결론과 할 일이 따로 정리되어 있지 않아요. 아래에서 보고서 전체를 볼 수 있어요.</p>}
+    {report.technicalHidden && <p className="text-xs leading-5 opacity-75">문서 경로와 버전은 아래 근거에 모았어요.</p>}
+    <details className="min-w-0 rounded-xl border border-slate-500/30 p-3">
+      <summary className="cursor-pointer text-sm font-semibold">근거와 원문 전체 보기</summary>
+      <p className="my-2 text-xs leading-5 opacity-75">저장된 원문 그대로입니다. 위 항목에 표시되지 않은 내용도 모두 포함합니다.</p>
+      <div className="min-w-0 whitespace-normal break-words [overflow-wrap:anywhere]"><MessageContent content={content}/></div>
+    </details>
+  </section>;
+}

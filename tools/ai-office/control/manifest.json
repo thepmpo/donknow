@@ -1,11 +1,12 @@
 {
   "version": 1,
-  "packageId": "c21f437787aaf8043d36abec0b5fe4921d73d53ee73ffa8deb54322851e55532",
+  "packageId": "580f3aa357a7a9bb4a314b71101890b2eefd8ce1c6b7fa7d2ed9dc85b4dcd52c",
   "files": {
     "lib/access.mjs": "bf878e810a26bbb9470c717983e83203c99180efcdce4b2e2e2e97f83d557494",
     "lib/ai-office-client.mjs": "edd44e50b591ebf73a9b658685f77bbd6ffe3b181a43998fea54af1c875497d6",
-    "lib/controller.mjs": "a4af2474378b71096fd026c2c777361f46a095a56e4301a9ea013eb143c9abd3",
-    "server.mjs": "12ac116e89f328ecb145d730b590bc928aceabc5eb0cf315cca7b27030631179",
+    "lib/controller.mjs": "c1d9f5aa36fb145a2dce49dc4783a27604ba283aad4da6ea75dcab50ae5d22e1",
+    "lib/team.mjs": "0704c8393f7ff4f4c63fe5b845a0c426cb2408527a7750718642d7a96e949d55",
+    "server.mjs": "698df76086bf4757eac099cc6594f17ae85bda627a652b787e6226611fc377aa",
     "ui.html": "60a3d70f80da5e8f67d15eb5273ee6fcdaf5b19be72a3303552e2ab637a9fc0d"
   }
 }

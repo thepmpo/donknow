@@ -1,7 +1,7 @@
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
 const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),base=path.join(repo,'tools/ai-office/control'),install=path.join(repo,'tools/ai-office/install');
 fs.copyFileSync(path.join(repo,'scripts/lib/ai-office-client.mjs'),path.join(base,'lib/ai-office-client.mjs'));
-const files={};for(const name of ['lib/access.mjs','lib/ai-office-client.mjs','lib/controller.mjs','server.mjs','ui.html'])files[name]=createHash('sha256').update(fs.readFileSync(path.join(base,name))).digest('hex');
+const files={};for(const name of ['lib/access.mjs','lib/ai-office-client.mjs','lib/controller.mjs','lib/team.mjs','server.mjs','ui.html'])files[name]=createHash('sha256').update(fs.readFileSync(path.join(base,name))).digest('hex');
 const manifest={version:1,packageId:createHash('sha256').update(JSON.stringify(files)).digest('hex'),files};fs.writeFileSync(path.join(base,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 execFileSync('python3',['-c',`import sys,zipfile,json,pathlib
 base=pathlib.Path(sys.argv[1]); target=pathlib.Path(sys.argv[2]); manifest=json.loads((base/'manifest.json').read_text())

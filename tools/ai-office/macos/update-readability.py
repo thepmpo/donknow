@@ -13,7 +13,7 @@ import subprocess
 import sys
 import uuid
 
-FILES = {'src/App.tsx', 'src/app/useAppLabels.ts', 'src/components/ChatPanel.tsx', 'src/components/DecisionInboxModal.tsx', 'src/components/chat-panel/ChatComposer.tsx', 'src/components/chat-panel/model.ts', 'src/components/office-view/buildScene-break-room.ts', 'src/components/office-view/buildScene-department-agent.ts', 'src/components/office-view/buildScene-departments.ts', 'src/components/office-view/model.ts', 'src/components/office-view/useOfficeDeliveryEffects.ts'}
+FILES = {'src/App.tsx', 'src/app/useAppLabels.ts', 'src/components/ChatPanel.tsx', 'src/components/DecisionInboxModal.tsx', 'src/components/MessageContent.tsx', 'src/components/chat-panel/ChatComposer.tsx', 'src/components/chat-panel/ChatMessageList.tsx', 'src/components/chat-panel/model.ts', 'src/components/office-view/buildScene-break-room.ts', 'src/components/office-view/buildScene-department-agent.ts', 'src/components/office-view/buildScene-departments.ts', 'src/components/office-view/model.ts', 'src/components/office-view/useOfficeDeliveryEffects.ts'}
 
 
 def digest(data):
