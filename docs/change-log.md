@@ -1,5 +1,11 @@
 # 변경 기록
 
+## 2026-11-11 — 실제 Windows 로그인 보조 파일 처리 v2
+
+- 사용자 PC의 파일 이름 목록으로 auth.json 외 tmp/log/auth.lock/auth.json.lock이 남는 것을 확인했다. v1은 tmp만 처리해 실패했으므로 [독립 v2 수정 ZIP](ai-office-login-repair.md)을 제공한다.
+- 4개 보조 항목만 private 백업하고 인증 바이트·inode·mtime·권한과 DB/설정을 보존한다. 실행 중인 로그인/열린 파일·advisory lock·다른 설정/심볼릭 링크는 거부하고 안전한 reasonCode를 출력한다. Worker auth-only 정책은 그대로다.
+- 실제 목록 재현과 잠금/로그 사용 중 거부를 검증했다. 실제 PC의 authReady와 모델 응답은 수정 후 결과 대기다.
+
 ## 2026-11-11 — 공식 Codex 로그인 임시 폴더 오판 수정
 
 - Windows 실제 진단의 office_provider_home_not_fresh를 공식 Codex0.167.0/가짜 인증/네트워크 차단으로 재현했다. 공식 CLI가 .codex/tmp를 생성해 사무실 auth-only 검사가 거부한 설치 도구 오류다.

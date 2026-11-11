@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-[Windows 로그인 오류 수정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md): 공식 Codex가 만든 임시 폴더를 인증 실패로 오판한 문제를 재현해 독립 수정 ZIP을 준비했습니다. 인증/키/DB/worker 정책을 보존하고 임시 폴더만 백업합니다. 실제 PC의 인증·첫 AI 응답은 수정 후 확인 대기입니다.
+[Windows 로그인 오류 수정](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md): 공식 Codex가 만든 임시/로그/잠금 보조 파일을 인증 실패로 오판한 문제를 확인해 v2 독립 수정 ZIP을 준비했습니다. 인증/키/DB/worker 정책을 보존하고 사용 중이 아닌 보조 파일만 백업합니다. 실제 PC의 인증·첫 AI 응답은 수정 후 확인 대기입니다.
 
 [주술회전 직원 테마](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-jjk-theme.md): 직원14명의 생성 스프라이트를 적용하고 실제 화면/PNG·복원/재적용을 확인했습니다. 역할·모델·업무는 유지하며 Windows 최신 패키지에 적용 경로를 추가했습니다. 실제 Windows/Mac 검증과 AI 업무 실행 성공을 뜻하지 않습니다.
 
@@ -63,6 +63,12 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — 실제 Windows 로그인 보조 파일 처리 v2
+
+- 사용자 PC의 파일 이름 목록으로 auth.json 외 tmp/log/auth.lock/auth.json.lock이 남는 것을 확인했다. v1은 tmp만 처리해 실패했으므로 [독립 v2 수정 ZIP](ai-office-login-repair.md)을 제공한다.
+- 4개 보조 항목만 private 백업하고 인증 바이트·inode·mtime·권한과 DB/설정을 보존한다. 실행 중인 로그인/열린 파일·advisory lock·다른 설정/심볼릭 링크는 거부하고 안전한 reasonCode를 출력한다. Worker auth-only 정책은 그대로다.
+- 실제 목록 재현과 잠금/로그 사용 중 거부를 검증했다. 실제 PC의 authReady와 모델 응답은 수정 후 결과 대기다.
 
 #### 2026-11-11 — 공식 Codex 로그인 임시 폴더 오판 수정
 
@@ -578,6 +584,10 @@
 
 [인증 보존 수정 파일](ai-office-login-repair.md): 공식 CLI의 .codex/tmp 생성으로 로그인 폴더 검사가 실패하는 문제를 재현했다. 인증/키/DB를 유지하고 임시 폴더만 백업한다. 실제 CLI 및 JS/Python/PowerShell 검증을 수행했고 사용자 PC의 수정 후 authReady·모델 응답은 미확인이다.
 
+#### 2026-11-11 — Windows 로그인 수정 v2
+
+[로그인 수정 v2](ai-office-login-repair.md): 실제 PC의 tmp/log/auth.lock/auth.json.lock 목록을 반영했다. 인증 파일은 그대로 두고 사용 중이 아닌 보조 파일만 백업한다. 활성 프로세스/잠금·잘못된 경로/다른 설정을 거부하고 비밀 없는 reasonCode를 표시한다. PC의 인증 확인/모델 응답은 결과 대기다.
+
 
 ### Git 커밋 이력
 
@@ -663,6 +673,7 @@ f978196 docs: daily project update [skip ci]
 bdd0616 Prepare Windows and Mac office launchers and complete work handoff packages
 eeda2a0 Merge daily project record while preserving local office setup documentation
 33c3587 Apply reversible Jujutsu Kaisen character theme to the AI office
+34d5902 Preserve Codex login while backing up official temporary CLI artifacts
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1246,8 +1257,8 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 #### 지금 사용자가 할 일
 
-1. [로그인 수정 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-login-fix.zip)
-2. 압축을 풀고 **`7-fix-login.cmd`**를 실행한다. 사무실 서버 창은 켜 둔다.
+1. [로그인 수정 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-login-fix-v2.zip)
+2. 압축을 풀고 **`7-fix-login.cmd`**를 실행한다. 사무실 서버 창은 켜 두고, 별도의 Codex 로그인 절차는 완료된 상태에서 실행한다.
 3. 결과에 **`authReady: true`**가 나오면 원래 설치 폴더의 **`4-first-review.cmd`**를 실행한다.
 4. 중단하거나 false가 나오면 오류 문구만 전달한다. 인증 파일·비밀번호·토큰·일회 코드를 전달하지 않는다.
 
@@ -1259,7 +1270,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 #### 수정과 보존 범위
 
-- 독립 Python 수정기는 사무실 전용 provider-home의 `.codex/tmp`만 `state/provider-cache-backups/` 아래 고유한 백업 폴더로 이동한다. 임시 파일을 삭제하지 않는다.
+- v2 독립 Python 수정기는 사용자 PC에서 확인된 `.codex/tmp`, `.codex/log`, `auth.lock`, `auth.json.lock`만 `state/provider-cache-backups/` 아래 고유한 백업 폴더로 이동한다. 파일 내용을 출력하지 않고 삭제하지 않는다.
 - auth.json의 바이트/권한/위치, `.env`, 암호화 키, SQLite를 보존한다. 파일 내용을 출력하지 않고 이동 전후 해시 비교 결과만 내부 검사한다.
 - provider-home은 사무실 상태 폴더 안이어야 하며 심볼릭 링크/범위 밖 경로는 거부한다. 알 수 없는 config.toml/다른 파일이 있으면 덮거나 지우지 않고 중단한다.
 - worker에는 기존처럼 auth.json 하나만 읽기 전용 제공한다. 임시 폴더/설정/다른 프로젝트를 worker에 마운트하는 예외를 추가하지 않는다. vendor 정책과 pinned patch는 변경하지 않는다.
@@ -1273,6 +1284,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - Windows 실기기의 실제 authReady 및 첫 모델 응답은 수정 파일 실행 후 사용자 결과로 확인해야 한다. 네트워크 도달이나 fake-auth 진단 성공을 실제 로그인 성공으로 기록하지 않는다.
 
 [첫 실행](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md) · [Windows 설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-local-install.md) · [인수인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md)
+
+#### v2 추가 확인 — 실제 Windows 파일 목록
+
+v1은 login status에서 생성된 tmp만 처리해 실제 기기 로그인에서 남은 log/auth.lock/auth.json.lock을 거부했다. 사용자 제공 파일 이름 목록으로 차이를 확인했다. v2는 이4개 보조 항목만 명시적으로 처리하며 config.toml/다른 항목은 계속 거부한다. 잠금 파일의 advisory lock과 /proc의 열린 파일 경로를 확인해 로그인/Codex가 사용하는 동안에는 이동하지 않는다. 새 위치에는0700 권한을 적용하며 auth.json의 내용·inode·mtime·권한은 보존한다. 이동 중 실패하면 옮긴 보조 항목을 원래 위치로 되돌리되 새로 생긴 파일을 덮지는 않는다.
+
+중단 시 이제 비밀값 없는 reasonCode를 표시한다. `office_auth_provider_in_use`면 로그인 과정이 끝난 후 다시 시도한다. `office_auth_file_missing_login_required`면 아직 사무실 인증 파일이 없어3-login을 다시 진행해야 한다. 알 수 없는 항목/경로는 내용을 요청하지 않고 이름과 진단 코드로 검토한다.
+
+실제 Windows와 같은4개 보조 항목, 잠금 유지 중 거부, 별도 프로세스가 로그를 여는 동안 거부, 인증 바이트/inode/mtime 유지·백업 내용 보존·멱등성·안전한 오류 코드 출력을 회귀 검증했다. 사용자 PC의 v2 실행 후 authReady와 모델 응답은 여전히 확인 대기다.
 
 ### 原文 / docs/ai-office-jjk-theme.md
 
@@ -1399,7 +1418,7 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 
 #### 로그인은 했는데 실행이 거부되는 경우
 
-`office_provider_home_not_fresh`는 [별도 로그인 수정 ZIP](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md)의 `7-fix-login.cmd`로 처리한다. 인증을 그대로 두고 공식 Codex의 임시 폴더만 백업한다. 서버를 켠 상태로 진단하고 authReady:true 후 검토를 실행한다. 재설치/키 재생성은 하지 않는다.
+`office_provider_home_not_fresh`는 [별도 로그인 수정 ZIP](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-login-repair.md)의 `7-fix-login.cmd`로 처리한다. 인증을 그대로 두고 공식 Codex의 임시·로그·잠금 보조 파일만 백업한다. 서버를 켠 상태로 진단하고 authReady:true 후 검토를 실행한다. 재설치/키 재생성은 하지 않는다.
 
 ### 原文 / docs/ai-office-handoff.md
 

@@ -4,8 +4,8 @@
 
 ## 지금 사용자가 할 일
 
-1. [로그인 수정 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-login-fix.zip)
-2. 압축을 풀고 **`7-fix-login.cmd`**를 실행한다. 사무실 서버 창은 켜 둔다.
+1. [로그인 수정 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-login-fix-v2.zip)
+2. 압축을 풀고 **`7-fix-login.cmd`**를 실행한다. 사무실 서버 창은 켜 두고, 별도의 Codex 로그인 절차는 완료된 상태에서 실행한다.
 3. 결과에 **`authReady: true`**가 나오면 원래 설치 폴더의 **`4-first-review.cmd`**를 실행한다.
 4. 중단하거나 false가 나오면 오류 문구만 전달한다. 인증 파일·비밀번호·토큰·일회 코드를 전달하지 않는다.
 
@@ -17,7 +17,7 @@
 
 ## 수정과 보존 범위
 
-- 독립 Python 수정기는 사무실 전용 provider-home의 `.codex/tmp`만 `state/provider-cache-backups/` 아래 고유한 백업 폴더로 이동한다. 임시 파일을 삭제하지 않는다.
+- v2 독립 Python 수정기는 사용자 PC에서 확인된 `.codex/tmp`, `.codex/log`, `auth.lock`, `auth.json.lock`만 `state/provider-cache-backups/` 아래 고유한 백업 폴더로 이동한다. 파일 내용을 출력하지 않고 삭제하지 않는다.
 - auth.json의 바이트/권한/위치, `.env`, 암호화 키, SQLite를 보존한다. 파일 내용을 출력하지 않고 이동 전후 해시 비교 결과만 내부 검사한다.
 - provider-home은 사무실 상태 폴더 안이어야 하며 심볼릭 링크/범위 밖 경로는 거부한다. 알 수 없는 config.toml/다른 파일이 있으면 덮거나 지우지 않고 중단한다.
 - worker에는 기존처럼 auth.json 하나만 읽기 전용 제공한다. 임시 폴더/설정/다른 프로젝트를 worker에 마운트하는 예외를 추가하지 않는다. vendor 정책과 pinned patch는 변경하지 않는다.
@@ -31,3 +31,11 @@
 - Windows 실기기의 실제 authReady 및 첫 모델 응답은 수정 파일 실행 후 사용자 결과로 확인해야 한다. 네트워크 도달이나 fake-auth 진단 성공을 실제 로그인 성공으로 기록하지 않는다.
 
 [첫 실행](ai-office-ready.md) · [Windows 설치](ai-office-local-install.md) · [인수인계](ai-office-handoff.md)
+
+## v2 추가 확인 — 실제 Windows 파일 목록
+
+v1은 login status에서 생성된 tmp만 처리해 실제 기기 로그인에서 남은 log/auth.lock/auth.json.lock을 거부했다. 사용자 제공 파일 이름 목록으로 차이를 확인했다. v2는 이4개 보조 항목만 명시적으로 처리하며 config.toml/다른 항목은 계속 거부한다. 잠금 파일의 advisory lock과 /proc의 열린 파일 경로를 확인해 로그인/Codex가 사용하는 동안에는 이동하지 않는다. 새 위치에는0700 권한을 적용하며 auth.json의 내용·inode·mtime·권한은 보존한다. 이동 중 실패하면 옮긴 보조 항목을 원래 위치로 되돌리되 새로 생긴 파일을 덮지는 않는다.
+
+중단 시 이제 비밀값 없는 reasonCode를 표시한다. `office_auth_provider_in_use`면 로그인 과정이 끝난 후 다시 시도한다. `office_auth_file_missing_login_required`면 아직 사무실 인증 파일이 없어3-login을 다시 진행해야 한다. 알 수 없는 항목/경로는 내용을 요청하지 않고 이름과 진단 코드로 검토한다.
+
+실제 Windows와 같은4개 보조 항목, 잠금 유지 중 거부, 별도 프로세스가 로그를 여는 동안 거부, 인증 바이트/inode/mtime 유지·백업 내용 보존·멱등성·안전한 오류 코드 출력을 회귀 검증했다. 사용자 PC의 v2 실행 후 authReady와 모델 응답은 여전히 확인 대기다.

@@ -176,3 +176,7 @@
 ## 2026-11-11 — Windows 로그인 확인 오류
 
 [인증 보존 수정 파일](ai-office-login-repair.md): 공식 CLI의 .codex/tmp 생성으로 로그인 폴더 검사가 실패하는 문제를 재현했다. 인증/키/DB를 유지하고 임시 폴더만 백업한다. 실제 CLI 및 JS/Python/PowerShell 검증을 수행했고 사용자 PC의 수정 후 authReady·모델 응답은 미확인이다.
+
+## 2026-11-11 — Windows 로그인 수정 v2
+
+[로그인 수정 v2](ai-office-login-repair.md): 실제 PC의 tmp/log/auth.lock/auth.json.lock 목록을 반영했다. 인증 파일은 그대로 두고 사용 중이 아닌 보조 파일만 백업한다. 활성 프로세스/잠금·잘못된 경로/다른 설정을 거부하고 비밀 없는 reasonCode를 표시한다. PC의 인증 확인/모델 응답은 결과 대기다.
