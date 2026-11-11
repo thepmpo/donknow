@@ -11,7 +11,13 @@
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 최신 사용자 확인으로 f76172d의 Render 배포와 TestFlight 1.0.0 (12)가 확인됐습니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
-### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
+### 2026-11-12 최신 이어받기 — 이 채팅과 AI 사무실
+
+[양방향 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)을 공식 지침에 추가했습니다. 이 채팅의 작업자는 수정 전에 사무실이 GitHub main에 반영한 코드·문서·검증 기록을 확인합니다. 여기서 수정한 뒤에는 사무실에서 **최신 코드 받기가 필요한지 반드시 안내**합니다. Mac 안의 미게시 코드·채팅·보고서·추가 문서는 자동으로 공유되지 않으며, 실제 작업 사본의 변경과 검증을 확인한 인계가 필요합니다. 설치된 사무실 프로그램 업데이트와 프로젝트 코드 갱신도 구분합니다.
+
+사용자는 Tailscale Serve 허용 완료 화면과 **휴대폰 사무실 접속 성공**을 확인했습니다. 모바일 글씨가 작다는 피드백도 받았습니다. Wi-Fi를 끈 외부 모바일 데이터 접속·다른 컴퓨터 접속·11번 개발 업데이트·12번 GitHub 로그인·실제 코드 게시/배포는 별도 확인입니다. 문서고는 스킬 목록, 상단 문서함은 제품 자료, 보고서는 업무 결과입니다. 다음 날짜별 기록은 당시 상태입니다.
+
+### 2026-11-10 이어받기 — 톤 합의와 제품 원칙
 
 2026-11-11 휴대폰 연결: [Mac용 10번 파일·쉬운 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 준비했습니다. 기존 사무실을 재사용하고 같은 Tailscale 계정에만 HTTPS로 연결합니다. 설정/호스트 모의15개 통과이며 실제 계정 로그인·HTTPS 동의·외부 폰 접속은 확인 전입니다. 코드 수정·배포도 [별도 설치·권한·검증 문서](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)에 따라 연결했습니다. 전용 작업 사본 수정→실제 격리 검사→확인한 GitHub 반영→정확한 커밋의 Render 배포 순서이며, 사용자 Mac 적용·GitHub 로그인·Render 비밀 설정·실제 모델과 배포는 확인 전입니다. 기존 원본/인증/업무는 보존합니다.
 
@@ -81,6 +87,16 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-12 — 이 채팅과 AI 사무실의 양방향 이어받기 확정
+
+사용자는 여기서 수정한 뒤 사무실 갱신이 필요하다는 안내를 매번 요구했고, 사무실의 수정도 이 채팅 작업자가 알고 이어가야 한다고 확인했다. [공통 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)과 AGENTS 지침을 추가했다. 작업 전 GitHub 최신 main·실제 diff·변경/검증 기록을 먼저 확인하고, 작업 후 프로젝트 최신 코드 받기와 사무실 프로그램 업데이트를 구분해 안내한다. 현재 자동 감시/실시간 대화 공유를 새로 구현한 것은 아니다.
+
+미게시 작업 사본·채팅·보고서·문서함 자료는 자동 공개되지 않는다. 기본 인계 생성기가 모든 격리 작업 사본의 미커밋 변경을 수집하지 않는 한계와 실제 patch/파일·검증 확인 요구를 명시했다. 문서고(스킬 목록)·문서함(제품 자료)·보고서(업무 결과)도 구분했다.
+
+사용자는 Tailscale Serve 허용 완료 화면과 휴대폰 사무실 접속 성공을 확인했다. 모바일에서 작게 보인다는 피드백을 기록했다. Wi-Fi를 끈 모바일 데이터 접속·다른 컴퓨터 접속·11번 개발 업데이트·12번 GitHub 로그인·실제 코드 게시/배포는 미확인이다. 원격 main은 변경 전 fetch해 로컬 기준과 일치함을 확인했다.
+
+검증: 기존 공개 문서 댓글 회귀1개, 일일 문서 집계 회귀1개 통과. 인계/공개 HTML 생성·새 문서 포함·로컬 링크·diff 검사를 확인한다. 앱/설치 패키지/DB/인증/복구 bundle은 변경하지 않는다. Render 실제 배포는 실행하지 않으며 GitHub 저장과 공개 반영은 구분한다.
 
 #### 2026-11-11 — 승인한 코드 수정·검사·GitHub 반영·Render 배포 연결
 
@@ -483,6 +499,16 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 ### 매일 개발 정리
 
+#### 2026-11-12 — 이 채팅과 AI 사무실의 양방향 이어받기 확정
+
+사용자는 여기서 수정한 뒤 사무실 갱신이 필요하다는 안내를 매번 요구했고, 사무실의 수정도 이 채팅 작업자가 알고 이어가야 한다고 확인했다. [공통 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)과 AGENTS 지침을 추가했다. 작업 전 GitHub 최신 main·실제 diff·변경/검증 기록을 먼저 확인하고, 작업 후 프로젝트 최신 코드 받기와 사무실 프로그램 업데이트를 구분해 안내한다. 현재 자동 감시/실시간 대화 공유를 새로 구현한 것은 아니다.
+
+미게시 작업 사본·채팅·보고서·문서함 자료는 자동 공개되지 않는다. 기본 인계 생성기가 모든 격리 작업 사본의 미커밋 변경을 수집하지 않는 한계와 실제 patch/파일·검증 확인 요구를 명시했다. 문서고(스킬 목록)·문서함(제품 자료)·보고서(업무 결과)도 구분했다.
+
+사용자는 Tailscale Serve 허용 완료 화면과 휴대폰 사무실 접속 성공을 확인했다. 모바일에서 작게 보인다는 피드백을 기록했다. Wi-Fi를 끈 모바일 데이터 접속·다른 컴퓨터 접속·11번 개발 업데이트·12번 GitHub 로그인·실제 코드 게시/배포는 미확인이다. 원격 main은 변경 전 fetch해 로컬 기준과 일치함을 확인했다.
+
+검증: 기존 공개 문서 댓글 회귀1개, 일일 문서 집계 회귀1개 통과. 인계/공개 HTML 생성·새 문서 포함·로컬 링크·diff 검사를 확인한다. 앱/설치 패키지/DB/인증/복구 bundle은 변경하지 않는다. Render 실제 배포는 실행하지 않으며 GitHub 저장과 공개 반영은 구분한다.
+
 #### 2026-11-11 — 승인한 코드 수정·검사·GitHub 반영·Render 배포 연결
 
 [개발 연결 파일·사용법·계정 단계·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 전역 잠금은 유지하고 승인한 작업만 전용 사본에서 수정한다. 최신 코드/문서 기준을 확인해 fast-forward로 맞추고, 변경 후 별도 격리 검사와 정확한 변경 확인을 거쳐 일반 push한다. 로컬 소스와 작업 사본을 보존하고 게시된 과거 사본도 영수증과 정확히 일치할 때만 다음 동기화에 허용한다. Render는 별도 승인한 정확한 main SHA와 기존 무료 서비스만 대상으로 하며 비밀이 있는 job에서 프로젝트 코드를 실행하지 않는다. 모바일 main 반영에 따른 기존 TestFlight 자동화 가능성을 확인창에 알린다.
@@ -853,6 +879,7 @@ a678c55 Resume Mac installation with scoped office AppArmor support
 7944058 Record user-confirmed Mac office installation completion
 18f59e7 Add one-click Mac office launcher preserving existing services
 1582eb8 Add private phone access setup for the existing Mac office
+9210493 Connect approved office development, validation, publication and deployment
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1300,6 +1327,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - `docs/notion-handoff.md`의 최신 상태 표와 `docs/remaining-activation.md`를 먼저 읽고, 현재 코드·커밋·실제 배포 상태를 확인한다.
 - 문서의 초기 단계 기록과 최신 기능이 다르면 최신 상태 표와 실제 코드/검증을 기준으로 한다. 구현, 자동 테스트, 실제 사용자 확인, 미확인 항목을 구분한다.
 
+## 이 채팅과 AI 사무실의 양방향 인계 — 2026-11-12
+
+- 사용자는 이 채팅에서 수정한 뒤 사무실에 가져와야 한다는 안내를 매번 요구했다. [공통 이어받기 기준](docs/ai-office-shared-work.md)을 따른다. 코드·문서 작업의 완료 답변에는 사무실 동기화 필요 여부와 실제 버튼/업데이트 파일 링크를 반드시 적는다. 단순 질의응답에는 불필요한 갱신을 요구하지 않는다.
+- 이 채팅/저장소 작업자는 수정 전에 작업 트리를 확인하고 `origin/main`을 fetch해 사무실이 GitHub에 반영한 커밋·변경 문서·실제 diff를 먼저 읽는다. 로컬 작업/다른 작업자 변경을 보존해 합치며 강제 push/reset하지 않는다. 접근이 실패하면 최신 상태를 확인했다고 하지 않는다. 사무실의 네트워크 격리 실행기는 이 지침을 근거로 직접 fetch/push하지 않고 승인된 준비/게시 경로를 사용한다.
+- 각 작업자는 변경 파일과 이유, 실제 검사 결과, 실패/미실행 검사, 남은 일과 배포 여부를 문서와 보고서에 기록한다. 사무실에서 작성한 코드는 변경/검사 결과에 대한 사용자 확인 후에만 GitHub에 반영한다. 이 채팅에서 반영한 프로젝트 변경은 사무실의 `전체 대화 → 코드 수정 → 최신 코드 확인 → 최신 코드 받기`로 가져오게 안내한다.
+- GitHub에 없는 사용자 Mac의 미반영 코드·채팅·보고서·문서함 자료를 읽었다고 하지 않는다. 필요한 경우 관련 보고서와 실제 작업 사본의 변경 파일/patch를 확인한 인계가 필요하다. 기본 인계 생성기가 모든 격리 작업 사본을 자동 수집한다고 가정하지 않는다. 공개 저장 여부는 자료 소유자의 범위에 따른다.
+- 프로젝트 코드/문서 갱신과 설치된 사무실 프로그램 갱신은 다르다. 사무실 UI·실행기·제어 모듈을 바꿨다면 필요한 설치 파일과 적용 순서도 알린다. 진행 중 업무/승인/미반영 변경을 덮거나, 단순 동기화를 실제 모델 실행·Render 배포로 보고하지 않는다.
+
 ## 사용자 의도와 제품
 
 - iPhone 우선 개인 비서다. dot 같은 대화→정리→실행 흐름을 지향하되 기존 ChatGPT 설정을 이식하는 작업은 아니다.
@@ -1427,6 +1462,153 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 原文 / docs/ai-office-shared-work.md
+
+### 이 채팅과 AI 사무실이 서로 이어서 일하는 방법
+
+2026-11-12 · 한국 시간. 사용자 요청: 여기서 수정한 뒤 사무실에 가져와야 한다는 안내를 매번 하고, 사무실에서 바꾼 내용도 이 채팅의 작업자가 알고 이어서 진행한다.
+
+#### 쉬운 사용 기준
+
+**GitHub에 저장한 코드와 변경 기록을 양쪽의 공통 기준으로 쓴다.** 서로의 대화나 기억이 실시간으로 합쳐지는 기능은 현재 없다.
+
+| 작업한 곳 | 상대방이 이어받는 순서 |
+|---|---|
+| 이 채팅 | 코드 수정·검사 → 변경 기록과 함께 GitHub 반영 → 사무실에서 최신 코드 받기 → 다음 업무 시작 |
+| AI 사무실 | 코드 수정·검사 → 사용자가 결과를 확인하고 GitHub 반영 → 이 채팅의 작업자가 최신 main과 변경 기록을 읽고 이어서 작업 |
+
+사용자가 여기서 다시 일을 맡길 때 사무실의 코드를 일일이 설명할 필요는 없다. 이 채팅의 작업자가 먼저 원격 최신 커밋과 문서를 확인한다. 단, GitHub에 올리지 않은 자료는 별도로 전달받아야 한다. 백그라운드에서 사무실을 계속 감시하거나 사용자 Mac에 자동 접속하는 것은 아니다.
+
+#### 여기서 수정한 뒤 꼭 알려줄 내용
+
+코드·문서 변경의 완료 답변에는 실제 상태에 따라 다음 안내를 넣는다.
+
+- 프로젝트 코드/문서를 GitHub에 반영했다면: **“사무실에서 최신 코드 받기가 필요해요. 진행 중인 업무가 끝난 뒤 전체 대화 → 코드 수정 → 최신 코드 확인 → 최신 코드 받기를 눌러주세요.”**
+- 설치된 사무실 프로그램을 바꿨다면: 위의 프로젝트 갱신과 함께 필요한 업데이트 ZIP·번호·순서를 정확히 제공한다. 프로젝트 소스를 받는 것만으로 실행 중인 사무실 UI/실행기/제어 모듈까지 교체됐다고 말하지 않는다.
+- GitHub 반영이 실패했다면: 로컬 저장 상태·정확한 실패·복구 자료를 알린다. 상대가 이미 새 버전을 받을 수 있다고 말하지 않는다.
+- 작업물 변경이 없는 설명만 했다면: 새 동기화를 요구하지 않는다.
+
+최신 코드 버튼은 [개발 연결 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)의 업데이트가 적용돼 있어야 한다. 이번 문서 변경 자체는 새 앱 설치를 요구하지 않는다. 현재 사용자 Mac의 11번 개발 업데이트와 12번 GitHub 로그인 완료는 아직 확인되지 않았다.
+
+#### 사무실에서 수정한 내용을 이 채팅이 확인하는 방법
+
+1. 작업 시작 전에 작업 트리와 최신 GitHub main을 확인한다. 게시한 커밋, 실제 변경 파일, `docs/daily-updates.md`, `docs/change-log.md`, 관련 인계 문서를 읽는다.
+2. “테스트 통과”라는 말만으로 처리하지 않고 실제 실행한 검사·결과·미실행 범위를 읽는다. 기존 사무실 게시 경로는 별도 검사와 사용자의 정확한 변경 확인을 요구한다.
+3. 로컬 미커밋 작업이나 원격 변경이 있으면 모두 보존한다. 강제 push/reset으로 맞추지 않는다. 사무실의 최신 코드 받기는 fast-forward가 불가능하거나 실행/승인/미반영 작업이 충돌하면 멈춘다.
+4. 새 변경은 다시 문서·검증 기록과 함께 저장하고, 반대편에서 가져올 필요를 사용자에게 알린다.
+
+사무실이 main에 반영해도 사무실 안의 원본/작업 사본이 즉시 바뀌지는 않는다. 다음 개발 업무 전 그쪽에서도 최신 코드 받기가 필요할 수 있다. 코드 게시, 자료 동기화, 운영 배포는 각각의 완료 상태를 확인한다.
+
+#### 아직 공유되지 않은 자료
+
+| 자료 | 지금의 전달 방식 |
+|---|---|
+| GitHub main에 반영한 코드·문서 | 이 채팅의 작업자가 fetch 후 확인 가능 |
+| Mac 안의 미반영 수정 | 해당 작업 사본의 실제 diff/파일을 확인한 인계가 필요 |
+| 사무실 채팅·완료 보고서 | Mac 사무실에 저장. 필요한 보고서를 직접 공유하거나 검증한 인계에 포함 |
+| 문서함에 직접 추가한 자료 | 해당 사무실의 지식에 반영. GitHub에 자동 게시하지 않음 |
+| 이 ChatGPT 대화의 합의 | 전달할 결정을 프로젝트 문서에 기록한 뒤 공유 |
+
+기본 `ai-office-handoff.mjs`는 스크립트가 속한 checkout의 Git 상태를 수집한다. 다른 격리 작업 사본의 미커밋 변경을 모두 자동 수집하지 않는다. 미게시 사무실 작업을 인계할 때는 실제 작업 사본·기준 SHA·변경 파일/patch·보고서·검증 결과가 포함됐는지 확인해야 한다. API가 닿지 않아 수집하지 못한 보고서도 누락으로 남긴다. 인증 파일·토큰·원본 DB는 전달 자료에 넣지 않는다.
+
+#### 문서고·문서함·보고서 구분
+
+- 왼쪽 **문서고**: 기본 사무실의 Agent Skills 목록. 작업 방법을 담은 스킬을 찾는 곳이다.
+- 상단 **문서함**: 제품 기획·디자인 원칙·수정 요구 등 프로젝트 참고 자료를 넣는 곳이다. 추가 요청이 성공하면 새 문서 버전을 만들고 다음 작업부터 연결한다. 이미 실행 중인 작업은 시작 당시 자료를 유지한다.
+- **보고서**: 직원이 수행한 업무 결과. 새 모델 실행 없이 저장된 결과를 다시 읽을 수 있다.
+
+이 문서는 작업자 지침과 기존 기능의 사용 순서를 확정한다. 자동 양방향 감시·메시지 전달·모든 자료의 자동 공개 기능을 추가한 것은 아니다.
+
+[개발과 게시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md) · [문서함](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-knowledge.md) · [실제 작업물 인계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-handoff.md) · [휴대폰 접속](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)
+
+### 原文 / docs/ai-office-development.md
+
+### 사무실에서 코드 수정과 배포까지 진행하기
+
+**2026-11-12 확정:** [이 채팅과 사무실이 서로 이어받는 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)을 따른다. 이 채팅에서 반영한 뒤에는 사무실의 최신 코드 받기를 반드시 안내하고, 이 채팅에서 다음 작업을 시작할 때는 사무실이 GitHub에 반영한 최신 코드·변경 기록을 먼저 확인한다. 미게시 작업·보고서는 자동 공유되지 않는다.
+
+2026-11-11 사용자 요청: 휴대폰에서 사무실을 사용하고, 검토에 이어 실제 코드 수정과 배포도 연결한다. 기존 전역 개발 잠금은 유지하면서 사용자가 확인한 개별 개발 작업을 실행하는 경로를 추가했다. 설치 자체가 모델 실행·GitHub 반영·배포 승인은 아니다.
+
+#### 쉬운 사용 순서
+
+1. [Mac 개발 연결 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-development.zip)을 새 폴더에 풀고, 실행 중인 업무가 끝나면 **11-enable-development.command**를 연다. 기존 설치·인증·업무를 초기화하지 않는다.
+2. **12-connect-github.command**에서 본인 GitHub 계정을 공식 화면으로 연결한다. 기존 로그인을 재사용하며 개인 토큰을 채팅으로 요구하지 않는다.
+3. 11번은 필요한 검사 도구도 이어서 준비한다. 다운로드 단계가 중단되면 **13-prepare-tests.command**로 재개한다. 설치된 버전이 있으면 재사용한다. 평소에는 **0-open-office.command**로 연다.
+4. 사무실의 **전체 대화 → 코드 수정 → 최신 코드 확인**에서 기준과 변경을 확인하고 **최신 코드 받기**를 실행한다. 현재 승인 대기나 보존할 미완료 변경이 있으면 갱신하지 않는다.
+5. 수정할 내용을 적고 범위를 확인해 실행한다. AI는 전용 작업 사본만 수정한다. 원본·인증·DB에 자유롭게 쓰는 권한은 주지 않는다.
+6. **코드 결과**에서 변경 내용과 실제 자동 검사 결과를 확인한다. 성공한 변경에만 **GitHub 반영**을 누른다. 이후 별도로 **운영 사이트 배포**를 확인한다.
+
+Windows는 [최신 제어 패키지](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-control.zip)의 같은 번호 `.cmd` 파일을 사용한다. [휴대폰 연결](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)은 동일한 사무실 화면을 열며 코드 실행 권한을 별도로 우회하지 않는다.
+
+#### 현재 연결 범위와 남은 계정 단계
+
+- 코드 수정은 등록된 프로젝트의 수동 배정된 Codex 직원과 승인된 인계서·문서·기준 커밋을 사용한다. 전역 workers/development 설정은 계속 false다. 승인된 단일 작업만 시작하며 임의 위임/자동 병합/추가 업무를 열지 않는다.
+- 자동 반영·배포 대상은 `thepmpo/donknow`와 기존 Render 무료 서비스다. 다른 프로젝트의 저장소/검사/배포 대상은 아직 연결하지 않았다. DAYWIT 주소도 아직 제공되지 않았다.
+- GitHub 저장에는 해당 Mac/WSL 사무실의 본인 GitHub 로그인과 저장소 쓰기 권한이 필요하다. 현재 ChatGPT 플랫폼의 GitHub 인증을 사용자 Mac으로 복사하지 않는다.
+- Render 배포에는 저장소 Actions의 `RENDER_API_KEY` 비밀 설정이 필요하다. [Render 공식 API 안내](https://render.com/docs/api)와 [GitHub 비밀 설정](https://github.com/thepmpo/donknow/settings/secrets/actions)을 사용한다. 비밀 값은 채팅·문서·Git에 넣지 않는다. 연결이 없으면 배포를 멈추고 화면에 필요한 단계를 표시한다.
+- `mobile/` 변경의 main 반영은 기존 TestFlight 자동화를 시작할 수 있음을 확인창에 표시한다. Render 요청 접수, Live 확인, TestFlight와 Apple 처리는 별도 상태다.
+
+#### 구현 계약
+
+`development.mjs`는 프로젝트·담당자·제목/요청·소스 HEAD·공통 문서 revision·HANDOFF 해시를 작업별로 고정한다. 10분 내 정확한 digest와 명시적 확인으로 prepare/approve/scoped unlock/run을 수행하고 마지막에 잠근다. runtime의 `development-unlock`은 운영자 인증, approved 상태, 정확한 digest, 준비된 공급자/격리를 검사한다. 한 작업이 권한을 선점하면 재사용하지 못하며 글로벌 잠금은 해제하지 않는다. 실제 Codex 개발 격리에는 사무실 전용 Node를 읽기 전용으로 제공한다.
+
+`최신 코드 받기`는 읽기 전용 미리보기와 정확한 기준/원격 HEAD/digest 확인을 분리한다. 실행 중 업무·승인 대기·원본 수정·미반영 작업 사본·divergence가 있으면 보존한다. 고정 GitHub 주소에서 fetch하고 fast-forward만 허용하며 reset/rebase/force push를 하지 않는다. 기존 origin과 `DISABLED_PENDING_APPROVAL` push URL을 바꾸지 않는다. 등록 metadata는 백업 후 `originalSource`를 보존하고 `source=isolatedSource`로 문서 기준을 맞춘다. 검토한 공통 문서 발행 모듈로 그 소스의 실제 revision을 만들며 기존 watcher도 같은 사본을 보게 한다. 새 프로젝트 등록도 같은 기준을 사용한다.
+
+개발 결과는 review 상태, consumed 개발 권한, 실제 결과, source/worktree 관계와 HEAD가 일치해야 후보가 된다. 변경 파일·모드·해시·전체 patch를 확인하며 민감 파일·심볼릭 링크·지나치게 큰 변경을 거부한다. 모델의 “테스트 통과”라는 문장만으로 GitHub 반영을 열지 않는다.
+
+`release-validation.mjs`는 승인한 HEAD의 Git blob과 정확한 patch로 별도 검사 사본을 만든다. 원본과 승인 작업 사본은 검사 중 수정하지 않는다. Linux 격리에서 네트워크·호스트 인증·다른 프로젝트를 차단하고 OS/Node/검증된 의존성은 읽기 전용, 임시 검사 사본만 쓰기 가능하게 한다. 같은 lockfile의 의존성과 브라우저가 없으면 통과로 대신하지 않고 준비 필요로 표시한다.
+
+`releases.mjs`는 성공한 검사와 전체 diff에 대한 사용자 확인을 요구한다. 검사 후 후보/기준/원격 main이 바뀌면 중단한다. 별도 Git index와 commit-tree를 쓰고 프로젝트 hooks/filters를 실행하지 않으며 일반 push만 한다. 반영 결과가 불명확하면 자동 재전송하지 않는다. 게시 후에도 로컬 원본 사본과 작업 사본은 그대로 유지한다. 다음 작업 전 별도의 최신 코드 받기로 갱신한다. 게시된 과거 작업 사본은 승인된 patch/파일 해시/작업·문맥·기준·경로와 정확히 일치하고 게시 커밋이 원격 main 이력에 있을 때만 보존한 채 동기화를 허용한다. 추가 수정은 미완료 작업으로 보고 중단한다.
+
+`office-render-deploy.yml`은 수동 dispatch로 받은 정확한 main SHA를 검사한다. 검사 job과 Render 비밀을 사용하는 job을 분리하며 비밀 job에서는 프로젝트 코드를 checkout하거나 실행하지 않는다. 배포 직전 GitHub main과 기존 Render 서비스의 저장소·branch·free plan을 확인한 뒤 해당 commitId로 한 번 요청한다. 환경 변수·데이터·자동 배포·플랜을 변경하지 않는다. 동일 배포의 Live와 commit을 확인하며 결과 불명확 시 POST를 재시도하지 않는다.
+
+#### 업데이트와 복구
+
+11번은 runtime의 정확한 두 파일 해시와 유휴 상태를 먼저 확인한다. 운영자 실행 잠금 → 검증한 채팅 서버 종료 → 검증한 메인 supervisor 종료 → backend 검사/롤백 가능한 적용 → UI 검사/적용 → 제어 모듈 설치 순서다. 다른 프로그램·실행 중 업무·승인된 작업·알 수 없는 수정은 보존하고 중단한다. PIDFD로 정확한 프로세스만 SIGTERM하며 강제 종료는 없다. 실패하면 보존한 서버를 다시 시작하려고 시도한다. 전역 보안 규칙/인증/DB를 초기화하지 않는다.
+
+개발 파일 백업은 `state/development-backups`, UI 백업은 `state/ui-backups`, 시작/업데이트 로그는 `state/launcher`에 개인 권한으로 보관한다. 로그 원문에 민감한 상태가 있을 수 있으므로 자동으로 공개하지 않는다. 새 실행은 0번 시작과 같은 잠금을 사용한다.
+
+#### 검증 기록
+
+검증: runtime API262개, 기존 웹76개, 개발 제어25개, 업데이트11개, 검사 도구 준비8개를 통과했다. Python 전체99개 중98개 통과·선택적 기존 bwrap1개 미실행. 전체 Node160개 중159개 통과·선택적 실제 릴리스 격리1개는 별도 실행해 통과했다. 배포 ZIP9개의 CRC·내용·Mac 실행 권한·제어 모듈 해시와 기존 복구 bundle 불변을 확인했다. 실제 릴리스 격리 검사는 도구 내부의 중첩 uid-map 제한 오류를 확인한 뒤 승인된 호스트 경로에서 같은 임시 fixture로 통과했다. 호스트 비밀/loopback 접근 차단·원본 작업 사본 불변을 확인했다. 타입·Vite 빌드, HTTP 인증/CSRF, 데스크톱·390px 모바일 코드 흐름, 기존 채팅·팀장회의 회귀, YAML·배포 Python·PowerShell·bash 문법도 통과했다. 모든 모델/GitHub push/Render 버튼은 테스트에서는 fixture이며 실제 사용자 계정에 실행하지 않았다. 사용자 Mac/Windows의 최신 업데이트·실제 모델 코드 변경·GitHub 반영·실제 Render 배포는 이번 작업 환경의 모의 검사로 성공 처리하지 않는다. 휴대폰 연결 패키지는 별도 커밋으로 main에 저장했으며 실제 외부 폰 접속은 사용자 확인 대기다.
+
+공개 `/project` HTML과 생성 소스도 갱신했다. 현재 환경에서 운영 페이지 읽기는 프록시 `Tunnel connection failed: 403 Forbidden`으로 확인하지 못했다. Render 자동 배포를 켜거나 실제 배포 요청을 보내지 않았으므로 새 문서의 공개 반영은 미확인이다. 최신 안내는 GitHub 문서를 사용한다.
+
+[Mac 시작](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md) · [휴대폰](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md) · [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md) · [전체 인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md) · [GitHub 배포 실행 결과](https://github.com/thepmpo/donknow/actions/workflows/office-render-deploy.yml)
+
+### 原文 / docs/ai-office-phone.md
+
+### 맥 사무실을 휴대폰에서 열기
+
+**2026-11-12 사용자 확인:** Tailscale Serve 허용 완료 화면을 제공했고, 이어서 휴대폰에서 사무실이 열린다고 확인했다. 모바일에서 작게 보인다는 피드백도 받았다. Wi-Fi를 끈 외부 모바일 데이터 접속, 다른 컴퓨터 접속, 11번 개발 업데이트·12번 GitHub 로그인·실제 코드 게시/배포 성공은 아직 별도 확인이다. 다음의 이전 미확인 기록은 당시 기준이다. 평소에는 Mac 0번 시작과 양쪽 Tailscale 연결을 유지하고 휴대폰 홈 화면에 추가한 같은 주소를 연다. 원래 Mac이 꺼지거나 잠들면 접속할 수 없다.
+
+2026-11-11. 사용자가 휴대폰 연결을 요청했다. 이미 실행한 Mac 사무실의 업무·로그인·직원 설정을 보존하고 같은 화면에 비공개로 접속한다. 새 사무실이나 클라우드 복사본을 만들지 않는다.
+
+#### 사용자가 할 일
+
+1. 맥에는 [Tailscale 공식 Mac 앱](https://tailscale.com/download/mac), 휴대폰에는 [아이폰 앱](https://tailscale.com/download/ios) 또는 [안드로이드 앱](https://tailscale.com/download/android)을 설치한다. 두 기기에서 **같은 계정**으로 로그인하고 연결을 켠다. Mac에 기존 앱이 있으면 재사용하며 Standalone/App Store 버전을 동시에 설치하지 않는다.
+2. [맥 휴대폰 연결 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-phone.zip)을 새 폴더에 풀고 **10-phone-connect.command**를 연다. 기존 사무실은 시작하거나 재사용한다.
+3. Tailscale이 HTTPS 활성화 링크를 제시하면 본인 브라우저의 공식 화면에서 확인한다. 이후 10번을 다시 실행한다. 로그인 코드·토큰·비밀번호를 채팅으로 보내지 않는다.
+4. 표시된 **https://기기이름.…ts.net/** 주소를 휴대폰 브라우저에서 연다. `전체 대화`에서 요청하고 진행·보고서를 확인한다. Wi-Fi를 끈 휴대폰에서 같은 주소를 열어 외부 접속을 확인한다.
+
+평소에는 맥에서 0번 파일로 사무실을 켜면 된다. 맥·사무실·Tailscale·인터넷이 유지돼야 하며 잠자기/종료 중 업무 지속을 보장하지 않는다. 현재 ChatGPT 대화의 지시는 사무실로 자동 전달되지 않는다.
+
+#### 구현과 보존
+
+- `connect-phone-mac.sh`는 PATH의 CLI 또는 `/Applications/Tailscale.app/Contents/MacOS/Tailscale`을 쓰며 `TAILSCALE_BE_CLI=1`을 지정한다. macOS의 별도 Python/Node 설치를 요구하지 않고 JSON 검증은 기존 Lima VM의 Python에서 한다.
+- `phone-config.py`는 실행 중인 개인 계정, `.ts.net` HTTPS 호스트, 최소 지원 버전을 확인한다. 태그 기기는 제외한다. VM의 `state/private-access.json`을0600 권한으로 원자적으로 생성하며 기존 다른 소유자/주소를 덮지 않는다. DB·인증 파일·로컬 브라우저 키는 초기화하거나 전달하지 않는다.
+- 허용 경로는 Tailscale Serve HTTPS443 → Mac127.0.0.1:8810 하나다. 다른 TCP/Web 경로·Services·Foreground 구성·공개 Funnel을 발견하면 보존하고 중단한다. Serve reset/Funnel 활성화/전체 포트 공개는 하지 않는다.
+- gateway는 매 요청마다 소유자 설정을 읽으므로 기존 업무나 서버를 재시작하지 않아도 연결할 수 있다. 실제 HTTP/웹소켓은 정확한 Host와 Tailscale 사용자 식별 헤더를 검증한다. 다른 계정과 Funnel 요청은 거부하며 변경 요청에는 세션/CSRF 검사를 유지한다.
+- 설정 전과 후의 Tailscale 구성을 확인한다. 주소 설정 성공과 실제 휴대폰 접속 성공은 별도다. 기존 모델 권한/코드 실행 권한을 확대하지 않는다.
+
+#### 검증과 남은 확인
+
+설정·Mac 실행 모의 검사15개를 통과했다. 본인 계정/주소 검증, 기존 소유자·DB·키 보존, 심볼릭 링크/권한 거부, 공개 경로 차단, 설정 순서, 공백 경로, CLI 모드, 개인 임시 파일 정리, 실패 시 성공 주소를 표시하지 않는 것을 확인했다. ZIP의 파일 일치·CRC도 확인했다. 실제 Mac Tailscale 로그인·HTTPS 동의·외부 휴대폰 접속은 사용자가 확인해야 한다.
+
+2026-11-11 사용자 보고로 0번 시작이 정상 진행된 것으로 이해했다. 이 보고를 실모델 응답이나 휴대폰 접속 성공으로 확대하지 않는다. 코드 수정·GitHub 반영·배포는 [별도 개발 연결](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)의 정확한 작업/변경 승인과 계정 연결을 따른다. 휴대폰 파일만 실행해서 이 권한이 생기지는 않는다.
+
+[Mac 설치·시작](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md) · [사무실 입력·권한](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md) · [전체 인계](https://github.com/thepmpo/donknow/blob/main/docs/notion-handoff.md)
 
 ### 原文 / docs/ai-office-control.md
 
@@ -2013,6 +2195,8 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 
 ### “인수인계서 만들어줘”의 공식 처리 기준
 
+**2026-11-12 최신 양방향 인계:** [이 채팅과 AI 사무실의 공통 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)을 따른다. 이 채팅의 작업자는 수정 전 GitHub 최신 main과 사무실의 게시 변경을 먼저 읽고, 변경을 반영한 뒤 사무실에서 최신 코드 받기가 필요한지 반드시 알린다. 미게시 코드·사무실 보고서·문서함 자료는 별도 인계 범위다. 아래 기본 생성기는 모든 격리 작업 사본의 미커밋 변경을 자동 수집하지 않으므로, 해당 작업 사본의 실제 patch/파일·기준·검증 결과 포함 여부를 확인한다.
+
 **2026-11-11 최신 개발 연결:** [코드 수정·검사·GitHub 반영·배포 안내와 설치 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-development.md)을 추가했다. 11번 업데이트 적용 후 전체 대화의 코드 수정 모드는 승인한 작업 사본을 실제 수정한다. 기존 질문/검토는 읽기 전용이다. 글로벌 개발/worker 잠금과 자동 게시 금지는 유지하며 정확한 변경·검사 결과에 대한 별도 확인을 요구한다. 아래의 개발 미연결 설명은 이전 상태다. 사용자 Mac 업데이트·GitHub 로그인·Render 연결·실모델·실제 배포는 별도 확인한다.
 
 2026-11-11 최신: [Mac 휴대폰 비공개 연결](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)의 파일·정확한 검증·미확인 계정 단계를 함께 인계한다. 사용자 Mac 0번 정상 진행 보고와 실제 외부 접속/모델 응답은 구분한다.
@@ -2092,6 +2276,8 @@ v5 최신: 직원/팀장 지정, 전체 연결 버튼, 승인된 팀장 최대6�
 ### 原文 / docs/ai-office-knowledge.md
 
 ### AI 사무실 공통 제품 문서함
+
+**2026-11-12 메뉴 구분:** 이 문서의 **문서함**은 상단의 제품 자료 추가 화면이다. 왼쪽 **문서고**는 Agent Skills 목록이며 서로 다른 기능이다. 문서함에 추가한 자료는 GitHub/이 채팅으로 자동 공개되지 않는다. [양방향 이어받기와 자료 공유 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)를 함께 읽는다.
 
 2026-11-10. 사용자가 요청한 “제품 문서 기본 학습·추가 즉시 반영”을 모델 재훈련 대신 모든 역할의 작업 시작 컨텍스트에 연결했다. 문서함을 사용하는 데 AI 로그인은 필요 없다. 실제 AI 업무는 기존 네트워크/로그인 조건을 충족해야 한다.
 
