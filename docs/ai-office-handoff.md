@@ -56,3 +56,5 @@ Windows 패키지에는 `5-handoff.cmd`, Linux/WSL에는 `/workspace/ai-office/b
 최신v2 글자 패치: 이름22px·대사24px로 이전v1의2배. 기존 장면 확대율은 유지한다.0번에서 SHA/idle 검사 후 최초 한 번 빌드한다. 원본과dist를 백업하고 실패하면 복구한다. [정확한 기준](ai-office-control.md).
 
 최신 사용자 확정v3: v2 실제 적용 확인 후 이름/대사를 절반으로 요청했다. 최종 이름11px·대사12px와v1 배치를 사용하며 장면 확대 설정은 유지한다. 이전22/24px 요구는 대체됐다. [상세](ai-office-control.md).
+
+최신 공용방: 사용자가 원한 것은 카카오톡 같은 직원 대화·지시 공간이다. 실제 messages와 요청/보고서 기록을 시간순으로 모으고 공지/지시/질문을 선택해 보낸다. 공지는 state/control-notices에 저장하고 다음 요청에만 참고자료로 포함한다. DB 상태와 native agents/active 실행기 연결을 구분하고 오래 새 기록이 없으면 미확인 상태를 알려준다. 실제 실행은 검토 담당자1명이며 전체 직원 자동 협업은 미구현이다. [API·화면·검증·다음 작업](ai-office-control.md).

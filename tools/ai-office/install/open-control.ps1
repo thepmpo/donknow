@@ -30,8 +30,15 @@ foreach($name in @('install-control.py','control-payload.zip','restart-control.p
     if($LASTEXITCODE -ne 0){throw 'Cannot transfer verified input server package.'}
 }
 Write-Host 'Checking the requested larger name and speech text. First application builds the UI; please wait.'
-& wsl.exe --distribution Ubuntu --exec python3 "$temp/update-readability.py" "$temp/readability.json"
-if($LASTEXITCODE -ne 0){throw 'Text update stopped safely. If AI work is running, wait until it ends and try again. Existing data and login were preserved.'}
+& wsl.exe --distribution Ubuntu --exec python3 "$temp/update-readability.py" "$temp/readability.json" | Tee-Object -Variable uiOutput
+$uiExit=$LASTEXITCODE
+if($uiExit -ne 0){
+    $reason=$null
+    try {$reason=($uiOutput | Select-Object -Last 1 | ConvertFrom-Json).reasonCode} catch {}
+    if($reason -eq 'office_review_running_wait_until_finished'){
+        Write-Warning 'Work is running. Only the font update was deferred; opening chat and progress without stopping the task.'
+    }else{throw 'Text update stopped safely. Existing data and login were preserved. Keep this error for review.'}
+}
 $installedText=(& wsl.exe --distribution Ubuntu --exec python3 "$temp/install-control.py" "$temp/control-payload.zip" | Out-String).Trim()
 if($LASTEXITCODE -ne 0){Write-Host $installedText;throw 'Input server installation stopped safely.'}
 $installed=$installedText|ConvertFrom-Json

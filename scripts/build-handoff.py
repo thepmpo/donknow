@@ -36,6 +36,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+2026-11-11 공용방: 전체 직원의 실제 기록·내 요청·보고서를 한곳에서 보고 지시/질문/공지를 선택합니다. 실행 저장 상태와 실행기 연결·경과 시간·최근 활동을 구분합니다. 공지는 저장 후 이후 새 업무에서 참고하며 직원 읽음은 미확인입니다. 실제 실행은 검토 담당자1명이고 다자 자동 협업은 남아 있습니다. [사용·API·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
+
 최신 Windows 사무실 시작: **0-open-office.cmd 하나**로 기존 사무실과 채팅을 자동 시작/재사용하고 서버 창은 최소화합니다. 이름·대사 확대는 초기150%, 상단에서100~200% 조절합니다. [다운로드·보존·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md). 사용자 PC 적용 성공은 미확인입니다.
 
 2026-11-11: [사무실 채팅·내 지시](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md)를 사무실 안에 연결했습니다. 후속 요청은 이전 보고서와 연결된 별도 읽기 전용 업무이며 전체 원문/상태 검색을 제공합니다. [Mac용 준비 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)는 미리 제작했고 실제 Mac 설치/로그인은 미확인입니다.
