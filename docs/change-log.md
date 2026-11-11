@@ -1,5 +1,11 @@
 # 변경 기록
 
+## 2026-11-11 — Mac 중첩 격리 검사기 결함 수정
+
+- 사용자 설치 재개 실패 후 검사기의 `/proc` 마운트 누락을 실제 bwrap로 재현했다. 실제 실행기와 같은 `--proc /proc`를 적용해 uid_map 쓰기 실패를 고쳤으며 AppArmor 허용 범위는 그대로다.
+- 모의 검사 외 실제 중첩/읽기 전용 회귀를 추가하고 실패 단계만 안전한 코드로 표시한다. 설치/복구 검사41개 통과. 별도 브랜치의 Ubuntu24.04 CI는 저장소 DNS 오류로 격리 검사 전에 중단됐고 main에 포함하지 않는다. [최신 설치 재개 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md).
+- 사용자 Mac 설치·로그인 성공과 Render 배포는 아직 확인 전이다. 이전 실패를 성공으로 기록하지 않는다.
+
 ## 2026-11-11 — Mac 앱별 격리 허용과 설치 재개
 
 - 사용자 진단으로 Ubuntu AppArmor의 userns/bwrap/net_admin 거부를 확인했다. [설치 재개 파일과 검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 추가했다.

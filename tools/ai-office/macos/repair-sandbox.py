@@ -22,19 +22,25 @@ PROFILE = ('# Managed AI Office application exception; global restrictions stay 
            'profile duckduck-office-node ' + NODE + ' flags=(unconfined) {\n'
            '  userns,\n}\n')
 PROBE = r'''const {spawnSync}=require('node:child_process');const fs=require('node:fs');
-if(requireOfficeProfile && fs.readFileSync('/proc/self/attr/current','utf8').trim()!=='duckduck-office-node (unconfined)') process.exit(1);
+if(requireOfficeProfile && fs.readFileSync('/proc/self/attr/current','utf8').trim()!=='duckduck-office-node (unconfined)') {console.error('office_probe_failed:profile:attachment');process.exit(1);}
 const temporary=fs.mkdtempSync('/tmp/duckduck-namespace-probe-');const canary=temporary+'/source';
 fs.writeFileSync(canary,'preserve');
-const outer=['--ro-bind','/','/','--unshare-net'];
+const outer=['--ro-bind','/','/','--proc','/proc','--unshare-net'];
+let stage='outer',reason='command_failed';
 try {
-for(const args of [outer.concat('/bin/true'),outer.concat('/usr/bin/bwrap',...outer,'/bin/true'),
-outer.concat('/bin/sh','-c','if (printf blocked > "$1") 2>/dev/null; then exit 1; fi','probe',canary)]) {
- const r=spawnSync('/usr/bin/bwrap',args,{stdio:'ignore',timeout:10000});
- if(r.error||r.status!==0) throw Error('blocked');
+for(const [name,args] of [['outer',outer.concat('/bin/true')],['nested',outer.concat('/usr/bin/bwrap',...outer,'/bin/true')],
+['read_only',outer.concat('/bin/sh','-c','if (printf blocked > "$1") 2>/dev/null; then exit 1; fi','probe',canary)]]) {
+ stage=name;
+ const r=spawnSync('/usr/bin/bwrap',args,{encoding:'utf8',timeout:10000});
+ if(r.error||r.status!==0) {
+  reason=String(r.stderr).includes('Read-only file system')?'proc_readonly':String(r.stderr).includes('Operation not permitted')?'permission':r.error?.code==='ETIMEDOUT'?'timeout':'command_failed';
+  throw Error('blocked');
+ }
 }
+stage='integrity';reason='canary_changed';
 if(fs.readFileSync(canary,'utf8')!=='preserve') throw Error('write_allowed');
 process.stdout.write('office_namespace_probe_passed\n');
-}catch{process.exitCode=1;}finally{fs.rmSync(temporary,{recursive:true,force:true});}'''
+}catch{console.error('office_probe_failed:'+stage+':'+reason);process.exitCode=1;}finally{fs.rmSync(temporary,{recursive:true,force:true});}'''
 
 
 def error(code):
@@ -74,6 +80,12 @@ class Repair:
     def probe(self, require_profile=False):
         script = 'const requireOfficeProfile=' + ('true' if require_profile else 'false') + ';\n' + PROBE
         result = self.command([str(self.path(NODE)), '-e', script], **self.probe_options)
+        self.last_probe_failure = 'unknown'
+        # Only our fixed markers leave the probe; never raw child output.
+        for stage in ('profile', 'outer', 'nested', 'read_only', 'integrity'):
+            for reason in ('attachment', 'proc_readonly', 'permission', 'timeout', 'command_failed', 'canary_changed'):
+                if 'office_probe_failed:' + stage + ':' + reason in result.stderr.splitlines():
+                    self.last_probe_failure = stage + '_' + reason
         return result.returncode == 0 and result.stdout.strip() == 'office_namespace_probe_passed'
 
     def ordinary_bwrap_blocked(self):
@@ -137,7 +149,7 @@ class Repair:
             if loaded.returncode:
                 error('sandbox_repair_profile_load_failed')
             if not self.probe(require_profile=True):
-                error('sandbox_repair_nested_probe_failed')
+                error('sandbox_repair_probe_failed_' + self.last_probe_failure)
             if not self.ordinary_bwrap_blocked():
                 error('sandbox_repair_unscoped_bwrap_changed')
             # Confirm the system-wide setting was never relaxed.

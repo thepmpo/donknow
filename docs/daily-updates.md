@@ -1,5 +1,9 @@
 # 매일 개발 정리
 
+## 2026-11-11 — Mac 재개 검사기 수정
+
+사용자 재개 실패에서 검사기의 중첩 `/proc` 마운트 누락을 찾아 실제 Linux에서 재현·수정했다. 실제 bwrap를 포함한 설치/복구 검사41개가 통과했다. 별도 브랜치의 Ubuntu24.04 AppArmor CI는 다운로드 DNS 오류로 중단돼 main에 넣지 않았다. 최신 파일·남은 Mac 확인은 [맥 설치 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 따른다.
+
 ## 2026-11-11 — Mac 격리 오류 원인 확인·재개 패키지
 
 사용자 진단에서 AppArmor userns/bwrap/network capability 거부를 확인했다. 전용 Node 앱별 프로필과 실제 Codex 격리 검사를 포함한 [설치 이어하기 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 준비했다. 일반 격리 프로그램/전역 보호를 풀지 않고 기존 VM·checkout·인증·데이터를 보존한다. Linux 실제 sandbox 검사는 통과했으며 Mac 설치 재개 결과는 대기다.
