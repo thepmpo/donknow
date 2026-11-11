@@ -1,5 +1,9 @@
 # 변경 기록
 
+## 2026-11-11 — Mac 사무실 휴대폰 비공개 연결
+
+[휴대폰 연결 파일·사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 추가했다. 기존 Mac 사무실을 재사용하고 동일 Tailscale 계정으로 HTTPS 접속한다. 개인 소유자 설정과 기존 공유 경로를 검증하며 다른 경로·Funnel·계정 충돌은 덮지 않는다. 설정/호스트 모의15개와 ZIP 검증 통과. 실제 계정 로그인·HTTPS 동의·외부 휴대폰 접속은 사용자 확인 대기다. 코드 수정·배포 연결은 후속 작업이며 이번 휴대폰 파일이 해당 권한을 켜지 않는다. Render 배포는 하지 않았다.
+
 ## 2026-11-11 — Mac 사무실 한 번에 열기
 
 - `0-open-office.command` 하나로 기존 Lima VM, 설치된 사무실·문서함·채팅 서버를 시작하거나 재사용하고 브라우저를 여는 경로를 추가한다. [Mac 시작 파일과 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md).

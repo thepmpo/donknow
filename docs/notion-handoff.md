@@ -13,6 +13,8 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
+2026-11-11 휴대폰 연결: [Mac용 10번 파일·쉬운 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 준비했습니다. 기존 사무실을 재사용하고 같은 Tailscale 계정에만 HTTPS로 연결합니다. 설정/호스트 모의15개 통과이며 실제 계정 로그인·HTTPS 동의·외부 폰 접속은 확인 전입니다. 코드 수정·배포 연결은 별도 후속 작업입니다.
+
 2026-11-11 최신 Mac: 설치·화면 열림·로그인 단계 완료는 사용자 보고이며 채팅 설치 로그도 확인했습니다. 이후에는 **0-open-office.command 하나**로 기존 환경과 사무실·문서함·채팅을 시작/재사용하고 브라우저를 엽니다. [시작 파일 다운로드](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip) · [사용법·현재 상태·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md). 재설치·로그인 초기화·자동 새 업무 실행은 하지 않습니다. 기존 수동 서버 창은 유지하며, 0번이 새로 켠 서버는 실행 창을 닫아도 유지됩니다. 새 시작 파일의 실제 Mac 실행·14명 연결 상태·실모델 응답은 확인 전입니다. 아래 예전 미확인 기록은 당시 상태이며 Ubuntu24.04 CI 다운로드 DNS 실패 이력도 보존합니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
@@ -79,6 +81,10 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — Mac 사무실 휴대폰 비공개 연결
+
+[휴대폰 연결 파일·사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 추가했다. 기존 Mac 사무실을 재사용하고 동일 Tailscale 계정으로 HTTPS 접속한다. 개인 소유자 설정과 기존 공유 경로를 검증하며 다른 경로·Funnel·계정 충돌은 덮지 않는다. 설정/호스트 모의15개와 ZIP 검증 통과. 실제 계정 로그인·HTTPS 동의·외부 휴대폰 접속은 사용자 확인 대기다. 코드 수정·배포 연결은 후속 작업이며 이번 휴대폰 파일이 해당 권한을 켜지 않는다. Render 배포는 하지 않았다.
 
 #### 2026-11-11 — Mac 사무실 한 번에 열기
 
@@ -469,6 +475,10 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — Mac 사무실 휴대폰 비공개 연결
+
+[휴대폰 연결 파일·사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 추가했다. 기존 Mac 사무실을 재사용하고 동일 Tailscale 계정으로 HTTPS 접속한다. 개인 소유자 설정과 기존 공유 경로를 검증하며 다른 경로·Funnel·계정 충돌은 덮지 않는다. 설정/호스트 모의15개와 ZIP 검증 통과. 실제 계정 로그인·HTTPS 동의·외부 휴대폰 접속은 사용자 확인 대기다. 코드 수정·배포 연결은 후속 작업이며 이번 휴대폰 파일이 해당 권한을 켜지 않는다. Render 배포는 하지 않았다.
+
 #### 2026-11-11 — Mac 사무실을 파일 하나로 열기
 
 사용자가 매번 여러 파일을 열지 않도록 `0-open-office.command`와 [소형 시작 패키지](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-open.zip)를 준비한다. 기존 Lima VM과 설치된 사무실·문서함·채팅을 시작/재사용하고 브라우저를 연다. 재설치·업데이트·로그인·새 AI 업무는 자동 실행하지 않는다. 새 서버는 백그라운드에서 유지하며 기존 수동 서버 창과 진행 업무는 보존한다.
@@ -825,6 +835,7 @@ f9f0b4a Add read-only Mac sandbox diagnostics for Lima install failure
 a678c55 Resume Mac installation with scoped office AppArmor support
 9742e71 Fix Mac nested sandbox verification with a dedicated proc mount
 7944058 Record user-confirmed Mac office installation completion
+18f59e7 Add one-click Mac office launcher preserving existing services
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1650,6 +1661,8 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 
 ### Mac용 AI 사무실 준비 패키지
 
+휴대폰에서 같은 사무실을 열려면 [맥 휴대폰 연결 안내와 10번 파일](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)을 사용한다. 사용자 보고상 0번 시작은 정상 진행됐으며, 실제 외부 폰 접속은 별도 확인한다.
+
 #### 2026-11-11 최신 — 파일 하나로 매일 열기
 
 이미 설치와 채팅 연결을 마쳤다면 **0-open-office.command 하나**를 더블클릭한다. 꺼진 기존 Lima VM, 사무실·문서함·채팅 서버를 켜고 같은 Mac의 브라우저에서 사무실을 연다. 켜져 있는 서버와 진행 중인 업무는 그대로 사용한다.
@@ -1976,6 +1989,8 @@ VM 이름은 `duckduck-office`다. 기존 같은 이름의 VM/소스/설정은 �
 ### 原文 / docs/ai-office-handoff.md
 
 ### “인수인계서 만들어줘”의 공식 처리 기준
+
+2026-11-11 최신: [Mac 휴대폰 비공개 연결](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-phone.md)의 파일·정확한 검증·미확인 계정 단계를 함께 인계한다. 사용자 Mac 0번 정상 진행 보고와 실제 외부 접속/모델 응답은 구분한다.
 
 2026-11-11 사용자 요청: 앞으로 “인수인계서”, “인수인계서 뭐 해야 해”라고 하면 방법 설명이나 빈 양식으로 끝내지 않고 **인수인계서 + 실제 작업물 + 검증 결과 + 남은 일**을 묶어 제공한다. PC에서 먼저 일하고 이후 클라우드 작업자가 이어가는 상황을 지원한다.
 
