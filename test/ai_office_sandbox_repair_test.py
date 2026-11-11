@@ -163,6 +163,11 @@ class SandboxRepairTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), 'office_namespace_probe_passed')
 
+    def test_probe_reports_stage_without_raw_child_output(self):
+        self.subject.run = lambda args, **kwargs: subprocess.CompletedProcess(args, 1, '', 'private-value-must-not-escape\noffice_probe_failed:nested:proc_readonly\n')
+        self.assertFalse(self.subject.probe(require_profile=True))
+        self.assertEqual(self.subject.last_probe_failure, 'nested_proc_readonly')
+
     def test_unload_failure_preserves_profile_for_review(self):
         self.probes, self.fail_remove = [False, False], True
         with self.assertRaisesRegex(RuntimeError, 'rollback_unconfirmed_profile_preserved'):

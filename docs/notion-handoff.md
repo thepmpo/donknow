@@ -13,7 +13,7 @@
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 Mac 진단으로 AppArmor 격리 권한 거부를 확인했습니다. 전용 Node 앱별 규칙과 실제 Codex 격리 검사를 포함한 [기존 설치 이어하기·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 준비했습니다. Mac 적용·설치·로그인 성공은 아직 확인 대기입니다.
+2026-11-11 Mac 재개 파일의 중첩 검사기에서 /proc 마운트 누락을 재현·수정했습니다. 실제 실행기와 같은 검사로 맞추고 Ubuntu24.04 CI를 추가했습니다. [최신 설치 이어하기·실패 기록·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. Mac 설치·로그인 성공은 아직 확인 대기입니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 
@@ -79,6 +79,12 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-11 — Mac 중첩 격리 검사기 결함 수정
+
+- 사용자 설치 재개 실패 후 검사기의 `/proc` 마운트 누락을 실제 bwrap로 재현했다. 실제 실행기와 같은 `--proc /proc`를 적용해 uid_map 쓰기 실패를 고쳤으며 AppArmor 허용 범위는 그대로다.
+- 모의 검사 외 실제 중첩/읽기 전용 회귀와 Ubuntu24.04 CI를 추가하고 실패 단계만 안전한 코드로 표시한다. [최신 설치 재개 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md).
+- 사용자 Mac 설치·로그인 성공과 Render 배포는 아직 확인 전이다. 이전 실패를 성공으로 기록하지 않는다.
 
 #### 2026-11-11 — Mac 앱별 격리 허용과 설치 재개
 
@@ -450,6 +456,10 @@
 
 ### 매일 개발 정리
 
+#### 2026-11-11 — Mac 재개 검사기 수정
+
+사용자 재개 실패에서 검사기의 중첩 `/proc` 마운트 누락을 찾아 실제 Linux에서 재현·수정했다. 기존 모의 테스트의 한계를 기록하고 실제 bwrap 회귀 및 Ubuntu24.04 AppArmor CI를 추가했다. 최신 파일·남은 Mac 확인은 [맥 설치 안내](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 따른다.
+
 #### 2026-11-11 — Mac 격리 오류 원인 확인·재개 패키지
 
 사용자 진단에서 AppArmor userns/bwrap/network capability 거부를 확인했다. 전용 Node 앱별 프로필과 실제 Codex 격리 검사를 포함한 [설치 이어하기 패키지](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 준비했다. 일반 격리 프로그램/전역 보호를 풀지 않고 기존 VM·checkout·인증·데이터를 보존한다. Linux 실제 sandbox 검사는 통과했으며 Mac 설치 재개 결과는 대기다.
@@ -787,6 +797,8 @@ c76ed66 Balance office labels and speech at half the previous text size
 7d8704c Reuse original office chat globally and fix report decisions stuck preparing
 742cf52 Connect office recipients and team reviews with readable reports
 f9f0b4a Add read-only Mac sandbox diagnostics for Lima install failure
+a678c55 Resume Mac installation with scoped office AppArmor support
+d3f9b19 Match nested sandbox probe proc mount to the actual office runner
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1609,6 +1621,14 @@ Node 팀 실행 모의 테스트는 확인 전0회, 참여자/소스 불변, 실
 ### 原文 / docs/ai-office-macos.md
 
 ### Mac용 AI 사무실 준비 패키지
+
+#### 2026-11-11 설치 재개 v2 — 중첩 검사 오류 수정
+
+첫 재개 파일에서 사용자에게 `office_sandbox_repair_nested_probe_failed`가 발생했다. 검사기가 `/`를 읽기 전용으로 묶으면서 `/proc` 전용 마운트를 빠뜨린 결함을 별도 Linux에서 재현했다. 바깥 검사는 통과하지만 내부 bwrap가 uid_map을 만들지 못해 `Read-only file system`으로 실패했다. 실제 사무실 실행기는 이미 `--proc /proc`를 사용한다. 검사기도 동일하게 맞추니 중첩 실행과 읽기 전용 canary가 모두 통과했다. AppArmor 권한/전역 보안 설정을 추가로 완화한 수정이 아니다.
+
+최신 [설치 이어하기 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-resume.zip)을 **새 폴더**에 풀고7-resume-install.command를 실행한다. 이미 설치한 Node는 재사용하며 이전 시도의 새 규칙은 실패 복구 절차를 거쳤다. 같은 이름의 다른 프로필은 여전히 보존 후 중단한다. 이제 실패하면 프로필 연결/외부 격리/중첩 격리/쓰기 차단 중 어떤 단계인지 안전한 오류 코드로 구분한다.
+
+기존13개 모의 테스트만으로 실제 중첩 마운트 결함을 잡지 못했음을 기록한다. `OFFICE_TEST_REAL_SANDBOX=1` 회귀로 실제 bwrap를 실행하고, 공개 저장소의 별도 Ubuntu24.04 CI에서도 앱별 AppArmor 연결·중첩/읽기 전용/네트워크 차단·일반 bwrap 차단 유지를 검증하도록 추가했다. CI와 Linux 검증은 사용자 Mac arm64 설치 성공을 의미하지 않는다. Mac의 최신 파일 실행 결과는 아직 대기다.
 
 #### 2026-11-11 진단 확인 후 설치 재개
 

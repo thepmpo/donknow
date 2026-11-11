@@ -36,7 +36,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-10 최신 이어받기 — 톤 합의와 제품 원칙
 
-2026-11-11 Mac 진단으로 AppArmor 격리 권한 거부를 확인했습니다. 전용 Node 앱별 규칙과 실제 Codex 격리 검사를 포함한 [기존 설치 이어하기·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 준비했습니다. Mac 적용·설치·로그인 성공은 아직 확인 대기입니다.
+2026-11-11 Mac 재개 파일의 중첩 검사기에서 /proc 마운트 누락을 재현·수정했습니다. 실제 실행기와 같은 검사로 맞추고 Ubuntu24.04 CI를 추가했습니다. [최신 설치 이어하기·실패 기록·검증 범위](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-macos.md)를 먼저 확인하세요. Mac 설치·로그인 성공은 아직 확인 대기입니다.
 
 최신v5: 직원/팀장 수신자 선택, 전체 실행 연결, 승인된 팀장회의(최대6명+종합1건)와 쉬운 보고를 준비했습니다. 계정/모델 설정을 보존하며 실제14명 응답은 미검증입니다. 결론·할 일·내 결정부터 보여주고 원문은 접어 보존합니다. [사용·보존·실행 한도·검증](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-control.md).
 

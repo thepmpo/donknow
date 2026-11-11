@@ -1,5 +1,13 @@
 # Mac용 AI 사무실 준비 패키지
 
+## 2026-11-11 설치 재개 v2 — 중첩 검사 오류 수정
+
+첫 재개 파일에서 사용자에게 `office_sandbox_repair_nested_probe_failed`가 발생했다. 검사기가 `/`를 읽기 전용으로 묶으면서 `/proc` 전용 마운트를 빠뜨린 결함을 별도 Linux에서 재현했다. 바깥 검사는 통과하지만 내부 bwrap가 uid_map을 만들지 못해 `Read-only file system`으로 실패했다. 실제 사무실 실행기는 이미 `--proc /proc`를 사용한다. 검사기도 동일하게 맞추니 중첩 실행과 읽기 전용 canary가 모두 통과했다. AppArmor 권한/전역 보안 설정을 추가로 완화한 수정이 아니다.
+
+최신 [설치 이어하기 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-resume.zip)을 **새 폴더**에 풀고7-resume-install.command를 실행한다. 이미 설치한 Node는 재사용하며 이전 시도의 새 규칙은 실패 복구 절차를 거쳤다. 같은 이름의 다른 프로필은 여전히 보존 후 중단한다. 이제 실패하면 프로필 연결/외부 격리/중첩 격리/쓰기 차단 중 어떤 단계인지 안전한 오류 코드로 구분한다.
+
+기존13개 모의 테스트만으로 실제 중첩 마운트 결함을 잡지 못했음을 기록한다. `OFFICE_TEST_REAL_SANDBOX=1` 회귀로 실제 bwrap를 실행하고, 공개 저장소의 별도 Ubuntu24.04 CI에서도 앱별 AppArmor 연결·중첩/읽기 전용/네트워크 차단·일반 bwrap 차단 유지를 검증하도록 추가했다. CI와 Linux 검증은 사용자 Mac arm64 설치 성공을 의미하지 않는다. Mac의 최신 파일 실행 결과는 아직 대기다.
+
 ## 2026-11-11 진단 확인 후 설치 재개
 
 사용자 진단에서 Ubuntu24.04, AppArmor 활성화, userns 제한1, 사용자 namespace clone1, 관련 bwrap 프로필 없음, userns/bwrap/net_admin 거부가 함께 확인됐다. [설치 이어하기 ZIP](https://github.com/thepmpo/donknow/raw/refs/heads/main/tools/ai-office/ai-office-mac-resume.zip)을 새 폴더에 풀고 **7-resume-install.command 하나**를 실행한다. 기존 `duckduck-office` VM이 없으면 새로 만들지 않고 멈춘다. 설치에 성공하면 원래 폴더의2-start→3-login→9-office-chat 순서로 진행한다.
