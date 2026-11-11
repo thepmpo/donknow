@@ -2,20 +2,26 @@ import fs from 'node:fs';import path from 'node:path';import http from 'node:htt
 import {createTeam} from './lib/team.mjs';
 import {createDevelopment} from './lib/development.mjs';
 import {createReleases} from './lib/releases.mjs';
+import {createRoleGuides} from './lib/role-guides.mjs';
+import {createTaskArchive} from './lib/task-archive.mjs';
+import {createReportMail} from './lib/report-mail.mjs';
 import {createOfficeClient,parseOfficeConfig,officeOrigin} from './lib/ai-office-client.mjs';import {createController,fail} from './lib/controller.mjs';import {authorize,remoteConfiguration,createSessions,validAccessKey} from './lib/access.mjs';
 const controlPort=Number(process.env.AI_OFFICE_CONTROL_PORT??8810);if(!Number.isInteger(controlPort)||controlPort<1024||controlPort>65535)throw Error('office_invalid_port');const backendPort=Number(new URL(officeOrigin(process.env.AI_OFFICE_API_URL??'http://127.0.0.1:8790')).port||80);
 const root=path.dirname(fileURLToPath(import.meta.url)),state=process.env.AI_OFFICE_STATE_DIR??'/workspace/ai-office/state',runtime=process.env.AI_OFFICE_RUNTIME_PATH??'/workspace/ai-office-runtime',config=parseOfficeConfig(fs.readFileSync(path.join(runtime,'.env'),'utf8'));
 const apiFactory=async()=>{const client=await createOfficeClient({config,runtimePath:runtime});return client.request;};
 const keyFile=path.join(state,'control-access.key');if(!fs.existsSync(keyFile))fs.writeFileSync(keyFile,randomBytes(32).toString('hex'),{mode:0o600,flag:'wx'});if(fs.lstatSync(keyFile).isSymbolicLink()||(fs.statSync(keyFile).mode&0o077)!==0)throw Error('office_control_key_requires_review');const localKey=fs.readFileSync(keyFile,'utf8').trim();if(!/^[a-f0-9]{64}$/.test(localKey))throw Error('office_control_key_requires_review');
 const database=fs.realpathSync(config.DB_PATH??path.join(state,'office.sqlite'));if(!database.startsWith(fs.realpathSync(state)+path.sep))throw Error('office_database_outside_private_state');
-const controller=createController({apiFactory,stateDir:state,projectsRoot:config.AI_OFFICE_PROJECTS_ROOT??'/workspace/ai-office/projects',database}),sessions=createSessions();
+const roleGuides=createRoleGuides({apiFactory,stateDir:state,projectsRoot:config.AI_OFFICE_PROJECTS_ROOT??'/workspace/ai-office/projects'});
+const reportMail=createReportMail({stateDir:state});
+const controller=createController({guideContext:roleGuides.context,apiFactory,stateDir:state,projectsRoot:config.AI_OFFICE_PROJECTS_ROOT??'/workspace/ai-office/projects',database}),sessions=createSessions();
 const team=createTeam({apiFactory,stateDir:state,projects:controller.projects,projectSnapshot:controller.projectSnapshot,exclusive:controller.exclusive,draft:controller.draft,start:controller.start,tasks:controller.tasks,stop:controller.stop});
-const development=createDevelopment({apiFactory,stateDir:state,projectsRoot:config.AI_OFFICE_PROJECTS_ROOT??'/workspace/ai-office/projects',database,exclusive:controller.exclusive});
+const archive=createTaskArchive({database,projectsRoot:config.AI_OFFICE_PROJECTS_ROOT??'/workspace/ai-office/projects',stateDir:state,exclusive:controller.exclusive});
+const development=createDevelopment({guideContext:roleGuides.context,apiFactory,stateDir:state,projectsRoot:config.AI_OFFICE_PROJECTS_ROOT??'/workspace/ai-office/projects',database,exclusive:controller.exclusive});
 const releases=createReleases({development,stateDir:state});
 let meetingTimer=null;
 function remote(){try{return remoteConfiguration(JSON.parse(fs.readFileSync(path.join(state,'private-access.json'),'utf8')));}catch(e){if(e.code==='ENOENT')return null;throw e;}}
 function headers(req){const h={...req.headers,host:'127.0.0.1:'+backendPort};for(const k of Object.keys(h))if(k.startsWith('tailscale-')||['forwarded','x-forwarded-host','x-forwarded-proto','x-forwarded-for','authorization','x-office-owner-key','x-control-csrf'].includes(k))delete h[k];if(req.headers.origin)h.origin='http://127.0.0.1:'+backendPort;if(config.API_AUTH_TOKEN)h.authorization='Bearer '+config.API_AUTH_TOKEN;return h;}
-async function body(req){let data='';for await(const part of req){data+=part;if(Buffer.byteLength(data)>65536)fail('office_request_too_large',413);}try{return JSON.parse(data||'{}');}catch{fail('office_invalid_json',400);}}
+async function body(req,limit=65536){const chunks=[];let size=0;for await(const part of req){const chunk=Buffer.isBuffer(part)?part:Buffer.from(part);size+=chunk.length;if(size>limit)fail('office_request_too_large',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8')||'{}');}catch{fail('office_invalid_json',400);}}
 function proxy(req,res,port,url){if(port===backendPort)res.setHeader('content-security-policy',String(res.getHeader('content-security-policy')).replace("script-src 'self' 'unsafe-inline'","script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src 'self' blob:"));const h=headers(req);if(url==='/')h['accept-encoding']='identity';h.host='127.0.0.1:'+port;if(req.headers.origin)h.origin='http://127.0.0.1:'+port;const upstream=http.request({hostname:'127.0.0.1',port,path:url,method:req.method,headers:h},response=>{if((port===8791||port===backendPort)&&url==='/'){let html='';response.setEncoding('utf8');response.on('data',c=>html+=c);response.on('end',()=>{const out={...response.headers};delete out['content-length'];res.writeHead(response.statusCode,out);res.end(port===8791?html.replaceAll("fetch('/api/","fetch('api/"):html.replace('</body>','<script src="/office-chat-bridge.js"></script></body>'));});}else{res.writeHead(response.statusCode,response.headers);response.pipe(res);}});upstream.on('error',()=>{if(!res.headersSent)res.writeHead(502,{'content-type':'text/plain; charset=utf-8'});res.end('사무실 서버가 꺼져 있습니다. 0번 사무실 시작 파일을 열어 주세요.');});req.pipe(upstream);}
 const gate='<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>사무실 연결</title><body style="font:18px system-ui;padding:32px"><h1>사무실 연결</h1><p id="state">사무실이 설치된 컴퓨터에서 0번 시작 파일로 열어 주세요.</p><script>const key=new URLSearchParams(location.hash.slice(1)).get("access");history.replaceState(null,"",location.pathname);if(key){document.getElementById("state").textContent="본인 사무실에 연결 중…";fetch("/control-api/local-connect",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({accessKey:key})}).then(r=>{if(!r.ok)throw Error();location.replace("/");}).catch(()=>{document.getElementById("state").textContent="시작 파일로 다시 열어 주세요.";});}</script></body></html>';
 const bridge=`(()=>{let scale=1.5;try{const saved=Number(localStorage.getItem('office-scene-scale'));if([1,1.25,1.5,1.75,2].includes(saved))scale=saved;}catch{}const style=document.createElement('style');document.head.append(style);function apply(){style.textContent='canvas{zoom:'+scale+'}';}apply();window.addEventListener('message',event=>{if(event.source!==window.parent||event.origin!==location.origin||event.data?.kind!=='office-scene-scale'||![1,1.25,1.5,1.75,2].includes(event.data.scale))return;scale=event.data.scale;apply();try{localStorage.setItem('office-scene-scale',String(scale));}catch{}});const original=window.fetch.bind(window);window.fetch=async(input,options={})=>{const url=new URL(typeof input==='string'?input:input.url,location.href),method=String(options.method||input.method||'GET').toUpperCase();if(url.origin===location.origin&&method==='POST'&&['/api/messages','/api/directives','/api/announcements'].includes(url.pathname)){let body={};try{body=JSON.parse(options.body||'{}');}catch{}window.parent.postMessage({kind:'office-chat-compose',prompt:typeof body.content==='string'?body.content:'',projectId:body.project_id||null,messageType:body.message_type==='announcement'||url.pathname==='/api/announcements'?'announcement':body.message_type==='chat'?'question':'directive'},location.origin);return new Response(JSON.stringify({error:'office_chat_confirmation_required',message:'사무실 채팅에서 요청 내용을 확인해주세요.'}),{status:409,headers:{'content-type':'application/json'}});}return original(input,options);};})();`;
@@ -35,6 +41,10 @@ export const server=http.createServer(async(req,res)=>{try{
  if(url.pathname.startsWith('/control-api/')){
   const session=ownerSession;if(!['GET','HEAD'].includes(req.method))sessions.check(req,session,actor);
   if(req.method==='GET'){
+   if(url.pathname==='/control-api/role-guides')return json(await roleGuides.status(url.searchParams.get('projectId')));
+   if(url.pathname==='/control-api/report-mail')return json({...reportMail.status(),localConfigurationAllowed:actor.mode==='local'});
+   const mailReceipt=url.pathname.match(/^\/control-api\/report-mail\/deliveries\/([a-f0-9-]{36})$/i);if(mailReceipt)return json(reportMail.delivery(mailReceipt[1]));
+
    if(url.pathname==='/control-api/session'){let scopedDevelopment=false;try{const a=await apiFactory(),p=await a('/api/office-policy/status');scopedDevelopment=p.developmentTaskUnlockAvailable===true;}catch{}return json({csrf:session.csrf,mode:actor.mode,owner:actor.owner,capabilities:{productReview:true,scopedDevelopment,verifiedPublication:true,automaticPublication:false}});}
    if(url.pathname==='/control-api/development/source')return json(await development.sourceStatus(url.searchParams.get('projectId')));
    if(url.pathname==='/control-api/development')return json(await development.list());
@@ -48,7 +58,11 @@ export const server=http.createServer(async(req,res)=>{try{
    if(url.pathname==='/control-api/tasks')return json(await controller.tasks());
    if(url.pathname==='/control-api/status')return json(await controller.status());
   }else if(req.method==='POST'){
-   const data=await body(req);
+   const data=await body(req,url.pathname==='/control-api/report-mail/send'?12*1024*1024:65536);
+   if(url.pathname==='/control-api/role-guides/connect')return json(await roleGuides.connect(data));
+   if(url.pathname==='/control-api/report-mail/configure'){if(actor.mode!=='local')fail('office_mail_local_configuration_required',403);return json(await reportMail.configure(data));}
+   if(url.pathname==='/control-api/report-mail/send')return json(await reportMail.send(data));
+   const archiveTask=url.pathname.match(/^\/control-api\/tasks\/([a-zA-Z0-9-]{1,64})\/(archive|restore)$/);if(archiveTask)return json(await archive[archiveTask[2]](archiveTask[1],data));
    if(url.pathname==='/control-api/development/source/sync')return json(await development.syncSource(data));
    if(url.pathname==='/control-api/development/prepare')return json(await development.prepare(data),201);
    const codeStart=/^\/control-api\/development\/([a-zA-Z0-9-]+)\/start$/.exec(url.pathname);if(codeStart)return json(await development.start(codeStart[1],data));

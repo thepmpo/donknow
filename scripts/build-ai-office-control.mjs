@@ -3,7 +3,7 @@ const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),base=
 const macOnly=process.argv.includes('--mac-only');
 fs.writeFileSync(path.join(install,'README-DEVELOPMENT.txt'),fs.readFileSync(path.join(repo,'tools/ai-office/macos/README-DEVELOPMENT.txt'),'utf8').replaceAll('.command','.cmd'));
 if(!macOnly){fs.copyFileSync(path.join(repo,'scripts/lib/ai-office-client.mjs'),path.join(base,'lib/ai-office-client.mjs'));fs.copyFileSync(path.join(repo,'scripts/lib/ai-office-knowledge.mjs'),path.join(base,'lib/knowledge.mjs'));}
-const files={};for(const name of ['lib/access.mjs','lib/ai-office-client.mjs','lib/controller.mjs','lib/team.mjs','lib/development.mjs','lib/knowledge.mjs','lib/releases.mjs','lib/release-validation.mjs','server.mjs','ui.html'].sort())files[name]=createHash('sha256').update(fs.readFileSync(path.join(base,name))).digest('hex');
+const files={};for(const name of ['lib/role-guides.mjs','lib/task-archive.mjs','lib/report-mail.mjs','lib/access.mjs','lib/ai-office-client.mjs','lib/controller.mjs','lib/team.mjs','lib/development.mjs','lib/knowledge.mjs','lib/releases.mjs','lib/release-validation.mjs','server.mjs','ui.html'].sort())files[name]=createHash('sha256').update(fs.readFileSync(path.join(base,name))).digest('hex');
 const manifest={version:1,packageId:createHash('sha256').update(JSON.stringify(files)).digest('hex'),files};
 if(!macOnly){
 fs.writeFileSync(path.join(base,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');

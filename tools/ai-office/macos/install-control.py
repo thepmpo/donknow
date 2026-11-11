@@ -8,7 +8,7 @@ import sys
 import uuid
 import zipfile
 
-ALLOWED = {'server.mjs', 'ui.html', 'lib/access.mjs', 'lib/controller.mjs', 'lib/ai-office-client.mjs', 'lib/team.mjs', 'lib/development.mjs', 'lib/knowledge.mjs', 'lib/releases.mjs', 'lib/release-validation.mjs'}
+ALLOWED = {'lib/role-guides.mjs', 'lib/task-archive.mjs', 'lib/report-mail.mjs', 'server.mjs', 'ui.html', 'lib/access.mjs', 'lib/controller.mjs', 'lib/ai-office-client.mjs', 'lib/team.mjs', 'lib/development.mjs', 'lib/knowledge.mjs', 'lib/releases.mjs', 'lib/release-validation.mjs'}
 LAUNCH = '''import fs from 'node:fs';import path from 'node:path';import {pathToFileURL} from 'node:url';
 const root='/workspace/ai-office/control';const p=JSON.parse(fs.readFileSync(path.join(root,'current.json'),'utf8'));if(!/^[a-f0-9]{64}$/.test(p.packageId))throw Error('office_control_manifest_invalid');const dir=path.join(root,'versions',p.packageId);if(fs.realpathSync(dir)!==dir)throw Error('office_control_path_invalid');process.env.AI_OFFICE_CONTROL_VERSION=p.packageId;await import(pathToFileURL(path.join(dir,'server.mjs')).href);
 '''

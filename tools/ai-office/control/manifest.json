@@ -1,16 +1,19 @@
 {
   "version": 1,
-  "packageId": "2dd1a984d358511276009267bd3c06032c544b105fb0fdf1d98c333ce8e1690d",
+  "packageId": "d4a7799164a027263efc3d873e604ceca0a4b34467846e25c6229cdea548676e",
   "files": {
     "lib/access.mjs": "bf878e810a26bbb9470c717983e83203c99180efcdce4b2e2e2e97f83d557494",
     "lib/ai-office-client.mjs": "edd44e50b591ebf73a9b658685f77bbd6ffe3b181a43998fea54af1c875497d6",
-    "lib/controller.mjs": "c1d9f5aa36fb145a2dce49dc4783a27604ba283aad4da6ea75dcab50ae5d22e1",
-    "lib/development.mjs": "91e881ddc7c8a390756cfda5592675806a23e7a349d70301cb49f70a2cfe382b",
+    "lib/controller.mjs": "2af4eb8088bfec4f3b7e32608eb43882f518ff34c876d7a480407edb26279ef1",
+    "lib/development.mjs": "56918ea0c75c505fa02c896ce2bd079a4545e419d0eacf5d61ae711efadb292b",
     "lib/knowledge.mjs": "9460b019272874b7c7b76bc54d5e8ca8859c13b8c5c248efbfafb28f49c1b81a",
     "lib/release-validation.mjs": "535580ce6e7a09c3369ba849398765ee671ac4c9cb4ac9355bc39c46a574cc5c",
     "lib/releases.mjs": "8c6c5d78f378dca286978300ff22240e72944316d3a411853585efffefcebdb1",
+    "lib/report-mail.mjs": "2d9eb2944b4c51d6e4ba9c556a1af6fb6f958a9cc6f9bf8f4abcbab0b7537fdc",
+    "lib/role-guides.mjs": "d7f7ea626cb48034a7c6ce947745e133bd8405b06f93f7505eece24297ed4e37",
+    "lib/task-archive.mjs": "0e9236314d3e61f7ee5e55a6ed57d8a9e4e59962fd913333b47aba4a06513908",
     "lib/team.mjs": "0704c8393f7ff4f4c63fe5b845a0c426cb2408527a7750718642d7a96e949d55",
-    "server.mjs": "1d5dcfb92168148b0d1c729f046c379764411a9ebaea14d7385e88260805e99c",
+    "server.mjs": "101ac8d211c10f7da1852140385150597578bf7dfe5d006254f837f4b3e1b14a",
     "ui.html": "60a3d70f80da5e8f67d15eb5273ee6fcdaf5b19be72a3303552e2ab637a9fc0d"
   }
 }

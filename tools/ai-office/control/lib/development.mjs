@@ -22,7 +22,7 @@ function captureChanges(worktree,sourceHead){
 }
 
 /** One exact code request per approval, with no persistent global development unlock. */
-export function createDevelopment({apiFactory,stateDir,projectsRoot,database,exclusive=fn=>fn(),networkGit}={}){
+export function createDevelopment({apiFactory,stateDir,projectsRoot,database,exclusive=fn=>fn(),networkGit,guideContext=async()=>''}={}){
  const ledger=path.join(stateDir,'control-development');
  function ensure(){if(fs.realpathSync(stateDir)!==path.resolve(stateDir))fail('office_development_state_path_invalid');if(fs.existsSync(ledger)&&fs.lstatSync(ledger).isSymbolicLink())fail('office_development_state_path_invalid');fs.mkdirSync(ledger,{recursive:true,mode:0o700});}
  const file=id=>path.join(ledger,uuid(id)+'.json');
@@ -104,7 +104,7 @@ export function createDevelopment({apiFactory,stateDir,projectsRoot,database,exc
    const a=await api(),agents=await idle(a),snap=await snapshot(a,input.projectId),assigned=new Set(snap.project.assigned_agent_ids??[]),origin=provenance(snap);if(origin.metadata){if(origin.metadata.source!==snap.source||remoteHead(snap.source)!==snap.sourceHead)fail('office_development_source_update_required');try{const knowledge=publishKnowledge({officeRoot:path.dirname(fs.realpathSync(projectsRoot)),project:origin.metadata.slug,source:snap.source});snap.knowledgeRevision=knowledge.revision;}catch{fail('office_development_knowledge_refresh_required');}}
    const available=agents.filter(agent=>agent.cli_provider==='codex'&&(!agent.workflow_pack_key||agent.workflow_pack_key==='development')&&assigned.has(agent.id));
    const agent=input.agentId?available.find(a=>a.id===input.agentId):available.find(a=>a.department_id==='dev'&&a.role==='team_leader')??available.find(a=>a.department_id==='dev');if(!agent)fail('office_development_agent_not_configured');
-   const title=prompt.split('\n')[0].slice(0,70),description=promptFor(prompt),payload={title,description,project_id:snap.project.id,project_path:snap.project.project_path,department_id:agent.department_id,assigned_agent_id:agent.id,status:'inbox',priority:0,task_type:'general',workflow_pack_key:'development',workflow_meta_json:{office_development_request_id:id},output_format:'markdown'};
+   const title=prompt.split('\n')[0].slice(0,70),description=promptFor(prompt)+await guideContext(snap.project.id,agent.department_id),payload={title,description,project_id:snap.project.id,project_path:snap.project.project_path,department_id:agent.department_id,assigned_agent_id:agent.id,status:'inbox',priority:0,task_type:'general',workflow_pack_key:'development',workflow_meta_json:{office_development_request_id:id},output_format:'markdown'};
    const all=await a('/api/tasks'),existing=(all.tasks??all).filter(t=>{try{return JSON.parse(t.workflow_meta_json??'{}').office_development_request_id===id;}catch{return false;}});if(existing.length>1)fail('office_development_existing_task_requires_review');if(existing[0]&&(existing[0].description!==description||existing[0].assigned_agent_id!==agent.id||existing[0].project_id!==input.projectId||existing[0].status!=='inbox'))fail('office_request_id_already_used');
    const created=existing[0]??await a('/api/tasks','POST',payload),task=created.task??created;safeId(task.id);
    const grant=await a('/api/office-policy/tasks/'+task.id+'/prepare','POST',{phase:'development'},{owner:true});if(!/^[a-f0-9]{64}$/.test(grant.digest??'')||grant.phase!=='development'||grant.state!=='pending')fail('office_development_permission_not_prepared');
@@ -113,7 +113,7 @@ export function createDevelopment({apiFactory,stateDir,projectsRoot,database,exc
   }),
   start:(id,input)=>exclusive(async()=>{
    const r=read(id);if(input.confirmation!==true||input.digest!==r.digest)fail('office_development_confirmation_required',400);if(r.state==='started')return {started:true,alreadyStarted:true,taskId:r.taskId};if(r.state!=='prepared')fail('office_development_inspection_required');if(r.expiresAt<=Date.now())fail('office_development_approval_expired');
-   const a=await api();await idle(a);const t=await getTask(a,r.taskId),snap=await snapshot(a,r.spec.projectId);checkRecord(r,t,snap);if(t.status!=='inbox')fail('office_development_task_not_waiting');
+   const a=await api();await idle(a);const t=await getTask(a,r.taskId),snap=await snapshot(a,r.spec.projectId);checkRecord(r,t,snap);if(t.hidden===1)fail('office_task_archived_restore_first');if(t.status!=='inbox')fail('office_development_task_not_waiting');
    const provider=await a('/api/office-policy/runtime/check','POST',{}, {owner:true});if(!provider.authReady||!provider.runnerConfigured||!provider.sandboxAvailable)fail('office_provider_not_ready');
    r.state='launching';save(r);
    try{await a('/api/office-policy/tasks/'+r.taskId+'/approve','POST',{expectedDigest:r.permissionDigest,confirmation:true},{owner:true});await a('/api/office-policy/tasks/'+r.taskId+'/development-unlock','POST',{expectedDigest:r.permissionDigest,confirmation:true},{owner:true});const result=await a('/api/tasks/'+r.taskId+'/run','POST',{});if(!result.ok)fail('office_task_start_not_confirmed');r.state='started';r.startedAt=Date.now();save(r);return {started:true,taskId:r.taskId,phase:'development',automaticPublication:false};}

@@ -1,0 +1,39 @@
+type OfficeMailStatus = { configured: boolean; sender?: string; localConfigurationAllowed?: boolean };
+function OfficeReportMail({ taskTitle }: { taskTitle: string }) {
+  const [open,setOpen]=useState(false),[status,setStatus]=useState<OfficeMailStatus|null>(null);
+  const [sender,setSender]=useState(''),[password,setPassword]=useState(''),[busy,setBusy]=useState(false),[notice,setNotice]=useState('');
+  const [pdf,setPdf]=useState<{id:string;name:string;base64:string}|null>(null),[attempted,setAttempted]=useState(false),[recoverable,setRecoverable]=useState(false);
+  const selection=useRef(0);
+  const request=async(path:string,body?:unknown)=>{
+    let csrf='';
+    if(body!==undefined){const s=await fetch('/control-api/session',{credentials:'same-origin',cache:'no-store'});if(!s.ok)throw Error('office_mail_reconnect');csrf=(await s.json()).csrf;}
+    const r=await fetch('/control-api/report-mail'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:body===undefined?{}:{'content-type':'application/json','x-control-csrf':csrf},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(45000)});
+    const result=await r.json();if(!r.ok)throw Error(String(result.error||'office_mail_request_failed'));return result;
+  };
+  const load=async()=>{setBusy(true);try{const r=await request('');setStatus(r);setSender(r.sender||'');}catch{setNotice('메일 설정을 확인하지 못했어요. 0번으로 다시 연결한 뒤 열어주세요.');}finally{setBusy(false);}};
+  const configure=async()=>{setBusy(true);setNotice('');try{await request('/configure',{sender,appPassword:password,confirmation:true});setPassword('');const r=await request('');setStatus(r);setNotice('연결 정보를 저장했어요. 실제 Gmail 인증과 발송은 PDF를 보낼 때 확인합니다.');}catch{setNotice('저장하지 못했어요. Mac에서 연 화면인지, Gmail 주소와 16자리 앱 비밀번호가 맞는지 확인해주세요.');}finally{setPassword('');setBusy(false);}};
+  const choose=async(file?:File)=>{const current=++selection.current;setPdf(null);setNotice('');if(!file)return;if(file.size>8*1024*1024){setNotice('PDF는 8MB까지 보낼 수 있어요.');return;}try{const bytes=new Uint8Array(await file.arrayBuffer());if(new TextDecoder().decode(bytes.slice(0,5))!=='%PDF-')throw Error('not_pdf');let binary='';for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));if(selection.current===current)setPdf({id:crypto.randomUUID(),name:file.name,base64:btoa(binary)});}catch{setNotice('PDF 파일을 읽지 못했어요. PDF로 저장한 파일을 선택해주세요.');}};
+  const describe=(r:{state?:string;status?:string;errorCode?:string})=>{setRecoverable(['office_report_mail_authentication_failed','office_report_mail_dependency_missing'].includes(r.errorCode||''));if(r.errorCode==='office_report_mail_authentication_failed')return 'Gmail 인증에 실패했어요. 연결 설정에서 앱 비밀번호를 다시 저장한 뒤 새 발송을 준비해주세요. 자동으로 다시 보내지는 않습니다.';if(r.errorCode==='office_report_mail_dependency_missing')return '메일 전송 도구가 준비되지 않았어요. 업무 종료 후 11번 업데이트를 완료하고 새 발송을 준비해주세요.';const state=r.state||r.status;return state==='accepted'?'Gmail 서버가 메일을 접수했어요. 받은편지함과 스팸함을 확인해주세요. 실제 도착 여부는 아직 확인하지 않았습니다.':state==='sending'?'발송 처리 중이에요. 잠시 뒤 결과 확인을 눌러주세요.':'발송 결과를 확인해야 해요. 받은편지함과 스팸함을 먼저 확인해주세요. 중복 발송을 막기 위해 자동으로 다시 보내지 않습니다.';};
+  const send=async()=>{if(!pdf||!status?.configured||attempted||busy)return;if(!window.confirm(pdf.name+' 파일을 '+status.sender+' 본인 Gmail로 보낼까요?'))return;setAttempted(true);setBusy(true);try{const r=await request('/send',{id:pdf.id,reportTitle:taskTitle.replace(/[\r\n]/g,' ').slice(0,160),pdfBase64:pdf.base64,confirmation:true});setNotice(describe(r));}catch{setNotice('발송 결과를 확인하지 못했어요. 아래 결과 확인과 Gmail 받은편지함을 확인해주세요. 자동으로 다시 보내지 않습니다.');}finally{setBusy(false);}};
+  const check=async()=>{if(!pdf)return;setBusy(true);try{setNotice(describe(await request('/deliveries/'+encodeURIComponent(pdf.id))));}catch{setNotice('발송 기록을 확인하지 못했어요. 받은편지함을 확인하고, 결과가 불명확한 동안 다시 보내지 마세요.');}finally{setBusy(false);}};
+  return <div className="min-w-0 space-y-2">
+    <button className="rounded border px-3 py-2" onClick={()=>{setOpen(v=>!v);if(open)setPassword('');else void load();}}>Gmail로 PDF 받기</button>
+    {open&&<section aria-label="Gmail 보고서 보내기" className="space-y-3 rounded border p-3">
+      <p>먼저 ‘PDF로 저장·인쇄’에서 PDF로 저장하고 아래에서 그 파일을 선택해주세요. 선택한 파일만 본인 Gmail로 보냅니다. 자동 발송은 하지 않습니다.</p>
+      {status?.configured&&<p>받을 주소: {status.sender}</p>}
+      {status?.localConfigurationAllowed&&<details open={!status.configured}><summary>Gmail 연결 설정</summary>
+        <p className="my-2">Google의 <a className="underline" href="https://myaccount.google.com/security" target="_blank" rel="noreferrer">2단계 인증</a>을 켠 뒤 <a className="underline" href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer">앱 비밀번호 만들기</a>에서 발급한 16자리만 입력해주세요. 일반 Google 비밀번호를 넣거나 채팅에 보내지 마세요.</p>
+        <label className="block">본인 Gmail 주소<input type="email" autoComplete="email" disabled={busy} className="my-1 block w-full rounded bg-gray-800 p-2" value={sender} onChange={e=>setSender(e.target.value)}/></label>
+        <label className="block">Google 앱 비밀번호<input type="password" autoComplete="new-password" disabled={busy} className="my-1 block w-full rounded bg-gray-800 p-2" value={password} onChange={e=>setPassword(e.target.value)}/></label>
+        <p>이 Mac 사무실에 암호화해 보관합니다. Google 계정에서 앱 비밀번호를 허용하지 않으면 이 연결 방식은 사용할 수 없습니다.</p>
+        <button disabled={busy||!sender.trim()||!password.trim()} className="rounded border px-3 py-2 disabled:opacity-40" onClick={()=>void configure()}>본인 Gmail 연결 정보 저장</button>
+      </details>}
+      {status&&!status.configured&&!status.localConfigurationAllowed&&<p>처음 연결은 Mac에서 0번으로 연 사무실에서 해주세요. 연결 후 휴대폰에서도 보낼 수 있어요.</p>}
+      <label className="block">저장한 PDF 선택<input type="file" accept="application/pdf,.pdf" disabled={busy||attempted} className="block max-w-full py-2" onChange={e=>void choose(e.target.files?.[0])}/></label>
+      <button disabled={busy||attempted||!pdf||!status?.configured} className="rounded bg-blue-600 px-3 py-2 text-white disabled:opacity-40" onClick={()=>void send()}>선택한 PDF를 내 Gmail로 보내기</button>
+      {recoverable&&pdf&&<button disabled={busy} className="ml-2 rounded border px-3 py-2" onClick={()=>{if(!window.confirm('연결 문제를 해결한 뒤 새 발송 요청을 준비할까요? 지금 메일을 보내지는 않습니다.'))return;setPdf({...pdf,id:crypto.randomUUID()});setAttempted(false);setRecoverable(false);setNotice('새 발송을 준비했어요. 내용을 확인하고 보내기 버튼을 눌러주세요.');}}>수정 후 새 발송 준비</button>}
+      {attempted&&<button disabled={busy} className="ml-2 rounded border px-3 py-2" onClick={()=>void check()}>발송 결과 확인</button>}
+      {busy&&<p role="status">처리 중이에요.</p>}{notice&&<p role="status" className="whitespace-pre-wrap">{notice}</p>}
+    </section>}
+  </div>;
+}
