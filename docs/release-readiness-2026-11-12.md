@@ -1,5 +1,15 @@
 # 덕 운영·백업·iPhone 출시 확인 — 2026-11-12
 
+## 2026-11-12 10:19 KST — 덕 채팅 후속 수정 공개 반영 확인
+
+검증된 `dd1abaec560ed2e49f387377754dcfbeb8d96f64`를 기존 Render 무료 서비스 `duckduck-test`에 배포했다. 배포 `dep-dbqh77bbc2fs73dclneg`는 10:18:35 KST에 live가 됐고, 뒤이어 공개 GET으로 `/project`의 Product Design 검토·소스 `6c8354e`, `/design-guide`의 새 답변/후보/결과 표시 규칙, `/support`의 Kim Sanghyun·thepmpo.official@gmail.com을 확인했다. `/api/health`는 `ok:true`다. 플랜·자동 배포·환경 변수·원본 DB·인증 설정은 바꾸지 않았다. 이전 “Render 연결/반영 대기”는 이 확인으로 갱신한다. 이 절은 확인한 기능 배포의 기록이며 후속 문서만 갱신한 커밋과 구분한다.
+
+[iOS 실행 43133408343](https://github.com/thepmpo/donknow/actions/runs/43133408343)도 같은 `dd1abae`에서 성공했다. 문법·202개 검사 통과/선택 1개 건너뜀·타입·iOS JS export를 거쳐 **빌드 14 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/aa053ed6-c1f7-40b1-ba16-ff53ef236e50) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8ca93f61-ad23-498d-95b7-c1c70ad6027d). 실제 Swift·Apple 처리·TestFlight 설치는 아직 미확인이다.
+
+배포 후 공개 capability는 `assistant:false`, Slack `configured:false`, Google·Notion `configured:true`, `externalActions:true`, `mail:true`다. 화면과 실행 API를 배포했다고 실제 AI/외부 쓰기 활성화를 주장하지 않는다. 남은 사용자 계정 권한과 서버 설정은 기존 [활성화 안내](remaining-activation.md)를 따른다.
+
+## 최초 공개 조회 — 09:29 KST 기록
+
 확인 기준: 2026-11-12 09:29 KST. 새 기능 구현과 운영 서버 설정, 실제 사용자 계정 성공을 구분한다. 이번 확인은 공개 GET 요청과 GitHub 실행 기록 조회만 사용했다. 실제 계정 생성·AI 호출·메일 발송·DB 변경·재배포·빌드 재실행은 하지 않았다.
 
 ## 지금 확인된 것

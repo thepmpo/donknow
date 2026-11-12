@@ -13,7 +13,7 @@
 
 ### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
-새 할 일 후보의 제목·날짜가 가려지던 자동 이동을 고쳤습니다. 새 답변·초안·완료 결과와 자료 선택이 바로 보이고, 이미 준비한 후보의 날짜는 읽기 전용입니다. 기존 톤·토큰·동의·확인 후 실행을 유지했습니다. [수정 전후 화면·네 단계 검토·실제 검사](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md)를 확인하세요. 자동 검사 202개·문법·타입·웹/iOS JS·전체 앱 검사를 통과했으며 실제 AI·실기기·Render 반영은 별도입니다. 사용자용 결과는 개인 Notion에 기록합니다.
+새 할 일 후보의 제목·날짜가 가려지던 자동 이동을 고쳤습니다. 새 답변·초안·완료 결과와 자료 선택이 바로 보이고, 이미 준비한 후보의 날짜는 읽기 전용입니다. 기존 톤·토큰·동의·확인 후 실행을 유지했습니다. [수정 전후 화면·네 단계 검토·실제 검사](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md)를 확인하세요. 자동 검사 202개·문법·타입·웹/iOS JS·전체 앱 검사를 통과했습니다. 후속 Render 배포 dd1abae의 live와 공개 문서·디자인 가이드·지원 연락처를 확인했고, TestFlight 빌드 14 생성·제출 요청도 접수됐습니다. 실제 AI 활성화·실기기·Apple 처리는 별도입니다. 사용자용 결과는 개인 Notion에 기록합니다.
 
 ### 2026-11-12 — 덕 개발 재개·Duo·Notion 업무 기록
 
@@ -111,7 +111,9 @@
 
 #### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
-Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기다.
+Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기였다.
+
+후속 확인: 검증한 `dd1abae`의 Render 배포가 live가 됐고 공개 `/project`·`/design-guide`·지원 연락처·health를 확인했다. 같은 커밋의 iOS 자동화도 성공해 빌드 14 생성·제출 요청을 접수했다. 실제 AI 활성화·Apple 처리·설치는 별도다. [정확한 배포·빌드 근거](release-readiness-2026-11-12.md).
 
 #### 2026-11-12 — TestFlight CI의 임시 Git 저장소 설정 격리
 
@@ -570,7 +572,9 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 ##### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
-Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기다.
+Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기였다.
+
+후속 확인: 검증한 `dd1abae`의 Render 배포가 live가 됐고 공개 `/project`·`/design-guide`·지원 연락처·health를 확인했다. 같은 커밋의 iOS 자동화도 성공해 빌드 14 생성·제출 요청을 접수했다. 실제 AI 활성화·Apple 처리·설치는 별도다. [정확한 배포·빌드 근거](release-readiness-2026-11-12.md).
 
 ##### 2026-11-12 — 덕 개발 재개 수동 작업 기록
 
@@ -1051,6 +1055,7 @@ dd650f0 Isolate Git test fixtures from runner LFS settings for TestFlight CI
 ee08bdb Record successful TestFlight build request and remaining live verification
 adf396b Keep new Duck chat proposals and results visible above older history
 6c8354e Record Product Design audit and preserve inline documentation images
+dd1abae Publish updated Duck chat audit and design guide documents
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1766,9 +1771,28 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 
 후속 운영 조회에서 Render 플러그인으로 기존 무료 `duckduck-test` 서비스에 접근했다. 배포 전 실제 live는 `5e129f0`이고 자동 배포는 꺼져 있었다. 이전의 “연결 도구 없음”은 당시 상태다. 기존 서비스를 유지한 최신 main 배포와 공개 문서 반영 확인은 이 후속 작업에서 계속 진행한다.
 
+#### 2026-11-12 10:19 KST — 덕 채팅 후속 수정 공개 반영 확인
+
+검증된 `dd1abaec560ed2e49f387377754dcfbeb8d96f64`를 기존 Render 무료 서비스 `duckduck-test`에 배포했다. 배포 `dep-dbqh77bbc2fs73dclneg`는 10:18:35 KST에 live가 됐고, 뒤이어 공개 GET으로 `/project`의 Product Design 검토·소스 `6c8354e`, `/design-guide`의 새 답변/후보/결과 표시 규칙, `/support`의 Kim Sanghyun·thepmpo.official@gmail.com을 확인했다. `/api/health`는 `ok:true`다. 플랜·자동 배포·환경 변수·원본 DB·인증 설정은 바꾸지 않았다. 이전 “Render 연결/반영 대기”는 이 확인으로 갱신한다. 이 절은 확인한 기능 배포의 기록이며 후속 문서만 갱신한 커밋과 구분한다.
+
+[iOS 실행 43133408343](https://github.com/thepmpo/donknow/actions/runs/43133408343)도 같은 `dd1abae`에서 성공했다. 문법·202개 검사 통과/선택 1개 건너뜀·타입·iOS JS export를 거쳐 **빌드 14 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/aa053ed6-c1f7-40b1-ba16-ff53ef236e50) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8ca93f61-ad23-498d-95b7-c1c70ad6027d). 실제 Swift·Apple 처리·TestFlight 설치는 아직 미확인이다.
+
+배포 후 공개 capability는 `assistant:false`, Slack `configured:false`, Google·Notion `configured:true`, `externalActions:true`, `mail:true`다. 화면과 실행 API를 배포했다고 실제 AI/외부 쓰기 활성화를 주장하지 않는다. 남은 사용자 계정 권한과 서버 설정은 기존 [활성화 안내](https://github.com/thepmpo/donknow/blob/main/docs/remaining-activation.md)를 따른다.
+
+
 ### 原文 / docs/release-readiness-2026-11-12.md
 
 ### 덕 운영·백업·iPhone 출시 확인 — 2026-11-12
+
+#### 2026-11-12 10:19 KST — 덕 채팅 후속 수정 공개 반영 확인
+
+검증된 `dd1abaec560ed2e49f387377754dcfbeb8d96f64`를 기존 Render 무료 서비스 `duckduck-test`에 배포했다. 배포 `dep-dbqh77bbc2fs73dclneg`는 10:18:35 KST에 live가 됐고, 뒤이어 공개 GET으로 `/project`의 Product Design 검토·소스 `6c8354e`, `/design-guide`의 새 답변/후보/결과 표시 규칙, `/support`의 Kim Sanghyun·thepmpo.official@gmail.com을 확인했다. `/api/health`는 `ok:true`다. 플랜·자동 배포·환경 변수·원본 DB·인증 설정은 바꾸지 않았다. 이전 “Render 연결/반영 대기”는 이 확인으로 갱신한다. 이 절은 확인한 기능 배포의 기록이며 후속 문서만 갱신한 커밋과 구분한다.
+
+[iOS 실행 43133408343](https://github.com/thepmpo/donknow/actions/runs/43133408343)도 같은 `dd1abae`에서 성공했다. 문법·202개 검사 통과/선택 1개 건너뜀·타입·iOS JS export를 거쳐 **빌드 14 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/aa053ed6-c1f7-40b1-ba16-ff53ef236e50) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8ca93f61-ad23-498d-95b7-c1c70ad6027d). 실제 Swift·Apple 처리·TestFlight 설치는 아직 미확인이다.
+
+배포 후 공개 capability는 `assistant:false`, Slack `configured:false`, Google·Notion `configured:true`, `externalActions:true`, `mail:true`다. 화면과 실행 API를 배포했다고 실제 AI/외부 쓰기 활성화를 주장하지 않는다. 남은 사용자 계정 권한과 서버 설정은 기존 [활성화 안내](https://github.com/thepmpo/donknow/blob/main/docs/remaining-activation.md)를 따른다.
+
+#### 최초 공개 조회 — 09:29 KST 기록
 
 확인 기준: 2026-11-12 09:29 KST. 새 기능 구현과 운영 서버 설정, 실제 사용자 계정 성공을 구분한다. 이번 확인은 공개 GET 요청과 GitHub 실행 기록 조회만 사용했다. 실제 계정 생성·AI 호출·메일 발송·DB 변경·재배포·빌드 재실행은 하지 않았다.
 
@@ -4005,7 +4029,9 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 
 #### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
-Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기다.
+Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기였다.
+
+후속 확인: 검증한 `dd1abae`의 Render 배포가 live가 됐고 공개 `/project`·`/design-guide`·지원 연락처·health를 확인했다. 같은 커밋의 iOS 자동화도 성공해 빌드 14 생성·제출 요청을 접수했다. 실제 AI 활성화·Apple 처리·설치는 별도다. [정확한 배포·빌드 근거](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md).
 
 #### 2026-11-12 — 덕 작업 재개
 

@@ -79,3 +79,12 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 문서 회귀에서는 본문의 전후 이미지 8장이 추가돼 기존 “전체 이미지 수=갤러리 수” 가정이 실패했다. 갤러리의 파일 목록을 manifest와 정확히 대조하도록 검사하고, 본문 이미지는 이미지용 주소로 변환해 같은 `/project-assets/`에서 지연 로딩되도록 생성기를 수정했다. 이후 공개 문서·전체 이미지·댓글 CRUD·XSS 방지·320px·디자인 가이드 회귀가 통과했다. 실패를 제거하기 위해 이미지 검사를 생략하지 않았다.
 
 후속 운영 조회에서 Render 플러그인으로 기존 무료 `duckduck-test` 서비스에 접근했다. 배포 전 실제 live는 `5e129f0`이고 자동 배포는 꺼져 있었다. 이전의 “연결 도구 없음”은 당시 상태다. 기존 서비스를 유지한 최신 main 배포와 공개 문서 반영 확인은 이 후속 작업에서 계속 진행한다.
+
+## 2026-11-12 10:19 KST — 덕 채팅 후속 수정 공개 반영 확인
+
+검증된 `dd1abaec560ed2e49f387377754dcfbeb8d96f64`를 기존 Render 무료 서비스 `duckduck-test`에 배포했다. 배포 `dep-dbqh77bbc2fs73dclneg`는 10:18:35 KST에 live가 됐고, 뒤이어 공개 GET으로 `/project`의 Product Design 검토·소스 `6c8354e`, `/design-guide`의 새 답변/후보/결과 표시 규칙, `/support`의 Kim Sanghyun·thepmpo.official@gmail.com을 확인했다. `/api/health`는 `ok:true`다. 플랜·자동 배포·환경 변수·원본 DB·인증 설정은 바꾸지 않았다. 이전 “Render 연결/반영 대기”는 이 확인으로 갱신한다. 이 절은 확인한 기능 배포의 기록이며 후속 문서만 갱신한 커밋과 구분한다.
+
+[iOS 실행 43133408343](https://github.com/thepmpo/donknow/actions/runs/43133408343)도 같은 `dd1abae`에서 성공했다. 문법·202개 검사 통과/선택 1개 건너뜀·타입·iOS JS export를 거쳐 **빌드 14 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/aa053ed6-c1f7-40b1-ba16-ff53ef236e50) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8ca93f61-ad23-498d-95b7-c1c70ad6027d). 실제 Swift·Apple 처리·TestFlight 설치는 아직 미확인이다.
+
+배포 후 공개 capability는 `assistant:false`, Slack `configured:false`, Google·Notion `configured:true`, `externalActions:true`, `mail:true`다. 화면과 실행 API를 배포했다고 실제 AI/외부 쓰기 활성화를 주장하지 않는다. 남은 사용자 계정 권한과 서버 설정은 기존 [활성화 안내](remaining-activation.md)를 따른다.
+
