@@ -41,7 +41,8 @@
     "test:e2e": "node e2e/app.mjs",
     "test:web-auth": "node e2e/web-auth.mjs",
     "test:project": "node e2e/project.mjs",
-    "test:motion": "node e2e/motion.mjs"
+    "test:motion": "node e2e/motion.mjs",
+    "test:ux": "node e2e/ux-audit.mjs"
   },
   "private": true
 }

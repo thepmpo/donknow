@@ -12,7 +12,7 @@ export const palette = {
 export const colors = {
   bg: palette.white, surface: palette.grey50, grouped: palette.grey100,
   text: palette.grey900, secondary: palette.grey700, muted: palette.grey600,
-  subtle: palette.grey500, blue: palette.blue500, blueText: palette.blue700,
+  subtle: palette.grey500, blue: palette.blue500, action: palette.blue700, blueText: palette.blue700,
   line: palette.grey200, pale: palette.blue50, white: palette.white,
   danger: palette.red500,
 } as const;

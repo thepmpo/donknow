@@ -65,3 +65,6 @@ export function searchTodos(todos: Todo[], query: string, filter: 'all' | 'open'
   if (!words.length) return [];
   return todos.filter(todo => (filter === 'all' || (filter === 'done' ? todo.done : !todo.done)) && words.every(word => normalize(todo.title).includes(word))).sort((a, b) => Number(a.done) - Number(b.done) || (a.done ? (b.completedAt ?? '').localeCompare(a.completedAt ?? '') : (a.dueDate ?? '9999').localeCompare(b.dueDate ?? '9999')));
 }
+
+/** Human display only; API and stored due dates remain ISO strings. */
+export const formatDueDate=(value:string|null|undefined)=>value?value.replace(/^(\d{4})-(\d{2})-(\d{2})$/,(_,y,m,d)=>`${y}년 ${Number(m)}월 ${Number(d)}일`):'없음';

@@ -5,7 +5,7 @@ import { MotionProvider, MotionView } from './src/motion';
 import { MotionPressable as Pressable } from './src/motion';
 import { AuthScreen } from './src/screens/AuthScreen';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -30,6 +30,7 @@ type Tab = typeof tabs[number]['id'];
 function Shell() {
   const store = useTodos();
   const insets=useSafeAreaInsets();
+  const {width}=useWindowDimensions();
   const duo=useDuoTrailingNavigation();
   const [tab, setTab] = useState<Tab>('todos');
   const [settings, setSettings] = useState(false);
@@ -52,7 +53,7 @@ function Shell() {
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
     </View>}</MotionView>
-    {store.connection && !settings && !needsAuth && <BlurView intensity={85} tint="light" style={[styles.tabBar,duo ? styles.duoTabBar : styles.bottomTabBar,{paddingBottom:duo?8:Math.max(insets.bottom,8)}]} testID={duo ? "DuoTrailingNavigation" : "BottomNavigation"} accessibilityRole="tablist"><ScrollView horizontal={!duo} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentContainerStyle={[styles.tabItems,duo&&styles.duoTabItems]}>{tabs.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{ selected: item.id === tab }} onPress={() => setTab(item.id)} style={[styles.tab,duo&&styles.duoTab]}>{item.id === 'duck' ? <Text style={styles.duckTab}>🦆</Text> : <Ionicons name={item.icon} size={24} color={item.id === tab ? colors.blue : palette.grey500} />}<Text style={[styles.tabLabel, item.id === tab && styles.selected]}>{item.name}</Text></Pressable>)}</ScrollView></BlurView>}
+    {store.connection && !settings && !needsAuth && <BlurView intensity={85} tint="light" style={[styles.tabBar,duo ? styles.duoTabBar : styles.bottomTabBar,{paddingBottom:duo?8:Math.max(insets.bottom,8)}]} testID={duo ? "DuoTrailingNavigation" : "BottomNavigation"} accessibilityRole="tablist"><ScrollView horizontal={!duo} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentContainerStyle={[styles.tabItems,duo&&styles.duoTabItems]}>{tabs.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{ selected: item.id === tab }} onPress={() => setTab(item.id)} style={[styles.tab,duo&&styles.duoTab]}>{item.id === 'duck' ? <Text style={styles.duckTab}>🦆</Text> : <Ionicons name={item.icon} size={24} color={item.id === tab ? colors.blue : palette.grey500} />}<Text numberOfLines={2} style={[styles.tabLabel, item.id === tab && styles.selected]}>{item.id==='todos'&&width<360&&!duo?'Todo\n리스트':item.name}</Text></Pressable>)}</ScrollView></BlurView>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView>;
 }

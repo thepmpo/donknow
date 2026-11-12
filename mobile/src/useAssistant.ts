@@ -1,3 +1,4 @@
+import {formatDueDate} from './domain';
 import {useEffect,useRef,useState} from 'react';
 import type {TodoStore} from './useTodos';
 
@@ -8,10 +9,10 @@ export type AssistantProposal={operation:string;label:string;args:Record<string,
 export type AssistantStatus={enabled:boolean;message:string;actions:AssistantDefinition[]};
 export type AssistantTurn={role:'user'|'assistant';text:string};
 export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'덕 Todo'};
-export const assistantLabels:Record<string,string>={title:'제목',notes:'메모',dueDate:'예정일 (YYYY-MM-DD)',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
+export const assistantLabels:Record<string,string>={title:'제목',notes:'메모',dueDate:'예정일',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
 export const assistantStatusLabels:Record<string,string>={pending:'확인 대기',running:'처리 중',succeeded:'완료',failed:'실패 · 새 초안에서 다시 확인',unknown:'결과 불확실 · 원본 확인 필요',cancelled:'취소','restored-cancelled':'복원 시 취소'};
 export const assistantTargetKeys=['id','list','channel','parent','ts','thread'];
-export const assistantValue=(key:string,value:unknown)=>key==='done'?(value?'완료':'미완료'):key==='read'?(value?'읽음':'읽지 않음'):String(value??'없음');
+export const assistantValue=(key:string,value:unknown)=>key==='done'?(value?'완료':'미완료'):key==='read'?(value?'읽음':'읽지 않음'):key==='dueDate'?formatDueDate(typeof value==='string'?value:null):String(value??'없음');
 
 /** The inline chat and advanced sheet use the same consent/preview/confirm API path. */
 export function useAssistant(store:TodoStore){

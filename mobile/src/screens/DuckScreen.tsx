@@ -20,6 +20,7 @@ import { typography } from '../theme';
 import { CloseButton, Button, colors, DateField } from '../ui';
 type Card = { id: number; title: string; notes: string; dueDate: string | null; saved: boolean; saving: boolean };
 export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStore; onOpenTodos: () => void; onOpenTodo: (todo: Todo) => void }) {
+  const [manualPaste,setManualPaste]=useState(false);
   const reduced = useReducedMotion();
   const insets=useSafeAreaInsets();
   const duo=useDuoTrailingNavigation();
@@ -44,7 +45,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
   const [task, setTask] = useState('');
   const [pasteHint,setPasteHint]=useState('');
   const scrollOnNextContent=useRef(false);
-  function closePaste() { setPasting(false); setConversation(''); setTask('');setPasteHint(''); }
+  function closePaste() { setPasting(false); setConversation(''); setTask('');setPasteHint('');setManualPaste(false); }
   function prepareTask() {
     if (!task.trim()) return;
     scrollOnNextContent.current=true;
@@ -85,15 +86,19 @@ export function DuckScreen({ store, onOpenTodos, onOpenTodo }: { store: TodoStor
     <Modal visible={pasting} transparent animationType="slide" onRequestClose={closePaste}>
       <KeyboardAvoidingView style={styles.backdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}><DraggableSheet visible={pasting} style={styles.sheet} onDismiss={closePaste}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 14 }}>
         <View style={styles.cardHeading}><Text style={styles.cardTitle}>대화에서 할 일 만들기</Text><CloseButton onPress={closePaste}/></View>
-        <Text style={styles.status}>어떤 서비스의 글이든 붙여넣어주세요. 목록은 초안으로 나누고, 대화는 AI에 동의한 뒤 분석할 수 있어요.</Text>
+        <Text style={styles.status}>어떤 서비스의 글이든 붙여넣어주세요. 덕 채팅에서 내용을 확인한 뒤 보낼 수 있어요.</Text>
         <TextInput accessibilityLabel="복사한 카카오톡 대화" value={conversation} onChangeText={setConversation} multiline maxLength={10000} placeholder="길게 눌러 대화 붙여넣기" style={styles.pasteInput} />
+        {assistantEnabled&&<Button title="덕 채팅으로 가져오기" accessibilityLabel="붙여넣은 내용 AI 분석 준비" disabled={!conversation.trim()} onPress={()=>{setChatRequest({id:Date.now()+Math.random(),pastedText:conversation,message:'붙여넣은 내용에서 미완료 할 일을 개별 Todo 초안으로 제안해줘. 완료 기록과 기존 Todo는 제외하고 날짜가 불명확하면 null로 남겨줘.'});closePaste();}}/>}
+        {assistantEnabled&&<Text style={styles.status}>덕 채팅으로 옮긴 뒤, 동의하고 보내면 할 일 후보를 만들어요.</Text>}
+        {assistantEnabled&&<Button title={manualPaste?'직접 정리 방법 접기':'목록·직접 입력으로 정리'} accessibilityLabel="직접 정리 방법 열기" expanded={manualPaste} quiet onPress={()=>setManualPaste(value=>!value)}/>}
+        {(!assistantEnabled||manualPaste)&&<>
         <Button title="목록에서 할 일 초안 나누기" disabled={!conversation.trim()} quiet onPress={()=>{const titles=pasteTodos(conversation);if(!titles.length){setPasteHint('추출할 목록을 찾지 못했어요. 직접 정리하거나 AI 분석을 이용해주세요.');return;}scrollOnNextContent.current=true;setCards(current=>[...current,...titles.map(title=>({id:Date.now()+Math.random(),title,notes:'',dueDate:null,saved:false,saving:false}))]);closePaste();setStatus('최대 20개 목록을 초안으로 나눴어요. 제목과 날짜를 확인하고 필요한 항목만 추가해주세요.');}}/>
         <Text accessibilityLiveRegion="polite" style={styles.status}>{pasteHint}</Text>
         <Text style={styles.status}>줄 앞 - 또는 번호, 빈 체크박스 목록을 최대 20개 추출해요. 완료 체크는 제외하고 날짜는 직접 확인해요. 일반 문장은 아래에서 직접 정리하거나 AI로 분석해주세요.</Text>
-        {assistantEnabled&&<Button title="붙여넣은 내용 AI 분석 준비" disabled={!conversation.trim()} quiet onPress={()=>{setChatRequest({id:Date.now()+Math.random(),pastedText:conversation,message:'붙여넣은 내용에서 미완료 할 일을 개별 Todo 초안으로 제안해줘. 완료 기록과 기존 Todo는 제외하고 날짜가 불명확하면 null로 남겨줘.'});closePaste();}}/>}
         <TextInput accessibilityLabel="대화에서 정리한 할 일" value={task} onChangeText={setTask} maxLength={120} placeholder="예: 금요일까지 회의 자료 보내기" style={styles.pasteInput} />
-        <Text style={styles.status}>{assistantEnabled?'AI 분석 준비를 누르면 붙여넣은 내용이 덕 채팅으로 옮겨져요. 전송에 동의한 뒤 AI에 보내고, Todo에는 확인한 할 일만 저장해요.':'대화 원문은 이 화면에서만 사용하며 닫으면 지워져요. Todo에는 확인한 할 일만 저장돼요.'}</Text>
+        <Text style={styles.status}>대화 원문은 Todo에 복사하지 않아요. 확인한 할 일만 저장돼요.</Text>
         <Button title="할 일 확인하기" disabled={!task.trim()} onPress={prepareTask} />
+        </>}
       </ScrollView></DraggableSheet></KeyboardAvoidingView>
     </Modal>
   </View>;

@@ -6,23 +6,23 @@ import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, PanResponder, Platform, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, dateKey, validateDraft } from './domain';
+import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, dateKey, validateDraft, formatDueDate } from './domain';
 import type { Draft, Todo } from './domain';
 import type { TodoStore } from './useTodos';
 import { colors, typography, spacing, radius, layout } from './theme';
 export { colors } from './theme';
 export function Label({ children }: { children: React.ReactNode }) { return <Text style={s.label}>{children}</Text>; }
-export function Button({ title, onPress, disabled = false, quiet = false, loading = false, accessibilityLabel }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; loading?: boolean; accessibilityLabel?: string }) {
+export function Button({ title, onPress, disabled = false, quiet = false, loading = false, accessibilityLabel, expanded }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; loading?: boolean; accessibilityLabel?: string; expanded?:boolean }) {
   const reduced = useReducedMotion();
-  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading, ...(expanded===undefined?{}:{expanded}) }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
 export function CloseButton({onPress,disabled=false}:{onPress:()=>void;disabled?:boolean}) {
   return <Pressable accessibilityRole="button" accessibilityLabel="닫기" disabled={disabled} onPress={onPress} style={{width:44,minHeight:44,alignItems:'center',justifyContent:'center',opacity:disabled ? 0.4 : 1}}><Text style={{fontSize:24,lineHeight:28,color:colors.muted}}>×</Text></Pressable>;
 }
-export function Page({ children, refreshControl, compact = false }: { children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
+export function Page({ children, refreshControl, compact = false, scrollRef }: { scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
   const insets=useSafeAreaInsets();
   const duo=useDuoTrailingNavigation();
-  return <MotionView style={{flex:1}} distance={0}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
+  return <MotionView style={{flex:1}} distance={0}><ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();
@@ -89,7 +89,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
 }
 export function DateField({ value, onChange }: { value: string | null; onChange: (date: string | null) => void }) {
   const [open, setOpen] = useState(false);
-  return <View><View style={s.dateField}><Label>예정일</Label>{Platform.OS === 'web' ? <TextInput accessibilityLabel="예정일 YYYY-MM-DD" placeholder="YYYY-MM-DD" maxLength={10} value={value ?? ''} onChangeText={text => onChange(text || null)} style={s.dateInput} /> : <Pressable accessibilityRole="button" accessibilityLabel="예정일 선택" onPress={() => {Keyboard.dismiss();setOpen(!open);}} style={s.datePick}><Text style={{ color: colors.blue }}>{value ?? '날짜 선택'}</Text></Pressable>}{value && <Pressable onPress={() => { onChange(null); setOpen(false); }} hitSlop={10} accessibilityRole="button" accessibilityLabel="날짜 해제"><Text style={s.muted}>해제</Text></Pressable>}</View>
+  return <View><View style={s.dateField}><Label>예정일</Label>{Platform.OS === 'web' ? React.createElement('input',{'aria-label':'예정일 선택',type:'date',value:value??'',onChange:(event:React.ChangeEvent<HTMLInputElement>)=>onChange(event.target.value||null),style:{flex:1,minWidth:0,height:48,boxSizing:'border-box',border:0,borderRadius:12,padding:12,fontFamily:'inherit',fontSize:17,color:colors.text,background:colors.grouped}}) : <Pressable accessibilityRole="button" accessibilityLabel="예정일 선택" onPress={() => {Keyboard.dismiss();setOpen(!open);}} style={s.datePick}><Text style={{ color: colors.blueText }}>{value?formatDueDate(value):'날짜 선택'}</Text></Pressable>}{value && <Pressable onPress={() => { onChange(null); setOpen(false); }} style={{minHeight:44,minWidth:44,justifyContent:'center',alignItems:'center'}} accessibilityRole="button" accessibilityLabel="날짜 해제"><Text style={s.muted}>해제</Text></Pressable>}</View>
     {open && Platform.OS !== 'web' && <DateTimePicker value={value ? new Date(value + 'T12:00:00') : new Date()} mode="date" display={Platform.OS === 'ios' ? 'spinner' : 'default'} locale="ko-KR" onChange={(event, date) => { if (Platform.OS !== 'ios') setOpen(false); if (event.type !== 'dismissed' && date) onChange(dateKey(date)); }} />}</View>;
 }
 export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?: Todo; dueDate: string | null; store: TodoStore; onClose: () => void }) {
@@ -137,10 +137,9 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={setAlarm} disabled={saving} trackColor={{ true: colors.blue }} /></View>
         {alarm && <View>{Platform.OS==='web'?<View style={{flexDirection:'row',gap:12}}>{(['시','분'] as const).map((unit,index)=>React.createElement('select',{key:unit,'aria-label':'알림 '+unit,value:alarmTime.slice(index?3:0,index?5:2),onChange:(event:React.ChangeEvent<HTMLSelectElement>)=>{const parts=alarmTime.split(':');parts[index]=event.target.value;setAlarmTime(parts.join(':'));},style:{minHeight:48,padding:12,borderRadius:12,border:'1px solid #dbe2ea',background:'#f5f7fa',fontSize:17}},...Array.from({length:index?60:24},(_,n)=>{const v=String(n).padStart(2,'0');return React.createElement('option',{key:v,value:v},v+unit);})) )}</View>:<DateTimePicker accessibilityLabel="알림 시간 선택" value={new Date(2000,0,1,Number(alarmTime.slice(0,2)),Number(alarmTime.slice(3)))} mode="time" display={Platform.OS==='ios'?'spinner':'default'} locale="ko-KR" onChange={(event,date)=>{if(date&&event.type!=='dismissed')setAlarmTime(`${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`);}}/>}<Text style={[s.muted, { marginVertical: 12 }]}>{store.reminders.supported ? store.reminders.enabled ? '선택한 시간에 이 기기에서 알려드려요.' : '내정보에서 기기 알림도 켜주세요.' : '웹에서는 시간을 저장해요. 알림은 아이폰에서 켤 수 있어요.'}</Text></View>}
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-        <Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} />
         {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} /><Text style={s.muted}>공유창에서 카카오톡을 선택하세요. 웹에서 공유창을 지원하지 않으면 내용을 복사해요. 저장된 내용이 공유돼요.</Text>{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
         {!!todo && <Pressable accessibilityRole="button" disabled={saving} onPress={remove} style={s.deleteButton}><Text style={s.deleteText}>할 일 삭제</Text></Pressable>}
-      </ScrollView></DraggableSheet>
+      </ScrollView><View style={{paddingTop:layout.actionGap,flexShrink:0}}><Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} /></View></DraggableSheet>
     </KeyboardAvoidingView>
   </Modal>;
 }
@@ -150,7 +149,7 @@ export const s = StyleSheet.create({
   h1: { ...typography.heading, color: colors.text, marginBottom: spacing.md },
   subtitle: { ...typography.detail, color: colors.muted },
   sectionTitle: { ...typography.section, color: colors.text },
-  button: { backgroundColor: colors.blue, paddingHorizontal: 20, paddingVertical: 14, minHeight: 56, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center' },
+  button: { backgroundColor: colors.action, paddingHorizontal: 20, paddingVertical: 14, minHeight: 56, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center' },
   buttonText: { ...typography.body, color: colors.white, fontWeight: '600', textAlign: 'center', flexShrink: 1 }, quietButton: { backgroundColor: colors.pale, minHeight: 48 },
   todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 6, gap: spacing.md, minHeight: 60, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
   swipeWrap: { overflow: 'hidden' }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },

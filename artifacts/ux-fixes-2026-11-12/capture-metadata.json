@@ -1,0 +1,2867 @@
+{
+  "source": "Current Expo web bundle; isolated mock account, model and API; no production reads/writes",
+  "capturedAt": "2026-11-12T09:15:28.009Z",
+  "steps": [
+    {
+      "file": "01-todos-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "계약서 검토하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 70,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일 추가",
+          "role": "button",
+          "width": 342,
+          "height": 52,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "02-calendar-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "이전 달",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "년월 선택",
+          "role": "button",
+          "width": 198,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "다음 달",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "오늘",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "월 보기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "주 보기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "선택한 날짜의 일정과 할 일 보기",
+          "role": "button",
+          "width": 96,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 1일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 2일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 3일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 4일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 5일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 6일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 7일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 8일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 9일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 10일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 11일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 12일, 일정과 할 일 3개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 13일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 14일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 15일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 16일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 17일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 18일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 19일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 20일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 21일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 22일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 23일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 24일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 25일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 26일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 27일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 28일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 29일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 30일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 1일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 2일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 3일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 4일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 5일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 6일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 7일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 8일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 9일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 10일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 11일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 12일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "할 일 추가 ＋",
+          "role": "button",
+          "width": 96,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "16-calendar-jump-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "2026년 11월 22일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 23일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 24일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 25일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 26일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 27일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 28일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 29일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 11월 30일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 1일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 2일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 3일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 4일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 5일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 6일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 7일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 8일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 9일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 10일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 11일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "2026년 12월 12일, 일정과 할 일 0개",
+          "role": "button",
+          "width": 56,
+          "height": 94,
+          "visible": true
+        },
+        {
+          "label": "할 일 추가 ＋",
+          "role": "button",
+          "width": 96,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 70,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "03-duck-start-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "04-log-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "지난 회의록 공유하기 미완료로 변경",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "지난 회의록 공유하기 되돌리기",
+          "role": "button",
+          "width": 48,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "이메일 정리하기 미완료로 변경",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "이메일 정리하기 되돌리기",
+          "role": "button",
+          "width": 48,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "05-profile-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "내 계정 관리",
+          "role": "button",
+          "width": 342,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "표시 이름 편집",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Slack 연결 안내",
+          "role": "button",
+          "width": 302,
+          "height": 91,
+          "visible": true
+        },
+        {
+          "label": "Google 연결 안내",
+          "role": "button",
+          "width": 302,
+          "height": 91,
+          "visible": true
+        },
+        {
+          "label": "Notion 연결 안내",
+          "role": "button",
+          "width": 302,
+          "height": 91,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "17-account-jump-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "내 데이터 파일 다운로드",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "비밀번호 재설정",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "로그아웃",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "계정 삭제",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "06-google-permissions-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "돌아가기",
+          "role": "button",
+          "width": 342,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Google",
+          "role": "tab",
+          "width": 76,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Slack",
+          "role": "tab",
+          "width": 66,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Notion",
+          "role": "tab",
+          "width": 72,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "기본 캘린더 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "메일 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "드라이브 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Google Tasks 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Google Tasks 완료 상태 수정 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "추가 권한 선택",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Google 연결",
+          "role": "button",
+          "width": 294,
+          "height": 56,
+          "visible": true
+        },
+        {
+          "label": "연결 상태 새로고침",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "18-expanded-permissions-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "기본 캘린더 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "메일 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "드라이브 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Google Tasks 읽기 권한",
+          "role": "checkbox",
+          "width": 143,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Google Tasks 완료 상태 수정 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "추가 권한 선택",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "메일 읽음·상태 수정 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "메일 발송 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "일정 작성·수정 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Drive 파일 내용 읽기 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕이 만들거나 허용한 Drive 파일 수정 권한",
+          "role": "checkbox",
+          "width": 294,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "Google 연결",
+          "role": "button",
+          "width": 294,
+          "height": 56,
+          "visible": true
+        },
+        {
+          "label": "연결 상태 새로고침",
+          "role": "button",
+          "width": 294,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "07-request-before-consent-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "선택한 자료와 내 Todo를 AI에 보내 분석하기 동의",
+          "role": "checkbox",
+          "width": 342,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "08-ai-candidate-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "할 일 후보 1 제목",
+          "role": "TEXTAREA",
+          "width": 302,
+          "height": 68,
+          "visible": true
+        },
+        {
+          "label": "예정일 선택",
+          "role": "INPUT",
+          "width": 254,
+          "height": 48,
+          "visible": true
+        },
+        {
+          "label": "Todo 추가 초안 확인",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "할 일 후보 1 메모 열기",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "09-confirmation-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "할 일 후보 1 메모 열기",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 추가 확인하고 실행",
+          "role": "button",
+          "width": 302,
+          "height": 56,
+          "visible": true
+        },
+        {
+          "label": "작업 취소",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "10-succeeded-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "확인할 초안이 준비됐어요",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "할 일 후보 1 메모 열기",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 추가 실행 내용 보기 draft-1",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 보기 →",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "11-added-todo-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "계약서 검토하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 70,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일 추가",
+          "role": "button",
+          "width": 342,
+          "height": 52,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "12-edit-sheet-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "계약서 검토하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 70,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정",
+          "role": "button",
+          "width": 248,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 수정",
+          "role": "button",
+          "width": 248,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일 추가",
+          "role": "button",
+          "width": 342,
+          "height": 52,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "아래로 내려 닫기",
+          "role": "button",
+          "width": 342,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "닫기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일 제목",
+          "role": "INPUT",
+          "width": 342,
+          "height": 60,
+          "visible": true
+        },
+        {
+          "label": "예정일 선택",
+          "role": "INPUT",
+          "width": 238,
+          "height": 48,
+          "visible": true
+        },
+        {
+          "label": "날짜 해제",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "메모",
+          "role": "TEXTAREA",
+          "width": 342,
+          "height": 220,
+          "visible": true
+        },
+        {
+          "label": "할 일 알림",
+          "role": "switch",
+          "width": 40,
+          "height": 20,
+          "visible": true
+        },
+        {
+          "label": "카카오톡 등으로 공유",
+          "role": "button",
+          "width": 342,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "저장",
+          "role": "button",
+          "width": 342,
+          "height": 56,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "19-small-editor-fixture.png",
+      "width": 320,
+      "height": 700,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "계약서 검토하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정",
+          "role": "button",
+          "width": 178,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "계약서 검토하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정",
+          "role": "button",
+          "width": 178,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "회의 자료 정리하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정",
+          "role": "button",
+          "width": 178,
+          "height": 70,
+          "visible": true
+        },
+        {
+          "label": "다음 주 프로젝트 일정과 담당자별 준비 사항 확인하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정",
+          "role": "button",
+          "width": 178,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "병원 예약하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정",
+          "role": "button",
+          "width": 178,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "책 반납하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정",
+          "role": "button",
+          "width": 178,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "운동 30분 하기 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 완료하기",
+          "role": "checkbox",
+          "width": 26,
+          "height": 26,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 수정",
+          "role": "button",
+          "width": 178,
+          "height": 46,
+          "visible": true
+        },
+        {
+          "label": "AI에서 확인한 자료 검토 수정 메뉴",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일 추가",
+          "role": "button",
+          "width": 272,
+          "height": 52,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "아래로 내려 닫기",
+          "role": "button",
+          "width": 272,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "닫기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일 제목",
+          "role": "INPUT",
+          "width": 272,
+          "height": 60,
+          "visible": true
+        },
+        {
+          "label": "예정일 선택",
+          "role": "INPUT",
+          "width": 168,
+          "height": 48,
+          "visible": true
+        },
+        {
+          "label": "날짜 해제",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "메모",
+          "role": "TEXTAREA",
+          "width": 272,
+          "height": 220,
+          "visible": true
+        },
+        {
+          "label": "할 일 알림",
+          "role": "switch",
+          "width": 40,
+          "height": 20,
+          "visible": true
+        },
+        {
+          "label": "저장",
+          "role": "button",
+          "width": 272,
+          "height": 56,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "13-paste-sheet-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "할 일 후보 1 메모 열기",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 추가 실행 내용 보기 draft-1",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 보기 →",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "오늘의 브리핑 열기",
+          "role": "button",
+          "width": 87,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕 AI 비서 열기",
+          "role": "button",
+          "width": 48,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일과 기록 찾기",
+          "role": "button",
+          "width": 75,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "카카오톡 대화 붙여넣기",
+          "role": "button",
+          "width": 99,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "아래로 내려 닫기",
+          "role": "button",
+          "width": 342,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "닫기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "복사한 카카오톡 대화",
+          "role": "TEXTAREA",
+          "width": 342,
+          "height": 79,
+          "visible": true
+        },
+        {
+          "label": "붙여넣은 내용 AI 분석 준비",
+          "role": "button",
+          "width": 342,
+          "height": 56,
+          "visible": true
+        },
+        {
+          "label": "직접 정리 방법 열기",
+          "role": "button",
+          "width": 342,
+          "height": 54,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "14-duck-small-fixture.png",
+      "width": 320,
+      "height": 700,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Todo 추가 실행 내용 보기 draft-1",
+          "role": "button",
+          "width": 232,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 보기 →",
+          "role": "button",
+          "width": 232,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "오늘의 브리핑 열기",
+          "role": "button",
+          "width": 87,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕 AI 비서 열기",
+          "role": "button",
+          "width": 48,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일과 기록 찾기",
+          "role": "button",
+          "width": 75,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "카카오톡 대화 붙여넣기",
+          "role": "button",
+          "width": 99,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 196,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 64,
+          "height": 80,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "file": "15-error-retry-fixture.png",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Todo 추가 실행 내용 보기 draft-1",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "Todo 보기 →",
+          "role": "button",
+          "width": 302,
+          "height": 54,
+          "visible": true
+        },
+        {
+          "label": "오늘의 브리핑 열기",
+          "role": "button",
+          "width": 87,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕 AI 비서 열기",
+          "role": "button",
+          "width": 48,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "할 일과 기록 찾기",
+          "role": "button",
+          "width": 75,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "카카오톡 대화 붙여넣기",
+          "role": "button",
+          "width": 99,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "대화 도구 열기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI에 보낼 자료 선택",
+          "role": "button",
+          "width": 94,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "선택한 자료와 내 Todo를 AI에 보내 분석하기 동의",
+          "role": "checkbox",
+          "width": 342,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "AI 요청 다시 보내기",
+          "role": "button",
+          "width": 87,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "덕에게 이야기하기",
+          "role": "TEXTAREA",
+          "width": 266,
+          "height": 75,
+          "visible": true
+        },
+        {
+          "label": "덕에게 보내기",
+          "role": "button",
+          "width": 44,
+          "height": 44,
+          "visible": true
+        },
+        {
+          "label": "캘린더",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "Todo 리스트",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "duckduck",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "log",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        },
+        {
+          "label": "내정보",
+          "role": "tab",
+          "width": 78,
+          "height": 64,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "requests": {
+    "chat": 1,
+    "prepare": 1,
+    "confirm": 1,
+    "authorization": 1
+  },
+  "errors": []
+}
