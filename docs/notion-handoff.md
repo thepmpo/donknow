@@ -105,6 +105,10 @@
 
 ### 변경 기록
 
+#### 2026-11-12 — TestFlight CI의 임시 Git 저장소 설정 격리
+
+덕 변경을 반영한 `06cb1e3`의 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)이 npm 검사에서 중단됐다. 원인은 CI 서버의 전역 Git LFS 설정이 기존 사무실 동기화 fixture에 상속돼 의도된 필터 차단이 발생한 것이다. 같은 임시 설정으로 11개 실패를 재현했고, 테스트 프로세스의 Git 설정만 격리했다. 실제 전역 필터를 다시 넣으면 여전히 fetch 전 차단하고 원본/설정을 보존하는 회귀를 추가해 26개 모두 통과했다. 제품 보호 코드·사용자 Git 설정·기존 인증은 변경하지 않았다. TestFlight workflow에도 테스트 단계에만 동일 격리를 명시했다. 사무실 기능 개발 재개가 아니라 덕 출시 검사 복구다. 수정 후 CI와 같은 설정에서 전체 203개 중 202개 통과·기존 선택 검사 1개 제외·실패 0개를 확인했다.
+
 #### 2026-11-12 — 덕 채팅·로그인·Apple Duo·개인 Notion 기록
 
 사용자가 AI 사무실을 보류하고 덕의 남은 기능과 Apple iPhone Duo를 진행하도록 승인했다. 덕 탭 안에서 동의 기반 AI 대화, 자료 선택, Todo 후보 편집, 실행 미리보기와 확인을 연결했다. 자동 발송·자동 외부 쓰기는 없으며, 늦은 기록 조회가 새 초안을 덮지 못한다. 기존 고급 비서와 AI 미설정 시 수동 초안 경로를 유지한다. [비서 실행](assistant-actions.md).
@@ -1030,6 +1034,7 @@ f2e34a8 Document bidirectional AI office handoff and required sync reminders
 5eca395 Record verified office downloads and public documentation access limit
 5e129f0 docs: daily project update [skip ci]
 7644621 Add inline assistant chat, isolate sessions and prepare Apple Duo navigation
+06cb1e3 Document duckduck delivery, release evidence and Notion work records
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1704,6 +1709,12 @@ node scripts/check-release-readiness.mjs
 
 `node scripts/build-service-pages.mjs`로 `/support`·`/privacy` HTML을 생성한다. 사용자가 확정한 공개 이름·이메일만 사용하며 미확정 연락처나 HTML 삽입은 거절/이스케이프한다. privacy 템플릿은 metadata 플래그만 바꿔도 정식 정책으로 자동 전환되지 않는다. 서버 경로는 고정 파일의 익명 GET/HEAD만 허용하고 POST는 405로 거절한다. 스크립트/폼/프레임을 막는 CSP, 본문 없는 HEAD, 경로 변형/조회 인자 비반사와 로그인 API 보호를 실제 임시 서버에서 확인했다. 출시 진단 4개와 공개 경로/생성 2개, 합계 6개 테스트 통과. 두 페이지의 390px·1280px 브라우저 표시, 연락 링크·초안 표시·가로 넘침 없음도 확인했다. 실제 배포는 수행하지 않았다.
 
+#### 2026-11-12 새 반영과 TestFlight CI 추적
+
+구현 `7644621`, 문서 `06cb1e3`을 main에 일반 push하고 원격 SHA 일치를 확인했다. 재조회한 Render `/project`는 이전 문서였으므로 새 변경의 공개 배포는 아직 아니다. 마지막 `/api/health`는 `ok:true`, capability는 AI 비활성·Slack 미설정 그대로다. 첫 재조회 503 후 정상 응답했으며 지속 장애로 확정하지 않는다.
+
+새 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)은 `npm test`에서 기존 사무실 동기화 검사 11개가 `office_development_source_filters_require_review`로 실패했다. EAS 요청은 실행되지 않았다. 로컬 기본 환경에서는 통과했지만 임시 글로벌 Git LFS 설정을 주입하면 같은 11개 실패를 재현했다. 임시 테스트 저장소의 시스템/글로벌 Git 설정을 분리하고, 의도적으로 필터를 추가하면 여전히 원본 동기화를 차단하는 회귀를 추가한다. 운영 보호 코드는 완화하지 않는다. 같은 임시 글로벌 LFS 설정에서 해당 파일은 수정 전 25개 중 11개 실패, 수정 후 26개 모두 통과했다. 전체 검사도 CI와 같은 설정에서 203개 중 202개 통과·선택 검사 1개 제외·실패 0개다. 후속 GitHub CI와 EAS/Apple 처리는 별도 확인한다.
+
 ### 原文 / docs/iphone-duo-support.md
 
 ### Apple iPhone Duo 대응 · 2026-11-12
@@ -2001,7 +2012,6 @@ Figma의 구조·크기는 실제 반환된 메타데이터에서 확인했다. 
 | [U06 공통 버튼 상태](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=4-3067) | `4:3067` |
 
 이 문서는 연결 도구의 실제 읽기 성공·실패와 코드 대조를 기록한 인계 자료다. Figma 캔버스 교정 또는 실기기 검수 완료 보고서가 아니다.
-
 
 ### 原文 / docs/duckduck-privacy-policy-draft.md
 

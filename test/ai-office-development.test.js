@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, {before, after} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,6 +8,23 @@ import {execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {createDevelopment} from '../tools/ai-office/control/lib/development.mjs';
 import {hash} from '../tools/ai-office/control/lib/controller.mjs';
+
+// Every Git call, including calls inside the controller, must see the fixture's
+// configuration instead of the runner's Git LFS/signing/filter setup. Node runs
+// this test file in its own process; never edit the user's Git config files.
+const configEnvironment={GIT_CONFIG_GLOBAL:os.devNull,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_COUNT:'0',GIT_CONFIG:undefined,GIT_CONFIG_PARAMETERS:undefined};
+const previousConfigEnvironment={};
+before(()=>{
+ for(const [name,value]of Object.entries(configEnvironment)){
+  previousConfigEnvironment[name]=process.env[name];
+  if(value===undefined)delete process.env[name];else process.env[name]=value;
+ }
+});
+after(()=>{
+ for(const [name,value]of Object.entries(previousConfigEnvironment)){
+  if(value===undefined)delete process.env[name];else process.env[name]=value;
+ }
+});
 
 const git=(cwd,...args)=>execFileSync('git',['-c','user.name=Office fixture','-c','user.email=fixture@localhost',...args],{cwd,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
 const fields=['id','title','description','task_type','assigned_agent_id','project_id','project_path','department_id','workflow_pack_key','base_branch'];
@@ -159,6 +176,19 @@ test('source filters and an unexpected registered remote block fetching or crede
  await fixture(async f=>{const r=registered(f);r.advance();const p=await r.controller.sourceStatus(f.project.id);git(f.source,'config','filter.fixture.smudge','cat');await assert.rejects(r.controller.syncSource(r.input(p)),/filters_require_review/);assert.equal(r.networkCalls.some(c=>c.args[0]==='fetch'),false);assert.equal(git(f.source,'config','filter.fixture.smudge'),'cat');});
  await fixture(async f=>{const r=registered(f);git(r.original,'remote','set-url','origin','https://example.invalid/unrelated/repository.git');await assert.rejects(r.controller.sourceStatus(f.project.id),/repository_not_configured/);assert.equal(r.networkCalls.length,0);});
 });
+
+test('global source filters still block synchronization without changing configuration or fetching',()=>fixture(async f=>{
+ const r=registered(f);r.advance();const preview=await r.controller.sourceStatus(f.project.id),head=git(f.source,'rev-parse','HEAD');
+ const globalConfig=path.join(f.root,'global-git-config'),contents='[filter "lfs"]\n\tprocess = git-lfs filter-process\n\trequired = true\n';
+ fs.writeFileSync(globalConfig,contents);const previous=process.env.GIT_CONFIG_GLOBAL;
+ try{
+  process.env.GIT_CONFIG_GLOBAL=globalConfig;
+  await assert.rejects(r.controller.syncSource(r.input(preview)),/filters_require_review/);
+  assert.equal(r.networkCalls.some(c=>c.args[0]==='fetch'),false);
+  assert.equal(git(f.source,'rev-parse','HEAD'),head);
+  assert.equal(fs.readFileSync(globalConfig,'utf8'),contents);
+ }finally{process.env.GIT_CONFIG_GLOBAL=previous;}
+}));
 
 test('registered projects require source and knowledge synchronization before preparing edits',()=>fixture(async f=>{
  const r=registered(f);await assert.rejects(r.controller.prepare(f.input()),/source_update_required/);assert.equal(f.tasks.length,0);await r.controller.syncSource(r.input(await r.controller.sourceStatus(f.project.id)));r.advance();await assert.rejects(r.controller.prepare(f.input()),/source_update_required/);assert.equal(f.tasks.length,0);

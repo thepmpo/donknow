@@ -78,3 +78,9 @@ node scripts/check-release-readiness.mjs
 ## 확정된 공개 연락처 반영 후 검증
 
 `node scripts/build-service-pages.mjs`로 `/support`·`/privacy` HTML을 생성한다. 사용자가 확정한 공개 이름·이메일만 사용하며 미확정 연락처나 HTML 삽입은 거절/이스케이프한다. privacy 템플릿은 metadata 플래그만 바꿔도 정식 정책으로 자동 전환되지 않는다. 서버 경로는 고정 파일의 익명 GET/HEAD만 허용하고 POST는 405로 거절한다. 스크립트/폼/프레임을 막는 CSP, 본문 없는 HEAD, 경로 변형/조회 인자 비반사와 로그인 API 보호를 실제 임시 서버에서 확인했다. 출시 진단 4개와 공개 경로/생성 2개, 합계 6개 테스트 통과. 두 페이지의 390px·1280px 브라우저 표시, 연락 링크·초안 표시·가로 넘침 없음도 확인했다. 실제 배포는 수행하지 않았다.
+
+## 2026-11-12 새 반영과 TestFlight CI 추적
+
+구현 `7644621`, 문서 `06cb1e3`을 main에 일반 push하고 원격 SHA 일치를 확인했다. 재조회한 Render `/project`는 이전 문서였으므로 새 변경의 공개 배포는 아직 아니다. 마지막 `/api/health`는 `ok:true`, capability는 AI 비활성·Slack 미설정 그대로다. 첫 재조회 503 후 정상 응답했으며 지속 장애로 확정하지 않는다.
+
+새 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)은 `npm test`에서 기존 사무실 동기화 검사 11개가 `office_development_source_filters_require_review`로 실패했다. EAS 요청은 실행되지 않았다. 로컬 기본 환경에서는 통과했지만 임시 글로벌 Git LFS 설정을 주입하면 같은 11개 실패를 재현했다. 임시 테스트 저장소의 시스템/글로벌 Git 설정을 분리하고, 의도적으로 필터를 추가하면 여전히 원본 동기화를 차단하는 회귀를 추가한다. 운영 보호 코드는 완화하지 않는다. 같은 임시 글로벌 LFS 설정에서 해당 파일은 수정 전 25개 중 11개 실패, 수정 후 26개 모두 통과했다. 전체 검사도 CI와 같은 설정에서 203개 중 202개 통과·선택 검사 1개 제외·실패 0개다. 후속 GitHub CI와 EAS/Apple 처리는 별도 확인한다.

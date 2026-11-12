@@ -40,7 +40,13 @@ jobs:
             mobile/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm run check
-      - run: npm test
+      - name: Run tests with isolated Git fixture configuration
+        run: npm test
+        env:
+          # Temporary Git fixtures must not inherit runner-wide LFS filters or aliases.
+          # This affects only tests; repository credentials and production guards are unchanged.
+          GIT_CONFIG_NOSYSTEM: '1'
+          GIT_CONFIG_GLOBAL: /dev/null
       - run: npm ci --prefix mobile --no-audit --no-fund
       - run: npm --prefix mobile run typecheck
       - run: npm --prefix mobile run export:ios -- --max-workers 2
