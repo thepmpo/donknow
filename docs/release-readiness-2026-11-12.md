@@ -84,3 +84,12 @@ node scripts/check-release-readiness.mjs
 구현 `7644621`, 문서 `06cb1e3`을 main에 일반 push하고 원격 SHA 일치를 확인했다. 재조회한 Render `/project`는 이전 문서였으므로 새 변경의 공개 배포는 아직 아니다. 마지막 `/api/health`는 `ok:true`, capability는 AI 비활성·Slack 미설정 그대로다. 첫 재조회 503 후 정상 응답했으며 지속 장애로 확정하지 않는다.
 
 새 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)은 `npm test`에서 기존 사무실 동기화 검사 11개가 `office_development_source_filters_require_review`로 실패했다. EAS 요청은 실행되지 않았다. 로컬 기본 환경에서는 통과했지만 임시 글로벌 Git LFS 설정을 주입하면 같은 11개 실패를 재현했다. 임시 테스트 저장소의 시스템/글로벌 Git 설정을 분리하고, 의도적으로 필터를 추가하면 여전히 원본 동기화를 차단하는 회귀를 추가한다. 운영 보호 코드는 완화하지 않는다. 같은 임시 글로벌 LFS 설정에서 해당 파일은 수정 전 25개 중 11개 실패, 수정 후 26개 모두 통과했다. 전체 검사도 CI와 같은 설정에서 203개 중 202개 통과·선택 검사 1개 제외·실패 0개다. 후속 GitHub CI와 EAS/Apple 처리는 별도 확인한다.
+
+수정 커밋 `dd650f094e880b01300b85c27c8f7a253e4628cd`의 [후속 iOS 실행 43130303497](https://github.com/thepmpo/donknow/actions/runs/43130303497)은 **성공**했다. 실제 CI에서 문법·203개 중 202개 통과/1개 선택 제외·타입·iOS JS export·EAS 요청 단계를 통과했다. EAS가 **build number 13** 요청을 접수했다.
+
+- [새 EAS build 1830483a-8fb8-4dc3-a36e-b150f799d29e](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/1830483a-8fb8-4dc3-a36e-b150f799d29e)
+- [자동 제출 요청 f4f3ebc8-d182-4c44-a757-537325941f46](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/f4f3ebc8-d182-4c44-a757-537325941f46)
+
+이 workflow는 `--no-wait`다. build number 13의 요청 접수를 IPA 생성·Swift 컴파일·Apple 처리·TestFlight 설치 성공으로 표시하지 않는다. 앱 기능 소스는 `7644621`, 빌드 요청의 정확한 소스는 `dd650f0`이다. 기존 확인된 TestFlight 버전 1.0.0 (12)는 새 설치 증거가 생기기 전까지 유지한다.
+
+새 EAS 공개 build 페이지는 “No internal distribution build exists at this URL”, submission은 로그인 필요 응답이었다. production 빌드의 실패로 해석하지 않으며 계정에서 실제 상태를 확인해야 한다.

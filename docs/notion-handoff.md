@@ -107,7 +107,7 @@
 
 #### 2026-11-12 — TestFlight CI의 임시 Git 저장소 설정 격리
 
-덕 변경을 반영한 `06cb1e3`의 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)이 npm 검사에서 중단됐다. 원인은 CI 서버의 전역 Git LFS 설정이 기존 사무실 동기화 fixture에 상속돼 의도된 필터 차단이 발생한 것이다. 같은 임시 설정으로 11개 실패를 재현했고, 테스트 프로세스의 Git 설정만 격리했다. 실제 전역 필터를 다시 넣으면 여전히 fetch 전 차단하고 원본/설정을 보존하는 회귀를 추가해 26개 모두 통과했다. 제품 보호 코드·사용자 Git 설정·기존 인증은 변경하지 않았다. TestFlight workflow에도 테스트 단계에만 동일 격리를 명시했다. 사무실 기능 개발 재개가 아니라 덕 출시 검사 복구다. 수정 후 CI와 같은 설정에서 전체 203개 중 202개 통과·기존 선택 검사 1개 제외·실패 0개를 확인했다.
+덕 변경을 반영한 `06cb1e3`의 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)이 npm 검사에서 중단됐다. 원인은 CI 서버의 전역 Git LFS 설정이 기존 사무실 동기화 fixture에 상속돼 의도된 필터 차단이 발생한 것이다. 같은 임시 설정으로 11개 실패를 재현했고, 테스트 프로세스의 Git 설정만 격리했다. 실제 전역 필터를 다시 넣으면 여전히 fetch 전 차단하고 원본/설정을 보존하는 회귀를 추가해 26개 모두 통과했다. 제품 보호 코드·사용자 Git 설정·기존 인증은 변경하지 않았다. TestFlight workflow에도 테스트 단계에만 동일 격리를 명시했다. 사무실 기능 개발 재개가 아니라 덕 출시 검사 복구다. 수정 후 CI와 같은 설정에서 전체 203개 중 202개 통과·기존 선택 검사 1개 제외·실패 0개를 확인했다. 후속 [GitHub 실행 43130303497](https://github.com/thepmpo/donknow/actions/runs/43130303497)도 성공했고 EAS build number 13 요청을 접수했다. 실제 Swift 컴파일·Apple 처리·설치는 별도 미확인이다. 정확한 build/submission 링크는 [출시 기록](release-readiness-2026-11-12.md)에 보존한다.
 
 #### 2026-11-12 — 덕 채팅·로그인·Apple Duo·개인 Notion 기록
 
@@ -562,7 +562,7 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 ##### 2026-11-12 — 덕 개발 재개 수동 작업 기록
 
-덕 채팅의 후보→편집→확인 실행, 로그인 계정 전환 보호, Apple 공식 Duo 대응, 공개 지원/개인정보 초안과 개인 Notion 기록을 진행했다. AI 사무실은 보류하고 예약 브리핑·날씨는 후속 명세를 기다린다. 실제 변경·검사 결과·외부 계정/실기기/배포의 남은 범위는 [오늘 변경 기록](change-log.md)과 [운영·출시 근거](release-readiness-2026-11-12.md), [Duo 검수](iphone-duo-support.md), [문서 도구·스킬 비교](tooling-and-documentation.md)를 따른다. 아래 자동 집계는 별도의 커밋 목록이며 실제 검사나 배포를 대신하지 않는다.
+덕 채팅의 후보→편집→확인 실행, 로그인 계정 전환 보호, Apple 공식 Duo 대응, 공개 지원/개인정보 초안과 개인 Notion 기록을 진행했다. AI 사무실은 보류하고 예약 브리핑·날씨는 후속 명세를 기다린다. 실제 변경·검사 결과·외부 계정/실기기/배포의 남은 범위는 [오늘 변경 기록](change-log.md)과 [운영·출시 근거](release-readiness-2026-11-12.md), [Duo 검수](iphone-duo-support.md), [문서 도구·스킬 비교](tooling-and-documentation.md)를 따른다. 후속 iOS 실행 43130303497도 성공해 EAS build number 13을 요청했다. 실제 Apple 처리·설치는 별도다. 아래 자동 집계는 별도의 커밋 목록이며 실제 검사나 배포를 대신하지 않는다.
 
 
 ##### 2026-11-12 — 당일 저장된 작업
@@ -1035,6 +1035,7 @@ f2e34a8 Document bidirectional AI office handoff and required sync reminders
 5e129f0 docs: daily project update [skip ci]
 7644621 Add inline assistant chat, isolate sessions and prepare Apple Duo navigation
 06cb1e3 Document duckduck delivery, release evidence and Notion work records
+dd650f0 Isolate Git test fixtures from runner LFS settings for TestFlight CI
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1714,6 +1715,15 @@ node scripts/check-release-readiness.mjs
 구현 `7644621`, 문서 `06cb1e3`을 main에 일반 push하고 원격 SHA 일치를 확인했다. 재조회한 Render `/project`는 이전 문서였으므로 새 변경의 공개 배포는 아직 아니다. 마지막 `/api/health`는 `ok:true`, capability는 AI 비활성·Slack 미설정 그대로다. 첫 재조회 503 후 정상 응답했으며 지속 장애로 확정하지 않는다.
 
 새 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)은 `npm test`에서 기존 사무실 동기화 검사 11개가 `office_development_source_filters_require_review`로 실패했다. EAS 요청은 실행되지 않았다. 로컬 기본 환경에서는 통과했지만 임시 글로벌 Git LFS 설정을 주입하면 같은 11개 실패를 재현했다. 임시 테스트 저장소의 시스템/글로벌 Git 설정을 분리하고, 의도적으로 필터를 추가하면 여전히 원본 동기화를 차단하는 회귀를 추가한다. 운영 보호 코드는 완화하지 않는다. 같은 임시 글로벌 LFS 설정에서 해당 파일은 수정 전 25개 중 11개 실패, 수정 후 26개 모두 통과했다. 전체 검사도 CI와 같은 설정에서 203개 중 202개 통과·선택 검사 1개 제외·실패 0개다. 후속 GitHub CI와 EAS/Apple 처리는 별도 확인한다.
+
+수정 커밋 `dd650f094e880b01300b85c27c8f7a253e4628cd`의 [후속 iOS 실행 43130303497](https://github.com/thepmpo/donknow/actions/runs/43130303497)은 **성공**했다. 실제 CI에서 문법·203개 중 202개 통과/1개 선택 제외·타입·iOS JS export·EAS 요청 단계를 통과했다. EAS가 **build number 13** 요청을 접수했다.
+
+- [새 EAS build 1830483a-8fb8-4dc3-a36e-b150f799d29e](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/1830483a-8fb8-4dc3-a36e-b150f799d29e)
+- [자동 제출 요청 f4f3ebc8-d182-4c44-a757-537325941f46](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/f4f3ebc8-d182-4c44-a757-537325941f46)
+
+이 workflow는 `--no-wait`다. build number 13의 요청 접수를 IPA 생성·Swift 컴파일·Apple 처리·TestFlight 설치 성공으로 표시하지 않는다. 앱 기능 소스는 `7644621`, 빌드 요청의 정확한 소스는 `dd650f0`이다. 기존 확인된 TestFlight 버전 1.0.0 (12)는 새 설치 증거가 생기기 전까지 유지한다.
+
+새 EAS 공개 build 페이지는 “No internal distribution build exists at this URL”, submission은 로그인 필요 응답이었다. production 빌드의 실패로 해석하지 않으며 계정에서 실제 상태를 확인해야 한다.
 
 ### 原文 / docs/iphone-duo-support.md
 
@@ -4112,6 +4122,9 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 ### 原文 / docs/testflight-automation.md
 
 ### iPhone 테스트 자동 빌드·제출
+
+2026-11-12 새 작업: `dd650f0`의 [43130303497 실행](https://github.com/thepmpo/donknow/actions/runs/43130303497)이 검사 후 EAS build number 13 요청에 성공했다. [빌드 진행](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/1830483a-8fb8-4dc3-a36e-b150f799d29e). `--no-wait`이므로 Swift·IPA·Apple 처리·설치는 별도이며, [실패 재현과 복구·전체 증거](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)를 읽는다.
+
 
 2026-11-12 확인: 기존 f76172d의 workflow 실행 `42745583353`과 job `129596764087`은 성공이며, 이는 새로 작성하는 채팅·Duo 코드의 iOS 빌드 성공을 뜻하지 않는다. EAS의 빌드 요청 접수, 실제 Xcode 빌드, Apple 업로드·처리, TestFlight 설치를 구분한다. 실제 확인 근거와 운영 가동 상태는 [최신 출시 점검](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)을 따른다. 기존 인증·서명·앱 ID는 재생성하지 않는다.
 
