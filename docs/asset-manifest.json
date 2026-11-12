@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-12",
-  "codeCommit": "76446210f14cd78a028755e3e52a4bf06269d528",
-  "imageCount": 43,
+  "codeCommit": "6c8354e1ab614f04cd4af9ba3c48244108efea8f",
+  "imageCount": 51,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -209,8 +209,8 @@
     {
       "path": "artifacts/design-guide-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 404832,
-      "sha256": "f6b177298a5c7660d14cf0fdb55ec134741879a606c70c812021a1bb4d5f629e",
+      "bytes": 438564,
+      "sha256": "abf3a2720d95b5148b3334a2bd6d1aa428cbac4cb15ed58b6a72256acba75cc3",
       "import_path": "images/artifacts__design-guide-fixture.png"
     },
     {
@@ -247,6 +247,62 @@
       "bytes": 92820,
       "sha256": "32526ebc62dbdd7cc29df1ef44fda820df843d2f17a52cce19f15b702785edef",
       "import_path": "images/artifacts__polish-overview.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/01-request-consent-fixture-after.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 36539,
+      "sha256": "661e44e4379d01a8690eb6afb79301c271c5a2783236bde4203eed3b3cd8b455",
+      "import_path": "images/artifacts__product-design-audit__01-request-consent-fixture-after.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/01-request-consent-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 36539,
+      "sha256": "661e44e4379d01a8690eb6afb79301c271c5a2783236bde4203eed3b3cd8b455",
+      "import_path": "images/artifacts__product-design-audit__01-request-consent-fixture.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/02-edit-proposal-fixture-after.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 39493,
+      "sha256": "0972fd9d0a81e4698aa9391dfe0faa82b17bc2347a9b55e60e8ce30b5564d2f3",
+      "import_path": "images/artifacts__product-design-audit__02-edit-proposal-fixture-after.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/02-edit-proposal-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 33721,
+      "sha256": "1a3c7d8d4550ad433740ff8b8868a545f2696bda931906aa8d352f9988f4e37d",
+      "import_path": "images/artifacts__product-design-audit__02-edit-proposal-fixture.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/03-confirm-fixture-after.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 43400,
+      "sha256": "60daa5c3ef58802765b8a1371d8c5d4172a1386adfad9ca2f14931083bc0f88b",
+      "import_path": "images/artifacts__product-design-audit__03-confirm-fixture-after.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/03-confirm-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 43364,
+      "sha256": "b7b71ce67948fcf8dfcea308af5ff70e2134fa177c9dacb21e8b6dc0cc47b93e",
+      "import_path": "images/artifacts__product-design-audit__03-confirm-fixture.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/04-result-fixture-after.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 40104,
+      "sha256": "5dfbc6ca260af354beb86b700284313bbb3b05f5f9f7385f3d45777322627822",
+      "import_path": "images/artifacts__product-design-audit__04-result-fixture-after.png"
+    },
+    {
+      "path": "artifacts/product-design-audit/04-result-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 40112,
+      "sha256": "2eb84cfb35b376a03713706e85f423e3bbdd476f247743463b3b6cf19fa8a2a4",
+      "import_path": "images/artifacts__product-design-audit__04-result-fixture.png"
     },
     {
       "path": "artifacts/profile.png",
