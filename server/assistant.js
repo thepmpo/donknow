@@ -9,7 +9,7 @@ async function providerErrorCode(response){
  try{
   while(true){const {done,value}=await reader.read();if(done)break;bytes+=value.byteLength;if(bytes>8192){void reader.cancel().catch(()=>{});return '';}text+=decoder.decode(value,{stream:true});}
   const code=JSON.parse(text+decoder.decode())?.error?.code;
-  return ['model_not_found','insufficient_quota','rate_limit_exceeded'].includes(code)?code:'';
+  return ['model_not_found','insufficient_quota','rate_limit_exceeded','credit_balance_exhausted','organization_spend_limit_exceeded','project_spend_limit_exceeded','organization_usage_limit_exceeded','slow_down'].includes(code)?code:'';
  }catch{return '';}finally{reader.releaseLock();}
 }
 async function providerFailure(response){
@@ -20,7 +20,18 @@ async function providerFailure(response){
  if(status===401)message='AI 연결 인증에 문제가 있어요. 운영자의 서버 키 확인이 필요해요.';
  else if(status===403)message='AI 이용 권한이 없어요. 운영자의 API 권한 확인이 필요해요.';
  else if(status===404||code==='model_not_found')message='설정된 AI 모델을 사용할 수 없어요. 운영자의 모델 설정 확인이 필요해요.';
- else if(status===429)message=code==='insufficient_quota'?'AI 사용 한도나 결제 설정 때문에 답변을 받지 못했어요. 운영자의 API 계정 확인이 필요해요.':code==='rate_limit_exceeded'?'AI 요청이 잠시 몰렸어요. 잠시 뒤 다시 보내주세요.':'AI 요청이 제한됐어요. 잠시 뒤 다시 시도하고, 계속되면 운영자의 사용 한도와 API 계정 확인이 필요해요.';
+ else if(status===429){
+  const messages={
+   insufficient_quota:'AI 사용 한도나 결제 설정 때문에 답변을 받지 못했어요. 운영자의 API 계정 확인이 필요해요.',
+   credit_balance_exhausted:'AI 사용 잔액이 부족해 답변을 받지 못했어요. 운영자의 API 잔액 확인이 필요해요.',
+   organization_spend_limit_exceeded:'AI 조직의 월 사용 금액 한도에 도달했어요. 운영자의 조직 한도 확인이 필요해요.',
+   project_spend_limit_exceeded:'이 앱의 AI 프로젝트 사용 금액 한도에 도달했어요. 운영자의 프로젝트 한도 확인이 필요해요.',
+   organization_usage_limit_exceeded:'AI 조직에 허용된 월 사용 한도에 도달했어요. 운영자의 API 사용 한도 확인이 필요해요.',
+   rate_limit_exceeded:'AI 요청이 잠시 몰렸어요. 잠시 뒤 다시 보내주세요.',
+   slow_down:'AI 요청량이 갑자기 늘어 잠시 제한됐어요. 잠시 뒤 다시 보내주세요.',
+  };
+  message=messages[code]??'AI 요청이 제한됐어요. 잠시 뒤 다시 시도하고, 계속되면 운영자의 사용 한도와 API 계정 확인이 필요해요.';
+ }
  else if(status>=500)message='AI 서비스에 일시적인 문제가 있어요. 잠시 뒤 다시 보내주세요.';
  return fail(502,message);
 }
