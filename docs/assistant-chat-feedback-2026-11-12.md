@@ -1,5 +1,25 @@
 # 덕 채팅 전송 무반응 진단과 수정 — 2026-11-12
 
+## 후속 사용자 확인 — 요청 제한(HTTP 429)
+
+공개 수정 뒤 사용자는 “AI 요청이 제한됐어요. 잠시 뒤 다시 시도하고, 계속되면 운영자의 사용 한도와 API 계정 확인이 필요해요.”를 확인했다. 당시 `7ad8d3f` 코드에서 이 문구는 AI 공급자 응답이 429이고 알려진 상세 코드를 분류하지 못했을 때 나온다. 전송이 서버의 AI 응답 처리까지 진행됐다는 근거지만 실제 모델 응답 성공·유효한 잔액·특정 한도 문제를 증명하지 않는다. 사용자의 잔액/계정 화면은 아직 읽지 않았다. 같은 시간대 Render 요청·오류 로그 조회는 빈 목록이었으므로 세부 원인으로 해석하지 않는다.
+
+[OpenAI 오류 코드](https://developers.openai.com/api/docs/guides/error-codes)와 [공식 429 진단](https://help.openai.com/en/articles/5955604-troubleshooting-api-rate-limits-and-429-errors)을 직접 확인했다. 최신 공식 코드 5개가 기존 분류 목록에 없어, 다음 응답에서 더 정확히 안내하도록 추가했다.
+
+| 코드 | 확인된 의미와 안내 |
+|---|---|
+| `credit_balance_exhausted` | 선불 API 잔액 소진 → 잔액 확인 |
+| `organization_spend_limit_exceeded` | 조직 사용 금액 한도 도달 → 조직 한도 확인 |
+| `project_spend_limit_exceeded` | 프로젝트 사용 금액 한도 도달 → 해당 프로젝트 한도 확인 |
+| `organization_usage_limit_exceeded` | OpenAI가 허용한 조직 사용 한도 도달 → API 사용 한도 확인 |
+| `slow_down` | 요청량이 급격히 증가 → 잠시 뒤 사용자가 직접 재시도 |
+
+이전 `insufficient_quota`·`rate_limit_exceeded`와 분류 불가의 중립 안내는 유지한다. HTTP 502 반환, 8KiB까지만 읽는 오류 본문, 고정 문구, 비밀값 비노출, 동의·이메일 인증 선확인과 자동 재전송 금지를 유지한다. 새 코드를 안다고 사용자에게 과금이나 한도 상향을 자동 적용하지 않는다.
+
+사용자에게 먼저 [API 결제·잔액](https://platform.openai.com/settings/organization/billing/overview)을 열고 키를 만든 조직의 잔액 표시만 알려달라고 안내했다. 필요할 때 [API 사용 제한](https://platform.openai.com/settings/organization/limits)을 확인한다. 즉시 결제를 요청하지 않는다. ChatGPT와 API 결제는 별개지만 자격에 따른 크레딧 혜택은 실제 활성화·잔액을 확인해야 한다. [공식 결제 안내](https://help.openai.com/en/articles/9039756-managing-billing-for-chatgpt-and-the-api-platform).
+
+검증: 기존 검사 행렬에 5개 응답을 추가해 비밀값 비노출·재전송 없음·고정 문구를 검증했다. 관련 비서 검사 14개, 문법 39개 파일, 전체 207개 중 206개 통과·실패 0개·기존 선택 1개 건너뜀. 실제 원인과 AI 답변은 다음 사용자 계정 확인 단계다. 새 오류 분류는 서버 변경이며 모바일 코드·네이티브 설치를 바꾸지 않는다.
+
 ## 사용자 보고와 확인 범위
 
 사용자는 Render에 AI 설정을 저장한 뒤, 덕 채팅의 파란 위쪽 화살표를 눌러도 화면이 그대로이고 대화 아래에도 오류가 보이지 않는다고 알렸다. 설정 저장에는 Git 커밋이 필요하지 않다. 기존 무료 서비스의 `6a3d6f5`를 배포한 `dep-dbqk495g1s2s73ej1gb0`가 13:36:22 KST에 live가 됐으며 공개 health 정상과 `assistant:true`를 확인했다. 이는 서버 설정이 켜졌다는 증거이고 실제 모델 응답 성공의 증거는 아니다.
