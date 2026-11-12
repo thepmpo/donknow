@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-12",
-  "codeCommit": "33a91cfb92906e694ca3b2de5e80138e99a075da",
-  "imageCount": 53,
+  "codeCommit": "f22ce51379bc95a368f1679a9c23f200802e5683",
+  "imageCount": 68,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -331,6 +331,111 @@
       "bytes": 57566,
       "sha256": "8edebde479223a9cf2377144ccf88ac1125c9b7852603c8f9300b3965065f3bc",
       "import_path": "images/artifacts__todos.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/01-todos-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 35602,
+      "sha256": "c244805d100d30399e96739e078e9fd30f5b02b37f9756d8e1f69b9aa0200c6b",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__01-todos-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/02-calendar-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 29873,
+      "sha256": "4d18aa53b412d39e2bd24c86aa81c67e50a6769ee3be5c55704d6c1fe2e66245",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__02-calendar-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 32282,
+      "sha256": "25f523877f2c0c403b8bfdd88f63de0edce254b11bce5e9b3573491922ca926a",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__03-duck-start-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/04-log-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 26640,
+      "sha256": "4d6bf721e71411d9cebbae1f44cb28e8a01129723186bd6267ccd6a5d24f82fd",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__04-log-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/05-profile-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 46166,
+      "sha256": "0fb8d6c5f15250c40f47963992b5a76c6c8b990b88a1a0708306c77d112aa5db",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__05-profile-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 49489,
+      "sha256": "b0887d6da3ddac22a04c9c40653b106e6116b5d572b3d86460c1e572cb8a6c85",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__06-google-permissions-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 36744,
+      "sha256": "0cdba7a39bb69c4b83a5abd7fcd00b6886770dfe579528c03b1283b52d068031",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__07-request-before-consent-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 39410,
+      "sha256": "c50cbef477e847784e141d14997d726e4fb7d05eb896428210a16195436bcdce",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__08-ai-candidate-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 45114,
+      "sha256": "4ac537a551fd16b2ad8d53b9159a0e6601e87be26cc4d64dbb7e3807df739ee6",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__09-confirmation-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 41828,
+      "sha256": "a1a6f2e56ed4a267a5639bc40a0e0a441c2c1cc5016adf99e32f35bce8150b17",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__10-succeeded-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 38274,
+      "sha256": "d10bca4dfda62168b43e52c9ae4cda5591275c2f8bf1da1515faef634ff4faf4",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__11-added-todo-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 24305,
+      "sha256": "e6bcc15b51f11ff9809c05b45a1b1cab92b3fe0a0325b3806881bedc2fe4249f",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__12-edit-sheet-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 49375,
+      "sha256": "215f9c42f1888a5f66de669662959994fedc4afd8538c17c6bb9efca02b6c88d",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__13-paste-sheet-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 35152,
+      "sha256": "8fccb659ae2553870801fc6fc36429c106fefd8bbe0e41fd48f4b5952d4d8b69",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__14-duck-small-fixture.png"
+    },
+    {
+      "path": "artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 46545,
+      "sha256": "7dafa5fb04691b9ed5542dc619bd90aea1aa00f281cddf149c32edcc888c6d1e",
+      "import_path": "images/artifacts__ux-audit-2026-11-12__15-error-retry-fixture.png"
     },
     {
       "path": "mobile/assets/android-icon-background.png",
