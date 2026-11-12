@@ -1,5 +1,51 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-13:start -->
+### 2026-11-13 — 당일 저장된 작업
+
+실제 정리: 03:04 KST. 새 저장 작업 20개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [7644621](https://github.com/sjfieni/donknow/commit/76446210f14cd78a028755e3e52a4bf06269d528) · 11-12 09:46 · Add inline assistant chat, isolate sessions and prepare Apple Duo navigation
+
+- [06cb1e3](https://github.com/sjfieni/donknow/commit/06cb1e32d26f3d0686baa76608ff9ac09907f7a3) · 11-12 09:47 · Document duckduck delivery, release evidence and Notion work records
+
+- [dd650f0](https://github.com/sjfieni/donknow/commit/dd650f094e880b01300b85c27c8f7a253e4628cd) · 11-12 09:51 · Isolate Git test fixtures from runner LFS settings for TestFlight CI
+
+- [ee08bdb](https://github.com/sjfieni/donknow/commit/ee08bdbe8ade056e896a5525ccf2dee40b51ac2b) · 11-12 09:53 · Record successful TestFlight build request and remaining live verification
+
+- [adf396b](https://github.com/sjfieni/donknow/commit/adf396bd59cfbba05cf8a2a7f984ec618f10c3ff) · 11-12 10:13 · Keep new Duck chat proposals and results visible above older history
+
+- [6c8354e](https://github.com/sjfieni/donknow/commit/6c8354e1ab614f04cd4af9ba3c48244108efea8f) · 11-12 10:16 · Record Product Design audit and preserve inline documentation images
+
+- [dd1abae](https://github.com/sjfieni/donknow/commit/dd1abaec560ed2e49f387377754dcfbeb8d96f64) · 11-12 10:16 · Publish updated Duck chat audit and design guide documents
+
+- [5c85735](https://github.com/sjfieni/donknow/commit/5c8573509ea9d7cf8d388ebc33a35036da84e8e7) · 11-12 10:20 · Record verified Render deployment and TestFlight build 14 request
+
+- [6a3d6f5](https://github.com/sjfieni/donknow/commit/6a3d6f55763d46dbdd560aefd1b78f0c6382d4f7) · 11-12 10:20 · Normalize audit document whitespace and refresh commit index
+
+- [e6ae9dc](https://github.com/sjfieni/donknow/commit/e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9) · 11-12 13:50 · Show Duck chat progress and actionable errors beside the composer
+
+- [7eeac79](https://github.com/sjfieni/donknow/commit/7eeac796d4605a2e136f5bdd7b47d1e996fb1d82) · 11-12 13:51 · Document Duck chat send feedback diagnosis and verified regression checks
+
+- [7ad8d3f](https://github.com/sjfieni/donknow/commit/7ad8d3f561c43e97b1bc86c42ed9aa3768d8aa36) · 11-12 13:54 · Record live chat feedback deployment and TestFlight build 15 request
+
+- [c69ad48](https://github.com/sjfieni/donknow/commit/c69ad487a7d5afd54f7bc666aab02fab328e3429) · 11-12 14:00 · Distinguish current OpenAI credit and usage limit error codes
+
+- [acb5625](https://github.com/sjfieni/donknow/commit/acb5625da294ad0ff9f7a6ee05bc388b37159022) · 11-12 14:00 · Record API request limit diagnosis and official account checks
+
+- [33a91cf](https://github.com/sjfieni/donknow/commit/33a91cfb92906e694ca3b2de5e80138e99a075da) · 11-12 14:48 · Let Duck greet naturally without forcing task analysis
+
+- [62bcde1](https://github.com/sjfieni/donknow/commit/62bcde156a6f3271fc85fce871a80b4bc49fd67e) · 11-12 14:49 · Record first live AI reply and natural conversation guidance
+
+- [f22ce51](https://github.com/sjfieni/donknow/commit/f22ce51379bc95a368f1679a9c23f200802e5683) · 11-12 17:48 · Make TestFlight builds manual and verify AI Todo persistence with fresh UX evidence
+
+- [6f0f881](https://github.com/sjfieni/donknow/commit/6f0f881342654831cf00e9f876eee122ec149431) · 11-12 17:49 · Publish fifteen-step UX audit and staged integration verification handoff
+
+- [e96d9b3](https://github.com/sjfieni/donknow/commit/e96d9b32f738c49ab50382f85e82a29f2713f8fa) · 11-12 18:17 · Improve Duck task confirmation, service permissions and mobile action visibility
+
+- [15c3a01](https://github.com/sjfieni/donknow/commit/15c3a01f540c1ae52a32c3faf0aa3167659adb3e) · 11-12 18:20 · Document verified UX fixes, account activation steps and nineteen-screen evidence
+<!-- daily:2026-11-13:end -->
+
 ### 2026-11-12 — UX/UI 10개 수정·편집 저장 가림 보완
 
 사용자 요청에 따라 감사10개와 추가로 발견한 할 일 편집창 저장 버튼 가림을 수정했다. 덕 도구 접기·동의 안내·후보 확인 우선·메모/완료 상세 펼치기·권한 선택 후 연결·44pt·버튼 대비·날짜 선택·작은 탭·선택일/계정 바로가기를 적용했다. 기존 동의/확인·데이터·인증과 브리핑/날씨는 유지한다. [19개 화면과 실제 회귀 검증](ux-ui-fixes-2026-11-12.md), [남은 실계정 가동·기기 확인](functional-workstream-2026-11-12.md)을 따른다. TestFlight는 수동이며 이번 EAS 빌드는 없다. GitHub 반영과 Render 실제 공개 반영은 별도 확인 후 기록한다.
