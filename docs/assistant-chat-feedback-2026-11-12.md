@@ -38,7 +38,7 @@
 - 전체 모바일 앱 브라우저 회귀 통과. 체크·되돌리기·계정·로그인·기존 비서 확인 실행을 유지한다.
 - iOS JS export 통과. Swift 컴파일·서명·TestFlight 설치·실기기 성공을 뜻하지 않는다.
 
-운영 AI 호출·실제 키/모델 권한·한도는 아직 미확인이다. 사용자 세션을 대신 사용하거나 운영 테스트 계정을 생성하지 않았다. 구현 커밋은 [e6ae9dc](https://github.com/thepmpo/donknow/commit/e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9)다. Render 실제 배포 결과는 [출시 근거](release-readiness-2026-11-12.md)에 이어 기록한다.
+운영 AI 호출·실제 키/모델 권한·한도는 아직 미확인이다. 사용자 세션을 대신 사용하거나 운영 테스트 계정을 생성하지 않았다. 구현 커밋은 [e6ae9dc](https://github.com/thepmpo/donknow/commit/e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9)다. 문서를 포함한 `7eeac79`의 Render 배포 live와 공개 문서 반영을 13:52 KST에 확인했다. 빌드 15 생성·제출 요청도 접수됐다. [정확한 배포와 남은 확인](release-readiness-2026-11-12.md)을 따른다.
 
 ## 사용자가 다음에 할 일
 

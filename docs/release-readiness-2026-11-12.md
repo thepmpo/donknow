@@ -1,5 +1,13 @@
 # 덕 운영·백업·iPhone 출시 확인 — 2026-11-12
 
+## 2026-11-12 13:52 KST — 덕 전송 피드백 수정 공개 반영
+
+구현 `e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9`와 검증 문서를 담은 `7eeac796d4605a2e136f5bdd7b47d1e996fb1d82`를 main에 일반 push한 후 Render에 배포했다. `dep-dbqkbi2fngtc73fs78h0`는 13:52:03 KST에 live가 됐다. 공개 health `ok:true`, capability `assistant:true`, `/project`의 새 피드백 수정·구현 커밋, `/design-guide`의 입력창 위 처리/오류 규칙과 공개 로그인 화면을 확인했다. 실제 사용자 로그인 세션·AI 답변은 확인하지 않았다. [진단·수정·사용 순서](assistant-chat-feedback-2026-11-12.md).
+
+[iOS 실행 43157459152](https://github.com/thepmpo/donknow/actions/runs/43157459152)는 같은 `7eeac79`에서 성공했다. 207개 중 206개 통과·실패 0개·선택 1개 건너뜀, 문법·타입·iOS JS export를 거쳐 **빌드 15 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/290deeea-9f57-4a86-833c-eab4c28ac5b0) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8bad0d3c-5594-402d-96f6-1e2184df4d95). `--no-wait` 요청 성공이며 실제 네이티브/Apple 처리·설치는 아직 미확인이다.
+
+플랜·환경 변수·DB·인증 설정은 변경하지 않았고 원래 복구 bundle의 SHA-256도 동일하다. 서버의 AI 활성화와 사용자 모델 호출 성공을 구분한다. 이후 배포 기록만 보완한 문서 커밋은 같은 기능 코드이며 별도 배포 결과와 구분한다.
+
 ## 2026-11-12 13:36 KST — 사용자 AI 설정 반영
 
 사용자가 기존 Render 환경에 AI 키·모델·활성화 값을 저장했다고 알렸고, 새 배포 기록이 없어 같은 기능 소스 `6a3d6f5`를 재배포했다. `dep-dbqk495g1s2s73ej1gb0`가 13:36:22 KST에 live가 됐다. 이후 공개 health 정상, `assistant:true`로 전환됐음을 확인했다. 비밀값이나 실제 설정된 모델명은 읽지 않았다. 사용자 AI 전송 무반응 보고에 따라 [처리·오류 표시를 진단](assistant-chat-feedback-2026-11-12.md)한다. 설정 게이트 활성화와 실제 AI 응답·계정 권한·API 잔액은 별도다. 아래 오전 AI 비활성 표는 당시 조회 기록이다.

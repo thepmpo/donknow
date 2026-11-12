@@ -13,7 +13,7 @@
 
 ### 2026-11-12 — 덕 전송 무반응 안내 수정
 
-파란 ↑를 눌러도 그대로 보이던 화면에서 오류가 대화 영역 밖에 숨는 문제를 재현하고 고쳤습니다. 입력창 위 처리·실패 안내, 입력/동의를 보존한 다시 보내기, AI 연결 재확인과 인증·권한·모델·사용 한도별 쉬운 안내를 제공합니다. 자동 재전송은 하지 않습니다. [진단·수정 전후 화면·버튼별 안내](https://github.com/thepmpo/donknow/blob/main/docs/assistant-chat-feedback-2026-11-12.md)를 확인하세요. 루트 206개 통과·선택 1개 건너뜀, 문법·타입·웹/iOS JS·전체 앱·채팅/오류 회귀를 통과했습니다. 13:36 KST 공개 서버에서 AI 설정 활성화를 확인했으나 실제 사용자 모델 응답·권한/한도 원인은 아직 미확인입니다. [배포와 남은 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)은 실제 근거로 갱신합니다.
+파란 ↑를 눌러도 그대로 보이던 화면에서 오류가 대화 영역 밖에 숨는 문제를 재현하고 고쳤습니다. 입력창 위 처리·실패 안내, 입력/동의를 보존한 다시 보내기, AI 연결 재확인과 인증·권한·모델·사용 한도별 쉬운 안내를 제공합니다. 자동 재전송은 하지 않습니다. [진단·수정 전후 화면·버튼별 안내](https://github.com/thepmpo/donknow/blob/main/docs/assistant-chat-feedback-2026-11-12.md)를 확인하세요. 루트 206개 통과·선택 1개 건너뜀, 문법·타입·웹/iOS JS·전체 앱·채팅/오류 회귀를 통과했습니다. 13:36 KST 공개 서버에서 AI 설정 활성화를 확인했으나 실제 사용자 모델 응답·권한/한도 원인은 아직 미확인입니다. 13:52 KST에 7eeac79의 Render live와 공개 문서·디자인 가이드 반영을 확인했고 빌드 15 생성·제출 요청이 접수됐습니다. [배포와 남은 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)을 따릅니다.
 
 ### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
@@ -118,6 +118,8 @@
 사용자가 파란 ↑를 눌러도 그대로이고 오류도 보이지 않는다고 보고했다. 모의 403/502에서 요청은 한 번 전송되지만 안내가 대화 스크롤 밖으로 밀리는 문제를 재현했다. 처리·오류 안내를 입력창 위로 옮기고, 입력과 동의를 보존한 **다시 보내기**, **AI 연결 다시 확인**, 서버 오류별 쉬운 안내를 추가했다. 자동 재전송·실행 확인 생략은 없다. 기존 계정·인증·데이터·브리핑·날씨는 보존한다. [진단·수정 전후 화면·버튼별 안내](assistant-chat-feedback-2026-11-12.md).
 
 문법·타입·웹/iOS JS·전체 앱·기존 채팅 및 새 오류 회귀를 통과했다. 루트 207개 중 206개 통과·실패 0개·기존 선택 1개 건너뜀. 서버 AI 설정은 13:36 KST 배포 후 활성화됐지만 실제 사용자 AI 응답·권한/한도 원인은 아직 미확인이다. GitHub 저장과 공개 배포는 [실제 배포 근거](release-readiness-2026-11-12.md)로 구분한다.
+
+후속 확인: `7eeac79`의 Render 배포가 13:52 KST에 live가 됐고 공개 문서·디자인 가이드·로그인 화면·서버 정상과 `assistant:true`를 확인했다. 같은 커밋의 iOS 자동화는 빌드 15 생성·제출 요청까지 성공했다. 실제 AI 답변·Apple 처리·기기 설치는 미확인이다. [배포 근거](release-readiness-2026-11-12.md).
 
 #### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
@@ -585,6 +587,8 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 사용자가 파란 ↑를 눌러도 그대로이고 오류도 보이지 않는다고 보고했다. 모의 403/502에서 요청은 한 번 전송되지만 안내가 대화 스크롤 밖으로 밀리는 문제를 재현했다. 처리·오류 안내를 입력창 위로 옮기고, 입력과 동의를 보존한 **다시 보내기**, **AI 연결 다시 확인**, 서버 오류별 쉬운 안내를 추가했다. 자동 재전송·실행 확인 생략은 없다. 기존 계정·인증·데이터·브리핑·날씨는 보존한다. [진단·수정 전후 화면·버튼별 안내](assistant-chat-feedback-2026-11-12.md).
 
 문법·타입·웹/iOS JS·전체 앱·기존 채팅 및 새 오류 회귀를 통과했다. 루트 207개 중 206개 통과·실패 0개·기존 선택 1개 건너뜀. 서버 AI 설정은 13:36 KST 배포 후 활성화됐지만 실제 사용자 AI 응답·권한/한도 원인은 아직 미확인이다. GitHub 저장과 공개 배포는 [실제 배포 근거](release-readiness-2026-11-12.md)로 구분한다.
+
+후속 확인: `7eeac79`의 Render 배포가 13:52 KST에 live가 됐고 공개 문서·디자인 가이드·로그인 화면·서버 정상과 `assistant:true`를 확인했다. 같은 커밋의 iOS 자동화는 빌드 15 생성·제출 요청까지 성공했다. 실제 AI 답변·Apple 처리·기기 설치는 미확인이다. [배포 근거](release-readiness-2026-11-12.md).
 
 ##### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
@@ -1075,6 +1079,7 @@ dd1abae Publish updated Duck chat audit and design guide documents
 5c85735 Record verified Render deployment and TestFlight build 14 request
 6a3d6f5 Normalize audit document whitespace and refresh commit index
 e6ae9dc Show Duck chat progress and actionable errors beside the composer
+7eeac79 Document Duck chat send feedback diagnosis and verified regression checks
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1760,7 +1765,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - 전체 모바일 앱 브라우저 회귀 통과. 체크·되돌리기·계정·로그인·기존 비서 확인 실행을 유지한다.
 - iOS JS export 통과. Swift 컴파일·서명·TestFlight 설치·실기기 성공을 뜻하지 않는다.
 
-운영 AI 호출·실제 키/모델 권한·한도는 아직 미확인이다. 사용자 세션을 대신 사용하거나 운영 테스트 계정을 생성하지 않았다. 구현 커밋은 [e6ae9dc](https://github.com/thepmpo/donknow/commit/e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9)다. Render 실제 배포 결과는 [출시 근거](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)에 이어 기록한다.
+운영 AI 호출·실제 키/모델 권한·한도는 아직 미확인이다. 사용자 세션을 대신 사용하거나 운영 테스트 계정을 생성하지 않았다. 구현 커밋은 [e6ae9dc](https://github.com/thepmpo/donknow/commit/e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9)다. 문서를 포함한 `7eeac79`의 Render 배포 live와 공개 문서 반영을 13:52 KST에 확인했다. 빌드 15 생성·제출 요청도 접수됐다. [정확한 배포와 남은 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)을 따른다.
 
 #### 사용자가 다음에 할 일
 
@@ -1868,6 +1873,14 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 ### 原文 / docs/release-readiness-2026-11-12.md
 
 ### 덕 운영·백업·iPhone 출시 확인 — 2026-11-12
+
+#### 2026-11-12 13:52 KST — 덕 전송 피드백 수정 공개 반영
+
+구현 `e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9`와 검증 문서를 담은 `7eeac796d4605a2e136f5bdd7b47d1e996fb1d82`를 main에 일반 push한 후 Render에 배포했다. `dep-dbqkbi2fngtc73fs78h0`는 13:52:03 KST에 live가 됐다. 공개 health `ok:true`, capability `assistant:true`, `/project`의 새 피드백 수정·구현 커밋, `/design-guide`의 입력창 위 처리/오류 규칙과 공개 로그인 화면을 확인했다. 실제 사용자 로그인 세션·AI 답변은 확인하지 않았다. [진단·수정·사용 순서](https://github.com/thepmpo/donknow/blob/main/docs/assistant-chat-feedback-2026-11-12.md).
+
+[iOS 실행 43157459152](https://github.com/thepmpo/donknow/actions/runs/43157459152)는 같은 `7eeac79`에서 성공했다. 207개 중 206개 통과·실패 0개·선택 1개 건너뜀, 문법·타입·iOS JS export를 거쳐 **빌드 15 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/290deeea-9f57-4a86-833c-eab4c28ac5b0) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8bad0d3c-5594-402d-96f6-1e2184df4d95). `--no-wait` 요청 성공이며 실제 네이티브/Apple 처리·설치는 아직 미확인이다.
+
+플랜·환경 변수·DB·인증 설정은 변경하지 않았고 원래 복구 bundle의 SHA-256도 동일하다. 서버의 AI 활성화와 사용자 모델 호출 성공을 구분한다. 이후 배포 기록만 보완한 문서 커밋은 같은 기능 코드이며 별도 배포 결과와 구분한다.
 
 #### 2026-11-12 13:36 KST — 사용자 AI 설정 반영
 
@@ -4121,6 +4134,8 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 사용자가 파란 ↑를 눌러도 그대로이고 오류도 보이지 않는다고 보고했다. 모의 403/502에서 요청은 한 번 전송되지만 안내가 대화 스크롤 밖으로 밀리는 문제를 재현했다. 처리·오류 안내를 입력창 위로 옮기고, 입력과 동의를 보존한 **다시 보내기**, **AI 연결 다시 확인**, 서버 오류별 쉬운 안내를 추가했다. 자동 재전송·실행 확인 생략은 없다. 기존 계정·인증·데이터·브리핑·날씨는 보존한다. [진단·수정 전후 화면·버튼별 안내](https://github.com/thepmpo/donknow/blob/main/docs/assistant-chat-feedback-2026-11-12.md).
 
 문법·타입·웹/iOS JS·전체 앱·기존 채팅 및 새 오류 회귀를 통과했다. 루트 207개 중 206개 통과·실패 0개·기존 선택 1개 건너뜀. 서버 AI 설정은 13:36 KST 배포 후 활성화됐지만 실제 사용자 AI 응답·권한/한도 원인은 아직 미확인이다. GitHub 저장과 공개 배포는 [실제 배포 근거](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)로 구분한다.
+
+후속 확인: `7eeac79`의 Render 배포가 13:52 KST에 live가 됐고 공개 문서·디자인 가이드·로그인 화면·서버 정상과 `assistant:true`를 확인했다. 같은 커밋의 iOS 자동화는 빌드 15 생성·제출 요청까지 성공했다. 실제 AI 답변·Apple 처리·기기 설치는 미확인이다. [배포 근거](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md).
 
 #### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
