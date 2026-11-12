@@ -34,6 +34,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 최신 사용자 확인으로 f76172d의 Render 배포와 TestFlight 1.0.0 (12)가 확인됐습니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-12 — Product Design 덕 채팅 후속 검토
+
+새 할 일 후보의 제목·날짜가 가려지던 자동 이동을 고쳤습니다. 새 답변·초안·완료 결과와 자료 선택이 바로 보이고, 이미 준비한 후보의 날짜는 읽기 전용입니다. 기존 톤·토큰·동의·확인 후 실행을 유지했습니다. [수정 전후 화면·네 단계 검토·실제 검사](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md)를 확인하세요. 자동 검사 202개·문법·타입·웹/iOS JS·전체 앱 검사를 통과했으며 실제 AI·실기기·Render 반영은 별도입니다. 사용자용 결과는 개인 Notion에 기록합니다.
+
 ### 2026-11-12 — 덕 개발 재개·Duo·Notion 업무 기록
 
 사용자는 AI 사무실의 추가 개발을 보류하고 덕의 남은 기능과 iPhone Duo 대응을 진행하도록 승인했습니다. 덕 채팅의 AI 제안→초안 확인→실행, 계정 전환 시 늦은 응답 차단, Apple 공식 힌지·화면 영역 API에 따른 Duo 우측 내비게이션을 구현하고 자동 검증했습니다. 실제 Xcode 네이티브 컴파일·Duo 실기기 검증은 남습니다. 일반 iPhone의 하단 내비게이션·기존 데이터와 인증은 보존합니다. 아래의 이전 Duo 보류 기록보다 이번 지시가 우선하며, 브리핑·날씨는 후속 간략 문서를 기다립니다.
@@ -378,17 +382,18 @@ def appendix(path):
         if not fence and re.match(r'^#{1,5} ',line):line='##'+line
         if not fence:
             def link(match):
-                target=match.group(2)
+                image_prefix,label,target=match.groups()
                 if '://' in target or target.startswith('#') or target.startswith('mailto:'):return match.group(0)
                 local=(ROOT/path).parent/target
                 try:relative=local.resolve().relative_to(ROOT).as_posix()
                 except ValueError:return match.group(0)
-                return f'[{match.group(1)}]({REPO}/blob/main/{relative})'
-            line=re.sub(r'\[([^\]]+)\]\(([^)]+)\)',link,line)
+                destination=RAW+relative if image_prefix and any(item['path']==relative for item in manifest) else f'{REPO}/blob/main/{relative}'
+                return f'{image_prefix}[{label}]({destination})'
+            line=re.sub(r'(!?)\[([^\]]+)\]\(([^)]+)\)',link,line)
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/product-design-chat-audit-2026-11-12.md','docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()

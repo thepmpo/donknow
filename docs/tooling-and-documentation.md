@@ -40,7 +40,7 @@ Craft의 공식 도움말에는 ChatGPT 플러그인 경로가 있다. 다만 �
 |---|---|---|---|
 | 기획·인수인계 | Notion의 `notion-spec-to-implementation`, `notion-knowledge-capture`, `notion-research-documentation` | 요구사항을 할 일로 나누고, 결정과 테스트 결과를 기록 | 현재 채팅에 해당 스킬 제공 |
 | 화면·디자인 시스템 | Figma의 `figma-design-to-code`, `figma-generate-library`, `figma-implement-motion` | 기존 화면과 코드 대조, 공통 토큰·컴포넌트·모션 관리 | 현재 채팅에 해당 스킬 제공. 파일 접근·쓰기 성공은 작업별로 확인 |
-| UX 검토·시안 비교 | Product Design의 `audit`, `research`, `ideate` | 사용 흐름의 불편 확인과 개선안 비교 | 현재 플러그인 검색에서 설치 가능한 미설치 항목 확인 |
+| UX 검토·시안 비교 | Product Design의 `audit`, `research`, `ideate` | 사용 흐름의 불편 확인과 개선안 비교 | 플랫폼의 설치 완료 알림 확인. 공식 audit 지침으로 덕 채팅을 후속 검토 |
 | React Native·Expo 개발 | Expo의 `native-data-fetching`, `expo-module`, `expo-deployment`, `expo-cicd-workflows`, `expo-dev-client` | 로그인·API 오류, 네이티브 연결, TestFlight·EAS 배포 | 공식 플러그인 저장소에서 확인. 현재 채팅에 설치된 것으로 확인하지 않음 |
 | iPhone 실기기 전 단계 | Build iOS Apps의 `ios-debugger-agent`, `ios-simulator-browser` | Mac의 Xcode·시뮬레이터에서 화면과 실행 오류 확인 | 공식 저장소에서 확인. 해당 Mac 도구와 설치는 별도 필요 |
 | iPhone Duo 화면 대응 | Apple App Resizability 스킬 | 힌지·안전 영역·회전·상태 보존 검토 | Apple 공식 Xcode 안내 확인. Mac/Xcode에서 `xcrun agent skills export`로 내보내기. 이 환경에서 내보내기·설치한 것은 아님 |
@@ -94,4 +94,4 @@ codex plugin marketplace add openai/plugins --ref d420d13051bffe4543ed39e30fa46b
 - [플러그인 카탈로그와 설치 방법](https://developers.openai.com/plugins/build/plugins): 버전 고정 카탈로그 등록 명령.
 - 조사한 공식 저장소: `openai/plugins@d420d13051bffe4543ed39e30fa46b87148e47dd`, `openai/skills@49f948faa9258a0c61caceaf225e179651397431`.
 
-공식 플러그인 카탈로그의 경로와 해당 스킬 파일 존재를 확인했다. 플러그인 검색에서는 Product Design 미설치·설치 가능, Figma 설치됨을 확인했고 Craft·Expo는 결과를 확보하지 못했다. 이 조사를 위해 플러그인을 설치·실행하거나 계정 권한을 변경하지 않았다. Craft 개발자 상세 사이트는 GitBook 로그인 화면으로 이동해 전체 엔드포인트 명세를 검증하지 못했으며, 비용·속도·사용성의 동일 조건 실측도 하지 않았다.
+공식 플러그인 카탈로그의 경로와 해당 스킬 파일 존재를 확인했다. 최초 검색에서는 Product Design 설치 가능·미설치로 나왔고 이후 플랫폼이 설치 완료를 알렸다. 후속 화면 검토에서 공식 audit 지침을 적용했다. Figma는 설치됨을 확인했고 Craft·Expo는 검색 결과를 확보하지 못했다. 이 조사를 위해 플러그인을 설치·실행하거나 계정 권한을 변경하지 않았다. Craft 개발자 상세 사이트는 GitBook 로그인 화면으로 이동해 전체 엔드포인트 명세를 검증하지 못했으며, 비용·속도·사용성의 동일 조건 실측도 하지 않았다.

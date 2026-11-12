@@ -1,5 +1,9 @@
 # 변경 기록
 
+## 2026-11-12 — Product Design 덕 채팅 후속 검토
+
+Product Design 설치 알림 뒤 요청→후보→확인→결과의 네 단계를 실제 웹 번들의 모의 데이터로 캡처·검토했다. 새 후보가 나올 때 메모 아래로 내려가 제목·날짜가 가려지는 문제, 자료 선택을 열어도 보이지 않는 문제, 이미 준비한 후보의 날짜가 수정 가능해 보이는 문제를 고쳤다. 기존 동의·실행 확인·계정 격리·톤과 토큰을 보존했다. 이전 기록 5개가 있어도 새 답변/초안/결과가 화면에 보이는 회귀와 전체 앱 검사를 통과했다. 루트 검사 202개 통과·기존 선택 1개 건너뜀, 문법 39개·타입·웹/iOS JS export 통과. 실제 AI·기기 검증은 별도다. [수정 전후 화면과 상세 결과](product-design-chat-audit-2026-11-12.md). 구현 커밋 [adf396b](https://github.com/thepmpo/donknow/commit/adf396b), Render 공개 반영은 대기다.
+
 ## 2026-11-12 — TestFlight CI의 임시 Git 저장소 설정 격리
 
 덕 변경을 반영한 `06cb1e3`의 [iOS 실행 43129844358](https://github.com/thepmpo/donknow/actions/runs/43129844358)이 npm 검사에서 중단됐다. 원인은 CI 서버의 전역 Git LFS 설정이 기존 사무실 동기화 fixture에 상속돼 의도된 필터 차단이 발생한 것이다. 같은 임시 설정으로 11개 실패를 재현했고, 테스트 프로세스의 Git 설정만 격리했다. 실제 전역 필터를 다시 넣으면 여전히 fetch 전 차단하고 원본/설정을 보존하는 회귀를 추가해 26개 모두 통과했다. 제품 보호 코드·사용자 Git 설정·기존 인증은 변경하지 않았다. TestFlight workflow에도 테스트 단계에만 동일 격리를 명시했다. 사무실 기능 개발 재개가 아니라 덕 출시 검사 복구다. 수정 후 CI와 같은 설정에서 전체 203개 중 202개 통과·기존 선택 검사 1개 제외·실패 0개를 확인했다. 후속 [GitHub 실행 43130303497](https://github.com/thepmpo/donknow/actions/runs/43130303497)도 성공했고 EAS build number 13 요청을 접수했다. 실제 Swift 컴파일·Apple 처리·설치는 별도 미확인이다. 정확한 build/submission 링크는 [출시 기록](release-readiness-2026-11-12.md)에 보존한다.
