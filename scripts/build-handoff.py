@@ -11,7 +11,7 @@ OUT.mkdir(exist_ok=True)
 CODE = subprocess.check_output(['git', 'log', '-1', '--format=%H', '--', 'server.js', 'server', 'mobile', 'Dockerfile', 'public/project-comments.js', 'public/project-comments.css'], cwd=ROOT, text=True).strip()
 DATE = datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')
 REPO = 'https://github.com/thepmpo/donknow'
-RAW = f'https://raw.githubusercontent.com/sjfieni/donknow/{CODE}/'
+RAW = f'https://raw.githubusercontent.com/thepmpo/donknow/{CODE}/'
 images = sorted(p for folder in ('artifacts', 'mobile/assets') for p in (ROOT/folder).rglob('*') if p.suffix.lower() in {'.png','.jpg','.jpeg','.gif','.webp','.svg','.ico'})
 priority = ['artifacts/mobile-todos.png','artifacts/mobile-calendar.png','artifacts/mobile-duckduck.png','artifacts/mobile-log.png','artifacts/mobile-profile.png']
 images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if p.relative_to(ROOT).as_posix() in priority else (1 if p.name.startswith('mobile-') else 2, p.as_posix()))
@@ -24,7 +24,7 @@ for path in images:
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 > 기준: {{DATE}} · 한국 시간 · 기능 코드 {{SHORT}} · 문서와 GitHub 소스가 이어받기의 기준입니다.
-> 실제 Notion에 생성된 페이지가 아니라 **한 페이지 가져오기 원본**입니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
+> 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 이 프로젝트가 하려는 일
 
@@ -34,11 +34,19 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 최신 사용자 확인으로 f76172d의 Render 배포와 TestFlight 1.0.0 (12)가 확인됐습니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
-### 2026-11-12 — 사무실 스킬·PDF·Gmail·업무관리
+### 2026-11-12 — 덕 개발 재개·Duo·Notion 업무 기록
+
+사용자는 AI 사무실의 추가 개발을 보류하고 덕의 남은 기능과 iPhone Duo 대응을 진행하도록 승인했습니다. 덕 채팅의 AI 제안→초안 확인→실행, 계정 전환 시 늦은 응답 차단, Apple 공식 힌지·화면 영역 API에 따른 Duo 우측 내비게이션을 구현하고 자동 검증했습니다. 실제 Xcode 네이티브 컴파일·Duo 실기기 검증은 남습니다. 일반 iPhone의 하단 내비게이션·기존 데이터와 인증은 보존합니다. 아래의 이전 Duo 보류 기록보다 이번 지시가 우선하며, 브리핑·날씨는 후속 간략 문서를 기다립니다.
+
+[운영·출시 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)에서 공개 서버 정상 응답, AI 비활성·Slack 미설정, Google·Notion 설정 존재, 예약 백업·격리 복원과 기존 TestFlight 요청 성공의 실제 근거를 확인합니다. 설정 존재를 실제 AI·새 쓰기·Apple 처리 성공으로 해석하지 않습니다. [Figma 69개 대조](https://github.com/thepmpo/donknow/blob/main/docs/figma-baseline-review-2026-11-12.md)는 새 읽기 성공과 이후 Starter 한도 차단을 구분합니다.
+
+매 업무의 결정·변경·실제 검사·남은 일을 개인 Notion에 기록하고 코드·테스트·공개 기술 문서는 GitHub에 유지합니다. [Notion·Craft·스킬 비교](https://github.com/thepmpo/donknow/blob/main/docs/tooling-and-documentation.md)에 공식 설치·다운로드 경로와 토큰 비교의 한계를 정리했습니다. 스킬 다운로드는 외부 계정 로그인이나 실제 작업 성공을 대신하지 않습니다.
+
+### 2026-11-12 — 사무실 스킬·PDF·Gmail·업무관리 (개발 보류 전 기록)
 
 [추천 스킬·PDF·Gmail·업무관리 사용법](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-capabilities.md)을 먼저 확인합니다. 문서고에서 공통·직무별 지침을 한 번에 연결하며, 다음에 새로 준비하는 업무에 실제 원문과 버전을 전달합니다. 보고서의 PDF 저장·인쇄와 선택한 PDF의 본인 Gmail 전송을 준비했습니다. Gmail은 Mac 사무실에서 직접 앱 비밀번호를 연결해야 하며 실제 계정 인증·수신은 미확인입니다. 업무관리 실행은 기존 안건의 내용 확인으로 연결하고, 삭제 대신 보관·복원을 제공해 보고서와 기록을 보존합니다. 팀장회의는 현재 개별 의견 수집 후 종합 제안이며 반복 상호 토론은 아직 아닙니다. 적용 파일·검증·남은 계정 단계는 위 안내에 기록합니다.
 
-### 2026-11-12 최신 이어받기 — 이 채팅과 AI 사무실
+### 2026-11-12 이어받기 — 사무실 재개 후 적용할 이전 기록
 
 [양방향 이어받기 기준](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-shared-work.md)을 공식 지침에 추가했습니다. 이 채팅의 작업자는 수정 전에 사무실이 GitHub main에 반영한 코드·문서·검증 기록을 확인합니다. 여기서 수정한 뒤에는 사무실에서 **최신 코드 받기가 필요한지 반드시 안내**합니다. Mac 안의 미게시 코드·채팅·보고서·추가 문서는 자동으로 공유되지 않으며, 실제 작업 사본의 변경과 검증을 확인한 인계가 필요합니다. 설치된 사무실 프로그램 업데이트와 프로젝트 코드 갱신도 구분합니다.
 
@@ -75,13 +83,17 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 [AI 사무실 첫 실행 준비](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ready.md): 공식 Codex 실행기·일회 제품 검토·보고서/중지 명령을 준비했습니다. API247개와 빌드 및 실제 네이티브 도구 격리를 검증했습니다. 첫 작업은 inbox, 승인/실행0, 개발 잠금입니다. 현재 환경의 auth.openai.com·chatgpt.com 차단 해제와 개인 터미널 ChatGPT 로그인이 남았습니다. 실제 모델 응답과 Render 공개 반영은 미검증입니다. [설치](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-setup.md) · [승인 경계](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-approval-gate.md).
 
 
+### 2026-11-10 당시 결정과 확인 기록
+
+아래의 보류·미확인 표시는 당시 기록입니다. 현재 작업은 위의 2026-11-12 덕 개발 재개와 최신 상태 표를 우선합니다.
+
 - [AI 사무실 대화 상세 분석](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md), [쉬운 톤앤톤 확정 요약](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md), [다른 프로젝트용 공식 원칙 v1.0](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽습니다. 첨부 전체를 분석했으며 사용자 발언·이전 AI 제안·현재 코드·새 후보를 구분했습니다. 원문 전체는 공개 재게시하지 않습니다.
 - 사용자 확인: GitHub/Render 기준 f76172d, iPhone build and submit 성공, TestFlight **1.0.0 (12)**. 아래 예전 날짜의 빌드/배포 미확인 기록은 당시 상태입니다. 에이전트가 Apple/Render 대시보드를 직접 검증한 것과 구분합니다. 실모델·실계정 가동은 아직 완료되지 않았습니다.
-- 사용자가 추천안 **A + ② + 가**를 공식 확정했습니다(2026-11-10): **차분하고 친근한 비서 · 필요할 때 담당 역할 표시 · 오리는 인사/완료 순간에 가볍게 표현**. RP-01~RP-12는 공식 v1.0입니다. 초기 초안 A + ① + 가보다 최신 승인이 우선합니다. [디자인 가이드](/design-guide)와 원칙 문서에 승인 범위를 기록했습니다. 앱·Figma·새 수치/시안은 이번에 변경하지 않습니다.
+- 사용자가 추천안 **A + ② + 가**를 공식 확정했습니다(2026-11-10): **차분하고 친근한 비서 · 필요할 때 담당 역할 표시 · 오리는 인사/완료 순간에 가볍게 표현**. RP-01~RP-12는 공식 v1.0입니다. 초기 초안 A + ① + 가보다 최신 승인이 우선합니다. [디자인 가이드](/design-guide)와 원칙 문서에 승인 범위를 기록했습니다. 당시 작업에서는 앱·Figma·새 수치/시안을 변경하지 않았습니다.
 - 붙여넣기 Todo는 덕 채팅의 AI 후보→사용자 확인→추가 방향입니다. 브리핑·날씨는 정한 시간에 덕 채팅으로 오는 자동화 방향이며 후속 간략 문서 전 구현/현재 코드 수정 금지입니다.
-- [Figma 69개 기존 화면](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265)과 [저장된 검수 목록](https://github.com/thepmpo/donknow/blob/main/docs/figma-wireframes.md)은 유지합니다. Current baseline 교정/Proposed 분리는 미완료입니다. 이번 metadata 요청도 Starter 한도로 실패했습니다.
-- Apple iPhone Duo의 `Duo 우측 내비게이션`/`DuoTrailingNavigation`은 [상세 분석 14절](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)에 기록만 했습니다. 일반 iPhone 하단 유지, Duo 접힘/펼침 우측 이동·상태 보존·공식 API 검증이 필요하며 **“Duo 진행” 전 코드 수정 금지**입니다.
-- 운영 `/project`·`/design-guide`는 프록시 403/별도 웹 도구 접근 실패입니다. 이번 생성 문서의 Render 공개 반영은 독립 확인 전이며 Git push를 공개 배포 성공으로 해석하지 않습니다.
+- [Figma 69개 기존 화면](https://www.figma.com/design/UkWrjnq8PQpqOZvY0uVZSx?node-id=3-265)과 [저장된 검수 목록](https://github.com/thepmpo/donknow/blob/main/docs/figma-wireframes.md)은 유지합니다. Current baseline 교정/Proposed 분리는 미완료입니다. 당시 metadata 요청은 Starter 한도로 실패했습니다. 11월 12일에는 69개 화면 ID 읽기에 성공했고 후속 쓰기는 제한됐습니다.
+- Apple iPhone Duo의 `Duo 우측 내비게이션`/`DuoTrailingNavigation`은 [상세 분석 14절](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)에 기록만 했습니다. 일반 iPhone 하단 유지, Duo 접힘/펼침 우측 이동·상태 보존·공식 API 검증이 필요해 당시에는 **“Duo 진행” 전 코드 수정 금지**였으며, 11월 12일 사용자가 진행을 승인해 이 보류는 해제됐습니다.
+- 당시 운영 `/project`·`/design-guide` 조회는 프록시 403/별도 웹 도구 실패였습니다. 현재 공개 조회와 새 문서의 Render 반영은 별개이며 Git push를 공개 배포 성공으로 해석하지 않습니다.
 
 공통 레이아웃과 화면 예시는 [디자인 가이드](/design-guide), 자동 빌드는 [설정 안내](testflight-automation.md)를 참고합니다.
 
@@ -111,17 +123,18 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | Google 캘린더 | 구현·기본 실사용 확인 | 사용자가 API/권한 설정 후 기본 동작 확인. 일반 사용자 OAuth 검증은 별개 |
 | Gmail·Drive | 기존 읽기 실사용 확인, 새 상세 읽기·제한 쓰기 구현 | 메일 본문 일부·읽음·답장·발송, 텍스트 파일 생성/수정. 새 권한·서버 배포와 실계정 확인 필요 |
 | Notion | 기존 읽기 실사용 확인, 쓰기 구현·모의 검증 | 하위 페이지 생성·내용 추가·제목 수정. 콘텐츠 capability/대상 페이지 접근과 재승인 필요 |
-| Slack | 읽기·전송·자기 메시지 수정 구현 | 보류 해제. chat:write 승인과 실계정 검증 필요 |
+| Slack | 읽기·전송·자기 메시지 수정 구현 | 공개 운영 응답 configured:false. OAuth 설정·chat:write 승인·채널 접근 필요 |
 | 아이폰 미리 알림 | 읽기·가져오기·완료 참고·수동 양방향 상태 맞추기 구현 | 실제 아이폰 권한/ID/상태 확인 필요 |
 | 기기 알림 | 미래 시간·권한·예약·변경·취소 구현 | 실제 아이폰 잠금/재실행/권한 검증 필요 |
 | 개인 데이터 내보내기 | 웹 다운로드·네이티브 파일 공유 구현 | 웹 실동작 테스트, 네이티브 공유는 기기 확인 필요 |
-| 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 정기 schedule 성공은 아직 미확인 |
-| iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 2026-11-10 iPhone Actions 성공 사용자 확인. 에이전트 독립 검증·App Store 공개와 구분 |
+| 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 2026-11-12 재확인: 예약 실행 42924574013의 암호화 백업·격리 복원 성공 |
+| iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 기존 Actions 42745583353 요청 성공 독립 확인. 새 Duo 네이티브 빌드·Apple 처리·App Store 공개는 별도 |
 | 최신 디자인·모션 | 기존 구현 유지, 새 톤 공식 확정 v1.0 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
-| AI 비서 | 동의 기반 자료 분석·근거·작업 제안 구현 | AI 키/모델/명시적 활성화 필요. 모의 응답 검증과 실제 모델 호출은 구분 |
+| AI 비서·덕 채팅 | 대화·동의·초안 편집·미리보기·한 번 실행 구현 | 운영 assistant:false. 키/모델/서버 활성화와 실계정 검증 필요 |
+| Apple iPhone Duo | 공식 힌지/예약 영역 기반 우측 내비게이션·상태 보존 구현 | 기하/브라우저 모의 검증 통과. Xcode 27.1 컴파일·실기기 미확인 |
 | 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
 | 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장, 실제 AI 가동은 서버 설정 필요 |
-| 날씨·오늘 브리핑 | 도시별 날씨·Todo와 선택한 외부 최근 자료 통합 | 모의 응답·웹 검증. 실제 날씨 API 접근과 최신 서버 배포 필요 |
+| 날씨·오늘 브리핑 | 기존 구현 유지 | 예약 덕 채팅 전달 상세는 사용자의 후속 간략 문서를 기다림 |
 
 **GitHub에 저장된 최신 기능이 Render에 자동으로 배포되지는 않습니다.** Render의 자동 배포는 꺼져 있습니다. 사용자는 f76172d 배포를 확인했습니다. 이번 문서 갱신 커밋의 공개 반영은 별도로 확인해야 합니다. 에이전트의 공개 사이트 직접 접속은 환경 네트워크 제한으로 막힌 적이 있으므로 사용자 확인과 자동 검증을 혼동하지 않습니다.
 
@@ -129,8 +142,8 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 - 앱: https://duckduck-test.onrender.com
 - 서버 상태: https://duckduck-test.onrender.com/api/health
-- 코드: https://github.com/sjfieni/donknow
-- 전체 소스 다운로드: https://github.com/sjfieni/donknow/archive/refs/heads/main.zip
+- 코드: https://github.com/thepmpo/donknow
+- 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
 - 기능 기준 커밋: {{COMMIT_LINK}}
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
@@ -375,7 +388,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()
@@ -528,7 +541,7 @@ project = project.replace(aside, '', 1)
 project = project.replace('<body>', '<body class="project-layout">'+aside+'<main class="project-content">', 1)
 project = project.replace('</body>', '</main></body>', 1)
 (ROOT/'public/project.html').write_text(project)
-(OUT/'IMPORT-README.txt').write_text('개인 Notion의 올바른 계정/워크스페이스에 로그인한 뒤 설정 또는 사이드바의 가져오기 → Markdown & CSV에서 duckduck-notion-import.zip을 선택하세요.\nZIP에는 문서 한 개와 전체 이미지 폴더가 있습니다. 가져온 뒤 이미지 수와 마지막 지침 절이 있는지 확인하세요.\n이 패키지는 아직 실제 Notion 페이지를 만들거나 계정을 조회하지 않았습니다.\nHTML은 전체 이미지가 포함된 오프라인 미리보기입니다.\nsource.zip은 별도의 전체 소스 인계용이며 Notion에 함께 가져오지 않아도 됩니다.\nAPI 키·토큰·DB·node_modules·Git 내부 데이터는 포함하지 않습니다.\n')
+(OUT/'IMPORT-README.txt').write_text('개인 Notion의 올바른 계정/워크스페이스에 로그인한 뒤 설정 또는 사이드바의 가져오기 → Markdown & CSV에서 duckduck-notion-import.zip을 선택하세요.\nZIP에는 문서 한 개와 전체 이미지 폴더가 있습니다. 가져온 뒤 이미지 수와 마지막 지침 절이 있는지 확인하세요.\n이 ZIP은 저장소 기술 인계용입니다. 사용자용 기록은 선택한 개인 Notion의 duckduck · 제품·개발 기록에 별도로 작성하며, 비공개 페이지를 이 ZIP에 복제하지 않습니다.\nHTML은 전체 이미지가 포함된 오프라인 미리보기입니다.\nsource.zip은 별도의 전체 소스 인계용이며 Notion에 함께 가져오지 않아도 됩니다.\nAPI 키·토큰·DB·node_modules·Git 내부 데이터는 포함하지 않습니다.\n')
 with zipfile.ZipFile(OUT/'duckduck-notion-import.zip') as archive:
     assert len([name for name in archive.namelist() if name.endswith('.md')])==1
     assert len([name for name in archive.namelist() if name.startswith('images/')])==len(manifest)

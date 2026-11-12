@@ -1,20 +1,20 @@
 {
   "generatedAt": "2026-11-12",
-  "codeCommit": "1c75e511c9f3ac301703cd863110d8dcedacaa13",
+  "codeCommit": "76446210f14cd78a028755e3e52a4bf06269d528",
   "imageCount": 43,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 25892,
-      "sha256": "35653673c29ef35683c457a577174572f198d58d17d700bb4d07a3eeb97b5dfe",
+      "bytes": 25323,
+      "sha256": "1d0ba19a16ff81c7f5865bde24124330e5d461e33c1126056cf8aaba242e02ce",
       "import_path": "images/artifacts__mobile-todos.png"
     },
     {
       "path": "artifacts/mobile-calendar.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 38195,
-      "sha256": "a4b5b1f8bb50fdbf13f797e3c4957d64d3ac95a718678df2c86a6ac8c0aee7ab",
+      "bytes": 37348,
+      "sha256": "17c3c9086799cbb9a5e4c20a7d7f023d5523ce3873fe4144eab6d572ca60b66a",
       "import_path": "images/artifacts__mobile-calendar.png"
     },
     {
@@ -27,8 +27,8 @@
     {
       "path": "artifacts/mobile-log.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 28596,
-      "sha256": "6183d2cedff1c9d2d27e463245addb94c6c27e05b15a1be591d358ffd0f09de1",
+      "bytes": 28197,
+      "sha256": "30da3a1dc4237ac688eb65021cc4a8085a6219c1ff69bc84150f380fbf76e93e",
       "import_path": "images/artifacts__mobile-log.png"
     },
     {
@@ -62,8 +62,8 @@
     {
       "path": "artifacts/mobile-assistant-ai-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 49673,
-      "sha256": "985e7f4a7d754050d90d377867e3b34da832c66e07756e409b48dbe5d0f03827",
+      "bytes": 41428,
+      "sha256": "6e64d555d23b063f8b221b203434e606402b9d23ff2c09cc5af56c9aa344f5eb",
       "import_path": "images/artifacts__mobile-assistant-ai-fixture.png"
     },
     {
@@ -76,8 +76,8 @@
     {
       "path": "artifacts/mobile-calendar-events-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 29003,
-      "sha256": "f0f02c2a308ce312e2821e8757f807d62d74820656d7c1929202626495eac5a1",
+      "bytes": 29085,
+      "sha256": "771673cb77ceac0f6723326661577ccc34d22686730145cefb51b510a105db7c",
       "import_path": "images/artifacts__mobile-calendar-events-fixture.png"
     },
     {
@@ -90,8 +90,8 @@
     {
       "path": "artifacts/mobile-completion-countdown-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 27330,
-      "sha256": "34ea4414a897c1f0f673d8fe468f633c286be860fb6ad77c4db3f4a5ce4b0ff7",
+      "bytes": 26959,
+      "sha256": "f8e38b222a917c881f01fa316bd7d5b73a76363ac3e11badeb564926f410fb3f",
       "import_path": "images/artifacts__mobile-completion-countdown-fixture.png"
     },
     {
@@ -132,8 +132,8 @@
     {
       "path": "artifacts/mobile-notes-fixture.png",
       "category": "체험 데이터 메모/시트 검증",
-      "bytes": 22252,
-      "sha256": "b0594b3cacde6a976d8b7767439fc1c3a6528408ae9f2b8fd29ad3d5fad20747",
+      "bytes": 22083,
+      "sha256": "20fa7332ab3f0ec91f916176af10ea9881f56acdf0a6d2907761cfdc3c4ca9f6",
       "import_path": "images/artifacts__mobile-notes-fixture.png"
     },
     {
@@ -153,8 +153,8 @@
     {
       "path": "artifacts/mobile-record-search.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
-      "bytes": 38105,
-      "sha256": "78d418c3996e00777b3f5004ee8c1782ffb9a4d0a40a48409d630597a115625b",
+      "bytes": 37978,
+      "sha256": "24b8ae52644dfbbb3a06549470e4b0a41c501b0a45466ea4b788608e35d981d8",
       "import_path": "images/artifacts__mobile-record-search.png"
     },
     {
@@ -181,8 +181,8 @@
     {
       "path": "artifacts/mobile-today-weather-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 42523,
-      "sha256": "f7713253ec698bdae09e393fbbed6c44028e88789d4a51fab808431e4ec22e77",
+      "bytes": 42443,
+      "sha256": "a6f9deb2ae9cf9f7e31433a7df3589376743bf924e4ea41fa11ce52ed636d141",
       "import_path": "images/artifacts__mobile-today-weather-fixture.png"
     },
     {
@@ -209,8 +209,8 @@
     {
       "path": "artifacts/design-guide-fixture.png",
       "category": "모의 응답 테스트 화면",
-      "bytes": 344204,
-      "sha256": "45292d13eb99355b062d8973b139810be5f40e3924a43eb006715272b4b1ad64",
+      "bytes": 404832,
+      "sha256": "f6b177298a5c7660d14cf0fdb55ec134741879a606c70c812021a1bb4d5f629e",
       "import_path": "images/artifacts__design-guide-fixture.png"
     },
     {
