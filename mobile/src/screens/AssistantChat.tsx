@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
+import {ActivityIndicator,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
 import {MotionPressable as Pressable,useReducedMotion} from '../motion';
 import {Button,colors,DateField} from '../ui';
@@ -33,6 +33,8 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  }
  function editProposal(index:number,key:string,value:unknown){assistant.setProposals(old=>old.map((proposal,i)=>i===index?{...proposal,args:{...proposal.args,[key]:value}}:proposal));}
  const consentNeeded=!!input.trim()||!!pastedText;
+ const verificationNeeded=assistant.error.includes('이메일 인증');
+ const feedback=verificationNeeded?`${assistant.error} 내정보 → 내 계정 → 이메일 인증에서 완료해주세요.`:assistant.error;
  return <View style={styles.screen}>
   <ScrollView ref={scroll} testID="duck-chat-scroll" style={styles.scroll} contentContainerStyle={styles.messages} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
    {!assistant.turns.length&&!assistant.drafts.length&&<View style={styles.welcome}><Text style={styles.duck}>🦆</Text><Text style={styles.greeting}>무엇을 도와드릴까요?</Text><Text style={styles.secondary}>떠오른 일을 편하게 적어주세요.</Text></View>}
@@ -69,7 +71,6 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
     <Button title={detailsOpen?'근거 접기':'확인한 자료와 안내 보기'} quiet onPress={()=>setDetailsOpen(value=>!value)}/>
     {detailsOpen&&<View style={styles.card}>{assistant.warnings.map((warning,index)=><Text key={index} style={styles.secondary}>{warning}</Text>)}{assistant.sources.slice(0,15).map(source=><View key={source.ref}><Text style={styles.secondary}>{assistantNames[source.provider]??source.provider} · {source.title}{source.completed?' · 완료 참고':''}</Text>{!!source.text&&<Text numberOfLines={3} style={styles.secondary}>{source.text}</Text>}</View>)}<Text style={styles.secondary}>연결한 자료 전체가 아닌 최근 일부를 확인해요.</Text></View>}
    </>}
-   {!!assistant.error&&<Text accessibilityRole="alert" style={styles.error}>{assistant.error}</Text>}
    {!!notice&&<Text accessibilityLiveRegion="polite" style={styles.secondary}>{notice}</Text>}
    {settingsOpen&&<View key={anchorKey('providers')} testID="duck-chat-providers" onLayout={event=>anchorLayout('providers',event)} style={styles.card}><Text style={styles.cardTitle}>이번 대화에서 사용할 자료</Text><Text style={styles.secondary}>내 Todo와 아래에서 선택한 서비스의 자료만 분석해요.</Text><View style={styles.providers}>{Object.entries(assistantNames).filter(([key])=>key!=='todo').map(([provider,name])=><Pressable key={provider} accessibilityRole="checkbox" accessibilityLabel={`${name} 자료 사용`} accessibilityState={{checked:assistant.providers.includes(provider)}} disabled={assistant.busy} onPress={()=>{assistant.toggleProvider(provider);setPrepared({});}} style={styles.provider}><Text style={styles.secondary}>{assistant.providers.includes(provider)?'☑':'□'} {name}</Text></Pressable>)}</View></View>}
   </ScrollView>
@@ -77,8 +78,13 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
   <Pressable accessibilityRole="button" accessibilityLabel="AI에 보낼 자료 선택" disabled={assistant.busy} onPress={()=>{setSettingsOpen(value=>!value);if(!settingsOpen)reveal('providers');}} style={styles.settings}><Text style={styles.secondary}>사용할 자료 · 내 Todo{assistant.providers.length?` + ${assistant.providers.map(provider=>assistantNames[provider]).join(', ')}`:''} {settingsOpen?'⌃':'⌄'}</Text></Pressable>
   {!!pastedText&&<View style={styles.attachment}><Text style={[styles.secondary,{flex:1}]}>붙여넣은 내용 {pastedText.length}자 · 아직 보내지 않았어요</Text><Pressable accessibilityRole="button" accessibilityLabel="붙여넣은 내용 제외" disabled={assistant.busy} onPress={()=>{setPastedText('');assistant.setConsent(false);}} style={styles.remove}><Text style={styles.secondary}>제외</Text></Pressable></View>}
   {consentNeeded&&<Pressable accessibilityRole="checkbox" accessibilityLabel="선택한 자료와 내 Todo를 AI에 보내 분석하기 동의" accessibilityState={{checked:assistant.consent}} disabled={assistant.busy} onPress={()=>assistant.setConsent(value=>!value)} style={styles.consent}><Text style={styles.secondary}>{assistant.consent?'☑':'□'} 요청·{pastedText?'붙여넣은 내용·':''}선택한 자료·내 Todo를 AI에 보내 분석하기</Text></Pressable>}
+  {assistant.busy||(!assistant.status&&!feedback)?<View testID="duck-chat-pending" style={styles.pending}><ActivityIndicator color={colors.blue} accessibilityLabel={assistant.busy?'AI 응답 기다리는 중':'AI 연결 확인 중'}/><Text accessibilityLiveRegion="polite" style={[styles.secondary,{flex:1}]}>{assistant.busy?'덕이 처리하고 있어요. 잠시만 기다려주세요.':'AI 연결을 확인하고 있어요.'}</Text></View>:!!feedback&&<View testID="duck-chat-feedback" style={styles.feedback}>
+   <Text accessibilityRole="alert" style={styles.error}>{feedback}</Text>
+   {assistant.errorKind==='chat'&&!!input.trim()&&!verificationNeeded&&<View style={styles.retryRow}><Text style={[styles.secondary,{flex:1}]}>입력은 그대로예요.</Text><Pressable accessibilityRole="button" accessibilityLabel="AI 요청 다시 보내기" disabled={!assistant.consent||!assistant.status?.enabled} onPress={()=>{void send();}} style={styles.retry}><Text style={styles.retryText}>다시 보내기</Text></Pressable></View>}
+   {assistant.errorKind==='load'&&<Button title="AI 연결 다시 확인" quiet onPress={()=>{void assistant.run(()=>assistant.load());}}/>}
+  </View>}
   <View style={styles.composer}><TextInput accessibilityLabel="덕에게 이야기하기" value={input} onChangeText={setInput} editable={!assistant.busy} maxLength={2000} multiline placeholder="덕에게 이야기하기" placeholderTextColor={colors.muted} style={styles.input}/><Pressable accessibilityRole="button" accessibilityLabel="덕에게 보내기" disabled={assistant.busy||!assistant.status?.enabled||!assistant.consent||!input.trim()} onPress={()=>{void send();}} style={[styles.send,(!assistant.consent||!input.trim()||assistant.busy||!assistant.status?.enabled)&&styles.disabled]}><Text style={styles.sendText}>{assistant.busy?'…':'↑'}</Text></Pressable></View>
-  <Text accessibilityLiveRegion="polite" style={styles.note}>{assistant.busy?'덕이 처리하고 있어요. 잠시만 기다려주세요.':assistant.status&&!assistant.status.enabled?assistant.status.message:'AI는 후보를 제안하고, 확인한 내용만 실행해요.'}</Text>
+  <Text style={styles.note}>{assistant.status&&!assistant.status.enabled?assistant.status.message:'AI는 후보를 제안하고, 확인한 내용만 실행해요.'}</Text>
  </View>;
 }
 const styles=StyleSheet.create({
@@ -86,5 +92,6 @@ const styles=StyleSheet.create({
  bubble:{padding:16,borderRadius:20,gap:8,maxWidth:'100%'},userBubble:{backgroundColor:colors.pale,alignSelf:'flex-end'},duckBubble:{backgroundColor:colors.surface,alignSelf:'stretch'},speaker:{...typography.caption,color:colors.muted},body:{...typography.body,color:colors.text},secondary:{...typography.caption,color:colors.muted},
  card:{padding:20,borderRadius:24,backgroundColor:colors.surface,gap:12},cardTitle:{...typography.body,fontWeight:'600',color:colors.text},draftInput:{...typography.body,color:colors.text,minHeight:48,borderBottomWidth:1,borderColor:colors.line,paddingVertical:8},error:{...typography.caption,color:colors.danger},providers:{flexDirection:'row',flexWrap:'wrap',gap:8},provider:{minHeight:44,justifyContent:'center',paddingHorizontal:10,borderRadius:12,backgroundColor:colors.white},
  settings:{minHeight:44,justifyContent:'center',paddingVertical:8},attachment:{flexDirection:'row',alignItems:'center',gap:8,paddingHorizontal:12,backgroundColor:colors.surface,borderRadius:12},remove:{minHeight:44,justifyContent:'center',paddingHorizontal:8},consent:{minHeight:44,justifyContent:'center',paddingVertical:8},
+ pending:{minHeight:44,flexDirection:'row',alignItems:'center',gap:10,paddingVertical:8},feedback:{gap:4,paddingVertical:8},retryRow:{flexDirection:'row',alignItems:'center',gap:8},retry:{minHeight:44,justifyContent:'center',paddingHorizontal:12},retryText:{...typography.caption,color:colors.blueText,fontWeight:'600'},
  composer:{backgroundColor:colors.grouped,borderRadius:24,padding:8,paddingLeft:16,flexDirection:'row',alignItems:'center',gap:8},input:{...typography.body,flex:1,color:colors.text,paddingVertical:12,paddingHorizontal:4,minHeight:48,maxHeight:144},send:{width:44,height:44,backgroundColor:colors.blue,borderRadius:22,alignItems:'center',justifyContent:'center'},sendText:{color:colors.white,fontSize:26},disabled:{opacity:.4},note:{...typography.caption,color:colors.muted,textAlign:'center',marginTop:8}
 });
