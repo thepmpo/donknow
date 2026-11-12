@@ -10,7 +10,8 @@
         "EXPO_PUBLIC_API_URL": "https://duckduck-test.onrender.com"
       },
       "ios": {
-        "simulator": false
+        "simulator": false,
+        "image": "macos-tahoe-26.6-xcode-27.1"
       }
     },
     "production": {
@@ -18,6 +19,9 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_API_URL": "https://duckduck-test.onrender.com"
+      },
+      "ios": {
+        "image": "macos-tahoe-26.6-xcode-27.1"
       }
     }
   },

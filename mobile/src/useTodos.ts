@@ -33,10 +33,13 @@ export function useTodos() {
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const busy = useRef(new Set<string>());
   const generation = useRef(0);
+  const renderGeneration = generation.current;
+  const sessionChanged = () => new Error('계정이나 서버 연결이 바뀌었어요. 현재 화면에서 다시 확인해주세요.');
   const connectingRef = useRef(false);
   const clearTimers = useCallback(() => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
   useEffect(() => {
-    let active = true;
+    let active = true; const initialGeneration = generation.current;
+    const current = () => active && initialGeneration === generation.current;
     (async () => {
       try {
         const stored = await AsyncStorage.getItem(CONNECTION_KEY);
@@ -44,18 +47,19 @@ export function useTodos() {
         let saved: Connection | null = stored ? JSON.parse(stored) : defaultUrl ? { mode: 'cloud', baseUrl: defaultUrl } : null;
         if (saved?.mode === 'cloud') saved = { mode: 'cloud', baseUrl: serverUrl(saved.baseUrl, __DEV__) };
         else if (saved && saved.mode !== 'demo') throw new Error('연결 설정을 다시 선택해주세요.');
-        if (!active) return;
+        if (!current()) return;
         if (saved) {
           setConnection(saved);
           if (saved.mode === 'cloud') {
-            try { const account = await auth.session(saved.baseUrl); if (!active) return; setUser(account); }
+            try { const account = await auth.session(saved.baseUrl); if (!current()) return; setUser(account); }
             catch (e) { if (e instanceof auth.AuthRequiredError) return; throw e; }
           }
+          if (!current()) return;
           const next = createRepository(saved); repo.current = next;
-          const data = await next.list(); if (active) setTodos(data);
+          const data = await next.list(); if (current()) setTodos(data);
         }
-      } catch (e) { if (active) setError(message(e)); }
-      finally { if (active) setLoading(false); }
+      } catch (e) { if (current()) setError(message(e)); }
+      finally { if (current()) setLoading(false); }
     })();
     return () => { active = false; generation.current++; completions.current.clear(); clearTimers(); };
   }, [clearTimers]);
@@ -67,7 +71,7 @@ export function useTodos() {
   }, []);
   async function connect(next: Connection) {
     if (busy.current.size || connectingRef.current) return false;
-    connectingRef.current = true; setConnecting(true); setError('');
+    connectingRef.current = true; generation.current++; setConnecting(true); setError('');
     try {
       const checked: Connection = next.mode === 'cloud' ? { mode: 'cloud', baseUrl: serverUrl(next.baseUrl, __DEV__) } : next;
       let account: auth.User | null = null;
@@ -176,7 +180,7 @@ export function useTodos() {
   }
   async function authenticate(email: string, password: string, register: boolean): Promise<boolean> {
     if (connection?.mode !== 'cloud' || connectingRef.current || busy.current.size) return false;
-    connectingRef.current = true; setConnecting(true); setError(''); setNotice('');
+    connectingRef.current = true; generation.current++; setConnecting(true); setError(''); setNotice('');
     try {
       const account = await auth.authenticate(connection.baseUrl, email, password, register);
       const repository = createRepository(connection);
@@ -187,23 +191,51 @@ export function useTodos() {
   }
   async function logout(): Promise<boolean> {
     if (connection?.mode !== 'cloud' || busy.current.size || connectingRef.current) return false;
-    connectingRef.current = true; setConnecting(true);
+    connectingRef.current = true; generation.current++; setConnecting(true);
     try { await auth.logout(connection.baseUrl); const cleared=await reminders.clear(); expireSession();if(!cleared)setNotice('로그아웃했어요. 일부 알림은 아이폰 설정에서도 확인해주세요.'); setError(''); return true; }
     catch (e) { if (e instanceof auth.AuthRequiredError) { expireSession(); setError(''); return true; } setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
   }
   async function featureRequest(path: string, method = 'GET', body?: unknown): Promise<unknown> {
     if (connection?.mode !== 'cloud') throw new Error('클라우드 계정으로 로그인하면 사용할 수 있어요.');
-    try { return await auth.request(connection.baseUrl, path, method, body); }
-    catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); throw e; }
+    // A screen may finish work after logout or a server/account switch. Its old
+    // callback must neither expose the response nor expire the replacement login.
+    const version = renderGeneration;
+    if (version !== generation.current) throw sessionChanged();
+    try {
+      const result = await auth.request(connection.baseUrl, path, method, body);
+      if (version !== generation.current) throw sessionChanged();
+      return result;
+    } catch (e) {
+      if (version !== generation.current) throw sessionChanged();
+      if (e instanceof auth.AuthRequiredError) expireSession();
+      throw e;
+    }
   }
-  async function refreshAccount() { if (connection?.mode === 'cloud') { const account = await auth.session(connection.baseUrl); setUser(account); } }
+  async function refreshAccount() {
+    if (connection?.mode !== 'cloud') return;
+    const version = renderGeneration;
+    if (version !== generation.current) throw sessionChanged();
+    try {
+      const account = await auth.session(connection.baseUrl);
+      if (version !== generation.current) throw sessionChanged();
+      if (user && account.id !== user.id) { expireSession(); throw new auth.AuthRequiredError(); }
+      setUser(account);
+    } catch (e) {
+      if (version !== generation.current) throw sessionChanged();
+      if (e instanceof auth.AuthRequiredError) expireSession();
+      throw e;
+    }
+  }
   async function deleteAccount(password: string) {
-    if (connection?.mode !== 'cloud' || busy.current.size) return false;
+    if (connection?.mode !== 'cloud' || busy.current.size || connectingRef.current) return false;
+    connectingRef.current = true; setConnecting(true);
     try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
     catch (e) { setError(message(e)); return false; }
+    finally { connectingRef.current = false; setConnecting(false); }
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
-  return { connection, user, reminders, notice, setNotice, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  const isCurrentSession = () => renderGeneration === generation.current;
+  return { connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

@@ -1,3 +1,4 @@
+import { DuoSafeSurface } from './DuoLayout';
 import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
@@ -61,9 +62,9 @@ export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...pro
 }
 
 // Let each platform animate its modal; reduced motion disables both slide/fade.
-export function MotionModal({ animationType = 'slide', ...props }: ModalProps) {
+export function MotionModal({ animationType = 'slide', children, ...props }: ModalProps) {
   const reduced = useReducedMotion();
-  return <Modal {...props} animationType={reduced ? 'none' : animationType} />;
+  return <Modal {...props} animationType={reduced ? 'none' : animationType}><DuoSafeSurface>{children}</DuoSafeSurface></Modal>;
 }
 
 // Keep a mounted sheet until the platform has finished its dismissal animation.

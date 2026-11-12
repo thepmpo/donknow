@@ -1,3 +1,4 @@
+import { useDuoTrailingNavigation } from './DuoLayout';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
@@ -20,7 +21,8 @@ export function CloseButton({onPress,disabled=false}:{onPress:()=>void;disabled?
 }
 export function Page({ children, refreshControl, compact = false }: { children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
   const insets=useSafeAreaInsets();
-  return <MotionView style={{flex:1}} distance={0}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:layout.navigationHeight+insets.bottom+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
+  const duo=useDuoTrailingNavigation();
+  return <MotionView style={{flex:1}} distance={0}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();

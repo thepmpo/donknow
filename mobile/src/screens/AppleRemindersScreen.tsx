@@ -12,36 +12,42 @@ export function AppleRemindersScreen({ store, onClose }: { store: TodoStore; onC
   const active=useRef(true);useEffect(()=>{active.current=true;return()=>{active.current=false;};},[]);
   const [syncCursor,setSyncCursor]=useState(''),[confirmDevice,setConfirmDevice]=useState(false),[syncDirection,setSyncDirection]=useState<'device'|'duck'|null>(null);
   const [listId, setListId] = useState<string | undefined>(), [completed, setCompleted] = useState(false);
+  const current = () => active.current && store.isCurrentSession();
   async function load(targetListId?: string, showCompleted = false) {
+    if (!current() || busy) return;
     setBusy(true); setError(''); setMessage('');
     try {
       const Calendar = await import('expo-calendar');
       const permission = await Calendar.requestRemindersPermissions();
+      if (!current()) return;
       if (!permission.granted) throw new Error('아이폰 설정에서 덕의 미리 알림 접근을 허용해주세요.');
-      if (!targetListId) { setLists(await Calendar.getCalendars(Calendar.EntityTypes.REMINDER)); setItems([]); setSelected([]); setListId(undefined); setCompleted(false); }
+      if (!targetListId) { const calendars = await Calendar.getCalendars(Calendar.EntityTypes.REMINDER); if (!current()) return; setLists(calendars); setItems([]); setSelected([]); setListId(undefined); setCompleted(false); }
       else {
         const list = await Calendar.ExpoCalendar.get(targetListId);
         const reminders = await list.listReminders(null, null, showCompleted ? Calendar.ReminderStatus.COMPLETED : Calendar.ReminderStatus.INCOMPLETE);
+        if (!current()) return;
         setItems(reminders.filter(item => !!item.completed === showCompleted && item.id).map(item => ({ id: item.id!, title: (item.title || '제목 없는 할 일').slice(0, 120), completed: !!item.completed, dueDate: item.dueDate ? dateKey(new Date(item.dueDate)) : null })));
         setListId(targetListId); setCompleted(showCompleted); setSelected([]); if (!reminders.length) setMessage(showCompleted ? '완료 기록이 없어요.' : '미완료 할 일이 없어요.');
       }
-    } catch (e) { setError(e instanceof Error ? e.message : '미리 알림을 읽지 못했어요.'); }
-    finally { setBusy(false); }
+    } catch (e) { if (current()) setError(e instanceof Error ? e.message : '미리 알림을 읽지 못했어요.'); }
+    finally { if (current()) setBusy(false); }
   }
   async function importSelected() {
+    if (!current() || busy) return;
     setBusy(true); setError('');
     try {
       const value = await store.featureRequest('/api/integrations/apple-reminders/import', 'POST', { items: items.filter(item => !item.completed && selected.includes(item.id)) }) as { results: { created: boolean }[] };
-      await store.refresh(); setSelected([]); setMessage(`${value.results.filter(item => item.created).length}개를 추가했어요. 이미 가져온 할 일은 중복 추가하지 않아요.`);
-    } catch (e) { setError(e instanceof Error ? e.message : '가져오지 못했어요.'); }
-    finally { setBusy(false); }
+      await store.refresh(); if (!current()) return; setSelected([]); setMessage(`${value.results.filter(item => item.created).length}개를 추가했어요. 이미 가져온 할 일은 중복 추가하지 않아요.`);
+    } catch (e) { if (current()) setError(e instanceof Error ? e.message : '가져오지 못했어요.'); }
+    finally { if (current()) setBusy(false); }
   }
   async function reconcile(direction:'device'|'duck'){
+    if (!current() || busy) return;
     setBusy(true);setError('');setConfirmDevice(false);
-    try{const Calendar=await import('expo-calendar');const permission=await Calendar.requestRemindersPermissions();if(!permission.granted)throw new Error('미리 알림 접근을 허용해주세요.');
-      const result=await reconcileApple(store.todos,direction,{active:()=>active.current,read:async id=>{const item=await Calendar.ExpoCalendarReminder.get(id);return {completed:!!item.completed,update:patch=>item.update(patch)};},saveTodo:async(id,done)=>!!(await store.update(id,{done}))},syncDirection===direction?syncCursor:'');
-      if(active.current){setSyncDirection(direction);setSyncCursor(result.nextCursor??'');setMessage(`${result.changed}개 상태를 맞췄어요.${result.failed?` ${result.failed}개는 이 기기에서 확인하지 못했어요.`:''}${result.nextCursor?' 다음 5개도 확인할 수 있어요.':''}`);}
-    }catch(e){if(active.current)setError(e instanceof Error?e.message:'상태를 맞추지 못했어요.');}finally{if(active.current)setBusy(false);}
+    try{const Calendar=await import('expo-calendar');const permission=await Calendar.requestRemindersPermissions();if(!current())return;if(!permission.granted)throw new Error('미리 알림 접근을 허용해주세요.');
+      const result=await reconcileApple(store.todos,direction,{active:current,read:async id=>{const item=await Calendar.ExpoCalendarReminder.get(id);return {completed:!!item.completed,update:patch=>item.update(patch)};},saveTodo:async(id,done)=>!!(await store.update(id,{done}))},syncDirection===direction?syncCursor:'');
+      if(current()){setSyncDirection(direction);setSyncCursor(result.nextCursor??'');setMessage(`${result.changed}개 상태를 맞췄어요.${result.failed?` ${result.failed}개는 이 기기에서 확인하지 못했어요.`:''}${result.nextCursor?' 다음 5개도 확인할 수 있어요.':''}`);}
+    }catch(e){if(current())setError(e instanceof Error?e.message:'상태를 맞추지 못했어요.');}finally{if(current())setBusy(false);}
   }
   return <Page><Button title="돌아가기" quiet disabled={busy} onPress={onClose} /><Text style={s.h1}>아이폰 미리 알림</Text>
     <Text style={s.subtitle}>목록에서 필요한 할 일만 골라 덕으로 가져와요. 선택한 제목과 예정일은 덕 계정에 저장돼요. 가져오기만 하면 원래 항목은 변경하지 않아요. 상태 맞추기는 아래에서 별도로 실행해요.</Text>

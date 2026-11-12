@@ -50,6 +50,13 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost'), path = url.pathname;
     if (await features.callback(req, res, path, url)) return;
+    const servicePages = { '/privacy': 'privacy.html', '/privacy/': 'privacy.html', '/support': 'support.html', '/support/': 'support.html' };
+    if (Object.hasOwn(servicePages, path)) {
+      if (!['GET', 'HEAD'].includes(req.method)) return send(405, { error: '이 안내는 조회만 할 수 있어요.' }, { Allow: 'GET, HEAD' });
+      const content = await readFile(root + 'public/' + servicePages[path]);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': content.length, 'Cache-Control': 'no-cache', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" });
+      res.end(req.method === 'HEAD' ? undefined : content); return;
+    }
     if (/^\/project-assets\/[a-f0-9]{64}\.(png|jpg|jpeg|gif|webp|svg|ico)$/.test(path) && req.method === 'GET') {
       try {
         const content = await readFile(root+'public'+path);

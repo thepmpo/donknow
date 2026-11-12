@@ -31,8 +31,10 @@ export function useReminders(todos: Todo[], owner: string | null) {
     try {
       if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: '할 일 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync(); if (!(permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL)) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return; } }
       if (currentOwner.current !== originalOwner) return;
-      await AsyncStorage.setItem('duckduck.reminders.' + owner, String(value)); setEnabled(value); setVersion(current => current + 1);
-    } catch { setError('알림 설정을 저장하지 못했어요.'); }
+      await AsyncStorage.setItem('duckduck.reminders.' + originalOwner, String(value));
+      if (currentOwner.current !== originalOwner) return;
+      setEnabled(value); setVersion(current => current + 1);
+    } catch { if (currentOwner.current === originalOwner) setError('알림 설정을 저장하지 못했어요.'); }
     finally { setBusy(false); }
   }, [owner, supported, busy]);
   async function clear() {
