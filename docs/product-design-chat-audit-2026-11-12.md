@@ -87,4 +87,3 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 [iOS 실행 43133408343](https://github.com/thepmpo/donknow/actions/runs/43133408343)도 같은 `dd1abae`에서 성공했다. 문법·202개 검사 통과/선택 1개 건너뜀·타입·iOS JS export를 거쳐 **빌드 14 생성·자동 제출 요청**을 접수했다. [EAS build](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/aa053ed6-c1f7-40b1-ba16-ff53ef236e50) · [submission](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/8ca93f61-ad23-498d-95b7-c1c70ad6027d). 실제 Swift·Apple 처리·TestFlight 설치는 아직 미확인이다.
 
 배포 후 공개 capability는 `assistant:false`, Slack `configured:false`, Google·Notion `configured:true`, `externalActions:true`, `mail:true`다. 화면과 실행 API를 배포했다고 실제 AI/외부 쓰기 활성화를 주장하지 않는다. 남은 사용자 계정 권한과 서버 설정은 기존 [활성화 안내](remaining-activation.md)를 따른다.
-
