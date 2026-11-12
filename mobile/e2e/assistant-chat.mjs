@@ -7,7 +7,15 @@ const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROM
 try{
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});page.setDefaultTimeout(12000);await page.emulateMedia({reducedMotion:'reduce'});
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
- let enabled=true,userId='first-user',chatCalls=[],prepareCalls=[],confirmCalls=[],drafts=[],todos=[],holdChat=false,releaseChat,holdConfirm=false,releaseConfirm,holdActionsRead=false,releaseActionsRead;
+ async function visibleInConversation(locator,message){
+  for(let attempt=0;attempt<30;attempt++){
+   const box=await locator.boundingBox(),area=await page.getByTestId('duck-chat-scroll').boundingBox();
+   if(box&&area&&box.y>=area.y-1&&box.y+box.height<=area.y+area.height+1)return;
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(resolve)));
+  }
+  assert.fail(message);
+ }
+ let enabled=true,userId='first-user',chatCalls=[],prepareCalls=[],confirmCalls=[],drafts=Array.from({length:5},(_,index)=>({id:'older-'+index,operation:'todo.create',label:'이전 기록 '+index,status:'succeeded',args:{title:'예전 업무 '+index,notes:'오래된 기록 '.repeat(30)},expiresAt:Date.now()-1000})),todos=[],holdChat=false,releaseChat,holdConfirm=false,releaseConfirm,holdActionsRead=false,releaseActionsRead;
  const definition={operation:'todo.create',provider:'todo',label:'Todo 추가',fields:['title','notes','dueDate'],required:['title']};
  await page.addInitScript(({origin})=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),{origin});
  await page.route(origin+'/**',async route=>{
@@ -45,13 +53,14 @@ try{
  assert.equal(await page.getByRole('button',{name:'덕에게 보내기',exact:true}).isDisabled(),true,'explicit consent before AI');
  await page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true}).click();await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();
  await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).waitFor();assert.equal(chatCalls.length,1);assert.equal(prepareCalls.length,0);assert.equal(confirmCalls.length,0);assert.equal(await page.getByRole('dialog').count(),0,'normal AI stays in Duck conversation');
- assert.ok((await page.getByTestId('duck-chat-scroll').textContent()).includes('답변 끝까지 유지'),'long answer remains visible');
+ assert.ok((await page.getByTestId('duck-chat-scroll').textContent()).includes('답변 끝까지 유지'),'long answer remains visible');await visibleInConversation(page.getByTestId('duck-latest-reply').getByText('덕',{exact:true}),'new reply heading is visible instead of old history');
  await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).fill('확인 후 저장할 자료');await page.getByRole('button',{name:'Todo 추가 초안 확인',exact:true}).click();
- await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).waitFor();assert.equal(prepareCalls.length,1);assert.equal(prepareCalls[0].args.title,'확인 후 저장할 자료');assert.equal(todos.length,0,'preview creates no Todo');
+ await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).waitFor();assert.equal(prepareCalls.length,1);assert.equal(prepareCalls[0].args.title,'확인 후 저장할 자료');assert.equal(todos.length,0,'preview creates no Todo');await visibleInConversation(page.getByTestId('duck-action-draft-1').getByText('Todo 추가 · 확인 대기',{exact:true}),'new preview heading is visible above old records');assert.equal(await page.getByRole('textbox',{name:'예정일 YYYY-MM-DD',exact:true}).count(),0,'prepared candidate date is read-only');await page.getByText('예정일: 없음',{exact:true}).waitFor();
  holdConfirm=true;await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).evaluate(button=>{button.click();button.click();});
  await page.waitForFunction(()=>document.body.textContent.includes('처리하고 있어요'));assert.equal(await page.getByRole('button',{name:'카카오톡 대화 붙여넣기',exact:true}).isDisabled(),true,'no replacement draft during an active request');assert.equal(confirmCalls.length,1,'double tap submits once');holdConfirm=false;releaseConfirm();
- await page.getByText('Todo 추가 · 완료',{exact:true}).waitFor();assert.equal(todos.length,1);
- await composer.fill('이어서 확인해줘');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByText('할 일 후보를 준비했어요.',{exact:true}).waitFor();assert.equal(chatCalls.length,2);assert.equal(chatCalls[1].history[1].text.length,2000,'follow-up context trims long answer');
+ await page.getByText('Todo 추가 · 완료',{exact:true}).waitFor();assert.equal(todos.length,1);await visibleInConversation(page.getByTestId('duck-action-draft-1').getByText('Todo 추가 · 완료',{exact:true}),'completed result heading remains visible');
+ await composer.fill('이어서 확인해줘');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByText('할 일 후보를 준비했어요.',{exact:true}).waitFor();assert.equal(chatCalls.length,2);assert.equal(chatCalls[1].history[1].text.length,2000,'follow-up context trims long answer');await visibleInConversation(page.getByRole('textbox',{name:'할 일 후보 1 제목',exact:true}),'candidate title remains visible below short reply');await visibleInConversation(page.getByRole('textbox',{name:'예정일 YYYY-MM-DD',exact:true}),'candidate date remains visible instead of scrolling to bottom of large note');
+ await page.getByTestId('duck-chat-scroll').evaluate(element=>{element.scrollTop=0;});await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();await visibleInConversation(page.getByTestId('duck-chat-providers').getByText('이번 대화에서 사용할 자료',{exact:true}),'opened provider panel is revealed from old scroll position');await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();
  await composer.fill('탭과 크기를 바꿔도 남는 입력');await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();assert.equal(await composer.inputValue(),'탭과 크기를 바꿔도 남는 입력');
  for(const width of [320,430,900]){await page.setViewportSize({width,height:844});assert.equal(await composer.inputValue(),'탭과 크기를 바꿔도 남는 입력');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow '+width);}
  // An older record read cannot replace a new preview. Closing advanced controls refreshes inline records.
@@ -73,5 +82,5 @@ try{
  // Unconfigured AI keeps the existing explicit manual Todo flow.
  enabled=false;await page.reload();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByText('AI 연결은 준비 중이에요. 지금은 직접 적어 Todo로 담을 수 있어요.',{exact:true}).waitFor();
  await composer.fill('AI 없이 직접 정리');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByRole('textbox',{name:'정리한 할 일',exact:true}).waitFor();assert.equal(todos.length,0);await page.getByRole('button',{name:'Todo 리스트에 추가',exact:true}).click();await page.getByText('추가 완료 ✓',{exact:true}).waitFor();assert.equal(todos[0].title,'AI 없이 직접 정리');
- assert.deepEqual(errors,[]);console.log('PASS: inline AI consent, full answer / bounded follow-up, editable proposals, preview and single confirm, pasted text consent, tab/resize continuity, stale record read preservation, advanced-close refresh, owner isolation, unavailable-AI manual fallback; mocked provider only');
+ assert.deepEqual(errors,[]);console.log('PASS: inline AI consent, full answer / bounded follow-up, editable proposals, preview and single confirm, pasted text consent, tab/resize continuity, stale record read preservation, advanced-close refresh, visible new results over old history, provider reveal, read-only prepared dates, owner isolation, unavailable-AI manual fallback; mocked provider only');
 }finally{await browser.close();}
