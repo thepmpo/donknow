@@ -1,5 +1,9 @@
 # 덕 운영·백업·iPhone 출시 확인 — 2026-11-12
 
+## 2026-11-12 13:36 KST — 사용자 AI 설정 반영
+
+사용자가 기존 Render 환경에 AI 키·모델·활성화 값을 저장했다고 알렸고, 새 배포 기록이 없어 같은 기능 소스 `6a3d6f5`를 재배포했다. `dep-dbqk495g1s2s73ej1gb0`가 13:36:22 KST에 live가 됐다. 이후 공개 health 정상, `assistant:true`로 전환됐음을 확인했다. 비밀값이나 실제 설정된 모델명은 읽지 않았다. 사용자 AI 전송 무반응 보고에 따라 [처리·오류 표시를 진단](assistant-chat-feedback-2026-11-12.md)한다. 설정 게이트 활성화와 실제 AI 응답·계정 권한·API 잔액은 별도다. 아래 오전 AI 비활성 표는 당시 조회 기록이다.
+
 ## 2026-11-12 10:19 KST — 덕 채팅 후속 수정 공개 반영 확인
 
 검증된 `dd1abaec560ed2e49f387377754dcfbeb8d96f64`를 기존 Render 무료 서비스 `duckduck-test`에 배포했다. 배포 `dep-dbqh77bbc2fs73dclneg`는 10:18:35 KST에 live가 됐고, 뒤이어 공개 GET으로 `/project`의 Product Design 검토·소스 `6c8354e`, `/design-guide`의 새 답변/후보/결과 표시 규칙, `/support`의 Kim Sanghyun·thepmpo.official@gmail.com을 확인했다. `/api/health`는 `ok:true`다. 플랜·자동 배포·환경 변수·원본 DB·인증 설정은 바꾸지 않았다. 이전 “Render 연결/반영 대기”는 이 확인으로 갱신한다. 이 절은 확인한 기능 배포의 기록이며 후속 문서만 갱신한 커밋과 구분한다.

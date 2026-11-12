@@ -6,7 +6,7 @@
 
 입력은 2,000자, 붙여넣기는 10,000자이며 모델에 전달하는 대화 이력은 최근 6개·각 2,000자로 제한한다. 화면의 긴 답변은 유지한다. 계정 전환 뒤 늦게 도착한 응답과 이전 조회가 현재 초안·실행 기록을 덮지 않게 검사한다. 탭/화면 크기 변경은 입력을 유지하고 계정 변경은 이전 개인 대화를 초기화한다.
 
-운영 공개 응답은 `assistant:false`로 실제 AI는 아직 꺼져 있다. 서버 설정이 없을 때 수동 초안 경로를 유지하며, 모의 응답 검증을 실제 모델 호출로 보고하지 않는다. 구현: `mobile/src/useAssistant.ts`, `mobile/src/screens/AssistantChat.tsx`, `DuckScreen.tsx`, `AssistantSheet.tsx`. 회귀: `mobile/e2e/assistant-chat.mjs`.
+2026-11-12 13:36 KST 사용자 설정 반영 배포 후 운영 공개 응답은 `assistant:true`다. 실제 모델 응답 성공은 별도로 확인한다. 서버 설정이 없을 때 수동 초안 경로를 유지하며, 모의 응답 검증을 실제 모델 호출로 보고하지 않는다. 구현: `mobile/src/useAssistant.ts`, `mobile/src/screens/AssistantChat.tsx`, `DuckScreen.tsx`, `AssistantSheet.tsx`. 회귀: `mobile/e2e/assistant-chat.mjs`.
 
 
 기준: 2026-11-04. 사용자 요청으로 기존 AI·Slack 구현 보류를 해제했다. 보류 해제가 실계정 쓰기 테스트·자동 발송·유료 서비스 활성화를 허용한다는 뜻은 아니다. 개발·검증에는 임시 계정과 공급자 모의 응답만 사용한다.

@@ -32,17 +32,21 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
-**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 최신 사용자 확인으로 f76172d의 Render 배포와 TestFlight 1.0.0 (12)가 확인됐습니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+
+### 2026-11-12 — 덕 전송 무반응 안내 수정
+
+파란 ↑를 눌러도 그대로 보이던 화면에서 오류가 대화 영역 밖에 숨는 문제를 재현하고 고쳤습니다. 입력창 위 처리·실패 안내, 입력/동의를 보존한 다시 보내기, AI 연결 재확인과 인증·권한·모델·사용 한도별 쉬운 안내를 제공합니다. 자동 재전송은 하지 않습니다. [진단·수정 전후 화면·버튼별 안내](https://github.com/thepmpo/donknow/blob/main/docs/assistant-chat-feedback-2026-11-12.md)를 확인하세요. 루트 206개 통과·선택 1개 건너뜀, 문법·타입·웹/iOS JS·전체 앱·채팅/오류 회귀를 통과했습니다. 13:36 KST 공개 서버에서 AI 설정 활성화를 확인했으나 실제 사용자 모델 응답·권한/한도 원인은 아직 미확인입니다. [배포와 남은 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)은 실제 근거로 갱신합니다.
 
 ### 2026-11-12 — Product Design 덕 채팅 후속 검토
 
-새 할 일 후보의 제목·날짜가 가려지던 자동 이동을 고쳤습니다. 새 답변·초안·완료 결과와 자료 선택이 바로 보이고, 이미 준비한 후보의 날짜는 읽기 전용입니다. 기존 톤·토큰·동의·확인 후 실행을 유지했습니다. [수정 전후 화면·네 단계 검토·실제 검사](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md)를 확인하세요. 자동 검사 202개·문법·타입·웹/iOS JS·전체 앱 검사를 통과했습니다. 후속 Render 배포 dd1abae의 live와 공개 문서·디자인 가이드·지원 연락처를 확인했고, TestFlight 빌드 14 생성·제출 요청도 접수됐습니다. 실제 AI 활성화·실기기·Apple 처리는 별도입니다. 사용자용 결과는 개인 Notion에 기록합니다.
+새 할 일 후보의 제목·날짜가 가려지던 자동 이동을 고쳤습니다. 새 답변·초안·완료 결과와 자료 선택이 바로 보이고, 이미 준비한 후보의 날짜는 읽기 전용입니다. 기존 톤·토큰·동의·확인 후 실행을 유지했습니다. [수정 전후 화면·네 단계 검토·실제 검사](https://github.com/thepmpo/donknow/blob/main/docs/product-design-chat-audit-2026-11-12.md)를 확인하세요. 자동 검사 202개·문법·타입·웹/iOS JS·전체 앱 검사를 통과했습니다. 후속 Render 배포 dd1abae의 live와 공개 문서·디자인 가이드·지원 연락처를 확인했고, TestFlight 빌드 14 생성·제출 요청도 접수됐습니다. 당시 실제 AI 활성화·실기기·Apple 처리는 별도였으며, 이후 AI 설정 활성화 상태는 위 최신 기록을 따릅니다. 사용자용 결과는 개인 Notion에 기록합니다.
 
 ### 2026-11-12 — 덕 개발 재개·Duo·Notion 업무 기록
 
 사용자는 AI 사무실의 추가 개발을 보류하고 덕의 남은 기능과 iPhone Duo 대응을 진행하도록 승인했습니다. 덕 채팅의 AI 제안→초안 확인→실행, 계정 전환 시 늦은 응답 차단, Apple 공식 힌지·화면 영역 API에 따른 Duo 우측 내비게이션을 구현하고 자동 검증했습니다. 실제 Xcode 네이티브 컴파일·Duo 실기기 검증은 남습니다. 일반 iPhone의 하단 내비게이션·기존 데이터와 인증은 보존합니다. 아래의 이전 Duo 보류 기록보다 이번 지시가 우선하며, 브리핑·날씨는 후속 간략 문서를 기다립니다.
 
-[운영·출시 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)에서 공개 서버 정상 응답, AI 비활성·Slack 미설정, Google·Notion 설정 존재, 예약 백업·격리 복원과 기존 TestFlight 요청 성공의 실제 근거를 확인합니다. 설정 존재를 실제 AI·새 쓰기·Apple 처리 성공으로 해석하지 않습니다. [Figma 69개 대조](https://github.com/thepmpo/donknow/blob/main/docs/figma-baseline-review-2026-11-12.md)는 새 읽기 성공과 이후 Starter 한도 차단을 구분합니다.
+[운영·출시 확인](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)에서 초기 공개 서버 정상 응답과 AI 비활성 기록, 이후 13:36 KST AI 설정 활성화, Slack 미설정, Google·Notion 설정 존재, 예약 백업·격리 복원과 기존 TestFlight 요청 성공의 실제 근거를 확인합니다. 설정 존재를 실제 AI·새 쓰기·Apple 처리 성공으로 해석하지 않습니다. [Figma 69개 대조](https://github.com/thepmpo/donknow/blob/main/docs/figma-baseline-review-2026-11-12.md)는 새 읽기 성공과 이후 Starter 한도 차단을 구분합니다.
 
 매 업무의 결정·변경·실제 검사·남은 일을 개인 Notion에 기록하고 코드·테스트·공개 기술 문서는 GitHub에 유지합니다. [Notion·Craft·스킬 비교](https://github.com/thepmpo/donknow/blob/main/docs/tooling-and-documentation.md)에 공식 설치·다운로드 경로와 토큰 비교의 한계를 정리했습니다. 스킬 다운로드는 외부 계정 로그인이나 실제 작업 성공을 대신하지 않습니다.
 
@@ -134,10 +138,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 2026-11-12 재확인: 예약 실행 42924574013의 암호화 백업·격리 복원 성공 |
 | iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 기존 Actions 42745583353 요청 성공 독립 확인. 새 Duo 네이티브 빌드·Apple 처리·App Store 공개는 별도 |
 | 최신 디자인·모션 | 기존 구현 유지, 새 톤 공식 확정 v1.0 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
-| AI 비서·덕 채팅 | 대화·동의·초안 편집·미리보기·한 번 실행 구현 | 운영 assistant:false. 키/모델/서버 활성화와 실계정 검증 필요 |
+| AI 비서·덕 채팅 | 대화·동의·초안 편집·미리보기·한 번 실행 구현 | 13:36 KST 운영 assistant:true 확인. 실제 모델 답변·계정 권한/한도 검증은 별도 |
 | Apple iPhone Duo | 공식 힌지/예약 영역 기반 우측 내비게이션·상태 보존 구현 | 기하/브라우저 모의 검증 통과. Xcode 27.1 컴파일·실기기 미확인 |
 | 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
-| 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장, 실제 AI 가동은 서버 설정 필요 |
+| 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장. 서버 AI 설정 활성화 확인, 실제 모델 답변은 별도 |
 | 날씨·오늘 브리핑 | 기존 구현 유지 | 예약 덕 채팅 전달 상세는 사용자의 후속 간략 문서를 기다림 |
 
 **GitHub에 저장된 최신 기능이 Render에 자동으로 배포되지는 않습니다.** Render의 자동 배포는 꺼져 있습니다. 사용자는 f76172d 배포를 확인했습니다. 이번 문서 갱신 커밋의 공개 반영은 별도로 확인해야 합니다. 에이전트의 공개 사이트 직접 접속은 환경 네트워크 제한으로 막힌 적이 있으므로 사용자 확인과 자동 검증을 혼동하지 않습니다.
@@ -393,7 +397,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/product-design-chat-audit-2026-11-12.md','docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/assistant-chat-feedback-2026-11-12.md','docs/product-design-chat-audit-2026-11-12.md','docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()
@@ -509,7 +513,7 @@ for chunk in chunks[1:]:
     heading,body_part=chunk.split('</h2>',1)
     number=int(re.match(r'<h2 id="section-(\d+)">',heading)[1])+1
     if number==2:
-        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했으며 실제 AI·쓰기 권한 가동은 남아 있어요. 사용자가 확인한 최신 기준은 Render f76172d·TestFlight 1.0.0 (12)예요. 공식 톤 원칙은 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
+        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했으며 실제 AI·쓰기 권한 가동은 남아 있어요. 서버는 최신 코드 배포와 AI 설정 활성화를 확인했고 실제 AI 답변은 검사 중이에요. TestFlight는 사용자 확인 1.0.0 (12)와 이후 빌드 요청을 구분해 기록해요. 공식 톤 원칙은 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
     if number==3:
         change_count=[0]
         def fold_change(match):

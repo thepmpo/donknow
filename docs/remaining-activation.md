@@ -4,12 +4,12 @@
 
 AI 사무실 개발은 보류하고 덕 앱을 진행한다. 덕 채팅의 동의→후보 편집→미리보기→확인 실행, 계정 전환 중 늦은 응답 차단, Apple 공식 API의 Duo 우측 내비게이션을 구현했다. [Duo 구현·실기기 검수](iphone-duo-support.md), [운영·출시 증거](release-readiness-2026-11-12.md)를 우선한다. 브리핑·날씨의 예약 채팅 변경은 후속 간략 문서 대기다.
 
-- 실제 공개 조회: 서버 정상, `assistant:false`, Google·Notion 서버 설정 있음, Slack 설정 없음. 실제 AI·새 외부 쓰기는 미확인이다.
+- 2026-11-12 13:36 KST 설정 반영 배포 후 공개 조회: 서버 정상, `assistant:true`, Google·Notion 서버 설정 있음, Slack 설정 없음. 실제 AI 답변·새 외부 쓰기는 미확인이다. 사용자 전송 무반응 보고는 [오류 표시 진단](assistant-chat-feedback-2026-11-12.md)을 따른다.
 - 예약 백업 42924574013의 암호화 snapshot·격리 복원·artifact 성공을 확인했다. 운영 DB 전환 훈련과는 구분한다.
 - 기존 TestFlight Actions 42745583353 성공을 조회했다. 사용자 확인 버전은 1.0.0 (12). 새 Duo 네이티브 빌드·Apple 처리·실기기 검증은 남아 있다.
 - 공개 운영자는 Kim Sanghyun, 지원 이메일은 thepmpo.official@gmail.com으로 사용자 확인했다. `/support`, 검토 중인 `/privacy`를 준비했다. 정책 시행일·실제 계약/지역/보관 조건·App Privacy·심사 자료는 아직 확정 전이다.
 - 개인 Notion에 제품·업무 기록과 도구 비교 문서를 실제 저장했다. 이 채팅의 Notion 연결은 덕 앱 사용자의 Notion 쓰기 권한과 다르다. 비공개 링크는 사용자에게 직접 전달하며 공개 저장소에 복제하지 않는다.
-- 남은 외부 설정: Render의 AI 설정·배포, Google 쓰기 재승인, Slack 앱·채널, Notion 쓰기·대상 페이지, 네이버 IMAP/SMTP·앱 비밀번호, 아이폰 미리 알림·알림 권한. 비밀값은 채팅에 요구하지 않는다.
+- 남은 외부 설정: AI 실제 호출·권한/한도 확인, Google 쓰기 재승인, Slack 앱·채널, Notion 쓰기·대상 페이지, 네이버 IMAP/SMTP·앱 비밀번호, 아이폰 미리 알림·알림 권한. 비밀값은 채팅에 요구하지 않는다.
 
 아래 날짜별 상태는 당시 기록이다. GitHub 반영과 운영 배포를 구분한다. 기존 데이터·인증·암호화 키·복구 bundle은 보존했다.
 

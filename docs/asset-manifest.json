@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-12",
-  "codeCommit": "6c8354e1ab614f04cd4af9ba3c48244108efea8f",
-  "imageCount": 51,
+  "codeCommit": "e6ae9dc9b56993ad677dc81d8f790cb75cfc68b9",
+  "imageCount": 53,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -198,6 +198,20 @@
       "bytes": 36930,
       "sha256": "74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34",
       "import_path": "images/artifacts__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/assistant-feedback/after-error-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 48862,
+      "sha256": "81b3ad709157f36ec788698861add95a8be124687cbbcc5569d4105918ec6f1f",
+      "import_path": "images/artifacts__assistant-feedback__after-error-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-feedback/before-error-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 43491,
+      "sha256": "1ab64c757c7ed2fb13942dd55d5b0eca83079fb238bba5595a5d0ffe7c1e4259",
+      "import_path": "images/artifacts__assistant-feedback__before-error-fixture.png"
     },
     {
       "path": "artifacts/calendar.png",
