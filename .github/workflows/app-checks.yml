@@ -1,0 +1,49 @@
+name: Validate app changes
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server.js'
+      - 'server/**'
+      - 'mobile/**'
+      - 'test/**'
+      - 'test-support/**'
+      - 'Dockerfile'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/app-checks.yml'
+      - '.github/workflows/ios-testflight.yml'
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: app-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            mobile/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Run tests with isolated Git fixture configuration
+        run: npm test
+        env:
+          GIT_CONFIG_NOSYSTEM: '1'
+          GIT_CONFIG_GLOBAL: /dev/null
+      - run: npm ci --prefix mobile --no-audit --no-fund
+      - run: npm --prefix mobile run typecheck
+      - run: npm --prefix mobile run export:ios -- --max-workers 2

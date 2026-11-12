@@ -1,13 +1,5 @@
 name: iPhone TestFlight build and submit
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'mobile/**'
-      - '!mobile/e2e/**'
-      - '!mobile/README.md'
-      - '!mobile/src/**/*.test.ts'
-      - '.github/workflows/ios-testflight.yml'
   workflow_dispatch:
 permissions:
   contents: read
