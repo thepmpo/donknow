@@ -32,7 +32,11 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
-**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 아직 실계정 AI 분석·새 쓰기·네이버 접속 성공을 확인한 것은 아닙니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+
+### 2026-11-12 — 첫 실제 AI 답변 사용자 확인
+
+사용자가 덕에서 인사에 대한 실제 AI 답변을 받았다고 확인했습니다. 인사에도 업무 분석과 자료 부족 설명을 요구하던 지침을 다듬어 짧고 자연스럽게 답하도록 했습니다. 실제 업무 요청에는 근거·후보·사용자 확인 후 실행을 유지합니다. 수정 후 실모델 말투, 실제 할 일 저장과 외부 쓰기는 별도 확인입니다. [응답 확인·말투 보완 기록](https://github.com/thepmpo/donknow/blob/main/docs/assistant-chat-feedback-2026-11-12.md)을 참고하세요.
 
 ### 2026-11-12 — AI 요청 제한 사유 분류 보완
 
@@ -142,7 +146,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 | 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 2026-11-12 재확인: 예약 실행 42924574013의 암호화 백업·격리 복원 성공 |
 | iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 기존 Actions 42745583353 요청 성공 독립 확인. 새 Duo 네이티브 빌드·Apple 처리·App Store 공개는 별도 |
 | 최신 디자인·모션 | 기존 구현 유지, 새 톤 공식 확정 v1.0 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
-| AI 비서·덕 채팅 | 대화·동의·초안 편집·미리보기·한 번 실행 구현 | 13:36 KST 운영 assistant:true 확인. 실제 모델 답변·계정 권한/한도 검증은 별도 |
+| AI 비서·덕 채팅 | 대화·동의·초안 편집·미리보기·한 번 실행 구현 | 운영 assistant:true, 첫 실제 AI 답변 사용자 확인. 수정 후 말투·업무 저장·외부 쓰기는 별도 |
 | Apple iPhone Duo | 공식 힌지/예약 영역 기반 우측 내비게이션·상태 보존 구현 | 기하/브라우저 모의 검증 통과. Xcode 27.1 컴파일·실기기 미확인 |
 | 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
 | 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장. 서버 AI 설정 활성화 확인, 실제 모델 답변은 별도 |
@@ -517,7 +521,7 @@ for chunk in chunks[1:]:
     heading,body_part=chunk.split('</h2>',1)
     number=int(re.match(r'<h2 id="section-(\d+)">',heading)[1])+1
     if number==2:
-        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했으며 실제 AI·쓰기 권한 가동은 남아 있어요. 서버는 최신 코드 배포와 AI 설정 활성화를 확인했고 실제 AI 답변은 검사 중이에요. TestFlight는 사용자 확인 1.0.0 (12)와 이후 빌드 요청을 구분해 기록해요. 공식 톤 원칙은 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
+        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했고 사용자가 첫 실제 AI 답변을 확인했어요. 인사는 짧게, 업무 요청은 근거와 확인을 거치도록 보완했어요. 실제 업무 저장과 외부 쓰기 확인은 남아 있어요. TestFlight는 사용자 확인 1.0.0 (12)와 이후 빌드 요청을 구분해 기록해요. 공식 톤 원칙은 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
     if number==3:
         change_count=[0]
         def fold_change(match):
