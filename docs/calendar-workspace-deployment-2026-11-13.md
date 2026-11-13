@@ -17,3 +17,9 @@
 원본 `duckduck-functional-completion.bundle` SHA-256은 `1b73da76ca222cff8a16d6b5a783eeed596d6930d90f05b5a9266990ad7b742d`로 동일하다. 새 DB/인증을 만들거나 복구 bundle을 갱신하지 않았다.
 
 남은 일: 최신main 새 수동 native 빌드/Apple 처리/아이폰 업데이트, 실제 Google 시험 캘린더의 쓰기 권한·ETag·종일/시간대·페이지 검수, 실제 Duo/VoiceOver/Dynamic Type/키보드·native Glass/햅틱·Figma Current/Proposed 교정. 출시·새 유료 플랜·AI 사무실 재개는 수행하지 않았다.
+
+## 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.

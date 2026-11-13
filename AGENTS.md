@@ -7,6 +7,11 @@
 - `docs/notion-handoff.md`의 최신 상태 표와 `docs/remaining-activation.md`를 먼저 읽고, 현재 코드·커밋·실제 배포 상태를 확인한다.
 - 문서의 초기 단계 기록과 최신 기능이 다르면 최신 상태 표와 실제 코드/검증을 기준으로 한다. 구현, 자동 테스트, 실제 사용자 확인, 미확인 항목을 구분한다.
 
+## 2026-11-13 최신 native 빌드/Apple 제출
+
+- 실제43394742649·소스1643e0c의1.0.0(23) native/서명 IPA 생성은 성공했다. Apple Submit만 필수 약관 미동의/만료403으로 실패했으며 취소/코드 오류/Ubuntu notice가 원인이 아니다. docs/testflight-automation.md 최신 절을 먼저 읽는다.
+- 계정 소유자가 Apple 계약/Developer 약관을 직접 확인·동의해야 한다. 기존 인증/서명/SDK를 재발급·업그레이드하거나 동의 전 재빌드/제출을 반복하지 않는다. runner IPA는 cleanup됐고 EAS 제출 archive 재사용/재시도는 확인 전이다. native 성공·Apple 업로드 실패·설치/실기기 미확인을 구분한다.
+
 ## 2026-11-13 캘린더 개선 전체 구현 — 최신 사용자 승인
 
 - 캘린더 수정 전 docs/calendar-ux-audit-2026-11-13.md를 읽는다.6흐름·16개새캡처·CA-01~20·Apple HIG16항목을 연결했다.20bc8eb의웹/격리API관찰이며실제Apple/Fantastical앱조작·nativeDynamicType/VoiceOver검사가아니다.

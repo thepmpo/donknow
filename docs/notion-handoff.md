@@ -1,11 +1,15 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-13 · 한국 시간 · 기능 코드 00bf57f · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-13 · 한국 시간 · 기능 코드 9f838e1 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
+
+#### 최신 iPhone23 — 앱 생성 성공, Apple 약관 동의 필요
+
+[실제 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)·소스1643e0c에서 **1.0.0(23) 서명IPA 생성은17:48:01 KST 성공**했다. 다음 Submit만 **필수 Apple 약관 미동의/만료403**으로17:48:32 KST 실패했다. 취소/앱 코드/Ubuntu notice가 원인이 아니다. 계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [Developer 계정](https://developer.apple.com/account/)에서 직접 확인/동의해야 한다. 동의 전 재빌드·재제출/키 재발급을 반복하지 않는다. Apple 업로드·처리·TestFlight23 설치와 실기기 검수는 미완료다. runner IPA는 기존cleanup으로 삭제됐으며 EAS 제출 archive의 재사용은 확인 전이다. [상세 증거/재개 절차](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 따른다. 앱/의존성/인증/데이터/서명/무료플랜은 유지한다.
 
 #### 캘린더 개선 전체 구현 · CA-01~20
 
@@ -201,6 +205,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 ### 변경 기록
 
+#### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
+
 #### 캘린더 개선 전체 구현 — 2026-11-13
 
 사용자가 “지금 그거 전체 수정해”라고 요청해 [감사 CA-01~20](calendar-ux-audit-2026-11-13.md)의 구현을 승인했다. [재현 가능한 구현 계약](calendar-workspace-2026-11-13.md)에 흐름·수치·원본 파일·권한·상태·검증·기기 체크리스트를 연결했다. 감사 당시 제안/미구현은 현재 상태가 아닌 이력이다.
@@ -213,6 +223,8 @@ Google 원본 쓰기는 미리보기→사용자 확인→한 번 실행, 역할
 
 
 검증 완료: 구현00bf57f·전체241개 중240통과/실패0/기존선택1개 제외·문법46·타입·웹/iOS JS·Calendar/전체 앱/로그인/모션/예약/채팅/오류/Duo 회귀를 통과했다. 새 캡처27개·운영 Google 쓰기0·fixture 저장시도3(불확실 후재발송0)·페이지오류0이다. 실제 커밋/Render 반영은 후속 운영 기록에서 확인하며 새TestFlight는 자동 요청하지 않았다.
+
+실제 공개 반영: [운영 확인](calendar-workspace-deployment-2026-11-13.md).9f838e1의 CI43393598786 success, Render dep-dbrckslg1s2s7383uhr0는17:30:49 KST live. 공개 health/capabilities·프로젝트·디자인 가이드의 새 구현을 확인했다. 이 후속 기록만 추가하며 배포된 코드/공개HTML은 바꾸지 않는다.
 
 #### 2026-11-13 — 캘린더 UX/UI · Apple/Fantastical 비교 감사
 
@@ -861,6 +873,12 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 
 ### 매일 개발 정리
 
+#### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
+
 #### 캘린더 개선 전체 구현 — 2026-11-13
 
 사용자가 “지금 그거 전체 수정해”라고 요청해 [감사 CA-01~20](calendar-ux-audit-2026-11-13.md)의 구현을 승인했다. [재현 가능한 구현 계약](calendar-workspace-2026-11-13.md)에 흐름·수치·원본 파일·권한·상태·검증·기기 체크리스트를 연결했다. 감사 당시 제안/미구현은 현재 상태가 아닌 이력이다.
@@ -873,6 +891,8 @@ Google 원본 쓰기는 미리보기→사용자 확인→한 번 실행, 역할
 
 
 검증 완료: 구현00bf57f·전체241개 중240통과/실패0/기존선택1개 제외·문법46·타입·웹/iOS JS·Calendar/전체 앱/로그인/모션/예약/채팅/오류/Duo 회귀를 통과했다. 새 캡처27개·운영 Google 쓰기0·fixture 저장시도3(불확실 후재발송0)·페이지오류0이다. 실제 커밋/Render 반영은 후속 운영 기록에서 확인하며 새TestFlight는 자동 요청하지 않았다.
+
+실제 공개 반영: [운영 확인](calendar-workspace-deployment-2026-11-13.md).9f838e1의 CI43393598786 success, Render dep-dbrckslg1s2s7383uhr0는17:30:49 KST live. 공개 health/capabilities·프로젝트·디자인 가이드의 새 구현을 확인했다. 이 후속 기록만 추가하며 배포된 코드/공개HTML은 바꾸지 않는다.
 
 #### 2026-11-13 — 캘린더 UX/UI · Apple/Fantastical 비교 감사
 
@@ -1636,10 +1656,12 @@ aa55b90 Add touch-driven Glass navigation and floating iPhone tabs
 697fa6a Link Calendar audit as a proposal in canonical and public records
 0cdab65 Normalize the Calendar audit guide ending
 00bf57f Implement complete Calendar workspace with safe Google actions
+9f838e1 Document approved Calendar improvements and verified handoff
+1643e0c Record Calendar CI and verified public deployment
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 00bf57f에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 9f838e1에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -2733,7 +2755,7 @@ aa55b90 Add touch-driven Glass navigation and floating iPhone tabs
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/00bf57f6a4b78016a811cc244f0bcfe13118cd6e
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/9f838e1b8dbe6e658bc387ad5bc2fa1149a1cb43
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -2898,6 +2920,11 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - `docs/continuation-guide.md` → `docs/liquid-glass-navigation.md` → `docs/reusable-product-design-principles.md`를 먼저 읽는다. 전체 현재 계약과 공통/덕 전용 구분이 우선하며 아래 과거 날짜 설명이 이를 덮지 않는다.
 - `docs/notion-handoff.md`의 최신 상태 표와 `docs/remaining-activation.md`를 먼저 읽고, 현재 코드·커밋·실제 배포 상태를 확인한다.
 - 문서의 초기 단계 기록과 최신 기능이 다르면 최신 상태 표와 실제 코드/검증을 기준으로 한다. 구현, 자동 테스트, 실제 사용자 확인, 미확인 항목을 구분한다.
+
+## 2026-11-13 최신 native 빌드/Apple 제출
+
+- 실제43394742649·소스1643e0c의1.0.0(23) native/서명 IPA 생성은 성공했다. Apple Submit만 필수 약관 미동의/만료403으로 실패했으며 취소/코드 오류/Ubuntu notice가 원인이 아니다. docs/testflight-automation.md 최신 절을 먼저 읽는다.
+- 계정 소유자가 Apple 계약/Developer 약관을 직접 확인·동의해야 한다. 기존 인증/서명/SDK를 재발급·업그레이드하거나 동의 전 재빌드/제출을 반복하지 않는다. runner IPA는 cleanup됐고 EAS 제출 archive 재사용/재시도는 확인 전이다. native 성공·Apple 업로드 실패·설치/실기기 미확인을 구분한다.
 
 ## 2026-11-13 캘린더 개선 전체 구현 — 최신 사용자 승인
 
@@ -3192,6 +3219,14 @@ npm --prefix mobile run test:project
 전체241개 중240통과·실패0·기존 선택1개 제외. 문법46개·타입·최신 웹/iOS JS export·새 Calendar 브라우저 흐름·전체 앱/로그인/모션·예약·AI 채팅/오류·Duo 기하 회귀를 통과했다. 새 캡처27개와 checks.json/verification.json을 보존한다. 모의 저장 시도3건(성공2·결과불확실1), 불확실 이후 재발송0·운영 Google 쓰기0·페이지 JS 오류0이다. 단위/API 검사에서 실제 공개 응답의 accountLabel/calendarName/targetTitle을 확인했다.
 
 테스트 보완: 유지 마운트된 비활성 Calendar 때문에 기존 전역 텍스트/목록 선택자가 중복됐으므로 화면에 실제 보이는 노드/내비게이션 범위로 좁혔다. 만료 세션 검사는 새 계정의 Todo 화면이 실제 준비된 후 서버 세션만 만료시켜 작성 시트 정리까지 검증한다. 기존 before/승인 캡처는 회귀 도구의 임시 출력으로 교체하지 않는다.
+
+[실제 main 저장·CI·Render 공개 반영 확인](https://github.com/thepmpo/donknow/blob/main/docs/calendar-workspace-deployment-2026-11-13.md). 마지막 운영 기록 전용 커밋은 배포된 앱/서버/공개 HTML과 기능 차이가 없다.
+
+#### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
 
 ### 原文 / docs/calendar-ux-audit-2026-11-13.md
 
@@ -3646,6 +3681,12 @@ Git 저장·CI·Render live·Apple 업로드·Apple 처리·사용자 설치·�
 Google 원본 쓰기는 미리보기→사용자 확인→한 번 실행, 역할·연결·ETag 재검사다. 결과 불확실일 때 닫았다 열어도 다시 저장하지 않고 결과만 확인한다. 기존 읽기 권한을 자동 확대하지 않고 데이터·인증·Duo 카메라 열/좌Calendar/우선택·무료 플랜을 보존한다. 앱은 기존light 선언 유지, 전체dark UI 추가는 아니다.
 
 새 증거는 calendar-workspace-2026-11-13 폴더의 실제 Expo 웹/격리 API다. native Glass 광학 효과·Dynamic Type/VoiceOver·실제 Duo·Google 실계정 쓰기·Figma 교정은 별도 검수다. **이번 작업은 새 TestFlight를 자동 요청하지 않는다.** 아이폰 설치 앱은 최신main 수동 빌드/Apple 처리/업데이트 후 바뀐다.
+
+#### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
 
 ### 原文 / docs/liquid-glass-navigation.md
 
@@ -7309,6 +7350,23 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 > **현재 구현 기준:** [전체 이어받기 기준서](https://github.com/thepmpo/donknow/blob/main/docs/continuation-guide.md) → [Liquid Glass 상태·수치·검수](https://github.com/thepmpo/donknow/blob/main/docs/liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 
 
+#### 2026-11-13 최신 — 1.0.0(23) 빌드 성공·Apple 약관으로 제출 실패
+
+[수동 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)은 소스 **1643e0c2b7da2c2e1e34362388dbbd671542b9d0**, validate 성공·build-and-submit failure다. 사용자가 ‘취소’로 표현했지만 실제 run/job conclusion은 failure이며 cancel이 아니다. [job131783233106](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131783233106)에서 **서명 IPA 생성 단계는 성공**, 다음 Submit 단계만 실패했다.
+
+- 원격 buildNumber22→23, 앱 버전1.0.0, **1.0.0(23)**. Xcode27.1에서 native 컴파일·기존 서명/IPA 생성은 **17:48:01 KST**에 성공했다. 로그의 컴파일 결과는0 errors/3 warnings다. ExpoHaptics58.0.8 설치/컴파일/패키징도 확인했다. 실제 기기의 햅틱/Glass/접근성 성공으로 확대하지 않는다.
+- 정확한 중단 원인: **`A required Apple agreement is missing or has expired.`** Apple403·필수 약관 미동의/만료이며 **17:48:32 KST** Submit가 exit1로 종료됐다. 새 인증서/API키/비밀번호 문제로 단정하거나 재생성하지 않는다.
+- EAS Submit에 archive 업로드와 submission 예약까지는 성공했지만 Apple 업로드 완료는 아니다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/ccd673f4-d5ee-4414-8b5b-533f495ad03d). GitHub runner의 임시 IPA는 기존 always cleanup으로 제거됐다. EAS가 업로드받은 archive의 재사용/재시도 가능 여부는 미확인이다. 사용자가 약관 동의하기 전 새 빌드/제출을 반복하지 않는다.
+- Ubuntu26 이전 notice는 이번 실패 원인이 아니다. expo-doctor의19/20·SDK 권장 버전10개 차이는 비차단 유지보수 경고로 기록한다. 실제 native 빌드는 그 뒤 성공했으므로 이번 원인 해결을 위해 잠금 파일/의존성/서명을 임의 변경하지 않는다.
+
+##### 사용자가 할 일 — 계정 소유자의 Apple 약관 확인
+
+1. [App Store Connect 계약 화면](https://appstoreconnect.apple.com/business)에 해당 Apple 팀의 **계정 소유자(Account Holder)**로 로그인한다. 검토/동의가 필요한 약관 배너/계약을 확인하고 본인이 읽은 뒤 동의한다. 버튼 표기는 Apple 화면/언어에 따라 달라 미확인 이름을 단정하지 않는다.
+2. [Apple Developer 계정](https://developer.apple.com/account/)에도 Program License Agreement 등 새 약관 안내가 있으면 같은 방식으로 확인한다. 자동으로 약관에 동의하거나 권한을 우회하지 않는다.
+3. 약관 동의 완료 후 기존 제출의 재시도/보관 archive 재사용 가능 여부를 먼저 확인한다. 불가능할 때만 최신main 새 수동 무료 빌드가 필요하다. 현재 CLI만으로 제출ID의 재시도나 삭제된 runner IPA 재사용을 약속하지 않는다. 새 번호를23으로 고정하거나 TestFlight23이 이미 도착했다고 하지 않는다.
+
+확인한 것: 실제 native 빌드/서명/IPA 성공. 미확인/실패: Apple 업로드 실패, Apple 처리·TestFlight23 등장/설치·실기기 검수 미확인. 기존 앱/데이터/인증·서명·원본 recovery bundle·무료 플랜·수동 빌드 정책을 보존했다. 이 대응에서는 추가 native 빌드/자동 재제출/유료 전환을 수행하지 않는다.
+
 #### 2026-11-13 정정 — 파란 선택 음영을 실제 GlassView로 변경
 
 사용자가 “Liquid Glass가 아니라 파란 음영”이라고 보고했다. 소스에서 **움직이는 선택 표시는 rgba(49,130,246,0.16) 색의 일반 Animated.View이고 native GlassView는 바 배경에만 연결돼 있었다**는 것을 확인했다. 따라서 이전 “Glass 연결” 설명을 선택 표시 전체의 실제 유리 검증으로 읽으면 안 된다. 사용자는 **아이폰 TestFlight 앱**에서 본 현상이라고 답했다. 웹 미리보기 차이로 설명하지 않는다. 실제 설치 버전/OS/접근성 모드를 원격으로 읽은 것은 아니다.
@@ -7721,6 +7779,12 @@ GitHub 업데이트 후 Render의 해당 Blueprint에서 **Manual sync**로 설�
 ### 原文 / docs/remaining-activation.md
 
 ### 남은 연결 활성화와 운영 확인
+
+#### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
 
 > **현재 구현 기준:** [전체 이어받기 기준서](https://github.com/thepmpo/donknow/blob/main/docs/continuation-guide.md) → [Liquid Glass 상태·수치·검수](https://github.com/thepmpo/donknow/blob/main/docs/liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 

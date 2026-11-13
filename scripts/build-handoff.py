@@ -33,6 +33,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
+#### 최신 iPhone23 — 앱 생성 성공, Apple 약관 동의 필요
+
+[실제 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)·소스1643e0c에서 **1.0.0(23) 서명IPA 생성은17:48:01 KST 성공**했다. 다음 Submit만 **필수 Apple 약관 미동의/만료403**으로17:48:32 KST 실패했다. 취소/앱 코드/Ubuntu notice가 원인이 아니다. 계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [Developer 계정](https://developer.apple.com/account/)에서 직접 확인/동의해야 한다. 동의 전 재빌드·재제출/키 재발급을 반복하지 않는다. Apple 업로드·처리·TestFlight23 설치와 실기기 검수는 미완료다. runner IPA는 기존cleanup으로 삭제됐으며 EAS 제출 archive의 재사용은 확인 전이다. [상세 증거/재개 절차](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 따른다. 앱/의존성/인증/데이터/서명/무료플랜은 유지한다.
+
 #### 캘린더 개선 전체 구현 · CA-01~20
 
 사용자가 ‘지금 그거 전체 수정해’로 전체 개선 구현을 승인했다. [현재 구현 계약](https://github.com/thepmpo/donknow/blob/main/docs/calendar-workspace-2026-11-13.md)에 20개 항목·원본 파일·수치/상태·원본 쓰기 보호·실제 검사·실기기/Figma 남은 일을 기록했다. 월42칸·선택일/일정 상세·월/주/일/목록·시간표·일정 작성/수정·소스/검색·시간대와 상태 보존을 연결했다. regular Glass는 조작층에만 쓴다. Google 원본은 미리보기/확인·한 번 실행·역할/연결/ETag로 보호하고 결과 불확실은 재발송하지 않는다. Duo 카메라 열·분할·기존 데이터/인증·무료 플랜·수동 TestFlight를 보존했다. 새 캡처는 웹/격리 API이며 native/실계정/Apple 설치 완료를 뜻하지 않는다.

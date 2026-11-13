@@ -1,5 +1,11 @@
 # 매일 개발 정리
 
+## 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
+
 ## 캘린더 개선 전체 구현 — 2026-11-13
 
 사용자가 “지금 그거 전체 수정해”라고 요청해 [감사 CA-01~20](calendar-ux-audit-2026-11-13.md)의 구현을 승인했다. [재현 가능한 구현 계약](calendar-workspace-2026-11-13.md)에 흐름·수치·원본 파일·권한·상태·검증·기기 체크리스트를 연결했다. 감사 당시 제안/미구현은 현재 상태가 아닌 이력이다.

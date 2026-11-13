@@ -96,3 +96,9 @@ npm --prefix mobile run test:project
 테스트 보완: 유지 마운트된 비활성 Calendar 때문에 기존 전역 텍스트/목록 선택자가 중복됐으므로 화면에 실제 보이는 노드/내비게이션 범위로 좁혔다. 만료 세션 검사는 새 계정의 Todo 화면이 실제 준비된 후 서버 세션만 만료시켜 작성 시트 정리까지 검증한다. 기존 before/승인 캡처는 회귀 도구의 임시 출력으로 교체하지 않는다.
 
 [실제 main 저장·CI·Render 공개 반영 확인](calendar-workspace-deployment-2026-11-13.md). 마지막 운영 기록 전용 커밋은 배포된 앱/서버/공개 HTML과 기능 차이가 없다.
+
+## 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
+
+[실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
+
+계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.

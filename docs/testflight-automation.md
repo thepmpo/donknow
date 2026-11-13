@@ -3,6 +3,23 @@
 > **현재 구현 기준:** [전체 이어받기 기준서](continuation-guide.md) → [Liquid Glass 상태·수치·검수](liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 
 
+## 2026-11-13 최신 — 1.0.0(23) 빌드 성공·Apple 약관으로 제출 실패
+
+[수동 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)은 소스 **1643e0c2b7da2c2e1e34362388dbbd671542b9d0**, validate 성공·build-and-submit failure다. 사용자가 ‘취소’로 표현했지만 실제 run/job conclusion은 failure이며 cancel이 아니다. [job131783233106](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131783233106)에서 **서명 IPA 생성 단계는 성공**, 다음 Submit 단계만 실패했다.
+
+- 원격 buildNumber22→23, 앱 버전1.0.0, **1.0.0(23)**. Xcode27.1에서 native 컴파일·기존 서명/IPA 생성은 **17:48:01 KST**에 성공했다. 로그의 컴파일 결과는0 errors/3 warnings다. ExpoHaptics58.0.8 설치/컴파일/패키징도 확인했다. 실제 기기의 햅틱/Glass/접근성 성공으로 확대하지 않는다.
+- 정확한 중단 원인: **`A required Apple agreement is missing or has expired.`** Apple403·필수 약관 미동의/만료이며 **17:48:32 KST** Submit가 exit1로 종료됐다. 새 인증서/API키/비밀번호 문제로 단정하거나 재생성하지 않는다.
+- EAS Submit에 archive 업로드와 submission 예약까지는 성공했지만 Apple 업로드 완료는 아니다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/ccd673f4-d5ee-4414-8b5b-533f495ad03d). GitHub runner의 임시 IPA는 기존 always cleanup으로 제거됐다. EAS가 업로드받은 archive의 재사용/재시도 가능 여부는 미확인이다. 사용자가 약관 동의하기 전 새 빌드/제출을 반복하지 않는다.
+- Ubuntu26 이전 notice는 이번 실패 원인이 아니다. expo-doctor의19/20·SDK 권장 버전10개 차이는 비차단 유지보수 경고로 기록한다. 실제 native 빌드는 그 뒤 성공했으므로 이번 원인 해결을 위해 잠금 파일/의존성/서명을 임의 변경하지 않는다.
+
+### 사용자가 할 일 — 계정 소유자의 Apple 약관 확인
+
+1. [App Store Connect 계약 화면](https://appstoreconnect.apple.com/business)에 해당 Apple 팀의 **계정 소유자(Account Holder)**로 로그인한다. 검토/동의가 필요한 약관 배너/계약을 확인하고 본인이 읽은 뒤 동의한다. 버튼 표기는 Apple 화면/언어에 따라 달라 미확인 이름을 단정하지 않는다.
+2. [Apple Developer 계정](https://developer.apple.com/account/)에도 Program License Agreement 등 새 약관 안내가 있으면 같은 방식으로 확인한다. 자동으로 약관에 동의하거나 권한을 우회하지 않는다.
+3. 약관 동의 완료 후 기존 제출의 재시도/보관 archive 재사용 가능 여부를 먼저 확인한다. 불가능할 때만 최신main 새 수동 무료 빌드가 필요하다. 현재 CLI만으로 제출ID의 재시도나 삭제된 runner IPA 재사용을 약속하지 않는다. 새 번호를23으로 고정하거나 TestFlight23이 이미 도착했다고 하지 않는다.
+
+확인한 것: 실제 native 빌드/서명/IPA 성공. 미확인/실패: Apple 업로드 실패, Apple 처리·TestFlight23 등장/설치·실기기 검수 미확인. 기존 앱/데이터/인증·서명·원본 recovery bundle·무료 플랜·수동 빌드 정책을 보존했다. 이 대응에서는 추가 native 빌드/자동 재제출/유료 전환을 수행하지 않는다.
+
 ## 2026-11-13 정정 — 파란 선택 음영을 실제 GlassView로 변경
 
 사용자가 “Liquid Glass가 아니라 파란 음영”이라고 보고했다. 소스에서 **움직이는 선택 표시는 rgba(49,130,246,0.16) 색의 일반 Animated.View이고 native GlassView는 바 배경에만 연결돼 있었다**는 것을 확인했다. 따라서 이전 “Glass 연결” 설명을 선택 표시 전체의 실제 유리 검증으로 읽으면 안 된다. 사용자는 **아이폰 TestFlight 앱**에서 본 현상이라고 답했다. 웹 미리보기 차이로 설명하지 않는다. 실제 설치 버전/OS/접근성 모드를 원격으로 읽은 것은 아니다.
