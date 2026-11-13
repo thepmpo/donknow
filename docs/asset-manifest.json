@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "4d41361134907dceafc6b521001fa3d15e612048",
-  "assetCommit": "4d41361134907dceafc6b521001fa3d15e612048",
-  "imageCount": 148,
+  "codeCommit": "fdd555f558ffcd5bf3c9407657edf5343595893b",
+  "assetCommit": "fdd555f558ffcd5bf3c9407657edf5343595893b",
+  "imageCount": 153,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -437,6 +437,41 @@
       "bytes": 1124082,
       "sha256": "2bf25a639287ec2ad4ea3b9301ecc3530c7a3618bdc3eb81dc3fd4a83614bae3",
       "import_path": "images/artifacts__duo-divider-proposal-2026-11-13__recommended-inset-hairline.png"
+    },
+    {
+      "path": "artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png",
+      "category": "파란 선택 표시 수정 후 웹 fallback · native/실기기 아님",
+      "bytes": 48264,
+      "sha256": "657fc3d0f5da65fd0a35634dc1331bd64b647194132dda2e31f6b8ea8067f588",
+      "import_path": "images/artifacts__duo-glass-selection-fix-2026-11-13__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/duo-glass-selection-fix-2026-11-13/02-open-calendar-duck.png",
+      "category": "파란 선택 표시 수정 후 웹 fallback · native/실기기 아님",
+      "bytes": 53252,
+      "sha256": "7928dbc5d5c3ccd3a263b56f2c80bd4924262114664146fa7531fcb3ab915008",
+      "import_path": "images/artifacts__duo-glass-selection-fix-2026-11-13__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/duo-glass-selection-fix-2026-11-13/03-portrait-current-screen.png",
+      "category": "파란 선택 표시 수정 후 웹 fallback · native/실기기 아님",
+      "bytes": 38373,
+      "sha256": "369bc2ffaa325679fcdd883da980f1d22f87145da90ef717a265df6fec60ed32",
+      "import_path": "images/artifacts__duo-glass-selection-fix-2026-11-13__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/duo-glass-selection-fix-2026-11-13/04-closed-camera-column.png",
+      "category": "파란 선택 표시 수정 후 웹 fallback · native/실기기 아님",
+      "bytes": 35349,
+      "sha256": "170acf0ee1712f3c99c6bc5f58bd247602c1d5d060a93451f475ca99aba7d0f5",
+      "import_path": "images/artifacts__duo-glass-selection-fix-2026-11-13__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/duo-glass-selection-fix-2026-11-13/05-back-in-camera-column.png",
+      "category": "파란 선택 표시 수정 후 웹 fallback · native/실기기 아님",
+      "bytes": 55272,
+      "sha256": "51db7c662b2e72c26d65c2e9c09135b540443a03bf9ab71495163e294448c51c",
+      "import_path": "images/artifacts__duo-glass-selection-fix-2026-11-13__05-back-in-camera-column.png"
     },
     {
       "path": "artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png",

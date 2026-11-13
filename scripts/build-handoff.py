@@ -21,7 +21,7 @@ images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '승인 구분선 실제 앱 웹 fixture · native/실기기 아님' if 'duo-divider-implemented-2026-11-13' in relative else 'AI 생성 구분선 추천 원본 · 이후 승인/구현' if 'duo-divider-proposal-2026-11-13' in relative else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '파란 선택 표시 수정 후 웹 fallback · native/실기기 아님' if 'duo-glass-selection-fix-2026-11-13' in relative else '승인 구분선 실제 앱 웹 fixture · native/실기기 아님' if 'duo-divider-implemented-2026-11-13' in relative else 'AI 생성 구분선 추천 원본 · 이후 승인/구현' if 'duo-divider-proposal-2026-11-13' in relative else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
 (ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'assetCommit':ASSET_COMMIT,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
@@ -36,6 +36,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+
+### 2026-11-13 실제 Glass 정정 — 파란 선택 View 제거
+
+사용자 보고로 움직이는 선택 원은 일반 파란 View이고 바 배경만 Glass였음을 확인했다. 구현fdd555f에서 선택 표시에도 지원 iOS의 GlassView regular/isInteractive를 넣고 파란 채움·host 클리핑을 제거했다. 이동은 기존250ms 커스텀 모션이며 웹/이전OS는 중립 블러 대체, 투명도/동작 줄이기·고대비·위치/구분선/상태를 지킨다. 전체224통과/선택1개 제외·타입·웹/iOS JS·전체 앱/모션/Duo 검사를 통과했다. 실제43374883126의1.0.0(20)은 ExpoGlassEffect 모듈 포함/Apple 업로드15:04:13 KST 성공이지만 이 수정 전이다. 사용자는 아이폰 TestFlight 앱에서 본 현상이라고 답했고, 실제 설치 버전/OS/재질 모드 및 수정 후 화면은 새 무료 빌드/폰 검수가 필요하다. [원인·빌드20·수정/미확인 구분](https://github.com/thepmpo/donknow/blob/main/docs/navigation-glass-correction-2026-11-13.md)을 우선한다.
 
 ### 2026-11-13 승인·적용 — 펼친 Duo의 연한 좌우 구분선
 
