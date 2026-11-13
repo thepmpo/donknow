@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "083192e7815d81f8c3241411026939e2b84d5f2a",
-  "assetCommit": "93b311d4a8291b5f65b4eeb53955afce4953b99c",
-  "imageCount": 264,
+  "codeCommit": "e2c853bdf5d0e40bea3b4d7707407a949b569f98",
+  "assetCommit": "e2c853bdf5d0e40bea3b4d7707407a949b569f98",
+  "imageCount": 305,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -661,6 +661,293 @@
       "bytes": 34572,
       "sha256": "e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054",
       "import_path": "images/artifacts__calendar-audit-2026-11-13__16-tab-return-resets-month.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 81286,
+      "sha256": "1265af37e914de5e6f369315387ebec222962d9a6e0cefaa95c042e26ba598e2",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/02-day-detail.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 101914,
+      "sha256": "8f9fc93333318747157b9bd1adec199e6d90197be024da36cd9baaf96901ecf2",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/03-event-detail.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 82345,
+      "sha256": "d013d32ab341086647d003285817e9094e67c8c64388812265e61ffbf0caeeb6",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/04-write-preview.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 100461,
+      "sha256": "96ad1e462102d0d7c7a9fe6680c59123d78eccf0bc6371d21263f2f6b40123b9",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/05-all-day-editor.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 96518,
+      "sha256": "b9c0a7905d0dcf1eeb902d5d4c60eb8bcf4717db7da64c79c5330b1e3e943f12",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/06-week-timeline.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 78640,
+      "sha256": "1da1eb44eee1a41a9dffc322af1a6b6def0b958c15e3ea7a10be201f391817d4",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/07-search-scope.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 90847,
+      "sha256": "1a62a6a1e2f84c39fd09d6b84ce13fe180d3401acffa3f4ca2fa75f0be60b9c3",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/08-calendar-sources.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 88309,
+      "sha256": "52824ffab8390ed95e4d413a95be8d127ebbec5e29b1de2eada171f7ef24e4f1",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/09-read-only-event.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 99238,
+      "sha256": "677420a7eec014ccf12cbe89ad0e24670e034ea4dac4edbb2c827def84782c7a",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/10-partial-state.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83726,
+      "sha256": "166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/11-error-visible-with-cache.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83726,
+      "sha256": "166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/12-phone-320.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 78994,
+      "sha256": "2c2573fea966e20ae2cb298cfe82b4232ce85d5b9d64c2fa8c988ad8f788b856",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/12-phone-430.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 91570,
+      "sha256": "701df22e1483f9342383465c069042510e76cdd420e5d35c348a0c73974f095f",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/13-large-text.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 97230,
+      "sha256": "e80a34588c2ff7274023d35a740fb18998d72c038b163c5db6e7aa5927cf5063",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/14-loading-with-cache.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83726,
+      "sha256": "166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/15-unknown-write-no-resend.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 111525,
+      "sha256": "5eb4011ace7f9ab3d63075d9a8943cee6ca0cda37bede12765207e14bba77879",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/16-dark-month-reference.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 82394,
+      "sha256": "36c5a59d3569fef8d11cc9de7c3fedae043ad56914ad8a1eba14648626eaedca",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/17-dark-event-reference.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 71891,
+      "sha256": "d8562793876ac1800e69254573eb2b2ce1e8c9ead0897827e918b34b53557647",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/18-light-month-reference.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83603,
+      "sha256": "7c49bdb6d1dfc76d5ada427f4615651f4088ac2c05704bf4f4c9174764e43fba",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/19-non-json-error-keeps-events.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83726,
+      "sha256": "166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/20-fortnight-expanded.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 63038,
+      "sha256": "61aed0fa5e12ac460557fcf0ea33d6061d195dab2dd135d56a3fa278bea9a1d2",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/21-integration-status-retained.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 104029,
+      "sha256": "0f394f1a642ed486781624f81dab53f6d0dd412d0d894dd05330d2a15ef4b6ec",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__21-integration-status-retained.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/22-motion-open-and-top-dim.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 40157,
+      "sha256": "1d2a5433821c67a4d455816cd04103873575b936d0bf55d2d68dafa4e3dfe69c",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__22-motion-open-and-top-dim.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/before-after-month.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 154370,
+      "sha256": "1a09886c6395705c96977cfada212aef4ad776850c56ea2903e21ff3d3b9c138",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__before-after-month.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/before-after-sheet.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 130430,
+      "sha256": "a92c5aad764d48817d85feb7200cd30519e0de4d8a77ea12b82bc10bdc4c0aaf",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__before-after-sheet.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/01-open-calendar-todo.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 52164,
+      "sha256": "b010dc242a59b216217d73fb453df8d608ed0c0bfab50131a3d88e5406df180f",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/02-open-calendar-duck.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 61210,
+      "sha256": "1810d921928165437b5624484c5a0dfd25bc235ae925baa06cef0583dd36fa94",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/03-portrait-current-screen.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/04-closed-camera-column.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/05-back-in-camera-column.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 63230,
+      "sha256": "2481bece720e0e27a4b166c5e8b6d977bba8fb629b9d44e145706ee364928893",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/06-dragging-lens-web-fallback.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 54292,
+      "sha256": "10d24b90e59f0c93dc6d961ee953a1a6eabd45ea90fc0d6d73d388a1d4baf6a4",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/07-iphone-320-floating-tabs.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 31316,
+      "sha256": "5d7fb77f19490c7244d14e87e0a826f2e99f1ffb7d0d4a095b48702df10ba2e8",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/07-iphone-390-floating-tabs.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 32603,
+      "sha256": "bc177d56cac6c888fe606019e0d438e5e3ea6db207787d7634044209cb344f4e",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/07-iphone-430-floating-tabs.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 33188,
+      "sha256": "a86808cbcee68bf2ab17305a6b8633d1e60130451daee36b4cf6df7b4a83305e",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/08-iphone-320-text-160-percent.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 25274,
+      "sha256": "d919f440433a160c65b76d60e9f4914b903a66212968c6f284986cefde0618f4",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/08-pane-local-day-detail.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 59139,
+      "sha256": "9c7b6d42823f35b29897bf4ca5c08e3bff26c2757a4a3ececd30f29dc185712d",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/10-folded-calendar-dark.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 36630,
+      "sha256": "33d4a70c4a0cc2744d83acfce371c31cca71a16d7c90b1f2af6fb6eaa5ed488c",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/11-folded-calendar-light.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 35524,
+      "sha256": "73422c56b52255bc3ca1b4a543dda54db7093628a2be9a357116548cdc260d9f",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/12-open-calendar-dark.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 54592,
+      "sha256": "a8db7a1468c2e856ac69e9417317cb5278b400ef6e0b49db1ebbc7b665160b72",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/13-folded-fortnight.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 27577,
+      "sha256": "76f4b619567d9cf2e6099fdbf90aad74fc796e086587dd313427bfd1b9ce209b",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-refinement-2026-11-13/duo/14-open-fortnight-dark.png",
+      "category": "캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 47723,
+      "sha256": "f1f0d7a278cf4f7a36dcf76c9305f7852f2fcd647753e732164277dfe2f6ace8",
+      "import_path": "images/artifacts__calendar-refinement-2026-11-13__duo__14-open-fortnight-dark.png"
     },
     {
       "path": "artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png",

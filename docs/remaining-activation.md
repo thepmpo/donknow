@@ -1,5 +1,15 @@
 # 남은 연결 활성화와 운영 확인
 
+## 2026-11-13 최신 정정 — 캘린더 정리·2주·시트·연동
+
+[현재 전체 계약](calendar-refinement-2026-11-13.md)과 [실제 QA](calendar-refinement-qa-2026-11-13.md)가 이전의42칸/본문 toolbar·status 규칙을 대체한다. 소개 사이트는 그대로 둔다. Calendar 본문 도구/조회 문구를 년월 sheet로 이동하고24pt 여백, 월에 실제 속한 주만28/35/42일(2026-11은11/1–12/5), red/blue 주말·옅은 인접월을 적용했다. fortnight는 selected와 별도 anchor로14일 창을 보존하고 두 행 높이를 실측으로 넓힌다. 물리 카메라 열의 Today 위64pt 보기 버튼·8pt 간격이며 기존5탭 위치/왼쪽 고정 Calendar/오른쪽 우선/회전 상태는 보존한다.
+
+시트 입장360ms cubic(.22,1,.36,1),퇴장260ms,dim220ms. 실제 pane/host 좌표로 앱 상단까지 같은 회색을 이어 덮고 본문/상단 배경·Duo Back/Close/손잡이/Escape로 닫는다. 입력/스크롤·busy·편집 취소·reduced motion과 초점 복귀를 보존한다. 수치는 덕 구현값이며 Apple 공식 값이 아니다.
+
+정상 token회전을 다른 계정으로 오판하지 않고 connectionId/accountId로 검사한다. 실제 해제/교체는 계속 차단한다. 상태 read 순서·session generation·안정화 callback, cold-start GET60초와 네이티브 취소 GET1회 복구로 늦은 응답/일시 실패가 연결을 지우지 않도록 했다. OAuth/쓰기/확인은 자동 반복하지 않는다. 비밀값/인증/DB를 초기화하지 않았다.
+
+코드e2c853b, 전체254개 중253통과·실패0·기존 선택1제외,타입/웹/iOS JS·Calendar/모션/연동경쟁/Duo/전체앱/세션/웹로그인 검사 통과. 새 캡처는 실제 Expo+합성API/기하 fixture다. **실제 사용자 계정·native iPhone 검수는 별도이며26번 앱에는 이번 수정이 없다. 추가 TestFlight는 자동 실행하지 않았다.** 아래25/26·이전42일 설명은 이력이다.
+
 ## 2026-11-13 최신 — Apple 참고 Calendar 수정은25번 이후
 
 [083192e의 현재 UI·서버 응답 계약](calendar-apple-reference-2026-11-13.md)을 우선한다. 년·월 본문 우상단·Duo Today 독립·시스템 밝게/어둡게·새 상세와 Calendar 응답 보강은 이전25번 앱에 없다. 웹/iOS JS·회귀 통과와 실제 native 빌드/Apple 처리/아이폰 설치는 구분한다. 이번 수정에서 새 TestFlight를 자동 실행하지 않았으며 실제 계정 오류 원인은 아직 재현하지 못했다. 다음 native는 최신main 새 수동 실행이어야 하고 옛25 job을 Re-run해 새 UI가 생긴다고 하지 않는다.

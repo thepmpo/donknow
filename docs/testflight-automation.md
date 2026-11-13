@@ -1,5 +1,9 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-13 — 26번 이후 새 캘린더 수정·새 빌드 미실행
+
+[코드e2c853b의 현재 계약](calendar-refinement-2026-11-13.md): 본문 도구/status 정리·월별 필요 주·2주 확대·주말 숫자·전체 상단 dim/배경닫기/시트 모션·연동 안정성. 단위/타입·웹/iOS JS·격리 UI/Duo/계정 검사 통과는 실제 IPA/Apple 업로드가 아니다. **현재 TestFlight26에는 이번 수정이 없으며 이 작업에서 새 native 빌드를 시작하지 않았다.** 다음 ‘빌드해’ 요청 때 최신 main의 workflow_dispatch를 한 번만 시작하고 Run SHA/실제 번호/서명/Apple 업로드·처리·설치를 분리한다. 유료/자동 push 빌드/기존 서명·권한 재생성은 하지 않는다. 아래26 성공은 이전 소스의 실제 결과다.
+
 ## 2026-11-13 최신 확인 — 1.0.0(26) native·Apple 업로드 성공
 
 사용자가 직접 시작한 [43408230557](https://github.com/thepmpo/donknow/actions/runs/43408230557)·소스2a7aa82d0940d89c594cfebbc5db7cbe3da94dbf를 플랫폼 연결 도구로 확인했다. validate131827799528·build-and-submit131828123539 모두success, 실제 버전 **1.0.0(26)**다. **서명 IPA 생성2026-11-13 10:27:56 UTC/19:27:56 KST**, **Apple 업로드10:28:25 UTC/19:28:25 KST 성공**이다. [EAS 제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/7b09c2b0-f3cd-4d8d-84e6-2aeb5a553b41).

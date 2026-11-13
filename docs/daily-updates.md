@@ -1,5 +1,13 @@
 # 매일 개발 정리
 
+## 2026-11-13 — 캘린더 정리·14일 보기·시트·연동 안정성 구현
+
+[현재 계약](calendar-refinement-2026-11-13.md), [검수](calendar-refinement-qa-2026-11-13.md), [개인 Notion](https://app.notion.com/p/41718ee8299181389c27f3f68549c4d3). 코드e2c853b. 사용자 첨부 기준으로 본문 도구/status를 년월 sheet로 이동하고24pt 여백·해당 월 날짜가 있는 주만 표시·일/토 숫자 red/blue·Today 위 독립2주 버튼과14일 확대를 구현했다. 두 번째 주 날짜를 눌러도 창이 움직이지 않고 탭/회전/접힘/고정 pane 상태를 보존한다.
+
+실측 pane/host의 상단 dim strip·같은 회색/opacity·본문/상단 탭 닫기·360ms 등장/260ms퇴장·reduced motion 즉시·busy/편집 취소/초점 보존을 반영했다. 정상 token회전을 계정변경으로 오판하는 비교·늦은 연결상태 역전·불필요 재조회·네이티브 취소 GET을 보강했다. 인증/DB/키/서명·원본bundle·소개 사이트는 보존했다.
+
+전체254중253통과/실패0/기존 선택1제외,타입·web/iOS JS·Calendar 전체흐름·실제시트모션/배경닫기·연동취소와늦은미연결응답·Duo14일/카메라열/회전/상태·전체앱·startup/늦은401/계정격리·실제격리웹로그인을 통과했다. [새 증거](../artifacts/calendar-refinement-2026-11-13/)에 화면·전후비교·시트WEBM·샘플JSON·검사영수증을 보존했다. 사용자 실계정 안정성/native기기는 별도다. **TestFlight26은 이전 소스이며 새 native빌드를 자동 실행하지 않았다.**
+
 ## 2026-11-13 — 덕 소개 사이트 디자인·동작 구현과 검증 완료
 
 [전체 구현 계약](duck-website-brief-2026-11-13.md), [QA](../website/design-qa.md), [다운로드/실행](../tools/duck-website/README.md). 사용자 정정으로 정지 캡처가 아닌 전체 동작을 구현했다. 원본 캡처43423800908 성공·ZIP 해시 검증/실제 회수 후 별도 website에 Hero 반복영상/등장·scroll backdrop/footer reveal·기능 pill/4개 실제 덕 영상/진행률/자동 전환·키보드/모바일 touch swipe·menu/KR/EN·실제 Duck QR/dialog·FAQ를 연결했다. 글자/줄바꿈·화면 밖 재생·동작 줄이기 초기화·anchor 이중 간격·다운로드 JS의 replacement-token 손상을 고쳐 재검수했다. 코드93b311d이며 기존 앱/데이터/인증·서명·복구bundle과 native 빌드 설정은 그대로다.
