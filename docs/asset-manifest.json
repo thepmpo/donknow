@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "87849a2d4191646e39acbdaa8e3c3214d22c90bd",
-  "imageCount": 119,
+  "codeCommit": "775a561cea5d64e53fa0c1f270a747abd3d6e02a",
+  "imageCount": 131,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -310,6 +310,90 @@
       "bytes": 34756,
       "sha256": "e500a12fd8fcc17ab3afbdad2c630c51dd1e99579f574f3e8547475367aa3e9e",
       "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__9-back-open-demo-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 44869,
+      "sha256": "8bd459fcea58219eba946605b45216f5dfab6e31e10261efef468fca2ceefe42",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 49907,
+      "sha256": "b8bf8afb6335ddd8b611bb2f52f55699fc381126741eee408a0d55961117cb4f",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 35079,
+      "sha256": "4b7ef94903c68b7d47008c78fd71176fbc321426b1ad7d4970d8bcc214e5ff86",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 32145,
+      "sha256": "896559a03c39d6a71e3a3ea6f3843287c373f0660edad6c4fa46fcb4a94cf741",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 51556,
+      "sha256": "dc8538d2d38c991cc0a35d3b8cf0b05a31455a148622c0c44012a4a096293fd9",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/approved-wireframe.png",
+      "category": "사용자 승인 위치 확인 시안 · 실기기 아님",
+      "bytes": 1159387,
+      "sha256": "47f156fd9283b142a8dd28e38c54714a88d01a4759ff83d96852dfe27035e334",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__approved-wireframe.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/geometry-1.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 26013,
+      "sha256": "4a36bd77fee0df781c51139f1f934d984affb523441d863b2da8f1cb37e8fe96",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-1.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/geometry-2.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 26860,
+      "sha256": "36d7dc3a81a31a696e33d72916d7392e6bcc9fcb29aac5d63d357cb93dce0c58",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-2.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/geometry-3.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 30247,
+      "sha256": "98679f2db0f47ae7bd29580cb988a26dfb5c52d6ef2a283b2e7c01016457729d",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-3.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/geometry-4.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 26880,
+      "sha256": "6fdce3c1917519d702caf29ed0bea4a77b4ac0cd183c91fb10eb2cd1918e9fe8",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-4.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/geometry-5.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 26860,
+      "sha256": "36d7dc3a81a31a696e33d72916d7392e6bcc9fcb29aac5d63d357cb93dce0c58",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-5.png"
+    },
+    {
+      "path": "artifacts/duo-camera-column-2026-11-13/geometry-6.png",
+      "category": "카메라 열·분할 화면 격리 웹 fixture · 실기기 아님",
+      "bytes": 22889,
+      "sha256": "9df11e2dd10ae07cee47baee9c1153a3afff64afec097211590465675a12780d",
+      "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-6.png"
     },
     {
       "path": "artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png",

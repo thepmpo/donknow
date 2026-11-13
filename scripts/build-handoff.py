@@ -18,7 +18,7 @@ images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
 (ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
@@ -34,13 +34,13 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
-### 2026-11-13 추가 정정 — 오른쪽 세로는 아래, 원형 뒤로가기는 위
+### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
 
-오른쪽 세로5개 묶음 그대로 아래 안전 영역8pt 위로 내린다. 하단 가로바가 아니다. 접힘·펼침 모두 같으며 배터리 아래의 상단8pt에는 실제 돌아갈 경로가 있을 때만 원형 ‹를 두고 복귀 시 제거한다. 실제 콜백·저장 중 비활성·짧은 높이·채팅 보내기 비가림을 검사했다. 이전 위쪽 세로/가로 해석보다 [최신 Duo 미리보기와 검증](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md)을 우선한다. 빌드16은 수정 전이며 새 수동 빌드가 필요하다.
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
 
-### 2026-11-13 최종 정정 — Duo는 오른쪽 세로
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
 
-사용자는 **접힘·펼침 모두 배터리 아래 화면 오른쪽에 세로배열**을 요청했다. 기존 헤더 안 가로5개 탭은 구현자의 오해이며 폐기했다. 현재48×226pt 짧은 세로 묶음·44pt 조작·본문 조작 보호 padding·짧은 높이 스크롤을 적용했다. 일반 iPhone 하단·입력/탭/편집/스크롤을 유지한다. [새 접힘/펼침 미리보기와 검증](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md)을 우선한다. 기존 빌드16은 수정 전57aee29이며 최신 아이폰 반영에는 새 수동 빌드가 필요하다.
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
 
 ### 2026-11-13 — 네이버 읽기 전용·아이폰 테스트
 
@@ -338,7 +338,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 접힘·펼침 모두 오른쪽 세로5개 묶음을 아래 안전 영역8pt 위로 내립니다. 배터리 아래 상단8pt에는 실제 돌아갈 경로가 있을 때만 원형 ‹를 둡니다. 헤더 안 가로 배치는 폐기했고 전체 높이 전용 패널을 만들지 않습니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
 다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 이번 사용자가 확인한 설치 버전은 1.0.0 (12), Render 기준은 f76172d입니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 

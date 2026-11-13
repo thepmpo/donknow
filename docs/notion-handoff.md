@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-13 · 한국 시간 · 기능 코드 87849a2 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-13 · 한국 시간 · 기능 코드 775a561 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -11,13 +11,13 @@
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
-### 2026-11-13 추가 정정 — 오른쪽 세로는 아래, 원형 뒤로가기는 위
+### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
 
-오른쪽 세로5개 묶음 그대로 아래 안전 영역8pt 위로 내린다. 하단 가로바가 아니다. 접힘·펼침 모두 같으며 배터리 아래의 상단8pt에는 실제 돌아갈 경로가 있을 때만 원형 ‹를 두고 복귀 시 제거한다. 실제 콜백·저장 중 비활성·짧은 높이·채팅 보내기 비가림을 검사했다. 이전 위쪽 세로/가로 해석보다 [최신 Duo 미리보기와 검증](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md)을 우선한다. 빌드16은 수정 전이며 새 수동 빌드가 필요하다.
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
 
-### 2026-11-13 최종 정정 — Duo는 오른쪽 세로
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
 
-사용자는 **접힘·펼침 모두 배터리 아래 화면 오른쪽에 세로배열**을 요청했다. 기존 헤더 안 가로5개 탭은 구현자의 오해이며 폐기했다. 현재48×226pt 짧은 세로 묶음·44pt 조작·본문 조작 보호 padding·짧은 높이 스크롤을 적용했다. 일반 iPhone 하단·입력/탭/편집/스크롤을 유지한다. [새 접힘/펼침 미리보기와 검증](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md)을 우선한다. 기존 빌드16은 수정 전57aee29이며 최신 아이폰 반영에는 새 수동 빌드가 필요하다.
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
 
 ### 2026-11-13 — 네이버 읽기 전용·아이폰 테스트
 
@@ -146,6 +146,16 @@
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
+
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
+
+아래는 정정 전의 날짜별 구현 이력이다. 현재 기준은 위의 카메라 열·가로 분할·세로 단일 화면이다.
 
 #### 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
@@ -669,6 +679,16 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
+
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
+
+아래는 정정 전의 날짜별 구현 이력이다. 현재 기준은 위의 카메라 열·가로 분할·세로 단일 화면이다.
 
 #### 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
@@ -1288,10 +1308,12 @@ e7e0ea2 Record the authenticated scheduler connection check and deployment bound
 5c1ae41 Place Duo navigation vertically along the safe right edge in both states
 7e92104 Correct Duo design guidance to a vertical right-edge stack
 87849a2 Lower the Duo vertical stack and show a contextual circular back button
+380dde2 Document the lower Duo stack and contextual round back control
+775a561 Fix Duo camera-column navigation and preserve split workspace state
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 87849a2에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 775a561에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -1317,602 +1339,662 @@ e7e0ea2 Record the authenticated scheduler connection check and deployment bound
 ### 할 일
 파일: `artifacts/mobile-todos.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 25,323 bytes · SHA-256 `1d0ba19a16ff81c7f5865bde24124330e5d461e33c1126056cf8aaba242e02ce`
-![artifacts/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-todos.png)
+![artifacts/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-todos.png)
 
 ### 캘린더
 파일: `artifacts/mobile-calendar.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,348 bytes · SHA-256 `17c3c9086799cbb9a5e4c20a7d7f023d5523ce3873fe4144eab6d572ca60b66a`
-![artifacts/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-calendar.png)
+![artifacts/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-calendar.png)
 
 ### 덕 첫 화면
 파일: `artifacts/mobile-duckduck.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 32,025 bytes · SHA-256 `4366a85f119bc1dbf652e94e297b1469c93bb1d92e2ad444507a53977e41b5cb`
-![artifacts/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-duckduck.png)
+![artifacts/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-duckduck.png)
 
 ### 완료 기록
 파일: `artifacts/mobile-log.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 28,197 bytes · SHA-256 `30da3a1dc4237ac688eb65021cc4a8085a6219c1ff69bc84150f380fbf76e93e`
-![artifacts/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-log.png)
+![artifacts/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-log.png)
 
 ### 내정보
 파일: `artifacts/mobile-profile.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 45,198 bytes · SHA-256 `41ad47c9e93589e3c091b924550e48eee602f863c7ccc3b896c7067796b06f21`
-![artifacts/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-profile.png)
+![artifacts/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-profile.png)
 
 ### mobile account settings
 파일: `artifacts/mobile-account-settings.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 45,935 bytes · SHA-256 `16bb756695a79df542fd66f4205f6680a1c719ba7365af7c27eebf1a7a96769d`
-![artifacts/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-account-settings.png)
+![artifacts/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/mobile-apple-reminders.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 34,240 bytes · SHA-256 `e593c913e5fb134409aca999bd05c83a5ca6b57eb0b48feb095294c2c4534b74`
-![artifacts/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-apple-reminders.png)
+![artifacts/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-apple-reminders.png)
 
 ### 비서 초안 확인과 Todo 실행 · 테스트
 파일: `artifacts/mobile-assistant-action-fixture.png`
 분류: 모의 응답 테스트 화면 · 36,227 bytes · SHA-256 `ed649eb1dd2148be1808a4acc3b35e0cc18b2eabe929ceb71a43d17285b4d727`
-![artifacts/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-assistant-action-fixture.png)
+![artifacts/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-assistant-action-fixture.png)
 
 ### AI 근거·Todo 제안 · 모의 응답
 파일: `artifacts/mobile-assistant-ai-fixture.png`
 분류: 모의 응답 테스트 화면 · 41,428 bytes · SHA-256 `6e64d555d23b063f8b221b203434e606402b9d23ff2c09cc5af56c9aa344f5eb`
-![artifacts/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-assistant-ai-fixture.png)
+![artifacts/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-assistant-ai-fixture.png)
 
 ### 로그인
 파일: `artifacts/mobile-auth.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 35,110 bytes · SHA-256 `ca4e199a3010ae315fe20d2143661bdbcff23ee2848b627388f71b8526152b59`
-![artifacts/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-auth.png)
+![artifacts/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-auth.png)
 
 ### 일정·할 일 분리와 시간 표시 · 테스트
 파일: `artifacts/mobile-calendar-events-fixture.png`
 분류: 모의 응답 테스트 화면 · 29,085 bytes · SHA-256 `771673cb77ceac0f6723326661577ccc34d22686730145cefb51b510a105db7c`
-![artifacts/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-calendar-events-fixture.png)
+![artifacts/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-calendar-events-fixture.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/mobile-completed-reference-fixture.png`
 분류: 모의 응답 테스트 화면 · 49,035 bytes · SHA-256 `7237cd528f21dc88aab7a62799ad48453f58cd7547d8159d0c53f0e515daf26c`
-![artifacts/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-completed-reference-fixture.png)
+![artifacts/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-completed-reference-fixture.png)
 
 ### 완료 3→1 카운트다운 · 체험 화면
 파일: `artifacts/mobile-completion-countdown-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,959 bytes · SHA-256 `f8e38b222a917c881f01fa316bd7d5b73a76363ac3e11badeb564926f410fb3f`
-![artifacts/mobile-completion-countdown-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-completion-countdown-fixture.png)
+![artifacts/mobile-completion-countdown-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-completion-countdown-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/mobile-duck-draft.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 32,858 bytes · SHA-256 `c06a1fefd36ac3860231b99e416e8b655ddb29bdd68bdf1b7a52c7529548f597`
-![artifacts/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-duck-draft.png)
+![artifacts/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-duck-draft.png)
 
 ### 외부 기록 검색 · 테스트
 파일: `artifacts/mobile-external-search-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,437 bytes · SHA-256 `0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8`
-![artifacts/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-external-search-fixture.png)
+![artifacts/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-external-search-fixture.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/mobile-google-tasks-fixture.png`
 분류: 모의 응답 테스트 화면 · 48,713 bytes · SHA-256 `e25032a713a1c31367e120551c9f7d6557ac768bf2d4accfe24ab92381003613`
-![artifacts/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-google-tasks-fixture.png)
+![artifacts/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/mobile-kakao-paste.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 46,082 bytes · SHA-256 `9c265171361c16fd3a6a60ca2f42257c15bd9c7c3dc8814f65b308d164fb06f1`
-![artifacts/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-kakao-paste.png)
+![artifacts/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/mobile-kakao-share.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 30,586 bytes · SHA-256 `565db0f6232270aaa931dfae9f8a7ef41ebe260a8d5bfa7662668d493ba2ed28`
-![artifacts/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-kakao-share.png)
+![artifacts/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-kakao-share.png)
 
 ### 메모·글머리표·닫기 손잡이
 파일: `artifacts/mobile-notes-fixture.png`
 분류: 체험 데이터 메모/시트 검증 · 22,083 bytes · SHA-256 `20fa7332ab3f0ec91f916176af10ea9881f56acdf0a6d2907761cfdc3c4ca9f6`
-![artifacts/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-notes-fixture.png)
+![artifacts/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-notes-fixture.png)
 
 ### mobile overview
 파일: `artifacts/mobile-overview.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 145,614 bytes · SHA-256 `0c4a7c633b3390d6c41352d549f6f6dbfde79824f4099ac10cf5bad62d361a80`
-![artifacts/mobile-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-overview.png)
+![artifacts/mobile-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-overview.png)
 
 ### mobile personal export
 파일: `artifacts/mobile-personal-export.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 53,350 bytes · SHA-256 `8cc8ffb91a2ac3e7e50e1d1b2bebc1ab5181f0337c5aa2f529b5faf4f9c30093`
-![artifacts/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-personal-export.png)
+![artifacts/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-personal-export.png)
 
 ### 기록 찾기
 파일: `artifacts/mobile-record-search.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,978 bytes · SHA-256 `24b8ae52644dfbbb3a06549470e4b0a41c501b0a45466ea4b788608e35d981d8`
-![artifacts/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-record-search.png)
+![artifacts/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/mobile-reminder.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 22,056 bytes · SHA-256 `079dc3f6c59ad886be9f89d365333d9f3b4d84e0b9dbf7a5b614383ad99ec5f6`
-![artifacts/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-reminder.png)
+![artifacts/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/mobile-services.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 47,383 bytes · SHA-256 `4d37f89c8accf0919692dfb3dbebbbc70b35229cd7ad228098209e32071b3380`
-![artifacts/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-services.png)
+![artifacts/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/mobile-task-sync-fixture.png`
 분류: 모의 응답 테스트 화면 · 53,956 bytes · SHA-256 `11890b0d015d30567c6c0cc074fb30e71cc4106bf5297dde61bc9b1559d71afc`
-![artifacts/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-task-sync-fixture.png)
+![artifacts/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-task-sync-fixture.png)
 
 ### mobile today weather fixture
 파일: `artifacts/mobile-today-weather-fixture.png`
 분류: 모의 응답 테스트 화면 · 42,443 bytes · SHA-256 `a6f9deb2ae9cf9f7e31433a7df3589376743bf924e4ea41fa11ce52ed636d141`
-![artifacts/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-today-weather-fixture.png)
+![artifacts/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-today-weather-fixture.png)
 
 ### 한 화면에 8개 · 목록 밀도 확인
 파일: `artifacts/mobile-todo-density-fixture.png`
 분류: 체험 데이터 8개 목록 밀도 검증 · 40,033 bytes · SHA-256 `66094189b1e7b506fe195b099130a2ee18064b464ee44679cb4c56d7085e460a`
-![artifacts/mobile-todo-density-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-todo-density-fixture.png)
+![artifacts/mobile-todo-density-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-todo-density-fixture.png)
 
 ### mobile verification
 파일: `artifacts/mobile-verification.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 36,930 bytes · SHA-256 `74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34`
-![artifacts/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/mobile-verification.png)
+![artifacts/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/mobile-verification.png)
 
 ### after error fixture
 파일: `artifacts/assistant-feedback/after-error-fixture.png`
 분류: 모의 응답 테스트 화면 · 48,862 bytes · SHA-256 `81b3ad709157f36ec788698861add95a8be124687cbbcc5569d4105918ec6f1f`
-![artifacts/assistant-feedback/after-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/assistant-feedback/after-error-fixture.png)
+![artifacts/assistant-feedback/after-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/assistant-feedback/after-error-fixture.png)
 
 ### before error fixture
 파일: `artifacts/assistant-feedback/before-error-fixture.png`
 분류: 모의 응답 테스트 화면 · 43,491 bytes · SHA-256 `1ab64c757c7ed2fb13942dd55d5b0eca83079fb238bba5595a5d0ffe7c1e4259`
-![artifacts/assistant-feedback/before-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/assistant-feedback/before-error-fixture.png)
+![artifacts/assistant-feedback/before-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/assistant-feedback/before-error-fixture.png)
 
 ### calendar
 파일: `artifacts/calendar.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 67,096 bytes · SHA-256 `eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351`
-![artifacts/calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/calendar.png)
+![artifacts/calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/calendar.png)
 
 ### design guide fixture
 파일: `artifacts/design-guide-fixture.png`
 분류: 모의 응답 테스트 화면 · 438,564 bytes · SHA-256 `abf3a2720d95b5148b3334a2bd6d1aa428cbac4cb15ed58b6a72256acba75cc3`
-![artifacts/design-guide-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/design-guide-fixture.png)
+![artifacts/design-guide-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/design-guide-fixture.png)
 
 ### duckduck
 파일: `artifacts/duckduck.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 53,117 bytes · SHA-256 `f773dfd7a01bf87c0deaabe2f3c9751bb6c6bd5cf883e830e1df6687c6b863b3`
-![artifacts/duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duckduck.png)
+![artifacts/duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duckduck.png)
 
 ### 1 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 25,747 bytes · SHA-256 `7ded58293e3d4f9300a638e45be9b5d16a5d656970d1b5ee3fb2a990979333cd`
-![artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png)
 
 ### 10 back closed demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,464 bytes · SHA-256 `47ef1dc2ca8f032c07e842b77e765f2633596f3194573a6eb25542db62933e4c`
-![artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
 
 ### 2 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 25,692 bytes · SHA-256 `f07f6c3b90c2a53d5539f26362ba3a3ac932abe5a51da2e3b16c97a97ee735c2`
-![artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png)
 
 ### 3 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,980 bytes · SHA-256 `53936ae78c82c4eaa64e150c12af1736df64322624166cb73d25bc969dfc0c81`
-![artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png)
 
 ### 4 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 21,824 bytes · SHA-256 `1c99077c228f9e7f191318638e2d9737607a304c6b1a96748d486d5838f2326b`
-![artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png)
 
 ### 5 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 20,724 bytes · SHA-256 `7f9c480f177f3c6dd04c8e817d6d224e23de86cc4b86a6157a2d645553f99b81`
-![artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png)
 
 ### 6 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 25,747 bytes · SHA-256 `7ded58293e3d4f9300a638e45be9b5d16a5d656970d1b5ee3fb2a990979333cd`
-![artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png)
 
 ### 7 duck closed demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 30,241 bytes · SHA-256 `1d35a8a4d6037ebaafe16bf1b129b810e0198e41d5808729c22ff88eeaa19774`
-![artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
 
 ### 7 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,565 bytes · SHA-256 `eb22e2b5e7f25ece37d1dec62d32020134c8de4c52654ee2f7a601249b0bf8b2`
-![artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png)
 
 ### 8 duck open demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,405 bytes · SHA-256 `302e7968246e471b2f1d65be85347877ebfdd8464f94296be08a2a8e85c9ee00`
-![artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
 
 ### 9 back open demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 34,756 bytes · SHA-256 `e500a12fd8fcc17ab3afbdad2c630c51dd1e99579f574f3e8547475367aa3e9e`
-![artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png)
+
+### 01 open calendar todo
+파일: `artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 44,869 bytes · SHA-256 `8bd459fcea58219eba946605b45216f5dfab6e31e10261efef468fca2ceefe42`
+![artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
+
+### 02 open calendar duck
+파일: `artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 49,907 bytes · SHA-256 `b8bf8afb6335ddd8b611bb2f52f55699fc381126741eee408a0d55961117cb4f`
+![artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
+
+### 03 portrait current screen
+파일: `artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 35,079 bytes · SHA-256 `4b7ef94903c68b7d47008c78fd71176fbc321426b1ad7d4970d8bcc214e5ff86`
+![artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
+
+### 04 closed camera column
+파일: `artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 32,145 bytes · SHA-256 `896559a03c39d6a71e3a3ea6f3843287c373f0660edad6c4fa46fcb4a94cf741`
+![artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
+
+### 05 back in camera column
+파일: `artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 51,556 bytes · SHA-256 `dc8538d2d38c991cc0a35d3b8cf0b05a31455a148622c0c44012a4a096293fd9`
+![artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
+
+### approved wireframe
+파일: `artifacts/duo-camera-column-2026-11-13/approved-wireframe.png`
+분류: 사용자 승인 위치 확인 시안 · 실기기 아님 · 1,159,387 bytes · SHA-256 `47f156fd9283b142a8dd28e38c54714a88d01a4759ff83d96852dfe27035e334`
+![artifacts/duo-camera-column-2026-11-13/approved-wireframe.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
+
+### geometry 1
+파일: `artifacts/duo-camera-column-2026-11-13/geometry-1.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,013 bytes · SHA-256 `4a36bd77fee0df781c51139f1f934d984affb523441d863b2da8f1cb37e8fe96`
+![artifacts/duo-camera-column-2026-11-13/geometry-1.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/geometry-1.png)
+
+### geometry 2
+파일: `artifacts/duo-camera-column-2026-11-13/geometry-2.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,860 bytes · SHA-256 `36d7dc3a81a31a696e33d72916d7392e6bcc9fcb29aac5d63d357cb93dce0c58`
+![artifacts/duo-camera-column-2026-11-13/geometry-2.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/geometry-2.png)
+
+### geometry 3
+파일: `artifacts/duo-camera-column-2026-11-13/geometry-3.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 30,247 bytes · SHA-256 `98679f2db0f47ae7bd29580cb988a26dfb5c52d6ef2a283b2e7c01016457729d`
+![artifacts/duo-camera-column-2026-11-13/geometry-3.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/geometry-3.png)
+
+### geometry 4
+파일: `artifacts/duo-camera-column-2026-11-13/geometry-4.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,880 bytes · SHA-256 `6fdce3c1917519d702caf29ed0bea4a77b4ac0cd183c91fb10eb2cd1918e9fe8`
+![artifacts/duo-camera-column-2026-11-13/geometry-4.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/geometry-4.png)
+
+### geometry 5
+파일: `artifacts/duo-camera-column-2026-11-13/geometry-5.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,860 bytes · SHA-256 `36d7dc3a81a31a696e33d72916d7392e6bcc9fcb29aac5d63d357cb93dce0c58`
+![artifacts/duo-camera-column-2026-11-13/geometry-5.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/geometry-5.png)
+
+### geometry 6
+파일: `artifacts/duo-camera-column-2026-11-13/geometry-6.png`
+분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 22,889 bytes · SHA-256 `9df11e2dd10ae07cee47baee9c1153a3afff64afec097211590465675a12780d`
+![artifacts/duo-camera-column-2026-11-13/geometry-6.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/geometry-6.png)
 
 ### 1 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,146 bytes · SHA-256 `73bc0928280ae602f163c6a85a6d8e4e087a597f0b1c1b152c40703979646b51`
-![artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png)
 
 ### 2 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,057 bytes · SHA-256 `899157ad156d6d8335cf2541671ca36729b4074b536073f5050a1d5be699e036`
-![artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png)
 
 ### 3 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 22,358 bytes · SHA-256 `8a0128b7fa871eede4d86e6d4e2bc2657e355dd1dd09e75eb7216c3e05afb9de`
-![artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png)
 
 ### 4 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 19,220 bytes · SHA-256 `36edf4183b7e7882a83b8b76ee54cc35253bdf77f9aa5c97ace85d3f97ca7218`
-![artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png)
 
 ### 5 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 18,153 bytes · SHA-256 `f3a0e2e1506d1c719b0ba3a34c4d4a5098d08ee7a3dfb4ccee5b7ed786eb89db`
-![artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png)
 
 ### 6 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,146 bytes · SHA-256 `73bc0928280ae602f163c6a85a6d8e4e087a597f0b1c1b152c40703979646b51`
-![artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png)
 
 ### 7 duck closed demo fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 30,670 bytes · SHA-256 `3ab8372fba3ff9df1e3316edac8cbd42d32bccdd310557c4e7389ed3da8e1112`
-![artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
 ### 7 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,478 bytes · SHA-256 `56f0e8ffd255163a1711d90b12f11754abf37780d82515dcce1f8e661ab2b963`
-![artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png)
 
 ### 8 duck open demo fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,973 bytes · SHA-256 `c1fb8ca1c9fbd1e155b2576d48c2d727587e4d1e5bcff652cab503e739b9a79e`
-![artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 ### 1 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,501 bytes · SHA-256 `c5b746a865752a98073bbacdab0b5a406071b3e654860172e87c81d529b2f67b`
-![artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png)
 
 ### 2 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,422 bytes · SHA-256 `4d28d178aac54bd0bb57a3649e2705186ea4a1abcca60f30f2399a5faf30389a`
-![artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png)
 
 ### 3 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 22,732 bytes · SHA-256 `74ceb5995761e2851993fc0ba8c32087b93a1abb3a7fe9d13a11f525057152a1`
-![artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png)
 
 ### 4 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 19,613 bytes · SHA-256 `f0a66d975e6c90fce1d1bda9d8df240807c38f4bd6c171ec5be18f8e0817a544`
-![artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png)
 
 ### 5 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 18,566 bytes · SHA-256 `ea0a60611851e5b2f8979d3db53c069eebf2d330b80d8e49d53e7f5ce0e6ad87`
-![artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png)
 
 ### 6 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,501 bytes · SHA-256 `c5b746a865752a98073bbacdab0b5a406071b3e654860172e87c81d529b2f67b`
-![artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png)
 
 ### 7 duck closed demo fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,037 bytes · SHA-256 `d3fea9ef0fe4354eeb8db00f556b9f117c8f985c74b86ff344c862a8fceac2bb`
-![artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
 ### 7 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,478 bytes · SHA-256 `56f0e8ffd255163a1711d90b12f11754abf37780d82515dcce1f8e661ab2b963`
-![artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png)
 
 ### 8 duck open demo fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 33,168 bytes · SHA-256 `76d53c85a73e29482d4eb5ba2e72abc276e5f8b52e9333727908f35439a204ed`
-![artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 ### features overview
 파일: `artifacts/features-overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 133,916 bytes · SHA-256 `a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba`
-![artifacts/features-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/features-overview.png)
+![artifacts/features-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/features-overview.png)
 
 ### log
 파일: `artifacts/log.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 43,986 bytes · SHA-256 `5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea`
-![artifacts/log.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/log.png)
+![artifacts/log.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/log.png)
 
 ### overview
 파일: `artifacts/overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 137,266 bytes · SHA-256 `108db53c7dee5028aa39c2e147e46df6e1f75e523b535aecdcdf4a89daaee73d`
-![artifacts/overview.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/overview.png)
+![artifacts/overview.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/overview.png)
 
 ### polish overview
 파일: `artifacts/polish-overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 92,820 bytes · SHA-256 `32526ebc62dbdd7cc29df1ef44fda820df843d2f17a52cce19f15b702785edef`
-![artifacts/polish-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/polish-overview.png)
+![artifacts/polish-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/polish-overview.png)
 
 ### 01 request consent fixture after
 파일: `artifacts/product-design-audit/01-request-consent-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 36,539 bytes · SHA-256 `661e44e4379d01a8690eb6afb79301c271c5a2783236bde4203eed3b3cd8b455`
-![artifacts/product-design-audit/01-request-consent-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/01-request-consent-fixture-after.png)
+![artifacts/product-design-audit/01-request-consent-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/01-request-consent-fixture-after.png)
 
 ### 01 request consent fixture
 파일: `artifacts/product-design-audit/01-request-consent-fixture.png`
 분류: 모의 응답 테스트 화면 · 36,539 bytes · SHA-256 `661e44e4379d01a8690eb6afb79301c271c5a2783236bde4203eed3b3cd8b455`
-![artifacts/product-design-audit/01-request-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/01-request-consent-fixture.png)
+![artifacts/product-design-audit/01-request-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/01-request-consent-fixture.png)
 
 ### 02 edit proposal fixture after
 파일: `artifacts/product-design-audit/02-edit-proposal-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 39,493 bytes · SHA-256 `0972fd9d0a81e4698aa9391dfe0faa82b17bc2347a9b55e60e8ce30b5564d2f3`
-![artifacts/product-design-audit/02-edit-proposal-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
+![artifacts/product-design-audit/02-edit-proposal-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
 
 ### 02 edit proposal fixture
 파일: `artifacts/product-design-audit/02-edit-proposal-fixture.png`
 분류: 모의 응답 테스트 화면 · 33,721 bytes · SHA-256 `1a3c7d8d4550ad433740ff8b8868a545f2696bda931906aa8d352f9988f4e37d`
-![artifacts/product-design-audit/02-edit-proposal-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/02-edit-proposal-fixture.png)
+![artifacts/product-design-audit/02-edit-proposal-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/02-edit-proposal-fixture.png)
 
 ### 03 confirm fixture after
 파일: `artifacts/product-design-audit/03-confirm-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 43,400 bytes · SHA-256 `60daa5c3ef58802765b8a1371d8c5d4172a1386adfad9ca2f14931083bc0f88b`
-![artifacts/product-design-audit/03-confirm-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/03-confirm-fixture-after.png)
+![artifacts/product-design-audit/03-confirm-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/03-confirm-fixture-after.png)
 
 ### 03 confirm fixture
 파일: `artifacts/product-design-audit/03-confirm-fixture.png`
 분류: 모의 응답 테스트 화면 · 43,364 bytes · SHA-256 `b7b71ce67948fcf8dfcea308af5ff70e2134fa177c9dacb21e8b6dc0cc47b93e`
-![artifacts/product-design-audit/03-confirm-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/03-confirm-fixture.png)
+![artifacts/product-design-audit/03-confirm-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/03-confirm-fixture.png)
 
 ### 04 result fixture after
 파일: `artifacts/product-design-audit/04-result-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 40,104 bytes · SHA-256 `5dfbc6ca260af354beb86b700284313bbb3b05f5f9f7385f3d45777322627822`
-![artifacts/product-design-audit/04-result-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/04-result-fixture-after.png)
+![artifacts/product-design-audit/04-result-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/04-result-fixture-after.png)
 
 ### 04 result fixture
 파일: `artifacts/product-design-audit/04-result-fixture.png`
 분류: 모의 응답 테스트 화면 · 40,112 bytes · SHA-256 `2eb84cfb35b376a03713706e85f423e3bbdd476f247743463b3b6cf19fa8a2a4`
-![artifacts/product-design-audit/04-result-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/04-result-fixture.png)
+![artifacts/product-design-audit/04-result-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/04-result-fixture.png)
 
 ### profile
 파일: `artifacts/profile.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 80,270 bytes · SHA-256 `373274654c0efb441423218ea34ac8a68548ba52121bc3acb366cd4bb800e184`
-![artifacts/profile.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/profile.png)
+![artifacts/profile.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/profile.png)
 
 ### 01 chat fixture
 파일: `artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,672 bytes · SHA-256 `1fcd13bf05151eac44509f791cf24b166eb6ea391aacb319ded054486e6aabc0`
-![artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
+![artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
 
 ### 02 briefing fixture
 파일: `artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png`
 분류: 모의 응답 테스트 화면 · 34,223 bytes · SHA-256 `6ea0d7fb964e2b425139e925faa10cf71b4c98fdad3ec65509142f1cd20a40b6`
-![artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
+![artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
 
 ### 03 small weather fixture
 파일: `artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,467 bytes · SHA-256 `879d7c4742bb4043bcd358c6c4f16007f84cafb7082f7dc0ed9f58654f069c0d`
-![artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
+![artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
 
 ### todos
 파일: `artifacts/todos.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 57,566 bytes · SHA-256 `8edebde479223a9cf2377144ccf88ac1125c9b7852603c8f9300b3965065f3bc`
-![artifacts/todos.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/todos.png)
+![artifacts/todos.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/todos.png)
 
 ### 01 todos fixture
 파일: `artifacts/ux-audit-2026-11-12/01-todos-fixture.png`
 분류: 모의 응답 테스트 화면 · 35,602 bytes · SHA-256 `c244805d100d30399e96739e078e9fd30f5b02b37f9756d8e1f69b9aa0200c6b`
-![artifacts/ux-audit-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
+![artifacts/ux-audit-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
 
 ### 02 calendar fixture
 파일: `artifacts/ux-audit-2026-11-12/02-calendar-fixture.png`
 분류: 모의 응답 테스트 화면 · 29,873 bytes · SHA-256 `4d18aa53b412d39e2bd24c86aa81c67e50a6769ee3be5c55704d6c1fe2e66245`
-![artifacts/ux-audit-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
+![artifacts/ux-audit-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
 
 ### 03 duck start fixture
 파일: `artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,282 bytes · SHA-256 `25f523877f2c0c403b8bfdd88f63de0edce254b11bce5e9b3573491922ca926a`
-![artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
+![artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
 
 ### 04 log fixture
 파일: `artifacts/ux-audit-2026-11-12/04-log-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,640 bytes · SHA-256 `4d6bf721e71411d9cebbae1f44cb28e8a01129723186bd6267ccd6a5d24f82fd`
-![artifacts/ux-audit-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
+![artifacts/ux-audit-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
 
 ### 05 profile fixture
 파일: `artifacts/ux-audit-2026-11-12/05-profile-fixture.png`
 분류: 모의 응답 테스트 화면 · 46,166 bytes · SHA-256 `0fb8d6c5f15250c40f47963992b5a76c6c8b990b88a1a0708306c77d112aa5db`
-![artifacts/ux-audit-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
+![artifacts/ux-audit-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
 
 ### 06 google permissions fixture
 파일: `artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png`
 분류: 모의 응답 테스트 화면 · 49,489 bytes · SHA-256 `b0887d6da3ddac22a04c9c40653b106e6116b5d572b3d86460c1e572cb8a6c85`
-![artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
+![artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
 
 ### 07 request before consent fixture
 파일: `artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png`
 분류: 모의 응답 테스트 화면 · 36,744 bytes · SHA-256 `0cdba7a39bb69c4b83a5abd7fcd00b6886770dfe579528c03b1283b52d068031`
-![artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
+![artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
 
 ### 08 ai candidate fixture
 파일: `artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,410 bytes · SHA-256 `c50cbef477e847784e141d14997d726e4fb7d05eb896428210a16195436bcdce`
-![artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
+![artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
 
 ### 09 confirmation fixture
 파일: `artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png`
 분류: 모의 응답 테스트 화면 · 45,114 bytes · SHA-256 `4ac537a551fd16b2ad8d53b9159a0e6601e87be26cc4d64dbb7e3807df739ee6`
-![artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
+![artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
 
 ### 10 succeeded fixture
 파일: `artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png`
 분류: 모의 응답 테스트 화면 · 41,828 bytes · SHA-256 `a1a6f2e56ed4a267a5639bc40a0e0a441c2c1cc5016adf99e32f35bce8150b17`
-![artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
+![artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
 
 ### 11 added todo fixture
 파일: `artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png`
 분류: 모의 응답 테스트 화면 · 38,274 bytes · SHA-256 `d10bca4dfda62168b43e52c9ae4cda5591275c2f8bf1da1515faef634ff4faf4`
-![artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
+![artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
 
 ### 12 edit sheet fixture
 파일: `artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,305 bytes · SHA-256 `e6bcc15b51f11ff9809c05b45a1b1cab92b3fe0a0325b3806881bedc2fe4249f`
-![artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
+![artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
 
 ### 13 paste sheet fixture
 파일: `artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 49,375 bytes · SHA-256 `215f9c42f1888a5f66de669662959994fedc4afd8538c17c6bb9efca02b6c88d`
-![artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
+![artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
 
 ### 14 duck small fixture
 파일: `artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png`
 분류: 모의 응답 테스트 화면 · 35,152 bytes · SHA-256 `8fccb659ae2553870801fc6fc36429c106fefd8bbe0e41fd48f4b5952d4d8b69`
-![artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
+![artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
 
 ### 15 error retry fixture
 파일: `artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png`
 분류: 모의 응답 테스트 화면 · 46,545 bytes · SHA-256 `7dafa5fb04691b9ed5542dc619bd90aea1aa00f281cddf149c32edcc888c6d1e`
-![artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
+![artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
 
 ### 01 todos fixture
 파일: `artifacts/ux-fixes-2026-11-12/01-todos-fixture.png`
 분류: 모의 응답 테스트 화면 · 35,584 bytes · SHA-256 `817d97deaf9962348ee303fd2871c423589f5bc54e4171cfb90ba7893828ce84`
-![artifacts/ux-fixes-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/01-todos-fixture.png)
+![artifacts/ux-fixes-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/01-todos-fixture.png)
 
 ### 02 calendar fixture
 파일: `artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,684 bytes · SHA-256 `105a54a33edc1e84aaa07e8fc94a9e275a70a188e6d39073f208f94b679ed768`
-![artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png)
+![artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png)
 
 ### 03 duck start fixture
 파일: `artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png`
 분류: 모의 응답 테스트 화면 · 28,795 bytes · SHA-256 `d4520c8422756e5dd9247fa666874aa7624a81585397f2031eb8c922c66810e6`
-![artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png)
+![artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png)
 
 ### 04 log fixture
 파일: `artifacts/ux-fixes-2026-11-12/04-log-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,528 bytes · SHA-256 `a380d75399abd7b804e82c3575691d10f9abbffe584ff417991b12e3a84c935d`
-![artifacts/ux-fixes-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/04-log-fixture.png)
+![artifacts/ux-fixes-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/04-log-fixture.png)
 
 ### 05 profile fixture
 파일: `artifacts/ux-fixes-2026-11-12/05-profile-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,549 bytes · SHA-256 `4ad16d3211e188d8486a569950bc801502e0e77c49340cf5dc8d771dda035471`
-![artifacts/ux-fixes-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/05-profile-fixture.png)
+![artifacts/ux-fixes-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/05-profile-fixture.png)
 
 ### 06 google permissions fixture
 파일: `artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png`
 분류: 모의 응답 테스트 화면 · 45,904 bytes · SHA-256 `9b5fa8bcbc476bddd439caad2af225cd23f473b100c9d275c024067af87f7f5c`
-![artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
+![artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
 
 ### 07 request before consent fixture
 파일: `artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,971 bytes · SHA-256 `7cb2d908ff2ede41ab5d3476e4f1dc34a4b84ac4e7c5d867daacf5c45ae877f6`
-![artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png)
+![artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png)
 
 ### 08 ai candidate fixture
 파일: `artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,843 bytes · SHA-256 `1a80b2e8bdf5f84ddd4017f59f559aa03a0a9fb57e93892277381a75860c9082`
-![artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
+![artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
 
 ### 09 confirmation fixture
 파일: `artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,828 bytes · SHA-256 `f0cc8d44132777fab6f1b3e480c789fa9ab8f56f516fb1c2f1683df5a83d8ca8`
-![artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png)
+![artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png)
 
 ### 10 succeeded fixture
 파일: `artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png`
 분류: 모의 응답 테스트 화면 · 38,881 bytes · SHA-256 `1a9cf5b1fc9d0390d762c12c3a17926fa9c64654dff7473e84baf5fc9bbc836a`
-![artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
+![artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
 
 ### 11 added todo fixture
 파일: `artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png`
 분류: 모의 응답 테스트 화면 · 38,758 bytes · SHA-256 `31659fc8b3b1926530f991fae70ab9e2330dd585f19223543c8a9a8ef93985a5`
-![artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png)
+![artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png)
 
 ### 12 edit sheet fixture
 파일: `artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,729 bytes · SHA-256 `677e40ed43184c043ef210f3c5d76b7eb24febb2f4f54fff3002554b064a4fa3`
-![artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png)
+![artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png)
 
 ### 13 paste sheet fixture
 파일: `artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,895 bytes · SHA-256 `fac3db5fc36bd874707d3c8130b86efe47733748029d0eb63acc2170b328e8f3`
-![artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
+![artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
 
 ### 14 duck small fixture
 파일: `artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png`
 분류: 모의 응답 테스트 화면 · 27,725 bytes · SHA-256 `3cf084fd329002d4fb1c4c85f91d9bffa8878e8cba11cc4e8f735277d8bf2a82`
-![artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png)
+![artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png)
 
 ### 15 error retry fixture
 파일: `artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png`
 분류: 모의 응답 테스트 화면 · 42,142 bytes · SHA-256 `1874e06586b532dd4c9b24a15167081fd3944096ddbd4311c86aad37ebd1fcbb`
-![artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png)
+![artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png)
 
 ### 16 calendar jump fixture
 파일: `artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,453 bytes · SHA-256 `e16b68c808fc6a602056b8a8d27966bb734c5c6faea1bbcf51a0b91870ddada4`
-![artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
+![artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
 
 ### 17 account jump fixture
 파일: `artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png`
 분류: 모의 응답 테스트 화면 · 37,884 bytes · SHA-256 `15daed71f8f4251681ed39f25264c929aae27416f4400ba67f21bcf970069368`
-![artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
+![artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
 
 ### 18 expanded permissions fixture
 파일: `artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png`
 분류: 모의 응답 테스트 화면 · 57,480 bytes · SHA-256 `8ce1427cb0fa7dac45a62945ccfa4193740325deb6c8337ea54c825d690840b8`
-![artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
+![artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
 
 ### 19 small editor fixture
 파일: `artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png`
 분류: 모의 응답 테스트 화면 · 17,449 bytes · SHA-256 `d06909105ea8a75dcd41b307592882187d30fa54e2070e370d7cac234ebfcee6`
-![artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
+![artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
 
 ### android icon background
 파일: `mobile/assets/android-icon-background.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 17,549 bytes · SHA-256 `fb139c2dee362ebf2070e23b96da6fc0d43f8492de38b8af1fd7223e19b5861d`
-![mobile/assets/android-icon-background.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/mobile/assets/android-icon-background.png)
+![mobile/assets/android-icon-background.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/mobile/assets/android-icon-background.png)
 
 ### android icon foreground
 파일: `mobile/assets/android-icon-foreground.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 78,796 bytes · SHA-256 `9e3d0315a33c6799de601dd34cd8bf8cc3a8d16f3bf75592baec2ceb7240b391`
-![mobile/assets/android-icon-foreground.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/mobile/assets/android-icon-foreground.png)
+![mobile/assets/android-icon-foreground.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/mobile/assets/android-icon-foreground.png)
 
 ### android icon monochrome
 파일: `mobile/assets/android-icon-monochrome.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 4,140 bytes · SHA-256 `6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83`
-![mobile/assets/android-icon-monochrome.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/mobile/assets/android-icon-monochrome.png)
+![mobile/assets/android-icon-monochrome.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/mobile/assets/android-icon-monochrome.png)
 
 ### favicon
 파일: `mobile/assets/favicon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 1,129 bytes · SHA-256 `a4e030697a7571b3e95d31860e4da55d2f98e5e861e2b55e414f45a8556828ba`
-![mobile/assets/favicon.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/mobile/assets/favicon.png)
+![mobile/assets/favicon.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/mobile/assets/favicon.png)
 
 ### icon
 파일: `mobile/assets/icon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 393,493 bytes · SHA-256 `119462bb78eb240a65c869fc067ee599639b3cb5a41953f25c07b17d2a8c7e0f`
-![mobile/assets/icon.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/mobile/assets/icon.png)
+![mobile/assets/icon.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/mobile/assets/icon.png)
 
 ### splash icon
 파일: `mobile/assets/splash-icon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 17,547 bytes · SHA-256 `5f4c0a732b6325bf4071d9124d2ae67e037cb24fcc9c482ef82bea742109a3b8`
-![mobile/assets/splash-icon.png](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/mobile/assets/splash-icon.png)
+![mobile/assets/splash-icon.png](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/mobile/assets/splash-icon.png)
 
 
 ## 6. 댓글로 수정 요청하기
 
-공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 119개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
+공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 131개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
 
 - 각 절/이미지의 수정 요청 버튼으로 위치를 지정할 수 있습니다.
 - 댓글은 서버 DB에 저장되며 작성자만 수정·삭제·반영 확인할 수 있습니다.
@@ -1926,7 +2008,7 @@ e7e0ea2 Record the authenticated scheduler connection check and deployment bound
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 2절의 현재 상태, 3절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 접힘·펼침 모두 오른쪽 세로5개 묶음을 아래 안전 영역8pt 위로 내립니다. 배터리 아래 상단8pt에는 실제 돌아갈 경로가 있을 때만 원형 ‹를 둡니다. 헤더 안 가로 배치는 폐기했고 전체 높이 전용 패널을 만들지 않습니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 2절의 현재 상태, 3절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
 다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 이번 사용자가 확인한 설치 버전은 1.0.0 (12), Render 기준은 f76172d입니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 
@@ -1950,7 +2032,7 @@ e7e0ea2 Record the authenticated scheduler connection check and deployment bound
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/87849a2d4191646e39acbdaa8e3c3214d22c90bd
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/775a561cea5d64e53fa0c1f270a747abd3d6e02a
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -2119,7 +2201,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 - 추가 사용자 결정: 네이버는 읽기 전용으로 유지한다. `NAVER_READ_ONLY=true`로 읽음 상태 변경·발송·답장과 기존 초안 실행도 막는다. 인증/기존 저장 권한은 삭제하거나 재발급하지 않는다. 무료 서버 유지, 불필요한 추가 TestFlight 빌드 금지. 사용자 수동 실행43345083809는57aee29의빌드16 요청 접수이며 Apple 완료와 구분한다.
 - 사용자는 브리핑을 dot처럼 덕이 먼저 채팅으로 보내도록 확정했다. 브리핑·날씨의 ‘상세 문서 대기’는 해제하고 docs/scheduled-messages-2026-11-13.md를 따른다. 기본 예약은 꺼짐, 시간·도시·연결 자료와 반복 AI 전송 동의는 사용자가 선택한다. 외부 쓰기를 예약으로 자동 실행하지 않는다.
-- 최종 Duo 정정: 하단 가로바가 아니라 **오른쪽 세로5개 묶음 그대로 아래**로 옮긴다. 접힘·펼침 모두 아래 안전 영역8pt,48×226pt·44pt를 유지한다. 상단8pt에는 실제 돌아갈 경로가 있을 때만 원형 ‹를 표시하고 복귀 시 제거한다. 임의 탭 history를 만들지 않는다. 콜백/저장 중 비활성·모달별 안전 좌표·상태·짧은 높이 스크롤·조작 보호를 보존한다. 빌드16(57aee29)은 수정 전이다.
+- 최종 Duo 정정: Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 네이티브 전체 좌표와 실제 힌지 상태를 사용한다. 본문64pt padding/본문 끝에 탭 배치/폭만으로 펼침 추정은 금지한다. docs/iphone-duo-support.md의 승인 그림·한계·실기기 체크리스트를 따른다.1.0.0(17)은380dde2로 이번 수정 전이다.
 - Render Free의 SMTP465/587 차단을 확인했다. 네이버 읽기·읽음 변경은 SMTP와 분리하고, 발송은 해당 호스트에서 차단한다. 유료 플랜으로 임의 전환하지 않는다. docs/functional-completion-2026-11-13.md를 따른다.
 - 복원은 예약을 비활성화하고 푸시 기기/큐를 제거한다. 실제 푸시 접수·수신·예약 동작을 모의 검사와 구분한다. TestFlight 수동·출시 준비 마지막 정책은 유지한다.
 
@@ -2279,13 +2361,19 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 덕 기능 가동과 Duo 수정 — 2026-11-13
 
-사용자가 덕의 모든 기능과 Duo 대응을 진행하도록 요청했고, Duo의 오른쪽 전용 열은 잘못 이해한 배치라고 정정했다. 최종 정정은 **접힘/펼침 모두 배터리 표시 아래의 화면 오른쪽 세로 배열**이다. 기존 헤더 안의 가로 배치는 구현자의 오해였다. 브리핑은 dot처럼 정한 시간에 덕이 먼저 보내는 기능이며 상세 문서를 더 기다리지 않도록 확정했다. AI 사무실의 콘텐츠 제작 전환은 앞선 질의응답만 있었으므로 이번 작업에서 사무실을 변경하지 않는다.
+
+#### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
+
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+
 
 #### 이번에 바뀐 기능
 
 | 항목 | 구현·검증 | 실제 가동 경계 |
 |---|---|---|
-| Duo | 오른쪽 아래의48×226 세로5개 탭·아래8pt. 위쪽 원형 뒤로가기는 실제 상세/닫기 경로에서만 표시.44pt·짧은 높이 스크롤·보내기 비가림 | Apple API 판별 유지. 네이티브 컴파일·물리 기기는 별도 |
+| Duo | 본문 밖 실제 카메라 열·아래 세로5개·위 실제 복귀 원형 ‹. 펼친 가로 Calendar 고정/오른쪽 Todo·선택 탭, 세로 현재 화면 하나 | 힌지 상태·기하 모의 검증. 새 네이티브 빌드·실기기·키보드 검수는 별도 |
 | 브리핑 | 시간·시간대·자료·반복 AI 동의를 저장하고 예약 메시지를 덕 채팅에 전달 | 기본 꺼짐. 사용자 설정/실모델·실예약 수신 확인 필요 |
 | 날씨 | 브리핑에 포함하거나 별도 시각·도시로 예약, AI 없이도 단독 사용 | 실제 날씨 장애는 실패로 안내 |
 | 휴대폰 도착 알림 | OS 허용·Expo 기기 연결·세션에 묶인 큐·일반 안내·탭 시 덕 열기 | APNs/Expo 연결·새 iOS 빌드·기기 수신은 별도 |
@@ -2350,9 +2438,9 @@ main `e7e0ea2`를 일반 push했고 [자동 검사43341877783](https://github.co
 
 소스 `5c1ae41`. **기존 빌드16은57aee29로 요청돼 이 세로 수정이 들어 있지 않다.** 웹 배포가 기존 TestFlight 바이너리를 바꾸지 않으며, 아이폰 반영에는 최신 main의 새 수동 빌드가 필요하다. 자동 빌드·유료 전환·기존 인증/데이터 변경은 하지 않는다. 아래 이전226×48 가로/기존 헤더 배치 기록은 폐기된 해석으로 읽는다.
 
-![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 #### 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
@@ -2415,11 +2503,11 @@ main `e7e0ea2`를 일반 push했고 [자동 검사43341877783](https://github.co
 
 UI는 현재 Expo 웹 번들로 시간·도시·자료·AI 동의·독립 날씨·320px 저장 버튼·미확인/읽음·새 메시지 도착 중 입력 유지·다른 계정 격리를 검사했다.
 
-![덕 채팅으로 도착한 모의 브리핑](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
+![덕 채팅으로 도착한 모의 브리핑](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
 
-![브리핑 시간·자료·동의 설정](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
+![브리핑 시간·자료·동의 설정](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
 
-![작은 화면에서도 예약 저장 표시](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
+![작은 화면에서도 예약 저장 표시](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
 
 구현: `server/automations-store.js`, `server/automations.js`, `server/scheduler-auth.js`, `server/push.js`, `server/feature-routes.js`, `mobile/src/useAutomations.ts`, `mobile/src/screens/AutomationSheet.tsx`, `mobile/src/screens/AssistantChat.tsx`, `mobile/src/push.ts`, `scripts/deliver-briefings.mjs`.
 
@@ -2469,31 +2557,31 @@ UI는 현재 Expo 웹 번들로 시간·도시·자료·AI 동의·독립 날씨
 
 ##### 후보 확인 버튼 — 수정 전 / 후
 
-![수정 전: 확인 버튼이 아래로 밀림](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
+![수정 전: 확인 버튼이 아래로 밀림](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
 
-![수정 후: 제목·날짜·초안 확인 우선](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
+![수정 후: 제목·날짜·초안 확인 우선](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
 
 ##### 권한 선택 — 기본 / 펼친 상태
 
-![읽기와 선택 권한 후 연결](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
+![읽기와 선택 권한 후 연결](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
 
-![선택한 쓰기 권한 아래 연결 버튼](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
+![선택한 쓰기 권한 아래 연결 버튼](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
 
 ##### 편집창 — 수정 전 / 작은 화면 수정 후
 
-![수정 전 편집창](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
+![수정 전 편집창](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
 
-![수정 후320px에서도 저장 버튼 전체 표시](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
+![수정 후320px에서도 저장 버튼 전체 표시](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
 
 ##### 완료 / 붙여넣기 / 바로가기
 
-![접힌 완료와 결과 보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
+![접힌 완료와 결과 보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
 
-![붙여넣기를 채팅으로 가져오기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
+![붙여넣기를 채팅으로 가져오기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
 
-![선택한 날짜 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
+![선택한 날짜 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
 
-![내 계정 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
+![내 계정 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
 
 전체19개 원본은 [캡처 폴더](https://github.com/thepmpo/donknow/blob/main/artifacts/ux-fixes-2026-11-12), DOM 측정·호출 수는 [capture-metadata.json](https://github.com/thepmpo/donknow/blob/main/artifacts/ux-fixes-2026-11-12/capture-metadata.json)에 보존한다. 이전 감사 원본은 덮어쓰지 않는다.
 
@@ -2569,91 +2657,91 @@ P1은 현재 작업의 조작·가독성 개선 우선순위이고 모든 항목
 
 6개 미완료 항목과 긴 제목이 구분되고 추가 버튼을 찾을 수 있다. 체크 표시의 시각 크기는26px지만 소스의 hitSlop9로 확장되므로 시각 크기만으로 터치 실패라고 판정하지 않는다.
 
-![01 Todo 목록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
+![01 Todo 목록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
 
 ##### 2. 월간 캘린더 — 개선 필요
 
 42칸 그리드는 유지되지만 긴 일정 이름이 줄임표로 짧아진다. 선택일의 자세한 할 일 목록은 첫 화면 아래에 있어 추가 스크롤이 필요하다.
 
-![02 월간 캘린더 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
+![02 월간 캘린더 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
 
 ##### 3. 덕 첫 화면 — 개선 필요
 
 인사와 입력창은 명확하다. 오늘 브리핑·비서·기록 찾기·대화 붙여넣기와 자료 선택이 고정되어 대화 영역을 차지한다.
 
-![03 덕 첫 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
+![03 덕 첫 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
 
 ##### 4. 완료 기록 — 대체로 양호
 
 완료 항목과 되돌리기가 분명하다. 빈 공간이 크고 첫 사용자가 log의 의미를 바로 이해하기는 어려울 수 있다. 탭 이름 변경은 확정 IA와 별도 합의가 필요하다.
 
-![04 완료 기록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
+![04 완료 기록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
 
 ##### 5. 내정보 — 개선 필요
 
 표시 이름·통계·미리 알림이 상단을 차지한다. 서비스 목록과 계정 관련 행동은 아래로 내려가야 한다.
 
-![05 내정보 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
+![05 내정보 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
 
 ##### 6. Google 연결 권한 — 개선 필요
 
 읽기 선택·연결·새로고침·추가 쓰기 권한이 길게 이어진다. 쓰기 권한은 연결 버튼 아래에 있어 고른 뒤 위로 돌아가야 한다.
 
-![06 Google 연결 권한 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
+![06 Google 연결 권한 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
 
 ##### 7. 요청 입력·동의 전 — 개선 필요
 
 동의 전 요청0회와 전송 버튼 비활성은 확인했다. 작은 동의 문구와 비활성 화살표만으로는 다음 행동이 충분히 드러나지 않는다.
 
-![07 요청 입력·동의 전 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
+![07 요청 입력·동의 전 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
 
 ##### 8. AI 답변·후보 편집 — 우선 개선
 
 후보 제목과 날짜는 보이지만 확인 버튼은 첫 화면에서 아래로 밀린다. 고정 도구 영역이 후보 작성 공간을 줄인다.
 
-![08 AI 답변·후보 편집 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
+![08 AI 답변·후보 편집 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
 
 ##### 9. 실행 전 확인 — 양호·문구 개선
 
 확인 전 Todo 수8개로 유지된다. 실행과 취소 버튼이 명확하다. 비어 있는 메모와 YYYY-MM-DD 같은 내부 형식 표기는 줄일 수 있다.
 
-![09 실행 전 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
+![09 실행 전 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
 
 ##### 10. 실행 완료 — 양호·기록 정리 필요
 
 완료 상태와 Todo 보기 버튼이 보인다. 완료 카드와 이전 후보가 대화에 계속 남아 다음 대화의 초점을 분산한다.
 
-![10 실행 완료 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
+![10 실행 완료 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
 
 ##### 11. 추가된 Todo 확인 — 양호
 
 격리 모의 API에서 확인한 항목1개가 새로 표시되고 목록 수가7개 미완료로 바뀐다. 실제 서버 저장은 별도의 임시 서버 회귀에서 검증했다.
 
-![11 추가된 Todo 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
+![11 추가된 Todo 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
 
 ##### 12. 할 일 편집 시트 — 대체로 양호
 
 제목·날짜·메모·저장과 닫기 흐름이 분명하다. 웹 예정일 입력의 기계적인 표기와 작은 부가 설명은 개선 여지가 있다.
 
-![12 할 일 편집 시트 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
+![12 할 일 편집 시트 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
 
 ##### 13. 대화 붙여넣기 — 개선 필요
 
 목록 초안 나누기·AI 분석 준비·수동 입력의 선택지가 한 화면에 있다. 분석 준비와 실제 전송의 차이를 사용자가 여러 설명을 읽어야 이해한다.
 
-![13 대화 붙여넣기 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
+![13 대화 붙여넣기 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
 
 ##### 14. 320×700 작은 화면 — 개선 필요
 
 가로 넘침은 없지만 Todo 리스트 탭 이름의 마지막 글자가 분리되고 결과 카드가 더욱 좁아진다.
 
-![14 320×700 작은 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
+![14 320×700 작은 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
 
 ##### 15. 오류와 재시도 — 양호
 
 오류가 입력창 위에 나타나고 입력·동의가 유지된다. 다시 보내기가 보여 복구 행동을 알 수 있다.
 
-![15 오류와 재시도 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
+![15 오류와 재시도 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
 
 #### 구현·검증·계정 확인의 구분
 
@@ -2780,7 +2868,7 @@ JSON 문법과 서버 요청 scope/redirect 일치는 로컬 검증했다. Slack
 
 390×844px 터치 화면, 입력창 포커스, 모션 사용, 이전 기록 5개에서 모의 403과 502 응답을 각각 재현했다. 파란 전송 버튼은 요청을 1회 보냈지만 실패 뒤 입력만 그대로 남았다. 오류 문구는 대화 스크롤의 맨 끝에 출력돼 화면 밖에 숨었다. 확인한 오류 위치는 y=2290.5였고, 보이는 대화 영역은 y=115~453.5였다. 401은 기존 로그인 화면으로 정상 이동했다.
 
-![수정 전: 실패 문구가 화면 아래에 숨은 모의 화면](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/assistant-feedback/before-error-fixture.png)
+![수정 전: 실패 문구가 화면 아래에 숨은 모의 화면](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/assistant-feedback/before-error-fixture.png)
 
 사용자가 겪은 실제 API 실패가 이메일 미인증, 키 권한, 모델 접근, 잔액, 네트워크 중 어느 것인지는 아직 확정하지 않았다. 모의 재현은 무반응처럼 보이는 화면 결함을 확인한 것이며 실제 계정의 원인을 추정하는 근거로 쓰지 않는다.
 
@@ -2794,7 +2882,7 @@ JSON 문법과 서버 요청 scope/redirect 일치는 로컬 검증했다. Slack
 
 #### 수정 결과와 실제 검증
 
-![수정 후: 입력창 바로 위의 오류와 다시 보내기 — 모의 응답](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/assistant-feedback/after-error-fixture.png)
+![수정 후: 입력창 바로 위의 오류와 다시 보내기 — 모의 응답](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/assistant-feedback/after-error-fixture.png)
 
 입력창 위 고정 위치에 즉시 처리 표시와 실패 안내를 둔다. 이메일 미인증은 서버가 반환한 경우에만 **내정보 → 내 계정 → 이메일 인증**을 안내한다. 오래된 클라이언트의 인증 상태로 전송을 미리 막지 않는다. 상태와 이전 실행 기록은 독립적으로 읽고, 초기 조회 실패에는 **AI 연결 다시 확인**을 제공한다. 새 요청 뒤 늦게 온 초기 조회 오류가 현재 오류를 덮지 못한다.
 
@@ -2837,25 +2925,25 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 
 ##### 1. 요청 입력·자료 동의 — 기본 흐름 정상
 
-![1 요청 입력과 동의 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/01-request-consent-fixture.png)
+![1 요청 입력과 동의 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/01-request-consent-fixture.png)
 
 입력창 가까이에 자료 사용 동의가 있고 동의 전 전송이 비활성화된다. 요청을 입력하는 것만으로 AI 호출·Todo 생성이 발생하지 않았다. 작은 설명문·체크 상태의 실제 화면 낭독과 큰 글자 사용성은 실기기에서 확인해야 한다.
 
 ##### 2. 후보 편집 — 이동 위치 수정 완료
 
-![2 후보 편집 전 자동 이동 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/02-edit-proposal-fixture.png)
+![2 후보 편집 전 자동 이동 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/02-edit-proposal-fixture.png)
 
 응답 후 맨 아래로 이동해 후보 제목·날짜가 위로 가려지고 빈 메모와 버튼만 보였다. 저장된 실행 기록이 있으면 더 오래된 기록으로 이동할 수도 있다. 새 답변·후보와 방금 만든 초안 위치를 기준으로 이동해야 한다. 기존 메모 편집 높이·토큰을 임의로 줄이는 대신 이동 동작을 바로잡는다.
 
 ##### 3. 실행 미리보기 — 확인 경계 정상, 읽기 전용 표시 보완 완료
 
-![3 실행 확인 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/03-confirm-fixture.png)
+![3 실행 확인 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/03-confirm-fixture.png)
 
 실행 전 제목·대상과 확인 버튼을 볼 수 있고 이 시점에는 Todo가 만들어지지 않는다. 소스 검토에서는 준비된 후보의 제목·메모는 잠겨도 날짜 선택기는 열리는 문제를 확인했다. 변경이 반영되지 않는 입력처럼 보이지 않게 준비 후 날짜를 읽기 전용으로 표시한다.
 
 ##### 4. 저장 결과 — 완료와 다음 이동 정상
 
-![4 완료 결과 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/04-result-fixture.png)
+![4 완료 결과 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/04-result-fixture.png)
 
 명시적 확인 후 Todo가 1개 생성되고 완료 상태와 Todo로 이동하는 버튼이 나타났다. 현재 검토 계정은 실행 이력이 짧다. 이력이 많은 경우에도 방금 실행한 결과가 바로 보이도록 별도 회귀가 필요하다.
 
@@ -2882,13 +2970,13 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 
 수정 후에도 390×844px의 같은 흐름을 새로 실행해 각 캡처를 열어 확인했다. 2단계의 전후 이미지를 함께 비교해 제목·날짜가 가려졌던 문제가 해소됐음을 확인했다. 아래 네 이미지는 수정 후의 모의 데이터 화면이다.
 
-![1 수정 후 · 요청 입력과 자료 동의](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/01-request-consent-fixture-after.png)
+![1 수정 후 · 요청 입력과 자료 동의](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/01-request-consent-fixture-after.png)
 
-![2 수정 후 · 답변과 후보 제목·날짜](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
+![2 수정 후 · 답변과 후보 제목·날짜](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
 
-![3 수정 후 · 확인 대기와 실행](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/03-confirm-fixture-after.png)
+![3 수정 후 · 확인 대기와 실행](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/03-confirm-fixture-after.png)
 
-![4 수정 후 · 완료와 Todo 이동](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/product-design-audit/04-result-fixture-after.png)
+![4 수정 후 · 완료와 Todo 이동](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/product-design-audit/04-result-fixture-after.png)
 
 검증 결과:
 
@@ -3041,6 +3129,65 @@ node scripts/check-release-readiness.mjs
 
 ### Apple iPhone Duo 대응 · 2026-11-12
 
+#### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
+
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+
+##### 화면별 계약
+
+| 상태 | 왼쪽 | 오른쪽/본문 | 내비게이션 |
+|---|---|---|---|
+| 완전히 펼친 가로 | 캘린더 고정 | 최초 Todo, 이후 선택한 탭 | 카메라 열 아래 세로5개 |
+| 펼친 세로 | 분할하지 않음 | 현재 선택한 화면 하나 | 같은 카메라 열 |
+| 접힘·부분 접힘·힌지 상태 unknown | 분할하지 않음 | 현재 선택한 화면 하나 | 같은 열의 안전한 구간 |
+| 일반 iPhone/iPad·힌지 없음 | 기존 화면 | 기존 단일 화면 | 기존 하단 내비게이션 |
+
+최초 실행의 Todo와 달리 회전/접힘은 사용자가 선택한 탭을 초기화하지 않는다. 세로일 때 표시할 화면은 오른쪽 활성 화면이다. 고정 캘린더는 숨겨도 부모/인스턴스를 유지하고, 선택한 월과 스크롤을 보존한다. 양쪽에서 Todo를 수정하면 같은 기존 store를 쓰며 복사 데이터를 만들지 않는다. 로그인·서버/계정 전환 시 계정별 화면 상태는 기존 정책으로 분리한다.
+
+##### 좌표·API와 구현자가 바꾸면 안 되는 것
+
+- `DuoSafeSurface`의 네이티브 관찰 View는 전체 화면 좌표를 읽는다. **SafeAreaView로 먼저 카메라 열을 제외한 뒤 그 본문 끝에 탭을 붙이지 않는다.** `DuoChrome`은 본문 밖에서 탭과 뒤로가기를 배치한다. 각 모달은 자체 좌표로 계산하고 분할하지 않는다.
+- 실제 `UIHingeInteraction`의 `hinge.status`가 `fullyOpen`이고 현재 View가 가로일 때만 분할한다. 화면 폭/기기 이름으로 Duo를 추정하지 않는다. 네이티브 상태가 없으면 폭이 커도 단일 화면이다.
+- UIKit의 `reservedRegions(kind:options:)`는 카메라 전용 식별 API가 아니다. `occlusion`에는 카메라·Dynamic Island·창 조작부 등이 포함된다. 화면 오른쪽 위의 실제 예약 영역을 정렬 근거로 사용하며 `.includeInactive`도 읽는다. 후보가 없으면 실제 오른쪽 safe inset, 그것도 없으면 trailing edge로 대체한다. `alignment`에 출처를 남긴다. **대체 좌표는 물리 카메라 일치가 검증됐다는 뜻이 아니다.** 실기기 예약 영역 확인이 남는다.
+- 조작부는 한 x 중심선을 유지한다. 활성 힌지·가림 구간은 세로로 건너뛰며 카메라 왼쪽의 본문 열로 옮기지 않는다. 원형 ‹는 실제 callback에서만 표시하고 저장 중 비활성·닫힘 후 제거를 유지한다.
+- `DUO_CHROME`이48pt 너비·최대226pt 높이·8pt 안전 간격·분할 사이16pt의 단일 소스다. 실제 힌지가 양 화면을 가르면 그 경계를 우선한다. 짧은 높이는44pt 터치를 줄이지 않고 세로 스크롤한다.64pt 본문 보호 padding은 제거했다.
+- 일반 기기는 안전 영역 inset을 본문에 적용하고 기존 하단 bar의 bottom inset을 중복 적용하지 않는다. 네이티브 첫 기하를 받기 전 하단 bar를 잠깐 표시하지 않는다.
+
+공식 근거: [Duo 준비](https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo), [예약 영역](https://developer.apple.com/documentation/uikit/uiview/reservedregions(kind:options:)), [힌지 상태](https://developer.apple.com/documentation/uikit/uihinge/status-swift.enum). 기존 SDK guard는 유지하며 실제 Xcode27.1 컴파일은 이 Linux 환경에서 수행하지 못했다.
+
+##### 승인 그림과 새 캡처
+
+![사용자가 승인한 카메라 열 기준 그림 · 파란 열은 안내 표시](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
+
+![펼친 가로: 왼쪽 캘린더 고정·오른쪽 Todo](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
+
+![탭 선택: 왼쪽 캘린더 유지·오른쪽 덕](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
+
+![펼친 세로: 현재 덕 화면 하나](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
+
+![접힘: 카메라와 같은 세로선의 내비게이션](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
+
+![실제 상세 경로에서만 카메라 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
+
+캡처는 실제 앱 컴포넌트에 테스트 기하를 전달한 **격리 웹 fixture**다. 파란색/카메라 점은 fixture에만 있으며 운영 앱에는 없다. 실제 Duo 사진·Apple 하드웨어 치수의 증거로 사용하지 않는다. 제품에는 URL/폭으로 Duo를 켜는 숨은 스위치를 추가하지 않았다.
+
+##### 실제 검증과 남은 검수
+
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
+
+재현: `npm run check`, `npm test`, `npm --prefix mobile run typecheck`, `npm --prefix mobile run export:web`, `npm --prefix mobile run export:ios`, `npm --prefix mobile run test:duo`. Export의 첫 시도는 환경의 `/home/agent/.expo` 쓰기 실패로 중단됐고 `EXPO_NO_TELEMETRY=1 CI=1`로 동일 코드를 재실행해 통과했다. 인증값/보안 설정은 변경하지 않았다.
+
+- [x] 최초 펼친 가로의 Calendar/Todo, 탭을 바꿔도 왼쪽 유지, 세로에서 현재 탭만 표시.
+- [x] 회전 뒤 작성 중 메시지·양쪽 선택 월·고정 캘린더 스크롤 위치/인스턴스 유지.
+- [x] 접힘·펼침·세로·부분 접힘·짧은 높이의 카메라 열·8pt·44pt·뒤로가기/비활성·입력 조작 비가림.
+- [ ] 새 Xcode 네이티브 빌드·서명·Apple 처리·TestFlight 설치. 현재17은 이번 코드가 아니다.
+- [ ] Duo 실제 reserved region/카메라 중심선·접힘/회전·힌지·안전 영역, 키보드와 시스템 시트 동작. 대체 alignment인 기기는 좌표를 확인한다.
+- [ ] 일반 iPhone의 실제 notch/가로 안전 영역·Dynamic Type·VoiceOver, Figma Current baseline 교정. 이번에는 Figma를 수정하지 않았다.
+
+#### 이전 구현 이력 — 아래 배치/수치는 현재 기준이 아님
+
 #### 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
 사용자는 **하단 가로 내비게이션으로 바꾸라는 뜻이 아니라 지금 오른쪽의 세로5개 묶음을 그대로 아래로 내리라**고 정정했다. 접힘·펼침 모두 세로 배열을 유지하며 아래 안전 영역에서8pt를 띄운다. 배터리/상태 표시 아래의 상단8pt에는 **원 안의 ‹ 뒤로가기**를 별도로 두며 실제 돌아갈 화면/시트가 있을 때만 나타난다. 루트 탭을 바꾸기만 했다고 임의의 뒤로가기 기록을 만들지 않는다.
@@ -3049,11 +3196,11 @@ node scripts/check-release-readiness.mjs
 
 소스 `87849a2`. Duo 전환·동일한 위/아래8pt·세로 열·원형 경계·루트 숨김·상세 진입/복귀 시 표시/해제·비활성 보호·짧은 높이 마지막 탭 접근·실제 채팅 보내기 비가림·초안 유지 검사를 통과했다. 전체221개 중220통과·기존 선택1개 제외, 문법·타입·웹/iOS JS·전체 앱·채팅·오류 회귀를 통과했다. 캡처는 격리 웹 미리보기이며 실제 Duo/Swift/키보드 검수는 별도다. 빌드16은 이전57aee29이므로 새 설치 앱에는 최신 main의 수동 빌드가 필요하다. 추가 EAS 빌드를 요청하지 않았다. 이전의 위쪽 세로 배치 설명은 이 정정 이전 기록이다.
 
-![접힘: 오른쪽 세로 묶음을 아래로 이동](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힘: 오른쪽 세로 묶음을 아래로 이동](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼침: 같은 아래쪽 세로 배치](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
+![펼침: 같은 아래쪽 세로 배치](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
 
-![상세 화면: 배터리 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
+![상세 화면: 배터리 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
 
 #### 2026-11-13 최종 정정 — Duo 오른쪽 세로 배열
 
@@ -3065,9 +3212,9 @@ node scripts/check-release-readiness.mjs
 
 소스 `5c1ae41`. **기존 빌드16은57aee29로 요청돼 이 세로 수정이 들어 있지 않다.** 웹 배포가 기존 TestFlight 바이너리를 바꾸지 않으며, 아이폰 반영에는 최신 main의 새 수동 빌드가 필요하다. 자동 빌드·유료 전환·기존 인증/데이터 변경은 하지 않는다. 아래 이전226×48 가로/기존 헤더 배치 기록은 폐기된 해석으로 읽는다.
 
-![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 #### 2026-11-13 — 배터리 아래 기존 헤더 오른쪽으로 정정
 
@@ -3079,9 +3226,9 @@ node scripts/check-release-readiness.mjs
 
 자동 검사는 실제 앱의 AppNavigation 컴포넌트와 Shell을 사용한다. Expo 공식 export:embed 웹 resolver로 묶어 아이콘·BlurView를 그대로 사용하며, 기존의 손으로 만든 resolver는 웹/네이티브 의존성을 다 처리하지 못해 교체했다. 접힘·펼침·책·테이블·320px·일반 기기 전환에서 탭·입력·편집·스크롤·자식 identity 보존,44px·상단/우측 위치·전체 폭 본문·중복 하단 탭 없음을 검증한다. 실제 iPhone/Duo·키보드·Swift 빌드는 별도다.
 
-![접힌 Duo: 실제 앱 체험 데이터의 새 탭 배치](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 Duo: 실제 앱 체험 데이터의 새 탭 배치](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 Duo: 같은 위치와 전체 폭 본문](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 Duo: 같은 위치와 전체 폭 본문](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 스크린샷은 네이티브 기하를 주입한 격리 웹 fixture이며 실기기 캡처가 아니다. 코드에 웹 URL/모델명으로 Duo를 켜는 우회는 추가하지 않았다. 재현: `npm --prefix mobile run test:duo`.
 
@@ -5222,6 +5369,16 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 
 ### 현재 UI·기능 통합 대조 — 2026-11-10
 
+#### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
+
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
+
+아래는 정정 전의 날짜별 구현 이력이다. 현재 기준은 위의 카메라 열·가로 분할·세로 단일 화면이다.
+
 #### 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
 사용자는 **하단 가로 내비게이션으로 바꾸라는 뜻이 아니라 지금 오른쪽의 세로5개 묶음을 그대로 아래로 내리라**고 정정했다. 접힘·펼침 모두 세로 배열을 유지하며 아래 안전 영역에서8pt를 띄운다. 배터리/상태 표시 아래의 상단8pt에는 **원 안의 ‹ 뒤로가기**를 별도로 두며 실제 돌아갈 화면/시트가 있을 때만 나타난다. 루트 탭을 바꾸기만 했다고 임의의 뒤로가기 기록을 만들지 않는다.
@@ -5240,9 +5397,9 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 
 소스 `5c1ae41`. **기존 빌드16은57aee29로 요청돼 이 세로 수정이 들어 있지 않다.** 웹 배포가 기존 TestFlight 바이너리를 바꾸지 않으며, 아이폰 반영에는 최신 main의 새 수동 빌드가 필요하다. 자동 빌드·유료 전환·기존 인증/데이터 변경은 하지 않는다. 아래 이전226×48 가로/기존 헤더 배치 기록은 폐기된 해석으로 읽는다.
 
-![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/87849a2d4191646e39acbdaa8e3c3214d22c90bd/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/775a561cea5d64e53fa0c1f270a747abd3d6e02a/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 #### 2026-11-13 — 예약 브리핑·날씨와 Duo 배치 정정
 
@@ -5546,6 +5703,10 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 ### 原文 / docs/testflight-automation.md
 
 ### iPhone 테스트 수동 빌드·자동 제출
+
+#### 2026-11-13 — 빌드17과 현재 카메라 열 수정 구분
+
+[사용자 수동 실행43352316009](https://github.com/thepmpo/donknow/actions/runs/43352316009)의 요청 로그에서 **1.0.0(17)·소스380dde2**를 확인했다. [EAS 빌드17](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/f527087f-c164-4534-912d-7e72b4112e8c)의 실제 네이티브/Apple 처리·사용자 설치는 별도다.17의 탭은 본문 기준이므로 이번 승인한 카메라 열·고정 캘린더/오른쪽 Todo·세로 단일 화면 변경을 포함하지 않는다. 힌지 상태를 읽는 Swift도 바뀌어 새 **네이티브 수동 빌드**가 필요하다. 웹/iOS JS export 성공은 IPA 검증이 아니다. 이번 push에서 EAS를 자동 요청하지 않는다. [최신 화면·기기 검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
 
 #### 2026-11-13 — 네이버 읽기 전용 확정·아이폰 빌드16 요청
 
@@ -6409,7 +6570,9 @@ expo-blur를 새로 추가했으므로 기존 TestFlight 앱에서 OTA만으로 
 
 #### 2026-11-13 — Duo 오른쪽 세로 탭과 예약 메시지
 
-Duo는 접힘·펼침 모두 **오른쪽 세로5개 묶음을 아래로 내린다.** 하단 가로 내비게이션이 아니다. 아래 안전 영역8pt·48×226pt·44pt 조작을 유지한다. 배터리/상태 표시 아래의 상단8pt에는 실제 상세/닫기 경로가 있을 때만 **원형 ‹ 뒤로가기**를 표시하고 돌아오면 제거한다. 루트 탭에는 임의 뒤로가기를 만들지 않는다. 모달별 안전 좌표·저장 중 비활성·본문 조작 보호·짧은 높이 스크롤을 지키고 채팅 보내기를 가리지 않는다. 일반 iPhone의 하단·기존 뒤로가기 위치와 상태를 보존한다. [정정 근거·새 미리보기](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+전체 네이티브 좌표에서 조작부와 본문을 분리한다. 본문에64pt 여백을 넣어 카메라 왼쪽으로 밀던 해석은 폐기한다. 분할은 Apple 힌지 상태 fullyOpen과 가로 방향에서만 켠다. 치수는 UI 토큰이며 기기 탐지 조건이 아니다. [승인 그림·새 미리보기·실기기 검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
 
 브리핑·날씨는 별도 화면이 기본이 아니라 설정한 시간에 덕 채팅으로 오는 메시지다. 예약은 기본 꺼짐이며 사용자가 시간·시간대·도시·자료를 정한다. 반복 AI 전송은 별도 동의, 외부 쓰기는 자동 실행하지 않는다. 작은 화면의 예약 저장은 스크롤과 분리해 고정한다. 기존 직접 조회는 오늘 내용 보기라는 보조 도구로 남긴다. [예약 동작·검증](https://github.com/thepmpo/donknow/blob/main/docs/scheduled-messages-2026-11-13.md).
 

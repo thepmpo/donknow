@@ -4,6 +4,9 @@ import re,html
 root=Path(__file__).resolve().parents[1]
 theme=(root/'mobile/src/theme.ts').read_text()
 layout=dict((k,int(v)) for k,v in re.findall(r'(\w+):\s*(\d+)',theme.split('export const layout =')[1]))
+duo_source=(root/'mobile/src/duo-layout.ts').read_text()
+duo_tokens=dict((k,int(v)) for k,v in re.findall(r'(\w+):\s*(\d+)',re.search(r'export const DUO_CHROME=\{([^}]+)\}',duo_source).group(1)))
+layout.update((name,duo_tokens[key]) for name,key in re.findall(r'(\w+):\s*DUO_CHROME\.(\w+)',theme))
 palette=dict(re.findall(r"(\w+): '(#[a-fA-F0-9]+)'",theme.split('export const palette =')[1].split('} as const')[0]))
 heading=re.search(r'heading: \{ fontSize: (\d+), lineHeight: (\d+)',theme).groups()
 css=';'.join('--'+k+':'+str(v)+'px' for k,v in layout.items())+';'+';'.join('--'+k+':'+v for k,v in palette.items())+';--headingSize:'+heading[0]+'px;--headingLine:'+heading[1]+'px'

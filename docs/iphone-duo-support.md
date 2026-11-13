@@ -1,5 +1,64 @@
 # Apple iPhone Duo 대응 · 2026-11-12
 
+## 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
+
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+
+이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
+
+### 화면별 계약
+
+| 상태 | 왼쪽 | 오른쪽/본문 | 내비게이션 |
+|---|---|---|---|
+| 완전히 펼친 가로 | 캘린더 고정 | 최초 Todo, 이후 선택한 탭 | 카메라 열 아래 세로5개 |
+| 펼친 세로 | 분할하지 않음 | 현재 선택한 화면 하나 | 같은 카메라 열 |
+| 접힘·부분 접힘·힌지 상태 unknown | 분할하지 않음 | 현재 선택한 화면 하나 | 같은 열의 안전한 구간 |
+| 일반 iPhone/iPad·힌지 없음 | 기존 화면 | 기존 단일 화면 | 기존 하단 내비게이션 |
+
+최초 실행의 Todo와 달리 회전/접힘은 사용자가 선택한 탭을 초기화하지 않는다. 세로일 때 표시할 화면은 오른쪽 활성 화면이다. 고정 캘린더는 숨겨도 부모/인스턴스를 유지하고, 선택한 월과 스크롤을 보존한다. 양쪽에서 Todo를 수정하면 같은 기존 store를 쓰며 복사 데이터를 만들지 않는다. 로그인·서버/계정 전환 시 계정별 화면 상태는 기존 정책으로 분리한다.
+
+### 좌표·API와 구현자가 바꾸면 안 되는 것
+
+- `DuoSafeSurface`의 네이티브 관찰 View는 전체 화면 좌표를 읽는다. **SafeAreaView로 먼저 카메라 열을 제외한 뒤 그 본문 끝에 탭을 붙이지 않는다.** `DuoChrome`은 본문 밖에서 탭과 뒤로가기를 배치한다. 각 모달은 자체 좌표로 계산하고 분할하지 않는다.
+- 실제 `UIHingeInteraction`의 `hinge.status`가 `fullyOpen`이고 현재 View가 가로일 때만 분할한다. 화면 폭/기기 이름으로 Duo를 추정하지 않는다. 네이티브 상태가 없으면 폭이 커도 단일 화면이다.
+- UIKit의 `reservedRegions(kind:options:)`는 카메라 전용 식별 API가 아니다. `occlusion`에는 카메라·Dynamic Island·창 조작부 등이 포함된다. 화면 오른쪽 위의 실제 예약 영역을 정렬 근거로 사용하며 `.includeInactive`도 읽는다. 후보가 없으면 실제 오른쪽 safe inset, 그것도 없으면 trailing edge로 대체한다. `alignment`에 출처를 남긴다. **대체 좌표는 물리 카메라 일치가 검증됐다는 뜻이 아니다.** 실기기 예약 영역 확인이 남는다.
+- 조작부는 한 x 중심선을 유지한다. 활성 힌지·가림 구간은 세로로 건너뛰며 카메라 왼쪽의 본문 열로 옮기지 않는다. 원형 ‹는 실제 callback에서만 표시하고 저장 중 비활성·닫힘 후 제거를 유지한다.
+- `DUO_CHROME`이48pt 너비·최대226pt 높이·8pt 안전 간격·분할 사이16pt의 단일 소스다. 실제 힌지가 양 화면을 가르면 그 경계를 우선한다. 짧은 높이는44pt 터치를 줄이지 않고 세로 스크롤한다.64pt 본문 보호 padding은 제거했다.
+- 일반 기기는 안전 영역 inset을 본문에 적용하고 기존 하단 bar의 bottom inset을 중복 적용하지 않는다. 네이티브 첫 기하를 받기 전 하단 bar를 잠깐 표시하지 않는다.
+
+공식 근거: [Duo 준비](https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo), [예약 영역](https://developer.apple.com/documentation/uikit/uiview/reservedregions(kind:options:)), [힌지 상태](https://developer.apple.com/documentation/uikit/uihinge/status-swift.enum). 기존 SDK guard는 유지하며 실제 Xcode27.1 컴파일은 이 Linux 환경에서 수행하지 못했다.
+
+### 승인 그림과 새 캡처
+
+![사용자가 승인한 카메라 열 기준 그림 · 파란 열은 안내 표시](../artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
+
+![펼친 가로: 왼쪽 캘린더 고정·오른쪽 Todo](../artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
+
+![탭 선택: 왼쪽 캘린더 유지·오른쪽 덕](../artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
+
+![펼친 세로: 현재 덕 화면 하나](../artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
+
+![접힘: 카메라와 같은 세로선의 내비게이션](../artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
+
+![실제 상세 경로에서만 카메라 아래 원형 뒤로가기](../artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
+
+캡처는 실제 앱 컴포넌트에 테스트 기하를 전달한 **격리 웹 fixture**다. 파란색/카메라 점은 fixture에만 있으며 운영 앱에는 없다. 실제 Duo 사진·Apple 하드웨어 치수의 증거로 사용하지 않는다. 제품에는 URL/폭으로 Duo를 켜는 숨은 스위치를 추가하지 않았다.
+
+### 실제 검증과 남은 검수
+
+검증: 전체224개 중223통과·실패0·기존 선택1개 제외, 기하11개·모바일 타입·웹/iOS JS 출력·Duo 전환 검사를 통과했다. 카메라 중심선과 탭/뒤로가기 중심선 일치, 본문 밖 배치, 왼쪽 고정/오른쪽 전환, 세로 단일 화면, 월·초안·스크롤 유지, 실제 복귀·비활성 보호·짧은 높이·초기 하단 탭 깜박임 방지를 검사했다. 전체 앱·웹 로그인·모션·AI 채팅/오류·세션 격리 회귀도 통과했다. 공개 문서/디자인 가이드 회귀와131개 이미지 manifest를 검증했다. 구현775a561. 웹 모의 기하/체험 데이터 결과이며 Swift 컴파일·Duo 실기기·시스템 키보드는 미검증이다. 기존1.0.0(17)은380dde2로 이번 수정 전이며 새 네이티브 수동 빌드가 필요하다. push 자동 EAS 빌드는 계속 꺼짐이다.
+
+재현: `npm run check`, `npm test`, `npm --prefix mobile run typecheck`, `npm --prefix mobile run export:web`, `npm --prefix mobile run export:ios`, `npm --prefix mobile run test:duo`. Export의 첫 시도는 환경의 `/home/agent/.expo` 쓰기 실패로 중단됐고 `EXPO_NO_TELEMETRY=1 CI=1`로 동일 코드를 재실행해 통과했다. 인증값/보안 설정은 변경하지 않았다.
+
+- [x] 최초 펼친 가로의 Calendar/Todo, 탭을 바꿔도 왼쪽 유지, 세로에서 현재 탭만 표시.
+- [x] 회전 뒤 작성 중 메시지·양쪽 선택 월·고정 캘린더 스크롤 위치/인스턴스 유지.
+- [x] 접힘·펼침·세로·부분 접힘·짧은 높이의 카메라 열·8pt·44pt·뒤로가기/비활성·입력 조작 비가림.
+- [ ] 새 Xcode 네이티브 빌드·서명·Apple 처리·TestFlight 설치. 현재17은 이번 코드가 아니다.
+- [ ] Duo 실제 reserved region/카메라 중심선·접힘/회전·힌지·안전 영역, 키보드와 시스템 시트 동작. 대체 alignment인 기기는 좌표를 확인한다.
+- [ ] 일반 iPhone의 실제 notch/가로 안전 영역·Dynamic Type·VoiceOver, Figma Current baseline 교정. 이번에는 Figma를 수정하지 않았다.
+
+## 이전 구현 이력 — 아래 배치/수치는 현재 기준이 아님
+
 ## 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
 사용자는 **하단 가로 내비게이션으로 바꾸라는 뜻이 아니라 지금 오른쪽의 세로5개 묶음을 그대로 아래로 내리라**고 정정했다. 접힘·펼침 모두 세로 배열을 유지하며 아래 안전 영역에서8pt를 띄운다. 배터리/상태 표시 아래의 상단8pt에는 **원 안의 ‹ 뒤로가기**를 별도로 두며 실제 돌아갈 화면/시트가 있을 때만 나타난다. 루트 탭을 바꾸기만 했다고 임의의 뒤로가기 기록을 만들지 않는다.
