@@ -1,0 +1,42 @@
+import {chromium} from 'playwright-core';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import {resolve,extname} from 'node:path';
+import assert from 'node:assert/strict';
+const root=resolve(new URL('../dist-web',import.meta.url).pathname),output=resolve(process.env.CALENDAR_CAPTURE_DIR||new URL('../../artifacts/calendar-navigation-2026-11-14',import.meta.url).pathname),before=process.env.CAPTURE_PHASE==='before',origin='https://calendar-viewport.test';
+await mkdir(output,{recursive:true});
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const errors=[],checks=[];
+try{
+ const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,timezoneId:'Asia/Seoul'});page.on('pageerror',e=>errors.push(e.message));await page.clock.install({time:new Date('2026-11-14T00:00:00Z')});await page.emulateMedia({reducedMotion:'reduce'});
+ await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
+ await page.route(origin+'/**',async route=>{
+  const p=new URL(route.request().url()).pathname;
+  if(!p.startsWith('/api/')){const path=resolve(root,'.'+(p==='/'?'/index.html':p));assert.ok(path.startsWith(root+'/'));try{return route.fulfill({body:await readFile(path),contentType:({'.html':'text/html','.js':'text/javascript','.ttf':'font/ttf','.png':'image/png'})[extname(path)]||'application/octet-stream'});}catch{return route.fulfill({status:404,body:''});}}
+  if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'viewport-user',email:'viewport@example.test',emailVerified:true}}});
+  if(p==='/api/todos')return route.fulfill({json:[{id:'viewport-task',title:'제안서 검토하기',dueDate:'2026-11-14',category:'업무',done:false}]});
+  if(p==='/api/capabilities')return route.fulfill({json:{todoNotes:true,calendarWorkspace:2}});
+  if(p==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:'primary',primary:true,name:'내 일정',canWrite:true,color:'#1b64da'}]}});
+  if(p==='/api/calendar/events')return route.fulfill({json:{items:[{id:'review',title:'디자인 검토',dueDate:'2026-11-13',allDay:true,endDate:'2026-11-14',calendarId:'primary',canWrite:true}],calendarId:'primary',connectionState:'connected',readAt:'2026-11-14T00:00:00Z'}});
+  if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[],scheduledMessages:false}});
+  if(p==='/api/assistant/actions')return route.fulfill({json:{actions:[]}});
+  if(p==='/api/duck-chat')return route.fulfill({json:{messages:[]}});
+  if(p==='/api/integrations')return route.fulfill({json:{providers:{google:{connected:true},notion:{connected:false},slack:{connected:false},naver:{connected:false}}}});
+  return route.fulfill({status:404,json:{error:'fixture endpoint unavailable'}});
+ });
+ const tab=name=>page.getByRole('tab',{name,exact:true}),button=name=>page.getByRole('button',{name,exact:true}),grid=()=>page.getByTestId('calendar-date-grid');
+ async function nextMonth(){await button('년월 선택').click();await button('다음 달').click();}
+ async function shot(name){await page.screenshot({path:resolve(output,name+'.png')});}
+ async function holdCalendar(){const b=await tab('캘린더').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.waitForTimeout(650);}
+ const selected=()=>grid().locator('[aria-selected="true"]').getAttribute('aria-label');
+ async function todaySelected(){await grid().locator('[aria-selected="true"]').filter({has:page.locator('[dir="auto"]')}).filter({hasText:'14'}).waitFor();await page.waitForFunction(()=>document.querySelector('[data-testid="calendar-date-grid"] [aria-selected="true"]')?.getAttribute('aria-label')?.includes('2026년 11월 14일'));}
+ await page.goto(origin);await tab('캘린더').click();await grid().waitFor();await nextMonth();assert.match(await button('년월 선택').innerText(),/12월/);
+ await tab('Todo 리스트').click();await tab('캘린더').click();assert.match(await button('년월 선택').innerText(),/11월/,'entering ordinary Calendar always returns to today');assert.match(await selected(),/14일/);await shot('01-ordinary-enter-today');
+ await nextMonth();await tab('캘린더').click();await todaySelected();assert.match(await selected(),/14일/,'reselecting Calendar returns to today');
+ await nextMonth();await holdCalendar();assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),14);await page.mouse.up();assert.match(await selected(),/2026년 12월 1일/,'long-press release must not also run Today');await shot('02-ordinary-long-press-fortnight');await button('월 보기로 전환').click();await button('2주 보기로 전환').click();assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),14,'visible top shortcut remains');
+ await tab('Todo 리스트').click();await holdCalendar();await page.mouse.up();assert.match(await selected(),/2026년 11월 14일/);assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),14,'long press from another tab enters today in 2-week mode');await shot('03-ordinary-long-press-from-other-tab');
+ await button('월 보기로 전환').click();await nextMonth();await tab('캘린더').focus();await page.keyboard.press('Enter');await todaySelected();assert.match(await selected(),/14일/,'keyboard activation preserves Today behavior');
+ // Short presses and cancelled scrubs must not become the long-press shortcut.
+ await button('2주 보기로 전환').click();await button('월 보기로 전환').click();const b=await tab('캘린더').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.waitForTimeout(100);await page.mouse.move(b.x-50,b.y-50,{steps:8});await page.waitForTimeout(600);await page.mouse.up();assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),35,'cancelled press does not switch view');
+ await page.emulateMedia({reducedMotion:'no-preference'});await tab('캘린더').click();await page.waitForTimeout(300);await holdCalendar();await page.mouse.up();assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),14);await shot('04-ordinary-motion-enabled-shortcut');
+ assert.deepEqual(errors,[]);await writeFile(resolve(output,'gesture-verification.json'),JSON.stringify({checks:['ordinary enter/reselect Today','long press 500ms','release suppresses second action','top button retained','other-tab long press','keyboard activation','cancelled press','reduced/full motion'],errors,nativeHapticsVerified:false},null,2));console.log('PASS: ordinary Calendar enter/reselect Today, long press 2 weeks without duplicate press, visible shortcut, keyboard, cancel and motion modes');
+}finally{await browser.close();}

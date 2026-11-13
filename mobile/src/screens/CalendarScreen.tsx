@@ -19,8 +19,9 @@ import {deviceZone,eventOccurs,eventTime,monthCellHeight,periodShift,safeCalenda
 import type {CalendarEvent,CalendarView} from '../calendar-model';
 import type {Todo} from '../domain';
 import type {TodoStore} from '../useTodos';
+export type CalendarNavigationRequest={id:number;action:'today'|'fortnight';resetToToday?:boolean;scope:string};
 type Overlay='day'|'event'|'add'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|null;
-export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;fixedPane?:boolean}){
+export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,navigationRequest}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest}){
  const {scene}=useDuoScene(),backState=useDuoBackState();
  const insets=useSafeAreaInsets(),duo=useDuoTrailingNavigation(),reduced=useReducedMotion(),{fontScale}=useWindowDimensions();
  const [zone,setZone]=useState(deviceZone),[zoneDraft,setZoneDraft]=useState(zone),[startDay,setStartDay]=useState(0),[density,setDensity]=useState<'details'|'compact'>('details');
@@ -53,6 +54,17 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false}:
  function choose(day:string,detail=true){setSelected(day);if(view==='month'&&day.slice(0,7)!==month)setMonth(day.slice(0,7));if(detail)setOverlay('day');void feedback();}
  useDuoToday(today,()=>now(),active&&!overlay,fixedPane?1:2,{expanded:view==='fortnight',onPress:()=>{if(view!=='fortnight')setFortnightAnchor(selected);setView(v=>v==='fortnight'?'month':'fortnight');animatePeriod();}});
  function now(){setMonth(today.slice(0,7));setSelected(today);setFortnightAnchor(today);scroll.current?.scrollTo({y:0,animated:!reduced});}
+ const handledNavigation=useRef(0),navigationScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
+ useEffect(()=>{
+  if(!navigationRequest||navigationRequest.scope!==navigationScope||handledNavigation.current===navigationRequest.id)return;
+  handledNavigation.current=navigationRequest.id;
+  // Navigation shortcuts never discard an open form or run later after it closes.
+  if(!active||overlay)return;
+  if(navigationRequest.action==='today'||navigationRequest.resetToToday)now();
+  if(navigationRequest.action==='fortnight'){setFortnightAnchor(navigationRequest.resetToToday?today:selected);setView('fortnight');}
+  animatePeriod();void feedback();
+ },[navigationRequest?.id,active,navigationScope]);
+
  async function close(){if(editorBusy)return;if(overlay==='editor'&&editorActions[editorKey]&&!editorActions[editorKey].locked){try{await store.featureRequest('/api/assistant/actions/'+editorActions[editorKey].pending.id,'DELETE');clearEditorAction(editorKey);}catch(e){setLocalError(e instanceof Error?e.message:'미리보기를 취소하지 못했어요.');return;}}setLocalError('');setOverlay(overlay==='editor'&&event?'event':overlay==='event'?eventParent.current:null);}
  function toggleSource(id:string){if(sourceDraft.includes(id)){setSourceDraft(sourceDraft.filter(x=>x!==id));setLocalError('');}else if(sourceDraft.length>=10)setLocalError('캘린더는 한 번에 10개까지 선택할 수 있어요. 먼저 하나를 해제해주세요.');else{setSourceDraft([...sourceDraft,id]);setLocalError('');}}
  function openEvent(e:CalendarEvent){eventParent.current=overlay==='day'?'day':null;const day=e.allDay?e.dueDate:e.startAt?zonedDay(e.startAt,zone):e.dueDate;if(day){setSelected(day);setMonth(day.slice(0,7));}setEvent(e);setOverlay('event');setLocalError('');}

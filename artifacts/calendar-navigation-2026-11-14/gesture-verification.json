@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "ordinary enter/reselect Today",
+    "long press 500ms",
+    "release suppresses second action",
+    "top button retained",
+    "other-tab long press",
+    "keyboard activation",
+    "cancelled press",
+    "reduced/full motion"
+  ],
+  "errors": [],
+  "nativeHapticsVerified": false
+}
