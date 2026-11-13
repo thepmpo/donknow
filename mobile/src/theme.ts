@@ -32,9 +32,12 @@ export const radius = { small: 12, button: 16, card: 24, sheet: 28 } as const;
 // Single layout contract shared by every tab and editor.
 export const layout = {
   pageInset: 24, pageTop: 16, headerHeight: 48,
-  navigationHeight: 72, sectionGap: 24, actionGap: 16,
+  navigationHeight: 72, navigationInset: 12, navigationBottomGap: 8, navigationRadius: 32, sectionGap: 24, actionGap: 16,
   sheetInset: 24, titleBottom: 16,
   duoNavigationWidth: DUO_CHROME.width, duoNavigationHeight: DUO_CHROME.height, duoNavigationInset: DUO_CHROME.gap,
   duoNavigationItemSize: DUO_CHROME.itemSize, duoNavigationIconSize: DUO_CHROME.iconSize,
   duoPaneDividerInset: DUO_CHROME.dividerInset,
 } as const;
+
+// Duck implementation values, not Apple-mandated timings or dimensions.
+export const navigationMotion = { travel: 250, press: 100, release: 180, pressedScale: 1.08 } as const;

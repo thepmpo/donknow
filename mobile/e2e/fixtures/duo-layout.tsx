@@ -10,9 +10,10 @@ import type {AppTab} from '../../src/AppNavigation';
 import {BackButton} from '../../src/ui';
 import type {DuoGeometry} from '../../src/duo-layout';
 const {createRoot}=require('react-dom/client') as {createRoot:(element:Element)=>{render:(node:React.ReactNode)=>void}};
-const host=globalThis as unknown as {duoFixture:{change:(value:DuoGeometry|null)=>void;setReady:(value:boolean)=>void;mounts:number;unmounts:number;showApp:()=>void}};
-host.duoFixture={change:()=>{},setReady:()=>{},mounts:0,unmounts:0,showApp:()=>{}};
+const host=globalThis as unknown as {duoFixture:{change:(value:DuoGeometry|null)=>void;setReady:(value:boolean)=>void;mounts:number;unmounts:number;showApp:()=>void;setBottomInset:(value:number)=>void}};
+host.duoFixture={change:()=>{},setReady:()=>{},mounts:0,unmounts:0,showApp:()=>{},setBottomInset:()=>{}};
 function Work(){
+ const [bottomInset,setBottomInset]=useState(0);host.duoFixture.setBottomInset=setBottomInset;
  const [draft,setDraft]=useState(''),[tab,setTab]=useState<AppTab>('todos'),[editing,setEditing]=useState(false),[busy,setBusy]=useState(false);const duo=useDuoTrailingNavigation();
  useEffect(()=>{host.duoFixture.mounts++;return()=>{host.duoFixture.unmounts++;};},[]);
  return <View style={{flex:1,minHeight:0}}>
@@ -20,7 +21,7 @@ function Work(){
   <View testID="full-width-body" style={{flex:1,minHeight:0}}><Text testID="current-tab">{tab==='duck'?'duckduck':tab}</Text><Text testID="editing">{editing?'editing':'closed'}</Text>{editing&&<BackButton onPress={()=>setEditing(false)} disabled={busy}/>}<Pressable onPress={()=>setBusy(value=>!value)}><Text>작업 중 전환</Text></Pressable>
    <Pressable onPress={()=>{setTab('duck');setEditing(true);}}><Text>편집 시작</Text></Pressable><TextInput testID="draft" value={draft} onChangeText={setDraft}/>
    <ScrollView testID="scroll" style={{flex:1,minHeight:0}}>{Array.from({length:100},(_,i)=><Text key={i} style={{height:50}}>행 {i}</Text>)}</ScrollView>
-  </View><AppNavigation tab={tab} onSelect={setTab} duo={duo}/>
+  </View><AppNavigation tab={tab} onSelect={setTab} duo={duo} bottomInset={bottomInset}/>
  </View>;
 }
 function Fixture(){
