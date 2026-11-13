@@ -7,7 +7,7 @@ await mkdir(output,{recursive:true});
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 const errors=[],checks=[];
 try{
- const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,timezoneId:'Asia/Seoul'});page.on('pageerror',e=>errors.push(e.message));await page.clock.setFixedTime(new Date('2026-11-14T00:00:00Z'));await page.emulateMedia({reducedMotion:'reduce'});
+ const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,timezoneId:'Asia/Seoul'});page.on('pageerror',e=>errors.push(e.message));await page.clock.install({time:new Date('2026-11-14T00:00:00Z')});await page.emulateMedia({reducedMotion:'reduce'});
  await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
  await page.route(origin+'/**',async route=>{
   const p=new URL(route.request().url()).pathname;
@@ -27,7 +27,7 @@ try{
  async function capture(name){await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await page.screenshot({path:resolve(output,(before?'before-':'')+name+'.png')});}
  await page.goto(origin);await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();const subtitleY=(await page.getByText('11월 14일 토요일',{exact:true}).boundingBox()).y;
  await capture('ordinary-todos');await tab('캘린더').click();await grid().waitFor();await capture('ordinary-month');
- await button('년월 선택').click();await button('오늘').waitFor();await capture('ordinary-today-menu');await button('년월 선택 닫기').click();
+ await button('캘린더 더보기').click();await button('오늘').waitFor();await capture('ordinary-today-menu');await page.getByTestId('calendar-sheet').getByRole('button',{name:'닫기',exact:true}).click();await page.getByTestId('calendar-sheet').waitFor({state:'detached'});
  if(before){console.log('Captured before state');}else{
   const headings=[];
   for(const [name,title] of [['캘린더','캘린더'],['Todo 리스트','할 일'],['duckduck','덕'],['log','log'],['내정보','내정보']]){await tab(name).click();const heading=await page.getByRole('heading',{name:title,exact:true}).boundingBox();headings.push({name,...heading});}
@@ -39,8 +39,8 @@ try{
    await button('2주 보기로 전환').click();await fits('fortnight-'+width);await button('월 보기로 전환').click();
   }
   await page.setViewportSize({width:390,height:844});await button('2주 보기로 전환').click();await capture('ordinary-fortnight');await button('월 보기로 전환').click();
-  await button('년월 선택').click();await page.getByLabel('이동할 월',{exact:true}).selectOption('1');await button('선택한 년월로 이동').click();assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),28);await fits('four-week-february');
-  await button('년월 선택').click();await page.getByLabel('이동할 월',{exact:true}).selectOption('7');await button('선택한 년월로 이동').click();assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),42);await fits('six-week-august');await capture('ordinary-six-week-month');
+  await button('년월 선택').click();await page.getByTestId('calendar-year-overview').getByRole('button',{name:'2026년 2월로 이동',exact:true}).click();await page.getByTestId('calendar-year-overview').waitFor({state:'detached'});assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),28);await fits('four-week-february');
+  await button('년월 선택').click();await page.getByTestId('calendar-year-overview').getByRole('button',{name:'2026년 8월로 이동',exact:true}).click();await page.getByTestId('calendar-year-overview').waitFor({state:'detached'});assert.equal(await grid().getByRole('button',{name:/^2026년 .*일, 일정과 할 일/}).count(),42);await fits('six-week-august');await capture('ordinary-six-week-month');
   await page.emulateMedia({colorScheme:'dark'});await capture('ordinary-dark');
   assert.deepEqual(errors,[]);await writeFile(resolve(output,'viewport-verification.json'),JSON.stringify({headings,subtitleY,checks,errors,nativeDeviceVerified:false},null,2));console.log('PASS: month/fortnight fit, no wheel scroll, 4/5/6-week capacity, five headings and body baseline, ordinary controls');
  }

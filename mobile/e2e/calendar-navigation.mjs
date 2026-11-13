@@ -24,7 +24,7 @@ try{
   return route.fulfill({status:404,json:{error:'fixture endpoint unavailable'}});
  });
  const tab=name=>page.getByRole('tab',{name,exact:true}),button=name=>page.getByRole('button',{name,exact:true}),grid=()=>page.getByTestId('calendar-date-grid');
- async function nextMonth(){await button('년월 선택').click();await button('다음 달').click();}
+ async function nextMonth(){await button('캘린더 더보기').click();await button('다음 달').click();}
  async function shot(name){await page.screenshot({path:resolve(output,name+'.png')});}
  async function holdCalendar(){const b=await tab('캘린더').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.waitForTimeout(650);}
  const selected=()=>grid().locator('[aria-selected="true"]').getAttribute('aria-label');

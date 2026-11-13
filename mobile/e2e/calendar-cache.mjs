@@ -32,7 +32,7 @@ try{
   return route.fulfill({status:404,json:{error:'fixture endpoint unavailable'}});
  });
  const tab=name=>page.getByRole('tab',{name,exact:true}),button=name=>page.getByRole('button',{name,exact:true}),grid=()=>page.getByTestId('calendar-date-grid');
- async function command(name){await button('년월 선택').click();if(name==='Google 일정 새로고침'||name==='일정 더 불러오기')await button('캘린더 상태·새로고침').click();await button(name).click();}
+ async function command(name){await button('캘린더 더보기').click();if(name==='Google 일정 새로고침'||name==='일정 더 불러오기')await button('캘린더 상태·새로고침').click();await button(name).click();}
  async function close(){await page.getByTestId('calendar-sheet').getByRole('button',{name:'닫기',exact:true}).click();}
  const event=name=>grid().getByRole('button',{name:name+' 일정 상세',exact:true});
  async function shot(name){await page.screenshot({path:resolve(output,name+'.png')});}
