@@ -26,6 +26,9 @@
 
 ## 2026-11-13 무료 iOS 빌드 경로
 
+- 실제 성공43365834762: 소스224a498·Xcode27.1·1.0.0(19) 서명IPA 생성·Apple 업로드13:40:01 KST 완료. 기존 “첫 Mac 실행 미확인”은 해제한다. Apple 처리·TestFlight 설치·Duo 기기 검수는 별도이며19가 안 보인다고 추가 빌드를 반복하지 않는다. docs/testflight-automation.md의 실제 로그/제출 링크를 따른다.
+
+
 - 사용자 비용0 정책으로 기존 ios-testflight 수동 workflow는 공개 저장소의 표준 GitHub `xcode-27` Mac에서 EAS `--local` 빌드→같은IPA 제출을 수행한다. Expo cloud 무료 한도 소진에 유료 가입을 요구하지 않는다. 표준 runner의 무료 조건(public/main/manual)과 Xcode27.1·서명 freeze·임시 파일 정리·공개 artifact 제외를 유지한다. 유료 xlarge/large runner·cloud fallback·push 자동 빌드는 금지한다. docs/testflight-automation.md를 따른다.
 - 이전 실패 실행43357992366 Re-run은 구cloud 코드를 재실행하므로 사용하지 않는다. 최신 main에서 새 workflow_dispatch가 필요하다. 실제 Mac 빌드·서명·제출·Apple/실기기 상태를 코드/JS 검사와 구분한다. 서명/토큰을 재생성하거나 로그로 출력하지 않는다.
 

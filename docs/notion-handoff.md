@@ -11,6 +11,10 @@
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-13 실제 무료 빌드 성공 — 1.0.0(19) Apple 업로드
+
+사용자 수동43365834762는 소스224a498에서 validate/build-and-submit 모두 성공했다. 실제 Xcode27.1·기존 서명·로컬IPA11.4MB 생성·Apple 업로드13:40:01 KST를 확인했다. 새 버전은1.0.0(19)이고 승인 카메라 열/가로 Calendar 고정·Todo 선택/세로 현재 화면을 포함한다. [실행 결과](https://github.com/thepmpo/donknow/actions/runs/43365834762) · [Apple 제출](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 로그는 Apple 처리 중이며 TestFlight 목록/설치/Duo 기기 검수는 아직 별도다.19가 안 보이면 Apple 처리를 기다리고 재빌드하지 않는다. Expo cloud 무료 한도를 쓰지 않는 공개 GitHub 표준 Mac 경로의 실제 성공이다. [실제 증거와 남은 검수](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 우선한다.
+
 ### 2026-11-13 무료 빌드 — Windows에서도 GitHub의 Mac 사용
 
 사용자 비용0 정책에 따라 기존 수동 TestFlight 버튼을 공개 저장소의 표준 xcode-27 GitHub Mac에서 실제 local 빌드→제출하는 경로로 변경했다. 저장소 공개/표준 runner 무료/설치된 Xcode27.1을 공식 자료로 확인했다. 추가 Mac·Expo Starter 결제·새 인증이 필요하지 않다. main/public/manual 조건, 기존 서명 freeze, 임시 파일 정리·공개 artifact 제외, 유료 대체/자동 push 빌드 금지를 유지한다. actionlint·셸·224개 중223통과/선택1개 제외·타입·iOS JS·문서 회귀는 확인했지만 첫 Mac 컴파일/제출/Apple 처리는 아직 미확인이다. [무료 빌드 실행 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow→main→Run workflow를 누른다. 이전 실패 실행 Re-run은 구cloud 코드이므로 쓰지 않는다. [공식 근거·구현·상태 구분](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)을 읽는다.
@@ -154,6 +158,16 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-13 실제 성공 — 무료 GitHub Mac 빌드1.0.0(19)·Apple 업로드
+
+[사용자 수동 실행43365834762](https://github.com/thepmpo/donknow/actions/runs/43365834762)은 **소스224a498**, validate와build-and-submit 두 job 모두 성공이다. [실제 빌드·제출 job131690178721](https://github.com/thepmpo/donknow/actions/runs/43365834762/job/131690178721)의 로그에서 Xcode27.1, 기존 서명 재사용, 원격번호18→19, `Build successful`, 서명된IPA11.4MB, `Submitted your app to Apple App Store Connect!`를 확인했다. 앱 설정 버전1.0.0과 합쳐 **1.0.0(19)**다. Expo cloud build가 아니라 앞서 설정한 공개 저장소의 표준 GitHub Mac에서 `--local`로 실제 빌드했다. 새 유료 가입·과금 설정·인증서 재발급을 하지 않았으며 추가 빌드를 요청하지 않는다.
+
+IPA 생성은 **13:39:30 KST**, Apple 업로드 완료는 **13:40:01 KST**다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 완료 로그의 마지막 상태는 **Apple 처리 중**이며, 실제 TestFlight 목록 등장·설치·Duo 실기기 동작은 아직 확인하지 않았다. 설치 파일 생성/서명/Apple 업로드 성공을 기기 검수나 App Store 공개 완료로 확대하지 않는다. 이번 로그에서 DuckduckDuo1.0.0 pod 설치·패키징도 확인했지만 실제 카메라/힌지/키보드는 기기에서 검수한다.
+
+사용자는 아이폰의 **TestFlight → duckduck → 업데이트**에서 **1.0.0(19)**를 확인한다. 아직19가 안 보이면 Apple 처리 완료를 기다리고 같은 이유로 다시 빌드하지 않는다. 이 버전은 승인한 카메라 열의 세로 탭·상황별 원형 뒤로가기, 펼친 가로의 왼쪽 캘린더 고정/오른쪽 Todo·선택 탭, 펼친 세로의 현재 화면 하나를 포함한다. 일반 iPhone 하단 탭은 유지한다. [Duo 검수 기준](iphone-duo-support.md) · [Apple TestFlight 관리](https://appstoreconnect.apple.com/apps/6829597261/testflight/ios).
+
+이제 **첫 무료 Mac 빌드/서명/제출 미확인**은 해제한다. 아래 Linux 단계나이전17·18의 미확인/실패 기록은 당시 상태다. 이번 변경은 실제 결과 기록뿐이며 앱 코드·서명·데이터·OAuth·원본 recovery bundle을 바꾸지 않는다.
 
 #### 2026-11-13 최신 경로 — Windows에서 GitHub 무료 Mac으로 빌드
 
@@ -724,6 +738,16 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-13 실제 성공 — 무료 GitHub Mac 빌드1.0.0(19)·Apple 업로드
+
+[사용자 수동 실행43365834762](https://github.com/thepmpo/donknow/actions/runs/43365834762)은 **소스224a498**, validate와build-and-submit 두 job 모두 성공이다. [실제 빌드·제출 job131690178721](https://github.com/thepmpo/donknow/actions/runs/43365834762/job/131690178721)의 로그에서 Xcode27.1, 기존 서명 재사용, 원격번호18→19, `Build successful`, 서명된IPA11.4MB, `Submitted your app to Apple App Store Connect!`를 확인했다. 앱 설정 버전1.0.0과 합쳐 **1.0.0(19)**다. Expo cloud build가 아니라 앞서 설정한 공개 저장소의 표준 GitHub Mac에서 `--local`로 실제 빌드했다. 새 유료 가입·과금 설정·인증서 재발급을 하지 않았으며 추가 빌드를 요청하지 않는다.
+
+IPA 생성은 **13:39:30 KST**, Apple 업로드 완료는 **13:40:01 KST**다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 완료 로그의 마지막 상태는 **Apple 처리 중**이며, 실제 TestFlight 목록 등장·설치·Duo 실기기 동작은 아직 확인하지 않았다. 설치 파일 생성/서명/Apple 업로드 성공을 기기 검수나 App Store 공개 완료로 확대하지 않는다. 이번 로그에서 DuckduckDuo1.0.0 pod 설치·패키징도 확인했지만 실제 카메라/힌지/키보드는 기기에서 검수한다.
+
+사용자는 아이폰의 **TestFlight → duckduck → 업데이트**에서 **1.0.0(19)**를 확인한다. 아직19가 안 보이면 Apple 처리 완료를 기다리고 같은 이유로 다시 빌드하지 않는다. 이 버전은 승인한 카메라 열의 세로 탭·상황별 원형 뒤로가기, 펼친 가로의 왼쪽 캘린더 고정/오른쪽 Todo·선택 탭, 펼친 세로의 현재 화면 하나를 포함한다. 일반 iPhone 하단 탭은 유지한다. [Duo 검수 기준](iphone-duo-support.md) · [Apple TestFlight 관리](https://appstoreconnect.apple.com/apps/6829597261/testflight/ios).
+
+이제 **첫 무료 Mac 빌드/서명/제출 미확인**은 해제한다. 아래 Linux 단계나이전17·18의 미확인/실패 기록은 당시 상태다. 이번 변경은 실제 결과 기록뿐이며 앱 코드·서명·데이터·OAuth·원본 recovery bundle을 바꾸지 않는다.
 
 #### 2026-11-13 최신 경로 — Windows에서 GitHub 무료 Mac으로 빌드
 
@@ -1394,6 +1418,7 @@ e7e0ea2 Record the authenticated scheduler connection check and deployment bound
 775a561 Fix Duo camera-column navigation and preserve split workspace state
 faee581 Document approved Duo camera column and landscape workspace behavior
 a1c2274 Record exhausted Expo iOS build quota and local Mac build alternative
+224a498 Build TestFlight on the free public GitHub Mac instead of Expo cloud
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -2300,6 +2325,9 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 - 사용자 안내는 쉬운 한국어와 클릭 가능한 실제 주소를 사용하고, 화면에 보이는 버튼 이름을 순서대로 적는다. 설정 저장·Git 커밋·배포·실제 동작 성공을 구분하며 사용자에게 불필요한 커밋을 요구하지 않는다.
 
 ## 2026-11-13 무료 iOS 빌드 경로
+
+- 실제 성공43365834762: 소스224a498·Xcode27.1·1.0.0(19) 서명IPA 생성·Apple 업로드13:40:01 KST 완료. 기존 “첫 Mac 실행 미확인”은 해제한다. Apple 처리·TestFlight 설치·Duo 기기 검수는 별도이며19가 안 보인다고 추가 빌드를 반복하지 않는다. docs/testflight-automation.md의 실제 로그/제출 링크를 따른다.
+
 
 - 사용자 비용0 정책으로 기존 ios-testflight 수동 workflow는 공개 저장소의 표준 GitHub `xcode-27` Mac에서 EAS `--local` 빌드→같은IPA 제출을 수행한다. Expo cloud 무료 한도 소진에 유료 가입을 요구하지 않는다. 표준 runner의 무료 조건(public/main/manual)과 Xcode27.1·서명 freeze·임시 파일 정리·공개 artifact 제외를 유지한다. 유료 xlarge/large runner·cloud fallback·push 자동 빌드는 금지한다. docs/testflight-automation.md를 따른다.
 - 이전 실패 실행43357992366 Re-run은 구cloud 코드를 재실행하므로 사용하지 않는다. 최신 main에서 새 workflow_dispatch가 필요하다. 실제 Mac 빌드·서명·제출·Apple/실기기 상태를 코드/JS 검사와 구분한다. 서명/토큰을 재생성하거나 로그로 출력하지 않는다.
@@ -3218,6 +3246,16 @@ node scripts/check-release-readiness.mjs
 
 ### Apple iPhone Duo 대응 · 2026-11-12
 
+#### 2026-11-13 실제 성공 — 무료 GitHub Mac 빌드1.0.0(19)·Apple 업로드
+
+[사용자 수동 실행43365834762](https://github.com/thepmpo/donknow/actions/runs/43365834762)은 **소스224a498**, validate와build-and-submit 두 job 모두 성공이다. [실제 빌드·제출 job131690178721](https://github.com/thepmpo/donknow/actions/runs/43365834762/job/131690178721)의 로그에서 Xcode27.1, 기존 서명 재사용, 원격번호18→19, `Build successful`, 서명된IPA11.4MB, `Submitted your app to Apple App Store Connect!`를 확인했다. 앱 설정 버전1.0.0과 합쳐 **1.0.0(19)**다. Expo cloud build가 아니라 앞서 설정한 공개 저장소의 표준 GitHub Mac에서 `--local`로 실제 빌드했다. 새 유료 가입·과금 설정·인증서 재발급을 하지 않았으며 추가 빌드를 요청하지 않는다.
+
+IPA 생성은 **13:39:30 KST**, Apple 업로드 완료는 **13:40:01 KST**다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 완료 로그의 마지막 상태는 **Apple 처리 중**이며, 실제 TestFlight 목록 등장·설치·Duo 실기기 동작은 아직 확인하지 않았다. 설치 파일 생성/서명/Apple 업로드 성공을 기기 검수나 App Store 공개 완료로 확대하지 않는다. 이번 로그에서 DuckduckDuo1.0.0 pod 설치·패키징도 확인했지만 실제 카메라/힌지/키보드는 기기에서 검수한다.
+
+사용자는 아이폰의 **TestFlight → duckduck → 업데이트**에서 **1.0.0(19)**를 확인한다. 아직19가 안 보이면 Apple 처리 완료를 기다리고 같은 이유로 다시 빌드하지 않는다. 이 버전은 승인한 카메라 열의 세로 탭·상황별 원형 뒤로가기, 펼친 가로의 왼쪽 캘린더 고정/오른쪽 Todo·선택 탭, 펼친 세로의 현재 화면 하나를 포함한다. 일반 iPhone 하단 탭은 유지한다. [Duo 검수 기준](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md) · [Apple TestFlight 관리](https://appstoreconnect.apple.com/apps/6829597261/testflight/ios).
+
+이제 **첫 무료 Mac 빌드/서명/제출 미확인**은 해제한다. 아래 Linux 단계나이전17·18의 미확인/실패 기록은 당시 상태다. 이번 변경은 실제 결과 기록뿐이며 앱 코드·서명·데이터·OAuth·원본 recovery bundle을 바꾸지 않는다.
+
 #### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
 
 Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
@@ -3271,7 +3309,8 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - [x] 최초 펼친 가로의 Calendar/Todo, 탭을 바꿔도 왼쪽 유지, 세로에서 현재 탭만 표시.
 - [x] 회전 뒤 작성 중 메시지·양쪽 선택 월·고정 캘린더 스크롤 위치/인스턴스 유지.
 - [x] 접힘·펼침·세로·부분 접힘·짧은 높이의 카메라 열·8pt·44pt·뒤로가기/비활성·입력 조작 비가림.
-- [ ] 새 Xcode 네이티브 빌드·서명·Apple 처리·TestFlight 설치. 현재17은 이번 코드가 아니다.
+- [x] Xcode27.1 네이티브 빌드·서명·Apple 업로드:43365834762의1.0.0(19).
+- [ ] Apple 처리 완료·TestFlight19 설치·실기기 확인.17은 이번 코드가 아니다.
 - [ ] Duo 실제 reserved region/카메라 중심선·접힘/회전·힌지·안전 영역, 키보드와 시스템 시트 동작. 대체 alignment인 기기는 좌표를 확인한다.
 - [ ] 일반 iPhone의 실제 notch/가로 안전 영역·Dynamic Type·VoiceOver, Figma Current baseline 교정. 이번에는 Figma를 수정하지 않았다.
 
@@ -5793,6 +5832,16 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 
 ### iPhone 테스트 수동 빌드·자동 제출
 
+#### 2026-11-13 실제 성공 — 무료 GitHub Mac 빌드1.0.0(19)·Apple 업로드
+
+[사용자 수동 실행43365834762](https://github.com/thepmpo/donknow/actions/runs/43365834762)은 **소스224a498**, validate와build-and-submit 두 job 모두 성공이다. [실제 빌드·제출 job131690178721](https://github.com/thepmpo/donknow/actions/runs/43365834762/job/131690178721)의 로그에서 Xcode27.1, 기존 서명 재사용, 원격번호18→19, `Build successful`, 서명된IPA11.4MB, `Submitted your app to Apple App Store Connect!`를 확인했다. 앱 설정 버전1.0.0과 합쳐 **1.0.0(19)**다. Expo cloud build가 아니라 앞서 설정한 공개 저장소의 표준 GitHub Mac에서 `--local`로 실제 빌드했다. 새 유료 가입·과금 설정·인증서 재발급을 하지 않았으며 추가 빌드를 요청하지 않는다.
+
+IPA 생성은 **13:39:30 KST**, Apple 업로드 완료는 **13:40:01 KST**다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 완료 로그의 마지막 상태는 **Apple 처리 중**이며, 실제 TestFlight 목록 등장·설치·Duo 실기기 동작은 아직 확인하지 않았다. 설치 파일 생성/서명/Apple 업로드 성공을 기기 검수나 App Store 공개 완료로 확대하지 않는다. 이번 로그에서 DuckduckDuo1.0.0 pod 설치·패키징도 확인했지만 실제 카메라/힌지/키보드는 기기에서 검수한다.
+
+사용자는 아이폰의 **TestFlight → duckduck → 업데이트**에서 **1.0.0(19)**를 확인한다. 아직19가 안 보이면 Apple 처리 완료를 기다리고 같은 이유로 다시 빌드하지 않는다. 이 버전은 승인한 카메라 열의 세로 탭·상황별 원형 뒤로가기, 펼친 가로의 왼쪽 캘린더 고정/오른쪽 Todo·선택 탭, 펼친 세로의 현재 화면 하나를 포함한다. 일반 iPhone 하단 탭은 유지한다. [Duo 검수 기준](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md) · [Apple TestFlight 관리](https://appstoreconnect.apple.com/apps/6829597261/testflight/ios).
+
+이제 **첫 무료 Mac 빌드/서명/제출 미확인**은 해제한다. 아래 Linux 단계나이전17·18의 미확인/실패 기록은 당시 상태다. 이번 변경은 실제 결과 기록뿐이며 앱 코드·서명·데이터·OAuth·원본 recovery bundle을 바꾸지 않는다.
+
 #### 2026-11-13 최신 경로 — Windows에서 GitHub 무료 Mac으로 빌드
 
 사용자는 빌드 비용을 내고 싶지 않고 현재 Windows를 사용한다고 밝혔다. [저장소 API](https://api.github.com/repos/thepmpo/donknow)의 `private:false`/`visibility:public`과 [GitHub 공식 표준 runner 안내](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)를 확인했다. 공개 저장소의 **표준 `xcode-27` Mac runner는 무료**다. 사용자 PC에 Mac/Xcode를 설치할 필요 없이 GitHub가 Xcode를 실행한다. 저장소 공개 범위를 바꾸거나 인증값을 공개하지 않는다.
@@ -5818,7 +5867,7 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 
 Actionlint1.7.12(공식 릴리스 SHA256 확인)·모든 셸 단계 문법·수동/main/public 조건·local-only/서명 보존·문법·전체224개 중223통과/선택1개 제외·모바일 타입·iOS JS export를 통과했다. actionlint가 새 preview label을 몰라 `.github/actionlint.yaml`에 **확인한 label 하나만** 추가했다. 이 lint 설정은 self-hosted 서버를 생성하는 설정이 아니다. 첫 lint에서 발견한 job env의 runner context 위치도 단계 env로 수정해 재검증했다.
 
-**Linux 검증이 실제 무료 Mac 컴파일·서명·업로드 성공을 뜻하지 않는다.** 새 workflow의 첫 GitHub 실행과 Apple 처리는 아직 확인 전이다. 현재 환경의 GitHub dispatch가Forbidden이면 사용자가 위 버튼을 누른 뒤 실제 실행을 확인한다. 이전1.0.0(17)은 이번 Duo 수정 전이며 번호18은 한도 거절 과정에서 할당만 됐다. 새 번호를 임의로 고정하거나18번 재사용을 약속하지 않는다. 아래 Expo cloud 한도/요금 비교는 이전 경로의 이력이며 새 기본 빌드 경로는 이 절을 우선한다.
+**Linux 검증이 실제 무료 Mac 컴파일·서명·업로드 성공을 뜻하지 않는다.** 새 workflow의 첫 실제 Mac 빌드·서명·Apple 업로드는43365834762에서 성공했고 Apple 처리·기기 설치는 별도다. 현재 환경의 GitHub dispatch가Forbidden이면 사용자가 위 버튼을 누른 뒤 실제 실행을 확인한다. 이전1.0.0(17)은 이번 Duo 수정 전이며 번호18은 한도 거절 과정에서 할당만 됐다. 새 번호를 임의로 고정하거나18번 재사용을 약속하지 않는다. 아래 Expo cloud 한도/요금 비교는 이전 경로의 이력이며 새 기본 빌드 경로는 이 절을 우선한다.
 
 #### 2026-11-13 — 새 iOS 빌드는 Expo 무료 한도 소진으로 차단
 

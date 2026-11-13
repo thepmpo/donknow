@@ -34,6 +34,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-13 실제 무료 빌드 성공 — 1.0.0(19) Apple 업로드
+
+사용자 수동43365834762는 소스224a498에서 validate/build-and-submit 모두 성공했다. 실제 Xcode27.1·기존 서명·로컬IPA11.4MB 생성·Apple 업로드13:40:01 KST를 확인했다. 새 버전은1.0.0(19)이고 승인 카메라 열/가로 Calendar 고정·Todo 선택/세로 현재 화면을 포함한다. [실행 결과](https://github.com/thepmpo/donknow/actions/runs/43365834762) · [Apple 제출](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 로그는 Apple 처리 중이며 TestFlight 목록/설치/Duo 기기 검수는 아직 별도다.19가 안 보이면 Apple 처리를 기다리고 재빌드하지 않는다. Expo cloud 무료 한도를 쓰지 않는 공개 GitHub 표준 Mac 경로의 실제 성공이다. [실제 증거와 남은 검수](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 우선한다.
+
 ### 2026-11-13 무료 빌드 — Windows에서도 GitHub의 Mac 사용
 
 사용자 비용0 정책에 따라 기존 수동 TestFlight 버튼을 공개 저장소의 표준 xcode-27 GitHub Mac에서 실제 local 빌드→제출하는 경로로 변경했다. 저장소 공개/표준 runner 무료/설치된 Xcode27.1을 공식 자료로 확인했다. 추가 Mac·Expo Starter 결제·새 인증이 필요하지 않다. main/public/manual 조건, 기존 서명 freeze, 임시 파일 정리·공개 artifact 제외, 유료 대체/자동 push 빌드 금지를 유지한다. actionlint·셸·224개 중223통과/선택1개 제외·타입·iOS JS·문서 회귀는 확인했지만 첫 Mac 컴파일/제출/Apple 처리는 아직 미확인이다. [무료 빌드 실행 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow→main→Run workflow를 누른다. 이전 실패 실행 Re-run은 구cloud 코드이므로 쓰지 않는다. [공식 근거·구현·상태 구분](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)을 읽는다.
