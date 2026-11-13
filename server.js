@@ -1,3 +1,4 @@
+import {sendJson} from './server/http-json.js';
 import { createTaskSync } from './server/task-sync.js';
 import { backupScheduler } from './server/backups.js';
 import { createMailer, startMailWorker } from './server/mail.js';
@@ -46,7 +47,7 @@ async function json(req) {
 function validReminder(value) { return value === null || (typeof value === 'string' && value.length <= 30 && Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value); }
 const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Referrer-Policy', 'same-origin');
-  const send = (status, data, headers = {}) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers }); res.end(JSON.stringify(data)); };
+  const send = (status,data,headers={}) => sendJson(res,status,data,headers);
   try {
     const url = new URL(req.url, 'http://localhost'), path = url.pathname;
     if (await features.callback(req, res, path, url)) return;
@@ -90,7 +91,7 @@ const server = http.createServer(async (req, res) => {
         const previous = tokenFrom(req); if (previous) store.logout(previous);
         return send(path.endsWith('register') ? 201 : 200, { user: result.user, expiresAt: result.expiresAt, ...(req.headers['x-duckduck-client'] === 'native' ? { token: result.token } : {}) }, { 'Set-Cookie': cookie(result.token, 30 * 24 * 60 * 60) });
       }
-      if (path === '/api/health' && req.method === 'GET') return send(200, { ok: true, authentication: 'session', version: 1 });
+      if (path === '/api/health' && req.method === 'GET') return send(200, { ok: true, authentication: 'session', version: 1, calendarWorkspace:2, release:/^[a-f0-9]{40}$/.test(process.env.RENDER_GIT_COMMIT??'')?process.env.RENDER_GIT_COMMIT:null });
       const token = tokenFrom(req), session = store.session(token);
       if (!session) return send(401, { error: '로그인이 필요해요.', code: 'AUTH_REQUIRED' });
       if(path==='/api/project/comments'&&req.method==='POST'){

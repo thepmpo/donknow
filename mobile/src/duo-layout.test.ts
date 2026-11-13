@@ -85,3 +85,12 @@ test('approved divider follows the actual pane gutter, respects insets and skips
  for(const hingeStatus of ['closed','partiallyOpen','unknown'] as const)assert.equal(duoSceneLayout({...g,hingeStatus}).divider,null);
  assert.equal(duoSceneLayout({...g,width:740,height:960}).divider,null);assert.equal(duoSceneLayout(g,false).divider,null);
 });
+
+test('Today stays above the unchanged camera-column tabs and yields when space is insufficient',async()=>{
+ const {duoSceneLayout,duoTabFrame,duoTodayFrame,DUO_CHROME}=await import('./duo-layout.ts');
+ for(const [width,height,hingeStatus] of [[390,844,'closed'],[960,740,'fullyOpen'],[740,960,'fullyOpen']] as const){
+  const scene=duoSceneLayout(base({width,height,hingeStatus,safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'occlusion',active:hingeStatus==='closed',frame:{x:width-60,y:32,width:28,height:28}}]}));
+  const before=duoTabFrame(scene,true)!,today=duoTodayFrame(scene,true)!;assert.ok(today);assert.equal(today.x,before.x);assert.equal(today.width,64);assert.equal(today.y+today.height+DUO_CHROME.gap,before.y+before.height-Math.min(before.height,DUO_CHROME.height));assert.equal(intersectRects(today,scene.back!),null);assert.deepEqual(duoTabFrame(scene,true),before);
+ }
+ const short=duoSceneLayout(base({height:240}));assert.equal(duoTodayFrame(short,true),null);
+});

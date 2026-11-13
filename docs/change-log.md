@@ -1,5 +1,15 @@
 # 변경 기록
 
+## 2026-11-13 — 첨부 Apple 캘린더·시스템 외형 정정
+
+[현재 구현 계약](calendar-apple-reference-2026-11-13.md). 사용자 답변으로 년·월은 캘린더 본문 우상단, 오늘은 물리 카메라 열의 세로 탭 바로 위 독립 원형, 밝게·어둡게는 시스템 설정으로 확정했다. 기존 light 고정·큰 2단 toolbar·월 화면 상시 agenda/무조건6주 화면 안 맞추기 규칙은 이 부분에서 대체한다.
+
+월42일은 보존하고 최소92pt 주 높이·내부 세로 스크롤·일정 직접 탭·색상 출처·인접 월 옅은 날짜를 적용했다. 큰 제목·출처 세로선·그룹 옵션의 상세, 왼쪽 목록 정렬, iOS DynamicColorIOS/웹 media 변수·Glass scheme·일반 시트의 semantic 배경을 반영했다. Today와 세로 탭/뒤로가기의 안전 좌표·오른쪽 활성 Calendar 우선·fold/rotation/초안을 보존한다. 알림/삭제는 지원하는 Google 원본 경로를 안내하고 가짜 동작을 만들지 않는다.
+
+Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못된200을 빈 일정 성공으로 처리하지 않기·실패 source 캐시 보존·JSON 직렬화 전 성공 헤더 금지를 수정했다. 실제 사용자 계정 오류 원인은 아직 재현하지 못했으며 공개 상태/fixture 개선과 구분한다. 쓰기/확인은 자동 재실행하지 않는다.
+
+단위247개 중246통과·실패0·기존 선택1제외를 확인했고, 타입·웹/격리 Calendar·Duo·전체 앱/로그인·모션·예약·iOS JS 및 공개 문서 회귀의 최종 영수증은 계약/검수 문서에 남긴다. 새 화면은 합성 데이터 웹 캡처다. **25번 앱에는 이번 수정이 없고 새 TestFlight를 자동 실행하지 않았다.** 데이터/인증·서명·무료 플랜·원본bundle·AI사무실 보류는 유지한다.
+
 ## 2026-11-13 — iPhone25 빌드·Apple 업로드 성공
 
 추가 약관 동의 확인 후 제가 연결된 GitHub로 실패job을 재실행했다. [43394742649 attempt3](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/3)·소스1643e0c, job131801055230/validate 모두success. 현재main6161372와 앱/서버/빌드 workflow 동일함을 비교했고 사용자 추가 Run workflow 없이 진행했다. **1.0.0(25) 서명IPA 생성18:29:43 KST·Apple 업로드18:30:18 KST 성공**. [실제 증거와 설치 안내](testflight-automation.md).

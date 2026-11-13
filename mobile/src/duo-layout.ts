@@ -125,3 +125,10 @@ export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|nu
  }).filter(r=>r.height>=DUO_CHROME.itemSize+12).sort((a,b)=>(b.y+b.height)-(a.y+a.height));
  return candidates[0]??null;
 }
+
+/** Independent accessory above the existing bottom-aligned tabs, in native coordinates. */
+export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
+ const frame=duoTabFrame(scene,backVisible);if(!frame)return null;
+ const height=DUO_CHROME.width,y=frame.y+frame.height-Math.min(frame.height,DUO_CHROME.height)-DUO_CHROME.gap-height;
+ return y>=frame.y?{x:frame.x,y,width:frame.width,height}:null;
+}

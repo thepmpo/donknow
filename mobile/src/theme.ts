@@ -1,3 +1,4 @@
+import {DynamicColorIOS,Platform} from 'react-native';
 import type { TextStyle } from 'react-native';
 import {DUO_CHROME} from './duo-layout';
 
@@ -10,13 +11,24 @@ export const palette = {
   blue50: '#e8f3ff', blue500: '#3182f6', blue700: '#1b64da',
   red500: '#f04452',
 } as const;
-export const colors = {
-  bg: palette.white, surface: palette.grey50, grouped: palette.grey100,
-  text: palette.grey900, secondary: palette.grey700, muted: palette.grey600,
-  subtle: palette.grey500, blue: palette.blue500, action: palette.blue700, blueText: palette.blue700,
-  line: palette.grey200, pale: palette.blue50, white: palette.white,
-  danger: palette.red500,
+// Semantic colors resolve inside native styles, including already-created StyleSheets.
+// Web variables also update without remounting forms or losing Calendar state.
+const semantic = {
+ bg: ['#ffffff','#000000'], surface: ['#f9fafb','#1c1c1e'], grouped: ['#f2f4f6','#2c2c2e'],
+ text: ['#191f28','#f5f5f7'], secondary: ['#4e5968','#d1d1d6'], muted: ['#6b7684','#98989d'],
+ subtle: ['#8b95a1','#8e8e93'], outsideMonth: ['#9299a3','#77777e'],
+ blue: ['#3182f6','#64a8ff'], action: ['#1b64da','#1b64da'], blueText: ['#1b64da','#64a8ff'],
+ line: ['#e5e8eb','#38383a'], pale: ['#e8f3ff','#10243e'], white: ['#ffffff','#ffffff'],
+ danger: ['#d92d40','#ff626c'],
 } as const;
+if(Platform.OS==='web'&&typeof document!=='undefined'&&!document.getElementById('duckduck-system-theme')){
+ const style=document.createElement('style');style.id='duckduck-system-theme';
+ const variables=(dark:boolean)=>Object.entries(semantic).map(([key,pair])=>'--duck-'+key+':'+pair[dark?1:0]).join(';');
+ style.textContent=':root{color-scheme:light dark;'+variables(false)+'}@media(prefers-color-scheme:dark){:root{'+variables(true)+'}}@media(prefers-contrast:more){:root{--duck-outsideMonth:var(--duck-muted)}}';document.head.appendChild(style);
+}
+export const colors=Object.fromEntries(Object.entries(semantic).map(([name,[light,dark]])=>[name,
+ Platform.OS==='web'?'var(--duck-'+name+')':Platform.OS==='ios'?DynamicColorIOS({light,dark,highContrastLight:name==='outsideMonth'?'#6b7684':light,highContrastDark:name==='outsideMonth'?'#98989d':dark}):light,
+])) as Record<keyof typeof semantic,string>;
 export const typography = {
   title: { fontSize: 30, lineHeight: 40, fontWeight: '700', letterSpacing: -0.6 },
   heading: { fontSize: 26, lineHeight: 35, fontWeight: '700', letterSpacing: -0.5 },

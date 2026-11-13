@@ -1,0 +1,50 @@
+{
+  "scope": "synthetic Expo web / isolated APIs, not native or real Google account",
+  "unit": {
+    "total": 247,
+    "passed": 246,
+    "failed": 0,
+    "skipped": 1
+  },
+  "logs": {
+    "calendar-check": {
+      "tail": "\n> donknow@1.0.0 check\n> node scripts/check.mjs\n\nSyntax checked 47 server/web/tool files\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-tests": {
+      "tail": "✔ free configuration fails closed without remote credentials or stable key and disallows insecure endpoints (2.256589ms)\n✔ weather uses fixed destination and city coordinates, caches/coalesces without personal data (21.834977ms)\n✔ weather failure and malformed payload are safe and never cached as success (0.679006ms)\nℹ tests 247\nℹ suites 0\nℹ pass 246\nℹ fail 0\nℹ cancelled 0\nℹ skipped 1\nℹ todo 0\nℹ duration_ms 9350.86991\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-types": {
+      "tail": "\n> duckduck-mobile@0.1.0 typecheck\n> tsc --noEmit\n\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-web-export": {
+      "tail": "node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.4e85bc9ebe07e0340c9c4fc2f6c38908.ttf (357KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Octicons.871378c6eab492a3e689a9385dc45a12.ttf (69KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.d2285965fe34b05465047401b8595dd0.ttf (54KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Zocial.1681f34aaca71b8dfb70756bca331eb2.ttf (26KB)\n\n› web bundles (3):\n_expo/static/js/web/Haptics-8fe24ec18871f02e5600691143a145af.js (3.6KB)\n_expo/static/js/web/index-6e398370ea74c3f11dc6948ea928157f.js (68KB)\n_expo/static/js/web/index-dfda6c12e60cafa77286b82712d26f97.js (1.4MB)\n\n› Files (3):\nfavicon.ico (15KB)\nindex.html (1.2KB)\nmetadata.json (49B)\n\nExported: dist-web"
+    },
+    "calendar-ios-export": {
+      "tail": "node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Fontisto.ttf (314KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Foundation.ttf (57KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf (390KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf (1.3MB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf (357KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Octicons.ttf (69KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.ttf (54KB)\nnode_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Zocial.ttf (26KB)\n\n› ios bundles (1):\n_expo/static/js/ios/index-1c85591b6753260824a8810d7a8fed1e.hbc (2.7MB)\n\n› Files (1):\nmetadata.json (1.3KB)\n\nExported: dist-ios"
+    },
+    "calendar-reference-after": {
+      "tail": "PASS:calendar readability/scroll, light/dark live theme, direct event tap, bounded malformed GET recovery, no write replay,day/event detail,explicit preview/confirm/cancel,all-day exclusive end,draft retention,week/day steps,tab retention,search,source permissions,partial/error recovery,44pt commands and large text"
+    },
+    "calendar-duo-after": {
+      "tail": "PASS: press-only lens/expansion, vertical and horizontal drag preview/release/outside cancel, keyboard activation, floating capsule 320/390/430 and safe bottom34/160% labels; selection material replaces blue fill, explicit neutral fallback/opaque states, unclipped glass host; inset hairline centered in actual pane gutter, decorative/noninteractive, fixed through scroll/tab changes, absent in portrait/folded/ordinary layouts and occupied hinge; 28pt icons/52pt targets/64pt bar, actual selection movement/rapid changes/reduced motion, explicit glass fallback/forced-colors, physical camera centerline outside body; fixed Calendar + active Todo, right-only tab changes, portrait current screen, real back, draft/month/scroll node preservation, safe gaps, short-height access and no startup fallback flash; native geometry/demo fixture only"
+    },
+    "calendar-full-e2e": {
+      "tail": "\n> duckduck-mobile@0.1.0 test:e2e\n> node e2e/app.mjs\n\nPASS: actual Expo web bundle; five tabs, native PanResponder swipe + three-second countdown and removal, log restore, 42-day calendar, Duck record search/filter/open/restore, draft edit/discard and transfer, service disclosure, assistant preview/explicit confirmation/history plus consent/source-backed AI proposals (fixture), signup, cloud API create and cookie reload, logout, tenant isolation, session expiry clears modal, demo/cloud separation, optimistic completion and queued undo before acknowledgement, stale acknowledgement ignored, failed writes rollback, retry recovery, email verification, password reset/relogin, memo bullets/continuation, calendar memo reopen, hidden-but-working scroll, legacy-server memo guard, reminder persistence, missing OAuth setup, Google opt-in completion sync and connection diagnosis (fixture), personal JSON download, Google Tasks list selection and external search/reference-only results (fixture), Apple Reminders web guidance, Kakao paste and share message, account deletion, responsive widths\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-login": {
+      "tail": "\n> duckduck-mobile@0.1.0 test:web-auth\n> node e2e/web-auth.mjs\n\nPASS: original web signup, HttpOnly cookie, create, reload, logout, account isolation; no JS errors\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-motion": {
+      "tail": "\n> duckduck-mobile@0.1.0 test:motion\n> node e2e/motion.mjs\n\nPASS: drag-to-dismiss and accessible X, button press/release, tab fade, rapid navigation preserves draft, three-to-one countdown then fade and collapse, live reduced-motion preference, undo cancels expiry; compact phone list density\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-automations": {
+      "tail": "\n> duckduck-mobile@0.1.0 test:automations\n> node e2e/automations.mjs\n\nPASS: scheduled chat, opt-in/AI consent, exact city/time/provider save, independent weather, 320px footer, polling preserves typing, read on active tab only, account isolation; fixture only\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2\nnpm notice To update run: npm install -g npm@12.2.2\nnpm notice"
+    },
+    "calendar-ai-chat": {
+      "tail": "PASS: inline AI consent, full answer / bounded follow-up, editable proposals, preview and single confirm, pasted text consent, tab/resize continuity, stale record read preservation, advanced-close refresh, visible new results over old history, provider reveal, read-only prepared dates, owner isolation, unavailable-AI manual fallback; mocked provider only"
+    },
+    "calendar-ai-errors": {
+      "tail": "PASS: mobile touch + both motion preferences; visible pending and 403/502/server timeout/client timeout with empty or long history; preserved input/consent, explicit edited retry, status retry, independent history load, stale verification flag, expired login; mocked provider only"
+    }
+  }
+}

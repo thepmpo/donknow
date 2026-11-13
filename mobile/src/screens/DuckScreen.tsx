@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   welcomeNote: { ...typography.detail, color: colors.muted, marginTop: 12, textAlign: 'center' },
   cardHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }, dismiss: { minHeight: 44, paddingHorizontal: 8, justifyContent: 'center' },
   draftInput: { ...typography.body, color: colors.text, minHeight: 56, paddingVertical: 12, borderBottomWidth: 1, borderColor: colors.line },
-  backdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight: '90%', backgroundColor: colors.white, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24, paddingBottom: 36 },
+  backdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight: '90%', backgroundColor: colors.bg, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24, paddingBottom: 36 },
   pasteInput: { ...typography.detail, borderWidth: 1, borderColor: colors.line, borderRadius: 16, padding: 16, color: colors.text, minHeight: 64, backgroundColor: colors.surface },
   screen: { flex: 1, paddingTop:layout.pageTop,paddingHorizontal: layout.pageInset, paddingBottom: 16 }, welcome: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 32, minHeight: 200 },
   duck: { fontSize: 56, marginBottom: 24 }, greeting: { ...typography.heading, color: colors.text, textAlign: 'center' },
