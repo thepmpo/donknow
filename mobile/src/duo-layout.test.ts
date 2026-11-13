@@ -58,7 +58,7 @@ test('camera-column controls use full native coordinates even when the body safe
 test('hidden inner camera geometry keeps the same camera column; unrelated or absent occlusions have explicit fallback sources',async()=>{
  const {duoSceneLayout}=await import('./duo-layout.ts');
  const camera={x:900,y:32,width:28,height:28},g=base({hingeStatus:'fullyOpen',safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'occlusion',active:false,frame:camera}]});
- assert.equal(duoSceneLayout(g).column!.x+24,914);assert.equal(duoSceneLayout(g).alignment,'trailing-occlusion');
+ assert.equal(duoSceneLayout(g).column!.x+32,914);assert.equal(duoSceneLayout(g).alignment,'trailing-occlusion');
  assert.equal(duoSceneLayout({...g,regions:[]}).alignment,'system-inset');assert.equal(duoSceneLayout({...g,regions:[],safeArea:{...g.safeArea,right:0}}).alignment,'trailing-edge');
  for(const hingeStatus of ['closed','partiallyOpen','unknown'] as const)assert.equal(duoSceneLayout({...g,hingeStatus}).panes,null);
  assert.equal(duoSceneLayout({...g,hingeStatus:undefined}).panes,null,'an old binary without a pose cannot guess unfolded from width');

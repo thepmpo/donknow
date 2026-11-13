@@ -35,4 +35,5 @@ export const layout = {
   navigationHeight: 72, sectionGap: 24, actionGap: 16,
   sheetInset: 24, titleBottom: 16,
   duoNavigationWidth: DUO_CHROME.width, duoNavigationHeight: DUO_CHROME.height, duoNavigationInset: DUO_CHROME.gap,
+  duoNavigationItemSize: DUO_CHROME.itemSize, duoNavigationIconSize: DUO_CHROME.iconSize,
 } as const;

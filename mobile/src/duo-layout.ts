@@ -69,7 +69,7 @@ export type DuoSceneLayout={
  alignment:'trailing-occlusion'|'system-inset'|'trailing-edge';
  cameraRegion:DuoRect|null;
 };
-export const DUO_CHROME={width:48,height:226,gap:8,paneGap:16} as const;
+export const DUO_CHROME={width:64,height:272,itemSize:52,iconSize:28,gap:8,paneGap:16} as const;
 const {width:CHROME_WIDTH,gap:CHROME_GAP,paneGap:PANE_GAP}=DUO_CHROME;
 function clearFrame(initial:DuoRect,occupied:DuoRect[]){
  let frames=[initial];for(const area of occupied)frames=frames.flatMap(rect=>subtract(rect,area)).sort((a,b)=>b.width*b.height-a.width*a.height).slice(0,128);
@@ -113,6 +113,6 @@ export function duoSceneLayout(g:DuoGeometry,workspace=true):DuoSceneLayout{
 export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
  const candidates=scene.segments.map(segment=>{
   if(backVisible&&scene.back&&intersectRects(segment,scene.back)){const y=scene.back.y+scene.back.height+CHROME_GAP;return{...segment,y,height:Math.max(0,segment.y+segment.height-y)};}return segment;
- }).filter(r=>r.height>=44).sort((a,b)=>(b.y+b.height)-(a.y+a.height));
+ }).filter(r=>r.height>=DUO_CHROME.itemSize+12).sort((a,b)=>(b.y+b.height)-(a.y+a.height));
  return candidates[0]??null;
 }

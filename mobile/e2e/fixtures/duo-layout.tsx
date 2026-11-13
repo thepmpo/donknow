@@ -1,3 +1,4 @@
+import {MotionProvider} from '../../src/motion';
 import {Shell} from '../../App';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 // All marker geometry is fixture-only. Product screens never draw a fake camera.
@@ -31,4 +32,4 @@ function Fixture(){
   {camera&&<View pointerEvents="none" testID="fixture-camera-marker" style={{position:'absolute',left:camera.x,top:camera.y,width:camera.width,height:camera.height,borderRadius:camera.width/2,backgroundColor:'#111',zIndex:100}}/>}
  </View></SafeAreaProvider>;
 }
-createRoot(document.getElementById('root')!).render(<Fixture/>);
+createRoot(document.getElementById('root')!).render(<MotionProvider><Fixture/></MotionProvider>);
