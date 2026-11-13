@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
   "codeCommit": "083192e7815d81f8c3241411026939e2b84d5f2a",
-  "assetCommit": "083192e7815d81f8c3241411026939e2b84d5f2a",
-  "imageCount": 244,
+  "assetCommit": "93b311d4a8291b5f65b4eeb53955afce4953b99c",
+  "imageCount": 264,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -38,6 +38,76 @@
       "bytes": 45198,
       "sha256": "41ad47c9e93589e3c091b924550e48eee602f863c7ccc3b896c7067796b06f21",
       "import_path": "images/artifacts__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-demo.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 68613,
+      "sha256": "c5b5d5a65f2dbbf52dec7897023d2f5ff6298b16c8dfa5f5a78038728e52a660",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-demo.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-faq.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 61332,
+      "sha256": "dfeb846b0f1dfc7a717cd24c0cde19113cee1d8ac7ce4f40e42f373fc26a1ea0",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-faq.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-footer.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 89073,
+      "sha256": "ed0bbdcfb09832d742da308dff215db848d2016a22ff0d77db70aa32bf1a4bb0",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-footer.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-hero-comparison.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 436806,
+      "sha256": "995fa24b217849c8d75e56de64130d6504388b2b2ae5f70e4041657e52b95382",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-hero-comparison.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-hero.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 231713,
+      "sha256": "55383b4a290b61f8f6406da4d6d13caa07b7cbda359ab39dd92cb9ab3b9dde13",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-hero.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-intro.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 98375,
+      "sha256": "c0cad852a3a9bc8d867dcd0afdb38700aeba2a8e956585eefb89e4cc2110a33d",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-intro.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-menu.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 237261,
+      "sha256": "6291db4a5d9128585e5fc018e5732b3f88be386ae6c867a9fac85465f4909257",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-menu.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-open.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 119384,
+      "sha256": "d69da222d97f3099e355c5e66310efeba174841296cf72cc64c40f8f0eb05fe9",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-open.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-research.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 184261,
+      "sha256": "db292e0836f22e0c9d0a1946e43fd7f47c7db0bd90c9f95ce71fc94b5c98b5e2",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-research.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/mobile-security.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 68878,
+      "sha256": "de004acd71f7cfdb44c694061ae33dcdc278ff7123bfe72e171e4c97778141d2",
+      "import_path": "images/artifacts__duck-website-2026-11-13__mobile-security.png"
     },
     {
       "path": "artifacts/mobile-account-settings.png",
@@ -794,6 +864,76 @@
       "bytes": 438564,
       "sha256": "abf3a2720d95b5148b3334a2bd6d1aa428cbac4cb15ed58b6a72256acba75cc3",
       "import_path": "images/artifacts__design-guide-fixture.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-demo.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 263675,
+      "sha256": "b186dab1d6052268d85e34c4ef2562dcf2f4a511502a1ef1314609435bea9832",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-demo.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-faq.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 113627,
+      "sha256": "e1a31fbde0f30ddb745dc6c08f0f07ee49946beb2e7bfe3792abf86d67de5e61",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-faq.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-footer.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 204285,
+      "sha256": "b37b56b14696b0fa957fc15e87c17733186df2ecc6280a495cfd78573d6b16b4",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-footer.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-hero-comparison.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 1050636,
+      "sha256": "8f35adc2a370458b550f91fcb6e6a55893ed495875d289219912924246ce21f2",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-hero-comparison.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-hero.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 567582,
+      "sha256": "f84f73466a536e91b3228de7f2387b61f3f3bbb23b2f99d29988e3507ce3846e",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-hero.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-intro.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 299578,
+      "sha256": "9d424cb37774dcb8bca9f99963c4042145781b7d3f7c2380a32c8363944efc87",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-intro.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-open-comparison.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 1068710,
+      "sha256": "52a86f6f1972f25272443c66ce1bfb8aeddda35f3721bfd5928ca4be61874bf5",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-open-comparison.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-open.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 534417,
+      "sha256": "11d020b3564dfaf5f1925adf6b6066e543c5f1e680f4fce4aaeb80c441140887",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-open.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-research.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 399501,
+      "sha256": "f98d1b81cf07b6b1c50709b2000190e232d8cc574ca0e3e39afe081f73633e0d",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-research.png"
+    },
+    {
+      "path": "artifacts/duck-website-2026-11-13/desktop-security.png",
+      "category": "덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님",
+      "bytes": 114871,
+      "sha256": "434dbf9446fe7884cc18e4371cf3e41865203b6e50e05bdef344fb67df5b2017",
+      "import_path": "images/artifacts__duck-website-2026-11-13__desktop-security.png"
     },
     {
       "path": "artifacts/duckduck.png",

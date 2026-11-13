@@ -1,5 +1,13 @@
 # 매일 개발 정리
 
+## 2026-11-13 — 덕 소개 사이트 디자인·동작 구현과 검증 완료
+
+[전체 구현 계약](duck-website-brief-2026-11-13.md), [QA](../website/design-qa.md), [다운로드/실행](../tools/duck-website/README.md). 사용자 정정으로 정지 캡처가 아닌 전체 동작을 구현했다. 원본 캡처43423800908 성공·ZIP 해시 검증/실제 회수 후 별도 website에 Hero 반복영상/등장·scroll backdrop/footer reveal·기능 pill/4개 실제 덕 영상/진행률/자동 전환·키보드/모바일 touch swipe·menu/KR/EN·실제 Duck QR/dialog·FAQ를 연결했다. 글자/줄바꿈·화면 밖 재생·동작 줄이기 초기화·anchor 이중 간격·다운로드 JS의 replacement-token 손상을 고쳐 재검수했다. 코드93b311d이며 기존 앱/데이터/인증·서명·복구bundle과 native 빌드 설정은 그대로다.
+
+PC1440×1000/mobile390×844 동작,320/390/700/768/1440 overflow 없음, pageerror0/실패 응답0/외부 호출0. production build·packaging4·다운로드 회귀1·전체250개 중249통과/실패0/기존 선택1제외. 원본/구현을 한 이미지에 함께 놓아 시각 비교했고 [실제 조작 영상·PNG·검증 JSON](../artifacts/duck-website-2026-11-13/)과 [원본 영상/실측 JSON](../artifacts/duck-website-reference-2026-11-13/)을 보존했다. ZIP은 설치 없이 전달 가능한 HTML+상대 미디어이며 같은 패키지 로컬 HTTP 검증은 성공했다. 환경 file URL 정책 때문에 사용자 Mac/Windows의 직접 파일 열기는 별도다.
+
+관리 환경 preview relay 부재와 panel 도구 무응답으로 사용자 화면이 열렸다고 주장하지 않는다. [확인용 ZIP](https://raw.githubusercontent.com/thepmpo/donknow/93b311d4a8291b5f65b4eeb53955afce4953b99c/tools/duck-website/duck-website-preview.zip)을 제공한다. 원본 배경/장식은 참고 자산이고 공개 전 Duck용 교체/권한 확인이 남아 있다. 기존 운영 앱을 덮어쓰거나 새 소개 사이트를 공개하지 않았다. [선택한 개인 Notion 기록](https://app.notion.com/p/41718ee82991812eb531ed8d776e095d)을 갱신했다. 아래 캡처 대기/미구현은 당시 이력이다.
+
 ## 2026-11-13 — 피클과 같은 덕 소개 사이트 요청·원본 캡처 대기
 
 [사이트 요청·실제 조사와 덕 문구 초안](duck-website-brief-2026-11-13.md), [별도 사이트 QA](../website/design-qa.md). 사용자는 피클 한국어 사이트의 디자인을 유지하고 덕 내용으로 바꾸라고 요청했다. 외부 브라우저는 실제 구성/다운로드·FAQ 동작을 보고했지만 screenshot/정량 스타일은 전달되지 않았다. 로컬은 CONNECT403/ERR_TUNNEL_CONNECTION_FAILED이며 current/enforced restricted 허용 목록에pickle.com이 없다. 원본 확보 전 사이트 코드/scaffold/서버/배포는 만들지 않았고 QA는blocked다. 원본 이미지 없이 동일하게 만들었다고 하지 않는다. 원본 캡처 또는 최소 출처 도메인 허용 후 이어간다. 기존 앱/계정/데이터·서명·빌드·원본bundle은 보존하며 새 TestFlight는 요청하지 않았다.

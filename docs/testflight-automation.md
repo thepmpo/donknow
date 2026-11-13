@@ -1,5 +1,11 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-13 최신 확인 — 1.0.0(26) native·Apple 업로드 성공
+
+사용자가 직접 시작한 [43408230557](https://github.com/thepmpo/donknow/actions/runs/43408230557)·소스2a7aa82d0940d89c594cfebbc5db7cbe3da94dbf를 플랫폼 연결 도구로 확인했다. validate131827799528·build-and-submit131828123539 모두success, 실제 버전 **1.0.0(26)**다. **서명 IPA 생성2026-11-13 10:27:56 UTC/19:27:56 KST**, **Apple 업로드10:28:25 UTC/19:28:25 KST 성공**이다. [EAS 제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/7b09c2b0-f3cd-4d8d-84e6-2aeb5a553b41).
+
+083192e의 Apple 참고 Calendar·시스템 밝게/어둡게·서버 응답 수정이 포함된다.25번에는 없다는 이전 설명은 역사이고26번을 확인한다. Apple 처리 완료/TestFlight26 표시·사용자 설치·실기기/실계정 Google 오류 해소는 별도 미확인이다. 이 사이트 작업 중 새 native 빌드를 요청하거나 자동 push 빌드를 켜지 않았다. 사이트 웹 프로토타입과 iPhone 앱 빌드는 별개다. 아래 ‘새 빌드 없음/권한 차단’은 당시 상태이며 최신 성공을 덮지 않는다.
+
 ## 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
 
 사용자가 “오류 확인된 거면 빌드해”라고 요청했다. 서버 응답 처리의 확인된 코드 문제는 수정/검증했고, **실제 사용자 Google 계정의 오류 원인은 아직 재현하지 못했다**고 구분해 안내했다. 원격main43e06a8을 fetch했으며 공개 health의 `ok:true / calendarWorkspace:2 / release:43e06a883eb60b503fe829e138f309839c7ecd52`를 다시 확인했다. 단위246통과·타입/웹/iOS JS·UI 회귀와 실제43e06a8 원격검사43406903820 성공은 이전 검증 영수증이다. 이번에 새 IPA를 만든 것은 아니다.

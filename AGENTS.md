@@ -1,5 +1,15 @@
 # duckduck 개발·인계 지침
 
+## 2026-11-13 최신 확인 — 1.0.0(26) native·Apple 업로드 성공
+
+사용자가 직접 시작한 [43408230557](https://github.com/thepmpo/donknow/actions/runs/43408230557)·소스2a7aa82d0940d89c594cfebbc5db7cbe3da94dbf를 플랫폼 연결 도구로 확인했다. validate131827799528·build-and-submit131828123539 모두success, 실제 버전 **1.0.0(26)**다. **서명 IPA 생성2026-11-13 10:27:56 UTC/19:27:56 KST**, **Apple 업로드10:28:25 UTC/19:28:25 KST 성공**이다. [EAS 제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/7b09c2b0-f3cd-4d8d-84e6-2aeb5a553b41).
+
+083192e의 Apple 참고 Calendar·시스템 밝게/어둡게·서버 응답 수정이 포함된다.25번에는 없다는 이전 설명은 역사이고26번을 확인한다. Apple 처리 완료/TestFlight26 표시·사용자 설치·실기기/실계정 Google 오류 해소는 별도 미확인이다. 이 사이트 작업 중 새 native 빌드를 요청하거나 자동 push 빌드를 켜지 않았다. 사이트 웹 프로토타입과 iPhone 앱 빌드는 별개다. 아래 ‘새 빌드 없음/권한 차단’은 당시 상태이며 최신 성공을 덮지 않는다.
+
+## 2026-11-13 최신 — 덕 소개 사이트의 실제 동작 구현
+
+피클 한국어 사이트의 디자인뿐 아니라 영상·스크롤·기능 선택과 데모 연동·메뉴/QR/FAQ까지 별도 `website/`에 구현했다. [현재 계약과 수치](docs/duck-website-brief-2026-11-13.md), [QA](website/design-qa.md), [실행/다운로드](website/README.md)를 먼저 읽는다. 코드93b311d, 원본43423800908의 실제 영상·DOM/스타일과 같은 viewport 비교를 근거로 했다. PC/모바일 조작·실제 touch swipe·동작 줄이기·overflow·build/packaging 검사를 통과했다. 휴대폰은 실제 덕 Expo 웹+합성 데이터 녹화4개다. 원본 배경·장식은 비교용 참고 자산이며 공개 제품 출시 전 덕 자산 교체/권한 확인이 필요하다. 사이트 자체는 아직 운영 앱에 덮어쓰거나 공개 배포하지 않았다. [다운로드 ZIP](tools/duck-website/duck-website-preview.zip)은 압축을 풀고 index.html을 여는 용도이며 Mac/Windows 직접 파일 열기·Safari 실기기 검수는 별도다. 기존 앱/인증/데이터/서명·수동 무료 TestFlight 정책과 AI사무실 정지는 보존한다.
+
 ## 2026-11-13 — 첨부 Apple 캘린더·시스템 외형 정정
 
 [현재 구현 계약](docs/calendar-apple-reference-2026-11-13.md). 사용자 답변으로 년·월은 캘린더 본문 우상단, 오늘은 물리 카메라 열의 세로 탭 바로 위 독립 원형, 밝게·어둡게는 시스템 설정으로 확정했다. 기존 light 고정·큰 2단 toolbar·월 화면 상시 agenda/무조건6주 화면 안 맞추기 규칙은 이 부분에서 대체한다.

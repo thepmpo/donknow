@@ -29,6 +29,8 @@ latest_contract=(root/'docs/design-guide.md').read_text().split('## 최신 구�
 motion_tokens=dict(re.findall(r'(\w+):\s*([\d.]+)',theme.split('export const navigationMotion =')[1].split('} as const;')[0]))
 latest_html='<section id="current-contract"><h2>최신 구현 계약 · 다른 채팅과 서비스로 이어받기</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in latest_contract.splitlines() if line.strip())+'<h3>현재 모션 토큰 · 덕 구현값</h3><table>'+''.join('<tr><td>'+name+'</td><td>'+value+('배' if name=='pressedScale' else 'ms')+'</td></tr>' for name,value in motion_tokens.items())+'</table><p><a href="https://developer.apple.com/design/human-interface-guidelines/tab-bars">Apple Tab bars</a> · <a href="https://developer.apple.com/design/human-interface-guidelines/materials">Apple Materials</a> · <a href="https://developer.apple.com/videos/play/wwdc2025/219/">공식 동작 설명</a></p></section>'
 tone_html=latest_html+tone_html
+website_contract=(root/'docs/design-guide.md').read_text().split('## 2026-11-13 — 별도 소개 사이트의 시각·모션 기준',1)[1].split('## 2026-11-13 — 첨부 Apple',1)[0]
+tone_html='<section id="website-motion-contract"><h2>별도 소개 사이트 · 디자인과 실제 동작</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in website_contract.splitlines() if line.strip())+'</section>'+tone_html
 calendar_audit=(root/'docs/design-guide.md').read_text().split('## 캘린더 개선 전체 구현 — 2026-11-13',1)[1]
 audit_html='<section id="calendar-audit"><h2>캘린더 개선 전체 구현 · CA-01~20</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in calendar_audit.splitlines() if line.strip())+'</section>'
 tone_html=audit_html+tone_html
