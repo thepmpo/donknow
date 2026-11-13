@@ -40,3 +40,5 @@
 ## 실제 로컬 검증
 
 구현 [8e512cf](https://github.com/thepmpo/donknow/commit/8e512cf22a0be9e82ddf0d16faee08beceb1bd8f)를 검증했다. 루트219개 중218통과·실패0·기존 선택1개 제외,44개 문법·모바일 타입·웹/iOS JS 출력·전체 앱·예약UI·채팅/오류·모션·계정 격리·Duo 상단 탭·복원 보호를 확인했다. 실제 모델·푸시·외부 쓰기는 모의이며 운영 계정 원본을 변경하지 않았다. GitHub/Render/예약 실행 결과는 공개 반영 후 별도로 기록한다.
+
+연결 검증 보완: 수동gh 실행은 환경의GitHub API CONNECT403에 막혀 전용 실행기 변경 시 자동 연결 검사를 추가했다. 서버protocol2 대기 후 짧은 OIDC를 받아 동일한 보호 endpoint를 확인하며, 서명/저장소ID/main/전용workflow 제한을 유지한다. EAS를 호출하지 않는다.

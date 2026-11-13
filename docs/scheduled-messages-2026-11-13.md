@@ -35,7 +35,9 @@
 
 `.github/workflows/briefing-delivery.yml`이5분 간격의 예약 기회를 만들고, 깨어 있는 서버는1분 간격으로 due 예약을 확인한다. GitHub 일정 지연과 Render 무료 서버 기동 때문에 메시지가 몇 분 늦을 수 있다. 무료 서버가 완전히 중지되어도 다음 GitHub 요청이 깨울 수 있지만 GitHub/Render 자체 장애나 사용 한도는 별도다.
 
-장기 비밀 토큰을 추가하지 않는다. GitHub Actions의 짧은 수명 OIDC를 공식JWKS의RSA 서명으로 검증한다. 정확한 issuer·audience·저장소명/숫자ID·main·전용workflow_ref·schedule/workflow_dispatch·발급/만료시각을 확인한다. PR/다른 저장소/다른workflow/만료/서명 변조는 거부한다. 실행 endpoint는 사용자ID나 임의 작업 인자를 받지 않는다. JWT/개인 본문은 실행 로그에 적지 않는다.
+장기 비밀 토큰을 추가하지 않는다. GitHub Actions의 짧은 수명 OIDC를 공식JWKS의RSA 서명으로 검증한다. 정확한 issuer·audience·저장소명/숫자ID·main·전용workflow_ref·schedule/workflow_dispatch/main의전용실행기push·발급/만료시각을 확인한다. PR/다른 저장소/다른workflow/만료/서명 변조는 거부한다. 실행 endpoint는 사용자ID나 임의 작업 인자를 받지 않는다. JWT/개인 본문은 실행 로그에 적지 않는다.
+
+직접 gh 수동 실행은 작업 환경의 api.github.com CONNECT403 정책에 막혔다. 전용workflow·전달script·인증 코드가 main에 바뀌면 연결 검사도 자동 실행하도록 보완했다. 이 검사는 서버의 schedulerProtocol2가 준비될 때까지 기다린 후 새 OIDC를 받아 동일한 due endpoint를 호출한다. 새 저장소·브랜치·workflow를 신뢰하지 않으며 서명·숫자 저장소ID·audience 검증은 유지한다. 실제 실행 성공과 정시 메시지 수신은 별도로 기록한다.
 
 예약 workflow는 EAS/TestFlight를 호출하지 않는다. 현재 저장소는 공개이며 표준 GitHub runner를 사용한다. 예약 HTTP 호출이 무료 Render의 기동 시간을 늘리므로 같은 워크스페이스의750시간/월·대역폭 한도를 확인한다. 유료 플랜·업그레이드는 자동 활성화하지 않는다.
 
