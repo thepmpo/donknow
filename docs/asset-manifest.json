@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "c4eebbd699c071a27e0712cb4d9db91df83d961c",
-  "assetCommit": "c4eebbd699c071a27e0712cb4d9db91df83d961c",
-  "imageCount": 381,
+  "codeCommit": "340103049933e317f31b8f8eb721c05df5714639",
+  "assetCommit": "340103049933e317f31b8f8eb721c05df5714639",
+  "imageCount": 458,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -38,6 +38,181 @@
       "bytes": 45198,
       "sha256": "41ad47c9e93589e3c091b924550e48eee602f863c7ccc3b896c7067796b06f21",
       "import_path": "images/artifacts__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 47547,
+      "sha256": "9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-apple-reminders.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35615,
+      "sha256": "eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-action-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35773,
+      "sha256": "40cfc074db776f5927b2fc45ddb073f76fa52a82349a876ceb60ca5a294d3bb9",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-ai-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 48140,
+      "sha256": "452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-auth.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-calendar-events-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 32177,
+      "sha256": "b3bffb1c55b90add1809af2611c0922433cae609021ffec54a03b243c39303ed",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-calendar.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 32815,
+      "sha256": "e1bdc7021683e641f736cf28fc3bd70b0b7bbbf2bd1706dc7c2a2cc9f6acbafc",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-completed-reference-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 50521,
+      "sha256": "37cbb686baf59b4520a9476e258d4608cb36afc179622bb5b04e766044a83a43",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-duck-draft.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 34137,
+      "sha256": "9a53d580d97429080258ebe8f2c665bd5e233a0d8dab21e9e7d57f4fbc03af68",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-duck-draft.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-duckduck.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 34072,
+      "sha256": "8e56df5b67ef3d3405b1bce5698ac62f2f22a1935e3584c70b67e910590fe4ac",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-external-search-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 47437,
+      "sha256": "0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-external-search-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-google-tasks-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 50179,
+      "sha256": "d78c0d9939604d7093738f3413cd2f9841eebf129eb9fa59dee03dd94983ba7b",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-paste.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 43499,
+      "sha256": "297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-kakao-paste.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-share.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 30625,
+      "sha256": "8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-log.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 29938,
+      "sha256": "530a1e1eb4a4507b32a97796531c140d9a2c31c2b7350ae274e921c1ea57844f",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-log.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-notes-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 22314,
+      "sha256": "df7c97b68d34e694898b98ade501432ec1502c33f6cff91cf8de74fe4c68c26e",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-personal-export.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 54728,
+      "sha256": "2e6fdaeea4f7802a7c07135c480b3f7a431b86911d80e5e158aa4be4e7189778",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-profile.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 48215,
+      "sha256": "e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-record-search.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 38022,
+      "sha256": "b770fd71be459554d1b15f2605d999f6367415c6c893edec0661b5a882bd9e26",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-record-search.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-reminder.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 23432,
+      "sha256": "426d4f56745c079797486e1c06e6b787494407084849d28c1703f121d50d3cd5",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-services.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 50883,
+      "sha256": "294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-services.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-task-sync-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 58700,
+      "sha256": "97713ef26c00cfd60ffc27e880e9da19b8b4f8d87086b36520e9a458248e62a7",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-today-weather-fixture.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 41961,
+      "sha256": "8171edf7c301261a653a165caa6a120b06f26c17de84536ebbbead2484685de2",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-today-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-todos.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 26591,
+      "sha256": "464221211e23473583494ca1a91351d9531ba7bbe193c5cf1fbb10349bc543bb",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-verification.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 38385,
+      "sha256": "0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__app__mobile-verification.png"
     },
     {
       "path": "artifacts/calendar-viewport-2026-11-13/app/mobile-account-settings.png",
@@ -836,6 +1011,370 @@
       "bytes": 34572,
       "sha256": "e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054",
       "import_path": "images/artifacts__calendar-audit-2026-11-13__16-tab-return-resets-month.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74087,
+      "sha256": "99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__01-ordinary-enter-today.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/02-ordinary-long-press-fortnight.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 52201,
+      "sha256": "7e5aee00470b54f3404bc464e0edfb0788860330facf6fdc52d7df57a3a95258",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__02-ordinary-long-press-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/03-ordinary-long-press-from-other-tab.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 56354,
+      "sha256": "31eb23fc91dacda8639c42a9fcb991893b2d20e1516802aceb363f53b5998bf6",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__03-ordinary-long-press-from-other-tab.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/04-ordinary-motion-enabled-shortcut.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 56650,
+      "sha256": "da4532cf010948b894fc2126fdebacc790cc7f18c133af1e636b96a195a97b3e",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__04-ordinary-motion-enabled-shortcut.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/before/before-ordinary-month.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74087,
+      "sha256": "99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__before__before-ordinary-month.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/before/before-ordinary-today-menu.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 78680,
+      "sha256": "a3dec9866506835cc8156369d074303eec6da1f1ce6e82bbecd22e6ade63a8db",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__before__before-ordinary-today-menu.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/before/before-ordinary-todos.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 48883,
+      "sha256": "6e5af017d5f847d915cea2377fb3cefd15b5abee335e36ed5de6e3909c8b05eb",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__before__before-ordinary-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/cache/cache-account-isolation.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74092,
+      "sha256": "f7d3a65338158db285d03e64e2da473303855968e19cc649e01e4401b212d0f7",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__cache__cache-account-isolation.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/cache/cache-authoritative-delete.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 75676,
+      "sha256": "f347b1b78604907f4f3051f0f02623bad6e939486e12b02d72ea92d535b38ea0",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__cache__cache-authoritative-delete.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/cache/cache-fast-source-first.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 75877,
+      "sha256": "a65d30c3c0b38b58028bb8aa80cf30fbb938ed1e58ad9c920920353186d6aa19",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__cache__cache-fast-source-first.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/cache/cache-immediate-fortnight.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 58010,
+      "sha256": "75416216f94149ced8e2c74f9846dffbeda0514caeff43f9586e897485fe5a6b",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__cache__cache-immediate-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/cache/cache-updated-month.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 75877,
+      "sha256": "a65d30c3c0b38b58028bb8aa80cf30fbb938ed1e58ad9c920920353186d6aa19",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__cache__cache-updated-month.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/01-open-calendar-todo.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 52235,
+      "sha256": "af136cf606e074866e95add63b10be0d0c73413601b0b33fb8a675c73d10074c",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/02-open-calendar-duck.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 61292,
+      "sha256": "9e707750565adb8c4ffc6ad009a3db181f227a31c9d03a2981a6e8fbf2148944",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/03-portrait-current-screen.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/04-closed-camera-column.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/05-back-in-camera-column.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 63122,
+      "sha256": "06cc362c67a647f8f40b14833c823ad6073e5c9867be8ed79df02a532798c186",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/06-dragging-lens-web-fallback.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 54368,
+      "sha256": "09980033d82905955676301023ac71f1949c2e17a4d41bfd6d411e611b8bef6d",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/07-iphone-320-floating-tabs.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 31437,
+      "sha256": "7c0dba3d0ae6e68cda7c292bdff09db27247f1c77603b1322a90b971cadfd85e",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/07-iphone-390-floating-tabs.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 32737,
+      "sha256": "4365d3abb8eedf5a1610d90829b9fa3e63c1bfbcdf51f557dcb451268166c05e",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/07-iphone-430-floating-tabs.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 33314,
+      "sha256": "3c5ca274130899998355fe1e8c67c7b54e31ecabaf09ccee55db572828e26569",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/08-iphone-320-text-160-percent.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 25517,
+      "sha256": "c2e6147eb21e98484729d0a8108f6e9823b4dfc71b767a463c8b965370cc6e3f",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/08-pane-local-day-detail.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 60952,
+      "sha256": "3650189ffb64b7c5b5840065d524b3893b032b0f9c4fd86acd189768c7afbef2",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/10-folded-calendar-dark.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 36728,
+      "sha256": "8fb8d8e13f68e71cd3789847bb2f4d0d7fd394cbc62436a57822544b0cb59301",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/11-folded-calendar-light.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35497,
+      "sha256": "6719282e38ed0cd413bcc238f4f9af4ef6a6ad82797fdb2c241e4355a53020a9",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/12-open-calendar-dark.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 53545,
+      "sha256": "fb5dbd64f9c680f9884aaf1087e0780f71598486bd000c50b007c38f25ddcf84",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/13-folded-fortnight.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 27675,
+      "sha256": "e7c650ae163edc1f49ba0212a577e8922ad696d7a66d91a440b755115a716c9a",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/14-open-fortnight-dark.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 47660,
+      "sha256": "80308f46b83b823ff5ba37482710612edd3f9fd65494141c9152344e907a1871",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/15-long-press-left-calendar.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 42635,
+      "sha256": "809c0e959b3bf82f3c7b824a18ac70fee9874f8ab4e5658876b4747df71d257d",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/16-long-press-right-calendar.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 30141,
+      "sha256": "c72ae813b11f48f86fba648c39759fa4df278d0d4eca75e305301609262127ef",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/duo/17-folded-long-press-calendar.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 27484,
+      "sha256": "3b32f72d16379ff94cd8fda4bd123cf4708ff75ee820546c9a0f55384bcec9f8",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__duo__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/01-clean-adaptive-month.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 79609,
+      "sha256": "96237bccec3c839d0147104734e190e7f353e15ffbd95fba3d466bbb307b7ac3",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/02-day-detail.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 101889,
+      "sha256": "fd5fb6618324ad30e13b75cfdf472286c6b4ba7a0ef3f361370c7ec2dc78b138",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/03-event-detail.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82219,
+      "sha256": "d1bfe9803346ab9bb6f364f7314cd61b4cb27ba5eae8bd7283921ab8f16ae039",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/04-write-preview.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 100432,
+      "sha256": "6a29f93572934c3fbdd710562fee03f73f2c1f55dd7609b7b8ffc3b79653ec16",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/05-all-day-editor.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 96489,
+      "sha256": "b63e853e0df0edad782780f8e71e34e2c38bbd41f553077afbdc6803e48c7acb",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/06-week-timeline.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 88635,
+      "sha256": "e3e73b76970c75b2840cf8eff6eeee0155d8874207dba25b6e7da19b16557348",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/07-search-scope.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 95079,
+      "sha256": "c2cfa4001cc4010f9e3b0e3024a4ec7b9ce1c68b71478ae3b019e3bfe685f92c",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/08-calendar-sources.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 88891,
+      "sha256": "5d2e085837bdba36bb21660898ad5a2d4f74895700793fad68f530e8ad1c8834",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/09-read-only-event.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 99217,
+      "sha256": "32612be62cf4808e9b9a20d8a529c34377564e0caa5a160a5b0f2ccba8ee08d4",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/10-partial-state.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82034,
+      "sha256": "3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/11-error-visible-with-cache.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82034,
+      "sha256": "3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/12-phone-320.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 76910,
+      "sha256": "73700eacdfd8c2c402d092c229b5a930b5b8ccf32204766228eb0a5c3fab0ba7",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/12-phone-430.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 88428,
+      "sha256": "0653ad5b4d98998830f15c1d44e0ad8335414f2229a874b23a86d90e4efd834b",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/13-large-text.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 97779,
+      "sha256": "307276841a5935261c711a9fdcbf370e7470d453750e80ad4fd64fd0e90eaae8",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/14-loading-with-cache.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82034,
+      "sha256": "3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/15-unknown-write-no-resend.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 111522,
+      "sha256": "f402e0e63092490b7d4294039f8484f69e019e7be51d637106bc7c638b8a88a1",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/16-dark-month-reference.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 73888,
+      "sha256": "27a4bcb2f4bd3d60b0b8c83506751f0829ab61984f5b5f89ff4c97c2d7066acc",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/17-dark-event-reference.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 65942,
+      "sha256": "f9f2585dc991992b8e634a01b85c23abd5cc027354618e2d28963dc4062a1593",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/18-light-month-reference.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 73046,
+      "sha256": "4b2c6eb92749166d2869aa6759a78ab618f55f48554855d840f8c5dd5ef0cc23",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/19-non-json-error-keeps-events.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82746,
+      "sha256": "47615b8965e5620215e19bb31d962ad982f5a344e9cb9bfb1bf2f41c86ca75d1",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/calendar-navigation-2026-11-14/workspace/20-fortnight-expanded.png",
+      "category": "캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 63281,
+      "sha256": "16626e4627680834ab7590e26a844399911d486bbf48f77d205acfee49a39a38",
+      "import_path": "images/artifacts__calendar-navigation-2026-11-14__workspace__20-fortnight-expanded.png"
     },
     {
       "path": "artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png",

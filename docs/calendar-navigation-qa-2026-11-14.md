@@ -2,6 +2,8 @@
 
 final result: passed
 
+소스/합성캡처 커밋: [3401030](https://github.com/thepmpo/donknow/commit/3401030). 현재 작업은 새native빌드를 시작하지 않았다.
+
 통과 범위는 **사용자가 각각 승인한 일반 iPhone/Duo 탭 조작**의 Expo 웹·격리 API·명시적 Duo기하 fixture다. [기기별 계약](calendar-navigation-2026-11-14.md). **년월 탐색 UI는 별도 답변 대기/미변경**, native IPA·실제 진동·실계정 검수를 포함하지 않는다.
 
 ## 실제 화면과 비교

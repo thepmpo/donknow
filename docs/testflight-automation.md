@@ -1,5 +1,9 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-14 — 캘린더 단축은 다음 native 빌드 대상
+
+[현재 조작 계약](calendar-navigation-2026-11-14.md)과 [QA](calendar-navigation-qa-2026-11-14.md)의 일반폰 매진입Today·Duo재선택Today/기기별길게누르기2주는27 이후 수정이다. 웹/타입/iOS JS 검사와 서명IPA/Apple 제출은 구분한다. 현재 작업에서 새native빌드를 실행하지 않았고 년월 UI는 아직 미정이다. 사용자 빌드 요청 때 최신main으로 무료Mac workflow를 한 번 실행하고 실제 버전/소스/Apple 업로드를 별도로 기록한다. 기존 자동push빌드는 켜지 않는다.
+
 ## 최신 실제 확인 — 1.0.0(27) Apple 업로드 성공·이번 viewport/캐시는 이후
 
 사용자가 시작한 [43494093136](https://github.com/thepmpo/donknow/actions/runs/43494093136), 소스a61740efe9e333b8a602eb843ba418556f78c323의 validate132122527370/build-and-submit132123027330 모두success를 연결도구로 확인했다. 로그에서26→27 증가·앱버전1.0.0·buildNumber27, 서명IPA 생성2026-11-13 19:47:29 UTC(11/14 04:47:29 KST), Apple 업로드19:59:32 UTC(11/14 04:59:32 KST) 성공이다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/210e181e-ff6d-44e8-a037-e42cbdb044c2). Apple 처리·TestFlight 표시/설치·기기 검수는 별도다.
