@@ -108,3 +108,5 @@ npm --prefix mobile run test:project
 구현은083192e. 문법47·전체247개 중246통과/실패0/기존 선택1제외·타입·웹/iOS JS·Calendar·Duo·전체 앱·로그인·모션·예약·AI 채팅/오류 회귀를 통과했다. 새 합성 화면38장과검증 JSON을 별도폴더에 보관했다. 예전 회귀 캡처25장은 원본으로 복원했으며 원본bundle SHA-256도1b73da76ca222cff8a16d6b5a783eeed596d6930d90f05b5a9266990ad7b742d로 동일하다.
 
 공개문서/댓글·인증·XSS·320px 회귀를 통과했고 총244개 이미지 해시를 생성 원본과 대조한다. 공개 첫 요약의 오래된 TestFlight12 표시는 실제 Apple 업로드25와 이번 UI는 다음 빌드라는 문구로 정정했다. main 일반 push·Render 실배포/새 release 응답의 최종 결과는 이어 기록한다. 새 native 빌드/실계정 성공을 의미하지 않는다.
+
+main 저장:083192e와a0dee32를 일반 push했다.244개 이미지 해시와 공개 문서 회귀가 통과했고 작업트리는 보존할 원본bundle만 미추적이었다. Render free/autoDeploy off 기존서비스에서a0dee32 배포dep-dbre2odbedkc73dbebl0를 요청했다. 진행 중은 공개 완료가 아니다. GitHub status connector는 빈statuses를 반환해 원격Actions 성공을 추정하지 않는다. 인수인계에 삽입하는 AGENTS의 상대 링크도 원본 경로 기준 GitHub 주소로 변환해 공개 링크가 SPA로 잘못 열리지 않게 정정한다.
