@@ -1,0 +1,187 @@
+{
+  "auditId": "CAL-AUDIT-20261113",
+  "sourceHead": "20bc8eba2ff40129b807cd6b4668192a010cc2fb",
+  "sources": [
+    {
+      "url": "https://flexibits.com/fantastical-ios/help/calendar-views",
+      "title": "Calendar Views",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://flexibits.com/fantastical-ios/help/adding-events-and-tasks",
+      "title": "Adding Events and Tasks",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://flexibits.com/fantastical-ios/help/editing-events-and-tasks",
+      "title": "Fantastical Help",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://support.apple.com/guide/iphone/keep-track-of-events-iphdafdf98a1/ios",
+      "title": "Keep track of events in Calendar on iPhone",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/segmented-controls.md",
+      "title": "Segmented controls",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://support.apple.com/guide/iphone/change-how-you-view-events-iphfd1054569/ios",
+      "title": "Change how you view events in Calendar on iPhone",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://support.apple.com/guide/iphone/create-and-edit-events-in-calendar-iph3d110f84/ios",
+      "title": "Create and edit events in Calendar on iPhone",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://support.apple.com/guide/iphone/search-for-events-iph2c9ef44ad/ios",
+      "title": "Search for events in Calendar on iPhone",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://support.apple.com/guide/iphone/use-multiple-calendars-iph3d1110d4/ios",
+      "title": "Set up multiple calendars on iPhone",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/pickers.md",
+      "title": "Pickers",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/toolbars.md",
+      "title": "Toolbars",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/sheets.md",
+      "title": "Sheets",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility.md",
+      "title": "Accessibility",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/materials.md",
+      "title": "Materials",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://flexibits.com/fantastical",
+      "title": "Give Your Calendar Superpowers",
+      "type": "official-product-help",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/typography.md",
+      "title": "Typography",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/color.md",
+      "title": "Color",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/buttons.md",
+      "title": "Buttons",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/search-fields.md",
+      "title": "Search fields",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/context-menus.md",
+      "title": "Context menus",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/motion.md",
+      "title": "Motion",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/layout.md",
+      "title": "Layout",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/lists-and-tables.md",
+      "title": "Lists and tables",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/split-views.md",
+      "title": "Split views",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/playing-haptics.md",
+      "title": "Playing haptics",
+      "type": "official-design-guideline",
+      "readAt": "2026-11-13",
+      "evidence": "Text research, not an interactive native-app audit"
+    }
+  ],
+  "limitations": [
+    "Apple and Fantastical native apps were not run or pixel-compared.",
+    "Apple CDN image download returned HTTP403; no unavailable image is used as visual evidence.",
+    "Stale date-pickers.md returned404; actual pickers.md was read.",
+    "Cloud browser control unavailable; previously authorized isolated Chromium used."
+  ]
+}
