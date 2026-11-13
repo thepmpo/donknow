@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "20bc8eba2ff40129b807cd6b4668192a010cc2fb",
-  "assetCommit": "32a3d5efc9eecb1cdda87ffaf041018032f8741f",
-  "imageCount": 179,
+  "codeCommit": "00bf57f6a4b78016a811cc244f0bcfe13118cd6e",
+  "assetCommit": "00bf57f6a4b78016a811cc244f0bcfe13118cd6e",
+  "imageCount": 206,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -325,6 +325,195 @@
       "bytes": 34572,
       "sha256": "e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054",
       "import_path": "images/artifacts__calendar-audit-2026-11-13__16-tab-return-resets-month.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 42917,
+      "sha256": "2cd606d8d36793a6dbeae286e974d7e8b2b4e5dcb392b6ddd2f91cbb515c180b",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__01-month-adaptive-and-toolbar.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/02-day-detail.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 48541,
+      "sha256": "4e34b8749a73cc90b8e70792f5da021cc74daaeded767012d3c2030d7af4f550",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/03-event-detail.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 43626,
+      "sha256": "b97d403b86f4c1c1681f0f9d412961b39acc0fae8cfe13298ea19176fd6788f8",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/04-write-preview.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 51456,
+      "sha256": "416ed58e96e378833b0846aeac29f22d5c20510484c7d1186ec7b2046b28d733",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/05-all-day-editor.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 45458,
+      "sha256": "3470566a28dc681eb40c2fe987e4c7efc292dcce9800bff29d6e23e459f55014",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/06-week-timeline.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 39872,
+      "sha256": "561ee87a7b9aed0b45fe7dd4c925c369bec747cf48b5593d7d31c99c5755c630",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/07-search-scope.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 45552,
+      "sha256": "2b4aa8d75343de843dc76ca06963246d61f3ea7299113c181548e58f64860629",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/08-calendar-sources.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 45365,
+      "sha256": "e4d9a2bda18e7debfe187e058ccab96d1f462c569f4c288c99432e0a9f31aa44",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/09-read-only-event.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 48105,
+      "sha256": "e68a4b61bce110889521154937a79607d6008fce24e27d3a9eaf49463a7ce0d8",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/10-partial-state.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 46888,
+      "sha256": "810697f1ac72fa179f9b236f0425ef46e992238541c03159909987e470eb023a",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/11-error-visible-with-cache.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 59508,
+      "sha256": "89477812533b6de397a223d01bcc8d58f1aa427aaefbb12f1fce6b8947d423bd",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/12-phone-320.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 39776,
+      "sha256": "665ec1b9260aeececd798c9e30c251fe1cde7a695ffe655c130882dbe252fb1b",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/12-phone-430.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 45412,
+      "sha256": "eae986d1497254b9fd9fd5a7f6c05491a7186dc96a4462593df90a8aca0f85f8",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/13-large-text.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 48308,
+      "sha256": "9e23631173c110b4d2f42604d452ddc1e5051c7a16408147172ce6b3d28007e5",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/14-loading-with-cache.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 44470,
+      "sha256": "bdd64824fa1adfe94071e8b0ec67529e32e8446b78cd676d24f8585e0df1678f",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/15-unknown-write-no-resend.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 57887,
+      "sha256": "62738dd3bab5cdc5226f8c829f5a724484dff40b99c794f475fa798c7f5944ca",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/01-open-calendar-todo.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 58861,
+      "sha256": "e2f50489e7a67bec72dd390c33ec6ef517bf2ea094f17edc165f938d1d1bce78",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/02-open-calendar-duck.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 70724,
+      "sha256": "1a8f46116ed6142dacbd0c030242f334c311568745861394953675d73faba24c",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/03-portrait-current-screen.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/04-closed-camera-column.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/05-back-in-camera-column.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 73229,
+      "sha256": "85407fc0c596cbcdf9c91d3315a595d6e9590311a94f208283a20b6a068771d5",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/06-dragging-lens-web-fallback.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 61027,
+      "sha256": "62c53a08da34dc4a3c9bbed8d8fde742341e77e6ff347f1ee6ff7238ed3b0cf6",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/07-iphone-320-floating-tabs.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 43586,
+      "sha256": "2f2f73d12e4750d5ad937e6ac43bbdf60d50d667c745c90a58053b2557d8ab66",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/07-iphone-390-floating-tabs.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 45485,
+      "sha256": "18ee27dfb41a560645c93c6a5a584a441dbf327c49dc3fe4bb2dbaaaf4eaeaa2",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/07-iphone-430-floating-tabs.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 45289,
+      "sha256": "bc26871fb9d2343480572528fc86ccb73c39ae2238e94f325bb380a6fddd026d",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/08-iphone-320-text-160-percent.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 25569,
+      "sha256": "b613403f6f9b2d44d2323d4cdf7782a66436893a894bd9e97fbbddb364799207",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/calendar-workspace-2026-11-13/duo/08-pane-local-day-detail.png",
+      "category": "캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님",
+      "bytes": 59792,
+      "sha256": "c30437c2d01d508038c552bfe6c95db3f4ca593dd9497fa2c33453842869881b",
+      "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__08-pane-local-day-detail.png"
     },
     {
       "path": "artifacts/calendar.png",

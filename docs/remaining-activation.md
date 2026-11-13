@@ -91,7 +91,7 @@ OAuth 데이터 액세스에 필요한 범위만 추가한다.
 - 메일: `https://www.googleapis.com/auth/gmail.readonly`
 - 드라이브: `https://www.googleapis.com/auth/drive.metadata.readonly`
 
-덕의 내정보 → Google에서 원하는 범위를 선택하고 권한을 다시 승인한다. 캘린더는 조회 중인 달의 기본 캘린더 일정과 다음 페이지를 보여준다. 일정 시각은 한국 날짜 기준이다. 메일은 최근 30일 받은편지함의 제목, Drive는 파일 이름/메타데이터를 가져온다. 메일 본문·첨부/파일 본문 전체를 읽거나 전송하지 않는다. Gmail의 공개 배포/민감 범위 심사는 개인 테스트 완료와 별개다.
+덕의 내정보 → Google에서 원하는 범위를 선택하고 권한을 다시 승인한다. 캘린더 workspace v2는 선택한 본인 캘린더와 표시 기간/시간대·다음 페이지를 보여준다. 일정 작성/수정은 calendarWrite와 source owner/writer·미리보기/확인·ETag 보호를 사용한다. calendar-workspace-2026-11-13.md를 따른다. 구버전 클라이언트의 기존 기본 캘린더 조회는 유지한다. 메일은 최근 30일 받은편지함의 제목, Drive는 파일 이름/메타데이터를 가져온다. 메일 본문·첨부/파일 본문 전체를 읽거나 전송하지 않는다. Gmail의 공개 배포/민감 범위 심사는 개인 테스트 완료와 별개다.
 
 ## 2. Google Tasks 완료 동기화
 
@@ -154,3 +154,7 @@ Render에 `NOTION_CLIENT_ID`, `NOTION_CLIENT_SECRET`를 등록한다. 덕에서 
 - 사용자 확인: Google Tasks 완료 동기화 켜기, 덕에서 완료 시 Google 반영, log에서 미완료 복원 시 Google 반영까지 성공.
 - 자동 백업에 실제 암호화 파일을 임시 로컬 DB로 복원하는 검증 단계를 추가했다. 격리된 테스트는 통과했으며, 변경 후 GitHub Actions 실행 결과는 아직 확인 전이다.
 - 이 검증에는 새 Turso DB나 Render 운영 설정 변경이 필요 없다. 원격 DB에서 운영 서비스를 복구하는 전환 훈련은 별도 작업으로 남긴다.
+
+## 캘린더 개선 후 남은 가동 검수
+
+CA-01~20 구현의 자동 검사와 실제 계정/기기 검수는 다르다. Google 쓰기는 내정보→Google에서 본인이 필요한 범위만 재승인한 뒤 시험 캘린더에서 확인한다. 새 Calendar/햅틱의 iPhone 반영에는 최신main 수동 native 빌드/업데이트가 필요하다. Figma 교정·실제 Duo/VoiceOver/Dynamic Type/키보드·native Glass는 미확인이며 전체dark UI를 추가한 것은 아니다. [구현 계약과 체크리스트](calendar-workspace-2026-11-13.md).
