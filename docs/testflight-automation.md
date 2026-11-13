@@ -3,7 +3,21 @@
 > **현재 구현 기준:** [전체 이어받기 기준서](continuation-guide.md) → [Liquid Glass 상태·수치·검수](liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 
 
-## 2026-11-13 최신 — 약관 동의 후24번 생성 성공·제출 재차 차단
+## 2026-11-13 최신 성공 — 1.0.0(25)·Apple 업로드 완료
+
+사용자가 추가 약관에 동의했다고 확인한 뒤 연결된 GitHub로 실패job만 다시 실행했다. [43394742649 attempt3](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/3)·소스 **1643e0c2b7da2c2e1e34362388dbbd671542b9d0**, [build-and-submit job131801055230](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131801055230)와 validate 모두 **success**다. 현재main6161372와 앱/서버/ios-testflight workflow 차이가 없는 것을 먼저 비교했다. 성공한validate를 재사용했으며 사용자가 Run workflow를 다시 누를 필요 없이 제가 접수/실행했다.
+
+- 번호24→**25**, 앱 버전 **1.0.0(25)**. **18:29:43 KST(09:29:43 UTC)** 서명 IPA 생성 성공.
+- **18:30:18 KST(09:30:18 UTC)** 실제 `Submitted your app to Apple App Store Connect!`를 확인했다. 이전23/24의 Apple 필수약관403 차단은 이번 제출에서 해소됐다. 어떤 약관이 구체적으로 원인이었는지를 새로 추정하지 않는다.
+- [EAS 제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/e7429e94-f215-4d07-b2c8-89c1d543903a). 로그의 최종 안내는 **Apple 처리 중**이다. [TestFlight 관리](https://appstoreconnect.apple.com/apps/6829597261/testflight/ios). 실제 TestFlight25 등장/설치·기기 동작은 독립 확인하지 않았다.
+- 최신 캘린더20개 개선, 월/주/일/목록·상세/일정 쓰기·소스/검색/시간대, Apple 상태별 Glass/하단 capsule·Duo 배치를 포함한 같은 앱 소스의 native 컴파일/서명/업로드다. 실계정 쓰기·실기기 Glass/햅틱/VoiceOver/Dynamic Type·Figma 완료로 확대하지 않는다.
+- 이전 실패23/24는 이력으로 남긴다. 새native 컴파일/서명/Apple 업로드 미확인·필수약관으로 제출 차단이라는 현재 보류는 **25번에 대해 해제**한다. Apple 처리/설치는 별도다. 다시 빌드하거나 제출을 반복하지 않는다.
+
+### 사용자가 할 일
+
+컴퓨터를 꺼도 된다. GitHub 클라우드 Mac의 실제 실행은 이미 끝났고 사용자의 PC와 독립적이다. Apple 처리 후 아이폰의 **TestFlight → duckduck → 업데이트**에서1.0.0(25)을 확인한다. 아직25가 안 보이면 처리를 기다리며 Run workflow를 다시 누르지 않는다. 추가 결제·키/서명 재생성·공개 App Store 출시는 하지 않았다. 기존 앱/데이터/인증·서명·무료플랜·원본 복구bundle을 보존했다.
+
+## 2026-11-13 이전 attempt2 — 약관 동의 후24번 생성 성공·제출 재차 차단
 
 사용자가 Apple 약관에 “동의했어”라고 확인했다. 계정 소유자의 직접 동의는 사용자 확인이며 서버 반영 여부는 실제 새 제출 결과로 판단한다.
 

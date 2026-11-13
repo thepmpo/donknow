@@ -1,5 +1,11 @@
 # 남은 연결 활성화와 운영 확인
 
+## 2026-11-13 — iPhone25 빌드·Apple 업로드 성공
+
+추가 약관 동의 확인 후 제가 연결된 GitHub로 실패job을 재실행했다. [43394742649 attempt3](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/3)·소스1643e0c, job131801055230/validate 모두success. 현재main6161372와 앱/서버/빌드 workflow 동일함을 비교했고 사용자 추가 Run workflow 없이 진행했다. **1.0.0(25) 서명IPA 생성18:29:43 KST·Apple 업로드18:30:18 KST 성공**. [실제 증거와 설치 안내](testflight-automation.md).
+
+Apple 처리 중이며 TestFlight25 등장·실제 설치/기기 검수·Google 실계정 쓰기·Figma는 별도다. 이전23/24의 필수약관 제출 차단은25번 제출에 대해 해제하며, 앱/데이터/인증·서명·무료플랜·원본bundle은 보존했다. 컴퓨터를 꺼도 되고 Apple 처리 후 아이폰 TestFlight→duckduck→업데이트에서25를 확인한다. 다시빌드/공개출시/추가요금은 실행하지 않는다.
+
 ## 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
 
 [실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.

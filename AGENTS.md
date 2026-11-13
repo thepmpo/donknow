@@ -7,7 +7,12 @@
 - `docs/notion-handoff.md`의 최신 상태 표와 `docs/remaining-activation.md`를 먼저 읽고, 현재 코드·커밋·실제 배포 상태를 확인한다.
 - 문서의 초기 단계 기록과 최신 기능이 다르면 최신 상태 표와 실제 코드/검증을 기준으로 한다. 구현, 자동 테스트, 실제 사용자 확인, 미확인 항목을 구분한다.
 
-## 2026-11-13 최신 native 빌드/Apple 제출
+## 2026-11-13 최신 성공 — iPhone25·Apple 업로드
+
+- 43394742649 attempt3·1643e0c의1.0.0(25) native/서명 IPA18:29:43 KST·Apple 업로드18:30:18 KST 성공. 현재main6161372와 앱/빌드 workflow가 같음을 비교한 실패job 재실행이며 사용자 추가 Run은 필요 없었다. docs/testflight-automation.md 최신 절을 먼저 읽는다.
+- 이전23/24의 약관 제출 차단은 이번 실제 제출에서 해제됐다. Apple 처리·TestFlight 설치·실제 Duo/접근성·실계정/Figma는 별도다.25가 안 보인다고 재빌드하지 않는다. 기존 데이터/인증/서명·무료 플랜·원본bundle을 보존한다.
+
+## 2026-11-13 이전23 시점 native 빌드/Apple 제출
 
 - 실제43394742649·소스1643e0c의1.0.0(23) native/서명 IPA 생성은 성공했다. Apple Submit만 필수 약관 미동의/만료403으로 실패했으며 취소/코드 오류/Ubuntu notice가 원인이 아니다. docs/testflight-automation.md 최신 절을 먼저 읽는다.
 - 계정 소유자가 Apple 계약/Developer 약관을 직접 확인·동의해야 한다. 기존 인증/서명/SDK를 재발급·업그레이드하거나 동의 전 재빌드/제출을 반복하지 않는다. runner IPA는 cleanup됐고 EAS 제출 archive 재사용/재시도는 확인 전이다. native 성공·Apple 업로드 실패·설치/실기기 미확인을 구분한다.

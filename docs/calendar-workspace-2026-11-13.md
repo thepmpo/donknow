@@ -81,7 +81,8 @@ npm --prefix mobile run test:project
 
 ## 다음 작업자와 실기기 검수
 
-- [ ] 최신 main 새 **수동** 무료 빌드에서 native 컴파일·서명·Apple 처리·설치 번호 확인. 이번 작업에서 자동 TestFlight를 시작하지 않는다.
+- [x] 사용자 요청 수동 재개43394742649 attempt3·1.0.0(25)의 native 컴파일/서명·Apple 업로드18:30:18 KST 성공. 현재 앱/빌드 소스와 동일한1643e0c.
+- [ ] Apple 처리·TestFlight25 등장·설치와 기기 동작 확인. 추가 자동 빌드를 요청하지 않는다.
 - [ ] 일반 iPhone/Duo 접힘·가로 분할·세로 단일에서 실측 월·우측 카메라 열·원형 복귀·키보드·초안/스크롤 확인.
 - [ ] iOS 도구 regular Glass·투명도 줄이기/고대비·Dynamic Type 최대 크기·VoiceOver 순서·실제 picker·햅틱·빠른 전환/성능 확인. 현재 앱은 light 선언이므로 OS 다크 선택을 전체 dark UI 구현 성공으로 보고하지 않는다.
 - [ ] 본인 Google 테스트 캘린더에서 read-only·쓰기 재승인·calendarList 페이지·종일/시간·시간대·ETag 충돌·한 번 저장·결과 확인. OAuth 동의는 사용자가 내정보→Google에서 직접 수행한다.
@@ -102,3 +103,9 @@ npm --prefix mobile run test:project
 [실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.
 
 계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [개발자 계정](https://developer.apple.com/account/)에서 약관을 확인/동의해야 한다. 본인 동의 전 재빌드·재제출을 반복하지 않는다. 기존 제출 archive의 재사용은 미확인이며 임시 runner IPA는 기존 cleanup으로 제거됐다. 코드/의존성/서명/데이터/인증·무료 플랜을 변경하지 않고 실제 성공/실패와 다음 행동을 기록한다.
+
+## 2026-11-13 — iPhone25 빌드·Apple 업로드 성공
+
+추가 약관 동의 확인 후 제가 연결된 GitHub로 실패job을 재실행했다. [43394742649 attempt3](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/3)·소스1643e0c, job131801055230/validate 모두success. 현재main6161372와 앱/서버/빌드 workflow 동일함을 비교했고 사용자 추가 Run workflow 없이 진행했다. **1.0.0(25) 서명IPA 생성18:29:43 KST·Apple 업로드18:30:18 KST 성공**. [실제 증거와 설치 안내](testflight-automation.md).
+
+Apple 처리 중이며 TestFlight25 등장·실제 설치/기기 검수·Google 실계정 쓰기·Figma는 별도다. 이전23/24의 필수약관 제출 차단은25번 제출에 대해 해제하며, 앱/데이터/인증·서명·무료플랜·원본bundle은 보존했다. 컴퓨터를 꺼도 되고 Apple 처리 후 아이폰 TestFlight→duckduck→업데이트에서25를 확인한다. 다시빌드/공개출시/추가요금은 실행하지 않는다.

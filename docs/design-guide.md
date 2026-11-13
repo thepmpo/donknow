@@ -154,3 +154,5 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 Google 원본 쓰기는 미리보기→사용자 확인→한 번 실행, 역할·연결·ETag 재검사다. 결과 불확실일 때 닫았다 열어도 다시 저장하지 않고 결과만 확인한다. 기존 읽기 권한을 자동 확대하지 않고 데이터·인증·Duo 카메라 열/좌Calendar/우선택·무료 플랜을 보존한다. 앱은 기존light 선언 유지, 전체dark UI 추가는 아니다.
 
 새 증거는 calendar-workspace-2026-11-13 폴더의 실제 Expo 웹/격리 API다. native Glass 광학 효과·Dynamic Type/VoiceOver·실제 Duo·Google 실계정 쓰기·Figma 교정은 별도 검수다. **이번 작업은 새 TestFlight를 자동 요청하지 않는다.** 아이폰 설치 앱은 최신main 수동 빌드/Apple 처리/업데이트 후 바뀐다.
+
+실제 설치용 빌드 상태: 43394742649 attempt3·1.0.0(25)의 native/서명IPA 생성·Apple 업로드18:30:18 KST 성공. Apple 처리/실제 설치·native 광학 효과/VoiceOver/Dynamic Type·Duo 기기 검수는 별도다. 이전23/24 약관 차단은25번 제출에서 해제됐고 추가 빌드를 요청하지 않는다. [실제 빌드/설치 기록](testflight-automation.md).

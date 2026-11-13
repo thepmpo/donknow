@@ -33,9 +33,9 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
-#### 최신 iPhone24 — 재실행은 제가 시작, Apple 약관 응답은 계속 차단
+#### 최신 iPhone25 — 빌드·Apple 업로드 성공
 
-사용자가 약관 동의를 확인한 뒤, 현재main과 앱/서버/빌드 workflow가 같은 것을 비교하고 연결된 GitHub로 [43394742649 attempt2](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/2)의 실패job만 재실행했다. **사용자가 Run workflow를 다시 누를 필요 없이 접수/실행했다.** 실제1.0.0(24) 서명IPA 생성은18:07:14 KST 성공했지만 Apple Submit가18:07:38 KST에 같은 필수약관 미동의/만료403으로 다시 실패했다. 추가 빌드/제출을 중단하며 약관 반영 지연/다른 필수 약관/팀 문제는 아직 구분하지 못했다. 사용자PC를 꺼도 GitHub 실행과 무관하다. TestFlight24 업로드/설치는 미완료이며 [실제 증거/재개 기준](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)을 따른다. 앱코드/SDK/서명/인증/데이터/무료플랜은 변경하지 않았다.
+추가 약관 동의 후 제가 연결된 GitHub로 [43394742649 attempt3](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/3)의 실패job을 재실행했고, **1.0.0(25) 서명IPA 생성18:29:43 KST·Apple 업로드18:30:18 KST 성공**을 확인했다. validate/build-and-submit 모두success다. 앱/빌드 workflow는 현재main과 동일한1643e0c임을 비교했다. 이전23/24의 필수약관 차단은 이번 제출에서 해제됐고 사용자 추가 Run workflow 없이 진행했다. **Apple 처리 중**이며 TestFlight25 등장·설치/기기 검수는 별도다. 사용자PC를 꺼도 되고 아이폰 TestFlight→duckduck→업데이트에서25를 확인한다. 안 보이면 처리를 기다리며 추가 빌드를 누르지 않는다. [실제 로그·재개/설치 안내](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 따른다. 기존 데이터/인증/서명·무료플랜·원본bundle을 보존하고 공개 App Store 출시는 하지 않았다.
 
 #### 캘린더 개선 전체 구현 · CA-01~20
 
