@@ -1,5 +1,12 @@
 # 매일 개발 정리
 
+## 2026-11-13 — 캘린더 높이·버튼 순서·일정 캐시
+
+사용자 첨부/답변으로 추가24pt 제거·요일/Todo 날짜줄 정렬·월/2주 viewport 채움/세로 스크롤·bounce/indicator 제거, 카메라열Today 위/2주아래로 정정했다. 일반 iPhone 제목옆2주/년월메뉴Today의 실제 Expo 그림을 저장했다. 이어 ‘가져온 일정 먼저 두고 빠르게 반영’ 요청으로 실행 메모리12기간 cache와 겹친기간 즉시 재표시·출처별 도착즉시 반영·capabilities5분·pagination완료후삭제·실패보존·계정/기간 지연응답 격리를 구현했다. 영구 사용자 데이터·인증/DB/서명·소개 사이트·사무실은 보존했다.
+
+[현재 계약](calendar-viewport-2026-11-13.md) · [QA](calendar-viewport-qa-2026-11-13.md) · [개인 Notion](https://app.notion.com/p/41718ee8299181389c27f3f68549c4d3). 단위253통과/실패0/기존선택1제외·타입·웹/iOS JS·화면크기/캐시·기존Calendar·Duo회귀 통과. 실제 기기/Google/native IPA는 별도다. 새 그림은 `artifacts/calendar-viewport-2026-11-13/`의 합성API/기하 fixture다. 기존 스크린샷을 덮어쓰지 않았다. 이전 build 요청은 기존 인증 dispatch Forbidden으로 새 run을 만들지 못했고, 이 수정도 새native설치가 필요하다.
+
+
 <!-- daily:2026-11-14:start -->
 ### 2026-11-14 — 당일 저장된 작업
 

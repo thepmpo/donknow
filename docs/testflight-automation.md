@@ -1,5 +1,17 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 최신 실제 확인 — 1.0.0(27) Apple 업로드 성공·이번 viewport/캐시는 이후
+
+사용자가 시작한 [43494093136](https://github.com/thepmpo/donknow/actions/runs/43494093136), 소스a61740efe9e333b8a602eb843ba418556f78c323의 validate132122527370/build-and-submit132123027330 모두success를 연결도구로 확인했다. 로그에서26→27 증가·앱버전1.0.0·buildNumber27, 서명IPA 생성2026-11-13 19:47:29 UTC(11/14 04:47:29 KST), Apple 업로드19:59:32 UTC(11/14 04:59:32 KST) 성공이다. [제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/210e181e-ff6d-44e8-a037-e42cbdb044c2). Apple 처리·TestFlight 표시/설치·기기 검수는 별도다.
+
+27에는e2c853b의 첫 캘린더 정리가 포함되지만 **c4eebbd의이번 스크롤/화면 채우기·Today/보기 순서·먼저 표시 후 갱신은 없다**. 이번 수정은 새main 빌드가 필요하다. 이 채팅에서 새dispatch는 시작하지 않았고 현재권한 Forbidden을 우회하지 않았다. 이전 ‘최신26’은 당시 관찰 이력이다.
+
+
+## 2026-11-13 후속 — viewport·버튼·캐시도 새 native 빌드 필요
+
+[이번 수정](calendar-viewport-2026-11-13.md)은 기존26과 e2c853b 이후다. 원격maina61740e(일일문서 자동갱신 포함)를 fetch해 보존했다. 사용자의 직전 ‘빌드해’에 기존 플랫폼 인증으로 workflow GET/POST dispatch를 시도했으나 둘 다 `Forbidden`이었고 새 run은 만들어지지 않았다. 연결 도구에도 새 dispatch가 없어 개인토큰 요청/권한 우회/구26 Re-run은 하지 않았다. 이번 단위·웹·iOS JS 검사는 새 IPA/Apple 업로드가 아니다. 최신main에서 사용자가 Run workflow→main→초록 Run workflow로 새 실행하면 이 앱 수정이 포함된다. 이전 실행이 이미 진행 중이면 소스SHA를 먼저 비교하고 중복 요청하지 않는다. 무료 표준Mac·서명freeze·수동정책 유지.
+
+
 ## 2026-11-13 — 26번 이후 새 캘린더 수정·새 빌드 미실행
 
 [코드e2c853b의 현재 계약](calendar-refinement-2026-11-13.md): 본문 도구/status 정리·월별 필요 주·2주 확대·주말 숫자·전체 상단 dim/배경닫기/시트 모션·연동 안정성. 단위/타입·웹/iOS JS·격리 UI/Duo/계정 검사 통과는 실제 IPA/Apple 업로드가 아니다. **현재 TestFlight26에는 이번 수정이 없으며 이 작업에서 새 native 빌드를 시작하지 않았다.** 다음 ‘빌드해’ 요청 때 최신 main의 workflow_dispatch를 한 번만 시작하고 Run SHA/실제 번호/서명/Apple 업로드·처리·설치를 분리한다. 유료/자동 push 빌드/기존 서명·권한 재생성은 하지 않는다. 아래26 성공은 이전 소스의 실제 결과다.

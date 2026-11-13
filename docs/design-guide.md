@@ -1,5 +1,14 @@
 # duckduck 디자인 적용 기준
 
+## 2026-11-13 — 화면 채우기·순서·지연 없는 재표시
+
+[현재 구현 계약](calendar-viewport-2026-11-13.md)과 [시각/기능 QA](calendar-viewport-qa-2026-11-13.md)가 이전24pt 여백/92pt 최소 주 높이/월 내부 스크롤/Today 위 보기 버튼을 대체한다. 월과2주 행은 실제 가용 높이를 정확히 나눠 채우며 세로 스크롤·bounce·스크롤바가 없다. 요일 줄은 Todo 날짜 줄과 같은 본문 시작선, 공통 제목은 기존16/26/35/16·inset24를 유지한다. 긴 시트/목록/시간표는 스크롤을 유지하고 숫자·일정 정보량은 높이에 맞춘다.
+
+사용자 확정으로 Duo 카메라 열의 Today가 위,2주 보기 버튼이 아래다.64pt 원형·8pt 간격/기존5탭/Back·pane/회전·접힘 상태를 보존한다. 일반폰의2주 보기는 제목 옆 겹친 달력 아이콘,Today는 년·월 메뉴 안이다. [일반폰 화면](https://github.com/thepmpo/donknow/blob/main/artifacts/calendar-viewport-2026-11-13/ordinary-month.png)과 [Today 메뉴](https://github.com/thepmpo/donknow/blob/main/artifacts/calendar-viewport-2026-11-13/ordinary-today-menu.png)를 확인한다.
+
+이미 읽은 일정은 먼저 보여주고 갱신한다. 계정/서버/시간대별12기간 실행 메모리 캐시,출처별 점진 반영·기능확인5분 캐시·페이지 완료 후 삭제·늦은 계정응답 폐기·일시 실패 보존을 사용한다. 첫 조회·앱 완전 재시작은 실제 네트워크가 필요하다. 실계정/native를 웹 fixture로 통과 처리하지 않는다.
+
+
 ## 2026-11-13 — 최신 캘린더 정리·2주·시트
 
 [현재 구현/수치 계약](calendar-refinement-2026-11-13.md)과 [실제 QA](calendar-refinement-qa-2026-11-13.md)가 이전42칸/본문 도구 규칙보다 우선한다. 도구/조회 문구는 년월 sheet로 이동·여백24pt, 월에 실제 속한 주만4/5/6줄(11월은12월5일까지), 일요일 빨강·토요일 파랑·옆 달 연한 숫자다.2주 모드는14일 두 줄을 실측 높이로 넓히고 선택일/anchor를 분리해 날짜 선택 때 창을 보존한다.
