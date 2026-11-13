@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "340103049933e317f31b8f8eb721c05df5714639",
-  "assetCommit": "340103049933e317f31b8f8eb721c05df5714639",
-  "imageCount": 458,
+  "codeCommit": "7c3d437a18b2a2a6da15d973186ea8c572eaee27",
+  "assetCommit": "7c3d437a18b2a2a6da15d973186ea8c572eaee27",
+  "imageCount": 557,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -388,6 +388,181 @@
       "bytes": 38385,
       "sha256": "0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e",
       "import_path": "images/artifacts__calendar-viewport-2026-11-13__app__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-account-settings.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 47547,
+      "sha256": "9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-apple-reminders.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35615,
+      "sha256": "eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-assistant-action-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35773,
+      "sha256": "40cfc074db776f5927b2fc45ddb073f76fa52a82349a876ceb60ca5a294d3bb9",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-assistant-ai-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 48140,
+      "sha256": "452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-auth.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-calendar-events-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 32383,
+      "sha256": "0e98fe05f09c0fc49bda82574fd6377753ac8fbbcc50e2df7eff54730c218db7",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-calendar.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 33034,
+      "sha256": "ce6abd2290ad1d1b8ff4e253a0329664472fc6361d2cd897820731d360e35420",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-completed-reference-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 50521,
+      "sha256": "37cbb686baf59b4520a9476e258d4608cb36afc179622bb5b04e766044a83a43",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-duck-draft.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35040,
+      "sha256": "88baf31ea2c57c1ce62e89e163b410ecdcf4dfba49c679f21662c0490c73ba6b",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-duck-draft.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-duckduck.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 34074,
+      "sha256": "4003262e41aac912f626911191bcefd7b96468eac29b88462fc5606f7b1c8f68",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-external-search-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 47437,
+      "sha256": "0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-external-search-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-google-tasks-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 50179,
+      "sha256": "d78c0d9939604d7093738f3413cd2f9841eebf129eb9fa59dee03dd94983ba7b",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-kakao-paste.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 43499,
+      "sha256": "297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-kakao-paste.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-kakao-share.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 30625,
+      "sha256": "8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-log.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 29425,
+      "sha256": "23c44afed85b1e0633c44bcac62809877d48369f7675e9444cc1c00171750d6c",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-log.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-notes-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 22314,
+      "sha256": "df7c97b68d34e694898b98ade501432ec1502c33f6cff91cf8de74fe4c68c26e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-personal-export.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 54728,
+      "sha256": "2e6fdaeea4f7802a7c07135c480b3f7a431b86911d80e5e158aa4be4e7189778",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-profile.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 48215,
+      "sha256": "e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-record-search.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 38022,
+      "sha256": "b770fd71be459554d1b15f2605d999f6367415c6c893edec0661b5a882bd9e26",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-record-search.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-reminder.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 23432,
+      "sha256": "426d4f56745c079797486e1c06e6b787494407084849d28c1703f121d50d3cd5",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-services.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 50883,
+      "sha256": "294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-services.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-task-sync-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 58700,
+      "sha256": "97713ef26c00cfd60ffc27e880e9da19b8b4f8d87086b36520e9a458248e62a7",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-today-weather-fixture.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 42003,
+      "sha256": "d220887d81a871225f01af3e2c19b2382b8816f028c55ebca5a85281ff85271e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-today-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-todos.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 26591,
+      "sha256": "464221211e23473583494ca1a91351d9531ba7bbe193c5cf1fbb10349bc543bb",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/app/mobile-verification.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 38385,
+      "sha256": "0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-verification.png"
     },
     {
       "path": "artifacts/duck-website-2026-11-13/mobile-demo.png",
@@ -2208,6 +2383,524 @@
       "bytes": 59792,
       "sha256": "c30437c2d01d508038c552bfe6c95db3f4ca593dd9497fa2c33453842869881b",
       "import_path": "images/artifacts__calendar-workspace-2026-11-13__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/01-ordinary-year.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 152935,
+      "sha256": "3e0d89713de7fb2862071eb43fcc9c61bcfcba300058bbf59fbe948ae73e07ec",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__01-ordinary-year.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/02-ordinary-month-after-zoom.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74834,
+      "sha256": "ec61debee28d39613b27c17b65fbff8f72981d85418d74b574c13b94e57d2a07",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__02-ordinary-month-after-zoom.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/03-year-width-320.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 149662,
+      "sha256": "33413cd4ed60baeaccf235a09891d21b286f19d60a480f17681c5f12a977d7f2",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__03-year-width-320.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/03-year-width-430.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 151772,
+      "sha256": "cbed2dd186d909e394e88b2f65a456467ac3fcd167672cb9594ed489fd13d591",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__03-year-width-430.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/04-year-dark.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 150776,
+      "sha256": "e41ea2a8b6da8c05fce175e54a7d38116dbcd9c0e8b4b3b8ccb790e1bf254303",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__04-year-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/05-opening-zoom.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 136208,
+      "sha256": "f11c1b01e17213f2eaeea599b516dfb9880281730754f51eb294d612634a55c1",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__05-opening-zoom.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/06-closing-zoom.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 175532,
+      "sha256": "2cd8ab3dde0884dc5bb7b9dd86ed9e71f572a736c0e36406a443900dcd7a26d7",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__06-closing-zoom.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/cache/cache-account-isolation.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74583,
+      "sha256": "22c5fd9084ac686f5bda05a8093d0526a141cbfc3489f8f45fb4f582cfe21ee3",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__cache__cache-account-isolation.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/cache/cache-authoritative-delete.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 76148,
+      "sha256": "93ce10d0723f19ed5deeb2228d182ef02252c960d09032d86352975dfced683d",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__cache__cache-authoritative-delete.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/cache/cache-fast-source-first.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 76350,
+      "sha256": "ebdce1e02087170d312898736897a6494fa4de2021d5c43ccb2f463e8b7089cd",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__cache__cache-fast-source-first.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/cache/cache-immediate-fortnight.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 58486,
+      "sha256": "fc2424f771c396f14e4511192cad9de8dbd5d6db847dde995355a8818c7cb5a8",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__cache__cache-immediate-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/cache/cache-updated-month.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 76350,
+      "sha256": "ebdce1e02087170d312898736897a6494fa4de2021d5c43ccb2f463e8b7089cd",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__cache__cache-updated-month.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/design-comparison.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 1119432,
+      "sha256": "de1873e37a2c78e72a2e8f960ad6395872224439442f89abbf8ab23088e3fa72",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__design-comparison.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/01-open-calendar-todo.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 52436,
+      "sha256": "98ae0d6f3d6e09fa25d161c3f364c84c9a2280de51b6e7190944bc85248cdb3f",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/02-open-calendar-duck.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 61487,
+      "sha256": "8758cf49ced132d817b8e4361c1bf3ccb918f86c3da9e7e8b939ef99552ee13c",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/03-portrait-current-screen.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/04-closed-camera-column.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/05-back-in-camera-column.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 63322,
+      "sha256": "7547d8d4c65043eba08bcdf97a986251e589ab45dfee8aefae8688bfbc15d4d6",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/06-dragging-lens-web-fallback.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 54567,
+      "sha256": "a122526f3c5d58fb529f169d72da87720c45887f3b93a7fc02eeb0a5938aca9d",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/07-iphone-320-floating-tabs.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 31635,
+      "sha256": "7e508341a790004b9c3c63777af74d5905c1f9be35f25d1aba546882723dd950",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/07-iphone-390-floating-tabs.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 32956,
+      "sha256": "6f180790df1694f11d0ea6a49147425954201e785953640d833582aad3bc94b6",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/07-iphone-430-floating-tabs.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 33519,
+      "sha256": "73d8fb5a62e4e604fa566e64c0189783cecf588afdc73fca57b5edd17c7de84e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/08-iphone-320-text-160-percent.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 25392,
+      "sha256": "2ba129414f713b4ddc177a4b629a87d1400e40308f354221955994e708d36993",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/08-pane-local-day-detail.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 61145,
+      "sha256": "7ce4aeaa8dcd3aea4e840f956cb380bcc254f040e83ccbadefb03acc21bcc573",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/10-folded-calendar-dark.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 36918,
+      "sha256": "591d54227101c78baf6b7a54f74bb62f9880dd15e635b3c9fbcfc7147da49282",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/11-folded-calendar-light.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 35705,
+      "sha256": "ed1e0899186ec825de25bcbdea76bdabba1ee81070f9ec6f803a4ed49cac610f",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/12-open-calendar-dark.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 53742,
+      "sha256": "59055a2552d324b86ad06764ad4577ea9c1cba37bd204de49646cb67a3c6cfde",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/13-folded-fortnight.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 27886,
+      "sha256": "bf9710e7757797d0cf755500108861eef277c0905c91bab1277cce39c1c23f3f",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/14-open-fortnight-dark.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 47864,
+      "sha256": "482e0025ee79360d4ef801d65b6765be3a779b2ffbd3eb5c5f20c3b67938e1b4",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/15-long-press-left-calendar.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 42845,
+      "sha256": "784ce859dcff14b8f6ba4f7ed6a904a7b82de82917590b7d358a1f7fca8f2b51",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/16-long-press-right-calendar.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 30350,
+      "sha256": "44a0e45882a508ec44375b67437488a566b74f4a3b57108e0052b01f7763efa2",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/17-folded-long-press-calendar.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 27697,
+      "sha256": "55476df7740175ebc5753a1ef4312f637d44202de7a054bac49a03af6ada2ae7",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/18-year-left-calendar-right-todos.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 86959,
+      "sha256": "b5d1627afec57cae0c50606633a5ce727c99858b85a9598490b735b0137e706d",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/19-year-right-calendar.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 87355,
+      "sha256": "f96f2c545805ab787de037d5e4be3bf14c55a4aef12dd1f0fcdfc6e4f346568e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/20-year-portrait.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 83739,
+      "sha256": "5d37c8a60c1760c860a587a744ca98258df9aa0461a172cfc483763ab03f173a",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/21-year-folded.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 67465,
+      "sha256": "8dea5bb2e553c29524acd92c2acb4a71d573fa9da296b6e31624ed6bb631ec09",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/22-year-duo-motion.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 84176,
+      "sha256": "1ed505ab18e184a9ea01beb3a8f8a49e155e17917215a536928ac1f44a40e929",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/duo/23-year-design-comparison-state.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 92528,
+      "sha256": "9e11e61778f4b55dafb6f8816426f0a97c722844e718a86d3bd772bb3b3c8130",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__duo__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/gestures/01-ordinary-enter-today.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74580,
+      "sha256": "d25247d215d9c25401da707db746ac4a2146f3b6a2f70459300525d1fb043410",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__gestures__01-ordinary-enter-today.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/gestures/02-ordinary-long-press-fortnight.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 52697,
+      "sha256": "4a6607acd00dce074e7d649cf7d027410ef0216d050c28834748bb1a8aaffaae",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__gestures__02-ordinary-long-press-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/gestures/03-ordinary-long-press-from-other-tab.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 56828,
+      "sha256": "b2fc4f553dae1bfa62cb9311e760c151ce559728b0f8e4c55e357d373e3c9ed8",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__gestures__03-ordinary-long-press-from-other-tab.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/gestures/04-ordinary-motion-enabled-shortcut.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 57111,
+      "sha256": "02ad51924617541254d4f0293774f380f7eb0d1f715dd6034424010a645411d3",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__gestures__04-ordinary-motion-enabled-shortcut.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/proposals/selected-year-overview.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 1308495,
+      "sha256": "554fb3988080e165dc1e2135c714c502d4e926f885868315e20580d0eb04e14e",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__proposals__selected-year-overview.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/proposals/unselected-compact.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 1162101,
+      "sha256": "53568581dbab185270b7a96a3c227a7fe87aefc4c8d39f3948576e0d950d4dcf",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__proposals__unselected-compact.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/proposals/unselected-sheet.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 1317243,
+      "sha256": "c9f9726ec200264ec17406b860014b081f211d329326a9b4a345dd8ca37bb1eb",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__proposals__unselected-sheet.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/rollback-legacy-picker-open.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 78680,
+      "sha256": "a3dec9866506835cc8156369d074303eec6da1f1ce6e82bbecd22e6ade63a8db",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__rollback-legacy-picker-open.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/rollback-legacy-picker-restored.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74087,
+      "sha256": "99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__rollback-legacy-picker-restored.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/viewport/ordinary-dark.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 80164,
+      "sha256": "47690684f5c601d6c3cbb79f305aa24bd27c67c2d4c208412758ee34e29a02f0",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__viewport__ordinary-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/viewport/ordinary-fortnight.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 56828,
+      "sha256": "b2fc4f553dae1bfa62cb9311e760c151ce559728b0f8e4c55e357d373e3c9ed8",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__viewport__ordinary-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/viewport/ordinary-month.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74580,
+      "sha256": "d25247d215d9c25401da707db746ac4a2146f3b6a2f70459300525d1fb043410",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__viewport__ordinary-month.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/viewport/ordinary-six-week-month.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 79343,
+      "sha256": "a285a2e8c0876f4ecadfa75a48636015f5753d0fb09a7004b9365dfb21ada41c",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__viewport__ordinary-six-week-month.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/viewport/ordinary-today-menu.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 73977,
+      "sha256": "7414dae43e7911c75784e3226f216412cc5a8b94beaf7037d6d98053126fd568",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__viewport__ordinary-today-menu.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/viewport/ordinary-todos.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 48883,
+      "sha256": "6e5af017d5f847d915cea2377fb3cefd15b5abee335e36ed5de6e3909c8b05eb",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__viewport__ordinary-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/01-clean-adaptive-month.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 80087,
+      "sha256": "eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/02-day-detail.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 102321,
+      "sha256": "8d1c7ccd2ccf4d22fb62bb0f658b8d84430dbd11e4f25392cc4113eb95e2a9a9",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/03-event-detail.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82679,
+      "sha256": "9e79567d1a2fa7a99bc50bf064ffe28d10afafc0bc2b0abebb795af87b43525f",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/04-write-preview.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 100866,
+      "sha256": "dc6f5587a0a560eaedbb32c8a43e4e16bb59d2bfcdb341f3594585c4eddae6df",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/05-all-day-editor.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 96917,
+      "sha256": "d728efbabee66a745acac25fd8a404e8700acde241ae2ecebe7341bd818fc9b0",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/06-week-timeline.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 89108,
+      "sha256": "3821731eefc3f2a00bda6cd593417263e78beb8ac2721932d368e9220ee4cc54",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/07-search-scope.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 95536,
+      "sha256": "4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/08-calendar-sources.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 89337,
+      "sha256": "2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/09-read-only-event.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 99661,
+      "sha256": "06e83a5bcce97c6b143bf5ec4194c3e69c1737fc7b3465f717ebf31aea3fc97c",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/10-partial-state.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/11-error-visible-with-cache.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/12-phone-320.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 77373,
+      "sha256": "8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/12-phone-430.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 88895,
+      "sha256": "1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/13-large-text.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 98883,
+      "sha256": "8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/14-loading-with-cache.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/15-unknown-write-no-resend.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 111953,
+      "sha256": "43ad6dde8a6bee9ff0ae7e347f2040661d377be1258e637f5892c93f19b17313",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/16-dark-month-reference.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 74340,
+      "sha256": "1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/17-dark-event-reference.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 65944,
+      "sha256": "994aa512411b49511217f1d3606e773448de547242206a81a916fb1e46cea2b7",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/18-light-month-reference.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 73514,
+      "sha256": "4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/19-non-json-error-keeps-events.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 83222,
+      "sha256": "e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/calendar-year-2026-11-14/workspace/20-fortnight-expanded.png",
+      "category": "연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님",
+      "bytes": 63763,
+      "sha256": "850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c",
+      "import_path": "images/artifacts__calendar-year-2026-11-14__workspace__20-fortnight-expanded.png"
     },
     {
       "path": "artifacts/calendar.png",
