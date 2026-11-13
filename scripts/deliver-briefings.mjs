@@ -1,6 +1,14 @@
 // No user documents, credentials, API keys or OIDC tokens are logged.
 const origin='https://duckduck-test.onrender.com';
 try{
+ // Code-change smoke checks wait for the compatible server, then obtain a fresh token.
+ if(process.env.GITHUB_EVENT_NAME==='push'){
+  let ready=false;const deadline=Date.now()+180000;
+  while(Date.now()<deadline){try{const r=await fetch(origin+'/api/capabilities',{redirect:'error',signal:AbortSignal.timeout(10000)});if(r.ok&&(await r.json()).schedulerProtocol>=2){ready=true;break;}}catch{}
+   await new Promise(resolve=>setTimeout(resolve,8000));
+  }
+  if(!ready)throw Error();
+ }
  const address=new URL(process.env.ACTIONS_ID_TOKEN_REQUEST_URL||'');
  if(address.protocol!=='https:'||!address.hostname.endsWith('.actions.githubusercontent.com')||!process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN)throw Error();
  address.searchParams.set('audience',origin+'/api/automations/tick');

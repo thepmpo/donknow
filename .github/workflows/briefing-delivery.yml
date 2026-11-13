@@ -3,6 +3,12 @@ on:
   schedule:
     - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/briefing-delivery.yml'
+      - 'scripts/deliver-briefings.mjs'
+      - 'server/scheduler-auth.js'
 permissions:
   contents: read
   id-token: write
@@ -13,7 +19,7 @@ jobs:
   deliver:
     if: github.repository == 'thepmpo/donknow' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
