@@ -94,3 +94,5 @@ npm --prefix mobile run test:project
 전체241개 중240통과·실패0·기존 선택1개 제외. 문법46개·타입·최신 웹/iOS JS export·새 Calendar 브라우저 흐름·전체 앱/로그인/모션·예약·AI 채팅/오류·Duo 기하 회귀를 통과했다. 새 캡처27개와 checks.json/verification.json을 보존한다. 모의 저장 시도3건(성공2·결과불확실1), 불확실 이후 재발송0·운영 Google 쓰기0·페이지 JS 오류0이다. 단위/API 검사에서 실제 공개 응답의 accountLabel/calendarName/targetTitle을 확인했다.
 
 테스트 보완: 유지 마운트된 비활성 Calendar 때문에 기존 전역 텍스트/목록 선택자가 중복됐으므로 화면에 실제 보이는 노드/내비게이션 범위로 좁혔다. 만료 세션 검사는 새 계정의 Todo 화면이 실제 준비된 후 서버 세션만 만료시켜 작성 시트 정리까지 검증한다. 기존 before/승인 캡처는 회귀 도구의 임시 출력으로 교체하지 않는다.
+
+[실제 main 저장·CI·Render 공개 반영 확인](calendar-workspace-deployment-2026-11-13.md). 마지막 운영 기록 전용 커밋은 배포된 앱/서버/공개 HTML과 기능 차이가 없다.
