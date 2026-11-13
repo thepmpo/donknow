@@ -22,3 +22,7 @@ final result: blocked
 Product Design url-to-code의 ‘Capture source evidence first’와 design-qa의 source/rendered artifact 비교가 필수다. 이미지가 없는데 prose·추측 CSS만으로 clone을 완성하지 않는다. 원본이 확보되면 prototype template 초기화 → 덕 자산/정확한 제품 문구 → PC/모바일 메뉴/CTA/FAQ → 나란히 시각 대조 → 이 문서의 검수 이력을 갱신한다.
 
 피클 로고/캐릭터/보안 기술·예약/통화·결제 기능·QR·스토어 주소를 덕의 것으로 복사하지 않는다. 덕은 기존 오리 자산, 실제 Calendar/Todo/AI/명시 확인 흐름과 현재 출시 상태를 사용한다.
+
+## 동작 확인 경로 보강
+
+사용자 요구는 스크롤/영상·버튼/메뉴·팝업·FAQ까지 포함한다. screenshot만으로 완료하지 않는다. tools/website-reference와 별도 contents-read 무료 Linux CI를 통해 익명 공개 원본의 실제 조작 영상·전후 PNG·DOM/computed styles/animations·공개 자산을 수집하도록 준비했다. 정책·파일크기 제한·오류 화면 거부 테스트 및 문법 검사는 통과했고, 실 CI 캡처와 artifact 회수는 별도 확인한다. 원본과 구현 대조 전 final result는blocked다.

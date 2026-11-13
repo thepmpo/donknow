@@ -1,0 +1,43 @@
+name: Capture public website reference
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/website-reference/**'
+      - '.github/workflows/website-reference.yml'
+permissions:
+  contents: read
+concurrency:
+  group: website-reference
+  cancel-in-progress: true
+jobs:
+  capture:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci --prefix mobile --no-audit --no-fund
+      - name: Check fixed public source and capture limits
+        run: |
+          node --check tools/website-reference/capture.mjs
+          node --test test/website-reference.test.js
+      - name: Install official Chromium and video recorder
+        run: node mobile/node_modules/playwright-core/cli.js install --with-deps chromium
+      - name: Record source appearance and interactions
+        run: node tools/website-reference/capture.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: duck-website-public-reference
+          path: .reference-output/
+          if-no-files-found: error
+          retention-days: 2
