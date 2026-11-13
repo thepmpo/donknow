@@ -1,5 +1,103 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-14:start -->
+### 2026-11-14 — 당일 저장된 작업
+
+실제 정리: 02:36 KST. 새 저장 작업 46개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [8e512cf](https://github.com/sjfieni/donknow/commit/8e512cf22a0be9e82ddf0d16faee08beceb1bd8f) · 11-13 09:52 · Deliver scheduled Duck messages and move Duo tabs below the status bar
+
+- [d1fcbcc](https://github.com/sjfieni/donknow/commit/d1fcbcc3f23b6e22d9e00b999fea16000616d9a0) · 11-13 09:54 · Record scheduled delivery, corrected Duo layout and free-host mail limits
+
+- [f65a6f4](https://github.com/sjfieni/donknow/commit/f65a6f47bc8569935c1efefd38fb2581a3d3ae40) · 11-13 10:02 · Check scheduled-delivery authentication automatically when its workflow changes
+
+- [e7e0ea2](https://github.com/sjfieni/donknow/commit/e7e0ea27a5c6f5ff609b66f631d8211697acb91d) · 11-13 10:02 · Record the authenticated scheduler connection check and deployment boundaries
+
+- [57aee29](https://github.com/sjfieni/donknow/commit/57aee290df5ea9d25bb7e8f01879c4c435f99d4d) · 11-13 10:09 · Record live scheduled-runner authentication and preserve verification limits
+
+- [084d631](https://github.com/sjfieni/donknow/commit/084d63138ce7e7df9bd6ec5646b97ab8d6bb03c8) · 11-13 10:33 · Enforce read-only Naver mail without changing saved authentication
+
+- [3dbdf5d](https://github.com/sjfieni/donknow/commit/3dbdf5d3b0313294fd17b49c01afc47374317bd3) · 11-13 10:34 · Record read-only Naver policy and the requested iPhone build 16
+
+- [5c1ae41](https://github.com/sjfieni/donknow/commit/5c1ae4182428e8656f1e56442228664b1352a077) · 11-13 11:00 · Place Duo navigation vertically along the safe right edge in both states
+
+- [7e92104](https://github.com/sjfieni/donknow/commit/7e92104bf0d8da08c2b95754c836d595ad6a598a) · 11-13 11:03 · Correct Duo design guidance to a vertical right-edge stack
+
+- [87849a2](https://github.com/sjfieni/donknow/commit/87849a2d4191646e39acbdaa8e3c3214d22c90bd) · 11-13 11:20 · Lower the Duo vertical stack and show a contextual circular back button
+
+- [380dde2](https://github.com/sjfieni/donknow/commit/380dde2f3e283feec93b6bda3b9ab561860cb02f) · 11-13 11:22 · Document the lower Duo stack and contextual round back control
+
+- [775a561](https://github.com/sjfieni/donknow/commit/775a561cea5d64e53fa0c1f270a747abd3d6e02a) · 11-13 12:05 · Fix Duo camera-column navigation and preserve split workspace state
+
+- [faee581](https://github.com/sjfieni/donknow/commit/faee581c5ab1d3c18011cd9431703ad405a279e7) · 11-13 12:06 · Document approved Duo camera column and landscape workspace behavior
+
+- [a1c2274](https://github.com/sjfieni/donknow/commit/a1c227449c4ff049a16465c7b459203840bbd162) · 11-13 12:21 · Record exhausted Expo iOS build quota and local Mac build alternative
+
+- [224a498](https://github.com/sjfieni/donknow/commit/224a4984f31a9529163fecb0f5158ab9ee29cc7d) · 11-13 12:34 · Build TestFlight on the free public GitHub Mac instead of Expo cloud
+
+- [5e761ec](https://github.com/sjfieni/donknow/commit/5e761ec3b2e45fb9f876f2d05502598d9168440d) · 11-13 13:45 · Record successful free iOS build 19 and completed Apple upload
+
+- [30ea3d9](https://github.com/sjfieni/donknow/commit/30ea3d9dd57dd0d0ca3e817889a920d61f102662) · 11-13 14:02 · Enlarge Duo navigation and add native Liquid Glass with moving selection
+
+- [6d71d3f](https://github.com/sjfieni/donknow/commit/6d71d3f3a49e6a3e6f55c81d88bbc5e487fe7725) · 11-13 14:04 · Document approved larger Glass navigation and per-build time limit
+
+- [106221c](https://github.com/sjfieni/donknow/commit/106221c6504c2fb9bd073fca32fb8d5703987a49) · 11-13 14:15 · Save researched subtle Duo pane-divider proposal for user review
+
+- [2082f57](https://github.com/sjfieni/donknow/commit/2082f574bd947cfc5276562c08d7aa0bfcb65c5e) · 11-13 14:16 · Record divider proposal and pin visuals independently of app code
+
+- [4d41361](https://github.com/sjfieni/donknow/commit/4d41361134907dceafc6b521001fa3d15e612048) · 11-13 14:47 · Apply the approved subtle divider between unfolded Duo panes
+
+- [57530ac](https://github.com/sjfieni/donknow/commit/57530ac0260674f7ab2164e48748541a53644fa6) · 11-13 14:49 · Record divider approval, implementation captures and verification
+
+- [fdd555f](https://github.com/sjfieni/donknow/commit/fdd555f558ffcd5bf3c9407657edf5343595893b) · 11-13 15:18 · Use Liquid Glass for the moving selection instead of a blue painted fill
+
+- [1f7dc5d](https://github.com/sjfieni/donknow/commit/1f7dc5df249d32d065e2856f09ddec1a9306e1c0) · 11-13 15:21 · Correct Glass claims and record build 20 plus selection-material fix
+
+- [aa55b90](https://github.com/sjfieni/donknow/commit/aa55b909b3c76e871ac5a2a24053a828f84a037f) · 11-13 16:07 · Add touch-driven Glass navigation and floating iPhone tabs
+
+- [20bc8eb](https://github.com/sjfieni/donknow/commit/20bc8eba2ff40129b807cd6b4668192a010cc2fb) · 11-13 16:10 · Consolidate reproducible product contracts and reusable Glass guidance
+
+- [32a3d5e](https://github.com/sjfieni/donknow/commit/32a3d5efc9eecb1cdda87ffaf041018032f8741f) · 11-13 16:40 · Audit Calendar against Apple and Fantastical with fresh flow evidence
+
+- [697fa6a](https://github.com/sjfieni/donknow/commit/697fa6af6100afb428ab8c1c0187a6114f17a5ca) · 11-13 16:42 · Link Calendar audit as a proposal in canonical and public records
+
+- [0cdab65](https://github.com/sjfieni/donknow/commit/0cdab65ddd7dec2022b4f03493b3ea1dda554258) · 11-13 16:42 · Normalize the Calendar audit guide ending
+
+- [00bf57f](https://github.com/sjfieni/donknow/commit/00bf57f6a4b78016a811cc244f0bcfe13118cd6e) · 11-13 17:27 · Implement complete Calendar workspace with safe Google actions
+
+- [9f838e1](https://github.com/sjfieni/donknow/commit/9f838e1b8dbe6e658bc387ad5bc2fa1149a1cb43) · 11-13 17:29 · Document approved Calendar improvements and verified handoff
+
+- [1643e0c](https://github.com/sjfieni/donknow/commit/1643e0c2b7da2c2e1e34362388dbbd671542b9d0) · 11-13 17:33 · Record Calendar CI and verified public deployment
+
+- [b9ddf34](https://github.com/sjfieni/donknow/commit/b9ddf34387165aa4a058d50050a9591f6d07b5f0) · 11-13 17:55 · Record iOS23 build success and Apple agreement submission blocker
+
+- [6161372](https://github.com/sjfieni/donknow/commit/6161372c1254635001038eee531bc927c93fff49) · 11-13 18:11 · Record iOS24 recovery attempt and continued Apple agreement block
+
+- [213742a](https://github.com/sjfieni/donknow/commit/213742a4ff7c5a677ce2ff8758a54b88005ca06d) · 11-13 18:33 · Record successful iOS25 build and Apple upload
+
+- [083192e](https://github.com/sjfieni/donknow/commit/083192e7815d81f8c3241411026939e2b84d5f2a) · 11-13 19:05 · Refine Calendar from Apple references and follow system appearance
+
+- [a0dee32](https://github.com/sjfieni/donknow/commit/a0dee32fa3f3fde662b8647197183f6254da5e67) · 11-13 19:07 · Publish Calendar reference contract, evidence and current build status
+
+- [43e06a8](https://github.com/sjfieni/donknow/commit/43e06a883eb60b503fe829e138f309839c7ecd52) · 11-13 19:08 · Correct embedded handoff links and record Calendar delivery
+
+- [2a7aa82](https://github.com/sjfieni/donknow/commit/2a7aa82d0940d89c594cfebbc5db7cbe3da94dbf) · 11-13 19:14 · Record latest iPhone build request and dispatch permission failure
+
+- [c6baaea](https://github.com/sjfieni/donknow/commit/c6baaeabc49f67bcf2535d593e7f4e5393964429) · 11-13 20:20 · Record Duck website reference, content draft and source capture blocker
+
+- [0fbaca2](https://github.com/sjfieni/donknow/commit/0fbaca2c113e945ed9eefe4b3ceb5f3107120b35) · 11-13 21:13 · Capture public website visuals and interactions in isolated reference checks
+
+- [5fec1ab](https://github.com/sjfieni/donknow/commit/5fec1ab428b12910a531f40b13299c57fede7ea8) · 11-13 21:16 · Preserve captured reference artifacts outside hidden output directory
+
+- [93b311d](https://github.com/sjfieni/donknow/commit/93b311d4a8291b5f65b4eeb53955afce4953b99c) · 11-13 21:42 · Build interactive Duck landing website from measured reference
+
+- [461ee7d](https://github.com/sjfieni/donknow/commit/461ee7d5bb6bfdc23f522b6a0dc395459bc8699c) · 11-13 21:45 · Record landing site interaction contract and verified iPhone build 26
+
+- [e2c853b](https://github.com/sjfieni/donknow/commit/e2c853bdf5d0e40bea3b4d7707407a949b569f98) · 11-13 22:19 · Refine calendar weeks, two-week view, sheet motion and connection stability
+
+- [fd8bf43](https://github.com/sjfieni/donknow/commit/fd8bf437b90282910ba86c7dc17d2e511a179146) · 11-13 22:23 · Document calendar refinement contract, checks and pending device verification
+<!-- daily:2026-11-14:end -->
+
 ## 2026-11-13 — 캘린더 정리·14일 보기·시트·연동 안정성 구현
 
 [현재 계약](calendar-refinement-2026-11-13.md), [검수](calendar-refinement-qa-2026-11-13.md), [개인 Notion](https://app.notion.com/p/41718ee8299181389c27f3f68549c4d3). 코드e2c853b. 사용자 첨부 기준으로 본문 도구/status를 년월 sheet로 이동하고24pt 여백·해당 월 날짜가 있는 주만 표시·일/토 숫자 red/blue·Today 위 독립2주 버튼과14일 확대를 구현했다. 두 번째 주 날짜를 눌러도 창이 움직이지 않고 탭/회전/접힘/고정 pane 상태를 보존한다.
