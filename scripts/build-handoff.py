@@ -33,9 +33,9 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
-#### 최신 iPhone23 — 앱 생성 성공, Apple 약관 동의 필요
+#### 최신 iPhone24 — 재실행은 제가 시작, Apple 약관 응답은 계속 차단
 
-[실제 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)·소스1643e0c에서 **1.0.0(23) 서명IPA 생성은17:48:01 KST 성공**했다. 다음 Submit만 **필수 Apple 약관 미동의/만료403**으로17:48:32 KST 실패했다. 취소/앱 코드/Ubuntu notice가 원인이 아니다. 계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [Developer 계정](https://developer.apple.com/account/)에서 직접 확인/동의해야 한다. 동의 전 재빌드·재제출/키 재발급을 반복하지 않는다. Apple 업로드·처리·TestFlight23 설치와 실기기 검수는 미완료다. runner IPA는 기존cleanup으로 삭제됐으며 EAS 제출 archive의 재사용은 확인 전이다. [상세 증거/재개 절차](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 따른다. 앱/의존성/인증/데이터/서명/무료플랜은 유지한다.
+사용자가 약관 동의를 확인한 뒤, 현재main과 앱/서버/빌드 workflow가 같은 것을 비교하고 연결된 GitHub로 [43394742649 attempt2](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/2)의 실패job만 재실행했다. **사용자가 Run workflow를 다시 누를 필요 없이 접수/실행했다.** 실제1.0.0(24) 서명IPA 생성은18:07:14 KST 성공했지만 Apple Submit가18:07:38 KST에 같은 필수약관 미동의/만료403으로 다시 실패했다. 추가 빌드/제출을 중단하며 약관 반영 지연/다른 필수 약관/팀 문제는 아직 구분하지 못했다. 사용자PC를 꺼도 GitHub 실행과 무관하다. TestFlight24 업로드/설치는 미완료이며 [실제 증거/재개 기준](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)을 따른다. 앱코드/SDK/서명/인증/데이터/무료플랜은 변경하지 않았다.
 
 #### 캘린더 개선 전체 구현 · CA-01~20
 

@@ -1,5 +1,11 @@
 # 매일 개발 정리
 
+## 2026-11-13 — 약관 동의 후24번 생성 성공·Apple 제출은 다시 차단
+
+사용자 약관 동의 확인 후 최신main과 앱/서버/빌드 workflow가 동일함을 비교했다. 연결된 GitHub 실패job 재실행 API가 성공해 사용자가 Run workflow를 다시 누를 필요 없이43394742649 attempt2를 실행했다. 성공한 validate를 재사용했고 job131792866795에서 **1.0.0(24) native/서명 IPA 생성18:07:14 KST 성공**, Apple Submit는18:07:38 KST 같은 필수약관 미동의/만료403으로 실패했다. [실제 증거와 재개 기준](testflight-automation.md).
+
+추가 빌드/제출은 중단했다. 사용자 동의의 Apple 반영 지연인지 다른 필수 약관/팀 문제인지 구분은 미확인이다. 새 키/서명/SDK를 바꾸지 않는다. 24번을 TestFlight 수신/설치 성공으로 기록하지 않는다. GitHub 클라우드 Mac 작업이므로 사용자PC를 켜둘 필요는 없으며, 이번 재시도에 사용자 추가 Run 버튼은 필요하지 않았다. 코드·데이터·인증·무료플랜·복구bundle은 보존한다.
+
 ## 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
 
 [실제 빌드/제출 기록](testflight-automation.md): 수동43394742649·소스1643e0c는 validate와1.0.0(23) 서명 IPA 생성이 성공했고 Apple Submit만 필수 약관 미동의/만료403으로 실패했다. 취소나 앱/Ubuntu 빌드 실패가 아니다. 새 Calendar·ExpoHaptics 포함 native 컴파일은 확인했지만 Apple 업로드/처리·TestFlight 설치·기기 검수는 미확인이다.

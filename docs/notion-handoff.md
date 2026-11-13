@@ -7,9 +7,9 @@
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
-#### 최신 iPhone23 — 앱 생성 성공, Apple 약관 동의 필요
+#### 최신 iPhone24 — 재실행은 제가 시작, Apple 약관 응답은 계속 차단
 
-[실제 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)·소스1643e0c에서 **1.0.0(23) 서명IPA 생성은17:48:01 KST 성공**했다. 다음 Submit만 **필수 Apple 약관 미동의/만료403**으로17:48:32 KST 실패했다. 취소/앱 코드/Ubuntu notice가 원인이 아니다. 계정 소유자가 [Apple 계약](https://appstoreconnect.apple.com/business)과 필요시 [Developer 계정](https://developer.apple.com/account/)에서 직접 확인/동의해야 한다. 동의 전 재빌드·재제출/키 재발급을 반복하지 않는다. Apple 업로드·처리·TestFlight23 설치와 실기기 검수는 미완료다. runner IPA는 기존cleanup으로 삭제됐으며 EAS 제출 archive의 재사용은 확인 전이다. [상세 증거/재개 절차](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 따른다. 앱/의존성/인증/데이터/서명/무료플랜은 유지한다.
+사용자가 약관 동의를 확인한 뒤, 현재main과 앱/서버/빌드 workflow가 같은 것을 비교하고 연결된 GitHub로 [43394742649 attempt2](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/2)의 실패job만 재실행했다. **사용자가 Run workflow를 다시 누를 필요 없이 접수/실행했다.** 실제1.0.0(24) 서명IPA 생성은18:07:14 KST 성공했지만 Apple Submit가18:07:38 KST에 같은 필수약관 미동의/만료403으로 다시 실패했다. 추가 빌드/제출을 중단하며 약관 반영 지연/다른 필수 약관/팀 문제는 아직 구분하지 못했다. 사용자PC를 꺼도 GitHub 실행과 무관하다. TestFlight24 업로드/설치는 미완료이며 [실제 증거/재개 기준](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)을 따른다. 앱코드/SDK/서명/인증/데이터/무료플랜은 변경하지 않았다.
 
 #### 캘린더 개선 전체 구현 · CA-01~20
 
@@ -204,6 +204,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-13 — 약관 동의 후24번 생성 성공·Apple 제출은 다시 차단
+
+사용자 약관 동의 확인 후 최신main과 앱/서버/빌드 workflow가 동일함을 비교했다. 연결된 GitHub 실패job 재실행 API가 성공해 사용자가 Run workflow를 다시 누를 필요 없이43394742649 attempt2를 실행했다. 성공한 validate를 재사용했고 job131792866795에서 **1.0.0(24) native/서명 IPA 생성18:07:14 KST 성공**, Apple Submit는18:07:38 KST 같은 필수약관 미동의/만료403으로 실패했다. [실제 증거와 재개 기준](testflight-automation.md).
+
+추가 빌드/제출은 중단했다. 사용자 동의의 Apple 반영 지연인지 다른 필수 약관/팀 문제인지 구분은 미확인이다. 새 키/서명/SDK를 바꾸지 않는다. 24번을 TestFlight 수신/설치 성공으로 기록하지 않는다. GitHub 클라우드 Mac 작업이므로 사용자PC를 켜둘 필요는 없으며, 이번 재시도에 사용자 추가 Run 버튼은 필요하지 않았다. 코드·데이터·인증·무료플랜·복구bundle은 보존한다.
 
 #### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
 
@@ -872,6 +878,12 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-13 — 약관 동의 후24번 생성 성공·Apple 제출은 다시 차단
+
+사용자 약관 동의 확인 후 최신main과 앱/서버/빌드 workflow가 동일함을 비교했다. 연결된 GitHub 실패job 재실행 API가 성공해 사용자가 Run workflow를 다시 누를 필요 없이43394742649 attempt2를 실행했다. 성공한 validate를 재사용했고 job131792866795에서 **1.0.0(24) native/서명 IPA 생성18:07:14 KST 성공**, Apple Submit는18:07:38 KST 같은 필수약관 미동의/만료403으로 실패했다. [실제 증거와 재개 기준](testflight-automation.md).
+
+추가 빌드/제출은 중단했다. 사용자 동의의 Apple 반영 지연인지 다른 필수 약관/팀 문제인지 구분은 미확인이다. 새 키/서명/SDK를 바꾸지 않는다. 24번을 TestFlight 수신/설치 성공으로 기록하지 않는다. GitHub 클라우드 Mac 작업이므로 사용자PC를 켜둘 필요는 없으며, 이번 재시도에 사용자 추가 Run 버튼은 필요하지 않았다. 코드·데이터·인증·무료플랜·복구bundle은 보존한다.
 
 #### 2026-11-13 — iPhone23 native 성공·Apple 약관으로 제출 차단
 
@@ -1658,6 +1670,7 @@ aa55b90 Add touch-driven Glass navigation and floating iPhone tabs
 00bf57f Implement complete Calendar workspace with safe Google actions
 9f838e1 Document approved Calendar improvements and verified handoff
 1643e0c Record Calendar CI and verified public deployment
+b9ddf34 Record iOS23 build success and Apple agreement submission blocker
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -7350,7 +7363,15 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 > **현재 구현 기준:** [전체 이어받기 기준서](https://github.com/thepmpo/donknow/blob/main/docs/continuation-guide.md) → [Liquid Glass 상태·수치·검수](https://github.com/thepmpo/donknow/blob/main/docs/liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 
 
-#### 2026-11-13 최신 — 1.0.0(23) 빌드 성공·Apple 약관으로 제출 실패
+#### 2026-11-13 최신 — 약관 동의 후24번 생성 성공·제출 재차 차단
+
+사용자가 Apple 약관에 “동의했어”라고 확인했다. 계정 소유자의 직접 동의는 사용자 확인이며 서버 반영 여부는 실제 새 제출 결과로 판단한다.
+
+GitHub main b9ddf34를 fetch해 이전1643e0c와 mobile/server/ios-testflight workflow 차이가 없음을 확인했다. runner IPA는 삭제됐고 현재 제공 도구에 EAS archive 재시도 기능이 없어, 연결된 GitHub의 **실패 job만 재실행** API로 [43394742649 attempt2](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/2)를 요청했다. success:true 접수와 build-and-submit job131792866795 실행을 확인했다. 성공한 validate는 재사용한다. 실제 결과: 번호23→24, **1.0.0(24) native/서명 IPA 생성은18:07:14 KST 성공**했다. 그러나18:07:38 KST Apple Submit가 다시 **필수 약관 미동의/만료403**으로 실패했다. [attempt2 job131792866795](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131792866795), [24번 제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/9b4f5c8c-9856-401f-83ca-5886c7cab443). 사용자 동의를 부정하는 뜻이 아니라 실제 제출 시 Apple이 반환한 상태다. 계약 반영 지연/다른 필수 약관/팀 선택 문제 중 어느 것인지는 아직 확인되지 않았다. 추가 빌드/제출을 중단하고 계정 소유자가 확인할 때 재개한다. TestFlight24 업로드·설치·기기 검수 완료가 아니다.
+
+이것은 예전 Expo cloud 한도 실패를 재시도하는 경로가 아니다. 실제 앱·서명 처리/무료 Mac·local build workflow가 현재main과 **동일함을 먼저 비교한 이번 복구**다. 앱/워크플로가 바뀐 실패라면 최신main 새 수동 실행이 필요하고, 오래된 cloud 코드의 Re-run 금지는 그대로 유지한다. 무료 플랜·기존 데이터/인증/서명·원본 복구 bundle을 보존하며 불확실한 제출을 자동 반복하지 않는다.
+
+#### 2026-11-13 이전 attempt1 — 1.0.0(23) 빌드 성공·Apple 약관으로 제출 실패
 
 [수동 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)은 소스 **1643e0c2b7da2c2e1e34362388dbbd671542b9d0**, validate 성공·build-and-submit failure다. 사용자가 ‘취소’로 표현했지만 실제 run/job conclusion은 failure이며 cancel이 아니다. [job131783233106](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131783233106)에서 **서명 IPA 생성 단계는 성공**, 다음 Submit 단계만 실패했다.
 

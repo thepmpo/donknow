@@ -3,7 +3,15 @@
 > **현재 구현 기준:** [전체 이어받기 기준서](continuation-guide.md) → [Liquid Glass 상태·수치·검수](liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 
 
-## 2026-11-13 최신 — 1.0.0(23) 빌드 성공·Apple 약관으로 제출 실패
+## 2026-11-13 최신 — 약관 동의 후24번 생성 성공·제출 재차 차단
+
+사용자가 Apple 약관에 “동의했어”라고 확인했다. 계정 소유자의 직접 동의는 사용자 확인이며 서버 반영 여부는 실제 새 제출 결과로 판단한다.
+
+GitHub main b9ddf34를 fetch해 이전1643e0c와 mobile/server/ios-testflight workflow 차이가 없음을 확인했다. runner IPA는 삭제됐고 현재 제공 도구에 EAS archive 재시도 기능이 없어, 연결된 GitHub의 **실패 job만 재실행** API로 [43394742649 attempt2](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/2)를 요청했다. success:true 접수와 build-and-submit job131792866795 실행을 확인했다. 성공한 validate는 재사용한다. 실제 결과: 번호23→24, **1.0.0(24) native/서명 IPA 생성은18:07:14 KST 성공**했다. 그러나18:07:38 KST Apple Submit가 다시 **필수 약관 미동의/만료403**으로 실패했다. [attempt2 job131792866795](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131792866795), [24번 제출 상세](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/9b4f5c8c-9856-401f-83ca-5886c7cab443). 사용자 동의를 부정하는 뜻이 아니라 실제 제출 시 Apple이 반환한 상태다. 계약 반영 지연/다른 필수 약관/팀 선택 문제 중 어느 것인지는 아직 확인되지 않았다. 추가 빌드/제출을 중단하고 계정 소유자가 확인할 때 재개한다. TestFlight24 업로드·설치·기기 검수 완료가 아니다.
+
+이것은 예전 Expo cloud 한도 실패를 재시도하는 경로가 아니다. 실제 앱·서명 처리/무료 Mac·local build workflow가 현재main과 **동일함을 먼저 비교한 이번 복구**다. 앱/워크플로가 바뀐 실패라면 최신main 새 수동 실행이 필요하고, 오래된 cloud 코드의 Re-run 금지는 그대로 유지한다. 무료 플랜·기존 데이터/인증/서명·원본 복구 bundle을 보존하며 불확실한 제출을 자동 반복하지 않는다.
+
+## 2026-11-13 이전 attempt1 — 1.0.0(23) 빌드 성공·Apple 약관으로 제출 실패
 
 [수동 실행43394742649](https://github.com/thepmpo/donknow/actions/runs/43394742649)은 소스 **1643e0c2b7da2c2e1e34362388dbbd671542b9d0**, validate 성공·build-and-submit failure다. 사용자가 ‘취소’로 표현했지만 실제 run/job conclusion은 failure이며 cancel이 아니다. [job131783233106](https://github.com/thepmpo/donknow/actions/runs/43394742649/job/131783233106)에서 **서명 IPA 생성 단계는 성공**, 다음 Submit 단계만 실패했다.
 
