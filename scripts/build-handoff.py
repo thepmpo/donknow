@@ -34,6 +34,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-13 — 네이버 읽기 전용·아이폰 테스트
+
+사용자는 네이버를 읽기 전용으로 확정했다. `NAVER_READ_ONLY=true`로 읽음 상태 변경·발송·답장과 이전 초안 실행을 막고 기존 인증은 보존한다. 사용자 수동 실행43345083809는57aee29의 아이폰 빌드16 요청/제출 예약 접수이며 실제 Apple 처리는 별도다. 이 서버 정책은 해당 빌드에도 적용하므로 이번 변경으로 추가 EAS를 요청하지 않는다. 웹·서버 변경 때 매번 아이폰 빌드를 할 필요는 없다. Google·Notion 실제 권한/읽기/시험용 쓰기는 설치 후 최종 테스트에 포함한다. [최신 정책·빌드 증거](https://github.com/thepmpo/donknow/blob/main/docs/functional-completion-2026-11-13.md)를 우선한다.
+
 ### 2026-11-13 — 예약 브리핑·날씨와 Duo 배치 정정
 
 사용자가 별도 명세 대기를 해제해 정한 시간에 덕 채팅으로 오는 브리핑·도시 날씨를 구현했다. 기본 꺼짐·시간대/자료/AI 동의·중복/취소/복원 보호·아이폰 도착 알림 연결을 포함한다. Duo는 접힘·펼침 모두 배터리 아래 기존 헤더 오른쪽으로 모으고 본문76pt 예약 공간과 전체 높이 rail을 제거했다. [현재 기능·서버 제약](https://github.com/thepmpo/donknow/blob/main/docs/functional-completion-2026-11-13.md), [예약 사용·보호·검증](https://github.com/thepmpo/donknow/blob/main/docs/scheduled-messages-2026-11-13.md), [Duo 화면](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md)을 우선한다.

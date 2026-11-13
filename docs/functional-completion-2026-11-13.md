@@ -48,3 +48,15 @@
 main `e7e0ea2`를 일반 push했고 [자동 검사43341877783](https://github.com/thepmpo/donknow/actions/runs/43341877783)가 성공했다. Render 배포 `dep-dbr64qdbedkc73cl5ilg`는10:06:11 KST에 live이며 공개 health 정상, `schedulerProtocol:2`, `scheduledMessages:true`, 네이버 읽기 활성/발송 비활성, 새 `/project`와 `/design-guide`를 확인했다.
 
 [예약 실행기43341877727](https://github.com/thepmpo/donknow/actions/runs/43341877727)의 첫 시도는 배포 전 시작되어 서버 대기180초를 소진했다. 서버 live 후 실패 작업만 재실행해10:06:50 KST에 `{"ok":true,"processed":0}`으로 성공했다. 이는 실제 GitHub OIDC→서버 인증 경로 확인이다. 처리0건을 사용자의 실모델 브리핑 생성·예약 수신·아이폰 푸시 성공으로 해석하지 않는다. 정확한 분 단위 전달은 무료 서버/GitHub 지연으로 보장하지 않는다. 새 TestFlight/EAS 빌드는 요청하지 않았다.
+
+## 2026-11-13 — 네이버 읽기 전용 확정·아이폰 빌드16 요청
+
+사용자 결정으로 네이버는 **받은 메일 읽기 전용**을 유지한다. `NAVER_READ_ONLY=true`를 기존 무료 서버에 병합하고 Blueprint에도 같은 비밀 아닌 값을 기록한다. 읽음 상태 변경·발송·답장을 연결 설정·서버 미리보기/실행·AI/수동 카탈로그에서 막는다. 예전에 저장된 `mailWrite` 권한이나 준비한 실행 초안도 제한을 우회할 수 없으며, 기존 인증·메일 계정·자료를 삭제하거나 다시 저장하지 않는다. 최신 UI는 쓰기 선택을 숨긴다. 기존 설치 앱에 선택칸이 보여도 서버에서 차단되므로 꺼두고 읽기만 연결한다.
+
+[사용자 수동 실행43345083809](https://github.com/thepmpo/donknow/actions/runs/43345083809)는 소스57aee29의 검사 후 **아이폰 빌드16** 요청·자동 제출 예약 접수를 완료했다. [EAS 빌드](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/f2dcece3-7540-4407-b02a-5019579976dd), [제출](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/a92f2559-01cd-4ca5-8b98-165299799d45). 실제 IPA·Apple 처리·설치는 아직 확인 전이다. 공개 EAS URL은 로그인 없이 정상 상태를 확인하지 못했으므로 실패/완료로 단정하지 않는다. 읽기 전용은 서버 정책으로 이 빌드에도 적용하고, 새 UI만을 위해 추가 EAS 빌드를 요청하지 않는다.
+
+웹·서버 변경은 일반 배포로 반영하며, 설치 앱 코드가 바뀌어 새 아이폰 버전을 테스트할 때만 수동 TestFlight 빌드가 필요하다. 지금 사용자가 버튼을 누른 이유는 작업 환경의 GitHub API 요청 제한이며 매 업무마다 빌드할 필요가 없다. push 자동 EAS 빌드는 계속 꺼둔다. Google·Notion은 설치 후 본인 권한 승인→읽기→시험용 항목/페이지 작성·수정까지 최종 테스트에 포함한다.
+
+[공식 Render 가격](https://render.com/pricing)의 최소 유료 웹 서버는월 US$7부터이며 세금·초과 사용료는 별도다. 네이버 발송을 쓰지 않으므로 무료 플랜을 유지하고 결제·마이그레이션을 실행하지 않는다.
+
+검증: 전체221개 중220통과·실패0·기존 선택1개 제외, 문법·모바일 타입·웹/iOS JS 출력·네이버 전용 읽기 UI·기존 채팅을 통과했다. 전용 회귀에서 이전 인증/권한 보존·읽기 가능·원본 변경0·기존 초안 차단·쓰기 선택 제거·앱 비밀번호 초기화를 확인했다. 이 검사는 모의 계정/공급자이며 운영 네이버 계정 접속 성공과 다르다. 실제 공개 정책 적용은 배포 후 확인한다.
