@@ -1,5 +1,15 @@
 # 변경 기록
 
+## 2026-11-13 — 새 iOS 빌드는 Expo 무료 한도 소진으로 차단
+
+[사용자 수동 실행43357992366](https://github.com/thepmpo/donknow/actions/runs/43357992366/job/131664508126)은 최신 main faee581(구현775a561)에서 실패했다. 서버 문법·224개 중223통과/기존 선택1개 제외·타입·iOS JS export는 성공했다. EAS가 인증/기존 서명을 확인하고 업로드한 뒤 **이번 달 Free iOS 빌드 한도를 모두 사용했다**고 거절했다. 실제 중단 원인은 이 계정 한도이며, Node20 action/Ubuntu26 이전 안내나 앱 코드 오류가 아니다.
+
+로그의 핵심: `This account has used its iOS builds from the Free plan this month` / `on Tue Dec 01 2026` / `Error: build command failed.` 원격 buildNumber는17→18로 증가했지만 이 실행에서는 새 빌드 URL·IPA·제출 예약이 확인되지 않았다. **18은 번호 할당이며 설치 가능한 TestFlight18이 만들어졌다는 뜻이 아니다.** 이번 실행은 네이티브 빌드가 가동되기 전 차단됐으므로 Swift/Duo 컴파일은 여전히 미확인이다. 인증·서명 재생성이나 같은 요청 재시도는 하지 않는다. 이번 거절된 요청이 별도 횟수를 차감했는지는 로그만으로 단정하지 않는다.
+
+남은 경로는① 로그에 표시된12월1일 초기화 후 수동 빌드,② 사용자 Mac에서 Xcode와 기존 서명으로 로컬 production 빌드 후 업로드,③ 사용자 선택으로 Expo 유료 플랜이다. [공식 로컬 빌드](https://docs.expo.dev/build-reference/local-builds/)와 [iOS 제출](https://docs.expo.dev/submit/ios/)에서 Mac의 `eas build --platform ios --profile production --local` 또는 Xcode 빌드/업로드를 확인했다. 로컬 빌드는 Expo 클라우드 빌드 서버를 쓰지 않지만 호환 Xcode·로컬 의존성·기존 Expo/Apple 로그인과 서명 확인이 필요하며 아직 사용자 Mac에서 수행하지 않았다. 사무실 Lima Linux VM은 iOS Xcode 빌드 환경이 아니다. [공식 가격](https://expo.dev/pricing)은 Starter 월US$19+사용량으로 표시하며 세금/추가 사용료는 별도다. **유료 가입·결제·한도 초기화 우회·재실행·추가 EAS 요청은 하지 않았다.** 사용자 무료 우선 정책과 push 자동 EAS 금지를 유지한다.
+
+[계정 빌드/요금 확인](https://expo.dev/accounts/thepmpo/settings/billing) · [빌드 실행 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml). 기존 데이터·인증·원본 recovery bundle을 보존했고 이번 변경은 실패 원인과 이어받기 문서뿐이다.
+
 ## 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
 
 Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.

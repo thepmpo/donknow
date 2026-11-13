@@ -1,5 +1,15 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-13 — 새 iOS 빌드는 Expo 무료 한도 소진으로 차단
+
+[사용자 수동 실행43357992366](https://github.com/thepmpo/donknow/actions/runs/43357992366/job/131664508126)은 최신 main faee581(구현775a561)에서 실패했다. 서버 문법·224개 중223통과/기존 선택1개 제외·타입·iOS JS export는 성공했다. EAS가 인증/기존 서명을 확인하고 업로드한 뒤 **이번 달 Free iOS 빌드 한도를 모두 사용했다**고 거절했다. 실제 중단 원인은 이 계정 한도이며, Node20 action/Ubuntu26 이전 안내나 앱 코드 오류가 아니다.
+
+로그의 핵심: `This account has used its iOS builds from the Free plan this month` / `on Tue Dec 01 2026` / `Error: build command failed.` 원격 buildNumber는17→18로 증가했지만 이 실행에서는 새 빌드 URL·IPA·제출 예약이 확인되지 않았다. **18은 번호 할당이며 설치 가능한 TestFlight18이 만들어졌다는 뜻이 아니다.** 이번 실행은 네이티브 빌드가 가동되기 전 차단됐으므로 Swift/Duo 컴파일은 여전히 미확인이다. 인증·서명 재생성이나 같은 요청 재시도는 하지 않는다. 이번 거절된 요청이 별도 횟수를 차감했는지는 로그만으로 단정하지 않는다.
+
+남은 경로는① 로그에 표시된12월1일 초기화 후 수동 빌드,② 사용자 Mac에서 Xcode와 기존 서명으로 로컬 production 빌드 후 업로드,③ 사용자 선택으로 Expo 유료 플랜이다. [공식 로컬 빌드](https://docs.expo.dev/build-reference/local-builds/)와 [iOS 제출](https://docs.expo.dev/submit/ios/)에서 Mac의 `eas build --platform ios --profile production --local` 또는 Xcode 빌드/업로드를 확인했다. 로컬 빌드는 Expo 클라우드 빌드 서버를 쓰지 않지만 호환 Xcode·로컬 의존성·기존 Expo/Apple 로그인과 서명 확인이 필요하며 아직 사용자 Mac에서 수행하지 않았다. 사무실 Lima Linux VM은 iOS Xcode 빌드 환경이 아니다. [공식 가격](https://expo.dev/pricing)은 Starter 월US$19+사용량으로 표시하며 세금/추가 사용료는 별도다. **유료 가입·결제·한도 초기화 우회·재실행·추가 EAS 요청은 하지 않았다.** 사용자 무료 우선 정책과 push 자동 EAS 금지를 유지한다.
+
+[계정 빌드/요금 확인](https://expo.dev/accounts/thepmpo/settings/billing) · [빌드 실행 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml). 기존 데이터·인증·원본 recovery bundle을 보존했고 이번 변경은 실패 원인과 이어받기 문서뿐이다.
+
 ## 2026-11-13 — 빌드17과 현재 카메라 열 수정 구분
 
 [사용자 수동 실행43352316009](https://github.com/thepmpo/donknow/actions/runs/43352316009)의 요청 로그에서 **1.0.0(17)·소스380dde2**를 확인했다. [EAS 빌드17](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/builds/f527087f-c164-4534-912d-7e72b4112e8c)의 실제 네이티브/Apple 처리·사용자 설치는 별도다.17의 탭은 본문 기준이므로 이번 승인한 카메라 열·고정 캘린더/오른쪽 Todo·세로 단일 화면 변경을 포함하지 않는다. 힌지 상태를 읽는 Swift도 바뀌어 새 **네이티브 수동 빌드**가 필요하다. 웹/iOS JS export 성공은 IPA 검증이 아니다. 이번 push에서 EAS를 자동 요청하지 않는다. [최신 화면·기기 검수](iphone-duo-support.md).
