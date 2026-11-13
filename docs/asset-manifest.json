@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "5c1ae4182428e8656f1e56442228664b1352a077",
-  "imageCount": 108,
+  "codeCommit": "87849a2d4191646e39acbdaa8e3c3214d22c90bd",
+  "imageCount": 119,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -233,6 +233,83 @@
       "bytes": 53117,
       "sha256": "f773dfd7a01bf87c0deaabe2f3c9751bb6c6bd5cf883e830e1df6687c6b863b3",
       "import_path": "images/artifacts__duckduck.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 25747,
+      "sha256": "7ded58293e3d4f9300a638e45be9b5d16a5d656970d1b5ee3fb2a990979333cd",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__1-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 32464,
+      "sha256": "47ef1dc2ca8f032c07e842b77e765f2633596f3194573a6eb25542db62933e4c",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__10-back-closed-demo-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 25692,
+      "sha256": "f07f6c3b90c2a53d5539f26362ba3a3ac932abe5a51da2e3b16c97a97ee735c2",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__2-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 24980,
+      "sha256": "53936ae78c82c4eaa64e150c12af1736df64322624166cb73d25bc969dfc0c81",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__3-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 21824,
+      "sha256": "1c99077c228f9e7f191318638e2d9737607a304c6b1a96748d486d5838f2326b",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__4-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 20724,
+      "sha256": "7f9c480f177f3c6dd04c8e817d6d224e23de86cc4b86a6157a2d645553f99b81",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__5-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 25747,
+      "sha256": "7ded58293e3d4f9300a638e45be9b5d16a5d656970d1b5ee3fb2a990979333cd",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__6-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 30241,
+      "sha256": "1d35a8a4d6037ebaafe16bf1b129b810e0198e41d5808729c22ff88eeaa19774",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__7-duck-closed-demo-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 26565,
+      "sha256": "eb22e2b5e7f25ece37d1dec62d32020134c8de4c52654ee2f7a601249b0bf8b2",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__7-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 32405,
+      "sha256": "302e7968246e471b2f1d65be85347877ebfdd8464f94296be08a2a8e85c9ee00",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__8-duck-open-demo-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 34756,
+      "sha256": "e500a12fd8fcc17ab3afbdad2c630c51dd1e99579f574f3e8547475367aa3e9e",
+      "import_path": "images/artifacts__duo-bottom-stack-2026-11-13__9-back-open-demo-fixture.png"
     },
     {
       "path": "artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png",
