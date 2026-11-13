@@ -1,0 +1,303 @@
+{
+  "purpose": "Visual and interaction comparison prototype; reference media is not claimed as Duck original artwork or cleared for public product launch. Replace or license before public launch. No original phone UI, fonts, logos, QR, scripts, store links or customer data included.",
+  "captureRun": "https://github.com/thepmpo/donknow/actions/runs/43423800908",
+  "capturedAt": "2026-11-13",
+  "assets": [
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_rieul_idle-540.webp",
+      "file": "assets/04040c1afe376c78266c5e17e92aa7ea7963f3c7c28ac4bfcf750eb3c5b12f88.webp",
+      "type": "image/webp",
+      "bytes": 13964,
+      "sha256": "04040c1afe376c78266c5e17e92aa7ea7963f3c7c28ac4bfcf750eb3c5b12f88",
+      "local": "public/assets/reference/footer_rieul_idle-540.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_bieup_idle-540.webp",
+      "file": "assets/da55670ae6ce919d4c0e04b1cc7a00e94dd1b8f0c42029eacec07230238165f8.webp",
+      "type": "image/webp",
+      "bytes": 13686,
+      "sha256": "da55670ae6ce919d4c0e04b1cc7a00e94dd1b8f0c42029eacec07230238165f8",
+      "local": "public/assets/reference/footer_bieup_idle-540.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_nieun_idle-540.webp",
+      "file": "assets/7213e6cb86b8233df5de18f386802c31d49ce9218118d1ea9aeb915a67bee4fb.webp",
+      "type": "image/webp",
+      "bytes": 13616,
+      "sha256": "7213e6cb86b8233df5de18f386802c31d49ce9218118d1ea9aeb915a67bee4fb",
+      "local": "public/assets/reference/footer_nieun_idle-540.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_ieung_idle-540.webp",
+      "file": "assets/292f2299b2251a834afdeab4c1d42abb52b97c824a1cf7d0eb0f1b42f51d77bc.webp",
+      "type": "image/webp",
+      "bytes": 12876,
+      "sha256": "292f2299b2251a834afdeab4c1d42abb52b97c824a1cf7d0eb0f1b42f51d77bc",
+      "local": "public/assets/reference/footer_ieung_idle-540.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_tieut_idle-540.webp",
+      "file": "assets/c371ac5faf731a831b9642330b39135dc86f0550145600b4e52ac954d831caf4.webp",
+      "type": "image/webp",
+      "bytes": 14070,
+      "sha256": "c371ac5faf731a831b9642330b39135dc86f0550145600b4e52ac954d831caf4",
+      "local": "public/assets/reference/footer_tieut_idle-540.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_rieul_idle-540.webm",
+      "file": "assets/4bc3647270a9fa11a16e67d0d8efe21dc47ca0399a1fc90d74864c17c852dcca.webm",
+      "type": "video/webm",
+      "bytes": 323132,
+      "sha256": "4bc3647270a9fa11a16e67d0d8efe21dc47ca0399a1fc90d74864c17c852dcca",
+      "local": "public/assets/reference/footer_rieul_idle-540.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/research_app_loop-480.webp",
+      "file": "assets/b90d71435c3e2d1cfd483ea6fee15dd9dab6af6f54ffbdc8713c025f62f4403a.webp",
+      "type": "image/webp",
+      "bytes": 33308,
+      "sha256": "b90d71435c3e2d1cfd483ea6fee15dd9dab6af6f54ffbdc8713c025f62f4403a",
+      "local": "public/assets/reference/research_app_loop-480.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/hero_background-1440.webp",
+      "file": "assets/156f444a9f1b3f14b08105ba836c552349622d49183f9352845d9acaff95eeb0.webp",
+      "type": "image/webp",
+      "bytes": 27730,
+      "sha256": "156f444a9f1b3f14b08105ba836c552349622d49183f9352845d9acaff95eeb0",
+      "local": "public/assets/reference/hero_background-1440.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_ieung_idle-540.webm",
+      "file": "assets/bd38989debb4693eac43de39f33ee134162b8ed6c8fdd464d711349ce937f021.webm",
+      "type": "video/webm",
+      "bytes": 318647,
+      "sha256": "bd38989debb4693eac43de39f33ee134162b8ed6c8fdd464d711349ce937f021",
+      "local": "public/assets/reference/footer_ieung_idle-540.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_bieup_idle-540.webm",
+      "file": "assets/6381945079ae55ebba7bb75a1d0050d38def91458c55c7d67551745a72c838f5.webm",
+      "type": "video/webm",
+      "bytes": 350865,
+      "sha256": "6381945079ae55ebba7bb75a1d0050d38def91458c55c7d67551745a72c838f5",
+      "local": "public/assets/reference/footer_bieup_idle-540.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_tieut_idle-540.webm",
+      "file": "assets/a3148cf921f6cc7da09912562a32bffb147e011b169f3a9413ce9c2b9c895cfd.webm",
+      "type": "video/webm",
+      "bytes": 316914,
+      "sha256": "a3148cf921f6cc7da09912562a32bffb147e011b169f3a9413ce9c2b9c895cfd",
+      "local": "public/assets/reference/footer_tieut_idle-540.webm"
+    },
+    {
+      "url": "https://pickle.com/landing/security-tile-key.webp",
+      "file": "assets/b13d2257dc16bacbfbac53f0410b5ef511d9d4a9768b1e933b4bcdeccbe95697.webp",
+      "type": "image/webp",
+      "bytes": 9640,
+      "sha256": "b13d2257dc16bacbfbac53f0410b5ef511d9d4a9768b1e933b4bcdeccbe95697",
+      "local": "public/assets/reference/security-tile-key.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_nieun_idle-540.webm",
+      "file": "assets/a41fe5685967557aa2dc10c22da6fec65f9dc057ec07e9088ac98a640db0a70b.webm",
+      "type": "video/webm",
+      "bytes": 243033,
+      "sha256": "a41fe5685967557aa2dc10c22da6fec65f9dc057ec07e9088ac98a640db0a70b",
+      "local": "public/assets/reference/footer_nieun_idle-540.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/research_app_loop-480.webm",
+      "file": "assets/9e3e1a44bbffa0e613f339209ef85c8b6566f70f6e99a9a09f7f1bfc464fa16c.webm",
+      "type": "video/webm",
+      "bytes": 3962842,
+      "sha256": "9e3e1a44bbffa0e613f339209ef85c8b6566f70f6e99a9a09f7f1bfc464fa16c",
+      "local": "public/assets/reference/research_app_loop-480.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/hero_background-1440.webm",
+      "file": "assets/cd6c0bbd532b06c227832d5e1804cd1a3c597b1ce13ffab194c35e55d176b894.webm",
+      "type": "video/webm",
+      "bytes": 379671,
+      "sha256": "cd6c0bbd532b06c227832d5e1804cd1a3c597b1ce13ffab194c35e55d176b894",
+      "local": "public/assets/reference/hero_background-1440.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_mieum_idle-405.webm",
+      "file": "assets/8aa1ad54902c6315fbc3a675359d8cbc1643187d24397ae847b0857e8c70595d.webm",
+      "type": "video/webm",
+      "bytes": 290079,
+      "sha256": "8aa1ad54902c6315fbc3a675359d8cbc1643187d24397ae847b0857e8c70595d",
+      "local": "public/assets/reference/intro_pickle_mieum_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_jieut_idle-405.webm",
+      "file": "assets/1034c20cc396a746630c569a1123e98f5642f69dc9b275cb4e35a143c8f184ce.webm",
+      "type": "video/webm",
+      "bytes": 265742,
+      "sha256": "1034c20cc396a746630c569a1123e98f5642f69dc9b275cb4e35a143c8f184ce",
+      "local": "public/assets/reference/intro_pickle_jieut_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_kieuk_idle-405.webm",
+      "file": "assets/22ed80f70006267dee0200f11cdf30142c4515a7dd45ff7d09af3240ed5392e3.webm",
+      "type": "video/webm",
+      "bytes": 317595,
+      "sha256": "22ed80f70006267dee0200f11cdf30142c4515a7dd45ff7d09af3240ed5392e3",
+      "local": "public/assets/reference/intro_pickle_kieuk_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_digeut_idle-405.webm",
+      "file": "assets/5a788f14791356a7e5e4badaa15fbe52fb82a259f00cbd5f1d0685376db9299c.webm",
+      "type": "video/webm",
+      "bytes": 283291,
+      "sha256": "5a788f14791356a7e5e4badaa15fbe52fb82a259f00cbd5f1d0685376db9299c",
+      "local": "public/assets/reference/intro_pickle_digeut_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_pieup_idle-540.webm",
+      "file": "assets/476a3603b69b2c6370f800f95098f8e63d2a764f31aa7f3d774101321166520a.webm",
+      "type": "video/webm",
+      "bytes": 468724,
+      "sha256": "476a3603b69b2c6370f800f95098f8e63d2a764f31aa7f3d774101321166520a",
+      "local": "public/assets/reference/intro_pickle_pieup_idle-540.webm"
+    },
+    {
+      "url": "https://pickle.com/landing/security-tile-box.webp",
+      "file": "assets/ca5c5d0d798d82ca67f59e473e3b3b7a618fbb687475b9556d1c429eb9dbeeac.webp",
+      "type": "image/webp",
+      "bytes": 8450,
+      "sha256": "ca5c5d0d798d82ca67f59e473e3b3b7a618fbb687475b9556d1c429eb9dbeeac",
+      "local": "public/assets/reference/security-tile-box.webp"
+    },
+    {
+      "url": "https://pickle.com/landing/security-tile-toggles.webp",
+      "file": "assets/dd6e681db9a91c45f89ae95c8eaf99ba393eb42bf5554497e68e7d0aa9d13bf1.webp",
+      "type": "image/webp",
+      "bytes": 8256,
+      "sha256": "dd6e681db9a91c45f89ae95c8eaf99ba393eb42bf5554497e68e7d0aa9d13bf1",
+      "local": "public/assets/reference/security-tile-toggles.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_mieum_idle-405.webp",
+      "file": "assets/e306161801e1991fe0b0617cbd62c02e0048db4e4e82b907b536d4e380be9aaf.webp",
+      "type": "image/webp",
+      "bytes": 9482,
+      "sha256": "e306161801e1991fe0b0617cbd62c02e0048db4e4e82b907b536d4e380be9aaf",
+      "local": "public/assets/reference/intro_pickle_mieum_idle-405.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_jieut_idle-405.webp",
+      "file": "assets/32d19d5773cf909945182efbcf10c9a35d4fe7924927262b0269739145418126.webp",
+      "type": "image/webp",
+      "bytes": 10878,
+      "sha256": "32d19d5773cf909945182efbcf10c9a35d4fe7924927262b0269739145418126",
+      "local": "public/assets/reference/intro_pickle_jieut_idle-405.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_pieup_idle-540.webp",
+      "file": "assets/60c280b088bbeb42313be2f8de48c61ebb9188cb283d32106b681fd7ed184bbc.webp",
+      "type": "image/webp",
+      "bytes": 14646,
+      "sha256": "60c280b088bbeb42313be2f8de48c61ebb9188cb283d32106b681fd7ed184bbc",
+      "local": "public/assets/reference/intro_pickle_pieup_idle-540.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_kieuk_idle-405.webp",
+      "file": "assets/dff329fca62c15674d35ba0298d0004505c7ecd3a0ffe8d2a64baaa343e3e28f.webp",
+      "type": "image/webp",
+      "bytes": 9902,
+      "sha256": "dff329fca62c15674d35ba0298d0004505c7ecd3a0ffe8d2a64baaa343e3e28f",
+      "local": "public/assets/reference/intro_pickle_kieuk_idle-405.webp"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_digeut_idle-405.webp",
+      "file": "assets/16cd149d707a1953cd8aad3afd1803bd7339eec6c3eaed4baf6e92a7a6991692.webp",
+      "type": "image/webp",
+      "bytes": 9526,
+      "sha256": "16cd149d707a1953cd8aad3afd1803bd7339eec6c3eaed4baf6e92a7a6991692",
+      "local": "public/assets/reference/intro_pickle_digeut_idle-405.webp"
+    },
+    {
+      "url": "https://pickle.com/landing/footer-sky.webp",
+      "file": "assets/75c447689274979fba4c643d5b58a0f086b118394d13171517d18d1c40cc251c.webp",
+      "type": "image/webp",
+      "bytes": 8346,
+      "sha256": "75c447689274979fba4c643d5b58a0f086b118394d13171517d18d1c40cc251c",
+      "local": "public/assets/reference/footer-sky.webp"
+    },
+    {
+      "url": "https://pickle.com/landing/research-video-mask.svg",
+      "file": "assets/f3f232e036c397ce17cebb6f9c432d63fc00fcfb56d0ef678cb4512eca07b07f.svg",
+      "type": "image/svg+xml",
+      "bytes": 394,
+      "sha256": "f3f232e036c397ce17cebb6f9c432d63fc00fcfb56d0ef678cb4512eca07b07f",
+      "local": "public/assets/reference/research-video-mask.svg"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_rieul_idle-405.webm",
+      "file": "assets/1812abee7fa26901864c8e96cc4ef74d2f8e57804524cb1fe6743e3ebbd12a50.webm",
+      "type": "video/webm",
+      "bytes": 274638,
+      "sha256": "1812abee7fa26901864c8e96cc4ef74d2f8e57804524cb1fe6743e3ebbd12a50",
+      "local": "public/assets/reference/footer_rieul_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_ieung_idle-405.webm",
+      "file": "assets/838aa82f9603fa6baabfd84171c1b3ec345afe6c176b498e6abaa59648b38543.webm",
+      "type": "video/webm",
+      "bytes": 228839,
+      "sha256": "838aa82f9603fa6baabfd84171c1b3ec345afe6c176b498e6abaa59648b38543",
+      "local": "public/assets/reference/footer_ieung_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_bieup_idle-405.webm",
+      "file": "assets/bf4cb6a6323b40d9e92dbde2696fb1fa2a31be9ca7ec0346757117fe28f0b6e0.webm",
+      "type": "video/webm",
+      "bytes": 258790,
+      "sha256": "bf4cb6a6323b40d9e92dbde2696fb1fa2a31be9ca7ec0346757117fe28f0b6e0",
+      "local": "public/assets/reference/footer_bieup_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_tieut_idle-405.webm",
+      "file": "assets/13cf251748a0eb5fb6ceb7a898ee93734a1bea4685fa0a42725ec31f58f409a1.webm",
+      "type": "video/webm",
+      "bytes": 242397,
+      "sha256": "13cf251748a0eb5fb6ceb7a898ee93734a1bea4685fa0a42725ec31f58f409a1",
+      "local": "public/assets/reference/footer_tieut_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/footer_nieun_idle-405.webm",
+      "file": "assets/f566b42c05bfe78b9b361a2473c06cb7b5726d9e276650925b5f57ca5b6d74fb.webm",
+      "type": "video/webm",
+      "bytes": 191627,
+      "sha256": "f566b42c05bfe78b9b361a2473c06cb7b5726d9e276650925b5f57ca5b6d74fb",
+      "local": "public/assets/reference/footer_nieun_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/hero_background_mobile-540.webm",
+      "file": "assets/0b5760000cb53075f4ae92d970427754b8d6b230733226c6a5099f1f089530cd.webm",
+      "type": "video/webm",
+      "bytes": 299799,
+      "sha256": "0b5760000cb53075f4ae92d970427754b8d6b230733226c6a5099f1f089530cd",
+      "local": "public/assets/reference/hero_background_mobile-540.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/intro_pickle_pieup_idle-405.webm",
+      "file": "assets/407b52cbdba5f32572a0002395ef4e78fd1a9a915fa431dee4e012c22123a45d.webm",
+      "type": "video/webm",
+      "bytes": 352570,
+      "sha256": "407b52cbdba5f32572a0002395ef4e78fd1a9a915fa431dee4e012c22123a45d",
+      "local": "public/assets/reference/intro_pickle_pieup_idle-405.webm"
+    },
+    {
+      "url": "https://d3h202kifjtcwm.cloudfront.net/landing/pickle-com/2026-10-16-03/videos/hero_background_mobile-540.webp",
+      "file": "assets/d934f8c7efd2e7c74106ce6f532060b10a1c204c40f40f18b385ae67aa5f6955.webp",
+      "type": "image/webp",
+      "bytes": 18464,
+      "sha256": "d934f8c7efd2e7c74106ce6f532060b10a1c204c40f40f18b385ae67aa5f6955",
+      "local": "public/assets/reference/hero_background_mobile-540.webp"
+    }
+  ]
+}

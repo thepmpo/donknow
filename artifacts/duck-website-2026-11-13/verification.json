@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-13",
+  "sourceCaptureRun": "43423800908",
+  "results": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "errors": [],
+      "badResponses": [],
+      "remoteRequests": [],
+      "checks": [
+        "hero playback/pause",
+        "offscreen pause",
+        "QR and real web target",
+        "Escape/focus",
+        "KR/EN",
+        "mobile menu/anchor",
+        "honest TestFlight dialog",
+        "four real product videos",
+        "keyboard feature tabs",
+        "automatic feature advancement",
+        "scroll background transition",
+        "FAQ expand/collapse",
+        "sticky footer reveal/CTA",
+        "320–1440 overflow",
+        "reduced motion and opt-in playback"
+      ]
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "errors": [],
+      "badResponses": [],
+      "remoteRequests": [],
+      "checks": [
+        "hero playback/pause",
+        "offscreen pause",
+        "QR and real web target",
+        "Escape/focus",
+        "KR/EN",
+        "mobile menu/anchor",
+        "honest TestFlight dialog",
+        "four real product videos",
+        "keyboard feature tabs",
+        "automatic feature advancement",
+        "scroll background transition",
+        "FAQ expand/collapse",
+        "sticky footer reveal/CTA",
+        "320–1440 overflow",
+        "reduced motion and opt-in playback"
+      ]
+    }
+  ]
+}

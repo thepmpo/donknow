@@ -18,3 +18,6 @@ __pycache__/
 
 # Temporary read-only browser-reference download; selected evidence is documented separately.
 reference-output/
+
+# Generated marketing prototype output
+website/dist/

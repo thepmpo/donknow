@@ -1,0 +1,41 @@
+{
+  "source": "https://pickle.com/ko",
+  "scope": "anonymous public marketing page only; no login/forms/purchase",
+  "capturedAt": "2026-11-13T12:18:17.493Z",
+  "evidence": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "pixels": "1440x1000",
+      "video": "page@6916aa11c3aba468aab6d892992e7991.webm",
+      "interactions": [
+        "download-open",
+        "after-escape",
+        "feature-0",
+        "feature-1",
+        "feature-2",
+        "feature-3",
+        "faq-0"
+      ],
+      "errors": []
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "pixels": "390x844",
+      "video": "page@1e870b19cdbf0c8f14eb8a2ab0f9182e.webm",
+      "interactions": [
+        "feature-0",
+        "feature-1",
+        "feature-2",
+        "feature-3",
+        "faq-0",
+        "mobile-menu"
+      ],
+      "errors": []
+    }
+  ],
+  "assetBytes": 10923927
+}

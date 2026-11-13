@@ -1,0 +1,191 @@
+{
+  "intro": [
+    {
+      "style": {
+        "--cx": "191.5",
+        "--cy": "163.5",
+        "--size": "265.07",
+        "--mcx": "-4",
+        "--mcy": "92",
+        "--msize": "104",
+        "--rotate": "11.08deg",
+        "--blur": "2px"
+      },
+      "front": false,
+      "artStyle": {
+        "left": "0.08%",
+        "top": "0.11%",
+        "width": "99.8%",
+        "height": "99.8%"
+      },
+      "src": "/assets/reference/intro_pickle_mieum_idle-405.webm",
+      "poster": "/assets/reference/intro_pickle_mieum_idle-405.webp"
+    },
+    {
+      "style": {
+        "--cx": "247",
+        "--cy": "420",
+        "--size": "326.93",
+        "--mcx": "0",
+        "--mcy": "372",
+        "--msize": "122",
+        "--rotate": "10.69deg",
+        "--blur": "0px"
+      },
+      "front": false,
+      "artStyle": {
+        "left": "0.19%",
+        "top": "0.18%",
+        "width": "99.6%",
+        "height": "99.6%"
+      },
+      "src": "/assets/reference/intro_pickle_jieut_idle-405.webm",
+      "poster": "/assets/reference/intro_pickle_jieut_idle-405.webp"
+    },
+    {
+      "style": {
+        "--cx": "484",
+        "--cy": "294",
+        "--size": "440.16",
+        "--mcx": "54",
+        "--mcy": "236",
+        "--msize": "164",
+        "--rotate": "-4.89deg",
+        "--blur": "0px"
+      },
+      "front": false,
+      "artStyle": {
+        "left": "0.84%",
+        "top": "0.48%",
+        "width": "98.11%",
+        "height": "98.11%"
+      },
+      "src": "/assets/reference/intro_pickle_pieup_idle-540.webm",
+      "poster": "/assets/reference/intro_pickle_pieup_idle-540.webp"
+    },
+    {
+      "style": {
+        "--cx": "985.5",
+        "--cy": "354.5",
+        "--size": "381",
+        "--mcx": "341",
+        "--mcy": "330",
+        "--msize": "150",
+        "--rotate": "0deg",
+        "--blur": "0px"
+      },
+      "front": true,
+      "artStyle": {
+        "left": "0.06%",
+        "top": "-0.04%",
+        "width": "99.92%",
+        "height": "99.92%"
+      },
+      "src": "/assets/reference/intro_pickle_kieuk_idle-405.webm",
+      "poster": "/assets/reference/intro_pickle_kieuk_idle-405.webp"
+    },
+    {
+      "style": {
+        "--cx": "1176",
+        "--cy": "211",
+        "--size": "303.54",
+        "--mcx": "373",
+        "--mcy": "118",
+        "--msize": "112",
+        "--rotate": "7.39deg",
+        "--blur": "2px"
+      },
+      "front": false,
+      "artStyle": {
+        "left": "-4%",
+        "top": "-3.87%",
+        "width": "107.12%",
+        "height": "107.12%"
+      },
+      "src": "/assets/reference/intro_pickle_digeut_idle-405.webm",
+      "poster": "/assets/reference/intro_pickle_digeut_idle-405.webp"
+    }
+  ],
+  "footer": [
+    {
+      "style": {
+        "left": "-91px",
+        "top": "186px",
+        "width": "459px",
+        "height": "459px"
+      },
+      "artStyle": {
+        "left": "-1.32%",
+        "top": "2.61%",
+        "width": "97.66%",
+        "height": "97.66%"
+      },
+      "src": "/assets/reference/footer_rieul_idle-540.webm",
+      "poster": "/assets/reference/footer_rieul_idle-540.webp"
+    },
+    {
+      "style": {
+        "left": "112px",
+        "top": "196px",
+        "width": "512px",
+        "height": "512px"
+      },
+      "artStyle": {
+        "left": "-0.05%",
+        "top": "-0.26%",
+        "width": "100.2%",
+        "height": "100.2%"
+      },
+      "src": "/assets/reference/footer_ieung_idle-540.webm",
+      "poster": "/assets/reference/footer_ieung_idle-540.webp"
+    },
+    {
+      "style": {
+        "left": "445px",
+        "top": "190px",
+        "width": "512px",
+        "height": "512px"
+      },
+      "artStyle": {
+        "left": "0.69%",
+        "top": "-1.65%",
+        "width": "101.54%",
+        "height": "101.54%"
+      },
+      "src": "/assets/reference/footer_bieup_idle-540.webm",
+      "poster": "/assets/reference/footer_bieup_idle-540.webp"
+    },
+    {
+      "style": {
+        "left": "786px",
+        "top": "196px",
+        "width": "423px",
+        "height": "423px"
+      },
+      "artStyle": {
+        "left": "1%",
+        "top": "-1.95%",
+        "width": "100.96%",
+        "height": "100.96%"
+      },
+      "src": "/assets/reference/footer_tieut_idle-540.webm",
+      "poster": "/assets/reference/footer_tieut_idle-540.webp"
+    },
+    {
+      "style": {
+        "left": "1045px",
+        "top": "162px",
+        "width": "491px",
+        "height": "491px"
+      },
+      "artStyle": {
+        "left": "3.1%",
+        "top": "3.89%",
+        "width": "90.36%",
+        "height": "90.36%"
+      },
+      "src": "/assets/reference/footer_nieun_idle-540.webm",
+      "poster": "/assets/reference/footer_nieun_idle-540.webp"
+    }
+  ]
+}

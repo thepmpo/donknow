@@ -1,0 +1,7 @@
+{
+  "file": "duck-website-preview.zip",
+  "bytes": 11330560,
+  "sha256": "0f6967ac5286676a106f336130f770e6ec3b0af9906e1631b89a8fa3c8149cc9",
+  "build": "website npm run build + npm run download",
+  "verification": "PC/mobile interactive tests and portable package HTTP: pageerror0. Direct file URL is blocked by managed Chromium; user Mac/Windows direct opening remains a separate check."
+}
