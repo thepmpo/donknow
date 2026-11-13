@@ -38,6 +38,6 @@ jobs:
         if: always()
         with:
           name: duck-website-public-reference
-          path: .reference-output/
+          path: reference-output/
           if-no-files-found: error
           retention-days: 2

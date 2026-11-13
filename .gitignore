@@ -15,3 +15,6 @@ backups/
 
 deliverables/
 __pycache__/
+
+# Temporary read-only browser-reference download; selected evidence is documented separately.
+reference-output/

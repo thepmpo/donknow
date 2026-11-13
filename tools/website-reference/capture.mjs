@@ -1,7 +1,7 @@
 import {chromium} from '../../mobile/node_modules/playwright-core/index.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';import {resolve,extname} from 'node:path';import {createHash} from 'node:crypto';
 import {SOURCE,publicAsset,realLanding,downloadable} from './policy.mjs';
-const out=resolve(process.env.REFERENCE_OUTPUT||'.reference-output');await mkdir(out,{recursive:true});await mkdir(resolve(out,'assets'),{recursive:true});
+const out=resolve(process.env.REFERENCE_OUTPUT||'reference-output');await mkdir(out,{recursive:true});await mkdir(resolve(out,'assets'),{recursive:true});
 const browser=await chromium.launch({headless:true});const assets=new Set(),evidence=[];
 try{
  for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844]]){

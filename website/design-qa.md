@@ -26,3 +26,7 @@ Product Design url-to-code의 ‘Capture source evidence first’와 design-qa�
 ## 동작 확인 경로 보강
 
 사용자 요구는 스크롤/영상·버튼/메뉴·팝업·FAQ까지 포함한다. screenshot만으로 완료하지 않는다. tools/website-reference와 별도 contents-read 무료 Linux CI를 통해 익명 공개 원본의 실제 조작 영상·전후 PNG·DOM/computed styles/animations·공개 자산을 수집하도록 준비했다. 정책·파일크기 제한·오류 화면 거부 테스트 및 문법 검사는 통과했고, 실 CI 캡처와 artifact 회수는 별도 확인한다. 원본과 구현 대조 전 final result는blocked다.
+
+## 원본 기록 실행43423394887
+
+source capture 단계는 실제 desktop1440×1000·mobile390×844 영상, 다운로드 모달·feature4개·FAQ·mobile menu, 콘솔오류0, 자산63개/10,923,927bytes를 기록했다. 그러나 upload-artifact 기본 hidden-directory 제외로 .reference-output가 업로드되지 않아 전체 job은failure다. 원본 생성 성공과 파일 회수 실패를 구분한다. output을 일반reference-output 경로로 바꿔 재실행한다. 아직 원본을 직접 열지 못해 시각QA는blocked다.
