@@ -7,6 +7,10 @@
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
+#### 덕 소개 사이트 — 피클 참고·원본 캡처 대기
+
+사용자는 https://pickle.com/ko 디자인에 덕 내용을 넣는 별도 사이트를 요청했다. [현재 brief·덕 문구·조사와 재개 조건](https://github.com/thepmpo/donknow/blob/main/docs/duck-website-brief-2026-11-13.md), [사이트 QA](https://github.com/thepmpo/donknow/blob/main/website/design-qa.md)를 읽는다. 외부 브라우저는 실제 페이지 구성을 보고했지만 저장 가능한 원본 screenshot·실측 스타일이 없고 작업 환경은 pickle.com CONNECT403으로 차단됐다. 원본 확보 전 임의 디자인으로 사이트를 만들지 않았으며 현재 사이트 구현/검수/공개는 미완료다. 기존 덕 앱·계정·데이터·빌드 정책은 보존한다.
+
 #### 새 iPhone 빌드 요청 — 아직 시작되지 않음
 
 사용자가 수정본 빌드를 요청해 최신main과 공개 서버release43e06a8 정상 응답을 다시 확인했다. 플랫폼 기존 인증의 workflow 조회와 새 dispatch 요청이 모두 **Forbidden**으로 중단돼 새 run/번호/IPA/Apple 제출은 없다. 실제 계정 Calendar 오류 원인은 아직 재현하지 못했으며 코드/fixture 수정과 구분한다. [실제 오류와 재개 기록](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md). [무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → Branch main → 초록 Run workflow를 한 번 누른다. 이전25 job Re-run은 새 UI를 포함하지 않는다. 개인 토큰/새 서명/유료 전환이나 push 자동 빌드는 요구하지 않았다.
@@ -214,6 +218,10 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-13 — 피클과 같은 덕 소개 사이트 요청·원본 캡처 대기
+
+[사이트 요청·실제 조사와 덕 문구 초안](duck-website-brief-2026-11-13.md), [별도 사이트 QA](../website/design-qa.md). 사용자는 피클 한국어 사이트의 디자인을 유지하고 덕 내용으로 바꾸라고 요청했다. 외부 브라우저는 실제 구성/다운로드·FAQ 동작을 보고했지만 screenshot/정량 스타일은 전달되지 않았다. 로컬은 CONNECT403/ERR_TUNNEL_CONNECTION_FAILED이며 current/enforced restricted 허용 목록에pickle.com이 없다. 원본 확보 전 사이트 코드/scaffold/서버/배포는 만들지 않았고 QA는blocked다. 원본 이미지 없이 동일하게 만들었다고 하지 않는다. 원본 캡처 또는 최소 출처 도메인 허용 후 이어간다. 기존 앱/계정/데이터·서명·빌드·원본bundle은 보존하며 새 TestFlight는 요청하지 않았다.
 
 #### 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
 
@@ -919,6 +927,10 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-13 — 피클과 같은 덕 소개 사이트 요청·원본 캡처 대기
+
+[사이트 요청·실제 조사와 덕 문구 초안](duck-website-brief-2026-11-13.md), [별도 사이트 QA](../website/design-qa.md). 사용자는 피클 한국어 사이트의 디자인을 유지하고 덕 내용으로 바꾸라고 요청했다. 외부 브라우저는 실제 구성/다운로드·FAQ 동작을 보고했지만 screenshot/정량 스타일은 전달되지 않았다. 로컬은 CONNECT403/ERR_TUNNEL_CONNECTION_FAILED이며 current/enforced restricted 허용 목록에pickle.com이 없다. 원본 확보 전 사이트 코드/scaffold/서버/배포는 만들지 않았고 QA는blocked다. 원본 이미지 없이 동일하게 만들었다고 하지 않는다. 원본 캡처 또는 최소 출처 도메인 허용 후 이어간다. 기존 앱/계정/데이터·서명·빌드·원본bundle은 보존하며 새 TestFlight는 요청하지 않았다.
 
 #### 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
 
@@ -1748,6 +1760,7 @@ b9ddf34 Record iOS23 build success and Apple agreement submission blocker
 083192e Refine Calendar from Apple references and follow system appearance
 a0dee32 Publish Calendar reference contract, evidence and current build status
 43e06a8 Correct embedded handoff links and record Calendar delivery
+2a7aa82 Record latest iPhone build request and dispatch permission failure
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -3416,6 +3429,54 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 原文 / docs/duck-website-brief-2026-11-13.md
+
+### 덕 소개 사이트 — 피클 참고 요청 · 2026-11-13
+
+#### 현재 상태
+
+사용자는 https://pickle.com/ko 의 디자인을 그대로 참고하고 내용만 덕으로 바꾼 별도 소개 사이트를 요청했다. 기존 iPhone 앱·네비게이션·데이터·인증·AI 사무실은 변경하지 않는다. 브라우저 조사와 문구 초안까지 준비했으며 **원본 캡처 확보가 막혀 사이트 구현/시각 검증/배포는 아직 하지 않았다.** [사이트 QA와 재개 조건](https://github.com/thepmpo/donknow/blob/main/website/design-qa.md).
+
+#### 확인 결과의 범위
+
+- TinyFish 공개 fetch는 /ko·www·query 변형에서 오류 화면을 반환했다.
+- 외부 stealth 브라우저 조사 bc11f729-004b-4416-bc8c-01677627ca7a는 실제 페이지가 열린다고 보고하고 헤더/영상hero/소개·스토어/전화기 기능 시연/연구/보안·FAQ/하단·다운로드 QR 모달을 설명했다. 실제 screenshot·정량 스타일은 전달되지 않았다. 이 텍스트 보고만으로 색/서체/간격·모션을 직접 검증했다고 하지 않는다.
+- 작업 환경의 상속 proxy curl CONNECT403·Playwright ERR_TUNNEL_CONNECTION_FAILED. current/enforced restricted 네트워크의 허용 목록에는 pickle.com이 없다. domain 허용이나 사용자가 제공하는 원본 캡처가 필요하며 제한을 우회하지 않는다.
+- 필요한 최소 공개 출처: pickle.com, www.pickle.com, 브라우저가 보고한 자산호스트 d3h202kifjtcwm.cloudfront.net. 접근 변경 후 새 연결로 원본과 실제 asset/font 의존성을 다시 확인한다. 모든 인터넷/불필요한 계정 권한을 요구하지 않는다.
+- Product Design user-context preflight는 저장 맥락이 없었다. 제품 맥락의 영구 학습·브라우저 화면 확보를 했다고 주장하지 않는다.
+
+#### 덕 내용 초안 — 원본 문구 복사가 아닌 실제 기능 안내
+
+아래는 사용자의 추가 확인이 없는 공개 초안이다. 타 서비스가 주장하는 기능/기술을 덕에 있다고 쓰지 않는다. 글줄/길이는 원본의 실제 시각 캡처를 확보한 뒤 그 레이아웃에 맞춘다.
+
+| 원본 보고 구간 | 덕 초안 | 실제 근거/주의 |
+| --- | --- | --- |
+| 헤더 | 덕 / 기능 / 개인정보 보호 / 덕 열기 | 실제 앱·지원·공개 privacy 주소 사용 |
+| Hero | 하루를 가볍게, 덕과 함께. / 일정부터 작은 할 일까지, 함께 정리하는 나만의 AI 비서. | 덕의 제품 방향. 자동 결제·통화·KTX 예약을 약속하지 않음 |
+| 소개 | 소개합니다 / 일정과 할 일을 한곳에 모으는 나만의 비서, 덕 | Calendar/Todo/AI 채팅/log |
+| 기능1 | 오늘의 일정과 할 일을 한눈에 | 실제 Google 조회·source 권한/실패 상태 구분 |
+| 기능2 | 긴 메시지를 붙여넣으면 할 일 후보로 | AI 자료 동의→후보→사용자 확인→Todo 추가 |
+| 기능3 | 내가 정한 시간에 도착하는 브리핑 | 기본 꺼짐·시간/도시/연결 자료·AI 동의 설정 필요 |
+| 기능4 | 끝낸 일은 기록으로 남겨요 | Todo 완료3초 되돌리기/log 복원 |
+| 제품 원칙 | 제안은 덕이, 결정은 내가. | 외부 쓰기 미리보기/명시 확인/한 번 실행·unknown 재발송 금지 |
+| 개인정보 | 필요한 자료를 선택하고, 실행 전 확인해요. | 실제 동의·계정 소유권 경계. 피클의 enclave/폰내 금고/카드 처리 기술을 덕에 있다고 쓰지 않음 |
+| 다운로드 | 웹에서 덕 열기 / iPhone 테스트 안내 | App Store 공개 출시·Android 배포가 확정되지 않아 가짜 스토어 버튼/QR/평점/가격을 만들지 않음 |
+| 지원 | 도움이 필요하면 언제든 알려주세요. | 공개 지원과 기존 공개 문의 주소 사용 |
+
+공개 기능·지원의 대상은 https://duckduck-test.onrender.com/ , /support , /privacy 다. 지금은 문구 초안이고 해당 서버의 홈페이지를 덮어쓰지 않았다. TestFlight 개인 초대 링크는 검증·소유자 허락 없이 노출하지 않는다.
+
+#### 화면/자산 작업 계획
+
+1. 실제 PC·모바일 screenshot과 메뉴/다운로드·FAQ 상태 및 DOM 스타일 확보.
+2. 덕의 기존 icon/브랜드와 실제 합성 데이터 앱 화면으로 교체. 새로운 hero 영상/일러스트가 필요하면 확보한 원본 비율/구도에 맞춰 생성하고 AI 자산임을 기록. 피클 이미지 hotlink·로고/문구 위장은 하지 않음.
+3. self-contained website 프로젝트. 기존 앱 경로·데이터/API·OAuth·native 빌드 workflow를 변경하지 않음. 본문/CTA/모달/FAQ/키보드·모바일 동작 구현.
+4. PC1440×1000·모바일390×844/320폭·동작 줄이기·로딩/오류·콘솔·외부 링크 검수. 원본과 구현을 같은 이미지 입력에서 대조.
+5. 실제 검증을 통과한 사이트만 커밋. 기존 프로젝트 기록/Notion·공개 문서에 원본 근거와 구현/미확인을 구분. 공개 호스팅과 앱 새 TestFlight는 별도이며 이번 요청으로 자동 실행하지 않음.
+
+#### 재개할 때
+
+원본 screenshot을 확보하기 전 임의 스타일로 만들어 놓고 피클과 같다고 안내하지 않는다. 현재 QA는 blocked이며 이 요청은 미완료다. source 캡처 경로가 열리면 처음부터 요구사항을 다시 묻지 않고 이 brief와 현재 코드/브랜드/사이트 QA로 이어간다. 전체 동영상/레이아웃·PC/모바일·실제 동작을 대조하고 그때만 passed로 변경한다.
 
 ### 原文 / docs/calendar-apple-reference-2026-11-13.md
 
