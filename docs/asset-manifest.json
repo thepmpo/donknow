@@ -1,7 +1,8 @@
 {
   "generatedAt": "2026-11-13",
   "codeCommit": "30ea3d9dd57dd0d0ca3e817889a920d61f102662",
-  "imageCount": 142,
+  "assetCommit": "106221c6504c2fb9bd073fca32fb8d5703987a49",
+  "imageCount": 143,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -394,6 +395,13 @@
       "bytes": 22889,
       "sha256": "9df11e2dd10ae07cee47baee9c1153a3afff64afec097211590465675a12780d",
       "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-6.png"
+    },
+    {
+      "path": "artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png",
+      "category": "AI 생성 구분선 추천 시안 · 미구현/미승인",
+      "bytes": 1124082,
+      "sha256": "2bf25a639287ec2ad4ea3b9301ecc3530c7a3618bdc3eb81dc3fd4a83614bae3",
+      "import_path": "images/artifacts__duo-divider-proposal-2026-11-13__recommended-inset-hairline.png"
     },
     {
       "path": "artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png",

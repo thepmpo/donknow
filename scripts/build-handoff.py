@@ -11,16 +11,19 @@ OUT.mkdir(exist_ok=True)
 CODE = subprocess.check_output(['git', 'log', '-1', '--format=%H', '--', 'server.js', 'server', 'mobile', 'Dockerfile', 'public/project-comments.js', 'public/project-comments.css'], cwd=ROOT, text=True).strip()
 DATE = datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')
 REPO = 'https://github.com/thepmpo/donknow'
-RAW = f'https://raw.githubusercontent.com/thepmpo/donknow/{CODE}/'
+# Proposal images can be committed without changing app code. Pin their own tree
+# so a new visual never becomes a 404 under an older code-only snapshot.
+ASSET_COMMIT = subprocess.check_output(['git', 'log', '-1', '--format=%H', '--', 'artifacts', 'mobile/assets'], cwd=ROOT, text=True).strip() or CODE
+RAW = f'https://raw.githubusercontent.com/thepmpo/donknow/{ASSET_COMMIT}/'
 images = sorted(p for folder in ('artifacts', 'mobile/assets') for p in (ROOT/folder).rglob('*') if p.suffix.lower() in {'.png','.jpg','.jpeg','.gif','.webp','.svg','.ico'})
 priority = ['artifacts/mobile-todos.png','artifacts/mobile-calendar.png','artifacts/mobile-duckduck.png','artifacts/mobile-log.png','artifacts/mobile-profile.png']
 images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if p.relative_to(ROOT).as_posix() in priority else (1 if p.name.startswith('mobile-') else 2, p.as_posix()))
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else 'AI 생성 구분선 추천 시안 · 미구현/미승인' if 'duo-divider-proposal-2026-11-13' in relative else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
-(ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
+(ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'assetCommit':ASSET_COMMIT,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 > 기준: {{DATE}} · 한국 시간 · 기능 코드 {{SHORT}} · 문서와 GitHub 소스가 이어받기의 기준입니다.
@@ -33,6 +36,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+
+### 2026-11-13 구분선 추천 이미지 — 구현 전
+
+사용자는 펼친 Duo의 좌우 구분을 연한 선으로 표시하고 다른 서비스의 방식 중 가장 나은 이미지 한 장을 요청했다. Apple/Material/Fluent의 공식 가이드를 읽고 같은 흰 표면 위에 #E5E8EB hairline 하나를 gutter 중앙에 두고 위아래 여백을 주는 시안을 생성했다. 실제 앱 코드는 바꾸지 않았고 사용자 선택 전 제안이다. 공개 문서 회귀/143개 이미지 해시를 검증하며, 앱 코드와 별개로 추가된 제안 이미지의 링크가404가 되지 않도록 assetCommit을 분리해 고정한다. [추천 이미지·공식 출처·치수 제안·검수와 다음 작업](https://github.com/thepmpo/donknow/blob/main/docs/duo-pane-divider-proposal-2026-11-13.md)을 읽는다. native Glass/실기기 검증 이미지로 오해하지 않는다.
 
 ### 2026-11-13 승인 반영 — 큰 내비게이션·Apple Glass·선택 이동
 
