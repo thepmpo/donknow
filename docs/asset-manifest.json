@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "30ea3d9dd57dd0d0ca3e817889a920d61f102662",
-  "assetCommit": "106221c6504c2fb9bd073fca32fb8d5703987a49",
-  "imageCount": 143,
+  "codeCommit": "4d41361134907dceafc6b521001fa3d15e612048",
+  "assetCommit": "4d41361134907dceafc6b521001fa3d15e612048",
+  "imageCount": 148,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -397,8 +397,43 @@
       "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-6.png"
     },
     {
+      "path": "artifacts/duo-divider-implemented-2026-11-13/01-open-calendar-todo.png",
+      "category": "승인 구분선 실제 앱 웹 fixture · native/실기기 아님",
+      "bytes": 47697,
+      "sha256": "9f6cdb42aa2f744a6faf0528086fb9facb092cd99c4b5c710b0d63233e8a5502",
+      "import_path": "images/artifacts__duo-divider-implemented-2026-11-13__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/duo-divider-implemented-2026-11-13/02-open-calendar-duck.png",
+      "category": "승인 구분선 실제 앱 웹 fixture · native/실기기 아님",
+      "bytes": 52673,
+      "sha256": "ac46d0f35796814802281a036812d0d549843d415d7b9ec728b0f22325bd96cd",
+      "import_path": "images/artifacts__duo-divider-implemented-2026-11-13__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/duo-divider-implemented-2026-11-13/03-portrait-current-screen.png",
+      "category": "승인 구분선 실제 앱 웹 fixture · native/실기기 아님",
+      "bytes": 37841,
+      "sha256": "6218cd0d5e8c13663a51640415b3be27990aa9d930290430cdd4f65abc50b92f",
+      "import_path": "images/artifacts__duo-divider-implemented-2026-11-13__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/duo-divider-implemented-2026-11-13/04-closed-camera-column.png",
+      "category": "승인 구분선 실제 앱 웹 fixture · native/실기기 아님",
+      "bytes": 34816,
+      "sha256": "8d6dd7c2657cde0f62980356185cedd98e909c6fe255c309b0d9fc9f17d81458",
+      "import_path": "images/artifacts__duo-divider-implemented-2026-11-13__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/duo-divider-implemented-2026-11-13/05-back-in-camera-column.png",
+      "category": "승인 구분선 실제 앱 웹 fixture · native/실기기 아님",
+      "bytes": 54792,
+      "sha256": "3be343518eac4b87d56333fa1dfb8c9b7c068d5c3bf39a3dc1ef0eb116dc19b0",
+      "import_path": "images/artifacts__duo-divider-implemented-2026-11-13__05-back-in-camera-column.png"
+    },
+    {
       "path": "artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png",
-      "category": "AI 생성 구분선 추천 시안 · 미구현/미승인",
+      "category": "AI 생성 구분선 추천 원본 · 이후 승인/구현",
       "bytes": 1124082,
       "sha256": "2bf25a639287ec2ad4ea3b9301ecc3530c7a3618bdc3eb81dc3fd4a83614bae3",
       "import_path": "images/artifacts__duo-divider-proposal-2026-11-13__recommended-inset-hairline.png"
