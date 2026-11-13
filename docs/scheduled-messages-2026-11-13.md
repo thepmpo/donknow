@@ -59,4 +59,4 @@ UI는 현재 Expo 웹 번들로 시간·도시·자료·AI 동의·독립 날씨
 
 검사: `test/automations.test.js`, `test/scheduler-auth.test.js`, `test/push.test.js`, `test/remote-backups.test.js`, `npm --prefix mobile run test:automations`.
 
-실제 GitHub OIDC 예약 실행·Render live·공개 설정 확인은 배포 후 기록한다. 코드/모의 검증을 사용자의 실제 예약 생성·모델 응답·아이폰 푸시 수신으로 표시하지 않는다. 실제 계정은 사용자가 원하는 시간과 자료를 골라 켜야 한다.
+실제 GitHub OIDC→서버 연결 검사는 성공했다. 배포·재실행의 정확한 증거는 [공개 서버 검증](functional-completion-2026-11-13.md#공개-서버예약-실행기-확인--2026-11-13-1006-kst)을 따른다. 코드/모의 검증을 사용자의 실제 예약 생성·모델 응답·아이폰 푸시 수신으로 표시하지 않는다. 실제 계정은 사용자가 원하는 시간과 자료를 골라 켜야 한다.

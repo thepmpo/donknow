@@ -141,6 +141,8 @@
 
 네이버 읽기/읽음 변경을SMTP와 분리했다. Render Free의465/587 차단은 실제 공식 제약이므로 발송은 이 호스트에서 막고 이유를 표시한다. 유료 전환·외부 쓰기·기존 데이터/인증 재설정은 하지 않는다. 실제 계정 승인·iPhone 빌드/기기 수신은 별도이며 TestFlight 수동·출시 준비 마지막 정책을 유지한다. 아래 이전 ‘브리핑·날씨 상세 문서 대기’와‘Duo76pt 세로 열’은 당시 기록이다.
 
+공개 검증: main e7e0ea2의 자동 검사43341877783와 Render live(10:06:11 KST), 공개 health·protocol2·새 문서를 확인했다. 예약 실행기43341877727는 첫 배포 대기 시간 초과 후 서버 live에서 재실행해 `ok:true, processed:0`으로 성공했다. 이는 인증 연결 검사이며 사용자 메시지/실모델/기기 수신 성공은 아니다. [상세 증거](functional-completion-2026-11-13.md).
+
 #### 2026-11-12 — UX/UI 10개 수정·편집 저장 가림 보완
 
 사용자 요청에 따라 감사10개와 추가로 발견한 할 일 편집창 저장 버튼 가림을 수정했다. 덕 도구 접기·동의 안내·후보 확인 우선·메모/완료 상세 펼치기·권한 선택 후 연결·44pt·버튼 대비·날짜 선택·작은 탭·선택일/계정 바로가기를 적용했다. 기존 동의/확인·데이터·인증과 브리핑/날씨는 유지한다. [19개 화면과 실제 회귀 검증](ux-ui-fixes-2026-11-12.md), [남은 실계정 가동·기기 확인](functional-workstream-2026-11-12.md)을 따른다. TestFlight는 수동이며 이번 EAS 빌드는 없다. GitHub 반영과 Render 실제 공개 반영은 별도 확인 후 기록한다.
@@ -631,6 +633,8 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 사용자가 별도 명세 대기를 해제해 정한 시간에 덕 채팅으로 오는 브리핑·도시 날씨를 구현했다. 기본 꺼짐·시간대/자료/AI 동의·중복/취소/복원 보호·아이폰 도착 알림 연결을 포함한다. Duo는 접힘·펼침 모두 배터리 아래 기존 헤더 오른쪽으로 모으고 본문76pt 예약 공간과 전체 높이 rail을 제거했다. [현재 기능·서버 제약](functional-completion-2026-11-13.md), [예약 사용·보호·검증](scheduled-messages-2026-11-13.md), [Duo 화면](iphone-duo-support.md)을 우선한다.
 
 네이버 읽기/읽음 변경을SMTP와 분리했다. Render Free의465/587 차단은 실제 공식 제약이므로 발송은 이 호스트에서 막고 이유를 표시한다. 유료 전환·외부 쓰기·기존 데이터/인증 재설정은 하지 않는다. 실제 계정 승인·iPhone 빌드/기기 수신은 별도이며 TestFlight 수동·출시 준비 마지막 정책을 유지한다. 아래 이전 ‘브리핑·날씨 상세 문서 대기’와‘Duo76pt 세로 열’은 당시 기록이다.
+
+공개 검증: main e7e0ea2의 자동 검사43341877783와 Render live(10:06:11 KST), 공개 health·protocol2·새 문서를 확인했다. 예약 실행기43341877727는 첫 배포 대기 시간 초과 후 서버 live에서 재실행해 `ok:true, processed:0`으로 성공했다. 이는 인증 연결 검사이며 사용자 메시지/실모델/기기 수신 성공은 아니다. [상세 증거](functional-completion-2026-11-13.md).
 
 
 ##### 2026-11-13 — 당일 저장된 작업
@@ -1205,6 +1209,7 @@ e96d9b3 Improve Duck task confirmation, service permissions and mobile action vi
 8e512cf Deliver scheduled Duck messages and move Duo tabs below the status bar
 d1fcbcc Record scheduled delivery, corrected Duo layout and free-host mail limits
 f65a6f4 Check scheduled-delivery authentication automatically when its workflow changes
+e7e0ea2 Record the authenticated scheduler connection check and deployment boundaries
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -1743,7 +1748,7 @@ f65a6f4 Check scheduled-delivery authentication automatically when its workflow 
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 2절의 현재 상태, 3절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 후속 문서 대기이며 현재 코드를 수정하지 않습니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 2절의 현재 상태, 3절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 접힘·펼침 모두 배터리 아래 기존 헤더 오른쪽 탭이며 본문 옆 전용 열을 만들지 않습니다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
 다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 이번 사용자가 확인한 설치 버전은 1.0.0 (12), Render 기준은 f76172d입니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 
@@ -2138,6 +2143,12 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 연결 검증 보완: 수동gh 실행은 환경의GitHub API CONNECT403에 막혀 전용 실행기 변경 시 자동 연결 검사를 추가했다. 서버protocol2 대기 후 짧은 OIDC를 받아 동일한 보호 endpoint를 확인하며, 서명/저장소ID/main/전용workflow 제한을 유지한다. EAS를 호출하지 않는다.
 
+##### 공개 서버·예약 실행기 확인 — 2026-11-13 10:06 KST
+
+main `e7e0ea2`를 일반 push했고 [자동 검사43341877783](https://github.com/thepmpo/donknow/actions/runs/43341877783)가 성공했다. Render 배포 `dep-dbr64qdbedkc73cl5ilg`는10:06:11 KST에 live이며 공개 health 정상, `schedulerProtocol:2`, `scheduledMessages:true`, 네이버 읽기 활성/발송 비활성, 새 `/project`와 `/design-guide`를 확인했다.
+
+[예약 실행기43341877727](https://github.com/thepmpo/donknow/actions/runs/43341877727)의 첫 시도는 배포 전 시작되어 서버 대기180초를 소진했다. 서버 live 후 실패 작업만 재실행해10:06:50 KST에 `{"ok":true,"processed":0}`으로 성공했다. 이는 실제 GitHub OIDC→서버 인증 경로 확인이다. 처리0건을 사용자의 실모델 브리핑 생성·예약 수신·아이폰 푸시 성공으로 해석하지 않는다. 정확한 분 단위 전달은 무료 서버/GitHub 지연으로 보장하지 않는다. 새 TestFlight/EAS 빌드는 요청하지 않았다.
+
 ### 原文 / docs/scheduled-messages-2026-11-13.md
 
 ### 덕이 먼저 보내는 브리핑·날씨 — 2026-11-13
@@ -2201,7 +2212,7 @@ UI는 현재 Expo 웹 번들로 시간·도시·자료·AI 동의·독립 날씨
 
 검사: `test/automations.test.js`, `test/scheduler-auth.test.js`, `test/push.test.js`, `test/remote-backups.test.js`, `npm --prefix mobile run test:automations`.
 
-실제 GitHub OIDC 예약 실행·Render live·공개 설정 확인은 배포 후 기록한다. 코드/모의 검증을 사용자의 실제 예약 생성·모델 응답·아이폰 푸시 수신으로 표시하지 않는다. 실제 계정은 사용자가 원하는 시간과 자료를 골라 켜야 한다.
+실제 GitHub OIDC→서버 연결 검사는 성공했다. 배포·재실행의 정확한 증거는 [공개 서버 검증](https://github.com/thepmpo/donknow/blob/main/docs/functional-completion-2026-11-13.md#공개-서버예약-실행기-확인--2026-11-13-1006-kst)을 따른다. 코드/모의 검증을 사용자의 실제 예약 생성·모델 응답·아이폰 푸시 수신으로 표시하지 않는다. 실제 계정은 사용자가 원하는 시간과 자료를 골라 켜야 한다.
 
 ### 原文 / docs/ux-ui-fixes-2026-11-12.md
 
