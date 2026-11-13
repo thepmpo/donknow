@@ -34,19 +34,20 @@ export function Shell() {
   const [duckSession, setDuckSession] = useState(0);
   useEffect(() => { setEditor(null);setUnread(0); setDuckSession(current => current + 1); setTab('todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
   const needsAuth = store.connection?.mode === 'cloud' && !store.user;
+  const navigationVisible=!!store.connection&&!settings&&!needsAuth;
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
   return <KeyboardAvoidingView style={[styles.root,duo&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View style={[styles.header,duo&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text>{duo&&store.connection&&!settings&&!needsAuth&&<AppNavigation tab={tab} onSelect={setTab} unread={unread} duo/>}</View>
-    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'}]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
-    {!!store.error && <View style={[styles.errorBar]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
-    <MotionView testID="screen-transition" style={[styles.content]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : tab}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
+    <View style={[styles.header,duo&&navigationVisible&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text></View>
+    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},duo&&navigationVisible&&styles.duoControls]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
+    {!!store.error && <View style={[styles.errorBar,duo&&navigationVisible&&styles.duoControls]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
+    <MotionView testID="screen-transition" style={[styles.content,duo&&navigationVisible&&styles.duoControls]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : tab}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
       {tab === 'calendar' && <CalendarScreen store={store} onAdd={onAdd} onEdit={onEdit} />}
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
       <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => setTab('todos')} onOpenTodo={onEdit} /></View>
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
     </View>}</MotionView>
-    {store.connection && !settings && !needsAuth && !duo && <AppNavigation tab={tab} onSelect={setTab} unread={unread} duo={false} bottomInset={insets.bottom} small={width<360}/>}
+    {navigationVisible && <AppNavigation tab={tab} onSelect={setTab} unread={unread} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView>;
 }
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
   header: { minHeight: layout.headerHeight, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: layout.pageInset, paddingVertical: 4, gap: 12 },
   brand: { ...typography.body, color: colors.text, fontWeight: '700', flexShrink: 1 }, storage: { ...typography.caption, color: colors.muted, flexShrink: 1, textAlign: 'right' },
   content: { flex: 1, minHeight: 0 }, hidden: { display: 'none' },
-  duoRoot:{maxWidth:'100%'},duoHeader:{paddingHorizontal:8,gap:4},
+  duoRoot:{maxWidth:'100%'},duoHeader:{paddingLeft:8,paddingRight:layout.duoControlInset,gap:4},duoControls:{paddingRight:layout.duoControlInset},
   errorBar: { paddingHorizontal: 20, paddingVertical: 12, backgroundColor: '#fff0f2', flexDirection: 'row', gap: 12, alignItems: 'center' },
   error: { ...typography.caption, flex: 1, color: colors.danger }, retry: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' },
 });

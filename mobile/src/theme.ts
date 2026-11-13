@@ -33,4 +33,6 @@ export const layout = {
   pageInset: 24, pageTop: 16, headerHeight: 48,
   navigationHeight: 72, sectionGap: 24, actionGap: 16,
   sheetInset: 24, titleBottom: 16,
+  duoNavigationWidth: 48, duoNavigationHeight: 226, duoNavigationInset: 8,
+  duoControlInset: 64,
 } as const;
