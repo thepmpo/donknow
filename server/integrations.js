@@ -54,7 +54,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (typeof value.access_token !== 'string') throw fail(502, '외부 서비스 인증 응답을 확인해주세요.');
       const updated = { ...current, accessToken: value.access_token, refreshToken: value.refresh_token ?? current.refreshToken, expiresAt: expiresAt(value.expires_in) };
       // A disconnect during refresh must not recreate a deleted connection.
-      if (!store.connection(userId, provider) || store.connection(userId, provider).accessToken !== current.accessToken) throw fail(409, '서비스 연결이 해제됐어요.');
+      if (!store.connection(userId, provider) || store.connection(userId, provider).accessToken !== current.accessToken || store.connection(userId, provider).connectionId !== current.connectionId || store.connection(userId, provider).accountId !== current.accountId) throw fail(409, '서비스 연결이 해제됐어요.');
       store.saveConnection(userId, provider, updated, current.label); return updated;
     })().finally(() => locks.delete(key)));
     return locks.get(key);

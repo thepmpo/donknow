@@ -28,8 +28,8 @@ async function scenario(kind) {
   await page.route('https://duckduck-api.test/**', async route => {
     const request = route.request(), path = new URL(request.url()).pathname;
     if (!path.startsWith('/api/')) {
-      const response = await fetch(`http://127.0.0.1:${server.address().port}${path}`);
-      await route.fulfill({ status: response.status, headers: { 'content-type': response.headers.get('content-type') }, body: Buffer.from(await response.arrayBuffer()) }); return;
+      const file=resolve(root,'.'+(path==='/'?'/index.html':path));assert.ok(file.startsWith(root+'/'));
+      await route.fulfill({status:200,contentType:({'.js':'text/javascript','.html':'text/html; charset=utf-8','.ttf':'font/ttf'})[extname(file)]||'application/octet-stream',body:await readFile(file)});return;
     }
     const json = (value, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(value) });
     if (path === '/api/auth/login') { account = bob; return json({ user: bob }); }

@@ -22,3 +22,22 @@ test('calendar workspace HTTP capabilities are public but sources/events require
   assert.equal((await h.request('/api/calendar/events?v=2&timeZone=Invalid%2FZone','GET',undefined,owner.token)).status,400);
  }finally{await h.close();}
 });
+
+test('a normal token refresh during another calendar read keeps the connection; reconnect still discards old data',async()=>{
+ const h=await setup();try{
+  const initial=h.store.connection(h.user,'google');h.store.saveConnection(h.user,'google',{...initial,refreshToken:'fixture-refresh',expiresAt:Date.now()+120000},'Google');
+  let release,held,hold=true;const started=new Promise(r=>held=r);
+  const api=createIntegrations(h.store,env,async url=>{
+   if(String(url).includes('/token'))return response({access_token:'rotated-access',expires_in:3600});
+   if(hold){hold=false;held();await new Promise(r=>release=r);}return response({items:[{id:'primary',primary:true,summary:'내 일정',accessRole:'owner'}]});
+  });
+  const first=api.calendarList(h.user);await started;
+  h.store.saveConnection(h.user,'google',{...h.store.connection(h.user,'google'),expiresAt:1},'Google');
+  assert.equal((await api.calendarList(h.user)).items[0].name,'내 일정');release();assert.equal((await first).items[0].name,'내 일정');
+  assert.equal(h.store.connection(h.user,'google').accessToken,'rotated-access');
+  let signal;const nextStarted=new Promise(r=>signal=r);hold=true;
+  const other=createIntegrations(h.store,env,async()=>{signal();await new Promise(r=>release=r);return response({items:[]});});
+  const obsolete=other.calendarList(h.user);await nextStarted;
+  h.store.saveConnection(h.user,'google',{...h.store.connection(h.user,'google'),connectionId:'replacement',accountId:'another-owner'},'다른 계정');release();await assert.rejects(obsolete,/연결이 바뀌/);
+ }finally{await h.close();}
+});

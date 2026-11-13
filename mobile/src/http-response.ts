@@ -18,3 +18,7 @@ export function validCalendarPage(value:unknown):boolean{
  if(!value||typeof value!=='object'||!('items' in value)||!Array.isArray(value.items))return false;
  return value.items.every(item=>!!item&&typeof item==='object'&&typeof item.id==='string'&&typeof item.title==='string')&&(!('nextCursor' in value)||value.nextCursor===null||typeof value.nextCursor==='string');
 }
+
+/** Cold-start reads may wait for Render; never replay a write or consent. */
+export function connectionRead(path:string,method:string){return method==='GET'&&(/^\/api\/(todos|integrations|capabilities)(?:[/?]|$)/.test(path)||calendarReadTimeout(path,method));}
+export function cancelledTransport(error:unknown){return error instanceof Error&&(/fetch request has been cancel[le]+d|network request.*cancel[le]+d/i.test(error.message));}

@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-13",
+  "scope": "Actual Expo web components, isolated API and explicit Duo geometry fixtures; no real user accounts",
+  "unit": {
+    "total": 254,
+    "passed": 253,
+    "failed": 0,
+    "existingOptionalSkip": 1
+  },
+  "passed": [
+    "syntax",
+    "TypeScript",
+    "web export",
+    "iOS JS/Hermes export",
+    "Calendar views/detail/edit/preview/confirm/cancel/unknown-write safety",
+    "14-day window and second-week selection preservation",
+    "weekend number colors and 4/5/6 month weeks",
+    "body and top backdrop dismiss/keyboard/focus/reduced motion",
+    "actual 360ms/260ms sheet animation samples and recording",
+    "Duo physical camera column, separate view/Today, pane dim, fold/rotation/state",
+    "native-shaped cancelled GET bounded recovery",
+    "late disconnected status ignored and transient failure retains connection",
+    "full app flow",
+    "startup/late401/profile account isolation",
+    "HttpOnly browser login/reload/logout/account isolation"
+  ],
+  "nativeSignedBuildStarted": false,
+  "currentInstalledBuild": "26 is previous source; new TestFlight required",
+  "realGoogleNotionSlackVerified": false
+}

@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readJsonResponse,InvalidJsonResponseError,calendarReadTimeout,validCalendarPage} from './http-response.ts';
+import {readJsonResponse,InvalidJsonResponseError,calendarReadTimeout,validCalendarPage,connectionRead,cancelledTransport} from './http-response.ts';
 test('Calendar body read timeout retains AbortError rather than reporting malformed JSON',async()=>{
  const response={status:200,ok:true,json:async()=>{throw new DOMException('aborted','AbortError');}} as unknown as Response;
  await assert.rejects(readJsonResponse(response),{name:'AbortError'});
@@ -19,4 +19,12 @@ test('malformed successful payload cannot be mistaken for an empty calendar',()=
  for(const payload of [{},null,{items:null},{items:[{}]},{items:[{id:'e',title:'일정'}],nextCursor:45}])assert.equal(validCalendarPage(payload),false);
  assert.equal(validCalendarPage({items:[],nextCursor:null}),true);
  assert.equal(validCalendarPage({items:[{id:'e',title:'일정'}]}),true);
+});
+
+test('cold-start and cancelled native reads can recover without replaying writes or logging out',()=>{
+ for(const path of ['/api/todos','/api/integrations','/api/capabilities','/api/calendar/events?v=2'])assert.equal(connectionRead(path,'GET'),true);
+ for(const method of ['POST','PATCH','DELETE'])assert.equal(connectionRead('/api/integrations/google',method),false);
+ assert.equal(connectionRead('/api/assistant/actions/id/confirm','POST'),false);
+ assert.equal(cancelledTransport(new Error('fetch failed: Fetch request has been canceled.')),true);
+ assert.equal(cancelledTransport(new Error('invalid session')),false);
 });

@@ -94,3 +94,10 @@ test('Today stays above the unchanged camera-column tabs and yields when space i
  }
  const short=duoSceneLayout(base({height:240}));assert.equal(duoTodayFrame(short,true),null);
 });
+
+test('calendar view switch stays above Today in the same safe camera column',async()=>{
+ const {duoSceneLayout,duoTodayFrame,duoCalendarViewFrame}=await import('./duo-layout.ts');
+ const scene=duoSceneLayout(base({height:844})),today=duoTodayFrame(scene,true)!,switcher=duoCalendarViewFrame(scene,true)!;
+ assert.ok(switcher);assert.equal(switcher.x,today.x);assert.equal(switcher.y+switcher.height+8,today.y);assert.equal(intersectRects(switcher,scene.back!),null);
+ assert.equal(duoCalendarViewFrame(duoSceneLayout(base({height:240})),true),null);
+});

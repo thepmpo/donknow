@@ -18,15 +18,15 @@ export function IntegrationsScreen({ store, initialProvider, onClose }: { store:
   const [taskStatus, setTaskStatus] = useState<'incomplete' | 'completed'>('incomplete');
   const initialScopesLoaded=useRef(false);
   const [statusRevision,setStatusRevision]=useState(0);
-  const active = useRef(true), version = useRef(0);
+  const active = useRef(true), version = useRef(0), statusRead = useRef(0);
   const current = statuses.find(item => item.provider === provider);
-  async function loadStatus() { if (!store.user) return; try { const result = await store.featureRequest('/api/integrations') as Status[]; if (active.current) {setStatuses(result);setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if (active.current) setError(e instanceof Error ? e.message : '연결 상태를 확인하지 못했어요.'); } }
-  useEffect(() => { active.current = true; void loadStatus(); const listener = AppState.addEventListener('change', state => { if (state === 'active') void loadStatus(); }); return () => { active.current = false; version.current++; listener.remove(); }; }, []);
+  async function loadStatus() { if (!store.user) return; const run=++statusRead.current; try { const result = await store.featureRequest('/api/integrations') as Status[]; if(!Array.isArray(result)||result.some(s=>typeof s.provider!=='string'||typeof s.connected!=='boolean'||!Array.isArray(s.features)))throw new Error('연결 상태를 다시 확인해주세요. 기존 연결은 유지돼요.'); if (active.current&&run===statusRead.current) {setStatuses(result);setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if (active.current&&run===statusRead.current) setError(e instanceof Error ? e.message : '연결 상태를 확인하지 못했어요.'); } }
+  useEffect(() => { active.current = true; void loadStatus(); const listener = AppState.addEventListener('change', state => { if (state === 'active') void loadStatus(); }); return () => { active.current = false; version.current++;statusRead.current++; listener.remove(); }; }, []);
   function choose(value: Provider) { setWriteOptionsOpen(false); version.current++; setTaskStatus('incomplete'); setProvider(value); setFeatures(statuses.find(s=>s.provider===value&&s.connected)?.features??(value==='google'?['calendar']:value==='slack'?['channels','messages']:['pages'])); setFeature(value === 'google' ? 'calendar' : value === 'slack' ? 'channels' : 'pages'); setChannel(null); setItems([]); setNext(null); setSelected([]); setError(''); setMessage(''); setDisconnecting(false); }
   async function authorize(requestedFeatures = features) {
     if(provider==='slack')requestedFeatures=['channels','messages',...(features.includes('messagesWrite')?['messagesWrite']:[])];
     if(provider==='notion')requestedFeatures=['pages',...(features.includes('pagesWrite')?['pagesWrite']:[])];
-    setBusy(true); setError(''); setMessage(''); let popup: Window | null = null;
+    statusRead.current++;setBusy(true); setError(''); setMessage(''); let popup: Window | null = null;
     if (Platform.OS === 'web') { popup = window.open('about:blank', '_blank'); if (popup) popup.opener = null; }
     try {
       const value = await store.featureRequest(`/api/integrations/${provider}/authorize`, 'POST', { features: requestedFeatures }) as { url: string };

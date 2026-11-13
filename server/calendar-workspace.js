@@ -7,7 +7,7 @@ const label=(v,fallback)=>typeof v==='string'&&v.trim()?v.trim().slice(0,200):fa
 const webLink=v=>{try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}};
 export function createCalendarWorkspace({store,token,request}){
  async function access(user){const r=await token(user,'google');if(!r.features.includes('calendar'))throw fail(403,'Google 캘린더 읽기 권한을 연결해주세요.');return r;}
- function unchanged(user,r){const latest=store.connection(user,'google');if(!latest||latest.accessToken!==r.accessToken||latest.connectionId!==r.connectionId)throw fail(409,'캘린더 연결이 바뀌었어요. 다시 확인해주세요.');}
+ function unchanged(user,r){const latest=store.connection(user,'google');if(!latest||latest.connectionId!==r.connectionId||latest.accountId!==r.accountId||(!r.connectionId&&latest.accessToken!==r.accessToken)||!latest.features.includes('calendar'))throw fail(409,'캘린더 연결이 바뀌었어요. 다시 확인해주세요.');}
  const get=(r,url)=>request(url,{headers:{Authorization:'Bearer '+r.accessToken}});
  return {
   async calendars(user,cursor){

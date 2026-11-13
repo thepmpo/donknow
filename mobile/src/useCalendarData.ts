@@ -5,7 +5,7 @@ import type {CalendarEvent,CalendarSource} from './calendar-model';
 type Page={items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string};
 export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean}){
  const [events,setEvents]=useState<CalendarEvent[]>([]),[sources,setSources]=useState<CalendarSource[]>([{id:'primary',name:'기본 캘린더',primary:true,canWrite:false}]);
- const [phase,setPhase]=useState<'unconnected'|'loading'|'ready'|'partial'|'error'>('unconnected'),[error,setError]=useState(''),[readAt,setReadAt]=useState<string|null>(null),[cursors,setCursors]=useState<Record<string,string>>({}),[version,setVersion]=useState<2|1|0>(0),[sourceError,setSourceError]=useState(''),[sourceCursor,setSourceCursor]=useState<string|null>(null);
+ const [phase,setPhase]=useState<'unconnected'|'loading'|'ready'|'partial'|'error'>(store.user?'loading':'unconnected'),[error,setError]=useState(''),[readAt,setReadAt]=useState<string|null>(null),[cursors,setCursors]=useState<Record<string,string>>({}),[version,setVersion]=useState<2|1|0>(0),[sourceError,setSourceError]=useState(''),[sourceCursor,setSourceCursor]=useState<string|null>(null);
  const generation=useRef(0),sourceGeneration=useRef(0),lastKey=useRef(''),snapshot=useRef<CalendarEvent[]>([]),cursorRef=useRef(cursors);cursorRef.current=cursors;
  const owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
  const key=JSON.stringify([owner,start,end,timeZone,selected]),latest=useRef({key,owner,active});latest.current={key,owner,active};

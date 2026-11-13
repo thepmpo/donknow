@@ -1,0 +1,7 @@
+{
+  "statusReads": 4,
+  "nativeCancelledReads": 2,
+  "staleDisconnectedIgnored": true,
+  "transientFailureKeepsConnection": true,
+  "errors": []
+}

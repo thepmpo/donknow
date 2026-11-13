@@ -1,7 +1,6 @@
-import {dateKey,monthDays} from './domain.ts';
 export type CalendarEvent={id:string;eventId?:string;calendarId?:string;calendarName?:string;title:string;dueDate:string|null;endDate?:string|null;startAt?:string|null;endAt?:string|null;allDay?:boolean;timeZone?:string;canWrite?:boolean;etag?:string|null;location?:string;notes?:string;notesPartial?:boolean;url?:string|null;meetingUrl?:string|null;recurring?:boolean};
 export type CalendarSource={id:string;name:string;primary?:boolean;canWrite:boolean;timeZone?:string;color?:string|null};
-export type CalendarView='month'|'week'|'day'|'list';
+export type CalendarView='month'|'fortnight'|'week'|'day'|'list';
 export function deviceZone(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Seoul';}catch{return 'Asia/Seoul';}}
 export function validZone(zone:string){try{new Intl.DateTimeFormat('en',{timeZone:zone});return !!zone;}catch{return false;}}
 export function zonedDay(value:string|number|Date,zone:string){return new Intl.DateTimeFormat('sv-SE',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}
@@ -9,8 +8,11 @@ export function shiftDay(day:string,amount:number){const d=new Date(day+'T12:00:
 export function weekDays(day:string,startDay=0){const d=new Date(day+'T12:00:00Z');const first=shiftDay(day,-((d.getUTCDay()-startDay+7)%7));return Array.from({length:7},(_,i)=>shiftDay(first,i));}
 export function visibleDays(month:string,selected:string,view:CalendarView,startDay=0){
  if(view==='week')return weekDays(selected,startDay);if(view==='day')return [selected];
- const [y,m]=month.split('-').map(Number);if(startDay===0)return monthDays(new Date(y,m-1,1)).map(dateKey);
- const first=weekDays(month+'-01',startDay)[0];return Array.from({length:42},(_,i)=>shiftDay(first,i));
+ if(view==='fortnight'){const first=weekDays(selected,startDay)[0];return Array.from({length:14},(_,i)=>shiftDay(first,i));}
+ const [y,m]=month.split('-').map(Number),last=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);
+ const first=weekDays(month+'-01',startDay)[0],end=weekDays(last,startDay)[6];
+ const count=Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(first+'T12:00:00Z'))/86400000)+1;
+ return Array.from({length:count},(_,i)=>shiftDay(first,i));
 }
 export function eventOccurs(event:CalendarEvent,day:string,zone:string){
  const start=event.allDay?event.dueDate:event.startAt?zonedDay(event.startAt,zone):event.dueDate;
@@ -27,9 +29,9 @@ export function wallTime(day:string,time:string,zone:string){
  for(let i=0;i<5;i++){const p=Object.fromEntries(f.formatToParts(new Date(guess)).map(x=>[x.type,x.value]));const delta=target-Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute);if(!delta)return new Date(guess).toISOString();guess+=delta;}
  throw Error('이 시간대에 존재하지 않는 시각이에요. 다른 시각을 선택해주세요.');
 }
-export function monthCellHeight(height:number,header:number,bottom:number,fontScale=1){return Math.max(44,Math.min(112,Math.floor((height-header-bottom-80)/6)),Math.ceil(30*fontScale+12));}
+export function monthCellHeight(height:number,header:number,bottom:number,fontScale=1,rows=6){return Math.max(44,Math.floor((height-header-bottom-38)/Math.max(1,rows)),Math.ceil(30*fontScale+12));}
 export function periodShift(month:string,selected:string,view:CalendarView,offset:number){
- if(view==='week'||view==='day'){const day=shiftDay(selected,offset*(view==='week'?7:1));return {month:day.slice(0,7),selected:day};}
+ if(view==='fortnight'||view==='week'||view==='day'){const day=shiftDay(selected,offset*(view==='fortnight'?14:view==='week'?7:1));return {month:day.slice(0,7),selected:day};}
  const [y,m]=month.split('-').map(Number),d=new Date(Date.UTC(y,m-1+offset,1)),day=d.toISOString().slice(0,10);return {month:day.slice(0,7),selected:day};
 }
 export function safeCalendarLink(value?:string|null){try{const u=new URL(value??'');if(u.protocol!=='https:'||u.username||u.password||u.hostname==='localhost'||/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.|\[)/.test(u.hostname))return null;return u.href;}catch{return null;}}

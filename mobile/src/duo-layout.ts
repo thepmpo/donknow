@@ -132,3 +132,10 @@ export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|
  const height=DUO_CHROME.width,y=frame.y+frame.height-Math.min(frame.height,DUO_CHROME.height)-DUO_CHROME.gap-height;
  return y>=frame.y?{x:frame.x,y,width:frame.width,height}:null;
 }
+
+/** Independent view switch above Today; never moves the existing bottom tabs. */
+export function duoCalendarViewFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
+ const frame=duoTabFrame(scene,backVisible),today=duoTodayFrame(scene,backVisible);if(!frame||!today)return null;
+ const y=today.y-DUO_CHROME.gap-DUO_CHROME.width;
+ return y>=frame.y?{x:today.x,y,width:today.width,height:DUO_CHROME.width}:null;
+}

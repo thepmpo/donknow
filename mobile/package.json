@@ -47,7 +47,9 @@
     "test:ux": "node e2e/ux-audit.mjs",
     "test:automations": "node e2e/automations.mjs",
     "test:duo": "node e2e/duo-layout.mjs",
-    "test:calendar": "node e2e/calendar-workspace.mjs"
+    "test:calendar": "node e2e/calendar-workspace.mjs",
+    "test:calendar-sheet": "node e2e/calendar-sheet-motion.mjs",
+    "test:integration-stability": "node e2e/integration-stability.mjs"
   },
   "private": true
 }

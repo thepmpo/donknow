@@ -196,7 +196,7 @@ export function useTodos() {
     catch (e) { if (e instanceof auth.AuthRequiredError) { expireSession(); setError(''); return true; } setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
   }
-  async function featureRequest(path: string, method = 'GET', body?: unknown): Promise<unknown> {
+  const featureRequest = useCallback(async (path: string, method = 'GET', body?: unknown): Promise<unknown> => {
     if (connection?.mode !== 'cloud') throw new Error('클라우드 계정으로 로그인하면 사용할 수 있어요.');
     // A screen may finish work after logout or a server/account switch. Its old
     // callback must neither expose the response nor expire the replacement login.
@@ -211,7 +211,7 @@ export function useTodos() {
       if (e instanceof auth.AuthRequiredError) expireSession();
       throw e;
     }
-  }
+  }, [connection, renderGeneration]);
   async function refreshAccount() {
     if (connection?.mode !== 'cloud') return;
     const version = renderGeneration;
