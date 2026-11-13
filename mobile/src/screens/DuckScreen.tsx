@@ -122,6 +122,6 @@ const styles = StyleSheet.create({
   duck: { fontSize: 56, marginBottom: 24 }, greeting: { ...typography.heading, color: colors.text, textAlign: 'center' },
   conversation: { paddingVertical: 24, gap: 20 }, card: { borderRadius: 24, padding: 24, backgroundColor: colors.surface, gap: 12 },
   cardLabel: { ...typography.caption, color: colors.muted }, cardTitle: { ...typography.body, color: colors.text, fontWeight: '600' }, status: { ...typography.caption, color: colors.muted, paddingVertical: 12 },
-  composer: { backgroundColor: colors.grouped, borderRadius: 24, padding: 8, paddingLeft: 16, flexDirection: 'row', alignItems: 'center', gap: 8 }, input: { ...typography.body, flex: 1, color: colors.text, paddingVertical: 12, paddingHorizontal: 4, minHeight: 48 },
+  composer: { backgroundColor: colors.grouped, borderRadius: 24, padding: 8, paddingLeft: 16, flexDirection: 'row', alignItems: 'center', gap: 8 }, input: { ...typography.body, flex: 1, minWidth:0, color: colors.text, paddingVertical: 12, paddingHorizontal: 4, minHeight: 48 },
   send: { width: 44, height: 44, backgroundColor: colors.blue, borderRadius: 22, justifyContent: 'center', alignItems: 'center' }, sendText: { color: colors.white, fontSize: 26 }, note: { ...typography.caption, color: colors.muted, textAlign: 'center', marginTop: 12 },
 });

@@ -1,4 +1,5 @@
 import { useDuoTrailingNavigation } from './DuoLayout';
+import {useDuoBackAction} from './DuoBackNavigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
@@ -17,7 +18,13 @@ export function Button({ title, onPress, disabled = false, quiet = false, loadin
   return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading, ...(expanded===undefined?{}:{expanded}) }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
 export function CloseButton({onPress,disabled=false}:{onPress:()=>void;disabled?:boolean}) {
+  const duo=useDuoBackAction(onPress,disabled);
+  if(duo)return <View pointerEvents="none" accessible={false} style={{width:44,minHeight:44}}/>;
   return <Pressable accessibilityRole="button" accessibilityLabel="닫기" disabled={disabled} onPress={onPress} style={{width:44,minHeight:44,alignItems:'center',justifyContent:'center',opacity:disabled ? 0.4 : 1}}><Text style={{fontSize:24,lineHeight:28,color:colors.muted}}>×</Text></Pressable>;
+}
+export function BackButton({onPress,disabled=false}:{onPress:()=>void;disabled?:boolean}){
+  const duo=useDuoBackAction(onPress,disabled);
+  return duo?null:<Button title="돌아가기" quiet disabled={disabled} onPress={onPress}/>;
 }
 export function Page({ children, refreshControl, compact = false, scrollRef }: { scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
   const insets=useSafeAreaInsets();

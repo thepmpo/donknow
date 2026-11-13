@@ -1,3 +1,4 @@
+import {BackButton} from '../ui';
 import { MotionPressable as Pressable } from '../motion';
 import { TaskSyncPanel } from './TaskSyncPanel';
 import React, { useEffect, useRef, useState } from 'react';
@@ -59,7 +60,7 @@ export function IntegrationsScreen({ store, initialProvider, onClose }: { store:
     catch (e) { setError(e instanceof Error ? e.message : '연결을 해제하지 못했어요.'); } finally { setBusy(false); }
   }
   async function diagnose(){setBusy(true);setError('');try{await store.featureRequest(`/api/integrations/${provider}/diagnose`,'POST',{});setMessage('연결된 계정의 읽기 접근을 확인했어요.');}catch(e){setError(e instanceof Error?e.message:'연결을 점검하지 못했어요.');}finally{setBusy(false);}}
-  return <Page><Button title="돌아가기" quiet onPress={onClose} disabled={busy} /><Text style={[s.h1, { marginTop: 28 }]}>연결된 서비스</Text><Text style={s.subtitle}>필요한 자료를 골라 나의 할 일로 정리해요.</Text>
+  return <Page><BackButton onPress={onClose} disabled={busy} /><Text style={[s.h1, { marginTop: 28 }]}>연결된 서비스</Text><Text style={s.subtitle}>필요한 자료를 골라 나의 할 일로 정리해요.</Text>
     <View style={styles.tabs}>{(['google', 'slack', 'notion'] as Provider[]).map(value => <Pressable key={value} accessibilityRole="tab" accessibilityState={{ selected: value === provider }} onPress={() => choose(value)} disabled={busy} style={[styles.tab, value === provider && styles.selectedTab]}><Text style={{ color: value === provider ? colors.blue : colors.muted, fontSize: 13 }}>{names[value]}</Text></Pressable>)}</View>
     {!store.user ? <View style={s.card}><Text style={s.subtitle}>클라우드 계정으로 로그인하면 외부 서비스를 연결할 수 있어요.</Text></View> : <>
       <View style={s.card}><Text style={s.sectionTitle}>{names[provider]}</Text><Text style={[s.subtitle, { marginVertical: 14 }]}>{!current ? '연결 상태를 확인하고 있어요.' : current.connected ? `${current.label ?? names[provider]} 연결됨` : current?.configured ? '아직 연결하지 않았어요.' : '서비스 연결 설정이 아직 준비되지 않았어요.'}</Text>

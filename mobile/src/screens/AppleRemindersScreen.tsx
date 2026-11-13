@@ -1,3 +1,4 @@
+import {BackButton} from '../ui';
 import { MotionPressable as Pressable } from '../motion';
 import { reconcileApple } from '../apple-reconcile';
 import React, { useEffect, useRef, useState } from 'react';
@@ -49,7 +50,7 @@ export function AppleRemindersScreen({ store, onClose }: { store: TodoStore; onC
       if(current()){setSyncDirection(direction);setSyncCursor(result.nextCursor??'');setMessage(`${result.changed}개 상태를 맞췄어요.${result.failed?` ${result.failed}개는 이 기기에서 확인하지 못했어요.`:''}${result.nextCursor?' 다음 5개도 확인할 수 있어요.':''}`);}
     }catch(e){if(current())setError(e instanceof Error?e.message:'상태를 맞추지 못했어요.');}finally{if(current())setBusy(false);}
   }
-  return <Page><Button title="돌아가기" quiet disabled={busy} onPress={onClose} /><Text style={s.h1}>아이폰 미리 알림</Text>
+  return <Page><BackButton disabled={busy} onPress={onClose} /><Text style={s.h1}>아이폰 미리 알림</Text>
     <Text style={s.subtitle}>목록에서 필요한 할 일만 골라 덕으로 가져와요. 선택한 제목과 예정일은 덕 계정에 저장돼요. 가져오기만 하면 원래 항목은 변경하지 않아요. 상태 맞추기는 아래에서 별도로 실행해요.</Text>
     {Platform.OS !== 'ios' ? <Text style={s.subtitle}>미리 알림 가져오기는 아이폰 앱에서 사용할 수 있어요.</Text> : !store.user ? <Text style={s.subtitle}>클라우드 계정으로 로그인한 뒤 사용할 수 있어요.</Text> : <>
       {!!store.todos.some(todo=>todo.source?.provider==='apple-reminders')&&<View style={s.card}><Text style={s.sectionTitle}>가져온 항목의 완료 상태 맞추기</Text><Text style={s.subtitle}>이 기기에서 접근 가능한 항목을 5개씩 확인해요. 제목·날짜는 변경하지 않아요.</Text><Button title="아이폰 완료 상태를 덕에 반영" quiet disabled={busy} onPress={()=>{void reconcile('duck');}} /><Button title="덕의 완료 상태를 아이폰에 반영" quiet disabled={busy} onPress={()=>setConfirmDevice(true)} />{confirmDevice&&<><Text style={s.subtitle}>덕에 저장된 완료 여부로 아이폰 원본을 변경합니다.</Text><Button title="아이폰 원본 상태 변경 확인" disabled={busy} onPress={()=>{void reconcile('device');}} /><Button title="취소" quiet onPress={()=>setConfirmDevice(false)} /></>}</View>}

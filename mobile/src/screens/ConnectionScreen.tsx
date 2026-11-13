@@ -1,3 +1,4 @@
+import {BackButton} from '../ui';
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { TodoStore } from '../useTodos';
@@ -13,7 +14,7 @@ export function ConnectionScreen({ store, onDone }: { store: TodoStore; onDone?:
     <Text style={styles.note}>계정별로 할 일과 완료 기록을 저장해요.{ '\n' }연결한 뒤 로그인하거나 계정을 만들 수 있어요.</Text></View>
 
     {store.connecting && <ActivityIndicator color={colors.blue} style={{ marginTop: 12 }} />}
-    {!!onDone && <Button title="돌아가기" quiet disabled={store.connecting} onPress={onDone} />}
+    {!!onDone && <BackButton disabled={store.connecting} onPress={onDone} />}
   </Page>;
 }
 const styles = StyleSheet.create({ welcome: { alignItems: 'center', paddingTop: 30, paddingBottom: 14, gap: 12 }, duck: { fontSize: 52 }, brand: { fontSize: 34, fontWeight: '800', color: colors.text, letterSpacing: -1.5 }, input: { borderWidth: 1, borderColor: colors.line, backgroundColor: colors.bg, padding: 16, borderRadius: 12, color: colors.text, fontSize: 13, marginVertical: 18 }, note: { color: colors.muted, fontSize: 13, lineHeight: 18, textAlign: 'center', marginTop: 15 } });

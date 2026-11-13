@@ -1,3 +1,4 @@
+import {useDuoBackState} from './src/DuoBackNavigation';
 import {listenForDuckNotification} from './src/push';
 import { DuoSafeSurface, useDuoTrailingNavigation } from './src/DuoLayout';
 import {AppNavigation} from './src/AppNavigation';
@@ -24,6 +25,7 @@ export function Shell() {
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
   const duo=useDuoTrailingNavigation();
+  const {available:canGoBack}=useDuoBackState();
   const [tab, setTab] = useState<AppTab>('todos'),[unread,setUnread]=useState(0);
   const [settings, setSettings] = useState(false);
   useEffect(()=>listenForDuckNotification(()=>setTab('duck')),[]);
@@ -37,10 +39,10 @@ export function Shell() {
   const navigationVisible=!!store.connection&&!settings&&!needsAuth;
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
   return <KeyboardAvoidingView style={[styles.root,duo&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View style={[styles.header,duo&&navigationVisible&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text></View>
-    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},duo&&navigationVisible&&styles.duoControls]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
-    {!!store.error && <View style={[styles.errorBar,duo&&navigationVisible&&styles.duoControls]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
-    <MotionView testID="screen-transition" style={[styles.content,duo&&navigationVisible&&styles.duoControls]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : tab}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
+    <View style={[styles.header,duo&&(navigationVisible||canGoBack)&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text></View>
+    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},duo&&(navigationVisible||canGoBack)&&styles.duoControls]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
+    {!!store.error && <View style={[styles.errorBar,duo&&(navigationVisible||canGoBack)&&styles.duoControls]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
+    <MotionView testID="screen-transition" style={[styles.content,duo&&(navigationVisible||canGoBack)&&styles.duoControls]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : tab}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
       {tab === 'calendar' && <CalendarScreen store={store} onAdd={onAdd} onEdit={onEdit} />}
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
       <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => setTab('todos')} onOpenTodo={onEdit} /></View>

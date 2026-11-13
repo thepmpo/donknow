@@ -4,6 +4,7 @@ import type { NativeSyntheticEvent, ViewProps } from 'react-native';
 import { requireNativeViewManager, requireOptionalNativeModule } from 'expo-modules-core';
 import { duoSafeFrame, hasDuoCapability, readDuoGeometry } from './duo-layout';
 import type { DuoGeometry } from './duo-layout';
+import {DuoBackProvider} from './DuoBackNavigation';
 
 const DuoLayout = createContext(false);
 export function useDuoTrailingNavigation() { return useContext(DuoLayout); }
@@ -19,7 +20,7 @@ export function DuoLayoutFrame({ children, geometry, enabled, onLayout }: {
   const frame = useMemo(() => enabled && geometry ? duoSafeFrame(geometry) : null, [enabled,geometry]);
   return <DuoLayout.Provider value={enabled}>
     <View style={styles.surface} onLayout={onLayout} testID={enabled ? 'duo-layout-surface' : 'standard-layout-surface'}>
-      <View style={[styles.content, frame && {position:'absolute',left:frame.x,top:frame.y,width:frame.width,height:frame.height,flex:0}]} testID="duo-safe-content">{children}</View>
+      <View style={[styles.content, frame && {position:'absolute',left:frame.x,top:frame.y,width:frame.width,height:frame.height,flex:0}]} testID="duo-safe-content"><DuoBackProvider enabled={enabled}>{children}</DuoBackProvider></View>
     </View>
   </DuoLayout.Provider>;
 }

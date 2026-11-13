@@ -1,3 +1,4 @@
+import {BackButton} from '../ui';
 import { MotionPressable as Pressable } from '../motion';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
@@ -22,7 +23,7 @@ export function AccountScreen({ store, kind, onClose }: { store: TodoStore; kind
       else { if (await store.deleteAccount(password)) { setPassword(''); onClose(); } else setError('계정을 삭제하지 못했어요. 현재 비밀번호를 확인해주세요.'); }
     } catch (e) { setError(e instanceof Error ? e.message : '처리하지 못했어요.'); } finally { setBusy(false); }
   }
-  return <Page><Button title="돌아가기" quiet disabled={busy} onPress={onClose} /><Text style={[s.h1, { marginTop: 28 }]}>{kind === 'verify' ? '이메일 인증' : kind === 'reset' ? '비밀번호 재설정' : '계정 삭제'}</Text>
+  return <Page><BackButton disabled={busy} onPress={onClose} /><Text style={[s.h1, { marginTop: 28 }]}>{kind === 'verify' ? '이메일 인증' : kind === 'reset' ? '비밀번호 재설정' : '계정 삭제'}</Text>
     {kind !== 'delete' ? <><Text style={s.subtitle}>메일로 받은 6자리 인증번호를 입력해주세요. 인증번호는 15분 동안 사용할 수 있어요.</Text>{mailConfigured === false && <View style={s.card}><Text style={s.subtitle}>이메일 발송 서비스가 아직 준비되지 않았어요. 서비스 설정이 완료되면 사용할 수 있어요.</Text></View>}
       <TextInput accessibilityLabel="계정 이메일" value={email} onChangeText={setEmail} editable={kind === 'reset' && !busy} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} placeholder="이메일" style={styles.input} />
       <Button title={queued ? '인증번호 다시 요청' : '인증번호 요청'} quiet onPress={() => { void send(); }} disabled={busy || !email.trim() || mailConfigured !== true} />
