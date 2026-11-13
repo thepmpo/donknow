@@ -36,7 +36,7 @@ function NavigationBar({tab,onSelect,duo,bottomInset=0,small=false,unread=0}:Pro
  },[targetX,targetY,!!frame,reduced,duo,x,y,scale]);
  return <NavigationGlass style={[styles.bar,duo?styles.duo:styles.bottom,!duo&&{paddingBottom:Math.max(bottomInset,8)}]} testID={duo?'DuoTrailingNavigation':'BottomNavigation'} accessibilityRole="tablist">
   <ScrollView horizontal={!duo} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentContainerStyle={[styles.items,duo&&styles.verticalItems]} style={{minWidth:0,minHeight:0}}>
-   {indicator&&<Animated.View pointerEvents="none" testID="navigation-selection" style={[styles.selection,indicator,{transform:[{translateX:x},{translateY:y},{scale}]}]}/>}
+   {indicator&&<Animated.View pointerEvents="none" testID="navigation-selection" style={[styles.selection,indicator,{transform:[{translateX:x},{translateY:y},{scale}]}]}><NavigationGlass variant="selection" pointerEvents="none" style={[StyleSheet.absoluteFill,styles.selectionMaterial]}/></Animated.View>}
    {appTabs.map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{selected:item.id===tab}} onPress={()=>onSelect(item.id)} onLayout={event=>{const next=event.nativeEvent.layout;setFrames(old=>{const prior=old[item.id];return prior&&Object.keys(next).every(key=>next[key as keyof LayoutRectangle]===prior[key as keyof LayoutRectangle])?old:{...old,[item.id]:next};});}} style={[styles.tab,duo&&styles.compact]}>
     {item.id==='duck'?<Text testID={'navigation-icon-'+item.id} style={[styles.duck,duo&&styles.duoDuck]}>🦆</Text>:<Ionicons testID={'navigation-icon-'+item.id} name={item.icon} size={duo?layout.duoNavigationIconSize:24} color={item.id===tab?colors.blueText:palette.grey600}/>}
     {item.id==='duck'&&unread>0&&<View style={styles.badge}><Text style={styles.badgeText}>{unread>99?'99+':unread}</Text></View>}
@@ -54,10 +54,10 @@ export function AppNavigation(props:Props){
  return !ready||duo?null:bar;
 }
 const styles=StyleSheet.create({
- bar:{borderColor:'rgba(180,190,205,0.5)',overflow:'hidden'},
+ bar:{borderColor:'rgba(180,190,205,0.5)'},
  bottom:{position:'absolute',bottom:0,left:0,right:0,borderTopWidth:StyleSheet.hairlineWidth,paddingTop:4},
  duo:{width:layout.duoNavigationWidth,height:layout.duoNavigationHeight,maxHeight:'100%',borderRadius:layout.duoNavigationWidth/2,borderWidth:1,padding:5},
- selection:{position:'absolute',left:0,top:0,borderRadius:27,backgroundColor:'rgba(49,130,246,0.16)',borderWidth:1,borderColor:'rgba(255,255,255,0.85)'},
+ selection:{position:'absolute',left:0,top:0},selectionMaterial:{borderRadius:27},
  badge:{position:'absolute',right:1,top:0,backgroundColor:colors.action,borderRadius:9,minWidth:18,paddingHorizontal:3,alignItems:'center'},badgeText:{fontSize:11,lineHeight:18,color:colors.white},
  items:{flexGrow:1,flexDirection:'row'},tab:{flex:1,minHeight:58,paddingHorizontal:2,paddingVertical:6,alignItems:'center',justifyContent:'center',gap:6},
  verticalItems:{flexDirection:'column'},compact:{flex:0,width:layout.duoNavigationItemSize,minWidth:layout.duoNavigationItemSize,minHeight:layout.duoNavigationItemSize,padding:0,gap:0},
