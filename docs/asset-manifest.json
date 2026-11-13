@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "9f838e1b8dbe6e658bc387ad5bc2fa1149a1cb43",
-  "assetCommit": "00bf57f6a4b78016a811cc244f0bcfe13118cd6e",
-  "imageCount": 206,
+  "codeCommit": "083192e7815d81f8c3241411026939e2b84d5f2a",
+  "assetCommit": "083192e7815d81f8c3241411026939e2b84d5f2a",
+  "imageCount": 244,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -213,6 +213,272 @@
       "bytes": 43491,
       "sha256": "1ab64c757c7ed2fb13942dd55d5b0eca83079fb238bba5595a5d0ffe7c1e4259",
       "import_path": "images/artifacts__assistant-feedback__before-error-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 89761,
+      "sha256": "5af202a1ec202a8da7ec31357b7b208001fdf7c0c289aac488ad8ac03bfc3072",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__01-month-adaptive-and-toolbar.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/02-day-detail.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 102475,
+      "sha256": "02961f4a91cb2130ded2abbfb53d8f66712ceb6e93a815239505e5975cd570ae",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/03-event-detail.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 82996,
+      "sha256": "e8c64b6d9f1e8a90de003f862ee890886f3df4909abdaf8c59817e02b53cd96e",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/04-write-preview.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 104275,
+      "sha256": "320f65b64037a9425511b7b481e37fbbdfed593118eace0b144c92fa6e3344db",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/05-all-day-editor.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 97025,
+      "sha256": "9938f0ab431a31208f35811680d9c708466253358b9063d6372546620eea6a5a",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/06-week-timeline.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83585,
+      "sha256": "60b4f652183249909257f5f3ad8059b26c588bb82b38006e86a04f9e9d137fbf",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/07-search-scope.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 95506,
+      "sha256": "080e64d76b1115c19c7fae66e177e033d02ee9ee0b947205c6ac7d693dd7c356",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/08-calendar-sources.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 92325,
+      "sha256": "de08cfdc53a095e8489ebc200a3ae380238457da3da7ca9e255e444b69673c7f",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/09-read-only-event.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 99916,
+      "sha256": "bcb0cfdcb35d1c0d2db6c3adf0d35e4664200fb7c4b97d8cc9c77d1eb7f72a19",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/10-partial-state.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 104114,
+      "sha256": "172b087b602383b90512b2f14f06e9a709ed2c45a3b0028bef79480d0dc6eb17",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/11-error-visible-with-cache.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 106130,
+      "sha256": "e438f79a94d4b47e16d9bc3331bd02e33d2e68fea19e83bf71c55dce69e8dac3",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/12-phone-320.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 83547,
+      "sha256": "4029739c946dec71ac5a4d30b06d6fbb56dc75f687e7448f5021bd66648e7956",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/12-phone-430.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 96101,
+      "sha256": "265a1cff5dfb33af80ffbdf622a9d99cec51764cd6ef625b5e1599d6719d8a9a",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/13-large-text.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 94597,
+      "sha256": "643b9d6c9ddd3b39041cde45a7a06cc6864c7742f4893e72dbd5525a063d0e21",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/14-loading-with-cache.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 95192,
+      "sha256": "c13d22d88bcf64afee994d87a57fa54ecaee08e5e80737fc49d058188c56db2b",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/15-unknown-write-no-resend.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 119042,
+      "sha256": "c695a37f46d35ceb68399a886e34dcb91309cf040203433d79340efb90a6d1dd",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/16-dark-month-reference.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 89833,
+      "sha256": "83f38f888fa4460b46be14edd25d12e184856da11ed2ae33de5d3f2eec9631ca",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/17-dark-event-reference.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 74716,
+      "sha256": "b76467d57fe36cafc4a4be1b19a7ac241e82625f20b728bacb345e1c9505be54",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/18-light-month-reference.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 93839,
+      "sha256": "2a0557c9972f0bd05b4b775aa84812505d770feeea6c76614034fc38bbc9f7b3",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/after/19-non-json-error-keeps-events.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 107674,
+      "sha256": "ad31ac0e5d11d10dc992ab2382981d9aea496f8d4a557ea539fe48eab527227d",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__after__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/before/01-month-adaptive-and-toolbar.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 42917,
+      "sha256": "2cd606d8d36793a6dbeae286e974d7e8b2b4e5dcb392b6ddd2f91cbb515c180b",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__before__01-month-adaptive-and-toolbar.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/before/02-day-detail.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 48541,
+      "sha256": "4e34b8749a73cc90b8e70792f5da021cc74daaeded767012d3c2030d7af4f550",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__before__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/before/03-event-detail.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 43626,
+      "sha256": "b97d403b86f4c1c1681f0f9d412961b39acc0fae8cfe13298ea19176fd6788f8",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__before__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/before/04-server-error-before.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 49603,
+      "sha256": "d0169b6591511064b1ecfe6f1d2e6b0340ee7b569afe696fb4b840e0ba39128d",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__before__04-server-error-before.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/01-open-calendar-todo.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 55878,
+      "sha256": "75baffa791b2aa456343ba0774bca567993d9799f204446199532baef02547a0",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/02-open-calendar-duck.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 61844,
+      "sha256": "238e18a0e6be261d0addedb556da3cacbb0c0499edc6b4fc6939de9310efd80e",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/03-portrait-current-screen.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/04-closed-camera-column.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/05-back-in-camera-column.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 63631,
+      "sha256": "db69f4adbdeb10c2b7ad762f3afc7d8daecb06bdc33d7e3a83213a8bfbb0f809",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/06-dragging-lens-web-fallback.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 58039,
+      "sha256": "c9efe335e6192a5789953c94571951e6b7ec0d12f6aca7fa6f7dc8275ced030d",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-320-floating-tabs.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 38629,
+      "sha256": "7d3dd0f1ae763869e9684b1b00ed1753c9834fb1b6d06f629881c00b4f37cbaa",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-390-floating-tabs.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 40100,
+      "sha256": "a029aed907a51b6bad5e9fd9f5556467d6ba4fb9b0ba47cd1b8d712c70bedcce",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-430-floating-tabs.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 40305,
+      "sha256": "3b7d02a22a197bdd26b8a5afaa7ff9a6e01a075d4bd38e744137c5bcf04b57df",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/08-iphone-320-text-160-percent.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 25267,
+      "sha256": "1a8ff676007b59cf81bfe2280170400ffcc65ee43b3c2d245e8937da3b447e64",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/08-pane-local-day-detail.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 61844,
+      "sha256": "370612e45a45c6eb8f915bd6aef9748a93a0167fa1e48c9be12e9bbf7d3c8cbf",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/10-folded-calendar-dark.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 40495,
+      "sha256": "701cf561e80199f9adcc465cb42b5dcaceb1e25056978fa7ea9b504cd239cf47",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/11-folded-calendar-light.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 40294,
+      "sha256": "432cbb63c76b8aa944c46856c0cf02e420a9c8386c9516712737edce96e52a64",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/calendar-apple-reference-2026-11-13/duo/12-open-calendar-dark.png",
+      "category": "Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님",
+      "bytes": 55157,
+      "sha256": "37c347dfc5c2209b2f67334a519a698f54ddaf1798cff0f1b9cc1d7d1ac757fb",
+      "import_path": "images/artifacts__calendar-apple-reference-2026-11-13__duo__12-open-calendar-dark.png"
     },
     {
       "path": "artifacts/calendar-audit-2026-11-13/01-month-overview.png",

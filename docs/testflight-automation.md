@@ -1,5 +1,9 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-13 최신 — Apple 참고 Calendar 수정은25번 이후
+
+[083192e의 현재 UI·서버 응답 계약](calendar-apple-reference-2026-11-13.md)을 우선한다. 년·월 본문 우상단·Duo Today 독립·시스템 밝게/어둡게·새 상세와 Calendar 응답 보강은 이전25번 앱에 없다. 웹/iOS JS·회귀 통과와 실제 native 빌드/Apple 처리/아이폰 설치는 구분한다. 이번 수정에서 새 TestFlight를 자동 실행하지 않았으며 실제 계정 오류 원인은 아직 재현하지 못했다. 다음 native는 최신main 새 수동 실행이어야 하고 옛25 job을 Re-run해 새 UI가 생긴다고 하지 않는다.
+
 > **현재 구현 기준:** [전체 이어받기 기준서](continuation-guide.md) → [Liquid Glass 상태·수치·검수](liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
 
 

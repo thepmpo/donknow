@@ -1,5 +1,9 @@
 # 남은 연결 활성화와 운영 확인
 
+## 2026-11-13 최신 — Apple 참고 Calendar 수정은25번 이후
+
+[083192e의 현재 UI·서버 응답 계약](calendar-apple-reference-2026-11-13.md)을 우선한다. 년·월 본문 우상단·Duo Today 독립·시스템 밝게/어둡게·새 상세와 Calendar 응답 보강은 이전25번 앱에 없다. 웹/iOS JS·회귀 통과와 실제 native 빌드/Apple 처리/아이폰 설치는 구분한다. 이번 수정에서 새 TestFlight를 자동 실행하지 않았으며 실제 계정 오류 원인은 아직 재현하지 못했다. 다음 native는 최신main 새 수동 실행이어야 하고 옛25 job을 Re-run해 새 UI가 생긴다고 하지 않는다.
+
 ## 2026-11-13 — iPhone25 빌드·Apple 업로드 성공
 
 추가 약관 동의 확인 후 제가 연결된 GitHub로 실패job을 재실행했다. [43394742649 attempt3](https://github.com/thepmpo/donknow/actions/runs/43394742649/attempts/3)·소스1643e0c, job131801055230/validate 모두success. 현재main6161372와 앱/서버/빌드 workflow 동일함을 비교했고 사용자 추가 Run workflow 없이 진행했다. **1.0.0(25) 서명IPA 생성18:29:43 KST·Apple 업로드18:30:18 KST 성공**. [실제 증거와 설치 안내](testflight-automation.md).

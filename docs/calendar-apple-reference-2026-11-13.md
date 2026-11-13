@@ -102,3 +102,9 @@ npm --prefix mobile run test:project
 마지막 영수증은 아래에 덧붙인다. 단위247개 중246 통과·실패0·기존 선택1 제외를 확인했다. 새 테스트는 body-abort/non-JSON 상태·조회만 복구 가능·malformed200·직렬화 헤더 순서·Today 기하다. Calendar E2E는 한 번 회복/지속 실패 source별2회·기존 자료·원문 HTML 미노출·쓰기 재발송 없음도 확인한다. 실기기 native/실계정·Figma와 새 IPA는 별도다.
 
 아이폰의25번(1643e0c)에는 이 수정이 없다. 이번 작업에서 새 iPhone 빌드/제출을 자동 실행하지 않는다. 최신main의 새 무료 native 빌드와 TestFlight 설치 이후에 폰이 바뀐다. [현재 빌드/공식 경로](testflight-automation.md). 사무실 보류·무료 플랜·데이터/인증/서명·원본 복구 bundle은 보존한다.
+
+## 최종 로컬 검증·저장 영수증
+
+구현은083192e. 문법47·전체247개 중246통과/실패0/기존 선택1제외·타입·웹/iOS JS·Calendar·Duo·전체 앱·로그인·모션·예약·AI 채팅/오류 회귀를 통과했다. 새 합성 화면38장과검증 JSON을 별도폴더에 보관했다. 예전 회귀 캡처25장은 원본으로 복원했으며 원본bundle SHA-256도1b73da76ca222cff8a16d6b5a783eeed596d6930d90f05b5a9266990ad7b742d로 동일하다.
+
+공개문서/댓글·인증·XSS·320px 회귀를 통과했고 총244개 이미지 해시를 생성 원본과 대조한다. 공개 첫 요약의 오래된 TestFlight12 표시는 실제 Apple 업로드25와 이번 UI는 다음 빌드라는 문구로 정정했다. main 일반 push·Render 실배포/새 release 응답의 최종 결과는 이어 기록한다. 새 native 빌드/실계정 성공을 의미하지 않는다.
