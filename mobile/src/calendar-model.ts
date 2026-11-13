@@ -29,7 +29,9 @@ export function wallTime(day:string,time:string,zone:string){
  for(let i=0;i<5;i++){const p=Object.fromEntries(f.formatToParts(new Date(guess)).map(x=>[x.type,x.value]));const delta=target-Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute);if(!delta)return new Date(guess).toISOString();guess+=delta;}
  throw Error('이 시간대에 존재하지 않는 시각이에요. 다른 시각을 선택해주세요.');
 }
-export function monthCellHeight(height:number,header:number,bottom:number,fontScale=1,rows=6){return Math.max(44,Math.floor((height-header-bottom-38)/Math.max(1,rows)),Math.ceil(30*fontScale+12));}
+// Fill the measured viewport exactly; density/text is handled inside each date cell.
+// A minimum row height here would recreate month overflow on 6-week/short screens.
+export function monthCellHeight(height:number,header:number,bottom:number,_fontScale=1,rows=6,weekdays=38){return Math.max(0,height-header-bottom-weekdays)/Math.max(1,rows);}
 export function periodShift(month:string,selected:string,view:CalendarView,offset:number){
  if(view==='fortnight'||view==='week'||view==='day'){const day=shiftDay(selected,offset*(view==='fortnight'?14:view==='week'?7:1));return {month:day.slice(0,7),selected:day};}
  const [y,m]=month.split('-').map(Number),d=new Date(Date.UTC(y,m-1+offset,1)),day=d.toISOString().slice(0,10);return {month:day.slice(0,7),selected:day};

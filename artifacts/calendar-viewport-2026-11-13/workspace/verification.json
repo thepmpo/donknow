@@ -1,0 +1,317 @@
+{
+  "errors": [],
+  "writes": 3,
+  "malformedReads": 5,
+  "actions": [
+    {
+      "operation": "calendar.update",
+      "args": {
+        "title": "수정한 디자인 리뷰",
+        "calendarId": "primary",
+        "timeZone": "Asia/Seoul",
+        "location": "회의실 A",
+        "notes": "검토 메모",
+        "id": "e1",
+        "expectedETag": "v1",
+        "allDay": false,
+        "start": "2026-11-13T00:00:00.000Z",
+        "end": "2026-11-13T01:00:00.000Z"
+      },
+      "status": "succeeded"
+    },
+    {
+      "operation": "calendar.create",
+      "args": {
+        "title": "새 종일 일정",
+        "calendarId": "primary",
+        "timeZone": "Asia/Seoul",
+        "location": "",
+        "notes": "",
+        "allDay": true,
+        "startDate": "2026-11-13",
+        "endDate": "2026-11-16"
+      },
+      "status": "cancelled"
+    },
+    {
+      "operation": "calendar.create",
+      "args": {
+        "title": "새 종일 일정",
+        "calendarId": "primary",
+        "timeZone": "Asia/Seoul",
+        "location": "",
+        "notes": "",
+        "allDay": true,
+        "startDate": "2026-11-13",
+        "endDate": "2026-11-16"
+      },
+      "status": "succeeded"
+    },
+    {
+      "operation": "calendar.create",
+      "args": {
+        "title": "결과 확인이 필요한 일정",
+        "calendarId": "primary",
+        "timeZone": "Asia/Seoul",
+        "location": "",
+        "notes": "",
+        "allDay": false,
+        "start": "2026-11-13T00:00:00.000Z",
+        "end": "2026-11-13T01:00:00.000Z"
+      },
+      "status": "succeeded"
+    }
+  ],
+  "reads": [
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-08",
+      "end": "2026-11-22"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-08",
+      "end": "2026-11-15"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-15",
+      "end": "2026-11-22"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-20",
+      "end": "2026-11-21"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-21",
+      "end": "2026-11-22"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-12",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-29",
+      "end": "2027-01-03"
+    },
+    {
+      "month": "2026-12",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-29",
+      "end": "2027-01-03"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06",
+      "cursor": "page2"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06",
+      "cursor": "page2"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "primary",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    },
+    {
+      "month": "2026-11",
+      "v": "2",
+      "calendarId": "team",
+      "timeZone": "Asia/Seoul",
+      "start": "2026-11-01",
+      "end": "2026-12-06"
+    }
+  ]
+}

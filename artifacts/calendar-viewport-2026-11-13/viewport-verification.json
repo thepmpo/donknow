@@ -1,0 +1,224 @@
+{
+  "headings": [
+    {
+      "name": "캘린더",
+      "x": 24,
+      "y": 64,
+      "width": 70.265625,
+      "height": 35
+    },
+    {
+      "name": "Todo 리스트",
+      "x": 24,
+      "y": 64,
+      "width": 53.578125,
+      "height": 35
+    },
+    {
+      "name": "duckduck",
+      "x": 24,
+      "y": 64,
+      "width": 23.421875,
+      "height": 35
+    },
+    {
+      "name": "log",
+      "x": 24,
+      "y": 64,
+      "width": 37.5,
+      "height": 35
+    },
+    {
+      "name": "내정보",
+      "x": 24,
+      "y": 64,
+      "width": 70.265625,
+      "height": 35
+    }
+  ],
+  "subtitleY": 115,
+  "checks": [
+    {
+      "label": "month-390",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 390,
+        "height": 616.953125
+      },
+      "metrics": {
+        "h": 729,
+        "sh": 729,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "fortnight-390",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 390,
+        "height": 617
+      },
+      "metrics": {
+        "h": 729,
+        "sh": 729,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "month-320",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 320,
+        "height": 440
+      },
+      "metrics": {
+        "h": 552,
+        "sh": 552,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "fortnight-320",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 320,
+        "height": 440
+      },
+      "metrics": {
+        "h": 552,
+        "sh": 552,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "month-431",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 431,
+        "height": 412.96875
+      },
+      "metrics": {
+        "h": 525,
+        "sh": 525,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "fortnight-431",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 431,
+        "height": 413
+      },
+      "metrics": {
+        "h": 525,
+        "sh": 525,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "month-430",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 430,
+        "height": 705
+      },
+      "metrics": {
+        "h": 817,
+        "sh": 817,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "fortnight-430",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 430,
+        "height": 705
+      },
+      "metrics": {
+        "h": 817,
+        "sh": 817,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "month-844",
+      "bounds": {
+        "x": 42,
+        "y": 146.5,
+        "width": 760,
+        "height": 162.96875
+      },
+      "metrics": {
+        "h": 275,
+        "sh": 275,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "fortnight-844",
+      "bounds": {
+        "x": 42,
+        "y": 146.5,
+        "width": 760,
+        "height": 163
+      },
+      "metrics": {
+        "h": 275,
+        "sh": 275,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "four-week-february",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 390,
+        "height": 617
+      },
+      "metrics": {
+        "h": 729,
+        "sh": 729,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    },
+    {
+      "label": "six-week-august",
+      "bounds": {
+        "x": 0,
+        "y": 146.5,
+        "width": 390,
+        "height": 616.96875
+      },
+      "metrics": {
+        "h": 729,
+        "sh": 729,
+        "top": 0,
+        "overflow": "hidden"
+      }
+    }
+  ],
+  "errors": [],
+  "nativeDeviceVerified": false
+}

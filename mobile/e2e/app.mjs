@@ -1,6 +1,6 @@
 import {openDuckTools} from './helpers.mjs';
 import http from 'node:http';
-import { readFile, mkdtemp, rm, readdir } from 'node:fs/promises';
+import { readFile, mkdtemp, rm, readdir, mkdir } from 'node:fs/promises';
 import { join, extname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
@@ -10,7 +10,7 @@ import { chromium } from 'playwright-core';
 const project=resolve(new URL('..',import.meta.url).pathname);
 const checkout=resolve(project,'..');
 const root=resolve(project,'dist-web');
-const artifacts=resolve(checkout,'artifacts');
+const artifacts=resolve(process.env.APP_CAPTURE_DIR||resolve(checkout,'artifacts'));await mkdir(artifacts,{recursive:true});
 const server=http.createServer(async(req,res)=>{try{const file=resolve(root,'.'+new URL(req.url,'http://local').pathname);if(!file.startsWith(root+'/'))throw new Error('invalid');const path=file===root+'/'?root+'/index.html':file;const data=await readFile(path);res.writeHead(200,{'Content-Type':({'.js':'text/javascript','.html':'text/html; charset=utf-8','.ttf':'font/ttf','.ico':'image/x-icon'})[extname(path)]||'application/octet-stream'});res.end(data);}catch{try{res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(await readFile(root+'/index.html'));}catch{res.writeHead(404);res.end();}}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const dir=await mkdtemp(join(tmpdir(),'duckduck-mobile-e2e-'));
