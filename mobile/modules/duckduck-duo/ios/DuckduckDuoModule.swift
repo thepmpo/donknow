@@ -15,6 +15,7 @@ public final class DuckduckDuoModule: Module {
 public final class DuckduckDuoObserver: ExpoView {
   let onGeometryChange = EventDispatcher()
   private var hasHinge = false
+  private var hingeStatus = "unknown"
   private var previous: NSDictionary?
   private var emissionPending = false
 
@@ -27,6 +28,15 @@ public final class DuckduckDuoObserver: ExpoView {
         guard let self else { return }
         // nil means this hierarchy cannot provide hinge data. Never guess from a width or idiom.
         self.hasHinge = update.hinge != nil
+        if let hinge = update.hinge {
+          switch hinge.status {
+          case .closed: self.hingeStatus = "closed"
+          case .fullyOpen: self.hingeStatus = "fullyOpen"
+          case .partiallyOpen: self.hingeStatus = "partiallyOpen"
+          case .unknown: self.hingeStatus = "unknown"
+          @unknown default: self.hingeStatus = "unknown"
+          }
+        } else { self.hingeStatus = "unknown" }
         self.setNeedsUpdateConstraints()
       })
     }
@@ -35,7 +45,7 @@ public final class DuckduckDuoObserver: ExpoView {
 
   public override func didMoveToWindow() {
     super.didMoveToWindow()
-    if window == nil { hasHinge = false; previous = nil }
+    if window == nil { hasHinge = false; hingeStatus = "unknown"; previous = nil }
     setNeedsUpdateConstraints()
   }
 
@@ -64,7 +74,7 @@ public final class DuckduckDuoObserver: ExpoView {
     }
     #endif
     let data: [String: Any] = [
-      "apiAvailable":apiAvailable, "hasHinge":hasHinge,
+      "apiAvailable":apiAvailable, "hasHinge":hasHinge, "hingeStatus":hingeStatus,
       "width":bounds.width, "height":bounds.height,
       "safeArea":["top":safeAreaInsets.top,"right":safeAreaInsets.right,"bottom":safeAreaInsets.bottom,"left":safeAreaInsets.left],
       "regions":regions

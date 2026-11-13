@@ -43,3 +43,30 @@ test('fold-open-fold transitions are deterministic without a state reset or size
  // No model-name field is consumed: a fake label cannot make an ordinary device into Duo.
  assert.equal(hasDuoCapability('ios',readDuoGeometry({...open,hasHinge:false,model:'iPhone Duo'})),false);
 });
+
+test('camera-column controls use full native coordinates even when the body safe inset lies far to their left',async()=>{
+ const {duoSceneLayout,duoTabFrame}=await import('./duo-layout.ts');
+ for(const [width,height,hingeStatus] of [[390,844,'closed'],[960,740,'fullyOpen'],[740,960,'fullyOpen']] as const){
+  const camera={x:width-60,y:32,width:28,height:28};
+  const g=base({width,height,hingeStatus,safeArea:{left:16,top:20,right:100,bottom:20},regions:[{kind:'occlusion',active:true,frame:camera}]});
+  const scene=duoSceneLayout(g),tabs=duoTabFrame(scene,true)!;
+  assert.equal(scene.alignment,'trailing-occlusion');assert.equal(scene.column!.x+scene.column!.width/2,camera.x+camera.width/2);assert.equal(tabs.x,scene.column!.x);assert.equal(scene.back!.x,tabs.x);assert.ok(scene.back!.y>=camera.y+camera.height+8);assert.ok(scene.body.x+scene.body.width<tabs.x,'chrome is not hosted at the inset body edge');
+  for(const frame of [scene.back!,tabs])for(const region of g.regions.filter(r=>r.active))assert.equal(intersectRects(frame,region.frame),null);
+  assert.equal(!!scene.panes,hingeStatus==='fullyOpen'&&width>height);
+ }
+});
+test('hidden inner camera geometry keeps the same camera column; unrelated or absent occlusions have explicit fallback sources',async()=>{
+ const {duoSceneLayout}=await import('./duo-layout.ts');
+ const camera={x:900,y:32,width:28,height:28},g=base({hingeStatus:'fullyOpen',safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'occlusion',active:false,frame:camera}]});
+ assert.equal(duoSceneLayout(g).column!.x+24,914);assert.equal(duoSceneLayout(g).alignment,'trailing-occlusion');
+ assert.equal(duoSceneLayout({...g,regions:[]}).alignment,'system-inset');assert.equal(duoSceneLayout({...g,regions:[],safeArea:{...g.safeArea,right:0}}).alignment,'trailing-edge');
+ for(const hingeStatus of ['closed','partiallyOpen','unknown'] as const)assert.equal(duoSceneLayout({...g,hingeStatus}).panes,null);
+ assert.equal(duoSceneLayout({...g,hingeStatus:undefined}).panes,null,'an old binary without a pose cannot guess unfolded from width');
+ assert.equal(readDuoGeometry({...g,hingeStatus:'invented'}),null);
+});
+test('unfolded landscape panels clear the actual fold and camera independently; portrait and modal content stay single',async()=>{
+ const {duoSceneLayout,duoTabFrame}=await import('./duo-layout.ts');
+ const g=base({hingeStatus:'fullyOpen',safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'division',active:true,frame:{x:460,y:0,width:40,height:740}},{kind:'occlusion',active:true,frame:{x:900,y:32,width:28,height:28}}]});
+ const scene=duoSceneLayout(g);assert.ok(scene.panes);clearOf(scene.panes!.leading,g);clearOf(scene.panes!.trailing,g);assert.equal(scene.panes!.leading.x+scene.panes!.leading.width,460);assert.equal(scene.panes!.trailing.x,500);assert.equal(duoSceneLayout(g,false).panes,null,'modals must not span the fold');
+ const short=duoSceneLayout({...g,height:240,regions:[{kind:'occlusion',active:true,frame:{x:900,y:24,width:28,height:28}}]});const tabs=duoTabFrame(short,true)!;assert.ok(tabs.height>=44);assert.equal(intersectRects(tabs,short.back!),null);assert.equal(tabs.y+tabs.height,212);
+});

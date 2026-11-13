@@ -1,4 +1,5 @@
-import {useDuoBackState} from './src/DuoBackNavigation';
+import {DuoWorkspace} from './src/DuoWorkspace';
+import {useDuoScene} from './src/DuoChrome';
 import {listenForDuckNotification} from './src/push';
 import { DuoSafeSurface, useDuoTrailingNavigation } from './src/DuoLayout';
 import {AppNavigation} from './src/AppNavigation';
@@ -25,7 +26,8 @@ export function Shell() {
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
   const duo=useDuoTrailingNavigation();
-  const {available:canGoBack}=useDuoBackState();
+  const {scene}=useDuoScene();
+  const split=!!scene?.panes;
   const [tab, setTab] = useState<AppTab>('todos'),[unread,setUnread]=useState(0);
   const [settings, setSettings] = useState(false);
   useEffect(()=>listenForDuckNotification(()=>setTab('duck')),[]);
@@ -37,30 +39,31 @@ export function Shell() {
   useEffect(() => { setEditor(null);setUnread(0); setDuckSession(current => current + 1); setTab('todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
   const needsAuth = store.connection?.mode === 'cloud' && !store.user;
   const navigationVisible=!!store.connection&&!settings&&!needsAuth;
+  const rightPane=scene?.panes?{marginLeft:scene.panes.trailing.x-scene.body.x,width:scene.panes.trailing.width}:null;
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
   return <KeyboardAvoidingView style={[styles.root,duo&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View style={[styles.header,duo&&(navigationVisible||canGoBack)&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text></View>
-    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},duo&&(navigationVisible||canGoBack)&&styles.duoControls]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
-    {!!store.error && <View style={[styles.errorBar,duo&&(navigationVisible||canGoBack)&&styles.duoControls]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
-    <MotionView testID="screen-transition" style={[styles.content,duo&&(navigationVisible||canGoBack)&&styles.duoControls]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : tab}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
+    <View style={[styles.header,duo&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text></View>
+    {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},rightPane]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
+    {!!store.error && <View style={[styles.errorBar,rightPane]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
+    <MotionView testID="screen-transition" style={[styles.content]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : split?'duo-split':tab}><DuoWorkspace enabled={navigationVisible} fixed={<CalendarScreen key={`${store.connection?.mode}-${store.connection?.mode==='cloud'?store.connection.baseUrl:''}-${store.user?.id??'demo'}`} store={store} onAdd={onAdd} onEdit={onEdit}/>}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <View style={styles.content}>
       {tab === 'calendar' && <CalendarScreen store={store} onAdd={onAdd} onEdit={onEdit} />}
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
       <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => setTab('todos')} onOpenTodo={onEdit} /></View>
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
-    </View>}</MotionView>
+    </View>}</DuoWorkspace></MotionView>
     {navigationVisible && <AppNavigation tab={tab} onSelect={setTab} unread={unread} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView>;
 }
-export default function App() { return <MotionProvider><SafeAreaProvider><SafeAreaView edges={['top','left','right']} style={styles.safe}><StatusBar style="dark" /><DuoSafeSurface><Shell /></DuoSafeSurface></SafeAreaView></SafeAreaProvider></MotionProvider>; }
+export default function App() { return <MotionProvider><SafeAreaProvider><SafeAreaView edges={[]} style={styles.safe}><StatusBar style="dark" /><DuoSafeSurface workspace><Shell /></DuoSafeSurface></SafeAreaView></SafeAreaProvider></MotionProvider>; }
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg }, root: { flex: 1, width: '100%', maxWidth: 760, alignSelf: 'center', backgroundColor: colors.bg },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: { minHeight: layout.headerHeight, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: layout.pageInset, paddingVertical: 4, gap: 12 },
   brand: { ...typography.body, color: colors.text, fontWeight: '700', flexShrink: 1 }, storage: { ...typography.caption, color: colors.muted, flexShrink: 1, textAlign: 'right' },
   content: { flex: 1, minHeight: 0 }, hidden: { display: 'none' },
-  duoRoot:{maxWidth:'100%'},duoHeader:{paddingLeft:8,paddingRight:layout.duoControlInset,gap:4},duoControls:{paddingRight:layout.duoControlInset},
+  duoRoot:{maxWidth:'100%'},duoHeader:{paddingHorizontal:8,gap:4},
   errorBar: { paddingHorizontal: 20, paddingVertical: 12, backgroundColor: '#fff0f2', flexDirection: 'row', gap: 12, alignItems: 'center' },
   error: { ...typography.caption, flex: 1, color: colors.danger }, retry: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' },
 });

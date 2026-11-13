@@ -1,4 +1,5 @@
 import type { TextStyle } from 'react-native';
+import {DUO_CHROME} from './duo-layout';
 
 // Verified TDS foundation values; layout dimensions below are Duck choices.
 // See docs/tds-analysis.md. Native text scaling remains enabled.
@@ -33,6 +34,5 @@ export const layout = {
   pageInset: 24, pageTop: 16, headerHeight: 48,
   navigationHeight: 72, sectionGap: 24, actionGap: 16,
   sheetInset: 24, titleBottom: 16,
-  duoNavigationWidth: 48, duoNavigationHeight: 226, duoNavigationInset: 8,
-  duoControlInset: 64,
+  duoNavigationWidth: DUO_CHROME.width, duoNavigationHeight: DUO_CHROME.height, duoNavigationInset: DUO_CHROME.gap,
 } as const;
