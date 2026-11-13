@@ -37,7 +37,7 @@ async function providerFailure(response){
 }
 export function createAssistant(store,integrations,env=process.env,fetcher=fetch){
  const aiEnabled=()=>env.AI_ENABLED==='true'&&!!env.OPENAI_API_KEY&&!!env.OPENAI_MODEL;
- const catalog=()=>Object.entries(actionDefinitions).filter(([operation])=>!(['naver.send','naver.reply'].includes(operation)&&integrations.naver?.status(null).sendAvailable===false)).map(([operation,d])=>({operation,provider:d.provider,label:d.label,feature:d.feature??null,fields:Object.keys(d.fields),required:d.required}));
+ const catalog=()=>Object.entries(actionDefinitions).filter(([operation])=>!(operation.startsWith('naver.')&&integrations.naver?.status(null).readOnly===true)&&!(['naver.send','naver.reply'].includes(operation)&&integrations.naver?.status(null).sendAvailable===false)).map(([operation,d])=>({operation,provider:d.provider,label:d.label,feature:d.feature??null,fields:Object.keys(d.fields),required:d.required}));
  function requireAccount(user){if(!store.account(user)?.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');}
  async function prepare(user,operation,input){requireAccount(user);const args=validateAction(operation,input);const preview=await integrations.inspect(user,operation,args);return store.createAssistantAction(user,{operation,args,preview,label:actionDefinitions[operation].label});}
  return {

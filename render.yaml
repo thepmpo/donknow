@@ -28,6 +28,8 @@ services:
         value: "true"
       - key: NAVER_SMTP_ENABLED
         value: "false"
+      - key: NAVER_READ_ONLY
+        value: "true"
       - key: STORE_DRIVER
         value: turso
       - key: TURSO_DATABASE_URL

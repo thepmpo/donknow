@@ -63,3 +63,7 @@ test('pasted sources require consent, stay ephemeral and produce drafts without 
   const exported=JSON.stringify(h.store.exportAssistantActions(h.user));assert.equal(exported.includes('원문 전용'),false);
  }finally{await h.close();}
 });
+
+test('read-only Naver policy removes every Naver write from AI and manual catalogs without removing other providers',async()=>{
+ const h=await setup();try{const integration=createIntegrations(h.store,env,()=>{throw Error('No provider call expected');});let readOnly=false;integration.naver={status:()=>({readOnly,sendAvailable:false})};const a=createAssistant(h.store,integration);assert.ok(a.status(null).actions.some(x=>x.operation==='naver.markRead'));readOnly=true;const actions=a.status(null).actions;assert.ok(!actions.some(x=>x.provider==='naver'));assert.ok(actions.some(x=>x.operation==='gmail.send'));assert.ok(actions.some(x=>x.operation==='notion.create'));}finally{await h.close();}
+});
