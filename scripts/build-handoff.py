@@ -18,7 +18,7 @@ images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
 (ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
@@ -34,6 +34,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-13 승인 반영 — 큰 내비게이션·Apple Glass·선택 이동
+
+구현30ea3d9에서 Duo 아이콘28pt·터치52pt·바64×272pt로 확대하고 지원 iOS의 실제 Liquid Glass를 연결했다. 웹/이전OS는 블러 대체, 투명도 줄이기/강제 고대비는 불투명 재질이다. 선택 강조판은 측정 좌표로250ms 이동/1.06배 반응하며 동작 줄이기에서는 즉시 바뀐다. 카메라 열·고정 캘린더/오른쪽 탭·세로 단일 화면·초안/스크롤/복귀를 유지한다. 전체223통과/선택1개 제외·타입·웹/iOS JS·전체 앱/모션/채팅·Duo 이동/접근성 검사를 통과했다.19번 앱에는 이번 변경이 없어 새 무료 native 빌드/실기기 검수가 남는다.90분은 한 빌드 job의 제한이며 월간 횟수/총시간 한도가 아니다. [확대 미리보기·native/웹 구분·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md)를 우선한다.
+
 ### 2026-11-13 실제 무료 빌드 성공 — 1.0.0(19) Apple 업로드
 
 사용자 수동43365834762는 소스224a498에서 validate/build-and-submit 모두 성공했다. 실제 Xcode27.1·기존 서명·로컬IPA11.4MB 생성·Apple 업로드13:40:01 KST를 확인했다. 새 버전은1.0.0(19)이고 승인 카메라 열/가로 Calendar 고정·Todo 선택/세로 현재 화면을 포함한다. [실행 결과](https://github.com/thepmpo/donknow/actions/runs/43365834762) · [Apple 제출](https://expo.dev/accounts/thepmpo/projects/duckduck-donknow/submissions/0d6c6741-25ea-4444-9a1e-62c55ec958da). 제출 로그는 Apple 처리 중이며 TestFlight 목록/설치/Duo 기기 검수는 아직 별도다.19가 안 보이면 Apple 처리를 기다리고 재빌드하지 않는다. Expo cloud 무료 한도를 쓰지 않는 공개 GitHub 표준 Mac 경로의 실제 성공이다. [실제 증거와 남은 검수](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 우선한다.
@@ -48,7 +52,7 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
 
-Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,64×272pt 묶음·52pt 조작·28pt 아이콘을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
 
 이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
 
@@ -350,7 +354,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,64×272pt 묶음·52pt 조작·28pt 아이콘을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
 다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 이번 사용자가 확인한 설치 버전은 1.0.0 (12), Render 기준은 f76172d입니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 

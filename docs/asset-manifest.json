@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "775a561cea5d64e53fa0c1f270a747abd3d6e02a",
-  "imageCount": 131,
+  "codeCommit": "30ea3d9dd57dd0d0ca3e817889a920d61f102662",
+  "imageCount": 142,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -394,6 +394,83 @@
       "bytes": 22889,
       "sha256": "9df11e2dd10ae07cee47baee9c1153a3afff64afec097211590465675a12780d",
       "import_path": "images/artifacts__duo-camera-column-2026-11-13__geometry-6.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 47565,
+      "sha256": "dc9f9894b06fd72aa56eadd5a95350cb5fe4a3b5cce794a95382b7116e994040",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/02-open-calendar-duck.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 52489,
+      "sha256": "2f34748d3eac41023bd96fc805aa2b171ac55ffdcd1941edc0427f639cac81ae",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 37841,
+      "sha256": "6218cd0d5e8c13663a51640415b3be27990aa9d930290430cdd4f65abc50b92f",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 34816,
+      "sha256": "8d6dd7c2657cde0f62980356185cedd98e909c6fe255c309b0d9fc9f17d81458",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 54589,
+      "sha256": "9dc424823b238d4e238a0ae7a3da0f19c11615893a6f3aebeea3376f5e42580c",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/geometry-1.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 29190,
+      "sha256": "01e824485bba60191873b7a6c356d6a706e2f04443e8ab280da819e2ca9fbfe5",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__geometry-1.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/geometry-2.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 30092,
+      "sha256": "51e8f0662232e911c2cc5a9637c1dd1a3b7af3b740c449d335ee3e7f6a979deb",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__geometry-2.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/geometry-3.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 33487,
+      "sha256": "6c58069032599259e5d72343df2b6fae9e3bc4d1fd7424b09c43d948b185ffca",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__geometry-3.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/geometry-4.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 30095,
+      "sha256": "1a6095cfc042f5a6d606c4f3f7fb1e13ed1d0b591917b8a62a4b8625c028881c",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__geometry-4.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/geometry-5.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 30092,
+      "sha256": "51e8f0662232e911c2cc5a9637c1dd1a3b7af3b740c449d335ee3e7f6a979deb",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__geometry-5.png"
+    },
+    {
+      "path": "artifacts/duo-liquid-glass-2026-11-13/geometry-6.png",
+      "category": "내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님",
+      "bytes": 25980,
+      "sha256": "54ce2185b7ed297556423125f4cb6026d275cecdd06f2840b730c35c286e72d1",
+      "import_path": "images/artifacts__duo-liquid-glass-2026-11-13__geometry-6.png"
     },
     {
       "path": "artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png",

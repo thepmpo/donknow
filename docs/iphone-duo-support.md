@@ -1,5 +1,32 @@
 # Apple iPhone Duo 대응 · 2026-11-12
 
+## 2026-11-13 승인 반영 — 큰 내비게이션·Liquid Glass·선택 이동
+
+사용자가 제안한 확대/재질/모션을 적용하도록 승인했다. 구현30ea3d9에서 Duo 아이콘24→**28pt**, 탭 터치44→**52pt**, 세로 바48→**64pt**·전체높이**272pt**로 키웠다. 기존 물리 카메라 열과 아래 탭·위 실제 복귀 원형 ‹, 위/아래 안전8pt, 가로 고정 캘린더/오른쪽 선택 화면·세로 현재 화면 규칙을 유지한다. YouTube는 큰 아이콘과 명확한 선택의 참고이며 로고/빨간색/하단 위치를 복제하지 않는다. 일반 iPhone은 하단 위치/기존 아이콘 치수를 유지하며 재질과 선택 표시를 공유한다.
+
+- 실제 native Apple Liquid Glass: Expo SDK58 권장 `expo-glass-effect ~58.0.5`를 잠금 파일과 함께 추가했다. [공식 API](https://docs.expo.dev/versions/latest/sdk/glass-effect/)의 runtime/compiler/API 가용성을 모두 확인하고 iOS26+에서 `GlassView`를 사용한다. Duo 뒤로가기 원에도 같은 재질을 적용한다. GlassView/부모 opacity를 애니메이션하지 않는다.
+- 지원하지 않는 OS/웹은 명시적 BlurView 대체이며 native Glass로 보고하지 않는다. 투명도 줄이기/웹 강제 고대비에서는 불투명한 대비 재질을 사용한다. 설정 조회가 실패하면 불투명 상태를 유지하고 이후 OS 변경 이벤트도 반영한다. React Native Web에 없는 reduceTransparency 메서드를 호출하지 않는다.
+- 선택 강조판은 실제 측정한 각 탭의 좌표로 **250ms 이동**하고 최대**1.06배**로 짧게 반응한다. 빠른 연속 탭은 이전 이동을 취소하고 최신 탭으로 이어간다. 동작 줄이기에서는 즉시 이동하며 확대하지 않는다. 새 탭 history나 자동 업무 실행은 만들지 않는다.
+- `DUO_CHROME`의64/272/52/28이 단일 소스이며, 짧은 높이에서는52pt를 줄이지 않고 스크롤한다. 새 크기로도 카메라 중심선, 본문 밖 위치, 채팅 입력/보내기 비가림·원형 뒤로가기 비활성·현재 탭/초안/월/스크롤 보존을 검사했다.
+
+검증: 문법·전체224개 중223통과/실패0/기존 선택1개 제외·기하11개·타입·웹/iOS JS export·전체 앱·모션·AI 채팅·Duo 실제 선택 이동/연속 입력/동작 줄이기/강제 고대비/52pt 조작·상태 보존 회귀를 통과했다. 공개 문서/디자인 가이드 회귀와142개 이미지 해시도 검증했다. 새 캡처는 **기하/체험 데이터 웹 fixture의 대체 재질**이며 native Apple Glass 실기기 캡처가 아니다. 이전 화면은 이력으로 보존했다.
+
+**현재 설치1.0.0(19)은 이번 확대/Glass 전이다.** native 모듈이 추가돼 최신 main의 새 수동 무료 GitHub Mac 빌드·Apple 처리·실기기 검수가 필요하다. 다음 빌드 번호를 미리 확정하지 않는다. push 자동 빌드는 계속 꺼짐이며 기존 인증·서명·데이터·무료 서버·원본 recovery bundle은 보존한다. [무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 새 main 실행을 사용한다.
+
+시간 제한 질문:90분은 **한 번의 Mac 빌드 job 제한**이지 월간 빌드 횟수/총시간 한도가 아니다. 현재 공개 저장소·표준 GitHub runner 조건에서 월15회 같은 Expo cloud 횟수 제한을 쓰지 않는다.19번의 Mac job은 약10분에 빌드/제출을 마쳤다. GitHub 사용 정책·대기·동시/작업 시간 제한은 유지한다. 이번 작업에서90분·과금 설정을 변경하지 않았다.
+
+### 확대 후 미리보기 — 웹의 대체 재질
+
+![펼친 가로 · 확대된 선택 표시와 왼쪽 캘린더/오른쪽 Todo](../artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png)
+
+![접힘 · 같은 카메라 열의64pt 바와28pt 아이콘](../artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png)
+
+![세로 · 현재 선택 화면 하나와 확대된 내비게이션](../artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png)
+
+![원형 실제 뒤로가기와 같은 재질의 확대된 세로 바](../artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png)
+
+캡처의 파란 열·검은 카메라는 위치 검증 안내이며 제품에는 그리지 않는다. native Glass의 굴절/빛·OS 접근성 설정과 실제 손가락 터치는 새 빌드 설치 후 확인한다. 웹 검수의 성공을 native Glass 완료로 올리지 않는다.
+
 ## 2026-11-13 실제 성공 — 무료 GitHub Mac 빌드1.0.0(19)·Apple 업로드
 
 [사용자 수동 실행43365834762](https://github.com/thepmpo/donknow/actions/runs/43365834762)은 **소스224a498**, validate와build-and-submit 두 job 모두 성공이다. [실제 빌드·제출 job131690178721](https://github.com/thepmpo/donknow/actions/runs/43365834762/job/131690178721)의 로그에서 Xcode27.1, 기존 서명 재사용, 원격번호18→19, `Build successful`, 서명된IPA11.4MB, `Submitted your app to Apple App Store Connect!`를 확인했다. 앱 설정 버전1.0.0과 합쳐 **1.0.0(19)**다. Expo cloud build가 아니라 앞서 설정한 공개 저장소의 표준 GitHub Mac에서 `--local`로 실제 빌드했다. 새 유료 가입·과금 설정·인증서 재발급을 하지 않았으며 추가 빌드를 요청하지 않는다.
@@ -12,7 +39,7 @@ IPA 생성은 **13:39:30 KST**, Apple 업로드 완료는 **13:40:01 KST**다. [
 
 ## 2026-11-13 승인 시안 반영 — 카메라 열과 두 화면
 
-Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,48×226pt 묶음·44pt 조작을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
+Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,64×272pt 묶음·52pt 조작·28pt 아이콘을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다.
 
 이 기준이 아래 이전 가로 탭·본문 안쪽 세로 탭·64pt 보호 padding·단일 본문 정책보다 우선한다. 사용자가 승인한 그림에서 파란 열과 검은 카메라 점은 **위치 확인용 안내 표시**이며 앱에 그려 넣지 않는다. [최신 구현·미리보기·검수](https://github.com/thepmpo/donknow/blob/main/docs/iphone-duo-support.md).
 
@@ -33,7 +60,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - 실제 `UIHingeInteraction`의 `hinge.status`가 `fullyOpen`이고 현재 View가 가로일 때만 분할한다. 화면 폭/기기 이름으로 Duo를 추정하지 않는다. 네이티브 상태가 없으면 폭이 커도 단일 화면이다.
 - UIKit의 `reservedRegions(kind:options:)`는 카메라 전용 식별 API가 아니다. `occlusion`에는 카메라·Dynamic Island·창 조작부 등이 포함된다. 화면 오른쪽 위의 실제 예약 영역을 정렬 근거로 사용하며 `.includeInactive`도 읽는다. 후보가 없으면 실제 오른쪽 safe inset, 그것도 없으면 trailing edge로 대체한다. `alignment`에 출처를 남긴다. **대체 좌표는 물리 카메라 일치가 검증됐다는 뜻이 아니다.** 실기기 예약 영역 확인이 남는다.
 - 조작부는 한 x 중심선을 유지한다. 활성 힌지·가림 구간은 세로로 건너뛰며 카메라 왼쪽의 본문 열로 옮기지 않는다. 원형 ‹는 실제 callback에서만 표시하고 저장 중 비활성·닫힘 후 제거를 유지한다.
-- `DUO_CHROME`이48pt 너비·최대226pt 높이·8pt 안전 간격·분할 사이16pt의 단일 소스다. 실제 힌지가 양 화면을 가르면 그 경계를 우선한다. 짧은 높이는44pt 터치를 줄이지 않고 세로 스크롤한다.64pt 본문 보호 padding은 제거했다.
+- `DUO_CHROME`이64pt 너비·최대272pt 높이·52pt 탭/28pt 아이콘·8pt 안전 간격·분할 사이16pt의 단일 소스다. 실제 힌지가 양 화면을 가르면 그 경계를 우선한다. 짧은 높이는52pt 터치를 줄이지 않고 세로 스크롤한다. 과거64pt 본문 보호 padding은 제거했다. 지금64pt는 실제 카메라 열의 바 너비이며 본문 padding이 아니다.
 - 일반 기기는 안전 영역 inset을 본문에 적용하고 기존 하단 bar의 bottom inset을 중복 적용하지 않는다. 네이티브 첫 기하를 받기 전 하단 bar를 잠깐 표시하지 않는다.
 
 공식 근거: [Duo 준비](https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo), [예약 영역](https://developer.apple.com/documentation/uikit/uiview/reservedregions(kind:options:)), [힌지 상태](https://developer.apple.com/documentation/uikit/uihinge/status-swift.enum). 기존 SDK guard는 유지하며 실제 Xcode27.1 컴파일은 이 Linux 환경에서 수행하지 못했다.
