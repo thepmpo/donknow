@@ -1,4 +1,4 @@
-name: iPhone TestFlight build and submit
+name: iPhone TestFlight build and submit (free GitHub Mac)
 on:
   workflow_dispatch:
 permissions:
@@ -7,23 +7,17 @@ concurrency:
   group: ios-testflight
   cancel-in-progress: false
 jobs:
-  build-and-submit:
+  validate:
+    # Standard runners are free for this PUBLIC repository. Never silently use a paid runner.
+    if: github.event.repository.private == false && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       CI: '1'
       EXPO_NO_TELEMETRY: '1'
     steps:
-      - name: Check one-time Expo authentication setup
-        shell: bash
-        run: |
-          if [ -z "$EXPO_TOKEN" ]; then
-            echo '::error::Add EXPO_TOKEN to this repository Actions secrets. Never put the token in code or logs.'
-            exit 1
-          fi
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
           cache: npm
@@ -42,12 +36,63 @@ jobs:
       - run: npm ci --prefix mobile --no-audit --no-fund
       - run: npm --prefix mobile run typecheck
       - run: npm --prefix mobile run export:ios -- --max-workers 2
-      - name: Build iOS and automatically submit to App Store Connect
+  build-and-submit:
+    needs: validate
+    if: github.event.repository.private == false && github.ref == 'refs/heads/main'
+    # This is a STANDARD runner, not xcode-27-xlarge (which is billable).
+    runs-on: xcode-27
+    timeout-minutes: 90
+    env:
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      EXPO_PUBLIC_API_URL: https://duckduck-test.onrender.com
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - name: Check existing Expo authentication
+        shell: bash
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo '::error::Existing EXPO_TOKEN is required. Do not print it or replace existing signing credentials.'
+            exit 1
+          fi
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Check native toolchain and Duo SDK
+        shell: bash
+        run: |
+          test -d "$DEVELOPER_DIR"
+          xcodebuild -version
+          ios_sdk_version="$(xcrun --sdk iphoneos --show-sdk-version)"
+          node -e 'const [major,minor]=process.argv[1].split(".").map(Number);if(!(major>27||(major===27&&minor>=1)))throw Error("Duo requires iOS SDK 27.1 or newer")' "$ios_sdk_version"
+          command -v pod
+          gem install --user-install fastlane -v 2.240.1 --no-document
+          ruby -e 'puts "#{Gem.user_dir}/bin"' >> "$GITHUB_PATH"
+      - run: npm ci --prefix mobile --no-audit --no-fund
+      - name: Build signed IPA on the free GitHub Mac (no Expo cloud build)
         working-directory: mobile
-        run: npx --yes eas-cli@27.4.1 build --platform ios --profile production --auto-submit --non-interactive --no-wait
-      - name: Explain release status
+        env:
+          EAS_LOCAL_BUILD_WORKINGDIR: ${{ runner.temp }}/duckduck-eas
+        shell: bash
+        run: |
+          command -v fastlane
+          npx --yes eas-cli@27.4.1 build --platform ios --profile production --local --non-interactive --freeze-credentials --output "$RUNNER_TEMP/duckduck-ios.ipa"
+          test -s "$RUNNER_TEMP/duckduck-ios.ipa"
+      - name: Submit this IPA using existing App Store Connect credentials
+        working-directory: mobile
+        shell: bash
+        run: npx --yes eas-cli@27.4.1 submit --platform ios --profile production --path "$RUNNER_TEMP/duckduck-ios.ipa" --non-interactive --wait
+      - name: Remove temporary build and signing workspace
+        if: always()
+        shell: bash
+        run: rm -rf -- "$RUNNER_TEMP/duckduck-eas" "$RUNNER_TEMP/duckduck-ios.ipa"
+      - name: Explain actual release status
         if: always()
         shell: bash
         run: |
-          echo 'A green workflow means EAS accepted the build request, not that the iOS build or Apple submission finished. Check EAS links. Apple processing is separate.' >> "$GITHUB_STEP_SUMMARY"
-          echo 'No public App Store release is performed by this workflow.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Native compilation runs on the standard public-repository GitHub Mac, without Expo cloud build credits or a paid-runner fallback.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Check the build and submit steps separately. Apple processing and TestFlight installation are separate; no public App Store release is performed.' >> "$GITHUB_STEP_SUMMARY"

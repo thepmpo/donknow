@@ -34,6 +34,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 **2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
+### 2026-11-13 무료 빌드 — Windows에서도 GitHub의 Mac 사용
+
+사용자 비용0 정책에 따라 기존 수동 TestFlight 버튼을 공개 저장소의 표준 xcode-27 GitHub Mac에서 실제 local 빌드→제출하는 경로로 변경했다. 저장소 공개/표준 runner 무료/설치된 Xcode27.1을 공식 자료로 확인했다. 추가 Mac·Expo Starter 결제·새 인증이 필요하지 않다. main/public/manual 조건, 기존 서명 freeze, 임시 파일 정리·공개 artifact 제외, 유료 대체/자동 push 빌드 금지를 유지한다. actionlint·셸·224개 중223통과/선택1개 제외·타입·iOS JS·문서 회귀는 확인했지만 첫 Mac 컴파일/제출/Apple 처리는 아직 미확인이다. [무료 빌드 실행 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow→main→Run workflow를 누른다. 이전 실패 실행 Re-run은 구cloud 코드이므로 쓰지 않는다. [공식 근거·구현·상태 구분](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)을 읽는다.
+
 ### 2026-11-13 빌드 차단 — Expo 무료 iOS 한도 소진
 
 사용자 수동43357992366은 faee581에서 검사·타입·iOS JS export를 통과했지만 EAS가 이번 달 무료 iOS 한도 소진으로 거절했다. 로그의 초기화일은12월1일이다. buildNumber18은 할당만 됐고 새 IPA/제출은 확인되지 않았다. Node20/Ubuntu 이전 안내는 중단 원인이 아니다. 같은 재실행·인증 재생성·유료 전환을 하지 않는다. 무료 대안은 사용자 Mac의 호환 Xcode에서 로컬 production 빌드/업로드이며 아직 미실행이다. [실제 실패 근거·공식 무료 대안·빌드 상태](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)를 읽는다. push 자동 EAS는 계속 꺼짐이다.

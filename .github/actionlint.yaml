@@ -1,0 +1,7 @@
+# actionlint 1.7.12 predates this STANDARD GitHub-hosted preview label.
+# This only extends lint recognition; it does not configure a self-hosted runner.
+# https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+# https://github.com/actions/runner-images/issues/14404
+self-hosted-runner:
+  labels:
+    - xcode-27

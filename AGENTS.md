@@ -24,6 +24,11 @@
 
 - 사용자 안내는 쉬운 한국어와 클릭 가능한 실제 주소를 사용하고, 화면에 보이는 버튼 이름을 순서대로 적는다. 설정 저장·Git 커밋·배포·실제 동작 성공을 구분하며 사용자에게 불필요한 커밋을 요구하지 않는다.
 
+## 2026-11-13 무료 iOS 빌드 경로
+
+- 사용자 비용0 정책으로 기존 ios-testflight 수동 workflow는 공개 저장소의 표준 GitHub `xcode-27` Mac에서 EAS `--local` 빌드→같은IPA 제출을 수행한다. Expo cloud 무료 한도 소진에 유료 가입을 요구하지 않는다. 표준 runner의 무료 조건(public/main/manual)과 Xcode27.1·서명 freeze·임시 파일 정리·공개 artifact 제외를 유지한다. 유료 xlarge/large runner·cloud fallback·push 자동 빌드는 금지한다. docs/testflight-automation.md를 따른다.
+- 이전 실패 실행43357992366 Re-run은 구cloud 코드를 재실행하므로 사용하지 않는다. 최신 main에서 새 workflow_dispatch가 필요하다. 실제 Mac 빌드·서명·제출·Apple/실기기 상태를 코드/JS 검사와 구분한다. 서명/토큰을 재생성하거나 로그로 출력하지 않는다.
+
 ## 진행 순서·빌드 정책 — 2026-11-12 최신 사용자 지시
 
 - 사용자는 남은 기능·검증과 UX/UI 점검을 진행하고 출시 준비는 마지막에 하도록 요청했다. 스토어 심사/공개 준비를 먼저 진행하지 않는다. 브리핑·날씨는 별도 명세 대기다.
