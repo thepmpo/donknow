@@ -33,6 +33,10 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
+#### 새 iPhone 빌드 요청 — 아직 시작되지 않음
+
+사용자가 수정본 빌드를 요청해 최신main과 공개 서버release43e06a8 정상 응답을 다시 확인했다. 플랫폼 기존 인증의 workflow 조회와 새 dispatch 요청이 모두 **Forbidden**으로 중단돼 새 run/번호/IPA/Apple 제출은 없다. 실제 계정 Calendar 오류 원인은 아직 재현하지 못했으며 코드/fixture 수정과 구분한다. [실제 오류와 재개 기록](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md). [무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → Branch main → 초록 Run workflow를 한 번 누른다. 이전25 job Re-run은 새 UI를 포함하지 않는다. 개인 토큰/새 서명/유료 전환이나 push 자동 빌드는 요구하지 않았다.
+
 #### 최신 캘린더 정정 — Apple 참고·시스템 밝게/어둡게
 
 년·월은 **캘린더 본문 오른쪽 위**, 오늘은 **물리 카메라 열의 세로 탭 바로 위 별도 원형**, 시스템 밝게/어둡게로 확정했다. 큰 2단 도구 막대를 줄이고, 읽을 수 있는 월 달력·직접 일정 상세·인접 월 옅은 날짜·큰 제목/그룹 옵션·전체 semantic 외형을 적용했다.42일은 유지하고 작은 화면은 달력 내부 스크롤이다. [현재 계약·수치·코드·검수·실제 운영 한계](https://github.com/thepmpo/donknow/blob/main/docs/calendar-apple-reference-2026-11-13.md)를 먼저 읽는다. 이전 light 고정 규칙은 대체한다.

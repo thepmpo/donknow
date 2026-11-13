@@ -7,6 +7,10 @@
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-13
 
+#### 새 iPhone 빌드 요청 — 아직 시작되지 않음
+
+사용자가 수정본 빌드를 요청해 최신main과 공개 서버release43e06a8 정상 응답을 다시 확인했다. 플랫폼 기존 인증의 workflow 조회와 새 dispatch 요청이 모두 **Forbidden**으로 중단돼 새 run/번호/IPA/Apple 제출은 없다. 실제 계정 Calendar 오류 원인은 아직 재현하지 못했으며 코드/fixture 수정과 구분한다. [실제 오류와 재개 기록](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md). [무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → Branch main → 초록 Run workflow를 한 번 누른다. 이전25 job Re-run은 새 UI를 포함하지 않는다. 개인 토큰/새 서명/유료 전환이나 push 자동 빌드는 요구하지 않았다.
+
 #### 최신 캘린더 정정 — Apple 참고·시스템 밝게/어둡게
 
 년·월은 **캘린더 본문 오른쪽 위**, 오늘은 **물리 카메라 열의 세로 탭 바로 위 별도 원형**, 시스템 밝게/어둡게로 확정했다. 큰 2단 도구 막대를 줄이고, 읽을 수 있는 월 달력·직접 일정 상세·인접 월 옅은 날짜·큰 제목/그룹 옵션·전체 semantic 외형을 적용했다.42일은 유지하고 작은 화면은 달력 내부 스크롤이다. [현재 계약·수치·코드·검수·실제 운영 한계](https://github.com/thepmpo/donknow/blob/main/docs/calendar-apple-reference-2026-11-13.md)를 먼저 읽는다. 이전 light 고정 규칙은 대체한다.
@@ -210,6 +214,21 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
+
+사용자가 “오류 확인된 거면 빌드해”라고 요청했다. 서버 응답 처리의 확인된 코드 문제는 수정/검증했고, **실제 사용자 Google 계정의 오류 원인은 아직 재현하지 못했다**고 구분해 안내했다. 원격main43e06a8을 fetch했으며 공개 health의 `ok:true / calendarWorkspace:2 / release:43e06a883eb60b503fe829e138f309839c7ecd52`를 다시 확인했다. 단위246통과·타입/웹/iOS JS·UI 회귀와 실제43e06a8 원격검사43406903820 성공은 이전 검증 영수증이다. 이번에 새 IPA를 만든 것은 아니다.
+
+플랫폼 기존 인증으로 새 main 실행을 시도했다. 정확한 오류는 아래와 같다.
+
+```text
+Get "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml": Forbidden
+Post "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches": Forbidden
+```
+
+읽기 전용 Actions 목록에서 마지막 수동 iPhone 실행은43394742649·1643e0c·완료/success임을 확인했다. 이번 요청으로 새 run/버전/IPA/Apple 업로드는 만들어지지 않았다. 이전25번의 재실행은 새 UI를 포함하지 않으므로 실행하지 않는다. 새 개인 토큰/로그인 비밀번호를 요구하거나 권한을 우회하지 않는다. 자동 push 빌드·유료 runner·Expo cloud fallback도 켜지 않는다.
+
+[새 main 무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml) → **Run workflow → Branch: main → 초록 Run workflow**를 한 번 누르면 기존 무료 GitHub Mac·동일IPA 제출 경로로 시작한다. 사용자PC는 켜둘 필요 없다. 화면 열기는 queued 응답이므로 실제 표시/클릭 성공으로 기록하지 않는다. 실행이 시작되면 새 run의 SHA·validate·native/서명·Apple 제출·처리/설치를 각각 확인한다. 데이터/인증/서명·무료 플랜·원본bundle은 보존했다.
 
 #### 2026-11-13 — 첨부 Apple 캘린더·시스템 외형 정정
 
@@ -900,6 +919,21 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
+
+사용자가 “오류 확인된 거면 빌드해”라고 요청했다. 서버 응답 처리의 확인된 코드 문제는 수정/검증했고, **실제 사용자 Google 계정의 오류 원인은 아직 재현하지 못했다**고 구분해 안내했다. 원격main43e06a8을 fetch했으며 공개 health의 `ok:true / calendarWorkspace:2 / release:43e06a883eb60b503fe829e138f309839c7ecd52`를 다시 확인했다. 단위246통과·타입/웹/iOS JS·UI 회귀와 실제43e06a8 원격검사43406903820 성공은 이전 검증 영수증이다. 이번에 새 IPA를 만든 것은 아니다.
+
+플랫폼 기존 인증으로 새 main 실행을 시도했다. 정확한 오류는 아래와 같다.
+
+```text
+Get "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml": Forbidden
+Post "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches": Forbidden
+```
+
+읽기 전용 Actions 목록에서 마지막 수동 iPhone 실행은43394742649·1643e0c·완료/success임을 확인했다. 이번 요청으로 새 run/버전/IPA/Apple 업로드는 만들어지지 않았다. 이전25번의 재실행은 새 UI를 포함하지 않으므로 실행하지 않는다. 새 개인 토큰/로그인 비밀번호를 요구하거나 권한을 우회하지 않는다. 자동 push 빌드·유료 runner·Expo cloud fallback도 켜지 않는다.
+
+[새 main 무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml) → **Run workflow → Branch: main → 초록 Run workflow**를 한 번 누르면 기존 무료 GitHub Mac·동일IPA 제출 경로로 시작한다. 사용자PC는 켜둘 필요 없다. 화면 열기는 queued 응답이므로 실제 표시/클릭 성공으로 기록하지 않는다. 실행이 시작되면 새 run의 SHA·validate·native/서명·Apple 제출·처리/설치를 각각 확인한다. 데이터/인증/서명·무료 플랜·원본bundle은 보존했다.
 
 #### 2026-11-13 — 첨부 Apple 캘린더·시스템 외형 정정
 
@@ -1713,6 +1747,7 @@ b9ddf34 Record iOS23 build success and Apple agreement submission blocker
 213742a Record successful iOS25 build and Apple upload
 083192e Refine Calendar from Apple references and follow system appearance
 a0dee32 Publish Calendar reference contract, evidence and current build status
+43e06a8 Correct embedded handoff links and record Calendar delivery
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -7797,6 +7832,21 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 ### 原文 / docs/testflight-automation.md
 
 ### iPhone 테스트 수동 빌드·자동 제출
+
+#### 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
+
+사용자가 “오류 확인된 거면 빌드해”라고 요청했다. 서버 응답 처리의 확인된 코드 문제는 수정/검증했고, **실제 사용자 Google 계정의 오류 원인은 아직 재현하지 못했다**고 구분해 안내했다. 원격main43e06a8을 fetch했으며 공개 health의 `ok:true / calendarWorkspace:2 / release:43e06a883eb60b503fe829e138f309839c7ecd52`를 다시 확인했다. 단위246통과·타입/웹/iOS JS·UI 회귀와 실제43e06a8 원격검사43406903820 성공은 이전 검증 영수증이다. 이번에 새 IPA를 만든 것은 아니다.
+
+플랫폼 기존 인증으로 새 main 실행을 시도했다. 정확한 오류는 아래와 같다.
+
+```text
+Get "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml": Forbidden
+Post "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches": Forbidden
+```
+
+읽기 전용 Actions 목록에서 마지막 수동 iPhone 실행은43394742649·1643e0c·완료/success임을 확인했다. 이번 요청으로 새 run/버전/IPA/Apple 업로드는 만들어지지 않았다. 이전25번의 재실행은 새 UI를 포함하지 않으므로 실행하지 않는다. 새 개인 토큰/로그인 비밀번호를 요구하거나 권한을 우회하지 않는다. 자동 push 빌드·유료 runner·Expo cloud fallback도 켜지 않는다.
+
+[새 main 무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml) → **Run workflow → Branch: main → 초록 Run workflow**를 한 번 누르면 기존 무료 GitHub Mac·동일IPA 제출 경로로 시작한다. 사용자PC는 켜둘 필요 없다. 화면 열기는 queued 응답이므로 실제 표시/클릭 성공으로 기록하지 않는다. 실행이 시작되면 새 run의 SHA·validate·native/서명·Apple 제출·처리/설치를 각각 확인한다. 데이터/인증/서명·무료 플랜·원본bundle은 보존했다.
 
 #### 2026-11-13 최신 — Apple 참고 Calendar 수정은25번 이후
 

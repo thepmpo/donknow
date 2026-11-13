@@ -1,5 +1,20 @@
 # 매일 개발 정리
 
+## 2026-11-13 — 새 캘린더 빌드 요청·실행 권한 차단
+
+사용자가 “오류 확인된 거면 빌드해”라고 요청했다. 서버 응답 처리의 확인된 코드 문제는 수정/검증했고, **실제 사용자 Google 계정의 오류 원인은 아직 재현하지 못했다**고 구분해 안내했다. 원격main43e06a8을 fetch했으며 공개 health의 `ok:true / calendarWorkspace:2 / release:43e06a883eb60b503fe829e138f309839c7ecd52`를 다시 확인했다. 단위246통과·타입/웹/iOS JS·UI 회귀와 실제43e06a8 원격검사43406903820 성공은 이전 검증 영수증이다. 이번에 새 IPA를 만든 것은 아니다.
+
+플랫폼 기존 인증으로 새 main 실행을 시도했다. 정확한 오류는 아래와 같다.
+
+```text
+Get "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml": Forbidden
+Post "https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches": Forbidden
+```
+
+읽기 전용 Actions 목록에서 마지막 수동 iPhone 실행은43394742649·1643e0c·완료/success임을 확인했다. 이번 요청으로 새 run/버전/IPA/Apple 업로드는 만들어지지 않았다. 이전25번의 재실행은 새 UI를 포함하지 않으므로 실행하지 않는다. 새 개인 토큰/로그인 비밀번호를 요구하거나 권한을 우회하지 않는다. 자동 push 빌드·유료 runner·Expo cloud fallback도 켜지 않는다.
+
+[새 main 무료 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml) → **Run workflow → Branch: main → 초록 Run workflow**를 한 번 누르면 기존 무료 GitHub Mac·동일IPA 제출 경로로 시작한다. 사용자PC는 켜둘 필요 없다. 화면 열기는 queued 응답이므로 실제 표시/클릭 성공으로 기록하지 않는다. 실행이 시작되면 새 run의 SHA·validate·native/서명·Apple 제출·처리/설치를 각각 확인한다. 데이터/인증/서명·무료 플랜·원본bundle은 보존했다.
+
 ## 2026-11-13 — 첨부 Apple 캘린더·시스템 외형 정정
 
 [현재 구현 계약](calendar-apple-reference-2026-11-13.md). 사용자 답변으로 년·월은 캘린더 본문 우상단, 오늘은 물리 카메라 열의 세로 탭 바로 위 독립 원형, 밝게·어둡게는 시스템 설정으로 확정했다. 기존 light 고정·큰 2단 toolbar·월 화면 상시 agenda/무조건6주 화면 안 맞추기 규칙은 이 부분에서 대체한다.
