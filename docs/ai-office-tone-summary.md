@@ -1,5 +1,8 @@
 # 덕의 느낌을 함께 정하기 — 쉬운 설명
 
+> **현재 구현 기준:** [전체 이어받기 기준서](continuation-guide.md) → [Liquid Glass 상태·수치·검수](liquid-glass-navigation.md). 아래 날짜별 기록은 당시 이력입니다. 일반 iPhone 하단 capsule·상태별 터치 동작, Duo 카메라 열·64/272/52/28,3초 완료,예약 메시지 문서 대기 해제가 최신이며 이전 설명보다 우선합니다. 구현·웹 검사·native 빌드·실기기 확인은 따로 읽으세요.
+
+
 2026-11-10 · 공식 확정 v1.0. [상세 분석](ai-office-ux-analysis.md) · [다른 프로젝트용 공통 원칙](reusable-product-design-principles.md).
 
 ## 제가 이해한 원하는 느낌

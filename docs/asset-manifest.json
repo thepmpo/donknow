@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "fdd555f558ffcd5bf3c9407657edf5343595893b",
-  "assetCommit": "fdd555f558ffcd5bf3c9407657edf5343595893b",
-  "imageCount": 153,
+  "codeCommit": "aa55b909b3c76e871ac5a2a24053a828f84a037f",
+  "assetCommit": "aa55b909b3c76e871ac5a2a24053a828f84a037f",
+  "imageCount": 163,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -689,6 +689,76 @@
       "bytes": 43986,
       "sha256": "5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea",
       "import_path": "images/artifacts__log.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 47357,
+      "sha256": "075dd31e4e28815b31c6c62a1d8c618dc1638064b379b625ea2928d1cf765b5b",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/02-open-calendar-duck.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 52269,
+      "sha256": "8f9021d619d505a34158fae822332c626d9d15283f7a8994ab647730050cce34",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/03-portrait-current-screen.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/04-closed-camera-column.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/05-back-in-camera-column.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 54458,
+      "sha256": "6ce1facfafdd90d9ef96bfc952f4150fce1a51d173264c3cb43b8b6fb675d8a6",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 49524,
+      "sha256": "041428a85af2662503ea6bd22207a045c1960b5e314e97fdf7be9165e400da54",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/07-iphone-320-floating-tabs.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 32771,
+      "sha256": "833544221650f1122128c01f6651f100a2eafedc9fc21ebbd8c6f6e43af5015d",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 33367,
+      "sha256": "3c1bb26257ceccc44968e4e5027aa16bfc6614b07b717fde200cb9ee9e31ef6b",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/07-iphone-430-floating-tabs.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 33120,
+      "sha256": "e3873226972b44a1837207343483814633e207efb0d6456cc479fb821fd061d0",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/navigation-interaction-2026-11-13/08-iphone-320-text-160-percent.png",
+      "category": "상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님",
+      "bytes": 25375,
+      "sha256": "e6a28b4ef6f0499017a8ad7cf90cf1f3d81a909f318ed1e2e8fe12cc242702d0",
+      "import_path": "images/artifacts__navigation-interaction-2026-11-13__08-iphone-320-text-160-percent.png"
     },
     {
       "path": "artifacts/overview.png",

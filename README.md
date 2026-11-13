@@ -1,5 +1,7 @@
 # duckduck
 
+**다른 채팅에서 이어받기:** [현재 제품·구현 기준](docs/continuation-guide.md) → [Glass 상태·수치·검수](docs/liquid-glass-navigation.md) → [다른 서비스용 공통 원칙](docs/reusable-product-design-principles.md). 날짜별 이력보다 이 최신 계약을 우선합니다.
+
 토스의 단순한 화면 구성을 참고한 iPhone용 할 일 관리·개인 비서 앱입니다. 비서의 애칭은 덕이며, 하단 메뉴는 **캘린더 / Todo 리스트 / duckduck / log / 내정보**입니다. 토스와 제휴하거나 공식 자산을 사용하지 않습니다.
 
 ## 구성

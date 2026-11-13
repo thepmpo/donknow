@@ -21,7 +21,7 @@ images.sort(key=lambda p: (0, priority.index(p.relative_to(ROOT).as_posix())) if
 manifest = []
 for path in images:
     relative = path.relative_to(ROOT).as_posix()
-    category = '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '파란 선택 표시 수정 후 웹 fallback · native/실기기 아님' if 'duo-glass-selection-fix-2026-11-13' in relative else '승인 구분선 실제 앱 웹 fixture · native/실기기 아님' if 'duo-divider-implemented-2026-11-13' in relative else 'AI 생성 구분선 추천 원본 · 이후 승인/구현' if 'duo-divider-proposal-2026-11-13' in relative else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
+    category = '상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님' if 'navigation-interaction-2026-11-13' in relative else '사용자 승인 위치 확인 시안 · 실기기 아님' if path.name=='approved-wireframe.png' else '파란 선택 표시 수정 후 웹 fallback · native/실기기 아님' if 'duo-glass-selection-fix-2026-11-13' in relative else '승인 구분선 실제 앱 웹 fixture · native/실기기 아님' if 'duo-divider-implemented-2026-11-13' in relative else 'AI 생성 구분선 추천 원본 · 이후 승인/구현' if 'duo-divider-proposal-2026-11-13' in relative else '내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님' if 'duo-liquid-glass-2026-11-13' in relative else '카메라 열·분할 화면 격리 웹 fixture · 실기기 아님' if 'duo-camera-column-2026-11-13' in relative else '앱 초기 리소스·최종 브랜딩 미확정' if relative.startswith('mobile/assets/') else '체험 데이터 메모/시트 검증' if 'notes-fixture' in path.stem else '체험 데이터 8개 목록 밀도 검증' if 'density-fixture' in path.stem else '모의 응답 테스트 화면' if 'fixture' in path.stem else '네이티브 기반 웹의 격리 테스트 화면' if path.name.startswith('mobile-') else '단계별 개요 또는 초기 웹 프로토타입'
     manifest.append({'path':relative, 'category':category, 'bytes':path.stat().st_size, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest(), 'import_path':'images/'+relative.replace('/','__')})
 (ROOT/'docs/asset-manifest.json').write_text(json.dumps({'generatedAt':DATE,'codeCommit':CODE,'assetCommit':ASSET_COMMIT,'imageCount':len(manifest),'images':manifest},ensure_ascii=False,indent=2)+'\n')
 body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
@@ -31,11 +31,20 @@ body = r'''# duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
 ## 1. 이 프로젝트가 하려는 일
 
+### 가장 먼저 읽을 현재 기준 — 2026-11-13
+
+[전체 이어받기 기준서](https://github.com/thepmpo/donknow/blob/main/docs/continuation-guide.md) → [Liquid Glass 구현 계약](https://github.com/thepmpo/donknow/blob/main/docs/liquid-glass-navigation.md) → [다른 서비스용 공통 원칙 v1.1](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md)을 먼저 읽는다. 세 문서 전문도18절에 포함한다. 과거 대화 없이 제품·기능·시각 토큰·상태 전이·예외·원본 파일·검사 명령·남은 기기 검수를 찾도록 정리했다. 아래 이전 날짜의 보류/미구현/빌드 설명을 최신 기준으로 다시 적용하지 않는다.
+
+최신 사용자 승인으로 일반 iPhone은 평평한 하단 바에서 좌우12pt·bottom=max(safeInset,8pt)·radius32의 떠 있는 capsule로 변경한다. 바regular,선택idle중립/press1.08배·100ms/drag포인터추적/release250ms중앙·180ms복귀/cancel원래탭이며,듀오의카메라열·64/272/52/28·분할/상태는보존한다. 수치는덕구현값이다. 흰본문을가짜무늬로꾸미거나본문전체를Glass로바꾸지않는다.
+
+실제1.0.0(21)은1f7dc5d의[43378603322](https://github.com/thepmpo/donknow/actions/runs/43378603322)에서무료Mac빌드·Apple업로드15:33:45 KST 성공,사용자가Glass외형을확인했다. 이번상태별터치/하단수정은21이후이며새native설치·기기광학효과/VoiceOver/실제Duo검수는별도다. 기존서명·데이터·인증·원본bundle·무료플랜·수동TestFlight정책을유지한다.
+
+
 서비스 이름은 **duckduck**, 편하게 **덕**이라고 부릅니다. 처음에는 dot이라는 이름과 현재 ChatGPT 안에서 쓰는 dot의 느낌을 이야기했지만, 최종 이름을 duckduck으로 바꿨습니다. 기존 개인 설정을 복사하는 일이 아니라 대화에서 할 일을 정리하고 실행으로 이어주는 개인 비서를 만드는 일입니다.
 
 목표는 iPhone 앱이고, Toss처럼 간결하고 읽기 쉬운 화면을 참고합니다. Google, Slack, Notion의 승인된 정보를 이용하고, 덕에서 정리한 내용을 Todo로 옮깁니다. 사용자가 정하지 않은 상세 화면은 작업하면서 함께 결정합니다.
 
-**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 사용자가 확인한 TestFlight는 1.0.0 (12)이며 이후 자동 빌드·Render 배포는 최신 운영 기록에서 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
+**2026-11-04 요청으로 AI·Slack 구현 보류를 해제**했습니다. 연결한 자료→근거가 붙은 오늘 할 일 제안→Todo 카드→사용자 확인 후 실행 흐름을 추가했습니다. AI 분석은 서버 키·모델·활성화 설정이 있어야 하며, 외부 쓰기는 공급자 권한 재승인이 필요합니다. 사용자가 첫 실제 AI 인사 응답을 확인했습니다. 실제 업무 분석·새 쓰기·네이버 접속 성공은 별도 확인입니다. 최신 확인한 Apple 업로드는1.0.0(21)이며 이번 수정의 새 설치와 구분합니다. 실모델·실계정 쓰기는 별도입니다. 자세한 범위는 [비서 실행 안내](assistant-actions.md)를 읽습니다.
 
 ### 2026-11-13 실제 Glass 정정 — 파란 선택 View 제거
 
@@ -207,15 +216,15 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 | 기기 알림 | 미래 시간·권한·예약·변경·취소 구현 | 실제 아이폰 잠금/재실행/권한 검증 필요 |
 | 개인 데이터 내보내기 | 웹 다운로드·네이티브 파일 공유 구현 | 웹 실동작 테스트, 네이티브 공유는 기기 확인 필요 |
 | 원격 암호화 백업·복원 | 실제 수동 백업·임시 DB 복원 검증 성공 | Actions run 40996926840 녹색 사용자 확인. 2026-11-12 재확인: 예약 실행 42924574013의 암호화 백업·격리 복원 성공 |
-| iPhone 출시 | TestFlight 1.0.0 (12) 사용자 확인 | 기존 Actions 42745583353 요청 성공 독립 확인. 새 Duo 네이티브 빌드·Apple 처리·App Store 공개는 별도 |
-| 최신 디자인·모션 | 기존 구현 유지, 새 톤 공식 확정 v1.0 | 사용자 확인: Render f76172d / TestFlight 1.0.0 (12). Figma Current baseline/Proposed 미완료 |
+| iPhone 설치/출시 | 무료 Mac에서1.0.0(21) Apple 업로드 성공, 사용자 Glass 외형 확인 |43378603322·1f7dc5d. 이번 터치/하단 수정은21 이후. 실제 전체 기기 검수·App Store 공개는 별도 |
+| 최신 디자인·모션 | 톤v1.0·공통원칙v1.1·Apple 상태별Glass·하단capsule | continuation-guide.md와liquid-glass-navigation.md가현재계약. Figma Current/Proposed 미완료 |
 | AI 비서·덕 채팅 | 대화·동의·초안 편집·미리보기·한 번 실행 구현 | 운영 assistant:true, 첫 실제 AI 답변 사용자 확인. 수정 후 말투·업무 저장·외부 쓰기는 별도 |
-| Apple iPhone Duo | 공식 힌지/예약 영역 기반 우측 내비게이션·상태 보존 구현 | 기하/브라우저 모의 검증 통과. Xcode 27.1 컴파일·실기기 미확인 |
-| 네이버 메일 | IMAP/SMTP 어댑터 구현·기본 비활성화 | 앱 비밀번호·계정별 설정·실제 호스트 접속 검증 필요 |
+| Apple iPhone Duo | 공식 힌지/가림 기반 물리 카메라 열·가로 분할·세로 단일·상태 보존 | 기하/브라우저 회귀 및21번까지 Xcode27.1 native 빌드 성공. 실제 Duo 하드웨어 검수 별도 |
+| 네이버 메일 | IMAP 읽기 활성·읽기 전용 확정, NAVER_READ_ONLY=true | 읽음/발송/답장 차단. 실제 계정의 IMAP 허용·앱 비밀번호를 앱에 직접 입력 후 읽기 확인 |
 | 범용 붙여넣기 자동 추출 | 목록 초안·동의 기반 AI 분석 구현 | 개별 수정·선택 저장. 서버 AI 설정 활성화 확인, 실제 모델 답변은 별도 |
-| 날씨·오늘 브리핑 | 기존 구현 유지 | 예약 덕 채팅 전달 상세는 사용자의 후속 간략 문서를 기다림 |
+| 날씨·오늘 브리핑 | 시간/도시/동의를 고르는 예약 덕 채팅 구현, 문서 대기 해제 | 기본꺼짐. 실제 예약·모델·기기 수신은 별도,무료지연으로정확한분보장안함 |
 
-**GitHub에 저장된 최신 기능이 Render에 자동으로 배포되지는 않습니다.** Render의 자동 배포는 꺼져 있습니다. 사용자는 f76172d 배포를 확인했습니다. 이번 문서 갱신 커밋의 공개 반영은 별도로 확인해야 합니다. 에이전트의 공개 사이트 직접 접속은 환경 네트워크 제한으로 막힌 적이 있으므로 사용자 확인과 자동 검증을 혼동하지 않습니다.
+**GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 4. 현재 주소와 관리 위치
 
@@ -375,9 +384,9 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. 과거 기록보다 3절의 현재 상태, 14절의 최신 변경, 실제 GitHub main을 우선하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,64×272pt 묶음·52pt 조작·28pt 아이콘을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. continuation-guide.md → liquid-glass-navigation.md → 공통 원칙v1.1을 먼저 읽고3절 현재 상태·14절 변경·실제 GitHub main을 대조하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,64×272pt 묶음·52pt 조작·28pt 아이콘을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
 
-다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 이번 사용자가 확인한 설치 버전은 1.0.0 (12), Render 기준은 f76172d입니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
+다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 실제21번43378603322·1f7dc5d의 무료Mac/Apple업로드와 사용자Glass외형확인을 확인했습니다. 이번 수정은21이후이며Render 최신배포는각기록의실제ID/SHA로확인합니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
 
 실제 작업에는 연결된 GitHub 저장소 소스와 필요한 도구/계정 접근이 추가로 필요합니다. 문서를 읽는 것만으로 코드·계정 권한이 자동 제공되지 않습니다. 읽기/브라우저 도구가 없어 문서를 열지 못하면 HTML 파일 또는 본문을 요청하세요. 로그인 비밀번호·토큰은 채팅으로 요청하지 말고, 계정 인증은 사용자가 해당 서비스의 보안 화면에서 수행하게 하세요. 접근 실패를 서비스 장애로 단정하지 마세요.
 
@@ -468,7 +477,7 @@ def appendix(path):
         lines.append(line)
     return f'### 原文 / {path}\n\n'+'\n'.join(lines)
 
-documents=['docs/functional-completion-2026-11-13.md','docs/scheduled-messages-2026-11-13.md','docs/ux-ui-fixes-2026-11-12.md','docs/ux-ui-audit-2026-11-12.md','docs/functional-workstream-2026-11-12.md','docs/assistant-chat-feedback-2026-11-12.md','docs/product-design-chat-audit-2026-11-12.md','docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+documents=['docs/continuation-guide.md','docs/liquid-glass-navigation.md','docs/navigation-glass-correction-2026-11-13.md','docs/functional-completion-2026-11-13.md','docs/scheduled-messages-2026-11-13.md','docs/ux-ui-fixes-2026-11-12.md','docs/ux-ui-audit-2026-11-12.md','docs/functional-workstream-2026-11-12.md','docs/assistant-chat-feedback-2026-11-12.md','docs/product-design-chat-audit-2026-11-12.md','docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',(ROOT/'AGENTS.md').read_text()).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()

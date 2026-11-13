@@ -1,5 +1,20 @@
 # 변경 기록
 
+## 2026-11-13 — Apple 상태별 Glass·하단 capsule·재현 가능한 전체 기록
+
+사용자 요청: 다른 채팅이 지금까지의 기록만으로 같은 제품을 구현하고 다른 서비스의 공통 부분도 재사용할 수준으로 정리. Apple 공식 재질·탭바·모션 가이드에 따라 실제 UI도 수정.
+
+[전체 이어받기 기준](continuation-guide.md) → [Glass 상태·수치·코드·검수](liquid-glass-navigation.md) → [공통 원칙 v1.1](reusable-product-design-principles.md)을 현재 계약으로 연결했다. AGENTS/README/모바일README/디자인/대조표/기능/가동/빌드 문서에 최신 우선순위를 반영하고, 폐기된 평평한 하단·브리핑 문서대기·자동TestFlight 규칙을 정정했다. 날짜별 원문과 승인 시안은 이력으로 보존한다. 생성기에서 전체 기준/Glass 계약을 전문 포함하고 실제 토큰의 공간/모션을 구분한다.
+
+구현aa55b90: 일반 iPhone 하단은 좌우12pt·bottom=max(safeInset,8)·radius32의 떠 있는 capsule. 바regular, 선택idle중립→press1.08배/100ms·regular→drag포인터추적→release250ms중앙/180ms축소·none. 밖에서 해제/취소하면 실제 탭을 유지한다. 미리보기와 실제 선택을 구분하고, 스크롤overflow·빠른전환·측정세대·화면비활성·다중터치 취소를 처리한다. 숫자는덕의구현값이며App Store의비공개물리동작과동일하다고하지않는다. native opacity는1이며pointerEvents none인장식에isInteractive만넣고완료라고하지않는다.
+
+흰본문·5탭·접근성이름·자료/권한·원본쓰기확인·Duo카메라열·64/272/52/28·좌Calendar/우선택·세로전체·분할선·입력/편집/월/스크롤은유지한다. Reduce Motion은즉시/scale1,투명도줄이기·강제고대비는불투명,웹/미지원OS는블러대체다. 기존data/auth/signing/무료플랜과원본bundle을보존한다.
+
+검증: 문법44개·전체228중227통과/실패0/기존선택1제외·타입·웹/iOS JS·실제웹앱/로그인/모션·Duo/일반폰 제스처/취소/상태·320/390/430·safe bottom34·라벨160%를통과했다. 새웹fixture10개를별도폴더에보관. 웹캡처는native광학효과/실제Duo기기검수가아니다. 공개문서/이미지manifest는문서커밋전에별도검사한다.
+
+실제21번은1f7dc5d/43378603322의무료Mac·Apple업로드15:33:45 KST 성공,사용자가Glass외형확인. 이번터치/하단수정은21이후다. push는검사만,새TestFlight자동요청/유료전환/스토어출시는하지않는다. 최신main새수동빌드·설치·실제굴절/취소/VoiceOver/키보드·OS접근성검수와Figma Current/Proposed정리는남는다. 실제CI/Render완료는해당커밋의운영기록에서확인한다.
+
+
 ## 2026-11-13 정정 — 파란 선택 음영을 실제 GlassView로 변경
 
 사용자가 “Liquid Glass가 아니라 파란 음영”이라고 보고했다. 소스에서 **움직이는 선택 표시는 rgba(49,130,246,0.16) 색의 일반 Animated.View이고 native GlassView는 바 배경에만 연결돼 있었다**는 것을 확인했다. 따라서 이전 “Glass 연결” 설명을 선택 표시 전체의 실제 유리 검증으로 읽으면 안 된다. 사용자는 **아이폰 TestFlight 앱**에서 본 현상이라고 답했다. 웹 미리보기 차이로 설명하지 않는다. 실제 설치 버전/OS/접근성 모드를 원격으로 읽은 것은 아니다.
