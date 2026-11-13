@@ -1,5 +1,21 @@
 # Apple iPhone Duo 대응 · 2026-11-12
 
+## 2026-11-13 — 배터리 아래 기존 헤더 오른쪽으로 정정
+
+최신 사용자 확정은 접힘·펼침 모두 **시스템 배터리 표시 아래 오른쪽 위**다. 기존 구현의 전체 높이76pt 세로 rail과 본문의 오른쪽 예약 여백을 제거했다. 기존 헤더 안에5개 탭을226×48pt의 compact 그룹으로 두며 각 조작 영역은44×44pt다. 탭 이름·선택 상태는 접근성에 유지하고, 일반 iPhone은 기존 하단 아이콘+라벨을 사용한다. 본문은 선택된 안전 영역의 전체 폭을 사용한다.
+
+‘배터리 아래’는 시스템 safe area 아래를 뜻한다. 배터리 그림/상태 바를 앱이 다시 그리거나 특정 모델의 화면 좌표를 하드코딩하지 않는다. 기기 판별은 기존 iOS27.1 UIHingeInteraction의 실제 hinge 값만 사용한다. 활성 접힘/카메라 영역을 피하는 안전 본문 계산과 모달별 좌표계는 유지한다. 내비게이션 폭을 본문 최소 폭에 더하던 계산도 제거했다.224pt 본문 최소 사용성 기준은 기기 판별값이 아니다.
+
+기존 아래의 ‘오른쪽76pt 전체 높이 내비게이션’ 설명은 당시 구현이며 이 정정이 우선한다. 원본을 역사로 보존한다. 네이티브 모듈·API는 바꾸지 않았고 [Apple UIHingeInteraction 공식 JSON](https://developer.apple.com/tutorials/data/documentation/uikit/uihingeinteraction.json)을 다시 읽어27.1·실제 hinge/nil 기준을 확인했다. HTML은JavaScript 안내만 반환해 공식 JSON을 근거로 사용했다.
+
+자동 검사는 실제 앱의 AppNavigation 컴포넌트와 Shell을 사용한다. Expo 공식 export:embed 웹 resolver로 묶어 아이콘·BlurView를 그대로 사용하며, 기존의 손으로 만든 resolver는 웹/네이티브 의존성을 다 처리하지 못해 교체했다. 접힘·펼침·책·테이블·320px·일반 기기 전환에서 탭·입력·편집·스크롤·자식 identity 보존,44px·상단/우측 위치·전체 폭 본문·중복 하단 탭 없음을 검증한다. 실제 iPhone/Duo·키보드·Swift 빌드는 별도다.
+
+![접힌 Duo: 실제 앱 체험 데이터의 새 탭 배치](../artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+
+![펼친 Duo: 같은 위치와 전체 폭 본문](../artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+
+스크린샷은 네이티브 기하를 주입한 격리 웹 fixture이며 실기기 캡처가 아니다. 코드에 웹 URL/모델명으로 Duo를 켜는 우회는 추가하지 않았다. 재현: `npm --prefix mobile run test:duo`.
+
 **현재 상태:** 공식 iOS 27.1 API를 사용하는 네이티브 연결과 `DuoTrailingNavigation`을 구현했다. 기하 계산 8개 테스트, React 화면 유지 테스트, TypeScript 검증을 수행했다. Linux 환경에서는 Swift 네이티브 빌드와 Duo 실기기 동작을 확인할 수 없으므로 **TestFlight·실기기 검증 완료로 표시하지 않는다.**
 
 사용자가 이번 업무에서 Duo 구현 진행을 명시적으로 승인했다. 기존의 “Duo 진행 전 보류”는 해제한다. 대상은 **Apple iPhone Duo**이며 Microsoft Surface Duo나 Android 폴더블이 아니다. 일반 iPhone은 기존 하단 탭을 유지한다.

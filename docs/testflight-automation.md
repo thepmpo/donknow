@@ -1,5 +1,7 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+2026-11-13 추가: Deliver scheduled Duck messages는 브리핑 due 작업만OIDC로 호출하며 EAS/Expo 빌드·submit을 호출하지 않는다. 앱 검사/예약 전달/TestFlight 수동 workflow는 서로 다르다. 최신 Duo 상단 탭·예약/도착 알림은 아이폰에 설치할 새 수동 빌드가 있어야 바뀐다.
+
 ## 최신 정책 — 필요할 때만 빌드
 
 사용자가 빌드 한도 절약 방식을 승인했다. 이제 앱 코드를 main에 올려도 EAS 빌드를 자동 요청하지 않는다. 코드 검사는 app-checks에서 자동 수행하며, 아이폰 설치가 필요한 시점에만 이 문서의 수동 실행을 사용한다. 출시 준비는 마지막에 진행한다. [전체 기능 작업 순서](functional-workstream-2026-11-12.md).

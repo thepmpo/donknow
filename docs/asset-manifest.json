@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-13",
-  "codeCommit": "e96d9b32f738c49ab50382f85e82a29f2713f8fa",
-  "imageCount": 87,
+  "codeCommit": "8e512cf22a0be9e82ddf0d16faee08beceb1bd8f",
+  "imageCount": 99,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -235,6 +235,69 @@
       "import_path": "images/artifacts__duckduck.png"
     },
     {
+      "path": "artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 23146,
+      "sha256": "73bc0928280ae602f163c6a85a6d8e4e087a597f0b1c1b152c40703979646b51",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__1-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 23057,
+      "sha256": "899157ad156d6d8335cf2541671ca36729b4074b536073f5050a1d5be699e036",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__2-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 22358,
+      "sha256": "8a0128b7fa871eede4d86e6d4e2bc2657e355dd1dd09e75eb7216c3e05afb9de",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__3-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 19220,
+      "sha256": "36edf4183b7e7882a83b8b76ee54cc35253bdf77f9aa5c97ace85d3f97ca7218",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__4-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 18153,
+      "sha256": "f3a0e2e1506d1c719b0ba3a34c4d4a5098d08ee7a3dfb4ccee5b7ed786eb89db",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__5-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 23146,
+      "sha256": "73bc0928280ae602f163c6a85a6d8e4e087a597f0b1c1b152c40703979646b51",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__6-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 30670,
+      "sha256": "3ab8372fba3ff9df1e3316edac8cbd42d32bccdd310557c4e7389ed3da8e1112",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__7-duck-closed-demo-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 24478,
+      "sha256": "56f0e8ffd255163a1711d90b12f11754abf37780d82515dcce1f8e661ab2b963",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__7-geometry-fixture.png"
+    },
+    {
+      "path": "artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 32973,
+      "sha256": "c1fb8ca1c9fbd1e155b2576d48c2d727587e4d1e5bcff652cab503e739b9a79e",
+      "import_path": "images/artifacts__duo-top-navigation-2026-11-13__8-duck-open-demo-fixture.png"
+    },
+    {
       "path": "artifacts/features-overview.png",
       "category": "단계별 개요 또는 초기 웹 프로토타입",
       "bytes": 133916,
@@ -324,6 +387,27 @@
       "bytes": 80270,
       "sha256": "373274654c0efb441423218ea34ac8a68548ba52121bc3acb366cd4bb800e184",
       "import_path": "images/artifacts__profile.png"
+    },
+    {
+      "path": "artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 31672,
+      "sha256": "1fcd13bf05151eac44509f791cf24b166eb6ea391aacb319ded054486e6aabc0",
+      "import_path": "images/artifacts__scheduled-messages-2026-11-13__01-chat-fixture.png"
+    },
+    {
+      "path": "artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 34223,
+      "sha256": "6ea0d7fb964e2b425139e925faa10cf71b4c98fdad3ec65509142f1cd20a40b6",
+      "import_path": "images/artifacts__scheduled-messages-2026-11-13__02-briefing-fixture.png"
+    },
+    {
+      "path": "artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 31467,
+      "sha256": "879d7c4742bb4043bcd358c6c4f16007f84cafb7082f7dc0ed9f58654f069c0d",
+      "import_path": "images/artifacts__scheduled-messages-2026-11-13__03-small-weather-fixture.png"
     },
     {
       "path": "artifacts/todos.png",
