@@ -6,7 +6,6 @@ export type DuoGeometry = {
   apiAvailable: boolean; hasHinge: boolean; width: number; height: number;
   safeArea: DuoInsets; regions: DuoRegion[];
 };
-export const DUO_NAVIGATION_WIDTH = 76; // Duck control size, not a device dimension.
 export const DUO_MIN_CONTENT_WIDTH = 224; // Layout usability floor, never a device-detection threshold.
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 export function readDuoGeometry(value: unknown): DuoGeometry | null {
@@ -40,7 +39,7 @@ function subtract(rect: DuoRect, reserved: DuoRect): DuoRect[] {
 export function duoSafeFrame(geometry: DuoGeometry): DuoRect {
   const {width,height,safeArea}=geometry;
   let initial:DuoRect={x:Math.min(width,safeArea.left),y:Math.min(height,safeArea.top),width:Math.max(0,width-safeArea.left-safeArea.right),height:Math.max(0,height-safeArea.top-safeArea.bottom)};
-  const minWidth=Math.min(initial.width,DUO_NAVIGATION_WIDTH+DUO_MIN_CONTENT_WIDTH);
+  const minWidth=Math.min(initial.width,DUO_MIN_CONTENT_WIDTH);
   // With a full-height active book fold, keep the complete app on the right pane even
   // when the left pane is larger. Do not force controls into an unusably narrow strip.
   for(const region of geometry.regions.filter(region=>region.active&&region.kind==='division')){

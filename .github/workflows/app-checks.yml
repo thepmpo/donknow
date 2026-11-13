@@ -14,6 +14,7 @@ on:
       - 'package-lock.json'
       - '.github/workflows/app-checks.yml'
       - '.github/workflows/ios-testflight.yml'
+      - '.github/workflows/briefing-delivery.yml'
   pull_request:
     branches: [main]
 permissions:

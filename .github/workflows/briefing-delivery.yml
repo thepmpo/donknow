@@ -1,0 +1,23 @@
+name: Deliver scheduled Duck messages
+on:
+  schedule:
+    - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: duck-scheduled-messages
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: github.repository == 'thepmpo/donknow' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Deliver due messages using GitHub's short-lived identity
+        run: node scripts/deliver-briefings.mjs

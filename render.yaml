@@ -23,6 +23,11 @@ services:
         value: /tmp/duckduck/backups
       - key: BACKUP_ENABLED
         value: "0"
+      # Naver IMAP is available; Free Render blocks outbound SMTP (465/587).
+      - key: NAVER_MAIL_ENABLED
+        value: "true"
+      - key: NAVER_SMTP_ENABLED
+        value: "false"
       - key: STORE_DRIVER
         value: turso
       - key: TURSO_DATABASE_URL

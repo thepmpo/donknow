@@ -6,7 +6,7 @@ import {dateKey} from '../domain';
 import type {TodoStore} from '../useTodos';
 type Source={ref:string;provider:string;title:string;text?:string;dueDate?:string|null;completed?:boolean;kind:string};
 type Weather={city:string;temperature:number;high:number;low:number;rain:number;observedAt:string;sourceUrl:string};
-export function TodaySheet({store,onClose}:{store:TodoStore;onClose:()=>void}){
+export function TodaySheet({store,onClose,onSchedule}:{store:TodoStore;onClose:()=>void;onSchedule?:()=>void}){
  const [sources,setSources]=useState<Source[]>([]),[warnings,setWarnings]=useState<string[]>([]),[providers,setProviders]=useState<string[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[readAt,setReadAt]=useState('');
  const [weather,setWeather]=useState<Weather|null>(null),[weatherError,setWeatherError]=useState(''),[weatherBusy,setWeatherBusy]=useState(false);
  const alive=useRef(true),reading=useRef(false),weatherReading=useRef(false);useEffect(()=>()=>{alive.current=false;},[]);
@@ -17,6 +17,7 @@ export function TodaySheet({store,onClose}:{store:TodoStore;onClose:()=>void}){
  async function readWeather(city:string){if(weatherReading.current)return;weatherReading.current=true;setWeatherBusy(true);setWeather(null);setWeatherError('');try{const r=await store.featureRequest('/api/weather?city='+city) as Weather;if(alive.current)setWeather(r);}catch(e){if(alive.current)setWeatherError(e instanceof Error?e.message:'날씨를 불러오지 못했어요.');}finally{weatherReading.current=false;if(alive.current)setWeatherBusy(false);}}
  return <Modal visible transparent animationType="slide" onRequestClose={onClose}><View style={{flex:1,justifyContent:'flex-end',backgroundColor:'#00000066'}}><DraggableSheet onDismiss={onClose} style={{maxHeight:'92%',backgroundColor:colors.white,borderTopLeftRadius:28,borderTopRightRadius:28,padding:24}}><ScrollView contentContainerStyle={{gap:14,paddingBottom:24}}>
  <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text style={s.h1}>오늘의 브리핑</Text><CloseButton onPress={onClose}/></View>
+ {onSchedule&&<><Button title="브리핑·날씨 예약 설정" quiet onPress={onSchedule}/><Text style={s.muted}>매일 채팅으로 받으려면 예약을 켜주세요. 아래는 지금 직접 조회하는 내용이에요.</Text></>}
  <Text style={s.subtitle}>{today} · 내 Todo {local.length}개 중 오늘까지 {due.length}개</Text>
  {due.map(t=><Text key={t.id} style={s.subtitle}>{t.dueDate!<today?'지난 할 일':'오늘'} · {t.title}</Text>)}
  {!due.length&&<Text style={s.muted}>오늘까지 예정된 미완료 Todo가 없어요.</Text>}<Text style={s.muted}>이후 예정 또는 날짜 없는 할 일 {later}개. 완료 기록은 새 할 일에 포함하지 않아요.</Text>

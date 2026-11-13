@@ -27,8 +27,10 @@ export async function verifyRemoteBackup({ file, env = process.env }) {
     const names = new Set(db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row => row.name));
     const count = name => Number(db.prepare(`SELECT COUNT(*) AS count FROM "${name}"`).get().count);
     for (const name of ['users', 'todos', 'crypto_metadata', 'integrations']) if (!names.has(name)) throw new Error('Required application table is missing');
-    for (const name of ['sessions', 'oauth_states', 'account_actions', 'task_sync']) if (names.has(name) && count(name)) throw new Error('Restored database contains active capabilities');
+    for (const name of ['sessions', 'oauth_states', 'account_actions', 'task_sync', 'push_devices', 'push_outbox']) if (names.has(name) && count(name)) throw new Error('Restored database contains active capabilities');
     if (names.has('mail_outbox') && db.prepare("SELECT 1 FROM mail_outbox WHERE status IN ('pending','processing') LIMIT 1").get()) throw new Error('Restored database contains pending mail');
+    if(names.has('automation_schedules')&&db.prepare('SELECT 1 FROM automation_schedules WHERE enabled=1 LIMIT 1').get())throw new Error('Restored database contains enabled schedules');
+    if(names.has('automation_deliveries')&&db.prepare("SELECT 1 FROM automation_deliveries WHERE status='running' LIMIT 1").get())throw new Error('Restored database contains active deliveries');
     if(names.has('assistant_actions')&&db.prepare("SELECT 1 FROM assistant_actions WHERE status IN ('pending','running') LIMIT 1").get())throw new Error('Restored database contains actionable assistant drafts');
     const box = await secretBox('', configuredTokenKey(target).toString('base64'), '');
     for (const row of db.prepare('SELECT payload FROM integrations').all()) if (box.open(row.payload).taskSyncEnabled) throw new Error('Restored external synchronization must be disabled');

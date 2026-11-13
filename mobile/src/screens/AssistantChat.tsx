@@ -1,3 +1,4 @@
+import type {ScheduledMessage} from '../useAutomations';
 import React,{useEffect,useRef,useState} from 'react';
 import {ActivityIndicator,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
@@ -10,21 +11,22 @@ import {useAssistant,assistantNames,assistantLabels,assistantStatusLabels,assist
 
 export type AssistantChatRequest={id:number;message:string;pastedText?:string};
 /** The main Duck conversation. Opening or typing never runs the model or an action. */
-export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBusyChange,refreshVersion}:{store:TodoStore;onOpenTodos:()=>void;request:AssistantChatRequest|null;children?:React.ReactNode;shortcuts:React.ReactNode;onBusyChange:(busy:boolean)=>void;refreshVersion:number}){
+export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBusyChange,refreshVersion,scheduledMessages=[],active=true}:{scheduledMessages?:ScheduledMessage[];active?:boolean;store:TodoStore;onOpenTodos:()=>void;request:AssistantChatRequest|null;children?:React.ReactNode;shortcuts:React.ReactNode;onBusyChange:(busy:boolean)=>void;refreshVersion:number}){
  const assistant=useAssistant(store);
  const [input,setInput]=useState(''),[pastedText,setPastedText]=useState(''),[settingsOpen,setSettingsOpen]=useState(false),[detailsOpen,setDetailsOpen]=useState(false),[toolsOpen,setToolsOpen]=useState(false),[proposalNotes,setProposalNotes]=useState<Record<number,boolean>>({}),[expandedDrafts,setExpandedDrafts]=useState<Record<string,boolean>>({});
  const [prepared,setPrepared]=useState<Record<number,string>>({}),[notice,setNotice]=useState('');
  const lastRequest=useRef<number|null>(null),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null);
  const [scrollRequest,setScrollRequest]=useState({target:'',sequence:0});
- const pendingScroll=useRef('');
+ const pendingScroll=useRef(''),lastScheduled=useRef('');
  function reveal(target:string){pendingScroll.current=target;setScrollRequest(previous=>({target,sequence:previous.sequence+1}));}
  function anchorKey(target:string){return target===scrollRequest.target?`${target}:${scrollRequest.sequence}`:target;}
  function anchorLayout(target:string,event:LayoutChangeEvent){if(pendingScroll.current!==target)return;pendingScroll.current='';scroll.current?.scrollTo({y:Math.max(0,event.nativeEvent.layout.y-8),animated:!reduced});}
  const reduced=useReducedMotion();
+ useEffect(()=>{const id=scheduledMessages.at(-1)?.id;if(active&&id&&lastScheduled.current!==id){lastScheduled.current=id;reveal('scheduled:'+id);}},[active,scheduledMessages]);
  useEffect(()=>{if(refreshVersion>0)void assistant.load();},[refreshVersion]);
  useEffect(()=>{onBusyChange(assistant.busy);return()=>onBusyChange(false);},[assistant.busy,onBusyChange]);
  const owner=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;
- useEffect(()=>{setInput('');setPastedText('');setPrepared({});setNotice('');setSettingsOpen(false);setDetailsOpen(false);setToolsOpen(false);setProposalNotes({});setExpandedDrafts({});pendingScroll.current='';lastRequest.current=null;},[owner]);
+ useEffect(()=>{setInput('');setPastedText('');lastScheduled.current='';setPrepared({});setNotice('');setSettingsOpen(false);setDetailsOpen(false);setToolsOpen(false);setProposalNotes({});setExpandedDrafts({});pendingScroll.current='';lastRequest.current=null;},[owner]);
  useEffect(()=>{if(request&&lastRequest.current!==request.id){lastRequest.current=request.id;setInput(request.message);setPastedText(request.pastedText??'');assistant.setConsent(false);setNotice('내용을 확인하고 AI 전송에 동의한 뒤 보내주세요.');}},[request?.id]);
  async function send(){
   if(!input.trim()||!assistant.consent||assistant.busy)return;
@@ -37,7 +39,7 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  const feedback=verificationNeeded?`${assistant.error} 내정보 → 내 계정 → 이메일 인증에서 완료해주세요.`:assistant.error;
  return <View style={styles.screen}>
   <ScrollView ref={scroll} testID="duck-chat-scroll" style={styles.scroll} contentContainerStyle={styles.messages} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-   {!assistant.turns.length&&!assistant.drafts.length&&<View style={styles.welcome}><Text style={styles.duck}>🦆</Text><Text style={styles.greeting}>무엇을 도와드릴까요?</Text><Text style={styles.secondary}>떠오른 일을 편하게 적어주세요.</Text></View>}
+   {!assistant.turns.length&&!assistant.drafts.length&&!scheduledMessages.length&&<View style={styles.welcome}><Text style={styles.duck}>🦆</Text><Text style={styles.greeting}>무엇을 도와드릴까요?</Text><Text style={styles.secondary}>떠오른 일을 편하게 적어주세요.</Text></View>}
    {assistant.turns.map((turn,index)=><View key={index===assistant.turns.length-1?anchorKey('reply'):`turn:${index}`} testID={index===assistant.turns.length-1?'duck-latest-reply':undefined} onLayout={index===assistant.turns.length-1?event=>anchorLayout('reply',event):undefined} style={[styles.bubble,turn.role==='user'?styles.userBubble:styles.duckBubble]}><Text style={styles.speaker}>{turn.role==='user'?'나':'덕'}</Text><Text selectable style={styles.body}>{turn.text}</Text></View>)}
    {assistant.proposals.length>0&&<Text style={styles.secondary}>할 일 후보예요. 내용을 고친 뒤 초안을 확인해주세요.</Text>}
    {assistant.proposals.map((proposal,index)=><View key={index} style={styles.card}>
@@ -53,6 +55,7 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
      {proposalNotes[index]?<NotesField label={`할 일 후보 ${index+1} 메모`} value={String(proposal.args.notes??'')} onChange={value=>editProposal(index,'notes',value)} disabled={assistant.busy||!!prepared[index]}/>:!!proposal.args.notes&&<Text numberOfLines={2} style={styles.secondary}>{String(proposal.args.notes)}</Text>}
     </>}
    </View>)}
+   {scheduledMessages.slice(-20).map(message=><View key={anchorKey('scheduled:'+message.id)} testID={'scheduled-message-'+message.id} onLayout={event=>anchorLayout('scheduled:'+message.id,event)} style={[styles.bubble,styles.duckBubble]}><Text style={styles.speaker}>덕 · {message.title} · {new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(message.createdAt)}</Text><Text selectable style={styles.body}>{message.text}</Text>{message.warnings.map((warning,index)=><Text key={index} style={styles.secondary}>{warning}</Text>)}</View>)}
    {children}
    {assistant.drafts.length>0&&<Text style={styles.cardTitle}>실행 확인과 최근 기록</Text>}
    {assistant.drafts.slice(0,5).map(draft=>{const folded=['succeeded','cancelled','restored-cancelled'].includes(draft.status)&&!expandedDrafts[draft.id];return <View key={anchorKey(`draft:${draft.id}`)} testID={`duck-action-${draft.id}`} onLayout={event=>anchorLayout(`draft:${draft.id}`,event)} style={styles.card}>

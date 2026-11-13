@@ -107,7 +107,7 @@ const server = http.createServer(async (req, res) => {
       }
       if(path==='/api/integrations/google/task-sync/pull'&&req.method==='POST'){const body=await json(req);return send(200,await taskSync.pull(session.user.id,body.cursor??''));}
       if(path==='/api/integrations/google/task-sync/retry'&&req.method==='POST')return send(200,taskSync.retry(session.user.id));
-      if (await features.private(req, path, url, session.user, json, send)) return;
+      if (await features.private(req, path, url, session.user, json, send,token)) return;
       if (path === '/api/auth/session' && req.method === 'GET') return send(200, session);
       if (path === '/api/auth/logout' && req.method === 'POST') { store.logout(token); return send(200, { ok: true }, { 'Set-Cookie': cookie('', 0) }); }
       if (path === '/api/todos' && req.method === 'GET') return send(200, store.list(session.user.id));

@@ -1,3 +1,5 @@
+import {pushStore} from './push.js';
+import {automationStore} from './automations-store.js';
 import { actionStore } from './action-store.js';
 import { commentsStore } from './comments-store.js';
 import { taskSyncStore } from './sync-store.js';
@@ -33,6 +35,8 @@ export async function featureStore(db, directory, env = process.env) {
     const result = await scrypt(password, row.salt, 64); return timingSafeEqual(result, Buffer.from(row.password_hash, 'hex'));
   }
   return {
+    ...automationStore(db,box),
+    ...pushStore(db,box),
     ...taskSyncStore(db),
     ...actionStore(db,box),
     ...commentsStore(db),

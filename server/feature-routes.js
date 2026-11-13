@@ -1,3 +1,6 @@
+import {createPushSender} from './push.js';
+import {createAutomations} from './automations.js';
+import {createSchedulerAuth} from './scheduler-auth.js';
 import {createWeather} from './weather.js';
 import {createAssistant} from './assistant.js';
 import { fail } from './secrets.js';
@@ -6,7 +9,10 @@ const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
 export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress) {
   const assistant=createAssistant(store,integrations);
   const weather=createWeather();
+  const automations=createAutomations(store,assistant,weather),schedulerAuth=createSchedulerAuth(),pushSender=createPushSender(store);
+  const scheduledWorker=process.env.NODE_ENV==='test'?null:setInterval(()=>{void automations.tick().then(()=>pushSender.tick()).catch(()=>undefined);},60000);scheduledWorker?.unref();
   return {
+    close(){if(scheduledWorker)clearInterval(scheduledWorker);},
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
       if (!match || req.method !== 'GET') return false;
@@ -18,7 +24,12 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       return true;
     },
     async public(req, path, json, send) {
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, assistant:assistant.status(null).enabled, externalActions:true, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if(path==='/api/automations/tick'&&req.method==='POST'){
+        if(limited('scheduler:'+clientAddress(req)))throw fail(429,'잠시 후 다시 요청해주세요.');
+        await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
+        const result=await automations.tick();await pushSender.tick();send(200,result);return true;
+      }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,naverMail:{configured:integrations.naver.status(null).configured,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -34,9 +45,27 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if (!(await store.resetPassword(email, body.code, body.password))) throw fail(400, '인증번호가 올바르지 않거나 만료됐어요. 다시 요청해주세요.');
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },
-    async private(req, path, url, user, json, send) {
+    async private(req, path, url, user, json, send, sessionToken) {
+      if(path==='/api/notifications/device'){
+        if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
+        if(req.method==='GET'){send(200,store.pushDeviceStatus(user.id,url.searchParams.get('deviceId')));return true;}
+        if(['POST','DELETE'].includes(req.method)){if(limited('push:'+user.id))throw fail(429,'잠시 후 다시 연결해주세요.');const body=await json(req);send(200,req.method==='POST'?store.registerPushDevice(user.id,body.deviceId,body.token,sessionToken):store.removePushDevice(user.id,body.deviceId));return true;}
+      }
+      if(path==='/api/automations'&&req.method==='GET'){send(200,{schedules:store.automationSettings(user.id)});return true;}
+      const schedule=/^\/api\/automations\/(briefing|weather)$/.exec(path);
+      if(schedule&&req.method==='POST'){
+        if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
+        if(limited('automations:'+user.id))throw fail(429,'예약 변경이 많아요. 잠시 후 다시 시도해주세요.');
+        send(200,store.configureAutomation(user.id,schedule[1],await json(req)));return true;
+      }
+      if(path==='/api/assistant/messages'&&req.method==='GET'){
+        const after=url.searchParams.get('after')||'';send(200,{messages:store.assistantMessages(user.id,after),incremental:!!after});
+        if(process.env.NODE_ENV!=='test')void automations.tick(user.id).catch(()=>undefined);return true;
+      }
+      if(path==='/api/assistant/messages/read'&&req.method==='POST'){const body=await json(req);send(200,store.readAssistantMessages(user.id,body.through));return true;}
+
       if(path==='/api/weather'&&req.method==='GET'){if(limited('weather:'+user.id))throw fail(429,'잠시 후 다시 확인해주세요.');send(200,await weather(url.searchParams.get('city')));return true;}
-      if(path==='/api/assistant/status'&&req.method==='GET'){send(200,assistant.status(user.id));return true;}
+      if(path==='/api/assistant/status'&&req.method==='GET'){send(200,{...assistant.status(user.id),scheduledMessages:true});return true;}
       if(path==='/api/assistant/actions'&&req.method==='GET'){send(200,{actions:store.assistantActions(user.id)});return true;}
       if(path==='/api/assistant/actions'&&req.method==='POST'){if(limited('assistant-prepare:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const body=await json(req);send(201,await assistant.prepare(user.id,body.operation,body.args));return true;}
       const assistantAction=/^\/api\/assistant\/actions\/([a-f0-9-]{36})(?:\/(confirm))?$/.exec(path);
@@ -44,7 +73,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(path==='/api/assistant/chat'&&req.method==='POST'){if(limited('assistant-chat:'+user.id))throw fail(429,'요청이 많아요. 잠시 후 다시 시도해주세요.');send(200,await assistant.chat(user.id,await json(req)));return true;}
       if(path==='/api/assistant/context'&&req.method==='POST'){if(limited('assistant-context:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const body=await json(req);send(200,await assistant.context(user.id,body.providers??[]));return true;}
       if(path==='/api/integrations/naver'&&req.method==='GET'){send(200,integrations.naver.status(user.id));return true;}
-      if(path==='/api/integrations/naver'&&req.method==='POST'){if(limited('naver-connect:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const b=await json(req);send(200,await integrations.naver.connect(user.id,b.email,b.password));return true;}
+      if(path==='/api/integrations/naver'&&req.method==='POST'){if(limited('naver-connect:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const b=await json(req);send(200,await integrations.naver.connect(user.id,b.email,b.password,b.permissions));return true;}
       if(path==='/api/integrations/naver'&&req.method==='DELETE'){send(200,await integrations.naver.disconnect(user.id));return true;}
       if(path==='/api/integrations/naver/resources'&&req.method==='GET'){if(limited('naver-read:'+user.id))throw fail(429,'잠시 후 다시 조회해주세요.');send(200,await integrations.naver.resources(user.id));return true;}
       const detail=/^\/api\/integrations\/(google|notion)\/detail$/.exec(path);if(detail&&req.method==='GET'){if(limited('detail:'+user.id))throw fail(429,'잠시 후 다시 조회해주세요.');const id=url.searchParams.get('id');if(typeof id!=='string'||id.length>1200)throw fail(400,'자료를 확인해주세요.');send(200,await integrations.readSource(user.id,detail[1],id));return true;}
@@ -59,7 +88,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         store.cacheResources(user.id, 'apple-reminders', items);
         send(200, { results: store.importResources(user.id, 'apple-reminders', [...new Set(items.map(item => item.id))]) }); return true;
       }
-      if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),todos:store.list(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id)});return true;}
+      if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),todos:store.list(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id),assistantMessages:store.exportAssistantMessages(user.id),automationSchedules:store.automationSettings(user.id)});return true;}
       if (path === '/api/account' && req.method === 'GET') { send(200, { user: store.account(user.id), mailConfigured: mailer.configured, mailStatus: store.mailStatus(user.id) }); return true; }
       if (path === '/api/account/verification/send' && req.method === 'POST') {
         if (store.account(user.id)?.emailVerified) { send(200, { alreadyVerified: true }); return true; }
