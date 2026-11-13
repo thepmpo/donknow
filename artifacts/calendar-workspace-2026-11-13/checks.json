@@ -1,0 +1,44 @@
+{
+  "baseCommit": "0cdab65ddd7dec2022b4f03493b3ea1dda554258",
+  "node": "v24.22.1",
+  "unit": {
+    "total": 241,
+    "passed": 240,
+    "failed": 0,
+    "existingOptionalSkipped": 1
+  },
+  "checks": [
+    "syntax46",
+    "typecheck",
+    "web export",
+    "iOS JS export",
+    "calendar workspace browser",
+    "full app browser",
+    "motion browser",
+    "web auth browser",
+    "scheduled messages browser",
+    "assistant chat browser",
+    "assistant errors browser",
+    "Duo geometry/demo browser"
+  ],
+  "realGoogleWrites": 0,
+  "fixtureGoogleWriteAttempts": 3,
+  "nativeBuildStarted": false,
+  "nativeDeviceVerified": false,
+  "screenshots": 27,
+  "files": {
+    "mobile/App.tsx": "edbac4ee6579bc9ea65a763fe1389db7e3acd35d982745d5dccf904fbe542caf",
+    "mobile/src/screens/CalendarScreen.tsx": "c487c3f80eda3c5c2b53a14156c040b51ecc22057ec4387a82ab2ac128ae19f3",
+    "mobile/src/calendar-model.ts": "0db002153630f1a7cc9631fabb12a0aa1c64387e6a2ca936417915c6311e2391",
+    "mobile/src/useCalendarData.ts": "e1f66bf5c892f9f0cd22bdea34405169370c95d274ef42ab580c22cd36440970",
+    "mobile/src/CalendarEventEditor.tsx": "ad12520cf38b82c16934e509040de4c25a25157353d9b9c859b9a35f3b02948b",
+    "mobile/src/CalendarSheet.tsx": "6d6e0dcd08c89425cadea98cc0b5489d85b34e36742a8843f15a4532022de7a6",
+    "mobile/src/CalendarTimeline.tsx": "962039f0f4096ed89fa4bb46ab6ec36fb7326fe48049f0c2002af4d815db13a9",
+    "server/calendar-workspace.js": "6321396cd21ba885dff87ecf45871c593e2cfda9e35b089809a1b6b8e35471e1",
+    "server/calendar-time.js": "8c6f30d8b921c3b60cbe956674642a697e21805ac2aae6545103d312a9f82411",
+    "server/provider-actions.js": "d4f96c4dfcf59818c5c82ed7f0cc787d88feefff55d22fdfe8f8d55a6fdc1aa2",
+    "server/action-store.js": "5453d5f1ecbc0dd1ba7a43e8a3896e4d39a71a62469703a09ecff209a9770665",
+    "server/feature-routes.js": "88e4aef466c75abe698d208d076774f59ee421ba6e7aa40e080d9288cb7d7576",
+    "server/integrations.js": "47ecd6f4982f3571e7ba6853f7d0db1e140f045796d4a00b270a25e00ab0a146"
+  }
+}

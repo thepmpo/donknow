@@ -29,7 +29,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await automations.tick();await pushSender.tick();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, calendarWorkspace:2, assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -111,7 +111,8 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         if (limited('record-search:' + user.id)) throw fail(429, '잠시 후 다시 찾아주세요.');
         send(200, await integrations.searchTasks(user.id, url.searchParams.get('q'))); return true;
       }
-      if (path === '/api/calendar/events' && req.method === 'GET') { send(200, await integrations.calendar(user.id,url.searchParams.get('month'),url.searchParams.get('cursor'))); return true; }
+      if(path==='/api/calendar/calendars'&&req.method==='GET'){send(200,await integrations.calendarList(user.id,url.searchParams.get('cursor')));return true;}
+      if (path === '/api/calendar/events' && req.method === 'GET') { send(200, await integrations.calendar(user.id,url.searchParams.get('month'),url.searchParams.get('cursor'),url.searchParams.get('v')==='2'?{calendarId:url.searchParams.get('calendarId')??'primary',timeZone:url.searchParams.get('timeZone')??'Asia/Seoul',start:url.searchParams.get('start')??undefined,end:url.searchParams.get('end')??undefined}:undefined)); return true; }
       const match = /^\/api\/integrations\/(google|slack|notion)(?:\/(authorize|resources|import))?$/.exec(path); if (!match) return false;
       const [, provider, action] = match;
       if (action === 'authorize' && req.method === 'POST') { const body = await json(req); send(200, integrations.start(user.id, provider, body.features, req.headers['x-duckduck-client'] === 'native')); return true; }

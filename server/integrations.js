@@ -1,3 +1,4 @@
+import {createCalendarWorkspace} from './calendar-workspace.js';
 import {createNaverMail} from './naver-mail.js';
 import {createProviderActions,mailText} from './provider-actions.js';
 import { randomBytes, createHash, randomUUID } from 'node:crypto';
@@ -199,7 +200,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const matches = pages.flatMap(({list, page}) => page.items.filter(item => words.every(word => normalize(item.title).includes(word))).map(item => ({ ...item, listTitle: list.title })));
       return { items: [...new Map(matches.map(item => [item.id, item])).values()], partial: lists.hasMore || lists.items.length > 5 || pages.some(({page}) => page.hasMore), searchedLists: selected.length };
     },
-    import(userId, provider, ids) { settings(provider); if (!store.connection(userId, provider)) throw fail(409, '서비스를 먼저 연결해주세요.'); if (!Array.isArray(ids) || !ids.length || ids.length > 20 || ids.some(id => typeof id !== 'string' || id.length > 250)) throw fail(400, '최대 20개의 자료를 선택해주세요.'); return store.importResources(userId, provider, [...new Set(ids)]); },
+    import(userId, provider, ids) { settings(provider); if (!store.connection(userId, provider)) throw fail(409, '서비스를 먼저 연결해주세요.'); if (!Array.isArray(ids) || !ids.length || ids.length > 20 || ids.some(id => typeof id !== 'string' || id.length > 1200)) throw fail(400, '최대 20개의 자료를 선택해주세요.'); return store.importResources(userId, provider, [...new Set(ids)]); },
     async disconnect(userId, provider) {
       if(provider==='naver')return naver.disconnect(userId);
       const record = store.connection(userId, provider); if (!record) return { revoked: true };
@@ -211,6 +212,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       } catch {} finally { store.removeConnection(userId, provider); }
       return { revoked };
     },
-    async calendar(userId,month,cursor) { const record=store.connection(userId,'google');if(!record?.features.includes('calendar'))return month?{items:[],nextCursor:null}:[];const result=await this.resources(userId,'google','calendar',null,cursor,'incomplete',month);return month?result:result.items; },
+    async calendarList(userId,cursor){return createCalendarWorkspace({store,token,request:providerRequest}).calendars(userId,cursor);},
+    async calendar(userId,month,cursor,options) { if(options)return createCalendarWorkspace({store,token,request:providerRequest}).events(userId,month,cursor,options); const record=store.connection(userId,'google');if(!record?.features.includes('calendar'))return month?{items:[],nextCursor:null}:[];const result=await this.resources(userId,'google','calendar',null,cursor,'incomplete',month);return month?result:result.items; },
   };
 }

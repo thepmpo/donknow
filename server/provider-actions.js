@@ -1,9 +1,14 @@
+import {calendarIdentifier,calendarZone} from './calendar-time.js';
 import { fail } from './secrets.js';
 import { validDate, validNotes, validTitle } from './store.js';
 const str = (value, max = 4000) => typeof value === 'string' && value.length <= max;
 const identifier = value => str(value, 512) && !!value && !/[\r\n\x00]/.test(value);
 const email = value => str(value, 254) && /^[A-Za-z0-9.!#$%&'*+\/=\?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value);
 const uuid = value => str(value, 36) && /^[a-f\d]{8}-?[a-f\d]{4}-?[a-f\d]{4}-?[a-f\d]{4}-?[a-f\d]{12}$/i.test(value);
+const calendarId=value=>{try{return calendarIdentifier(value)===value;}catch{return false;}};
+const timeZone=value=>{try{calendarZone(value);return true;}catch{return false;}};
+const calendarEventId=value=>str(value,1024)&&!!value&&!/[\x00-\x1f\x7f]/.test(value);
+const calendarFields={calendarId,allDay:v=>typeof v==='boolean',startDate:v=>typeof v==='string'&&validDate(v),endDate:v=>typeof v==='string'&&validDate(v),timeZone,location:v=>str(v,1000),expectedETag:v=>str(v,200)&&!!v&&!/[\r\n]/.test(v)};
 const instant = value => str(value, 40) && /(?:Z|[+-]\d\d:\d\d)$/.test(value) && Number.isFinite(Date.parse(value));
 const text = value => str(value) && !!value.trim();
 export const actionDefinitions = {
@@ -22,8 +27,8 @@ export const actionDefinitions = {
  'notion.rename': {provider:'notion',feature:'pagesWrite',label:'Notion 페이지 제목 수정',fields:{id:uuid,title:validTitle},required:['id','title']},
  'tasks.create': {provider:'google',feature:'tasksWrite',label:'Google Tasks 할 일 추가',fields:{list:identifier,title:validTitle,notes:validNotes,dueDate:validDate},required:['list','title']},
  'tasks.update': {provider:'google',feature:'tasksWrite',label:'Google Tasks 할 일 수정',fields:{list:identifier,id:identifier,title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'},required:['list','id']},
- 'calendar.create': {provider:'google',feature:'calendarWrite',label:'기본 캘린더 일정 추가',fields:{title:validTitle,start:instant,end:instant,notes:validNotes},required:['title','start','end']},
- 'calendar.update': {provider:'google',feature:'calendarWrite',label:'기본 캘린더 일정 수정',fields:{id:identifier,title:validTitle,start:instant,end:instant,notes:validNotes},required:['id','title','start','end']},
+ 'calendar.create': {provider:'google',feature:'calendarWrite',label:'캘린더 일정 추가',fields:{title:validTitle,start:instant,end:instant,notes:validNotes,...calendarFields},required:['title']},
+ 'calendar.update': {provider:'google',feature:'calendarWrite',label:'캘린더 일정 수정',fields:{id:calendarEventId,title:validTitle,start:instant,end:instant,notes:validNotes,...calendarFields},required:['id','title']},
  'drive.create': {provider:'google',feature:'driveWrite',label:'Drive 텍스트 파일 만들기',fields:{title:validTitle,text},required:['title','text']},
  'drive.rename': {provider:'google',feature:'driveWrite',label:'Drive 파일 이름 수정',fields:{id:identifier,title:validTitle},required:['id','title']},
  'drive.updateText': {provider:'google',feature:'driveWrite',label:'Drive 텍스트 파일 내용 교체',fields:{id:identifier,text},required:['id','text']},
@@ -33,7 +38,10 @@ export function validateAction(operation, input) {
  if(!def||!input||typeof input!=='object'||Array.isArray(input))throw fail(400,'실행할 작업을 확인해주세요.');
  if(Object.keys(input).some(k=>!Object.hasOwn(def.fields,k))||def.required.some(k=>!Object.hasOwn(input,k))||Object.entries(input).some(([k,v])=>!def.fields[k](v)))throw fail(400,'작업의 대상과 내용을 확인해주세요.');
  if(operation.endsWith('.update')&&Object.keys(input).every(k=>['id','list'].includes(k)))throw fail(400,'수정할 내용을 적어주세요.');
- if(operation.startsWith('calendar.')&&Date.parse(input.end)<=Date.parse(input.start))throw fail(400,'일정 종료는 시작 이후로 정해주세요.');
+ if(operation.startsWith('calendar.')){
+  if(input.allDay){if(!input.startDate||!input.endDate||input.endDate<=input.startDate||input.start!==undefined||input.end!==undefined)throw fail(400,'종일 일정의 시작일과 종료일을 확인해주세요.');}
+  else if(!instant(input.start)||!instant(input.end)||Date.parse(input.end)<=Date.parse(input.start)||input.startDate!==undefined||input.endDate!==undefined)throw fail(400,'일정 종료는 시작 이후로 정해주세요.');
+ }
  return structuredClone(input);
 }
 const encode=encodeURIComponent;
@@ -63,7 +71,8 @@ export function createProviderActions({store,token,request}) {
    target=await read('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encode(args.id)+'?format=full');version=JSON.stringify([target.historyId,target.threadId]);
    if(operation==='gmail.reply'){const recipient=header(target,'Reply-To')||header(target,'From');const to=/<([^<>]+)>/.exec(recipient)?.[1]??recipient.trim();if(!email(to))throw fail(409,'답장 받는 주소를 확인할 수 없어요.');extra={to,subject:('Re: '+header(target,'Subject').replace(/^Re:\s*/i,'')).slice(0,200),replyId:header(target,'Message-ID'),threadId:target.threadId};rawMail(extra.to,extra.subject,args.text,extra.replyId);}
   }
-  if(operation==='calendar.update'){target=await read('https://www.googleapis.com/calendar/v3/calendars/primary/events/'+encode(args.id));version=target.etag;if(!version)throw fail(409,'일정 버전을 확인할 수 없어요.');}
+  if(operation.startsWith('calendar.')&&args.calendarId){const cal=await read('https://www.googleapis.com/calendar/v3/users/me/calendarList/'+encode(args.calendarId));if(!['owner','writer'].includes(cal.accessRole))throw fail(403,'이 캘린더는 읽기 전용이에요.');extra={calendarName:cal.summary??'선택한 캘린더'};}
+  if(operation==='calendar.update'){target=await read('https://www.googleapis.com/calendar/v3/calendars/'+encode(args.calendarId??'primary')+'/events/'+encode(args.id));version=target.etag;if(!version||target.locked||target.status==='cancelled')throw fail(409,'일정 버전을 확인할 수 없어요.');if(args.expectedETag&&args.expectedETag!==version)throw fail(409,'열어둔 뒤 원본 일정이 바뀌었어요. 새로고침 후 다시 편집해주세요.');}
   if(operation==='tasks.create'){target=await read('https://www.googleapis.com/tasks/v1/users/@me/lists/'+encode(args.list));}
   if(operation==='tasks.update'){target=await read(`https://www.googleapis.com/tasks/v1/lists/${encode(args.list)}/tasks/${encode(args.id)}`);version=target.etag;if(!version||target.deleted)throw fail(409,'할 일의 원본 버전을 확인할 수 없어요.');}
   if(operation.startsWith('notion.')){target=await request('https://api.notion.com/v1/pages/'+encode(args.parent??args.id),opts(record,'GET',undefined,null,true));version=target.last_edited_time;if(target.archived||target.in_trash)throw fail(409,'보관되거나 삭제된 페이지예요.');}
@@ -85,7 +94,7 @@ export function createProviderActions({store,token,request}) {
    if(operation==='slack.send'||operation==='slack.update'){url='https://slack.com/api/'+(operation==='slack.send'?'chat.postMessage':'chat.update');body={channel:args.channel,text:args.text,parse:'none',link_names:false,unfurl_links:false,unfurl_media:false,...(args.thread?{thread_ts:args.thread}:{}),...(args.ts?{ts:args.ts}:{}),...(operation==='slack.send'?{client_msg_id:actionId}:{})};}
    if(operation.startsWith('notion.')){notion=true;if(operation==='notion.create'){url='https://api.notion.com/v1/pages';body={parent:{page_id:args.parent},properties:{title:{type:'title',title:rich(args.title)}},children:blocks(args.text)};}else if(operation==='notion.append'){url=`https://api.notion.com/v1/blocks/${encode(args.id)}/children`;method='PATCH';body={children:blocks(args.text)};}else{url='https://api.notion.com/v1/pages/'+encode(args.id);method='PATCH';const page=await request(url,opts(record,'GET',undefined,null,true));const prop=Object.entries(page.properties??{}).find(([,v])=>v.type==='title')?.[0];if(!prop)throw fail(409,'제목 속성을 찾지 못했어요.');body={properties:{[prop]:{title:rich(args.title)}}};}}
    if(operation.startsWith('tasks.')){url=`https://www.googleapis.com/tasks/v1/lists/${encode(args.list)}/tasks`+(args.id?'/'+encode(args.id):'');method=operation==='tasks.update'?'PATCH':'POST';body={...(args.title!==undefined?{title:args.title}:{}),...(args.notes!==undefined?{notes:args.notes}:{}),...(args.dueDate!==undefined?{due:args.dueDate?args.dueDate+'T00:00:00.000Z':null}:{}),...(args.done!==undefined?{status:args.done?'completed':'needsAction',...(!args.done?{completed:null}:{})}:{})};}
-   if(operation.startsWith('calendar.')){url='https://www.googleapis.com/calendar/v3/calendars/primary/events'+(args.id?'/'+encode(args.id):'')+'?sendUpdates=none';method=args.id?'PATCH':'POST';body={summary:args.title,start:{dateTime:args.start},end:{dateTime:args.end},...(args.notes!==undefined?{description:args.notes}:{}),...(!args.id?{id:actionId.replace(/-/g,'')}: {})};}
+   if(operation.startsWith('calendar.')){url='https://www.googleapis.com/calendar/v3/calendars/'+encode(args.calendarId??'primary')+'/events'+(args.id?'/'+encode(args.id):'')+'?sendUpdates=none';method=args.id?'PATCH':'POST';body={summary:args.title,start:args.allDay?{date:args.startDate}:{dateTime:args.start,...(args.timeZone?{timeZone:args.timeZone}:{})},end:args.allDay?{date:args.endDate}:{dateTime:args.end,...(args.timeZone?{timeZone:args.timeZone}:{})},...(args.location!==undefined?{location:args.location}:{}),...(args.notes!==undefined?{description:args.notes}:{}),...(!args.id?{id:actionId.replace(/-/g,'')}: {})};}
    if(operation==='drive.create'){const file=await request('https://www.googleapis.com/drive/v3/files',opts(record,'POST',{name:args.title,mimeType:'text/plain',appProperties:{duckduckAction:actionId}}));url='https://www.googleapis.com/upload/drive/v3/files/'+encode(file.id)+'?uploadType=media';method='PATCH';body=args.text;const result=await request(url,{method,headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'text/plain; charset=utf-8'},body});return {id:result.id??file.id};}
    if(operation==='drive.rename'){url='https://www.googleapis.com/drive/v3/files/'+encode(args.id);method='PATCH';body={name:args.title};}
    if(operation==='drive.updateText'){url='https://www.googleapis.com/upload/drive/v3/files/'+encode(args.id)+'?uploadType=media';const result=await request(url,{method:'PATCH',headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'text/plain; charset=utf-8','If-Match':current.version},body:args.text});return {id:result.id??args.id};}
