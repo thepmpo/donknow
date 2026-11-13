@@ -70,3 +70,18 @@ test('unfolded landscape panels clear the actual fold and camera independently; 
  const scene=duoSceneLayout(g);assert.ok(scene.panes);clearOf(scene.panes!.leading,g);clearOf(scene.panes!.trailing,g);assert.equal(scene.panes!.leading.x+scene.panes!.leading.width,460);assert.equal(scene.panes!.trailing.x,500);assert.equal(duoSceneLayout(g,false).panes,null,'modals must not span the fold');
  const short=duoSceneLayout({...g,height:240,regions:[{kind:'occlusion',active:true,frame:{x:900,y:24,width:28,height:28}}]});const tabs=duoTabFrame(short,true)!;assert.ok(tabs.height>=44);assert.equal(intersectRects(tabs,short.back!),null);assert.equal(tabs.y+tabs.height,212);
 });
+
+test('approved divider follows the actual pane gutter, respects insets and skips occupied hardware',async()=>{
+ const {duoSceneLayout,DUO_CHROME}=await import('./duo-layout.ts');
+ const g=base({hingeStatus:'fullyOpen',safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'occlusion',active:false,frame:{x:900,y:32,width:28,height:28}}]});
+ const scene=duoSceneLayout(g),{leading,trailing}=scene.panes!,divider=scene.divider!;
+ assert.ok(divider);assert.equal(divider.x+divider.width/2,(leading.x+leading.width+trailing.x)/2);
+ assert.notEqual(divider.x+divider.width/2,g.width/2,'camera column is excluded from pane midpoint');
+ assert.equal(divider.y,Math.max(leading.y,trailing.y)+DUO_CHROME.dividerInset);
+ assert.equal(divider.y+divider.height,Math.min(leading.y+leading.height,trailing.y+trailing.height)-DUO_CHROME.dividerInset);
+ const fold={kind:'division' as const,active:true,frame:{x:460,y:0,width:40,height:740}};
+ const occupied=duoSceneLayout({...g,regions:[...g.regions,fold]});assert.ok(occupied.panes);assert.equal(occupied.divider,null,'hardware already divides the panes; do not draw in the hinge');
+ assert.ok(duoSceneLayout({...g,regions:[...g.regions,{...fold,active:false}]}).divider);
+ for(const hingeStatus of ['closed','partiallyOpen','unknown'] as const)assert.equal(duoSceneLayout({...g,hingeStatus}).divider,null);
+ assert.equal(duoSceneLayout({...g,width:740,height:960}).divider,null);assert.equal(duoSceneLayout(g,false).divider,null);
+});

@@ -36,4 +36,5 @@ export const layout = {
   sheetInset: 24, titleBottom: 16,
   duoNavigationWidth: DUO_CHROME.width, duoNavigationHeight: DUO_CHROME.height, duoNavigationInset: DUO_CHROME.gap,
   duoNavigationItemSize: DUO_CHROME.itemSize, duoNavigationIconSize: DUO_CHROME.iconSize,
+  duoPaneDividerInset: DUO_CHROME.dividerInset,
 } as const;

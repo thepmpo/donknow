@@ -65,11 +65,11 @@ export function duoSafeFrame(geometry: DuoGeometry): DuoRect {
 
 export type DuoSceneLayout={
  body:DuoRect; column:DuoRect|null; back:DuoRect|null; segments:DuoRect[];
- panes:{leading:DuoRect;trailing:DuoRect}|null;
+ panes:{leading:DuoRect;trailing:DuoRect}|null; divider:DuoRect|null;
  alignment:'trailing-occlusion'|'system-inset'|'trailing-edge';
  cameraRegion:DuoRect|null;
 };
-export const DUO_CHROME={width:64,height:272,itemSize:52,iconSize:28,gap:8,paneGap:16} as const;
+export const DUO_CHROME={width:64,height:272,itemSize:52,iconSize:28,gap:8,paneGap:16,dividerInset:16} as const;
 const {width:CHROME_WIDTH,gap:CHROME_GAP,paneGap:PANE_GAP}=DUO_CHROME;
 function clearFrame(initial:DuoRect,occupied:DuoRect[]){
  let frames=[initial];for(const area of occupied)frames=frames.flatMap(rect=>subtract(rect,area)).sort((a,b)=>b.width*b.height-a.width*a.height).slice(0,128);
@@ -108,7 +108,16 @@ export function duoSceneLayout(g:DuoGeometry,workspace=true):DuoSceneLayout{
   const leading=clearFrame({...full,width:leftWidth},occupied),trailing=clearFrame({...full,x:rightX,width:Math.max(0,full.x+full.width-rightX)},occupied);
   if(leading.width>0&&trailing.width>0&&leading.height>0&&trailing.height>0){body=full;panes={leading,trailing};}
  }
- return {body,column,back,segments,panes,alignment,cameraRegion};
+ let divider:DuoRect|null=null;
+ if(panes){
+  const {leading,trailing}=panes,mid=(leading.x+leading.width+trailing.x)/2;
+  const top=Math.max(leading.y,trailing.y)+DUO_CHROME.dividerInset;
+  const bottom=Math.min(leading.y+leading.height,trailing.y+trailing.height)-DUO_CHROME.dividerInset;
+  // A conservative 1pt envelope checks hardware clearance; rendering uses one physical pixel.
+  const candidate={x:mid-.5,y:top,width:1,height:bottom-top};
+  if(trailing.x>leading.x+leading.width&&candidate.height>0&&!occupied.some(area=>intersectRects(candidate,area)))divider=candidate;
+ }
+ return {body,column,back,segments,panes,divider,alignment,cameraRegion};
 }
 export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
  const candidates=scene.segments.map(segment=>{
