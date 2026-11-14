@@ -1,0 +1,11 @@
+{
+  "codeCommit": "bff86c7d6540254749aaea19954f95296e4b6298",
+  "assetCommit": "bff86c7d6540254749aaea19954f95296e4b6298",
+  "imageCount": 788,
+  "sourceAndImmutableHashesAllValid": true,
+  "projectRegression": "PASS: public HTML / complete images / login / persistent comments / XSS / guest read-only / 320px",
+  "currentGuideSection": "navigation-refinement-current",
+  "latestConfirmedNative": "1.0.0(30), before this change",
+  "newNativeBuildStarted": false,
+  "remoteDeploy": "pending actual receipt in Notion"
+}

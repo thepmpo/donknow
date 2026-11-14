@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "78b9e0a245d51f4070050141cdb0a2dc7a19305e",
-  "assetCommit": "78b9e0a245d51f4070050141cdb0a2dc7a19305e",
-  "imageCount": 728,
+  "codeCommit": "bff86c7d6540254749aaea19954f95296e4b6298",
+  "assetCommit": "bff86c7d6540254749aaea19954f95296e4b6298",
+  "imageCount": 788,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -4714,6 +4714,426 @@
       "bytes": 25375,
       "sha256": "e6a28b4ef6f0499017a8ad7cf90cf1f3d81a909f318ed1e2e8fe12cc242702d0",
       "import_path": "images/artifacts__navigation-interaction-2026-11-13__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 34039,
+      "sha256": "e95a7452d9f289c1e2a5cc395837280ccc44efec1d52241c9530a83c2d7d3b1d",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__before__01-folded-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/before/03-short-column-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 29539,
+      "sha256": "3c78c353ec5f60b20edd06d621e8ad1c2937bd22ca804dbb25a72e0d6294967f",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__before__03-short-column-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/before/04-folded-chat.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 32732,
+      "sha256": "d07372637ffd6fe88b34ae5705d0d77545cc812365dd9b034096d9846e1bc90e",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__before__04-folded-chat.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/01-compact-long-source.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 87817,
+      "sha256": "03eb9877b0b12ad170515b2f7c4b81981a7c21d2f85198728cbe0b2ee0a19b0c",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__01-compact-long-source.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/02-local-only-preview.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 102827,
+      "sha256": "40f7e0498ee7665ad7ed0a4da54eb417bfbbfef651501013d480e9ac4925c44f",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__02-local-only-preview.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/03-partial-save-retry-only-duck.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 115413,
+      "sha256": "697b63c619d6a963d6e25d6e8f935a778432c57e39c8eac254b540d2de53e992",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__03-partial-save-retry-only-duck.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/04-editor-scrollbar-visible.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 95806,
+      "sha256": "c691e27eb03471f3ab6c572b96be9669a083b5ceeb9fb16a004b808a50732aee",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__04-editor-scrollbar-visible.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/05-todo-shared-transition.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 100314,
+      "sha256": "d04d6a2add27714e335033c3af268adf2c2fd7b8ae05a8d132f4b49fc68b1ff5",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__05-todo-shared-transition.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/06-year-scrollbar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 153528,
+      "sha256": "6b56b4f8314a4905bc06b85fbcb9bdff03e53baa53b6edee763ca4a11c334a23",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__06-year-scrollbar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/07-month-after-continuous-swipe.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 75180,
+      "sha256": "cd7eb010d99b8cda28c225d1bba8c0c8299fa1d5ba9c62c022737e8101c4e964",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__07-month-after-continuous-swipe.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/calendar-final/08-continuous-swipe-midpoint.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 75266,
+      "sha256": "160ac5f914ccd54b9993892b04b7defc01f188db11148af4d29ac83cd3c610c4",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__calendar-final__08-continuous-swipe-midpoint.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/chat/01-compact-phone-chat.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 18002,
+      "sha256": "af74c38f71daebb4ccc701d5c81c78dd94167d43283388a8b49fe808da910bee",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__chat__01-compact-phone-chat.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/01-folded-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 34290,
+      "sha256": "759311f588fd683305e9204df6a713ed7af65506f67c693a7026b8f05bd5e396",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__01-folded-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/01-open-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 39779,
+      "sha256": "54de5d3d6e5dcc50c283a5096f3739b8c2cc2b31ace9167a6bdb9bb8cb330f95",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__01-open-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/01-phone-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 32135,
+      "sha256": "a2e0d0da21f72428dd577502250321ed25ef99529346f690d419812fa94e5981",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__01-phone-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/02-folded-editor.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 16232,
+      "sha256": "3f6d60d45e6971867e597c7d26f238bc307e92051610104a005d34b7744358dc",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__02-folded-editor.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/02-open-editor.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 38322,
+      "sha256": "7f34b869127a6ea6c36576691a31df13e5038a388e75f299b0f25c8676f7d8d2",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__02-open-editor.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/02-phone-editor.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 21946,
+      "sha256": "e323422298d7f2f9e9127d0d0796559b2eced32a4cbcebdea0a966bbc5de09d9",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__02-phone-editor.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/03-compact-column-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 32581,
+      "sha256": "9c22df38f021a4a18c1c89eb65449cdde5e37134a69d2bb785ee3dcf27a05fa2",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__03-compact-column-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/03-short-column-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 31159,
+      "sha256": "2ae27771a20914a7e23fd647bb6e5d813713d914f792015d98004b4c210e3e9c",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__03-short-column-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/04-folded-chat.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 34555,
+      "sha256": "4a87a1e3f0f2e3c0d29cc1aa9ca8e099e7034b9dc4d1366e3ff3b52bcec8213f",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__04-folded-chat.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/05-history-compact.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 39399,
+      "sha256": "c962ebc1946442083b61da9db5070a99f60bee44379fe0201ec05cca57bf5c18",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__05-history-compact.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/05-history-expanded.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 40409,
+      "sha256": "1dca75ed817dca5d7c7ce9d62bc47c5a6870002764da2f97be09a404c34b5ca2",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__05-history-expanded.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 48360,
+      "sha256": "3d2fc612ac344f5d40aaf35f45d4a576345e6ed96d62037202da83b009fcc61e",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__06-profile-start.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 47571,
+      "sha256": "a02497a60ea69282967dbbfede085812a319ad2b3c7a3f56871dc7ecdcaec5ae",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__07-profile-account.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 47178,
+      "sha256": "6be047247e43c88e2e798e944c1cb697444b1c8de128990b7dae901e39cd9778",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__08-profile-google.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/09-profile-return.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 48360,
+      "sha256": "3d2fc612ac344f5d40aaf35f45d4a576345e6ed96d62037202da83b009fcc61e",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__09-profile-return.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 49970,
+      "sha256": "60e6fc848af089e379b5475837715f6783e7c7c603ad59a5514fa3a8e7ec4c95",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__10-profile-storage.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 64488,
+      "sha256": "2f4ab9419120150cdb99053846288af071ee57a3b744181b946cb51ee931bcce",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__11-profile-privacy.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 36885,
+      "sha256": "8abf46c9075299d7ad8cea658b2c8f7916829e7a05d9631035e251be2c5e3359",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__12-account-delete-entry.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 36997,
+      "sha256": "3084e09a3b7dc18bec040e2fbbf6988249b21112c98cbdb20e1e61ad53302866",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__12-notion-unconnected.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 47261,
+      "sha256": "5a3dd00c91f701df45c8cb7800d73cc195acb21adb1dfaa252581baf26915d1e",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__12-profile-backup.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/current/13-month-rest.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 33013,
+      "sha256": "50e718b79591f36c653986ea4755af941f6ac9005b1e4b2e8cddfb59d3376cb7",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__current__13-month-rest.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/01-open-calendar-todo.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 52098,
+      "sha256": "04f2f5f4308a7c6a2654e8388f50410872d3c5506111af8cc5583dee9d109ef5",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/02-open-calendar-duck.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 61599,
+      "sha256": "9c4bfeb3380b30c6713ade64ce179595047f94913a68ad1dd5bad8d5fef76525",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/03-portrait-current-screen.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 37335,
+      "sha256": "d8930fb6f069b7d430cb561ab7841f94d91bacb9f8e19a063d626e25e1d96609",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/04-closed-camera-column.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 34385,
+      "sha256": "8fcc5549c44771fd70150eafdf220402838884253406caa491ac41e20110ec4c",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/05-back-in-camera-column.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 63401,
+      "sha256": "14442c9cb52dad93089470f6aba34d6a8391badd0c7b09fa9bea81a549262d89",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/06-dragging-lens-web-fallback.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 54204,
+      "sha256": "718942aeea00a8ddcd8ec3f036cc5fb7f99312e637ef47d9008dcb39b882c9bd",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-320-floating-tabs.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 31668,
+      "sha256": "684cfa4ceb3c4bc2a554171411e895523c90572b23620e4f14999982a15cd37f",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-390-floating-tabs.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 32915,
+      "sha256": "e36b626d736a57c60505df9c8142057cba9ac165cd1db1b25b7d538baa71409c",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-430-floating-tabs.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 33656,
+      "sha256": "22471246d29b61213c68eabc761b0d76000f89d877c8098f28d12d28d9a35755",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/08-iphone-320-text-160-percent.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 25375,
+      "sha256": "9c24084c0cb1e59ff6b7a9e2ca3664a89f378757c46dd11f02019ae1a56296ae",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/08-pane-local-day-detail.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 58373,
+      "sha256": "fea265d0eb52c5ad1de37b8c72a88b90a3b03c5ca5fa707b5b3d5db7002ce2ae",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/10-folded-calendar-dark.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 36814,
+      "sha256": "8fa80fb1444062be5d76d39e5b640bcc108cc25b08c36696145ba5562125342f",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/11-folded-calendar-light.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 35653,
+      "sha256": "f4c58fd0576b1c954bc5f6a0e8a58a8c576398091d368c5935ef916472c611e9",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/12-open-calendar-dark.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 53641,
+      "sha256": "1ae3166c955e6553770573f56aada8617de56e8d595ac27c329ec73ea400f340",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/13-folded-fortnight.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 27710,
+      "sha256": "864cef4fa0f9ac3b1bdda44bee12fcdfd12b161b9e49358947f76285d7c19fd4",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/14-open-fortnight-dark.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 47664,
+      "sha256": "b71a4782c92fbf23922065f21c2c69523c82f4532332856b410e3acb8f1fd2b6",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/15-long-press-left-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 42526,
+      "sha256": "4de3912dba0c13492065c68750a821d40125e5de1f2986ad2bb8396059d243af",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/16-long-press-right-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 30304,
+      "sha256": "097b585e9fbc49aa3b32492a222503538ad6f4571cfccc0dc9e859452d291e7e",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/17-folded-long-press-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 27654,
+      "sha256": "fe44fb7d2b06f4525f0d784f0ecf23c46b32ce93d2f4ef5926558ad67f22ca67",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/18-year-left-calendar-right-todos.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 86734,
+      "sha256": "331d6cbb6e4f7d6c46d5286b25a1533918e6d04a2e4a44bb73e3d9145e544f32",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/19-year-right-calendar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 87182,
+      "sha256": "6dcb6f373f31b47a67f7929881756097faa2e8938964cb5ee93edcd839c4363d",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/20-year-portrait.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 83900,
+      "sha256": "e63826984e65cba892968468689944c1181fbd0f68d9250ae0c14a7eb2bee63c",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/21-year-folded.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 67468,
+      "sha256": "68e0e5812824adf13f82f153a416fef05efc1b89b5d0c673f136273f19671bc8",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/22-year-duo-motion.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 85990,
+      "sha256": "4ca57bacbcad4daa8c7e70f683269a5db56ffe7736290885925e09e9e1a32fa1",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/23-year-design-comparison-state.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 92435,
+      "sha256": "eeb8a5aef4857a01993c8ce1198569a4b386c03e4c2aa1bab48c8e3bf96633c8",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/24-pane-edge-scrollbar.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 91813,
+      "sha256": "c8bb96bc0d7c14dd4db39ced289e0877450524fa9e254ca5c6ad2e70951a35c7",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__24-pane-edge-scrollbar.png"
+    },
+    {
+      "path": "artifacts/navigation-refinement-2026-11-14/duo-final/25-compact-duo-chat.png",
+      "category": "약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님",
+      "bytes": 17555,
+      "sha256": "df9e564cf4c8f4cd352a61593b5518a862ee0acc68d0b971c78a16cbfef292cd",
+      "import_path": "images/artifacts__navigation-refinement-2026-11-14__duo-final__25-compact-duo-chat.png"
     },
     {
       "path": "artifacts/overview.png",
