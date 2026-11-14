@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "24e38cd3250cd1c79071d0be928b3b5066856553",
-  "assetCommit": "24e38cd3250cd1c79071d0be928b3b5066856553",
-  "imageCount": 844,
+  "codeCommit": "5d546bab7b1646209e0f78758af336c0257ae8ab",
+  "assetCommit": "5d546bab7b1646209e0f78758af336c0257ae8ab",
+  "imageCount": 860,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -5036,6 +5036,118 @@
       "bytes": 40003,
       "sha256": "889a7a3b7644e499083de8f8f36c3bd70853fe4af84cbcbc1b88bd4aff58a434",
       "import_path": "images/artifacts__me-settings-2026-11-14__current__17-small-dark.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/before/folded-chat-with-tools-and-metadata.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 37170,
+      "sha256": "c3c0b0ab124659c2b0d93376e65fd41dc761c40fe32016670c618fc79f8ddf79",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__before__folded-chat-with-tools-and-metadata.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/01-sent-input-empty.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 29559,
+      "sha256": "b04f1866d8f9619f69301b12c9029cc5bcd046f6bc53f46a8aec8ff0407b47b3",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__01-sent-input-empty.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/02-next-draft-preserved.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 31630,
+      "sha256": "46791925b5397d0f4c70b1c40ffbc5dc8b0b2c1eea48c10db2bde1b9ca7742e6",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__02-next-draft-preserved.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/03-retry-preserves-new-draft.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 39452,
+      "sha256": "950cd8d36f77b36aa9c174d36a68c64276e4b8ed145b7b2337815ca052955386",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__03-retry-preserves-new-draft.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/04-multiple-google-accounts.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 55380,
+      "sha256": "0d22fb9231d1b9443e5afd403b495579f03ee156fadf2e617b7e420c5c8cf1b9",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__04-multiple-google-accounts.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/05-selected-account-resources.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 57992,
+      "sha256": "a90b79ce36a5dcf87798f97bb1496041127738b3a7370455cc955951f70e5afe",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__05-selected-account-resources.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/06-add-account-permissions.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 54036,
+      "sha256": "75fcf345ffd9afa64851010019e2891619f28ff659827eeb52e87ecf5bcfeccc",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__06-add-account-permissions.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/07-account-disconnect-confirmation.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 56676,
+      "sha256": "1d2b3fc820b4f2b9cacc23bef67e69f9098cf28391dcdcd4df840d7faa6f370d",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__07-account-disconnect-confirmation.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/08-personal-briefing-consent.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 40690,
+      "sha256": "b8f4a2ce6ecef534ef912e521cadf0f79640f002f571eee61296668789df5f43",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__08-personal-briefing-consent.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/08-personal-briefing-settings.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 40824,
+      "sha256": "c552631bdaab510bebd1f845a8c7b2a9e3068e0c3731b6bceff4bab8083b8ec2",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__08-personal-briefing-settings.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/09-folded-clean-chat.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 34946,
+      "sha256": "3dc1d1afd1d9f3766f480f7f742ddad2aef59920c83bae90d1f7aad02329efbe",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__09-folded-clean-chat.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/10-open-clean-chat.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 61513,
+      "sha256": "10fad99920dae34ca34b4a04fc8318d1ccc7835cec41ebc67eb89169785dd0e7",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__10-open-clean-chat.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/current/11-small-dark-clean-chat.png",
+      "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
+      "bytes": 34910,
+      "sha256": "b0ce6abce44f5f454ac6e236dfe63be88b29dbea70413e83f93efdae4b9f1ae8",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__current__11-small-dark-clean-chat.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-1-in-composer.png",
+      "category": "키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님",
+      "bytes": 1467468,
+      "sha256": "2c749d0b4671b9a05fe9756813600603773cf43bf6d25e86c8d09f59661cad23",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__design-previews__keyboard-1-in-composer.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png",
+      "category": "키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님",
+      "bytes": 1377457,
+      "sha256": "5340c8e5b02293950b3d51a3f7672422cb8ecefdc94982934158da5c97455db7",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__design-previews__keyboard-2-accessory-done.png"
+    },
+    {
+      "path": "artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-3-interactive-dismiss.png",
+      "category": "키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님",
+      "bytes": 1393755,
+      "sha256": "9afb0ac012408bc07fcca573a8f95f5b5d939afa7e5a69b229554fe9926344c2",
+      "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__design-previews__keyboard-3-interactive-dismiss.png"
     },
     {
       "path": "artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png",
