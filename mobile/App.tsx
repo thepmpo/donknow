@@ -1,5 +1,5 @@
 import {DuoWorkspace} from './src/DuoWorkspace';
-import {disableLegacyKeyboardAccessory} from './src/keyboard-done';
+import {configureKeyboardAccessory} from './src/keyboard-done';
 import {KeyboardDismiss,KeyboardUXProvider,useKeyboardUX} from './src/KeyboardUX';
 import {useDuoScene} from './src/DuoChrome';
 import {listenForDuckNotification} from './src/push';
@@ -26,12 +26,12 @@ import { ConnectionScreen } from './src/screens/ConnectionScreen';
 export function Shell({keyboardOccluded}:{keyboardOccluded?:boolean}={}){return <KeyboardUXProvider occlusion={keyboardOccluded}><ShellContent/></KeyboardUXProvider>;}
 function ShellContent() {
   const keyboard=useKeyboardUX();
-  useEffect(disableLegacyKeyboardAccessory,[]);
   const store = useTodos();
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
   const duo=useDuoTrailingNavigation();
-  const {scene}=useDuoScene();
+  const {scene,ready}=useDuoScene();
+  useEffect(()=>{if(ready)return configureKeyboardAccessory(duo);},[duo,ready]);
   const split=!!scene?.panes;
   const [tab, setTab] = useState<AppTab>('todos'),[unread,setUnread]=useState(0);
   const [settings, setSettings] = useState(false);

@@ -126,9 +126,16 @@ private final class KeyboardDoneController: NSObject {
     toolbar.standardAppearance = appearance
     toolbar.scrollEdgeAppearance = appearance
     toolbar.compactAppearance = appearance
-    let done = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(dismissKeyboard))
-    done.accessibilityLabel = "완료, 키보드 내리기"
-    done.accessibilityHint = "입력한 내용은 그대로 유지돼요."
+    // A plain 44pt text control avoids the OS prominent floating Done pill.
+    let button = UIButton(type: .system)
+    button.setTitle("완료", for: .normal)
+    button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+    button.titleLabel?.adjustsFontForContentSizeCategory = true
+    button.frame = CGRect(x: 0, y: 0, width: 64, height: 44)
+    button.addTarget(self, action: #selector(dismissKeyboard), for: .touchUpInside)
+    button.accessibilityLabel = "완료, 키보드 내리기"
+    button.accessibilityHint = "입력한 내용은 그대로 유지돼요."
+    let done = UIBarButtonItem(customView: button)
     toolbar.items = [UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil), done]
     toolbar.sizeToFit()
     toolbar.frame.size.height = max(44, toolbar.frame.height)

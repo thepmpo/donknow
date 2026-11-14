@@ -1,4 +1,5 @@
-import {KeyboardDismiss} from './KeyboardUX';
+import {KeyboardDismiss,useKeyboardUX} from './KeyboardUX';
+import {useFocusedField} from './useFocusedField';
 import {ScrollArea as ScrollView} from './ScrollArea';
 import { useDuoTrailingNavigation } from './DuoLayout';
 import {useDuoBackAction} from './DuoBackNavigation';
@@ -99,8 +100,14 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   </Animated.View>;
 }
 export function DateField({value,onChange,disabled=false,activePicker,onPickerChange}:{value:string|null;onChange:(date:string|null)=>void;disabled?:boolean;activePicker?:string|null;onPickerChange?:(value:string|null)=>void}){return <DateTimeField label="예정일" inputLabel="예정일 선택" value={value} onChange={onChange} clearable disabled={disabled} activePicker={activePicker} onPickerChange={onPickerChange}/>;}
-export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?: Todo; dueDate: string | null; store: TodoStore; onClose: () => void }) {
-  const {visible,close:onClose} = useModalDismiss(onDismiss);
+type TodoEditorProps={todo?:Todo;dueDate:string|null;store:TodoStore;onClose:()=>void};
+export function TodoEditor(props:TodoEditorProps){
+ const {visible,close}=useModalDismiss(props.onClose),[busy,setBusy]=useState(false);
+ return <Modal visible={visible} transparent animationType="slide" onRequestClose={()=>{if(!busy)close();}}><TodoEditorForm {...props} visible={visible} onClose={close} onBusy={setBusy}/></Modal>;
+}
+/** Same form in the native modal's own safe surface or a geometry fixture. */
+export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy}:{todo?:Todo;dueDate:string|null;store:TodoStore;onClose:()=>void;visible?:boolean;onBusy?:(busy:boolean)=>void}){
+  const keyboard=useKeyboardUX(),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scroll);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
   const [notes,setNotes] = useState(todo?.notes ?? '');
@@ -110,6 +117,7 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
   const [alarmTime, setAlarmTime] = useState(originalTime ? `${String(originalTime.getHours()).padStart(2, '0')}:${String(originalTime.getMinutes()).padStart(2, '0')}` : '09:00');
   const [saving, setSaving] = useState(false),[activePicker,setActivePicker]=useState<string|null>(null);
   const [error, setError] = useState('');
+  useEffect(()=>{onBusy?.(saving);},[saving,onBusy]);
   async function save() {
     setSaving(true); setError('');
     try {
@@ -137,19 +145,17 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
     }
   }
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
-  return <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
-    <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <DraggableSheet testID="todo-editor-surface" visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
-        <TextInput accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
-        <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/><NotesField value={notes} onChange={setNotes} disabled={saving} />
+  return <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <DraggableSheet testID="todo-editor-surface" visible={visible} style={[s.sheet,keyboard.occluding&&{flex:1,maxHeight:'100%',paddingBottom:12}]} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><ScrollView ref={scroll} onLayout={field.reveal} onContentSizeChange={field.reveal} onScroll={field.onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
+        <TextInput ref={titleRef} onFocus={()=>{setActivePicker(null);field.focus(titleRef.current);}} accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
+        <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/><NotesField value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);field.focus(input);}} onResize={field.reveal}/>
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} disabled={saving} trackColor={{ true: colors.blue }} /></View>
         {alarm&&<View style={{gap:12,backgroundColor:colors.grouped,padding:12,borderRadius:18}}><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 날짜" value={alarmDay} disabled={saving} onChange={value=>value&&setAlarmDay(value)}/><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 시간" value={alarmTime} mode="time" disabled={saving} onChange={value=>value&&setAlarmTime(value)}/><Text testID="todo-reminder-preview" style={s.muted}>{(()=>{try{const at=todoReminderInstant(alarmDay,alarmTime,deviceZone(),todo?.reminderAt);return at?reminderDateLabel(at,deviceZone())+(Date.parse(at)<=Date.now()?' · 이미 지난 시각이에요.':'에 알려드려요.'):'알림 날짜와 시간을 선택해주세요.';}catch{return '이 날짜와 시간은 사용할 수 없어요. 다시 선택해주세요.';}})()}</Text><Text style={s.muted}>{store.reminders.supported?store.reminders.enabled?'이 기기에서 알림을 받아요.':'ME에서 기기 알림도 켜주세요.':'웹에서는 예약을 저장해요. 알림은 아이폰에서 켤 수 있어요.'}</Text></View>}
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
         {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} /><Text style={s.muted}>공유창에서 카카오톡을 선택하세요. 웹에서 공유창을 지원하지 않으면 내용을 복사해요. 저장된 내용이 공유돼요.</Text>{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
         {!!todo && <Pressable accessibilityRole="button" disabled={saving} onPress={remove} style={s.deleteButton}><Text style={s.deleteText}>할 일 삭제</Text></Pressable>}
-      </ScrollView><View style={{paddingTop:layout.actionGap,flexShrink:0}}><Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} /></View></DraggableSheet>
-    </KeyboardAvoidingView>
-  </Modal>;
+      </ScrollView>{!keyboard.occluding&&<View testID="todo-editor-save" style={{paddingTop:layout.actionGap,flexShrink:0}}><Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} /></View>}</DraggableSheet>
+    </KeyboardAvoidingView>;
 }
 export const s = StyleSheet.create({
   page: { padding: spacing.xl, paddingTop: spacing.xxl, paddingBottom: 40, flexGrow: 1 },

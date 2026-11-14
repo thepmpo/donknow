@@ -1,8 +1,6 @@
-import React,{createContext,useContext,useEffect,useState} from 'react';
-import {Keyboard,Platform,View} from 'react-native';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
-import {MotionPressable as Pressable} from './motion';
-import {colors} from './theme';
+import React,{createContext,useContext,useEffect,useRef,useState} from 'react';
+import {Keyboard,Platform} from 'react-native';
+import {useDuoBackState} from './DuoBackNavigation';
 
 const Context=createContext({visible:false,occluding:false,dismiss:()=>Keyboard.dismiss()});
 /** One visibility source; dismissal never submits, saves or changes the draft. */
@@ -21,6 +19,9 @@ export function KeyboardUXProvider({children,occlusion}:{children:React.ReactNod
 export const useKeyboardUX=()=>useContext(Context);
 export function KeyboardDismiss({fallback=false}:{fallback?:boolean}){
  const {visible,dismiss}=useKeyboardUX();
- if(!visible)return null;
- return <View testID={fallback?'keyboard-dismiss-fallback':'keyboard-dismiss-inline'}><Pressable accessibilityRole="button" accessibilityLabel="키보드 내리기" accessibilityHint="입력한 내용을 유지하고 키보드만 닫아요." onPress={dismiss} style={{width:44,height:44,alignItems:'center',justifyContent:'center',borderRadius:22}}><MaterialCommunityIcons name="keyboard-close" size={24} color={colors.blueText}/></Pressable></View>;
+ const {enabled,registerKeyboard}=useDuoBackState(),id=useRef(Symbol()),latest=useRef(dismiss);latest.current=dismiss;
+ useEffect(()=>{if(enabled&&visible)return registerKeyboard({id:id.current,dismiss:()=>latest.current()});},[enabled,visible,registerKeyboard]);
+ // The modal's own Duo surface owns its control. Ordinary iPhone uses its
+ // native input accessory; neither device gets another button in the header.
+ return null;
 }
