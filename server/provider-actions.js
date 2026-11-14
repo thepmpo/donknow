@@ -13,7 +13,7 @@ const calendarFields={calendarId,allDay:v=>typeof v==='boolean',startDate:v=>typ
 const instant = value => str(value, 40) && /(?:Z|[+-]\d\d:\d\d)$/.test(value) && Number.isFinite(Date.parse(value));
 const text = value => str(value) && !!value.trim();
 export const actionDefinitions = {
- 'todo.create': { provider:'todo', label:'Todo 추가', fields:{title:validTitle,notes:validNotes,dueDate:validDate}, required:['title'] },
+ 'todo.create': { provider:'todo', label:'Todo 추가', fields:{title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'}, required:['title'] },
  'todo.update': { provider:'todo', label:'Todo 수정', fields:{id:identifier,title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'},required:['id'] },
  'naver.markRead': {provider:'naver',feature:'mailWrite',label:'네이버 메일 읽음 처리',fields:{id:identifier,read:v=>typeof v==='boolean'},required:['id','read']},
  'naver.reply': {provider:'naver',feature:'mailWrite',label:'네이버 메일 답장 발송',fields:{id:identifier,text},required:['id','text']},
@@ -95,7 +95,7 @@ export function createProviderActions({store,token,request}) {
   async execute(user,operation,args,preview,actionId){
    const current=await inspect(user,operation,args);
    if(current.connectionId!==preview.connectionId||current.version!==preview.version||current.extra?.destinationCalendarName!==preview.extra?.destinationCalendarName)throw fail(409,'연결 또는 원본이 바뀌었어요. 내용을 다시 확인해주세요.');
-   if(operation==='todo.create')return {todo:store.create(user,{title:args.title.trim(),notes:args.notes??'',dueDate:args.dueDate??null,category:'업무'})};
+   if(operation==='todo.create')return {todo:store.create(user,{title:args.title.trim(),notes:args.notes??'',dueDate:args.dueDate??null,category:'업무'},{done:args.done===true})};
    if(operation==='todo.update')return {todo:store.update(user,args.id,Object.fromEntries(Object.entries(args).filter(([k])=>k!=='id')))};
    args=selectedArgs(user,operation,args);const record=await access(user,operation,args);let url,method='POST',body,notion=false;
    if(operation==='gmail.markRead'){url=`https://gmail.googleapis.com/gmail/v1/users/me/messages/${encode(args.id)}/modify`;body={addLabelIds:args.read?[]:['UNREAD'],removeLabelIds:args.read?['UNREAD']:[]};}

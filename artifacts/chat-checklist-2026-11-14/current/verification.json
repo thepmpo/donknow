@@ -1,0 +1,22 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "01-one-reply-many-items.png",
+    "02-complete-in-chat.png",
+    "03-complete-in-log.png",
+    "04-x-only-no-write.png",
+    "05-existing-todo-completed-once.png",
+    "06-uncertain-no-replay.png",
+    "07-lost-response-reconciled.png",
+    "08-folded-added.png",
+    "09-open-same-state.png",
+    "10-small-dark.png"
+  ],
+  "writes": 6,
+  "confirms": 6,
+  "todos": 5,
+  "ordinaryFoldedOpen": true,
+  "unknownNotReplayed": true,
+  "lostReplyReconciled": true,
+  "errors": []
+}

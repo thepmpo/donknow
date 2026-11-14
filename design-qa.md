@@ -1,3 +1,11 @@
+# Design QA — Chat checklist / 2026-11-14
+
+**Result: passed for actual Expo web / synthetic API and device geometry; native touch, VoiceOver and TestFlight verification remain pending.** Ten new screenshots verify the compact checked/X/saved states, ordinary/folded/open layout, actual log navigation and unchanged camera column/fixed Calendar. No reference-image pixel fidelity or native device result is claimed.
+
+[Contract](docs/chat-checklist-2026-11-14.md) · [Evidence and remaining device checks](docs/chat-checklist-qa-2026-11-14.md). Earlier keyboard native validation remains blocked until a new build is installed.
+
+---
+
 # Design QA — Keyboard accessory option 2 / 2026-11-14
 
 **final result: blocked** — native visual/runtime QA needs an Xcode build and actual iPhone/Duo keyboard. The approved option is implemented in the shared UIKit accessory. TypeScript, Apple autolinking, web/iOS JS export, full app and Duo web regressions pass; none proves Swift compilation or native fidelity. No synthetic keyboard screenshot is presented as actual implementation evidence.

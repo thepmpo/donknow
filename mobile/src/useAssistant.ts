@@ -3,10 +3,13 @@ import {consentPreferences,consentScope,durableConsentScope} from './assistant-c
 import {formatDueDate} from './domain';
 import {useEffect,useRef,useState} from 'react';
 import type {TodoStore} from './useTodos';
+import {saveChecklist} from './assistant-checklist';
+import type {ChecklistEntry} from './assistant-checklist';
+import type {Todo} from './domain';
 
 export type AssistantSource={ref:string;provider:string;kind:string;title:string;text:string;completed?:boolean;locator?:Record<string,string>};
 export type AssistantDefinition={operation:string;provider:string;label:string;fields:string[];required:string[]};
-export type AssistantDraft={id:string;operation:string;label:string;args:Record<string,unknown>;targetTitle?:string;accountLabel?:string;recipient?:string;status:string;result?:{message?:string};expiresAt:number};
+export type AssistantDraft={id:string;operation:string;label:string;args:Record<string,unknown>;targetTitle?:string;accountLabel?:string;recipient?:string;status:string;result?:{message?:string;todo?:Todo};expiresAt:number};
 export type AssistantProposal={operation:string;label:string;args:Record<string,unknown>;sourceRefs:string[]};
 export type AssistantStatus={googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;actions:AssistantDefinition[];consentScopes?:Record<string,string>};
 export type AssistantTurn={id?:string;createdAt?:number;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[]};
@@ -22,11 +25,13 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
  const [busyKind,setBusyKind]=useState<'chat'|'action'|'context'|null>(null),[grants,setGrants]=useState<string[]>([]),[consentReady,setConsentReady]=useState(false);
  const [errorKind,setErrorKind]=useState<'load'|'chat'|'action'|'context'|null>(null);
  const turnSequence=useRef(0);
+ const checklist=useRef<Record<string,ChecklistEntry>>({}),storeRef=useRef(store);storeRef.current=store;
+ const [,checklistChanged]=useState(0);
  const alive=useRef(true),working=useRef(false),generation=useRef(0),draftRevision=useRef(0),readSequence=useRef(0),errorRevision=useRef(0);
  const owner=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;
  useEffect(()=>{
   alive.current=true;const version=++generation.current;draftRevision.current++;readSequence.current++;errorRevision.current++;
-  setStatus(null);setProviders([]);setConsentState(false);setGrants([]);setConsentReady(false);setBusyKind(null);
+  setStatus(null);setProviders([]);setConsentState(false);setGrants([]);setConsentReady(false);setBusyKind(null);checklist.current={};
   AsyncStorage.getItem('duckduck.ai-consent.v1.'+owner).then(raw=>{if(current(version)){const saved=consentPreferences(raw?JSON.parse(raw):null);setProviders(saved.providers);setGrants(saved.grants);setConsentReady(true);}}).catch(()=>{if(current(version))setConsentReady(true);});setAnswer('');setSources([]);setWarnings([]);setProposals([]);setDrafts([]);setTurns([]);setError('');setErrorKind(null);working.current=false;setBusy(false);setBusyKind(null);
   if(store.user&&store.connection?.mode==='cloud')void load(version);
   return()=>{alive.current=false;generation.current++;};
@@ -70,6 +75,12 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
   if(!success&&current(version))setTurns(old=>old.map(turn=>turn.id===turnId?{...turn,state:'failed'}:turn));return success;
  }
  async function prepare(operation:string,args:Record<string,unknown>){const version=generation.current;return run(async()=>{draftRevision.current++;const d=await store.featureRequest('/api/assistant/actions','POST',{operation,args}) as AssistantDraft;if(current(version))setDrafts(old=>[d,...old.filter(x=>x.id!==d.id)]);return d;});}
+ function checklistEntry(id:string){return checklist.current[id]??(checklist.current[id]={});}
+ function excludeChecklist(id:string,excluded:boolean){if(working.current)return;checklistEntry(id).excluded=excluded;checklistEntry(id).error='';checklistChanged(v=>v+1);}
+ async function commitChecklist(id:string,proposal:AssistantProposal,done:boolean){
+  const version=generation.current,entry=checklistEntry(id);
+  await run(async()=>{draftRevision.current++;await saveChecklist(entry,proposal,done,{request:store.featureRequest,current:()=>current(version),refresh:()=>storeRef.current.refresh(),todo:id=>storeRef.current.findTodo(id),update:(id,patch)=>storeRef.current.update(id,patch),changed:()=>checklistChanged(v=>v+1)});if(current(version))await load(version);});
+ }
  async function confirm(draft:AssistantDraft){
   if(draft.status!=='pending'||draft.expiresAt<=Date.now())return;
   const version=generation.current;
@@ -77,5 +88,5 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
  }
  async function cancel(draft:AssistantDraft){const version=generation.current;await run(async()=>{draftRevision.current++;await store.featureRequest(`/api/assistant/actions/${draft.id}`,'DELETE');if(current(version))await load(version);});}
  function toggleProvider(provider:string){if(working.current||!consentReady)return;const next=providers.includes(provider)?providers.filter(x=>x!==provider):[...providers,provider];setProviders(next);setConsentState(false);saveConsent(next,grants);setSources([]);setProposals([]);setAnswer('');setTurns([]);}
- return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,reloadPreferences,run,read,chat,prepare,confirm,cancel,toggleProvider};
+ return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,reloadPreferences,run,read,chat,prepare,confirm,cancel,toggleProvider,checklistEntry,excludeChecklist,commitChecklist};
 }

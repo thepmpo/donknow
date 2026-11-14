@@ -52,7 +52,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     },
     logout(token) { if (token) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(digest(token)); },
     list, get,
-    create(userId, draft) { const todo = { ...draft, id: randomUUID(), done: false, createdAt: new Date().toISOString() }; db.prepare('INSERT INTO todos VALUES (?, ?, ?)').run(todo.id, userId, JSON.stringify(todo)); return todo; },
+    create(userId, draft, { done = false } = {}) { const now=new Date().toISOString(); const todo = { ...draft, id: randomUUID(), done: done===true, createdAt:now,...(done===true?{completedAt:now}:{}) }; db.prepare('INSERT INTO todos VALUES (?, ?, ?)').run(todo.id, userId, JSON.stringify(todo)); return todo; },
     update(userId, id, patch, { remote = false } = {}) {
       const todo = get(userId, id); if (!todo) return null;
       const previousDone=todo.done;
