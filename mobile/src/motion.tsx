@@ -88,7 +88,7 @@ export function useModalDismiss(onDismiss: () => void) {
   return { visible, close };
 }
 
-export function DraggableSheet({children,style,onDismiss,disabled=false,visible=true}:{children:React.ReactNode;style?:ViewProps['style'];onDismiss:()=>void;disabled?:boolean;visible?:boolean}) {
+export function DraggableSheet({children,style,onDismiss,disabled=false,visible=true,testID}:{children:React.ReactNode;testID?:string;style?:ViewProps['style'];onDismiss:()=>void;disabled?:boolean;visible?:boolean}) {
   const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current;
   const current=useRef({reduced,disabled,onDismiss});current.current={reduced,disabled,onDismiss};
   const reset=()=>{offset.stopAnimation();if(current.current.reduced)offset.setValue(0);else Animated.timing(offset,{toValue:0,duration:motion.pressOut,useNativeDriver:native}).start();};
@@ -103,5 +103,5 @@ export function DraggableSheet({children,style,onDismiss,disabled=false,visible=
     onPanResponderTerminate:reset,
   })).current;
   useEffect(()=>{if(disabled){offset.stopAnimation();offset.setValue(0);}return()=>offset.stopAnimation();},[disabled,offset]);
-  return <Animated.View style={[style,{transform:[{translateY:offset},{scale:zoom.interpolate({inputRange:[0,1],outputRange:[.975,1]})}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
+  return <Animated.View testID={testID} style={[style,{transform:[{translateY:offset},{scale:zoom.interpolate({inputRange:[0,1],outputRange:[.975,1]})}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
 }

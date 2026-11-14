@@ -17,7 +17,7 @@ const bundle=readFileSync(bundleFile,'utf8');
 const server=http.createServer((req,res)=>{if(req.url.includes('.ttf')){res.setHeader('Content-Type','font/ttf');res.end(readFileSync(resolve(project,'node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf')));return;}res.setHeader('Content-Type',req.url==='/fixture.js'?'text/javascript':'text/html');res.end(req.url==='/fixture.js'?bundle:'<!doctype html><style>html,body,#root{margin:0;width:100%;height:100%;display:flex;flex-direction:column}</style><div id="root"></div><script src="/fixture.js"></script>');});
 await new Promise(done=>server.listen(0,'127.0.0.1',done));
 const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
-const output=resolve(project,'../artifacts/chat-checklist-2026-11-14/current');mkdirSync(output,{recursive:true});
+const output=process.env.CHECKLIST_CAPTURE_DIR?resolve(process.env.CHECKLIST_CAPTURE_DIR):resolve(project,'../artifacts/chat-checklist-2026-11-14/current');mkdirSync(output,{recursive:true});
 const origin='https://checklist.test',errors=[],captures=[],calls=[],todos=[],actions=[];let page,hold=false,release,confirmMode='normal';
 const geometry=(width,height,open=false)=>({apiAvailable:true,hasHinge:true,width,height,hingeStatus:open?'fullyOpen':'closed',safeArea:{top:20,bottom:20,left:16,right:80},regions:[{kind:'occlusion',active:!open,frame:{x:width-60,y:32,width:28,height:28}}]});
 try{

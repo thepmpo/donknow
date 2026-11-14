@@ -1,0 +1,31 @@
+{
+  "syntheticOnly": true,
+  "nativeSpinnerNotRun": true,
+  "captures": [
+    "01-empty-list-no-scroll.png",
+    "02a-date-done-keeps-form-draft.png",
+    "02-date-done-and-exact-alert.png",
+    "03-short-form-stops-scrolling.png",
+    "04-fortnight-start-only.png",
+    "05-dark-detail-layer.png",
+    "06-dark-alert-menu.png",
+    "07-month-only-week-lines.png",
+    "08-folded-dark-detail.png",
+    "09-open-dark-detail.png",
+    "10-open-portrait-detail.png",
+    "11-small-dark-editor.png"
+  ],
+  "empty": {
+    "height": 796,
+    "content": 796,
+    "overflow": "hidden",
+    "top": 0
+  },
+  "detailsWrites": 1,
+  "writes": 0,
+  "independentTodoReminder": true,
+  "actualReminderDates": true,
+  "monthOnlyLines": true,
+  "todayHighlightPending": true,
+  "errors": []
+}

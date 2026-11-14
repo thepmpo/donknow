@@ -15,6 +15,7 @@ export const palette = {
 // Web variables also update without remounting forms or losing Calendar state.
 const semantic = {
  bg: ['#ffffff','#000000'], surface: ['#f9fafb','#1c1c1e'], grouped: ['#f2f4f6','#2c2c2e'],
+ sheet: ['#ffffff','#1c1c1e'],popup: ['#ffffff','#323234'],popupLine: ['#d1d6db','#5b5b60'],scrim: ['#00000055','#00000099'],
  text: ['#191f28','#f5f5f7'], secondary: ['#4e5968','#d1d1d6'], muted: ['#6b7684','#98989d'],
  subtle: ['#8b95a1','#8e8e93'], outsideMonth: ['#9299a3','#77777e'],
  blue: ['#3182f6','#64a8ff'], action: ['#1b64da','#1b64da'], blueText: ['#1b64da','#64a8ff'],

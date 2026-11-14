@@ -8,7 +8,7 @@ import type { TodoStore } from '../useTodos';
 import { typography } from '../theme';
 import { colors, Page, s, TodoRow } from '../ui';
 export function TodosScreen({ store, onEdit, onAdd }: { store: TodoStore; onEdit: (todo: Todo) => void; onAdd: (date: string | null) => void }) {
-  return <Page compact refreshControl={<RefreshControl refreshing={store.loading} onRefresh={store.refresh} tintColor={colors.blue} />}>
+  return <Page testID="todos-list-scroll" compact refreshControl={<RefreshControl refreshing={store.loading} onRefresh={store.refresh} tintColor={colors.blue} />}>
     <ScreenHeading embedded title="할 일"><Text style={styles.count}>{store.visible.length}</Text></ScreenHeading>
     <Text style={styles.date}>{new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' }).format(new Date())}</Text>
     <Text style={styles.hint}>좌우로 밀어 완료하거나 되돌려요</Text>

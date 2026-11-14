@@ -1,3 +1,9 @@
+# Design QA — Calendar comfort / 2026-11-14
+
+**final result: blocked** — user choice of Today background scope and actual native wheel/bounce/notification/VoiceOver verification remain pending. Implemented Expo web/synthetic API and ordinary/folded/open geometry checks pass. [Contract](docs/calendar-comfort-2026-11-14.md) · [reference comparison, evidence and limitations](docs/calendar-comfort-qa-2026-11-14.md). No new native build was requested.
+
+---
+
 # Design QA — Chat checklist / 2026-11-14
 
 **Result: passed for actual Expo web / synthetic API and device geometry; native touch, VoiceOver and TestFlight verification remain pending.** Ten new screenshots verify the compact checked/X/saved states, ordinary/folded/open layout, actual log navigation and unchanged camera column/fixed Calendar. No reference-image pixel fidelity or native device result is claimed.

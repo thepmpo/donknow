@@ -7,7 +7,9 @@ import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion }
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {Animated, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {DateTimeField} from './DateTimeField';
+import {todoReminderInstant,reminderDateLabel} from './calendar-display';
+import {deviceZone} from './calendar-model';
 import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, dateKey, validateDraft, formatDueDate } from './domain';
 import type { Draft, Todo } from './domain';
 import type { TodoStore } from './useTodos';
@@ -95,26 +97,23 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
     </Animated.View>
   </Animated.View>;
 }
-export function DateField({ value, onChange }: { value: string | null; onChange: (date: string | null) => void }) {
-  const [open, setOpen] = useState(false);
-  return <View><View style={s.dateField}><Label>예정일</Label>{Platform.OS === 'web' ? React.createElement('input',{'aria-label':'예정일 선택',type:'date',value:value??'',onChange:(event:React.ChangeEvent<HTMLInputElement>)=>onChange(event.target.value||null),style:{flex:1,minWidth:0,height:48,boxSizing:'border-box',border:0,borderRadius:12,padding:12,fontFamily:'inherit',fontSize:17,color:colors.text,background:colors.grouped}}) : <Pressable accessibilityRole="button" accessibilityLabel="예정일 선택" onPress={() => {Keyboard.dismiss();setOpen(!open);}} style={s.datePick}><Text style={{ color: colors.blueText }}>{value?formatDueDate(value):'날짜 선택'}</Text></Pressable>}{value && <Pressable onPress={() => { onChange(null); setOpen(false); }} style={{minHeight:44,minWidth:44,justifyContent:'center',alignItems:'center'}} accessibilityRole="button" accessibilityLabel="날짜 해제"><Text style={s.muted}>해제</Text></Pressable>}</View>
-    {open && Platform.OS !== 'web' && <DateTimePicker value={value ? new Date(value + 'T12:00:00') : new Date()} mode="date" display={Platform.OS === 'ios' ? 'spinner' : 'default'} locale="ko-KR" onChange={(event, date) => { if (Platform.OS !== 'ios') setOpen(false); if (event.type !== 'dismissed' && date) onChange(dateKey(date)); }} />}</View>;
-}
+export function DateField({value,onChange,disabled=false,activePicker,onPickerChange}:{value:string|null;onChange:(date:string|null)=>void;disabled?:boolean;activePicker?:string|null;onPickerChange?:(value:string|null)=>void}){return <DateTimeField label="예정일" inputLabel="예정일 선택" value={value} onChange={onChange} clearable disabled={disabled} activePicker={activePicker} onPickerChange={onPickerChange}/>;}
 export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?: Todo; dueDate: string | null; store: TodoStore; onClose: () => void }) {
   const {visible,close:onClose} = useModalDismiss(onDismiss);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
   const [notes,setNotes] = useState(todo?.notes ?? '');
-  const [alarm, setAlarm] = useState(!!todo?.reminderAt);
+  const [alarm, setAlarm] = useState(!!todo?.reminderAt),[alarmConfigured,setAlarmConfigured]=useState(!!todo?.reminderAt);
   const originalTime = todo?.reminderAt ? new Date(todo.reminderAt) : null;
+  const [alarmDay,setAlarmDay]=useState(originalTime?dateKey(originalTime):(todo?.dueDate??dueDate??dateKey(new Date())));
   const [alarmTime, setAlarmTime] = useState(originalTime ? `${String(originalTime.getHours()).padStart(2, '0')}:${String(originalTime.getMinutes()).padStart(2, '0')}` : '09:00');
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState(false),[activePicker,setActivePicker]=useState<string|null>(null);
   const [error, setError] = useState('');
   async function save() {
     setSaving(true); setError('');
     try {
       let reminderAt: string | null = null;
-      if (alarm) { if (!date || !/^([01]\d|2[0-3]):[0-5]\d$/.test(alarmTime)) throw new Error('예정일과 알림 시간을 확인해주세요.'); reminderAt = new Date(`${date}T${alarmTime}:00`).toISOString(); if (Date.parse(reminderAt) <= Date.now() && reminderAt !== todo?.reminderAt) throw new Error('알림은 미래 시간으로 정해주세요.'); }
+      if (alarm) { if (!alarmDay || !/^([01]\d|2[0-3]):[0-5]\d$/.test(alarmTime)) throw new Error('예정일과 알림 시간을 확인해주세요.'); reminderAt = todoReminderInstant(alarmDay,alarmTime,deviceZone(),todo?.reminderAt); if (Date.parse(reminderAt) <= Date.now() && reminderAt !== todo?.reminderAt) throw new Error('알림은 미래 시간으로 정해주세요.'); }
       const draft: Draft = validateDraft({ title, notes, dueDate: date, reminderAt, category: todo?.category ?? '일상' });
       const ok = todo ? await store.update(todo.id, { title: draft.title, dueDate: date, reminderAt: draft.reminderAt, notes: draft.notes }) : await store.add(draft);
       if (ok) onClose(); else setError('저장하지 못했어요. 연결을 확인하고 다시 시도해주세요.');
@@ -139,11 +138,11 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
     <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <DraggableSheet visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><CloseButton disabled={saving} onPress={onClose} /></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
+      <DraggableSheet testID="todo-editor-surface" visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><CloseButton disabled={saving} onPress={onClose} /></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
         <TextInput accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
-        <DateField value={date} onChange={setDate} /><NotesField value={notes} onChange={setNotes} disabled={saving} />
-        <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={setAlarm} disabled={saving} trackColor={{ true: colors.blue }} /></View>
-        {alarm && <View>{Platform.OS==='web'?<View style={{flexDirection:'row',gap:12}}>{(['시','분'] as const).map((unit,index)=>React.createElement('select',{key:unit,'aria-label':'알림 '+unit,value:alarmTime.slice(index?3:0,index?5:2),onChange:(event:React.ChangeEvent<HTMLSelectElement>)=>{const parts=alarmTime.split(':');parts[index]=event.target.value;setAlarmTime(parts.join(':'));},style:{minHeight:48,padding:12,borderRadius:12,border:'1px solid #dbe2ea',background:'#f5f7fa',fontSize:17}},...Array.from({length:index?60:24},(_,n)=>{const v=String(n).padStart(2,'0');return React.createElement('option',{key:v,value:v},v+unit);})) )}</View>:<DateTimePicker accessibilityLabel="알림 시간 선택" value={new Date(2000,0,1,Number(alarmTime.slice(0,2)),Number(alarmTime.slice(3)))} mode="time" display={Platform.OS==='ios'?'spinner':'default'} locale="ko-KR" onChange={(event,date)=>{if(date&&event.type!=='dismissed')setAlarmTime(`${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`);}}/>}<Text style={[s.muted, { marginVertical: 12 }]}>{store.reminders.supported ? store.reminders.enabled ? '선택한 시간에 이 기기에서 알려드려요.' : 'ME에서 기기 알림도 켜주세요.' : '웹에서는 시간을 저장해요. 알림은 아이폰에서 켤 수 있어요.'}</Text></View>}
+        <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/><NotesField value={notes} onChange={setNotes} disabled={saving} />
+        <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} disabled={saving} trackColor={{ true: colors.blue }} /></View>
+        {alarm&&<View style={{gap:12,backgroundColor:colors.grouped,padding:12,borderRadius:18}}><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 날짜" value={alarmDay} disabled={saving} onChange={value=>value&&setAlarmDay(value)}/><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 시간" value={alarmTime} mode="time" disabled={saving} onChange={value=>value&&setAlarmTime(value)}/><Text testID="todo-reminder-preview" style={s.muted}>{(()=>{try{const at=todoReminderInstant(alarmDay,alarmTime,deviceZone(),todo?.reminderAt);return at?reminderDateLabel(at,deviceZone())+(Date.parse(at)<=Date.now()?' · 이미 지난 시각이에요.':'에 알려드려요.'):'알림 날짜와 시간을 선택해주세요.';}catch{return '이 날짜와 시간은 사용할 수 없어요. 다시 선택해주세요.';}})()}</Text><Text style={s.muted}>{store.reminders.supported?store.reminders.enabled?'이 기기에서 알림을 받아요.':'ME에서 기기 알림도 켜주세요.':'웹에서는 예약을 저장해요. 알림은 아이폰에서 켤 수 있어요.'}</Text></View>}
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
         {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} /><Text style={s.muted}>공유창에서 카카오톡을 선택하세요. 웹에서 공유창을 지원하지 않으면 내용을 복사해요. 저장된 내용이 공유돼요.</Text>{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
         {!!todo && <Pressable accessibilityRole="button" disabled={saving} onPress={remove} style={s.deleteButton}><Text style={s.deleteText}>할 일 삭제</Text></Pressable>}
@@ -165,7 +164,7 @@ export const s = StyleSheet.create({
   todoBody: { flex: 1, minHeight: 44, justifyContent: 'center' }, todoTitle: { ...typography.list, color: colors.text }, doneText: { color: colors.subtle, textDecorationLine: 'line-through' }, todoDate: { ...typography.caption, color: colors.muted, marginTop: 2 }, pendingText: { ...typography.caption, color: colors.blueText, marginTop: 2 },
   more: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }, moreText: { fontSize: 23, color: colors.muted }, restore: { ...typography.caption, color: colors.blueText },
   dateField: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg, flexWrap: 'wrap' }, dateInput: { flex: 1, minHeight: 48, padding: spacing.md, borderRadius: radius.small, backgroundColor: colors.grouped, color: colors.text, ...typography.detail }, datePick: { flex: 1, minHeight: 44, padding: spacing.md, alignItems: 'flex-end', justifyContent: 'center' },
-  modalBackdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight:'90%', backgroundColor: colors.bg, padding: spacing.xl, paddingBottom: 38, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, width: '100%', maxWidth: 600, alignSelf: 'center' }, sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xl },
+  modalBackdrop: { flex: 1, backgroundColor: colors.scrim, justifyContent: 'flex-end' }, sheet: { maxHeight:'90%', backgroundColor: colors.sheet, padding: spacing.xl, paddingBottom: 38, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, width: '100%', maxWidth: 600, alignSelf: 'center' }, sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xl },
   editorInput: { ...typography.body, color: colors.text, backgroundColor: colors.grouped, padding: spacing.lg, borderRadius: radius.button, minHeight: 60 }, error: { ...typography.caption, color: colors.danger, marginVertical: spacing.md }, deleteButton: { alignItems: 'center', minHeight: 48, padding: 18, marginTop: 10 }, deleteText: { ...typography.detail, color: colors.danger },
   empty: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 56, gap: spacing.md }, emptyText: { ...typography.detail, color: colors.muted, textAlign: 'center' },
   card: { backgroundColor: colors.surface, borderRadius: radius.card, padding: spacing.xl, marginTop: spacing.xl },

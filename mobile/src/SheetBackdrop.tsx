@@ -1,3 +1,4 @@
+import {colors} from './theme';
 import React,{createContext,useCallback,useContext,useLayoutEffect,useRef,useState} from 'react';
 import {Animated,Pressable,StyleSheet,View,useWindowDimensions} from 'react-native';
 type Anchor=React.RefObject<React.ComponentRef<typeof View>|null>;
@@ -21,4 +22,4 @@ export function useSheetTopBackdrop(anchor:Anchor,onPress:()=>void,disabled:bool
  const register=useContext(Context),press=useRef(onPress);press.current=onPress;const {width,height}=useWindowDimensions();
  useLayoutEffect(()=>register(anchor,()=>press.current(),disabled,opacity),[register,anchor,disabled,width,height,opacity]);
 }
-const styles=StyleSheet.create({strip:{position:'absolute',top:0,zIndex:30,backgroundColor:'#00000055'}});
+const styles=StyleSheet.create({strip:{position:'absolute',top:0,zIndex:30,backgroundColor:colors.scrim}});
