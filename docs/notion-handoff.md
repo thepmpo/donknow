@@ -1,11 +1,19 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-14 · 한국 시간 · 기능 코드 5d546ba · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-14 · 한국 시간 · 기능 코드 9efa6d8 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-14
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md) · [검수·실기기 대기](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -318,6 +326,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](keyboard-done-2026-11-14.md) · [검수·실기기 대기](keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -1101,6 +1117,14 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](keyboard-done-2026-11-14.md) · [검수·실기기 대기](keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -2173,10 +2197,12 @@ bdc158a Publish implemented ME flows, fresh screens and reproducible handoff
 24e38cd Simplify chat and calendar editing with scoped consent and safe source actions
 60462e2 Publish chat and calendar simplicity contract, QA and current screens
 5d546ba Add multiple Google accounts and personalized briefings with a clean chat composer
+c2354f1 Publish multiple-account flows, clean chat screens and keyboard design previews
+9efa6d8 Add keyboard Done accessory across iPhone inputs
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 5d546ba에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 9efa6d8에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -5861,17 +5887,17 @@ bdc158a Publish implemented ME flows, fresh screens and reproducible handoff
 
 ### keyboard 1 in composer
 파일: `artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-1-in-composer.png`
-분류: 키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님 · 1,467,468 bytes · SHA-256 `2c749d0b4671b9a05fe9756813600603773cf43bf6d25e86c8d09f59661cad23`
+분류: 키보드 내리기 ImageGen 시안 · 2번 선택/코드 구현·native 검수 대기 · 실제 앱/native 캡처 아님 · 1,467,468 bytes · SHA-256 `2c749d0b4671b9a05fe9756813600603773cf43bf6d25e86c8d09f59661cad23`
 ![artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-1-in-composer.png](https://raw.githubusercontent.com/thepmpo/donknow/5d546bab7b1646209e0f78758af336c0257ae8ab/artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-1-in-composer.png)
 
 ### keyboard 2 accessory done
 파일: `artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png`
-분류: 키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님 · 1,377,457 bytes · SHA-256 `5340c8e5b02293950b3d51a3f7672422cb8ecefdc94982934158da5c97455db7`
+분류: 키보드 내리기 ImageGen 시안 · 2번 선택/코드 구현·native 검수 대기 · 실제 앱/native 캡처 아님 · 1,377,457 bytes · SHA-256 `5340c8e5b02293950b3d51a3f7672422cb8ecefdc94982934158da5c97455db7`
 ![artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png](https://raw.githubusercontent.com/thepmpo/donknow/5d546bab7b1646209e0f78758af336c0257ae8ab/artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png)
 
 ### keyboard 3 interactive dismiss
 파일: `artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-3-interactive-dismiss.png`
-분류: 키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님 · 1,393,755 bytes · SHA-256 `9afb0ac012408bc07fcca573a8f95f5b5d939afa7e5a69b229554fe9926344c2`
+분류: 키보드 내리기 ImageGen 시안 · 2번 선택/코드 구현·native 검수 대기 · 실제 앱/native 캡처 아님 · 1,393,755 bytes · SHA-256 `9afb0ac012408bc07fcca573a8f95f5b5d939afa7e5a69b229554fe9926344c2`
 ![artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-3-interactive-dismiss.png](https://raw.githubusercontent.com/thepmpo/donknow/5d546bab7b1646209e0f78758af336c0257ae8ab/artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-3-interactive-dismiss.png)
 
 ### 01 open calendar todo
@@ -6540,7 +6566,7 @@ bdc158a Publish implemented ME flows, fresh screens and reproducible handoff
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/5d546bab7b1646209e0f78758af336c0257ae8ab
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/9efa6d8fc701af3d3255e8b1923cf660e032b8b3
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -6700,6 +6726,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ### 原文 / AGENTS.md
 
 ### duckduck 개발·인계 지침
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md) · [검수·실기기 대기](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -7040,9 +7074,68 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 原文 / docs/keyboard-done-2026-11-14.md
+
+### 키보드 위 ‘완료’ — 2번 선택·앱 전체 적용
+
+상태: **사용자 선택 확정 / 코드 구현 / 네이티브 빌드·실기기 검수 대기**. 2026-11-14의 “2번으로 하고 키보드 쓸때마다 모두 나오도록”이 이전 미선택 상태를 대체한다.
+
+#### 선택한 화면과 동작
+
+[2번 시안 원본](https://github.com/thepmpo/donknow/blob/main/artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png). 입력창 바로 아래, 실제 iOS 키보드 바로 위의 얇은 시스템 바에 파란 **완료**를 오른쪽 정렬한다. 바 높이는 최소44pt, 배경/색상은 UIKit의 시스템 외형을 따른다. 이미지는 선택용 합성 시안이며 구현 후 캡처가 아니다. 기존 앱의 폰트·내비게이션·Duo 하드웨어 위치가 이미지와 다르다는 이유로 변경하지 않는다.
+
+일반 iPhone과 Duo 접힘·펼침 모두 앱의 입력칸에 공통 적용한다. AI 채팅, Todo 제목·메모, 캘린더 텍스트 편집, 검색, 이름, 로그인·비밀번호, 인증번호·숫자, 시간대·예약·연결 설정과 모달 안 입력칸을 포함한다. 새 React Native 입력칸도 자동 포함한다. Google 로그인 브라우저나 iOS 자체 입력 화면은 해당 서비스/시스템이 관리한다.
+
+**완료는 키보드만 닫는다.** 작성 중 내용·초안과 현재 화면을 유지하고 전송/저장/실행/뒤로가기를 호출하지 않는다. Return/Enter의 기존 의미와 자동 초점 제거 정책도 유지한다. 입력창 안에 새 버튼이나 새 쓸어 내리기 동작을 추가하는 안은 선택하지 않았다.
+
+#### 구현 위치와 재현 규칙
+
+- `mobile/modules/duckduck-duo/ios/DuckduckKeyboardModule.swift`: 별도 Expo 모듈 이름 `DuckduckKeyboard`. UIKit의 입력 시작/키보드 표시·프레임 알림을 관찰한다. 실제 포커스를 가진 RN `RCTUITextField`/`RCTUITextView`와 그 하위 클래스에만 `UIToolbar`를 연결한다. UIKit 창들을 확인하므로 모달 입력도 포함한다.
+- `mobile/modules/duckduck-duo/expo-module.config.json`: 기존 Duo 모듈과 함께 등록한다. 기존 pod의 Swift 파일 glob으로 포함하며 SDK·서명·패키지 의존성을 바꾸지 않는다.
+- `mobile/src/keyboard-done.ts`와 `mobile/App.tsx`의 `Shell`: 앱 전체 수명에 한 번 활성화하고 해제 시 observer와 본인이 설치한 바만 복원한다. 웹/Android·구버전 바이너리에서 모듈이 없어도 기존 입력은 유지한다.
+- `완료` action은 `resignFirstResponder()`만 호출한다. 입력 텍스트를 읽거나 저장·전송하지 않는다. 비밀번호도 JS/로그로 보내지 않는다.
+- 같은 입력의 동일 바는 다시 만들거나 reload하지 않아 반복 알림 루프를 막는다. 종료할 때 아직 본인 바인 경우에만 원래 accessory를 복원한다. UIKit이 회전/키보드 높이·위치를 관리한다.
+
+React Native의 deprecated `InputAccessoryView`는 공식 문서에 여러 줄·하단 탭 관련 알려진 문제가 있어 사용하지 않았다. 설치된 RN0.88.1의 숫자 키패드 기본 완료는 submit 이벤트를 호출하므로 재사용하지 않는다. 근거: [RN 공식 문서](https://reactnative.dev/docs/inputaccessoryview), 설치된 `RCTTextInputComponentView.mm`의 `setDefaultInputAccessoryView`/`handleInputAccessoryDoneButton`.
+
+#### 검증과 설치 범위
+
+[검수 영수증·실기기 체크리스트](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). JS 검사와 모듈 자동 연결 확인을 Swift 컴파일/실제 키보드 검증으로 표현하지 않는다. Linux에는 Xcode/UIKit 실행 환경이 없어 네이티브 시각 대조·VoiceOver·한국어 조합 입력은 대기다.
+
+최근 확인된 TestFlight는 사용자 실행43573843501·소스60462e2의 **1.0.0(32)**이며 이 코드를 포함하지 않는다. 앱을 새로 빌드하고 TestFlight에서 업데이트해야 한다. 현재 요청에서 새 네이티브 빌드를 자동 시작하지 않는다. 무료 수동 빌드 정책·데이터/인증·사무실/소개 사이트 보류를 유지한다. 서버 문서 배포만으로 설치된 앱에 네이티브 바가 생기지 않는다.
+
+#### 다음 작업자가 실제 기기에서 확인할 항목
+
+1. 일반 iPhone과 Duo 접힘/펼침·가로/세로에서 키보드를 반복 열고 전환해 오른쪽 완료 바 하나만 보이는지 확인한다.
+2. 한 줄/여러 줄/한국어 조합/자동 완성/붙여넣기/비밀번호/숫자·인증번호와 모달에서 확인한다.
+3. 완료 후 내용·초안 유지, 전송/저장/API 실행0, 다시 탭하면 재입력 가능함을 확인한다.
+4. 긴 채팅·키보드 종류 변경·회전·큰 글자·밝게/어둡게·VoiceOver·하드웨어 키보드 연결/해제에서 겹침·가림·반복 reload가 없는지 확인한다.
+5. 일반 하단 탭과 Duo 카메라 열·반대 pane·닫기/저장 위치를 보존한다. 합성 웹 키보드로 대체하지 않는다.
+
+### 原文 / docs/keyboard-done-qa-2026-11-14.md
+
+### 키보드 완료 바 — 검수 영수증
+
+#### 확인한 결과
+
+- 전체 단위292개 중291통과·실패0·기존 선택1제외. 이 수치는 기존 JS/서버 회귀이며 UIKit 동작 테스트가 아니다.
+- 서버/웹/도구50파일 문법 검사와 모바일 TypeScript 통과.
+- Expo web export 및 iOS JS export 통과. IPA/서명·Swift 컴파일을 뜻하지 않는다.
+- Expo Apple autolinking resolve에 기존 `DuckduckDuoModule`과 새 `DuckduckKeyboardModule`이 같은 로컬 pod로 포함됨을 확인했다.
+- 실제 Expo 웹/격리 API 전체 앱 회귀와 Duo 접힘·펼침/분할·기하 회귀 통과. 임시 캡처는 `/tmp/keyboard-done-app-regression`, `/tmp/keyboard-done-duo-regression`에 만들었으며 이전 화면 근거를 덮지 않았다.
+- 소스 검토: 현재14개 RN TextInput 사용 파일의 한 줄·여러 줄·보안·숫자 입력을 같은 네이티브 클래스 관찰로 포함한다. Done action은 resign만 하며 텍스트 접근·submit·저장·통신을 하지 않는다. 반복 알림은 설치된 바 동일성으로 차단하고 해제 시 원래 바를 복원한다.
+
+#### 네이티브 시각·동작 검수
+
+**final result: blocked** — Linux 작업 환경에 Xcode·UIKit 시뮬레이터가 없어 Swift 컴파일·실제 키보드 캡처·선택 시안과의 같은 상태 시각 대조를 하지 못했다. 웹 회귀 캡처를 네이티브 완료 바의 검수 증거로 제시하지 않는다. 원본은 [2번 선택 시안](https://github.com/thepmpo/donknow/blob/main/artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png), 실제 기기 수락 항목은 [구현 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md)에 있다.
+
+실제 최신 확인 앱1.0.0(32)은 이번 코드 이전이다. 새 native 빌드/설치 이후 이 목록을 확인하고 영수증을 갱신한다. 새 빌드 번호·Apple 처리 완료·사용자 설치를 추정하지 않는다. 실계정 로그인/모델/Google 원본 쓰기를 실행하지 않았다.
+
 ### 原文 / docs/multi-google-clean-chat-2026-11-14.md
 
 ### 간결한 채팅·Google 여러 계정·맞춤 브리핑 — 2026-11-14
+
+> 후속 확정: 사용자가 2번을 선택하고 앱 전체 적용을 승인했다. 현재 구현/미검수 범위는 [완료 바 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md)이 우선한다. 아래 “시안만”은 선택 전 이력이다.
 
 사용자 결정은 **키보드 내리기는 디자인 먼저, 나머지는 모두 구현**이다. 일반 iPhone 하단 탭과 Duo 카메라 열/가로 펼침의 왼쪽 고정 Calendar를 유지한다. 이번 구현은 60462e2의 native32 이후이며 새 앱 업데이트가 필요하다. 키보드 버튼/새 제스처는 선택 전까지 구현하지 않는다.
 
@@ -8906,6 +8999,14 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 ### 原文 / docs/continuation-guide.md
 
 ### 덕 — 다른 채팅에서 그대로 이어 만드는 현재 기준서
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md) · [검수·실기기 대기](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -12370,6 +12471,12 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 
 ### 재사용 가능한 제품·AI 협업 디자인 원칙
 
+#### 키보드 공통 원칙 — 선택과 적용 범위·native 검수
+
+입력을 닫는 조작은 저장/전송과 분리하고 작성 중 내용을 보존한다. 반복되는 폼마다 opt-in을 요구하기보다 앱 공통 네이티브 계층에서 일관되게 제공한다. 시스템 외형과 키보드 소유권을 존중하며 외부 서비스 입력 화면을 임의로 바꾸지 않는다. native UI는 실제 기기/시뮬레이터 검수를 따로 남기고 웹 모양으로 통과를 주장하지 않는다.
+
+덕의 선택은 [2번 완료 바](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md)이며 최소44pt·오른쪽 완료·한글 문구는 덕의 계약이다. 다른 서비스에는 자체 플랫폼/사용자 선택에 맞춘다.
+
 #### 2026-11-14 — 보낸 입력과 다음 초안·여러 외부 계정
 
 보낸 내용과 아직 쓰는 다음 문장을 구분한다. 전송 시작 때 입력을 비우되 비동기 응답/실패/재시도가 다음 초안을 지우지 않게 한다. 연결 서비스를 하나의 계정으로 가정하지 않고 계정별 권한/소유권/캐시/원본 ID/실행·동의 범위를 고정한다. 반복 예약의 동의도 새 연결로 자동 확대하지 않는다. 소스/실행 정보는 필요한 관리 경로에 남기되 대화 본문을 상시 운영 화면으로 만들지 않는다. 먼저 보여달라는 시안과 승인된 구현의 증거를 분리한다. [덕 계약](https://github.com/thepmpo/donknow/blob/main/docs/multi-google-clean-chat-2026-11-14.md)의 수치·계정 수·물리 카메라 열은 제품별 선택이다.
@@ -12516,6 +12623,14 @@ Apple 공식 원칙과 제품 구현값을 구분한다. 다른 OS에서 native 
 ### 原文 / docs/current-ui-comparison.md
 
 ### 현재 UI·기능 통합 대조 — 2026-11-10
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md) · [검수·실기기 대기](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -13035,6 +13150,14 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 ### 原文 / docs/testflight-automation.md
 
 ### iPhone 테스트 수동 빌드·자동 제출
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md) · [검수·실기기 대기](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 
@@ -14163,6 +14286,14 @@ expo-blur를 새로 추가했으므로 기존 TestFlight 앱에서 OTA만으로 
 ### 原文 / docs/design-guide.md
 
 ### duckduck 디자인 적용 기준
+
+#### 2026-11-14 — 키보드 2번 확정·앱 전체 완료 바
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-2026-11-14.md) · [검수·실기기 대기](https://github.com/thepmpo/donknow/blob/main/docs/keyboard-done-qa-2026-11-14.md). 사용자가 **2번 키보드 위 완료 바를 모든 입력에** 승인했다. 일반 iPhone/Duo 접힘·펼침 모두 채팅·메모·검색·로그인/비밀번호·숫자·모달 입력을 포함한다. 실제 키보드 위 최소44pt 시스템 바·오른쪽 파란 완료이며, 완료는 입력을 유지하고 키보드만 내린다. 전송/저장/실행/뒤로가기는 호출하지 않는다.
+
+기존 로컬 Expo pod에 별도 `DuckduckKeyboardModule`을 등록하고 Shell 수명에서 활성화한다. RN UITextField/UITextView를 관찰해 현재/새 입력에 공통 적용한다. 반복 알림은 설치 동일성으로 차단하고 종료 시 observer/본인이 설치한 바를 복원한다. 외부 로그인 브라우저/OS 입력·웹은 가짜 키보드로 바꾸지 않는다. 일반폰 하단탭/Duo 카메라 열·왼쪽 고정 Calendar/반대 pane·기존 초안/인증을 유지한다.
+
+전체292중291통과·실패0·기존선택1제외,50문법/타입·web/iOS JS·모듈 자동 연결·전체앱/Duo 회귀 통과. **Linux에 Xcode/UIKit이 없어 Swift 컴파일·실제 키보드 표시/VoiceOver/한국어 조합 검수는 대기**다. 선택 시안과 실제 native 캡처를 대조했다고 말하지 않는다. 최신 확인1.0.0(32)에는 없으므로 새 native 빌드/업데이트가 필요하다. 이번 요청에서 추가 native 빌드를 자동 시작하지 않는다. 무료/수동 정책·DB/인증/서명·복구bundle·사무실/소개사이트 보류를 유지한다. 아래 키보드 미선택·미구현은 선택 전 이력이다.
 
 #### 2026-11-14 — 간결한 채팅·Google 여러 계정·맞춤 브리핑
 

@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "5d546bab7b1646209e0f78758af336c0257ae8ab",
+  "codeCommit": "9efa6d8fc701af3d3255e8b1923cf660e032b8b3",
   "assetCommit": "5d546bab7b1646209e0f78758af336c0257ae8ab",
   "imageCount": 860,
   "images": [
@@ -5130,21 +5130,21 @@
     },
     {
       "path": "artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-1-in-composer.png",
-      "category": "키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님",
+      "category": "키보드 내리기 ImageGen 시안 · 2번 선택/코드 구현·native 검수 대기 · 실제 앱/native 캡처 아님",
       "bytes": 1467468,
       "sha256": "2c749d0b4671b9a05fe9756813600603773cf43bf6d25e86c8d09f59661cad23",
       "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__design-previews__keyboard-1-in-composer.png"
     },
     {
       "path": "artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png",
-      "category": "키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님",
+      "category": "키보드 내리기 ImageGen 시안 · 2번 선택/코드 구현·native 검수 대기 · 실제 앱/native 캡처 아님",
       "bytes": 1377457,
       "sha256": "5340c8e5b02293950b3d51a3f7672422cb8ecefdc94982934158da5c97455db7",
       "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__design-previews__keyboard-2-accessory-done.png"
     },
     {
       "path": "artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-3-interactive-dismiss.png",
-      "category": "키보드 내리기 선택 전 ImageGen 시안 · 미선택/미구현 · 실제 앱/native 캡처 아님",
+      "category": "키보드 내리기 ImageGen 시안 · 2번 선택/코드 구현·native 검수 대기 · 실제 앱/native 캡처 아님",
       "bytes": 1393755,
       "sha256": "9afb0ac012408bc07fcca573a8f95f5b5d939afa7e5a69b229554fe9926344c2",
       "import_path": "images/artifacts__multi-google-clean-chat-2026-11-14__design-previews__keyboard-3-interactive-dismiss.png"
