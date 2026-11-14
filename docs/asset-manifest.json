@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "fbcc0967e2d4486f2c60904836d02f9d1fa5da3a",
-  "assetCommit": "fbcc0967e2d4486f2c60904836d02f9d1fa5da3a",
-  "imageCount": 898,
+  "codeCommit": "28839983fcfbdbb3c5ac47dc5ed2164e80349802",
+  "assetCommit": "28839983fcfbdbb3c5ac47dc5ed2164e80349802",
+  "imageCount": 906,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -5085,6 +5085,62 @@
       "bytes": 68497,
       "sha256": "e22fa4573a2c2eaa93166fb67f2e4394cbf21bb2a10d2731cc64e330a0530480",
       "import_path": "images/artifacts__interaction-repair-2026-11-14__current__15-editable-draft-before-calendar-write-access.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/01-phone-memo-keyboard.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 25938,
+      "sha256": "63cf9ddabab9f81d286092d355fb26b0cae44e712102330fd1663438408d4c01",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__01-phone-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/02-folded-memo-keyboard.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 22305,
+      "sha256": "3d55e75e10a6c90ad173fc5cd182ff17c408979e5f7beaebf974dceca5e2cf54",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__02-folded-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/03-open-landscape-memo-keyboard.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 23286,
+      "sha256": "059fdb76de9986e36fc416f514e33a5638c6e39fbb5b26a4837258a2367bf9f0",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__03-open-landscape-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/04-open-portrait-memo-keyboard.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 27666,
+      "sha256": "1cbd397f73981f67803a4ecfd85208bbac687d6351c5e25fe32be7f684390b5b",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__04-open-portrait-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/05-dark-duo-today-shade.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 35566,
+      "sha256": "3c4f01218e12672082ae612c1a1e1f3fe24ef7f727595dbd1ba7e04d14bccf94",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__05-dark-duo-today-shade.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/05-dark-phone-today-shade.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 34093,
+      "sha256": "3e134c8829418a9ffde3decc532916c77ced7c7a60b14a1116b8e0d086cc5ad8",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__05-dark-phone-today-shade.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/05-light-duo-today-shade.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 34770,
+      "sha256": "d4a39cd8121650c31e35a43d857bf591d541437c910a4724b1389432cc1cee58",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__05-light-duo-today-shade.png"
+    },
+    {
+      "path": "artifacts/keyboard-device-2026-11-14/current/05-light-phone-today-shade.png",
+      "category": "기기별 키보드·메모 가림·오늘 칸 음영 · Expo/합성 API·Duo 기하 · 실제 native 키보드 아님",
+      "bytes": 33448,
+      "sha256": "60d3ccf5cae9ff0a3ae833b885852582928f52c69a5306b1731adc23f13dc1e8",
+      "import_path": "images/artifacts__keyboard-device-2026-11-14__current__05-light-phone-today-shade.png"
     },
     {
       "path": "artifacts/log.png",
