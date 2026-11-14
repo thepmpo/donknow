@@ -8,10 +8,11 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
   const supported = Platform.OS !== 'web';
   const [enabled, setEnabled] = useState(false), [ready, setReady] = useState(false), [error, setError] = useState('');
   const [version, setVersion] = useState(0), [busy, setBusy] = useState(false);
+  const [permission,setPermission]=useState<'unknown'|'allowed'|'denied'>('unknown');
   const generation = useRef(0), queue = useRef<Promise<unknown>>(Promise.resolve());
   const currentOwner = useRef(owner); currentOwner.current = owner;
   const calendarCache=useRef<{owner:string|null;items:CalendarReminder[]}>({owner:null,items:[]});
-  useEffect(() => { let active = true; setReady(false); setEnabled(false); AsyncStorage.getItem('duckduck.reminders.' + (owner ?? 'none')).then(value => { if (active) { setEnabled(value === 'true'); setReady(true); } }).catch(() => { if (active) setReady(true); }); return () => { active = false; }; }, [owner]);
+  useEffect(() => { let active = true; setReady(false); setEnabled(false);setPermission('unknown');setError('');setBusy(false); AsyncStorage.getItem('duckduck.reminders.' + (owner ?? 'none')).then(value => { if (active) { setEnabled(value === 'true'); setReady(true); } }).catch(() => { if (active) setReady(true); }); return () => { active = false; }; }, [owner]);
   useEffect(() => { const listener = AppState.addEventListener('change', state => { if (state === 'active') setVersion(value => value + 1); }); return () => listener.remove(); }, []);
   useEffect(() => {
     const run = ++generation.current;
@@ -23,6 +24,7 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
       const permission = await notifications.getPermissionsAsync();
       const allowed = permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL;
       if (run !== generation.current) return;
+      setPermission(allowed?'allowed':permission.status==='denied'?'denied':'unknown');
       if(calendarCache.current.owner!==owner)calendarCache.current={owner,items:[]};
       let calendarError='';
       if(owner&&enabled&&allowed&&request){try{
@@ -42,14 +44,14 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
     if (!owner || !supported || busy) return false;
     const originalOwner = owner; setBusy(true); setError('');
     try {
-      if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: '덕 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync(); if (!(permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL)) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return false; } }
+      if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: '덕 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync();if(currentOwner.current!==originalOwner)return false;const allowed=permission.granted||permission.ios?.status===notifications.IosAuthorizationStatus.PROVISIONAL;setPermission(allowed?'allowed':permission.status==='denied'?'denied':'unknown'); if (!allowed) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return false; } }
       if (currentOwner.current !== originalOwner) return;
       await AsyncStorage.setItem('duckduck.reminders.' + originalOwner, String(value));
       if (currentOwner.current !== originalOwner) return;
       setEnabled(value); setVersion(current => current + 1);
       return true;
     } catch { if (currentOwner.current === originalOwner) setError('알림 설정을 저장하지 못했어요.'); }
-    finally { setBusy(false); }
+    finally { if(currentOwner.current===originalOwner)setBusy(false); }
   }, [owner, supported, busy]);
   async function clear() {
     generation.current++;
@@ -57,5 +59,5 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
     const result=queue.current.catch(()=>undefined).then(async()=>{const notifications=await import('expo-notifications');await reconcileReminders(notifications,[],date=>({type:notifications.SchedulableTriggerInputTypes.DATE,date} as const));return true;});
     queue.current=result;try{return await result;}catch{setError('일부 알림을 지우지 못했어요. 아이폰 알림 설정을 확인해주세요.');return false;}
   }
-  return { clear, supported, enabled, busy, error, toggle, retry: () => setVersion(value => value + 1) };
+  return { clear, supported, enabled, busy, error, permission, toggle, retry: () => setVersion(value => value + 1) };
 }

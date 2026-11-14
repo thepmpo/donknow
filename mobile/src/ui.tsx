@@ -27,10 +27,10 @@ export function BackButton({onPress,disabled=false}:{onPress:()=>void;disabled?:
   const duo=useDuoBackAction(onPress,disabled);
   return duo?null:<Button title="돌아가기" quiet disabled={disabled} onPress={onPress}/>;
 }
-export function Page({ children, refreshControl, compact = false, scrollRef }: { scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean }) {
+export function Page({ children, refreshControl, compact = false, scrollRef,onScroll,testID }: { scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean;onScroll?:React.ComponentProps<typeof ScrollView>['onScroll'];testID?:string }) {
   const insets=useSafeAreaInsets();
   const duo=useDuoTrailingNavigation();
-  return <MotionView style={{flex:1}} distance={0}><ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
+  return <MotionView style={{flex:1}} distance={0}><ScrollView ref={scrollRef} testID={testID} onScroll={onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap}]}>{children}</ScrollView></MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false }: { todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean }) {
   const reduced = useReducedMotion();

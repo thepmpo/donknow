@@ -1,0 +1,65 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "01-me-overview.png",
+    "02-google-overview.png",
+    "03-google-permissions.png",
+    "04-completed-reference.png",
+    "05-stale-connection.png",
+    "06-account-delete.png",
+    "07-long-name-overview.png",
+    "08-notifications.png",
+    "09-privacy.png",
+    "10-advanced.png",
+    "11-export.png",
+    "12-notion-connect.png",
+    "13-folded-overview.png",
+    "15-folded-account.png",
+    "14-open-overview.png",
+    "16-open-account.png",
+    "17-small-dark.png"
+  ],
+  "googleDefaultButtons": 5,
+  "backupReads": 1,
+  "exports": 1,
+  "disconnects": 1,
+  "imports": 1,
+  "taskSyncReads": 3,
+  "authCalls": [
+    {
+      "features": [
+        "calendar",
+        "tasks",
+        "gmailSend"
+      ]
+    },
+    {
+      "features": [
+        "calendar",
+        "tasks",
+        "tasksWrite"
+      ]
+    }
+  ],
+  "resourceReads": [
+    {
+      "feature": "tasks",
+      "status": "incomplete"
+    },
+    {
+      "feature": "tasks",
+      "status": "incomplete",
+      "channel": "list"
+    },
+    {
+      "feature": "tasks",
+      "status": "completed",
+      "channel": "list"
+    }
+  ],
+  "scroll": {
+    "beforeScroll": 51,
+    "afterScroll": 51
+  },
+  "errors": []
+}
