@@ -1,3 +1,11 @@
+# Design QA — Keyboard accessory option 2 / 2026-11-14
+
+**final result: blocked** — native visual/runtime QA needs an Xcode build and actual iPhone/Duo keyboard. The approved option is implemented in the shared UIKit accessory. TypeScript, Apple autolinking, web/iOS JS export, full app and Duo web regressions pass; none proves Swift compilation or native fidelity. No synthetic keyboard screenshot is presented as actual implementation evidence.
+
+Reference: [selected option 2](artifacts/multi-google-clean-chat-2026-11-14/design-previews/keyboard-2-accessory-done.png). [Implementation contract](docs/keyboard-done-2026-11-14.md) and [receipts / pending device matrix](docs/keyboard-done-qa-2026-11-14.md). Existing native 1.0.0(32) predates this change; a new build is required. No new native build was requested in this task.
+
+---
+
 # Design QA — Apple Calendar reference / 2026-11-13
 
 **Result: passed for implemented Expo-web/isolated-API scope. Native device and real-account verification remain blocked on a new installed binary and authenticated user reproduction.**

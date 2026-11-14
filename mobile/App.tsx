@@ -1,4 +1,5 @@
 import {DuoWorkspace} from './src/DuoWorkspace';
+import {enableKeyboardDone} from './src/keyboard-done';
 import {useDuoScene} from './src/DuoChrome';
 import {listenForDuckNotification} from './src/push';
 import { DuoSafeSurface, useDuoTrailingNavigation } from './src/DuoLayout';
@@ -22,6 +23,7 @@ import { LogScreen } from './src/screens/LogScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { ConnectionScreen } from './src/screens/ConnectionScreen';
 export function Shell() {
+  useEffect(enableKeyboardDone,[]);
   const store = useTodos();
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
