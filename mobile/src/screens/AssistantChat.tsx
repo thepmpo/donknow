@@ -1,6 +1,7 @@
+import {ScrollArea as ScrollView} from '../ScrollArea';
 import type {ScheduledMessage} from '../useAutomations';
 import React,{useEffect,useRef,useState} from 'react';
-import {ActivityIndicator,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
+import {ActivityIndicator,StyleSheet,Text,TextInput,View} from 'react-native';
 import type {LayoutChangeEvent} from 'react-native';
 import {MotionPressable as Pressable,useReducedMotion} from '../motion';
 import {Button,colors,DateField} from '../ui';

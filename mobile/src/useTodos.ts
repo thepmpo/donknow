@@ -19,7 +19,6 @@ export function useTodos() {
   }, []);
   const [pending, setPending] = useState<Record<string, number>>({});
   const reminderOwner = connection?.mode === 'demo' ? 'demo' : user && connection?.mode === 'cloud' ? connection.baseUrl + ':' + user.id : null;
-  const reminders = useReminders(todos, reminderOwner);
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
@@ -212,6 +211,7 @@ export function useTodos() {
       throw e;
     }
   }, [connection, renderGeneration]);
+  const reminders = useReminders(todos, reminderOwner,connection?.mode==='cloud'&&user?featureRequest:undefined);
   async function refreshAccount() {
     if (connection?.mode !== 'cloud') return;
     const version = renderGeneration;

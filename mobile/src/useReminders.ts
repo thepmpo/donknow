@@ -2,13 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Todo } from './domain';
-import { reminderPlan, reconcileReminders } from './reminder-plan';
-export function useReminders(todos: Todo[], owner: string | null) {
+import { reminderPlan, reconcileReminders,validCalendarReminderPlan,retainedCalendarReminders } from './reminder-plan';
+import type {CalendarReminder} from './reminder-plan';
+export function useReminders(todos: Todo[], owner: string | null,request?:(path:string)=>Promise<unknown>) {
   const supported = Platform.OS !== 'web';
   const [enabled, setEnabled] = useState(false), [ready, setReady] = useState(false), [error, setError] = useState('');
   const [version, setVersion] = useState(0), [busy, setBusy] = useState(false);
   const generation = useRef(0), queue = useRef<Promise<unknown>>(Promise.resolve());
   const currentOwner = useRef(owner); currentOwner.current = owner;
+  const calendarCache=useRef<{owner:string|null;items:CalendarReminder[]}>({owner:null,items:[]});
   useEffect(() => { let active = true; setReady(false); setEnabled(false); AsyncStorage.getItem('duckduck.reminders.' + (owner ?? 'none')).then(value => { if (active) { setEnabled(value === 'true'); setReady(true); } }).catch(() => { if (active) setReady(true); }); return () => { active = false; }; }, [owner]);
   useEffect(() => { const listener = AppState.addEventListener('change', state => { if (state === 'active') setVersion(value => value + 1); }); return () => listener.remove(); }, []);
   useEffect(() => {
@@ -21,19 +23,31 @@ export function useReminders(todos: Todo[], owner: string | null) {
       const permission = await notifications.getPermissionsAsync();
       const allowed = permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL;
       if (run !== generation.current) return;
-      await reconcileReminders(notifications, reminderPlan(todos, owner, enabled && allowed), date => ({ type: notifications.SchedulableTriggerInputTypes.DATE, date } as const));
-      if (run === generation.current) setError(enabled && !allowed ? '아이폰 설정에서 알림을 허용해주세요.' : '');
+      if(calendarCache.current.owner!==owner)calendarCache.current={owner,items:[]};
+      let calendarError='';
+      if(owner&&enabled&&allowed&&request){try{
+        const result=await request('/api/calendar/reminders');if(!validCalendarReminderPlan(result))throw Error('일정 알림 응답을 확인하지 못했어요.');
+        if(run!==generation.current)return;
+        if(result.state==='ready'||result.state==='unconnected')calendarCache.current={owner,items:result.items};
+        else calendarError='일정 알림을 모두 갱신하지 못했어요. 이전 예약은 유지해요.';
+      }catch(e){if(run!==generation.current)return;if(e&&typeof e==='object'&&'status' in e&&e.status===404)calendarCache.current={owner,items:[]};else calendarError='일정 알림을 갱신하지 못했어요. 이전 예약은 유지해요.';}}
+      if(run!==generation.current)return;
+      if(calendarError&&owner&&!calendarCache.current.items.length){calendarCache.current={owner,items:retainedCalendarReminders(await notifications.getAllScheduledNotificationsAsync(),owner)};}
+      if(run!==generation.current)return;
+      await reconcileReminders(notifications, reminderPlan(todos, owner, enabled && allowed,Date.now(),calendarCache.current.items), date => ({ type: notifications.SchedulableTriggerInputTypes.DATE, date } as const));
+      if (run === generation.current) setError(enabled && !allowed ? '아이폰 설정에서 알림을 허용해주세요.' : calendarError);
     }).catch(() => { if (run === generation.current) setError('알림 예약을 완료하지 못했어요. 설정에서 다시 시도해주세요.'); });
-  }, [todos, owner, enabled, ready, supported, version]);
+  }, [todos, owner, enabled, ready, supported, version,request]);
   const toggle = useCallback(async (value: boolean) => {
-    if (!owner || !supported || busy) return;
+    if (!owner || !supported || busy) return false;
     const originalOwner = owner; setBusy(true); setError('');
     try {
-      if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: '할 일 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync(); if (!(permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL)) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return; } }
+      if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: '덕 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync(); if (!(permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL)) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return false; } }
       if (currentOwner.current !== originalOwner) return;
       await AsyncStorage.setItem('duckduck.reminders.' + originalOwner, String(value));
       if (currentOwner.current !== originalOwner) return;
       setEnabled(value); setVersion(current => current + 1);
+      return true;
     } catch { if (currentOwner.current === originalOwner) setError('알림 설정을 저장하지 못했어요.'); }
     finally { setBusy(false); }
   }, [owner, supported, busy]);

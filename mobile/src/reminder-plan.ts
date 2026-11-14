@@ -1,10 +1,24 @@
 import type { Todo } from './domain';
-export type Reminder = { id: string; todoId: string; title: string; at: string };
-export function reminderPlan(todos: Todo[], owner: string | null, enabled: boolean, now = Date.now()): Reminder[] {
+export type CalendarReminder={id:string;title:string;at:string;eventId:string;calendarId:string;day?:string};
+export function validCalendarReminderPlan(value:unknown):value is {items:CalendarReminder[];state:'ready'|'partial'|'unconnected'}{
+ if(!value||typeof value!=='object')return false;const x=value as {items?:unknown;state?:unknown};
+ return ['ready','partial','unconnected'].includes(String(x.state))&&Array.isArray(x.items)&&x.items.length<=60&&x.items.every(item=>item&&typeof item.id==='string'&&typeof item.title==='string'&&typeof item.at==='string'&&Number.isFinite(Date.parse(item.at))&&typeof item.eventId==='string'&&typeof item.calendarId==='string');
+}
+/** Recover already-scheduled calendar alerts after an app restart when refresh fails. */
+export function retainedCalendarReminders(items:{identifier:string;content:{body?:string|null;data?:Record<string,unknown>}}[],owner:string):CalendarReminder[]{
+ const prefix=`duckduck-${owner}-calendar-`;
+ return items.filter(v=>v.identifier.startsWith(prefix)&&v.content.data?.app==='duckduck'&&v.content.data?.kind==='calendar').flatMap(v=>{
+  const d=v.content.data!,item={id:v.identifier.slice(prefix.length),title:v.content.body??'',at:d.at,eventId:d.eventId,calendarId:d.calendarId,day:d.day};
+  return validCalendarReminderPlan({state:'ready',items:[item]})?[item as CalendarReminder]:[];
+ });
+}
+export type Reminder = { id: string; todoId: string; title: string; at: string;kind?:'calendar';eventId?:string;calendarId?:string;day?:string };
+export function reminderPlan(todos: Todo[], owner: string | null, enabled: boolean, now = Date.now(),calendar:CalendarReminder[]=[]): Reminder[] {
   if (!owner || !enabled) return [];
-  return todos.filter(todo => !todo.done && typeof todo.reminderAt === 'string' && Number.isFinite(Date.parse(todo.reminderAt)) && Date.parse(todo.reminderAt) > now)
-    .sort((a, b) => Date.parse(a.reminderAt!) - Date.parse(b.reminderAt!)).slice(0, 60)
+  const tasks=todos.filter(todo => !todo.done && typeof todo.reminderAt === 'string' && Number.isFinite(Date.parse(todo.reminderAt)) && Date.parse(todo.reminderAt) > now)
     .map(todo => ({ id: `duckduck-${owner}-${todo.id}`, todoId: todo.id, title: todo.title, at: todo.reminderAt! }));
+  const events=calendar.filter(item=>Number.isFinite(Date.parse(item.at))&&Date.parse(item.at)>now).map(item=>({...item,id:`duckduck-${owner}-calendar-${item.id}`,todoId:'',kind:'calendar' as const}));
+  return [...tasks,...events].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at)).slice(0,60);
 }
 export type NotificationClient<Trigger> = {
   getAllScheduledNotificationsAsync(): Promise<{ identifier: string; content: { title?: string | null; body?: string | null; data?: Record<string, unknown> } }[]>;
@@ -16,5 +30,5 @@ export async function reconcileReminders<Trigger>(client: NotificationClient<Tri
   const ours = existing.filter(item => item.content.data?.app === 'duckduck');
   const matches = (item: typeof ours[number], reminder: Reminder) => item.identifier === reminder.id && item.content.data?.at === reminder.at && item.content.body === reminder.title;
   for (const item of ours) if (!desired.some(reminder => matches(item, reminder))) await client.cancelScheduledNotificationAsync(item.identifier);
-  for (const reminder of desired) if (!ours.some(item => matches(item, reminder))) await client.scheduleNotificationAsync({ identifier: reminder.id, content: { title: 'duckduck · 할 일', body: reminder.title, data: { app: 'duckduck', todoId: reminder.todoId, at: reminder.at } }, trigger: trigger(new Date(reminder.at)) });
+  for (const reminder of desired) if (!ours.some(item => matches(item, reminder))) await client.scheduleNotificationAsync({ identifier: reminder.id, content: { title: reminder.kind==='calendar'?'덕 · 일정':'duckduck · 할 일', body: reminder.title, data: { app: 'duckduck', todoId: reminder.todoId, at: reminder.at,...(reminder.kind?{kind:reminder.kind,eventId:reminder.eventId,calendarId:reminder.calendarId,day:reminder.day}:{}) } }, trigger: trigger(new Date(reminder.at)) });
 }

@@ -1,6 +1,7 @@
+import {ScrollArea as ScrollView} from '../ScrollArea';
 import {connectPush,disconnectPush} from '../push';
 import React,{useEffect,useRef,useState} from 'react';
-import {Platform,ScrollView,Switch,Text,TextInput,View} from 'react-native';
+import {Platform,Switch,Text,TextInput,View} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {MotionModal as Modal,DraggableSheet,MotionPressable as Pressable} from '../motion';
 import {Button,CloseButton,colors,s} from '../ui';

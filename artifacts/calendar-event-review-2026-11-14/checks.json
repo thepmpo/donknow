@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-14",
+  "scope": "Expo web, synthetic APIs, explicit Duo geometry; not native iPhone",
+  "unit": {
+    "tests": 271,
+    "pass": 270,
+    "fail": 0,
+    "skipped": 1
+  },
+  "syntaxFiles": 49,
+  "typecheck": "passed",
+  "webExport": "passed",
+  "iosJsExport": "passed",
+  "ui": [
+    "calendar-event-refinement",
+    "calendar-workspace",
+    "calendar-year",
+    "calendar-sheet-motion",
+    "duo-layout with pane scrollbar and stationary opposite Calendar",
+    "app",
+    "integration-stability",
+    "motion"
+  ],
+  "nativeBuildStarted": false,
+  "lastNative": {
+    "version": "1.0.0(28)",
+    "source": "f008503ebba956615da8b948b59c68a9930197f9",
+    "run": "https://github.com/thepmpo/donknow/actions/runs/43536270733",
+    "signedIpaAt": "2026-11-14T00:52:04Z",
+    "appleUploadedAt": "2026-11-14T00:52:32Z"
+  },
+  "preservedBundleSha256": "1b73da76ca222cff8a16d6b5a783eeed596d6930d90f05b5a9266990ad7b742d"
+}

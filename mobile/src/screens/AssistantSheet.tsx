@@ -1,5 +1,6 @@
+import {ScrollArea as ScrollView} from '../ScrollArea';
 import React,{useState} from 'react';
-import {KeyboardAvoidingView,Platform,ScrollView,Text,TextInput,View} from 'react-native';
+import {KeyboardAvoidingView,Platform,Text,TextInput,View} from 'react-native';
 import {MotionModal as Modal,MotionPressable as Pressable,DraggableSheet} from '../motion';
 import {Button,CloseButton,colors,s} from '../ui';
 import type {TodoStore} from '../useTodos';

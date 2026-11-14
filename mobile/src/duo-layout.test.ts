@@ -101,3 +101,10 @@ test('calendar accessories swap: Today above view switch without moving the tabs
  assert.ok(switcher);assert.equal(switcher.x,today.x);assert.equal(today.y+today.height+8,switcher.y);assert.equal(intersectRects(switcher,scene.back!),null);
  assert.equal(duoCalendarViewFrame(duoSceneLayout(base({height:240})),true),null);
 });
+test('Calendar can distribute only the unoccupied bottom safe strip; hardware gaps stay reserved',async()=>{
+ const {duoSceneLayout}=await import('./duo-layout.ts');
+ const g=base({width:960,height:740,hingeStatus:'fullyOpen',safeArea:{left:16,top:20,right:80,bottom:34}}),scene=duoSceneLayout(g);
+ assert.equal(scene.calendarBottomExtension,34);
+ const blocked=duoSceneLayout({...g,regions:[...g.regions,{kind:'occlusion',active:true,frame:{x:0,y:720,width:960,height:20}}]});assert.equal(blocked.calendarBottomExtension,0);
+ const noBottom=duoSceneLayout({...g,safeArea:{...g.safeArea,bottom:0}});assert.equal(noBottom.calendarBottomExtension,0);
+});

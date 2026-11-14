@@ -1,0 +1,159 @@
+{
+  "writes": 1,
+  "detailsWrites": 3,
+  "revision": 2,
+  "partialFailureNoProviderReplay": true,
+  "longLabelSingleLine": true,
+  "scrollbarIdleMs": 1000,
+  "transitionFrames": [
+    {
+      "ms": 0,
+      "scale": 1
+    },
+    {
+      "ms": 14,
+      "scale": 1
+    },
+    {
+      "ms": 29,
+      "scale": 1
+    },
+    {
+      "ms": 99,
+      "scale": 0.96
+    },
+    {
+      "ms": 148,
+      "scale": 0.975719
+    },
+    {
+      "ms": 177,
+      "scale": 0.984138
+    },
+    {
+      "ms": 200,
+      "scale": 0.988995
+    },
+    {
+      "ms": 222,
+      "scale": 0.992481
+    },
+    {
+      "ms": 253,
+      "scale": 0.994669
+    },
+    {
+      "ms": 278,
+      "scale": 0.997016
+    },
+    {
+      "ms": 293,
+      "scale": 0.998028
+    },
+    {
+      "ms": 303,
+      "scale": 0.998485
+    },
+    {
+      "ms": 318,
+      "scale": 0.998777
+    },
+    {
+      "ms": 333,
+      "scale": 0.99908
+    },
+    {
+      "ms": 349,
+      "scale": 0.999332
+    },
+    {
+      "ms": 365,
+      "scale": 0.999537
+    },
+    {
+      "ms": 381,
+      "scale": 0.999688
+    },
+    {
+      "ms": 397,
+      "scale": 0.999798
+    },
+    {
+      "ms": 413,
+      "scale": 0.999876
+    },
+    {
+      "ms": 429,
+      "scale": 0.999929
+    },
+    {
+      "ms": 448,
+      "scale": 0.999963
+    },
+    {
+      "ms": 461,
+      "scale": 0.999986
+    },
+    {
+      "ms": 477,
+      "scale": 0.999994
+    },
+    {
+      "ms": 493,
+      "scale": 0.999999
+    },
+    {
+      "ms": 509,
+      "scale": 1
+    },
+    {
+      "ms": 525,
+      "scale": 1
+    },
+    {
+      "ms": 541,
+      "scale": 1
+    },
+    {
+      "ms": 557,
+      "scale": 1
+    },
+    {
+      "ms": 574,
+      "scale": 1
+    },
+    {
+      "ms": 589,
+      "scale": 1
+    },
+    {
+      "ms": 605,
+      "scale": 1
+    },
+    {
+      "ms": 621,
+      "scale": 1
+    },
+    {
+      "ms": 637,
+      "scale": 1
+    },
+    {
+      "ms": 653,
+      "scale": 1
+    },
+    {
+      "ms": 669,
+      "scale": 1
+    },
+    {
+      "ms": 686,
+      "scale": 1
+    },
+    {
+      "ms": 701,
+      "scale": 1
+    }
+  ],
+  "errors": []
+}

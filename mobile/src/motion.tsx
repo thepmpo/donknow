@@ -3,8 +3,9 @@ import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, u
 import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
 
-export const motion = { pressIn: 90, pressOut: 140, page: 180, feedback: 180, sheet: 240 } as const;
+export const motion = { pressIn: 90, pressOut: 140, page: 420, feedback: 180, sheet: 240 } as const;
 const ReducedMotion = createContext(true);
+const MotionAncestor = createContext(false);
 export function MotionProvider({ children }: { children: React.ReactNode }) {
   // Start without motion until the user's OS/browser preference is known.
   const [reduced, setReduced] = useState(true);
@@ -25,18 +26,20 @@ export function useReducedMotion() { return useContext(ReducedMotion); }
 const native = Platform.OS !== 'web';
 
 // Transition identity changes trigger motion without remounting retained content.
-export function MotionView({ children, transitionKey, style, distance = 6, ...props }: ViewProps & { transitionKey?: string | number | boolean; distance?: number }) {
-  const reduced = useReducedMotion();
+export function MotionView({ children, transitionKey, style, distance = 6,disabled=false,initial=true, ...props }: ViewProps & { transitionKey?: string | number | boolean; distance?: number;disabled?:boolean;initial?:boolean }) {
+  const ancestor=useContext(MotionAncestor),reduced = useReducedMotion()||disabled||(ancestor&&transitionKey===undefined);
   const progress = useRef(new Animated.Value(1)).current;
+  const seen=useRef(false);
   useLayoutEffect(() => {
     progress.stopAnimation();
+    if(!seen.current){seen.current=true;if(!initial){progress.setValue(1);return;}}
     if (reduced) { progress.setValue(1); return; }
     progress.setValue(0);
-    const animation = Animated.timing(progress, { toValue: 1, duration: motion.page, easing: Easing.out(Easing.cubic), useNativeDriver: native });
+    const animation = Animated.timing(progress, { toValue: 1, duration: motion.page, easing: Easing.bezier(.22,1,.36,1), useNativeDriver: native });
     animation.start();
     return () => animation.stop();
   }, [transitionKey, reduced, progress]);
-  return <Animated.View {...props} style={[style, { opacity: progress, transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [distance, 0] }) }] }]}>{children}</Animated.View>;
+  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity: progress, transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [distance, 0] }) },{scale:progress.interpolate({inputRange:[0,1],outputRange:[.96,1]})}] }]}>{children}</Animated.View></MotionAncestor.Provider>;
 }
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...props }: PressableProps) {
@@ -61,10 +64,10 @@ export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...pro
     style={[resolved, { transform: typeof resolved?.transform === 'string' ? resolved.transform : [...(resolved?.transform ?? []), { scale }] }]} />;
 }
 
-// Let each platform animate its modal; reduced motion disables both slide/fade.
+// Fade the presentation while the sheet content zooms; reduce motion skips both.
 export function MotionModal({ animationType = 'slide', children, ...props }: ModalProps) {
   const reduced = useReducedMotion();
-  return <Modal {...props} animationType={reduced ? 'none' : animationType}><DuoSafeSurface>{children}</DuoSafeSurface></Modal>;
+  return <Modal {...props} animationType={reduced||animationType==='none' ? 'none' : 'fade'}><DuoSafeSurface>{children}</DuoSafeSurface></Modal>;
 }
 
 // Keep a mounted sheet until the platform has finished its dismissal animation.
@@ -90,6 +93,8 @@ export function DraggableSheet({children,style,onDismiss,disabled=false,visible=
   const current=useRef({reduced,disabled,onDismiss});current.current={reduced,disabled,onDismiss};
   const reset=()=>{offset.stopAnimation();if(current.current.reduced)offset.setValue(0);else Animated.timing(offset,{toValue:0,duration:motion.pressOut,useNativeDriver:native}).start();};
   useLayoutEffect(()=>{if(visible){offset.stopAnimation();offset.setValue(0);}},[visible,offset]);
+  const zoom=useRef(new Animated.Value(reduced?1:0)).current;
+  useLayoutEffect(()=>{zoom.stopAnimation();if(reduced){zoom.setValue(1);return;}Animated.timing(zoom,{toValue:visible?1:0,duration:visible?420:240,easing:Easing.bezier(.22,1,.36,1),useNativeDriver:native}).start();return()=>zoom.stopAnimation();},[visible,reduced,zoom]);
   const responder=useRef(PanResponder.create({
     onMoveShouldSetPanResponderCapture:(_,gesture)=>!current.current.disabled&&gesture.dy>6&&Math.abs(gesture.dy)>Math.abs(gesture.dx)*1.3,
     onPanResponderGrant:()=>{offset.stopAnimation();Keyboard.dismiss();},
@@ -98,5 +103,5 @@ export function DraggableSheet({children,style,onDismiss,disabled=false,visible=
     onPanResponderTerminate:reset,
   })).current;
   useEffect(()=>{if(disabled){offset.stopAnimation();offset.setValue(0);}return()=>offset.stopAnimation();},[disabled,offset]);
-  return <Animated.View style={[style,{transform:[{translateY:offset}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
+  return <Animated.View style={[style,{transform:[{translateY:offset},{scale:zoom.interpolate({inputRange:[0,1],outputRange:[.96,1]})}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
 }

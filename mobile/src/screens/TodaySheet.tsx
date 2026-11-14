@@ -1,5 +1,6 @@
+import {ScrollArea as ScrollView} from '../ScrollArea';
 import React,{useRef,useState,useEffect} from 'react';
-import {ScrollView,Text,View,Linking} from 'react-native';
+import {Text,View,Linking} from 'react-native';
 import {MotionModal as Modal,DraggableSheet} from '../motion';
 import {Button,CloseButton,s,colors} from '../ui';
 import {dateKey} from '../domain';

@@ -64,7 +64,7 @@ export function duoSafeFrame(geometry: DuoGeometry): DuoRect {
 }
 
 export type DuoSceneLayout={
- body:DuoRect; column:DuoRect|null; back:DuoRect|null; segments:DuoRect[];
+ calendarBottomExtension:number; body:DuoRect; column:DuoRect|null; back:DuoRect|null; segments:DuoRect[];
  panes:{leading:DuoRect;trailing:DuoRect}|null; divider:DuoRect|null;
  alignment:'trailing-occlusion'|'system-inset'|'trailing-edge';
  cameraRegion:DuoRect|null;
@@ -117,7 +117,11 @@ export function duoSceneLayout(g:DuoGeometry,workspace=true):DuoSceneLayout{
   const candidate={x:mid-.5,y:top,width:1,height:bottom-top};
   if(trailing.x>leading.x+leading.width&&candidate.height>0&&!occupied.some(area=>intersectRects(candidate,area)))divider=candidate;
  }
- return {body,column,back,segments,panes,divider,alignment,cameraRegion};
+ // Only Calendar's noninteractive grid may paint into the bottom safe-area strip.
+ // Never extend through a hinge/occlusion or fill a gap caused by reserved hardware.
+ const footer={x:body.x,y:body.y+body.height,width:body.width,height:g.height-body.y-body.height};
+ const calendarBottomExtension=footer.height>0&&footer.height<=g.safeArea.bottom+.5&&!occupied.some(area=>intersectRects(footer,area))?footer.height:0;
+ return {body,column,back,segments,panes,divider,alignment,cameraRegion,calendarBottomExtension};
 }
 export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
  const candidates=scene.segments.map(segment=>{

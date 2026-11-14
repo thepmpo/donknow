@@ -18,3 +18,16 @@ test('completion, edits and account changes cancel only this app’s notificatio
  await reconcileReminders(client, reminderPlan([{ ...base, title: '제목 변경' }], 'alice', true, NOW), date => date); assert.equal(cancelled.length, 1); assert.equal(scheduled.length, 2);
  await reconcileReminders(client, [], date => date); assert.equal(existing.length, 1); assert.equal(existing[0].identifier, 'other');
 });
+test('calendar and todo alerts share 60 slots, coexist, update and cancel without touching other notifications',async()=>{
+ const calendar=Array.from({length:65},(_,i)=>({id:'e'+i,title:'일정'+i,at:new Date(NOW+(i+1)*60000).toISOString(),eventId:'event'+i,calendarId:'primary'}));
+ const plan=reminderPlan([base],'alice',true,NOW,calendar);assert.equal(plan.length,60);assert.equal(plan[0].kind,'calendar');assert.equal(plan.at(-1)?.eventId,'event59');
+ const both=reminderPlan([base],'alice',true,NOW,calendar.slice(0,2));assert.equal(both.length,3);assert.ok(both.some(r=>r.todoId==='one'));assert.notEqual(both[0].id,reminderPlan([],'bob',true,NOW,calendar)[0].id);
+ let existing:any[]=[{identifier:'other',content:{data:{app:'else'}}}];const client={getAllScheduledNotificationsAsync:async()=>existing,cancelScheduledNotificationAsync:async(id:string)=>{existing=existing.filter(v=>v.identifier!==id);},scheduleNotificationAsync:async(v:any)=>{existing.push(v);return v.identifier;}};
+ await reconcileReminders(client,both,d=>d);assert.equal(existing.length,4);await reconcileReminders(client,both,d=>d);assert.equal(existing.length,4);
+ await reconcileReminders(client,reminderPlan([base],'alice',true,NOW),d=>d);assert.equal(existing.length,2);assert.ok(existing.some(v=>v.identifier==='other'));assert.ok(existing.some(v=>v.content.data.todoId==='one'));
+});
+test('failed source refresh after restart retains only this account calendar schedules',async()=>{
+ const {retainedCalendarReminders}=await import('./reminder-plan.ts');
+ const items=[{identifier:'duckduck-alice-calendar-abc',content:{body:'일정',data:{app:'duckduck',kind:'calendar',at:'2030-01-01T00:00:00Z',eventId:'event',calendarId:'primary'}}},{identifier:'duckduck-bob-calendar-other',content:{body:'다른 계정',data:{app:'duckduck',kind:'calendar',at:'2030-01-01T00:00:00Z',eventId:'other',calendarId:'primary'}}},{identifier:'duckduck-alice-todo',content:{body:'할 일',data:{app:'duckduck',todoId:'todo',at:'2030-01-01T00:00:00Z'}}}];
+ assert.deepEqual(retainedCalendarReminders(items,'alice'),[{id:'abc',title:'일정',at:'2030-01-01T00:00:00Z',eventId:'event',calendarId:'primary',day:undefined}]);
+});

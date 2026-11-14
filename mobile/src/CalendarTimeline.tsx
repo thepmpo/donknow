@@ -1,5 +1,6 @@
+import {ScrollArea as ScrollView} from './ScrollArea';
 import React,{useEffect,useRef,useState} from 'react';
-import {ScrollView,StyleSheet,Text,View} from 'react-native';
+import {StyleSheet,Text,View} from 'react-native';
 import {MotionPressable as Pressable} from './motion';
 import {colors} from './theme';
 import {eventOccurs,eventTime,timedLayout} from './calendar-model';

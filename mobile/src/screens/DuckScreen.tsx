@@ -1,3 +1,4 @@
+import {ScrollArea as ScrollView} from '../ScrollArea';
 import {useAutomations} from '../useAutomations';
 import {AutomationSheet} from './AutomationSheet';
 import {pasteTodos} from '../paste-todos';
@@ -13,7 +14,7 @@ import {NotesField} from '../NotesField';
 import { DraggableSheet, MotionView, useReducedMotion } from '../motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from '../motion';
 import React, { useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {KeyboardAvoidingView, Platform,  StyleSheet, Text, TextInput, View} from 'react-native';
 import { RecordSearchSheet } from './RecordSearchSheet';
 import type { Todo } from '../domain';
 import { dateKey } from '../domain';

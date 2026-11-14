@@ -28,6 +28,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw fail(409, '서비스 연결을 다시 승인해주세요.');
       if(response.status===412)throw fail(409,'원본이 동시에 바뀌었어요. 새 초안에서 다시 확인해주세요.');
       if(response.status===403)throw fail(403,'이 작업의 외부 서비스 권한을 확인해주세요.');
+      if(response.status===410)throw fail(410,'외부 서비스에서 삭제된 대상이에요.');
       if(response.status===404)throw fail(404,'외부 서비스에서 대상을 찾지 못했어요.');
       if(response.status===400)throw fail(400,'외부 서비스가 작업 내용을 거절했어요.');
       if (value.error === 'not_in_channel') throw fail(409, 'Slack 채널에 연결한 앱을 먼저 초대해주세요.');
@@ -212,6 +213,8 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       } catch {} finally { store.removeConnection(userId, provider); }
       return { revoked };
     },
+    async calendarDetails(userId,input){return createCalendarWorkspace({store,token,request:providerRequest}).saveDetails(userId,input);},
+    async calendarReminders(userId){return createCalendarWorkspace({store,token,request:providerRequest}).reminders(userId);},
     async calendarList(userId,cursor){return createCalendarWorkspace({store,token,request:providerRequest}).calendars(userId,cursor);},
     async calendar(userId,month,cursor,options) { if(options)return createCalendarWorkspace({store,token,request:providerRequest}).events(userId,month,cursor,options); const record=store.connection(userId,'google');if(!record?.features.includes('calendar'))return month?{items:[],nextCursor:null}:[];const result=await this.resources(userId,'google','calendar',null,cursor,'incomplete',month);return month?result:result.items; },
   };

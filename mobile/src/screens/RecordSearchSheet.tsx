@@ -1,7 +1,8 @@
+import {ScrollArea as ScrollView} from '../ScrollArea';
 import { DraggableSheet, useModalDismiss } from '../motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from '../motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {KeyboardAvoidingView, Platform,  StyleSheet, Text, TextInput, View} from 'react-native';
 import { searchTodos } from '../domain';
 import type { Todo } from '../domain';
 import type { TodoStore } from '../useTodos';

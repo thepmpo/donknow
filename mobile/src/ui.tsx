@@ -1,3 +1,4 @@
+import {ScrollArea as ScrollView} from './ScrollArea';
 import { useDuoTrailingNavigation } from './DuoLayout';
 import {useDuoBackAction} from './DuoBackNavigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -5,7 +6,7 @@ import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, PanResponder, Platform, ScrollView, StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator } from 'react-native';
+import {Animated, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, dateKey, validateDraft, formatDueDate } from './domain';
 import type { Draft, Todo } from './domain';
