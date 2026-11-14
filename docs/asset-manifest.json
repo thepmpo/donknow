@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "bbfb061c14e2d9568477a96c8888f61bc5662e76",
-  "assetCommit": "bbfb061c14e2d9568477a96c8888f61bc5662e76",
-  "imageCount": 664,
+  "codeCommit": "78b9e0a245d51f4070050141cdb0a2dc7a19305e",
+  "assetCommit": "78b9e0a245d51f4070050141cdb0a2dc7a19305e",
+  "imageCount": 728,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -4189,6 +4189,454 @@
       "bytes": 133916,
       "sha256": "a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba",
       "import_path": "images/artifacts__features-overview.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 87554,
+      "sha256": "e5c035a5752ac798e398e2752c7dd51141ac726d4ef6a5e916b556e4370fae14",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__01-compact-long-source.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/02-local-only-preview.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 102563,
+      "sha256": "371ffa609fa100f97357e33c0d823c73f9e046eeaeb953c833b8f218b15ac195",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__02-local-only-preview.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/03-partial-save-retry-only-duck.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 115164,
+      "sha256": "ff7d2cc85e2c05897c67faa2615ae65cda0bdd348624ed7271fb02a1e505ae3d",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__03-partial-save-retry-only-duck.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/04-editor-scrollbar-visible.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 95547,
+      "sha256": "8e86b3088aa6adb4e0f765efbfb63f26e28f7782737f1f41f89bda60a2b4d020",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__04-editor-scrollbar-visible.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/05-todo-shared-transition.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 100314,
+      "sha256": "d04d6a2add27714e335033c3af268adf2c2fd7b8ae05a8d132f4b49fc68b1ff5",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__05-todo-shared-transition.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/06-year-scrollbar.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 153247,
+      "sha256": "e7164afcdf9072cdf577f509d68bd0b9fc6e63e24e41d72a78cdc31bfda1fba4",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__06-year-scrollbar.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/07-month-after-continuous-swipe.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 74885,
+      "sha256": "2c11bb222b68c0b6348bcede03b6dd5ff054f1613b11733ce9c2781605240ba2",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__07-month-after-continuous-swipe.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/calendar/08-continuous-swipe-midpoint.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 75325,
+      "sha256": "9340a596aafef84b9c65dab2bcac3868f11a7912fa1a90c1685cefd60a447907",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__calendar__08-continuous-swipe-midpoint.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/chat/01-compact-phone-chat.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 38019,
+      "sha256": "02f36c092a7c5c6d645690fd0d3658529c2ad6fd1caa8852ecec2f9aa47ce40e",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__chat__01-compact-phone-chat.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/01-open-calendar-todo.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 51801,
+      "sha256": "f019b5c7863dde7afeb89fb0f3584736b8944fcf13a35aa85bf4c4db348d9e12",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/02-open-calendar-duck.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 61326,
+      "sha256": "1d8bca77dfd615a2ad293fe76beaf7b319889f3a0b2c8bea4f6007b0d4d530ac",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/03-portrait-current-screen.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 37335,
+      "sha256": "d8930fb6f069b7d430cb561ab7841f94d91bacb9f8e19a063d626e25e1d96609",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/04-closed-camera-column.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 34385,
+      "sha256": "8fcc5549c44771fd70150eafdf220402838884253406caa491ac41e20110ec4c",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/05-back-in-camera-column.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 63122,
+      "sha256": "c2c99aa314bd8b19830e116bf7dc85b970ffac86c9a131634e2e9121bc55c291",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/06-dragging-lens-web-fallback.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 53931,
+      "sha256": "4a8bd96178179ded04c402ce2107c957f812309b39fc605bcb028f43b7b70d22",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/07-iphone-320-floating-tabs.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 31472,
+      "sha256": "dbdef64937d144a1d1f5cd60fa21ec09d79d0994693e16cd7a8b104150c1fda3",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/07-iphone-390-floating-tabs.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 32760,
+      "sha256": "b98fc22decf65d5855e4e67d5e25b755bdbf6dc36d1f82af50b0c20c4b2f8cb6",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/07-iphone-430-floating-tabs.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 33501,
+      "sha256": "87d3414e8c40afdedc5c7317c1cfda20479c62a1313034fdd96133293a31a889",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/08-iphone-320-text-160-percent.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 25377,
+      "sha256": "6a76c37cef72c46fe652feb470007beeb5603af7de5f0b2bddb3cd53a73878c6",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/08-pane-local-day-detail.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 58373,
+      "sha256": "fea265d0eb52c5ad1de37b8c72a88b90a3b03c5ca5fa707b5b3d5db7002ce2ae",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/10-folded-calendar-dark.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 36560,
+      "sha256": "3dd3669018a1f2339969cdc4dcc19883c69fff56c259f7381797d1d29eab7d55",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/11-folded-calendar-light.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 35397,
+      "sha256": "fdf14ff32cbf1f4e3d24720fc7b722fa3def17bd2ab3180c259a053edd5c7577",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/12-open-calendar-dark.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 53378,
+      "sha256": "7c6c641ca767c896e156c0b54b612fe586b43fb046b7ff274268991a00b1ef04",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/13-folded-fortnight.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 27539,
+      "sha256": "778e00c936c632f9981d5283c74b0dd00041b46d8de7452b14883fb3d4f1d1d6",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/14-open-fortnight-dark.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 47559,
+      "sha256": "3c632a4ecf5cb98ffba22fc967d16c5ecc2fe17f3e3de9071bd8cf5792f73395",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/15-long-press-left-calendar.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 42332,
+      "sha256": "c680ac488531672e8d1fb228d0d9ec24b8fcbbff2599cbf26b0a0907460cc108",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/16-long-press-right-calendar.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 30091,
+      "sha256": "4c3d128b20f85d2e267c60b0140a2ce353632e5232942b19bb639eeb405a4855",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/17-folded-long-press-calendar.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 27464,
+      "sha256": "038ce75e3b1dad857142496ef82889acdf757662e756b66917e0d6082e2d63af",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/18-year-left-calendar-right-todos.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 86497,
+      "sha256": "148e18ec39af666cd149ab041ae00193b58b1f3635014837083901fe4ac26f89",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/19-year-right-calendar.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 86967,
+      "sha256": "71aa905f672122ca8942f7023f77b0ec15dcb87de178689d696a00afcf7b9fca",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/20-year-portrait.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 83591,
+      "sha256": "a0072a99fbe9ee29b3c6ed331b02ca722e7262453bdc5dc19493eeff520351d6",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/21-year-folded.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 67224,
+      "sha256": "5cbb5cdcc0fbe984e071f42caacb408aa8b3fd06f1d562d5a9971468fd7dcfac",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/22-year-duo-motion.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 85120,
+      "sha256": "598a20145fad3680884ac54d13588a4fa0eb330a80365d0140489adfbabb8d6a",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/23-year-design-comparison-state.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 92130,
+      "sha256": "5088088c896c50fc94d2d04cab9b2e5768cc81ec5130e830ee07fa4b726e5a87",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/24-pane-edge-scrollbar.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 91561,
+      "sha256": "4b464a9ed908800473f4506bf431a6a3933ad912c33c59e5d7aec24227fd6a35",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__24-pane-edge-scrollbar.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/duo/25-compact-duo-chat.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 26300,
+      "sha256": "e7be2e079b79b9048ab7d31ff4ccc38eb64b5b3d45ad5d4f04f3cfeb338b12c3",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__duo__25-compact-duo-chat.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/01-clean-adaptive-month.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 80087,
+      "sha256": "eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/02-day-detail.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 104675,
+      "sha256": "73d3db07c9f4810b638c3ae386915348989f1c9bad8dc04316100e0df7a606e5",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/03-event-detail.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 86767,
+      "sha256": "b9a18d2fde9e3c0527c1bff09db9988a301c5e0e6a920b6d2b46afc8b8006eda",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/04-write-preview.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 99219,
+      "sha256": "41f62c0736fe0e2aad2f5a30c76f49e34d63d72118a035945a381fa0248e50b3",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/05-all-day-editor.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 90204,
+      "sha256": "32b8eb4dc41e0d4dae2d65d7ede14d936cbf112fa7c2b9ce1039a4a144b67a34",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/06-week-timeline.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 90286,
+      "sha256": "40935c5d045c1c684d260a1b0e03dc673a93bb2d307d4c4704bf2c7c9f9fa235",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/07-search-scope.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 95536,
+      "sha256": "4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/08-calendar-sources.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 89337,
+      "sha256": "2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/09-read-only-event.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 95721,
+      "sha256": "5bd1ee9d133375f64b8953218313d7919cf4115674046bb7d4466b18c1a04485",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/10-partial-state.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/11-error-visible-with-cache.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/12-phone-320.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 77373,
+      "sha256": "8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/12-phone-430.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 88895,
+      "sha256": "1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/13-large-text.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 98883,
+      "sha256": "8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__13-large-text.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/14-loading-with-cache.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/15-unknown-write-no-resend.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 113379,
+      "sha256": "7c8c47020de5df57736e2ade5beeeea206c08b786c97ad65edd1390d38d1576b",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/16-dark-month-reference.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 74340,
+      "sha256": "1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/17-dark-event-reference.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 71901,
+      "sha256": "98e29e5e3c25e6eafbb6651ea7a3f491b3719aaa35a887ad1ee27881a000e5b9",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/18-light-month-reference.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 73514,
+      "sha256": "4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/19-non-json-error-keeps-events.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 83222,
+      "sha256": "e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/workspace/20-fortnight-expanded.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 63763,
+      "sha256": "850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__workspace__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/01-ordinary-year.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 153392,
+      "sha256": "689a56ab3d9f676e1768b8578d41079b7c38486be669922e79fcc23d7647b3a1",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__01-ordinary-year.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/02-ordinary-month-after-zoom.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 74834,
+      "sha256": "ec61debee28d39613b27c17b65fbff8f72981d85418d74b574c13b94e57d2a07",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__02-ordinary-month-after-zoom.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/03-year-width-320.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 150103,
+      "sha256": "7acb2751a513649e6db0a72b355b1dc4083cc67497a058df93846929e7095740",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__03-year-width-320.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/03-year-width-430.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 152255,
+      "sha256": "775b54b6cdbf0c51091786ab4ad54614ba0f1a75729a20cbf49cc6c6d9f8aee7",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__03-year-width-430.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/04-year-dark.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 151164,
+      "sha256": "8677f57606b19cfba5f2e0ffdb867b268fa61d77361543bbdc61a53df5d2735c",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__04-year-dark.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/05-opening-zoom.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 133606,
+      "sha256": "1f1003635b422b6b11b9fa60f3b1955d750a98736bb8d550dc3184fea85b91b3",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__05-opening-zoom.png"
+    },
+    {
+      "path": "artifacts/interaction-polish-2026-11-14/year/06-closing-zoom.png",
+      "category": "느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님",
+      "bytes": 178091,
+      "sha256": "eaa0c6b247a20fe29bfa1fe0d106f2e9a4ef4b5e08eb86b9b9759c5be31b80b9",
+      "import_path": "images/artifacts__interaction-polish-2026-11-14__year__06-closing-zoom.png"
     },
     {
       "path": "artifacts/log.png",

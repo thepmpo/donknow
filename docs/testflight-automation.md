@@ -1,5 +1,12 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 최신 실제 확인 — 1.0.0(29) Apple 업로드 성공
+
+[43543369494](https://github.com/thepmpo/donknow/actions/runs/43543369494)·37a3e2842a5a2225aa8822ac8651373c200da6d2의validate132288806139/build-and-submit132289052514모두success다. 실제28→29증가·서명IPA02:03:01UTC/build성공02:03:05UTC/Apple업로드2026-11-14 02:03:38UTC를로그로확인했다. 이전상세·덕메타/알림/공통화면은29에포함된다. Apple처리/설치·실계정은별도다.
+
+[모션·Duo바깥스크롤바·작은입력부](interaction-polish-2026-11-14.md)는29이후수정이다. 이번UI요청으로native빌드를자동실행하지않는다. 아래28최신/dispatch차단은사용자의29실행이전이력이다. 무료Mac/서명freeze·수동정책을유지한다.
+
+
 ## 최신 실제 확인 — 1.0.0(28) native/Apple 업로드 성공
 
 [사용자 수동 실행43536270733](https://github.com/thepmpo/donknow/actions/runs/43536270733)·소스f008503ebba956615da8b948b59c68a9930197f9의validate132265916619/build-and-submit132266207178모두success다. 로그에서buildNumber27→28,서명IPA생성2026-11-14 00:52:04UTC·build성공00:52:07UTC·Apple업로드00:52:32UTC를확인했다. 연간/viewport/기기별탭단축은28에포함된다. Apple처리·TestFlight표시·설치/실기기는별도다.
