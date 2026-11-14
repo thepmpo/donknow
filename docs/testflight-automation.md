@@ -1,5 +1,10 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-14 — 사용자 실행30 실제 성공
+
+[43553158014](https://github.com/thepmpo/donknow/actions/runs/43553158014)의 소스382ad90·**validate132319959726 / build-and-submit132320247417**를 확인했다. 실제 버전1.0.0(30), 서명 빌드03:50:42UTC·Apple 업로드03:51:08UTC 성공이다. 메뉴 약화/공유 이동값 swipe/접힘2주·Todo 자동초점 제거/작은 실행기록은30 이후이며 새 빌드/설치가 필요하다. 이번 UI 수정 작업에서는 native를 자동 실행하지 않는다. Apple 처리·사용자 설치·실기기 확인은 별도다. 이전29최신/신규 dispatch 차단은 당시 이력이다.
+
+
 ## 최신 실제 확인 — 1.0.0(29) Apple 업로드 성공
 
 [43543369494](https://github.com/thepmpo/donknow/actions/runs/43543369494)·37a3e2842a5a2225aa8822ac8651373c200da6d2의validate132288806139/build-and-submit132289052514모두success다. 실제28→29증가·서명IPA02:03:01UTC/build성공02:03:05UTC/Apple업로드2026-11-14 02:03:38UTC를로그로확인했다. 이전상세·덕메타/알림/공통화면은29에포함된다. Apple처리/설치·실계정은별도다.

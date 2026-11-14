@@ -101,6 +101,13 @@ test('calendar accessories swap: Today above view switch without moving the tabs
  assert.ok(switcher);assert.equal(switcher.x,today.x);assert.equal(today.y+today.height+8,switcher.y);assert.equal(intersectRects(switcher,scene.back!),null);
  assert.equal(duoCalendarViewFrame(duoSceneLayout(base({height:240})),true),null);
 });
+test('folded Calendar retains both shortcuts in compact safe slots before using the heading fallback',async()=>{
+ const {duoSceneLayout,duoTabFrame,duoTodayFrame,duoCalendarViewFrame}=await import('./duo-layout.ts');
+ const g=base({width:430,height:600,hingeStatus:'closed',safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'occlusion',active:true,frame:{x:370,y:32,width:28,height:28}},{kind:'occlusion',active:true,frame:{x:350,y:60,width:80,height:120}}]});
+ const scene=duoSceneLayout(g),tabs=duoTabFrame(scene,false)!,today=duoTodayFrame(scene,false,true)!,view=duoCalendarViewFrame(scene,false)!;
+ assert.ok(view&&today);assert.ok(view.width>=44&&view.width<64);assert.equal(today.width,view.width);assert.equal(today.y+today.height+8,view.y);assert.equal(view.y+view.height+8,tabs.y+tabs.height-272);assert.equal(view.x+view.width/2,tabs.x+tabs.width/2);for(const frame of [today,view]){assert.ok(frame.x>=0&&frame.x+frame.width<=g.width);assert.ok(frame.y>=0&&frame.y+frame.height<=g.height);for(const region of g.regions.filter(r=>r.active))assert.equal(intersectRects(frame,region.frame),null);}
+ const tooShort=duoSceneLayout({...g,height:500});assert.equal(duoCalendarViewFrame(tooShort,false),null);
+});
 test('Calendar can distribute only the unoccupied bottom safe strip; hardware gaps stay reserved',async()=>{
  const {duoSceneLayout}=await import('./duo-layout.ts');
  const g=base({width:960,height:740,hingeStatus:'fullyOpen',safeArea:{left:16,top:20,right:80,bottom:34}}),scene=duoSceneLayout(g);

@@ -134,8 +134,14 @@ export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|nu
  * when the calendar switch is visible; otherwise it stays directly above tabs. */
 function calendarAccessorySlots(scene:DuoSceneLayout,backVisible:boolean){
  const frame=duoTabFrame(scene,backVisible);if(!frame)return {lower:null,upper:null};
- const height=DUO_CHROME.width,y=frame.y+frame.height-Math.min(frame.height,DUO_CHROME.height)-DUO_CHROME.gap-height;
- const lower=y>=frame.y?{x:frame.x,y,width:frame.width,height}:null,upper=lower&&y-DUO_CHROME.gap-height>=frame.y?{...lower,y:y-DUO_CHROME.gap-height}:null;
+ const tabTop=frame.y+frame.height-Math.min(frame.height,DUO_CHROME.height),available=tabTop-DUO_CHROME.gap-frame.y;
+ // Folded windows may reserve a taller camera/status interval. Preserve both
+ // shortcuts down to 44pt before falling back to the Calendar heading.
+ const pairSize=Math.min(DUO_CHROME.width,Math.floor((available-DUO_CHROME.gap)/2));
+ const height=pairSize>=44?pairSize:Math.min(DUO_CHROME.width,Math.floor(available));
+ if(height<44)return {lower:null,upper:null};
+ const y=tabTop-DUO_CHROME.gap-height,x=frame.x+(frame.width-height)/2;
+ const lower={x,y,width:height,height},upper=pairSize>=44?{...lower,y:y-DUO_CHROME.gap-height}:null;
  return {lower,upper};
 }
 export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean,viewVisible=false):DuoRect|null{

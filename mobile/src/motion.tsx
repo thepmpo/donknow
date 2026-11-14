@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, u
 import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
 
-export const motion = { pressIn: 90, pressOut: 140, page: 640, feedback: 180, sheet: 240 } as const;
+export const motion = { pressIn: 90, pressOut: 140, navigation: 220, page: 640, feedback: 180, sheet: 240 } as const;
 const ReducedMotion = createContext(true);
 const MotionAncestor = createContext(false);
 export function MotionProvider({ children }: { children: React.ReactNode }) {
@@ -26,7 +26,7 @@ export function useReducedMotion() { return useContext(ReducedMotion); }
 const native = Platform.OS !== 'web';
 
 // Transition identity changes trigger motion without remounting retained content.
-export function MotionView({ children, transitionKey, style, distance = 6,disabled=false,initial=true, ...props }: ViewProps & { transitionKey?: string | number | boolean; distance?: number;disabled?:boolean;initial?:boolean }) {
+export function MotionView({ children, transitionKey, style, distance = 6,disabled=false,initial=true,variant='page', ...props }: ViewProps & { transitionKey?: string | number | boolean; distance?: number;disabled?:boolean;initial?:boolean;variant?:'page'|'navigation' }) {
   const ancestor=useContext(MotionAncestor),reduced = useReducedMotion()||disabled||(ancestor&&transitionKey===undefined);
   const progress = useRef(new Animated.Value(1)).current;
   const seen=useRef(false);
@@ -35,11 +35,11 @@ export function MotionView({ children, transitionKey, style, distance = 6,disabl
     if(!seen.current){seen.current=true;if(!initial){progress.setValue(1);return;}}
     if (reduced) { progress.setValue(1); return; }
     progress.setValue(0);
-    const animation = Animated.timing(progress, { toValue: 1, duration: motion.page, easing: Easing.bezier(.32,0,.2,1), useNativeDriver: native });
+    const animation = Animated.timing(progress, { toValue: 1, duration: variant==='navigation'?motion.navigation:motion.page, easing: Easing.bezier(.32,0,.2,1), useNativeDriver: native });
     animation.start();
     return () => animation.stop();
-  }, [transitionKey, reduced, progress]);
-  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity:progress.interpolate({inputRange:[0,1],outputRange:[.92,1]}), transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [distance, 0] }) },{scale:progress.interpolate({inputRange:[0,1],outputRange:[.975,1]})}] }]}>{children}</Animated.View></MotionAncestor.Provider>;
+  }, [transitionKey, reduced, progress,variant]);
+  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity:progress.interpolate({inputRange:[0,1],outputRange:[variant==='navigation'?.98:.92,1]}), transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [variant==='navigation'?0:distance, 0] }) },{scale:progress.interpolate({inputRange:[0,1],outputRange:[variant==='navigation'?1:.975,1]})}] }]}>{children}</Animated.View></MotionAncestor.Provider>;
 }
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...props }: PressableProps) {

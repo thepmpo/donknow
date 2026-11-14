@@ -1,0 +1,38 @@
+{
+  "sourceBase": "382ad90a395d8360ed542e6c000cf059a55f3f26",
+  "syntheticOnly": true,
+  "unit": {
+    "tests": 273,
+    "passed": 272,
+    "skippedExisting": 1,
+    "failed": 0
+  },
+  "passed": [
+    "typecheck",
+    "syntax",
+    "Expo web export",
+    "Expo iOS JavaScript/Hermes export (not native IPA)",
+    "navigation-refinement current",
+    "duo-layout",
+    "calendar-event-refinement",
+    "assistant-chat",
+    "assistant-chat-errors",
+    "motion",
+    "app"
+  ],
+  "notRun": [
+    "native new IPA",
+    "real device keyboard/FPS/VoiceOver",
+    "real connected-account changes",
+    "recording",
+    "AI item checkboxes"
+  ],
+  "latestNative": {
+    "version": "1.0.0(30)",
+    "run": 43553158014,
+    "commit": "382ad90a395d8360ed542e6c000cf059a55f3f26",
+    "signedBuildSuccessUtc": "2026-11-14T03:50:42Z",
+    "appleUploadSuccessUtc": "2026-11-14T03:51:08Z",
+    "includesThisTask": false
+  }
+}

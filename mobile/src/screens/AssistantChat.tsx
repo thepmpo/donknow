@@ -8,6 +8,7 @@ import {Button,colors,DateField} from '../ui';
 import {NotesField} from '../NotesField';
 import {typography} from '../theme';
 import type {TodoStore} from '../useTodos';
+import type {AssistantDraft} from '../useAssistant';
 import {useAssistant,assistantNames,assistantLabels,assistantStatusLabels,assistantTargetKeys,assistantValue} from '../useAssistant';
 
 export type AssistantChatRequest={id:number;message:string;pastedText?:string};
@@ -16,11 +17,13 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  const assistant=useAssistant(store);
  const [inputHeight,setInputHeight]=useState(44);
  const [input,setInput]=useState(''),[pastedText,setPastedText]=useState(''),[settingsOpen,setSettingsOpen]=useState(false),[detailsOpen,setDetailsOpen]=useState(false),[toolsOpen,setToolsOpen]=useState(false),[proposalNotes,setProposalNotes]=useState<Record<number,boolean>>({}),[expandedDrafts,setExpandedDrafts]=useState<Record<string,boolean>>({});
- const [prepared,setPrepared]=useState<Record<number,string>>({}),[notice,setNotice]=useState('');
+ const [prepared,setPrepared]=useState<Record<number,string>>({}),[notice,setNotice]=useState(''),[historyOpen,setHistoryOpen]=useState(false);
+ const isHistory=(status:string)=>['succeeded','cancelled','restored-cancelled'].includes(status);
+ const history=assistant.drafts.filter(draft=>isHistory(draft.status)),needsAttention=assistant.drafts.filter(draft=>!isHistory(draft.status));
  const lastRequest=useRef<number|null>(null),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null);
  const [scrollRequest,setScrollRequest]=useState({target:'',sequence:0});
  const pendingScroll=useRef(''),lastScheduled=useRef('');
- function reveal(target:string){pendingScroll.current=target;setScrollRequest(previous=>({target,sequence:previous.sequence+1}));}
+ function reveal(target:string){if(target.startsWith('draft:'))setHistoryOpen(true);pendingScroll.current=target;setScrollRequest(previous=>({target,sequence:previous.sequence+1}));}
  function anchorKey(target:string){return target===scrollRequest.target?`${target}:${scrollRequest.sequence}`:target;}
  function anchorLayout(target:string,event:LayoutChangeEvent){if(pendingScroll.current!==target)return;pendingScroll.current='';scroll.current?.scrollTo({y:Math.max(0,event.nativeEvent.layout.y-8),animated:!reduced});}
  const reduced=useReducedMotion();
@@ -28,7 +31,7 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  useEffect(()=>{if(refreshVersion>0)void assistant.load();},[refreshVersion]);
  useEffect(()=>{onBusyChange(assistant.busy);return()=>onBusyChange(false);},[assistant.busy,onBusyChange]);
  const owner=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;
- useEffect(()=>{setInput('');setPastedText('');lastScheduled.current='';setPrepared({});setNotice('');setSettingsOpen(false);setDetailsOpen(false);setToolsOpen(false);setProposalNotes({});setExpandedDrafts({});pendingScroll.current='';lastRequest.current=null;},[owner]);
+ useEffect(()=>{setInput('');setPastedText('');lastScheduled.current='';setPrepared({});setNotice('');setHistoryOpen(false);setSettingsOpen(false);setDetailsOpen(false);setToolsOpen(false);setProposalNotes({});setExpandedDrafts({});pendingScroll.current='';lastRequest.current=null;},[owner]);
  useEffect(()=>{if(request&&lastRequest.current!==request.id){lastRequest.current=request.id;setInput(request.message);setPastedText(request.pastedText??'');assistant.setConsent(false);setNotice('내용을 확인하고 AI 전송에 동의한 뒤 보내주세요.');}},[request?.id]);
  async function send(){
   if(!input.trim()||!assistant.consent||assistant.busy)return;
@@ -39,6 +42,24 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  const consentNeeded=!!input.trim()||!!pastedText;
  const verificationNeeded=assistant.error.includes('이메일 인증');
  const feedback=verificationNeeded?`${assistant.error} 내정보 → 내 계정 → 이메일 인증에서 완료해주세요.`:assistant.error;
+ function renderDraft(draft:AssistantDraft){const terminal=isHistory(draft.status),folded=terminal&&!expandedDrafts[draft.id];return <View key={anchorKey(`draft:${draft.id}`)} testID={`duck-action-${draft.id}`} onLayout={event=>anchorLayout(`draft:${draft.id}`,event)} style={folded?styles.historyRow:styles.card}>
+    {folded?<Pressable accessibilityRole="button" accessibilityLabel={`${draft.label} 실행 내용 보기 ${draft.id}`} accessibilityState={{expanded:false}} onPress={()=>setExpandedDrafts(old=>({...old,[draft.id]:true}))} style={styles.historySummary}><View style={{flex:1,minWidth:0,gap:4}}><Text numberOfLines={1} style={styles.secondary}>{draft.label} · {assistantStatusLabels[draft.status]??draft.status}</Text><Text numberOfLines={1} style={styles.body}>{String(draft.args.title??draft.args.subject??draft.targetTitle??'처리한 내용')}</Text></View><Text style={styles.secondary}>›</Text></Pressable>:<>
+    <Text style={styles.cardTitle}>{draft.label} · {assistantStatusLabels[draft.status]??draft.status}</Text>
+    {!!draft.accountLabel&&<Text style={styles.body}>연결 계정: {draft.accountLabel}</Text>}
+    {!!draft.targetTitle&&<Text style={styles.body}>대상: {draft.targetTitle}</Text>}
+    {!!draft.recipient&&<Text style={styles.body}>받는 사람: {draft.recipient}</Text>}
+    {Object.entries(draft.args).filter(([key,value])=>!assistantTargetKeys.includes(key)&&!(key==='notes'&&!value)).map(([key,value])=><Text key={key} selectable style={styles.body}>{assistantLabels[key]??key}: {assistantValue(key,value)}</Text>)}
+    {!!draft.result?.message&&<Text style={styles.secondary}>{draft.result.message}</Text>}
+    {draft.status==='unknown'&&<Text style={styles.error}>처리됐는지 확인하지 못했어요. 원본 서비스에서 확인한 뒤 다음 작업을 진행해주세요.</Text>}
+    {draft.status==='pending'&&<>
+     <Text style={styles.secondary}>내용과 대상을 확인한 뒤 실행해주세요. 확인 전에는 저장하거나 보내지 않아요.</Text>
+     <Button title={`${draft.label} 확인하고 실행`} disabled={assistant.busy||draft.expiresAt<=Date.now()} onPress={()=>{void (async()=>{await assistant.confirm(draft);reveal(`draft:${draft.id}`);})();}}/>
+     <Button title="작업 취소" quiet disabled={assistant.busy} onPress={()=>{void (async()=>{await assistant.cancel(draft);reveal(`draft:${draft.id}`);})();}}/>
+    </>}
+    </>}
+    {terminal&&!folded&&<Button title="실행 내용 접기" accessibilityLabel={`${draft.label} 실행 내용 접기 ${draft.id}`} expanded quiet onPress={()=>setExpandedDrafts(old=>({...old,[draft.id]:false}))}/>}
+    {!folded&&draft.status==='succeeded'&&draft.operation.startsWith('todo.')&&<Button title="Todo 보기 →" quiet onPress={onOpenTodos}/>}
+   </View>;}
  return <View style={styles.screen}>
   <ScrollView ref={scroll} testID="duck-chat-scroll" style={styles.scroll} contentContainerStyle={styles.messages} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
    {!assistant.turns.length&&!assistant.drafts.length&&!scheduledMessages.length&&<View style={styles.welcome}><Text style={styles.duck}>🦆</Text><Text style={styles.greeting}>무엇을 도와드릴까요?</Text><Text style={styles.secondary}>떠오른 일을 편하게 적어주세요.</Text></View>}
@@ -59,25 +80,10 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
    </View>)}
    {scheduledMessages.slice(-20).map(message=><View key={anchorKey('scheduled:'+message.id)} testID={'scheduled-message-'+message.id} onLayout={event=>anchorLayout('scheduled:'+message.id,event)} style={[styles.bubble,styles.duckBubble]}><Text style={styles.speaker}>덕 · {message.title} · {new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(message.createdAt)}</Text><Text selectable style={styles.body}>{message.text}</Text>{message.warnings.map((warning,index)=><Text key={index} style={styles.secondary}>{warning}</Text>)}</View>)}
    {children}
-   {assistant.drafts.length>0&&<Text style={styles.cardTitle}>실행 확인과 최근 기록</Text>}
-   {assistant.drafts.slice(0,5).map(draft=>{const folded=['succeeded','cancelled','restored-cancelled'].includes(draft.status)&&!expandedDrafts[draft.id];return <View key={anchorKey(`draft:${draft.id}`)} testID={`duck-action-${draft.id}`} onLayout={event=>anchorLayout(`draft:${draft.id}`,event)} style={styles.card}>
-    <Text style={styles.cardTitle}>{draft.label} · {assistantStatusLabels[draft.status]??draft.status}</Text>
-    {folded?<Text numberOfLines={2} style={styles.body}>{String(draft.args.title??draft.args.subject??draft.targetTitle??'처리한 내용을 다시 확인할 수 있어요.')}</Text>:<>
-    {!!draft.accountLabel&&<Text style={styles.body}>연결 계정: {draft.accountLabel}</Text>}
-    {!!draft.targetTitle&&<Text style={styles.body}>대상: {draft.targetTitle}</Text>}
-    {!!draft.recipient&&<Text style={styles.body}>받는 사람: {draft.recipient}</Text>}
-    {Object.entries(draft.args).filter(([key,value])=>!assistantTargetKeys.includes(key)&&!(key==='notes'&&!value)).map(([key,value])=><Text key={key} selectable style={styles.body}>{assistantLabels[key]??key}: {assistantValue(key,value)}</Text>)}
-    {!!draft.result?.message&&<Text style={styles.secondary}>{draft.result.message}</Text>}
-    {draft.status==='unknown'&&<Text style={styles.error}>처리됐는지 확인하지 못했어요. 원본 서비스에서 확인한 뒤 다음 작업을 진행해주세요.</Text>}
-    {draft.status==='pending'&&<>
-     <Text style={styles.secondary}>내용과 대상을 확인한 뒤 실행해주세요. 확인 전에는 저장하거나 보내지 않아요.</Text>
-     <Button title={`${draft.label} 확인하고 실행`} disabled={assistant.busy||draft.expiresAt<=Date.now()} onPress={()=>{void (async()=>{await assistant.confirm(draft);reveal(`draft:${draft.id}`);})();}}/>
-     <Button title="작업 취소" quiet disabled={assistant.busy} onPress={()=>{void (async()=>{await assistant.cancel(draft);reveal(`draft:${draft.id}`);})();}}/>
-    </>}
-    </>}
-    {['succeeded','cancelled','restored-cancelled'].includes(draft.status)&&<Button title={folded?'실행 내용 보기':'실행 내용 접기'} accessibilityLabel={`${draft.label} 실행 내용 ${folded?'보기':'접기'} ${draft.id}`} expanded={!folded} quiet onPress={()=>setExpandedDrafts(old=>({...old,[draft.id]:!old[draft.id]}))}/>}
-    {draft.status==='succeeded'&&draft.operation.startsWith('todo.')&&<Button title="Todo 보기 →" quiet onPress={onOpenTodos}/>}
-   </View>;})}
+   {needsAttention.length>0&&<Text style={styles.cardTitle}>확인할 작업</Text>}
+   {needsAttention.map(renderDraft)}
+   {history.length>0&&<Pressable testID="duck-history-toggle" accessibilityRole="button" accessibilityLabel={`최근 실행 기록 ${history.length}개 ${historyOpen?'접기':'보기'}`} accessibilityState={{expanded:historyOpen}} onPress={()=>setHistoryOpen(value=>!value)} style={styles.historyToggle}><Text style={styles.secondary}>최근 실행 기록 · {history.length}개</Text><Text style={styles.secondary}>{historyOpen?'접기 ⌃':'보기 ⌄'}</Text></Pressable>}
+   {historyOpen&&history.map(renderDraft)}
    {(assistant.sources.length>0||assistant.warnings.length>0)&&<>
     <Button title={detailsOpen?'근거 접기':'확인한 자료와 안내 보기'} quiet onPress={()=>setDetailsOpen(value=>!value)}/>
     {detailsOpen&&<View style={styles.card}>{assistant.warnings.map((warning,index)=><Text key={index} style={styles.secondary}>{warning}</Text>)}{assistant.sources.slice(0,15).map(source=><View key={source.ref}><Text style={styles.secondary}>{assistantNames[source.provider]??source.provider} · {source.title}{source.completed?' · 완료 참고':''}</Text>{!!source.text&&<Text numberOfLines={3} style={styles.secondary}>{source.text}</Text>}</View>)}<Text style={styles.secondary}>연결한 자료 전체가 아닌 최근 일부를 확인해요.</Text></View>}
@@ -98,6 +104,7 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  </View>;
 }
 const styles=StyleSheet.create({
+ historyToggle:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,paddingHorizontal:4},historyRow:{borderBottomWidth:StyleSheet.hairlineWidth,borderColor:colors.line},historySummary:{minHeight:60,flexDirection:'row',alignItems:'center',gap:8,paddingVertical:8,paddingHorizontal:4},
  composerTools:{width:44,height:44,alignItems:'center',justifyContent:'center'},screen:{flex:1,minHeight:0},scroll:{flex:1},messages:{gap:14,paddingVertical:16,paddingBottom:24},welcome:{alignItems:'center',justifyContent:'center',paddingVertical:32,gap:12},duck:{fontSize:56},greeting:{...typography.heading,color:colors.text,textAlign:'center'},
  bubble:{padding:16,borderRadius:20,gap:8,maxWidth:'100%'},userBubble:{backgroundColor:colors.pale,alignSelf:'flex-end'},duckBubble:{backgroundColor:colors.surface,alignSelf:'stretch'},speaker:{...typography.caption,color:colors.muted},body:{...typography.body,color:colors.text},secondary:{...typography.caption,color:colors.muted},
  card:{padding:20,borderRadius:24,backgroundColor:colors.surface,gap:12},cardTitle:{...typography.body,fontWeight:'600',color:colors.text},draftInput:{...typography.body,color:colors.text,minHeight:48,borderBottomWidth:1,borderColor:colors.line,paddingVertical:8},error:{...typography.caption,color:colors.danger},providers:{flexDirection:'row',flexWrap:'wrap',gap:8},provider:{minHeight:44,justifyContent:'center',paddingHorizontal:10,borderRadius:12,backgroundColor:colors.bg},
