@@ -56,7 +56,7 @@ async function scenario(kind) {
     if (kind !== 'startup') {
       await page.getByText('alice 전용 할 일', { exact: true }).waitFor();
       holdFeature = kind === 'late-401';
-      await page.getByRole('tab', { name: '내정보', exact: true }).click();
+      await page.getByRole('tab', { name: 'ME', exact: true }).click();
       if (kind === 'late-profile') {
         await page.getByRole('button', { name: '이메일 인증', exact: true }).click();
         await page.getByRole('textbox', { name: '6자리 인증번호', exact: true }).fill('123456');
@@ -66,7 +66,7 @@ async function scenario(kind) {
       await held;
       // Navigation stays available while the old background read is pending.
       await page.getByRole('tab', { name: 'Todo 리스트', exact: true }).click();
-      await page.getByRole('tab', { name: '내정보', exact: true }).click();
+      await page.getByRole('tab', { name: 'ME', exact: true }).click();
       await page.getByRole('button', { name: '로그아웃', exact: true }).click();
     } else await held;
     await page.getByRole('textbox', { name: '이메일', exact: true }).fill(bob.email);
@@ -76,7 +76,7 @@ async function scenario(kind) {
     release();
     // Allow the actual state transition/effect and rendering to finish.
     await page.waitForTimeout(150);
-    await page.getByRole('tab', { name: '내정보', exact: true }).click();
+    await page.getByRole('tab', { name: 'ME', exact: true }).click();
     await page.getByText(bob.email, { exact: true }).waitFor();
     assert.equal(await page.getByText(alice.email, { exact: true }).count(), 0);
     await page.getByRole('tab', { name: 'Todo 리스트', exact: true }).click();

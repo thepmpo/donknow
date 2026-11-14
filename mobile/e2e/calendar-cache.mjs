@@ -50,7 +50,7 @@ try{
  // Going to a different month and back keeps the current month snapshot; late responses are ignored.
  hold=true;await command('다음 달');await command('이전 달');await event(title).waitFor({timeout:500});await event('팀 일정 유지').waitFor({timeout:500});assert.equal(await event('이후 삭제된 일정').count(),0);hold=false;release();
  // Cache and late calendar results cannot cross a Duck account boundary.
- hold=true;await command('Google 일정 새로고침');await close();await tab('내정보').click();await button('로그아웃').click();
+ hold=true;await command('Google 일정 새로고침');await close();await tab('ME').click();await button('로그아웃').click();
  await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByRole('textbox',{name:'비밀번호',exact:true}).fill('fixture-password-only');title='두 번째 계정 일정';await button('로그인').click();await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();await tab('캘린더').click();await grid().waitFor();assert.equal(await event('빠른 캘린더 먼저 반영').count(),0);
  for(const p of pending.filter(p=>p.owner==='viewport-user'))p.resolve();await page.waitForTimeout(100);assert.equal(await event('빠른 캘린더 먼저 반영').count(),0,'old owner response is ignored');hold=false;release();await event(title).waitFor();await shot('cache-account-isolation');
  assert.deepEqual(errors,[]);await writeFile(resolve(output,'cache-verification.json'),JSON.stringify({capCalls,eventCalls,errors,holdsReleased:pending.length,cache:'session memory, account/server/timezone scoped, 12 periods',nativeDeviceVerified:false},null,2));console.log('PASS: immediate cached ranges, source-by-source arrival, bounded capability cache, overlap updates, refresh failure preservation, pagination/deletion, late-range response isolation');

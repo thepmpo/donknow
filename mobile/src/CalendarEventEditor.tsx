@@ -95,7 +95,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
      <Label>첨부 링크</Label>{draft.attachments.map((a,i)=><View key={i} style={{gap:6}}><TextInput accessibilityLabel={'첨부 링크 이름 '+(i+1)} value={a.name} onChangeText={name=>update({attachments:draft.attachments.map((v,k)=>k===i?{...v,name}:v)})} maxLength={200} style={s.input}/><TextInput accessibilityLabel={'첨부 링크 주소 '+(i+1)} value={a.url} onChangeText={url=>update({attachments:draft.attachments.map((v,k)=>k===i?{...v,url}:v)})} autoCapitalize="none" keyboardType="url" maxLength={2000} style={s.input}/><Button title={'첨부 링크 '+(i+1)+' 삭제'} quiet onPress={()=>update({attachments:draft.attachments.filter((_,k)=>k!==i)})}/></View>)}{draft.attachments.length<20&&<Button title="첨부 링크 추가" quiet onPress={()=>update({attachments:[...draft.attachments,{name:'',url:''}]})}/>}<Text style={s.help}>파일 자체를 업로드하지 않고 링크를 저장해요.</Text>
     </View>
    </>}
-   {readonly&&<Text style={s.help}>Google 원본은 읽기 전용이에요.{metadataAvailable?' 덕에만 저장하는 정보는 편집할 수 있어요.':' 내정보에서 캘린더 쓰기를 승인해주세요.'}</Text>}
+   {readonly&&<Text style={s.help}>Google 원본은 읽기 전용이에요.{metadataAvailable?' 덕에만 저장하는 정보는 편집할 수 있어요.':' ME에서 캘린더 쓰기를 승인해주세요.'}</Text>}
    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}<Button title="일정 저장 내용 미리보기" disabled={busy||(!canWrite&&!metadataAvailable)} onPress={()=>void prepare()}/>
   </>}
  </ScrollView>;

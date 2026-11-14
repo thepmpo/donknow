@@ -71,7 +71,7 @@ try{
  assert.equal(await page.getByTestId('duck-chat-tools').count(),0,'optional tools begin collapsed');
  assert.ok((await page.getByTestId('duck-chat-scroll').boundingBox()).height>450,'conversation has at least 450px at 390x844');
  await page.getByRole('tab',{name:'log',exact:true}).click();await capture('04-log-fixture');
- await page.getByRole('tab',{name:'내정보',exact:true}).click();await page.getByRole('button',{name:'Google 연결 안내',exact:true}).waitFor();await capture('05-profile-fixture');
+ await page.getByRole('tab',{name:'ME',exact:true}).click();await page.getByRole('button',{name:'Google 연결 안내',exact:true}).waitFor();await capture('05-profile-fixture');
  await page.getByRole('button',{name:'내 계정 관리',exact:true}).click();
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));assert.ok((await page.getByText('내 계정',{exact:true}).boundingBox()).y<400,'profile jump reveals account heading');await capture('17-account-jump-fixture');
  await page.getByRole('button',{name:'Google 연결 안내',exact:true}).click();await page.getByRole('checkbox',{name:'Google Tasks 읽기 권한',exact:true}).waitFor();await capture('06-google-permissions-fixture');

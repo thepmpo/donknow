@@ -53,7 +53,7 @@ try{
     assert.equal(await send.isDisabled(),true,'busy tap cannot submit again');
     const alert=page.getByRole('alert');await alert.waitFor();await visibleNearComposer(alert,`${failure}, ${records} previous records, ${reducedMotion}`);
     assert.equal(await composer.inputValue(),'오늘 해야 할 일을 간단히 정리해줘','failed input is preserved');assert.equal(await consent.getAttribute('aria-checked'),'true','consent is preserved');assert.equal(chatCalls.length,callsBefore+1,'no automatic resend');
-    if(failure==='verification')assert.match(await alert.textContent(),/내정보 → 내 계정 → 이메일 인증/);
+    if(failure==='verification')assert.match(await alert.textContent(),/ME → 내 계정 → 이메일 인증/);
     else{
      assert.match(await alert.textContent(),failure==='client-timeout'?/응답 시간이 초과/:new RegExp(messages[failure]));
      await visibleNearComposer(page.getByRole('button',{name:'AI 요청 다시 보내기',exact:true}),'explicit retry');

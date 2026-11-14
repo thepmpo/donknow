@@ -1,0 +1,40 @@
+{
+  "checkedAtUtc": "2026-11-14T04:54:16.847518+00:00",
+  "scope": "official documentation comparison, not hands-on competitor app audit",
+  "references": [
+    {
+      "title": "Apple HIG Settings",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/settings",
+      "readableSource": "https://developer.apple.com/design/human-interface-guidelines/settings.md",
+      "finding": "설정 수와 중복을 줄이고 적절한 기본값을 사용하며, 작업별 옵션을 그 작업 화면 안에 둔다."
+    },
+    {
+      "title": "Apple Calendar settings",
+      "url": "https://support.apple.com/guide/iphone/change-your-calendar-settings-iphc37be2016/ios",
+      "finding": "계정·기본 캘린더·기본 알림·표시 옵션을 목적별로 설명한다."
+    },
+    {
+      "title": "Google Calendar accounts on iOS",
+      "url": "https://support.google.com/calendar/answer/15619834?co=GENIE.Platform%3DiOS",
+      "finding": "프로필 사진에서 계정 추가와 기기 계정을 관리한다."
+    },
+    {
+      "title": "Google Calendar general settings on iOS",
+      "url": "https://support.google.com/calendar/answer/6084644?co=GENIE.Platform%3DiOS",
+      "finding": "메뉴의 설정/일반에서 시작 요일·시간대·표시 옵션을 관리한다."
+    },
+    {
+      "title": "Todoist Calendar integration",
+      "url": "https://www.todoist.com/help/todoist/integrations/use-the-calendar-integration-rCqwLCt3G",
+      "finding": "iOS Browse/설정/Calendar에서 캘린더 연결과 동기화를 관리한다. Google Tasks와 별개다."
+    },
+    {
+      "title": "Todoist Account glossary",
+      "url": "https://www.todoist.com/help/todoist/get-started/todoist-glossary-cA60laWMH",
+      "finding": "Account에서 이름·계정 삭제·보안 설정을 다룬다고 설명한다."
+    }
+  ],
+  "appleDirectAssetFetch": "blocked; competitor pixel/spacing claims not made",
+  "currentDuckEvidence": "fresh Expo with synthetic API/native geometry",
+  "implementation": "ME labels/guidance only; hierarchy proposal not implemented"
+}

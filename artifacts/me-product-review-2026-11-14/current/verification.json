@@ -1,0 +1,81 @@
+{
+  "syntheticOnly": true,
+  "steps": [
+    {
+      "name": "01-me-entry",
+      "step": "ME 진입"
+    },
+    {
+      "name": "02-google-settings",
+      "step": "연결된 Google 관리"
+    },
+    {
+      "name": "03-notion-connect",
+      "step": "새 Notion 연결 진입"
+    },
+    {
+      "name": "04-notifications",
+      "step": "알림 설정 찾기"
+    },
+    {
+      "name": "05-privacy",
+      "step": "데이터 안내 읽기"
+    },
+    {
+      "name": "05-small-privacy",
+      "step": "짧고 좁은 화면의 개인정보"
+    },
+    {
+      "name": "06-account",
+      "step": "계정 관리 진입"
+    },
+    {
+      "name": "07-delete-entry",
+      "step": "삭제 확인 진입까지만"
+    },
+    {
+      "name": "08-storage-operations",
+      "step": "운영·백업 설명"
+    },
+    {
+      "name": "09-long-profile-name",
+      "step": "긴 프로필명"
+    },
+    {
+      "name": "09-status-recheck",
+      "step": "일시 조회 실패와 기존 연결 보존"
+    },
+    {
+      "name": "10-duo-folded-me",
+      "step": "Duo ME 기하 확인"
+    },
+    {
+      "name": "11-duo-open-me",
+      "step": "Duo ME 기하 확인"
+    }
+  ],
+  "devices": [
+    {
+      "hinge": "closed",
+      "width": 430,
+      "height": 640,
+      "tabLabel": "ME",
+      "cameraAligned": true
+    },
+    {
+      "hinge": "fullyOpen",
+      "width": 960,
+      "height": 740,
+      "tabLabel": "ME",
+      "cameraAligned": true
+    }
+  ],
+  "googleButtons": 11,
+  "smallPrivacyClose": {
+    "x": 228,
+    "y": 84.5,
+    "width": 44,
+    "height": 44
+  },
+  "errors": []
+}

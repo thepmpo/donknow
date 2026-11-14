@@ -80,7 +80,7 @@ try{
  await page.screenshot({path:'/tmp/duck-chat-mobile-fixture.png'});
  // A late AI answer from the first account cannot appear in the next account.
  holdChat=true;await composer.fill('이전 계정에서만 보여야 하는 질문');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.waitForFunction(()=>document.body.textContent.includes('처리하고 있어요'));
- await page.getByRole('tab',{name:'내정보',exact:true}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await page.getByRole('button',{name:'로그인',exact:true}).waitFor();
+ await page.getByRole('tab',{name:'ME',exact:true}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await page.getByRole('button',{name:'로그인',exact:true}).waitFor();
  releaseChat();await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByLabel('비밀번호',{exact:true}).fill('test-password');await page.getByRole('button',{name:'로그인',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();
  assert.equal(await composer.inputValue(),'');assert.equal(await page.getByText('이전 계정에서만 보여야 하는 질문',{exact:true}).count(),0);assert.equal(await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).count(),0);
  // Unconfigured AI keeps the existing explicit manual Todo flow.

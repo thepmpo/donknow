@@ -41,7 +41,7 @@ export function AssistantChat({store,onOpenTodos,request,children,shortcuts,onBu
  function editProposal(index:number,key:string,value:unknown){assistant.setProposals(old=>old.map((proposal,i)=>i===index?{...proposal,args:{...proposal.args,[key]:value}}:proposal));}
  const consentNeeded=!!input.trim()||!!pastedText;
  const verificationNeeded=assistant.error.includes('이메일 인증');
- const feedback=verificationNeeded?`${assistant.error} 내정보 → 내 계정 → 이메일 인증에서 완료해주세요.`:assistant.error;
+ const feedback=verificationNeeded?`${assistant.error} ME → 내 계정 → 이메일 인증에서 완료해주세요.`:assistant.error;
  function renderDraft(draft:AssistantDraft){const terminal=isHistory(draft.status),folded=terminal&&!expandedDrafts[draft.id];return <View key={anchorKey(`draft:${draft.id}`)} testID={`duck-action-${draft.id}`} onLayout={event=>anchorLayout(`draft:${draft.id}`,event)} style={folded?styles.historyRow:styles.card}>
     {folded?<Pressable accessibilityRole="button" accessibilityLabel={`${draft.label} 실행 내용 보기 ${draft.id}`} accessibilityState={{expanded:false}} onPress={()=>setExpandedDrafts(old=>({...old,[draft.id]:true}))} style={styles.historySummary}><View style={{flex:1,minWidth:0,gap:4}}><Text numberOfLines={1} style={styles.secondary}>{draft.label} · {assistantStatusLabels[draft.status]??draft.status}</Text><Text numberOfLines={1} style={styles.body}>{String(draft.args.title??draft.args.subject??draft.targetTitle??'처리한 내용')}</Text></View><Text style={styles.secondary}>›</Text></Pressable>:<>
     <Text style={styles.cardTitle}>{draft.label} · {assistantStatusLabels[draft.status]??draft.status}</Text>
