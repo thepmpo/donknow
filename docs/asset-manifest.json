@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "a2f4a2c47d442b668d756a4638a9ff42faf55804",
-  "assetCommit": "a2f4a2c47d442b668d756a4638a9ff42faf55804",
-  "imageCount": 801,
+  "codeCommit": "59262832404f9f24f3d48e7183c545bad9b911e2",
+  "assetCommit": "59262832404f9f24f3d48e7183c545bad9b911e2",
+  "imageCount": 818,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -4735,6 +4735,125 @@
       "bytes": 70506,
       "sha256": "0f1a34a82c042d0c5a4db9641f9d9ea0b7b3974b815313e6eb50f8e197e3b951",
       "import_path": "images/artifacts__me-product-review-2026-11-14__current__11-duo-open-me.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/01-me-overview.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 49589,
+      "sha256": "0a8bc6b98fa50c26925b1b39633b4b35715c0d84cd91c857b2bb85edf82ca4ee",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__01-me-overview.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/02-google-overview.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 35988,
+      "sha256": "42667457bc907e7473dc42567f4615bf353c9aaa8100f5f92748cd0260855a8f",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__02-google-overview.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/03-google-permissions.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 49745,
+      "sha256": "f0b0e2bef800115aef23b5ac7878b8cb4fe27a3f4dc3606efc21e5023ef9a351",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__03-google-permissions.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/04-completed-reference.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 51950,
+      "sha256": "9bda8fab3102c531d30504e292d768086b046be05de48a840d7cfe104b9abcb8",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__04-completed-reference.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/05-stale-connection.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 50619,
+      "sha256": "df8da88985cf9e03fcf03a33b385368f3c383ce9100cf1e46cc5d2e55d9d4ffc",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__05-stale-connection.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/06-account-delete.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 35135,
+      "sha256": "2c00cca4814929fc8249630914e71db65c710efc091effe697f355403977838f",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__06-account-delete.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/07-long-name-overview.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 51466,
+      "sha256": "9d563cecfde433f0377784c66ed3783a3fb736c5cda3c30896980e13326d9481",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__07-long-name-overview.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/08-notifications.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 30489,
+      "sha256": "a47f045ab64aa4e11ee28bdd0d47b013345f49133e289f954e7ac2f4e6023874",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__08-notifications.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/09-privacy.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 79636,
+      "sha256": "6762ce333151cd9175f53aa44ca0328cb30156e8322a1168478711bbe5393e83",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__09-privacy.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/10-advanced.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 39098,
+      "sha256": "6411ee6db4998555d6eebb58666f2bf1e7b6059f5e7522199430481368ee000d",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__10-advanced.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/11-export.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 36426,
+      "sha256": "ae3b58b67f0e6f4ce915d7ba97c63e67f1d37efc2da302f2dafcac7b19b06482",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__11-export.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/12-notion-connect.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 36821,
+      "sha256": "3864aea9171ad5f4fe8500a228edc4f4b9977271c3b02410d230fc87e1a38818",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__12-notion-connect.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/13-folded-overview.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 36016,
+      "sha256": "b3105969c44a43ec13074be838579fe21180690a613610b15106e8f1d322b5f8",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__13-folded-overview.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/14-open-overview.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 72829,
+      "sha256": "0419f7c341602619cdf509f5c4fec3fc5ff811dbd920f4ace7a9d9339689bb02",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__14-open-overview.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/15-folded-account.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 35468,
+      "sha256": "5c7fa02621b68b6ba943ab89c371befe9dc51ae12b7eebbe0b5dbecce7ee826b",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__15-folded-account.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/16-open-account.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 70117,
+      "sha256": "0a4fcf5066b18de6fd004a6b843b1527e45c95efa137067636d0fc84b4cbb67b",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__16-open-account.png"
+    },
+    {
+      "path": "artifacts/me-settings-2026-11-14/current/17-small-dark.png",
+      "category": "ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 40003,
+      "sha256": "889a7a3b7644e499083de8f8f36c3bd70853fe4af84cbcbc1b88bd4aff58a434",
+      "import_path": "images/artifacts__me-settings-2026-11-14__current__17-small-dark.png"
     },
     {
       "path": "artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png",
