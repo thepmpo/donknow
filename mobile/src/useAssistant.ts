@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {consentPreferences,consentScope,durableConsentScope} from './assistant-consent';
 import {formatDueDate} from './domain';
 import {useEffect,useRef,useState} from 'react';
 import type {TodoStore} from './useTodos';
@@ -6,8 +8,8 @@ export type AssistantSource={ref:string;provider:string;kind:string;title:string
 export type AssistantDefinition={operation:string;provider:string;label:string;fields:string[];required:string[]};
 export type AssistantDraft={id:string;operation:string;label:string;args:Record<string,unknown>;targetTitle?:string;accountLabel?:string;recipient?:string;status:string;result?:{message?:string};expiresAt:number};
 export type AssistantProposal={operation:string;label:string;args:Record<string,unknown>;sourceRefs:string[]};
-export type AssistantStatus={enabled:boolean;message:string;actions:AssistantDefinition[]};
-export type AssistantTurn={role:'user'|'assistant';text:string};
+export type AssistantStatus={enabled:boolean;message:string;actions:AssistantDefinition[];consentScopes?:Record<string,string>};
+export type AssistantTurn={id?:string;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[]};
 export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'덕 Todo'};
 export const assistantLabels:Record<string,string>={title:'제목',notes:'메모',dueDate:'예정일',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
 export const assistantStatusLabels:Record<string,string>={pending:'확인 대기',running:'처리 중',succeeded:'완료',failed:'실패 · 새 초안에서 다시 확인',unknown:'결과 불확실 · 원본 확인 필요',cancelled:'취소','restored-cancelled':'복원 시 취소'};
@@ -16,16 +18,23 @@ export const assistantValue=(key:string,value:unknown)=>key==='done'?(value?'완
 
 /** The inline chat and advanced sheet use the same consent/preview/confirm API path. */
 export function useAssistant(store:TodoStore){
- const [status,setStatus]=useState<AssistantStatus|null>(null),[providers,setProviders]=useState<string[]>([]),[consent,setConsent]=useState(false),[answer,setAnswer]=useState(''),[sources,setSources]=useState<AssistantSource[]>([]),[warnings,setWarnings]=useState<string[]>([]),[proposals,setProposals]=useState<AssistantProposal[]>([]),[drafts,setDrafts]=useState<AssistantDraft[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[turns,setTurns]=useState<AssistantTurn[]>([]);
+ const [status,setStatus]=useState<AssistantStatus|null>(null),[providers,setProviders]=useState<string[]>([]),[consent,setConsentState]=useState(false),[answer,setAnswer]=useState(''),[sources,setSources]=useState<AssistantSource[]>([]),[warnings,setWarnings]=useState<string[]>([]),[proposals,setProposals]=useState<AssistantProposal[]>([]),[drafts,setDrafts]=useState<AssistantDraft[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[turns,setTurns]=useState<AssistantTurn[]>([]);
+ const [busyKind,setBusyKind]=useState<'chat'|'action'|'context'|null>(null),[grants,setGrants]=useState<string[]>([]),[consentReady,setConsentReady]=useState(false);
  const [errorKind,setErrorKind]=useState<'load'|'chat'|'action'|'context'|null>(null);
+ const turnSequence=useRef(0);
  const alive=useRef(true),working=useRef(false),generation=useRef(0),draftRevision=useRef(0),readSequence=useRef(0),errorRevision=useRef(0);
  const owner=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;
  useEffect(()=>{
   alive.current=true;const version=++generation.current;draftRevision.current++;readSequence.current++;errorRevision.current++;
-  setStatus(null);setProviders([]);setConsent(false);setAnswer('');setSources([]);setWarnings([]);setProposals([]);setDrafts([]);setTurns([]);setError('');setErrorKind(null);working.current=false;setBusy(false);
+  setStatus(null);setProviders([]);setConsentState(false);setGrants([]);setConsentReady(false);setBusyKind(null);
+  AsyncStorage.getItem('duckduck.ai-consent.v1.'+owner).then(raw=>{if(current(version)){const saved=consentPreferences(raw?JSON.parse(raw):null);setProviders(saved.providers);setGrants(saved.grants);setConsentReady(true);}}).catch(()=>{if(current(version))setConsentReady(true);});setAnswer('');setSources([]);setWarnings([]);setProposals([]);setDrafts([]);setTurns([]);setError('');setErrorKind(null);working.current=false;setBusy(false);setBusyKind(null);
   if(store.user&&store.connection?.mode==='cloud')void load(version);
   return()=>{alive.current=false;generation.current++;};
  },[owner]);
+ const scope=consentScope(providers,status?.consentScopes);
+ useEffect(()=>{setConsentState(!!status&&consentReady&&grants.includes(scope));},[scope,consentReady,!!status,grants]);
+ function saveConsent(nextProviders:string[],nextGrants:string[]){void AsyncStorage.setItem('duckduck.ai-consent.v1.'+owner,JSON.stringify({providers:nextProviders,grants:nextGrants.filter(durableConsentScope)})).catch(()=>{});}
+ function setConsent(value:boolean|((old:boolean)=>boolean)){const allow=typeof value==='function'?value(consent):value;if(!consentReady)return;const next=allow?[...new Set([...grants,scope])].slice(-16):grants.filter(g=>g!==scope);setGrants(next);setConsentState(allow);saveConsent(providers,next);}
  function current(version:number){return alive.current&&version===generation.current;}
  async function load(version=generation.current){
   const revision=draftRevision.current,sequence=++readSequence.current,errorVersion=errorRevision.current;
@@ -41,20 +50,23 @@ export function useAssistant(store:TodoStore){
   if(failed?.status==='rejected'){setError(failed.reason instanceof Error?failed.reason.message:'비서 기능을 불러오지 못했어요.');setErrorKind('load');}
  }
  async function run<T>(fn:()=>Promise<T>,kind:'chat'|'action'|'context'='action'):Promise<T|undefined>{
-  if(working.current)return;const version=generation.current;working.current=true;errorRevision.current++;setBusy(true);setError('');setErrorKind(null);
+  if(working.current)return;const version=generation.current;working.current=true;errorRevision.current++;setBusy(true);setBusyKind(kind);setError('');setErrorKind(null);
   try{const result=await fn();return current(version)?result:undefined;}
   catch(e){if(current(version)){setError(e instanceof Error?e.message:'처리하지 못했어요.');setErrorKind(kind);}return undefined;}
-  finally{if(current(version)){working.current=false;setBusy(false);}}
+  finally{if(current(version)){working.current=false;setBusy(false);setBusyKind(null);}}
  }
  async function read(){const version=generation.current;await run(async()=>{const r=await store.featureRequest('/api/assistant/context','POST',{providers}) as {sources:AssistantSource[];warnings:string[]};if(current(version)){setSources(r.sources);setWarnings(r.warnings);}},'context');}
  async function chat(message:string,pastedText=''){
-  if(!status?.enabled||!consent||!message.trim()||message.length>2000||pastedText.length>10000)return false;
+  if(working.current||!status?.enabled||!consent||!message.trim()||message.length>2000||pastedText.length>10000)return false;
   const version=generation.current;
-  return await run(async()=>{
-   const r=await store.featureRequest('/api/assistant/chat','POST',{message,providers,consent,pastedText:pastedText||undefined,history:turns.slice(-6).map(turn=>({...turn,text:turn.text.slice(0,2000)}))}) as {answer:string;sources:AssistantSource[];warnings:string[];proposals:AssistantProposal[]};
+  const turnId=String(++turnSequence.current)+':'+generation.current;
+  setTurns(old=>{const failed=old.at(-1);return failed?.role==='user'&&failed.state==='failed'&&failed.text===message?old.map((turn,i)=>i===old.length-1?{...turn,id:turnId,state:'sending' as const}:turn):[...old,{id:turnId,role:'user' as const,text:message,state:'sending' as const}].slice(-40);});
+  const success=await run(async()=>{
+   const r=await store.featureRequest('/api/assistant/chat','POST',{message,providers,consent,consentScopes:status.consentScopes,pastedText:pastedText||undefined,history:turns.filter(turn=>turn.state!=='failed'&&turn.state!=='sending').slice(-6).map(turn=>({role:turn.role,text:turn.text.slice(0,2000)}))}).catch(async e=>{if(current(version)&&e&&typeof e==='object'&&'status' in e&&e.status===409&&e instanceof Error&&e.message.includes('자료')){await load(version);setConsentState(false);}throw e;}) as {answer:string;sources:AssistantSource[];warnings:string[];proposals:AssistantProposal[]};
    if(!current(version))return false;
-   setAnswer(r.answer);setTurns(old=>[...old,{role:'user' as const,text:message.slice(0,2000)},{role:'assistant' as const,text:r.answer}].slice(-40));setSources(r.sources);setWarnings(r.warnings);setProposals(r.proposals);return true;
+   setAnswer(r.answer);setTurns(old=>[...old.map(turn=>turn.id===turnId?{...turn,state:'sent' as const}:turn),{id:turnId+':reply',role:'assistant' as const,text:r.answer,proposals:r.proposals}].slice(-40));setSources(r.sources);setWarnings(r.warnings);setProposals(r.proposals);return true;
   },'chat')??false;
+  if(!success&&current(version))setTurns(old=>old.map(turn=>turn.id===turnId?{...turn,state:'failed'}:turn));return success;
  }
  async function prepare(operation:string,args:Record<string,unknown>){const version=generation.current;return run(async()=>{draftRevision.current++;const d=await store.featureRequest('/api/assistant/actions','POST',{operation,args}) as AssistantDraft;if(current(version))setDrafts(old=>[d,...old.filter(x=>x.id!==d.id)]);return d;});}
  async function confirm(draft:AssistantDraft){
@@ -63,6 +75,6 @@ export function useAssistant(store:TodoStore){
   await run(async()=>{draftRevision.current++;try{await store.featureRequest(`/api/assistant/actions/${draft.id}/confirm`,'POST',{confirmation:true});if(current(version))await store.refresh();}finally{if(current(version))await load(version);}});
  }
  async function cancel(draft:AssistantDraft){const version=generation.current;await run(async()=>{draftRevision.current++;await store.featureRequest(`/api/assistant/actions/${draft.id}`,'DELETE');if(current(version))await load(version);});}
- function toggleProvider(provider:string){if(working.current)return;setProviders(old=>old.includes(provider)?old.filter(x=>x!==provider):[...old,provider]);setConsent(false);setSources([]);setProposals([]);setAnswer('');setTurns([]);}
- return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,error,errorKind,turns,alive,load,run,read,chat,prepare,confirm,cancel,toggleProvider};
+ function toggleProvider(provider:string){if(working.current||!consentReady)return;const next=providers.includes(provider)?providers.filter(x=>x!==provider):[...providers,provider];setProviders(next);setConsentState(false);saveConsent(next,grants);setSources([]);setProposals([]);setAnswer('');setTurns([]);}
+ return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,run,read,chat,prepare,confirm,cancel,toggleProvider};
 }

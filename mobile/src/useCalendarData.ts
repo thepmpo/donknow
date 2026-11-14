@@ -1,4 +1,5 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
+import {AppState} from 'react-native';
 import {validCalendarPage} from './http-response';
 import {zonedDay} from './calendar-model';
 import type {TodoStore} from './useTodos';
@@ -60,9 +61,11 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
   }catch(e){if(fresh()){setError(e instanceof Error?e.message:'일정을 불러오지 못했어요.');setPhase('error');}}
  },[key,store.user?.id,request]);
  useEffect(()=>{if(active)void load();else generation.current++;return()=>{generation.current++;};},[load,active]);
+ useEffect(()=>{const subscription=AppState.addEventListener('change',state=>{if(state==='active'&&latest.current.active)void load();});return()=>subscription.remove();},[load]);
  useEffect(()=>{sourceGeneration.current++;setSources([{id:'primary',name:'기본 캘린더',primary:true,canWrite:false}]);setSourceCursor(null);setSourceError('');},[owner]);
  useEffect(()=>()=>{sourceGeneration.current++;},[]);
  async function loadSources(more=false){const run=++sourceGeneration.current,own=owner;setSourceError('');try{const result=await request('/api/calendar/calendars'+(more&&sourceCursor?'?cursor='+encodeURIComponent(sourceCursor):'')) as {items:CalendarSource[];nextCursor:string|null};if(run!==sourceGeneration.current||latest.current.owner!==own)return;setSources(previous=>[...new Map([...(more?previous:[]),...result.items.map(c=>({...c,id:c.primary?'primary':c.id}))].map(s=>[s.id,s])).values()]);setSourceCursor(result.nextCursor??null);}catch(e){if(run===sourceGeneration.current&&latest.current.owner===own)setSourceError(e instanceof Error?e.message:'캘린더 목록을 읽지 못했어요.');}}
+ function removeEvent(id:string){generation.current++;snapshot.current=snapshot.current.filter(e=>e.id!==id);for(const entry of periods.current.values())entry.items=entry.items.filter(e=>e.id!==id);pageChains.current.clear();setEvents(snapshot.current);}
  function applyEvent(id:string,patch:Partial<CalendarEvent>){snapshot.current=snapshot.current.map(e=>e.id===id?{...e,...patch}:e);for(const entry of periods.current.values())entry.items=entry.items.map(e=>e.id===id?{...e,...patch}:e);setEvents(snapshot.current);}
- return {applyEvent,detailsSupported,events,sources,phase,error,readAt,version,cursors,sourceError,sourceCursor,load,loadSources};
+ return {removeEvent,applyEvent,detailsSupported,events,sources,phase,error,readAt,version,cursors,sourceError,sourceCursor,load,loadSources};
 }

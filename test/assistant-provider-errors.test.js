@@ -7,7 +7,7 @@ const env={AI_ENABLED:'true',OPENAI_API_KEY:secret,OPENAI_MODEL:'fixture-model'}
 const input={message:secret,consent:true,providers:[]};
 function fixture(fetcher,{verified=true}={}){
  const calls=[];
- const store={account:()=>({emailVerified:verified}),list:()=>[],createAssistantAction:()=>{throw Error('AI errors must not save or execute actions');}};
+ const store={connection:()=>null,account:()=>({emailVerified:verified}),list:()=>[],createAssistantAction:()=>{throw Error('AI errors must not save or execute actions');}};
  const integrations={status:()=>[],execute:()=>{throw Error('AI errors must not perform external writes');}};
  const assistant=createAssistant(store,integrations,env,async(url,options)=>{calls.push({url,method:options.method});return fetcher();});
  return {assistant,calls};

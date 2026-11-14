@@ -20,7 +20,7 @@ export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=f
   <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#00000055',opacity:dim}]}/>
   <Pressable testID="calendar-sheet-backdrop" accessibilityRole="button" accessibilityLabel="배경 눌러 닫기" disabled={busy} onPress={dismiss} style={StyleSheet.absoluteFill}/>
   <Animated.View onLayout={e=>open(e.nativeEvent.layout.height)} style={[s.wrap,expanded&&{maxHeight:'96%'},{transform:[{translateY:offset}]}]}><DraggableSheet disabled={busy} onDismiss={dismiss} style={[s.sheet,expanded&&{borderRadius:28,margin:8,backgroundColor:colors.surface}]}>
-   <View style={s.heading}><Text accessibilityRole="header" style={s.title}>{title}</Text>{headerAction}<CloseButton onPress={dismiss} disabled={busy}/></View><MotionView initial={false} transitionKey={title} distance={0} style={{minHeight:0,flexShrink:1}}>{children}</MotionView>
+   <View style={s.heading}><Text accessibilityRole="header" style={s.title}>{title}</Text><View style={{flexDirection:'row',alignItems:'center',gap:4}}><CloseButton onPress={dismiss} disabled={busy}/>{headerAction}</View></View><MotionView initial={false} transitionKey={title} distance={0} style={{minHeight:0,flexShrink:1}}>{children}</MotionView>
   </DraggableSheet></Animated.View>
  </View>;
 }

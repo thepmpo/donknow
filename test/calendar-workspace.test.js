@@ -41,3 +41,31 @@ test('a normal token refresh during another calendar read keeps the connection; 
   h.store.saveConnection(h.user,'google',{...h.store.connection(h.user,'google'),connectionId:'replacement',accountId:'another-owner'},'다른 계정');release();await assert.rejects(obsolete,/연결이 바뀌/);
  }finally{await h.close();}
 });
+
+
+test('calendar delete requires preview, matching ETag and confirmation, accepts empty 204 and executes once',async()=>{
+ const h=await setup();try{let writes=0,etag='v1',role='owner';const calls=[];
+ const api=createIntegrations(h.store,env,async(url,options={})=>{calls.push({url:String(url),...options});if(options.method==='DELETE'){writes++;return new Response(null,{status:204});}return response(String(url).includes('/calendarList/')?{summary:'내 일정',accessRole:role}:{id:'event',etag,summary:'삭제할 일정'});});
+ const a=createAssistant(h.store,api),args={calendarId:'primary',id:'event',expectedETag:'v1'};
+ role='reader';await assert.rejects(a.prepare(h.user,'calendar.delete',args),e=>e.status===403);role='owner';const d=await a.prepare(h.user,'calendar.delete',args);assert.equal(writes,0);await assert.rejects(a.confirm(h.user,d.id,false));etag='v2';await assert.rejects(a.confirm(h.user,d.id,true),e=>e.status===409);assert.equal(writes,0);
+ etag='v1';const next=await a.prepare(h.user,'calendar.delete',args);const result=await a.confirm(h.user,next.id,true);await a.confirm(h.user,next.id,true);assert.equal(result.status,'succeeded');assert.equal(writes,1);const call=calls.find(c=>c.method==='DELETE');assert.equal(call.headers['If-Match'],'v1');assert.equal(call.body,undefined);assert.match(call.url,/events\/event\?sendUpdates=none$/);
+ assert.throws(()=>validateAction('calendar.delete',{id:'event',calendarId:'primary'}));
+ }finally{await h.close();}
+});
+test('calendar moves use approved writable destination; a partial move is unknown and never replayed',async()=>{
+ const h=await setup();try{let destinationRole='reader',moveCount=0,patchCount=0,failPatch=false;const calls=[];
+ const api=createIntegrations(h.store,env,async(url,options={})=>{calls.push({url:String(url),...options});if(String(url).includes('/calendarList/'))return response({accessRole:String(url).endsWith('/team')?destinationRole:'owner',summary:String(url).endsWith('/team')?'팀 일정':'내 일정'});if(String(url).includes('/move?')){moveCount++;return response({id:'event',etag:'moved'});}if(options.method==='PATCH'){patchCount++;return failPatch?new Response('{}',{status:403}):response({id:'event',etag:'saved'});}return response({id:'event',etag:'v1',summary:'일정',organizer:{self:true}});});
+ const a=createAssistant(h.store,api),args={calendarId:'primary',destinationCalendarId:'team',id:'event',expectedETag:'v1',title:'바꾼 제목'};
+ await assert.rejects(a.prepare(h.user,'calendar.update',args),e=>e.status===403);assert.equal(moveCount,0);destinationRole='owner';const d=await a.prepare(h.user,'calendar.update',args);await a.confirm(h.user,d.id,true);await a.confirm(h.user,d.id,true);assert.equal(moveCount,1);assert.equal(patchCount,1);assert.equal(calls.find(c=>c.method==='PATCH').headers['If-Match'],'moved');assert.ok(calls.find(c=>c.method==='PATCH').url.includes('/calendars/team/events/'));
+ failPatch=true;const partial=await a.prepare(h.user,'calendar.update',args);await assert.rejects(a.confirm(h.user,partial.id,true),e=>e.status===502);assert.equal(h.store.assistantAction(h.user,partial.id).status,'unknown');await assert.rejects(a.confirm(h.user,partial.id,true),e=>e.status===409);assert.equal(moveCount,2);
+ }finally{await h.close();}
+});
+test('transient calendar GET recovers once, persistent errors stay bounded, provider writes never retry',async()=>{
+ const h=await setup();try{let calls=0,always=false;const api=createIntegrations(h.store,env,async()=>{calls++;return always||calls===1?new Response('{}',{status:503}):response({items:[]});});await api.calendarList(h.user);assert.equal(calls,2);always=true;await assert.rejects(api.calendarList(h.user));assert.equal(calls,4);
+ }finally{await h.close();}
+});
+
+
+test('AI consent scope stays stable for normal token refresh but changes with provider account or grants',async()=>{const h=await setup();try{const a=createAssistant(h.store,createIntegrations(h.store,env)),before=a.status(h.user).consentScopes.google,record=h.store.connection(h.user,'google');h.store.saveConnection(h.user,'google',{...record,accessToken:'refreshed-access',expiresAt:Date.now()+3600000},'Google');assert.equal(a.status(h.user).consentScopes.google,before);h.store.saveConnection(h.user,'google',{...record,features:['calendar']},'Google');assert.notEqual(a.status(h.user).consentScopes.google,before);h.store.saveConnection(h.user,'google',{...record,connectionId:'another-connection'},'Google');assert.notEqual(a.status(h.user).consentScopes.google,before);assert.equal(JSON.stringify(a.status(h.user)).includes('fixture-access'),false);}finally{await h.close();}});
+
+test('remembered consent rejects a replaced connection before any AI request',async()=>{const h=await setup();try{const api=createIntegrations(h.store,env);let calls=0;const ai=createAssistant(h.store,api,{AI_ENABLED:'true',OPENAI_API_KEY:'fixture-key',OPENAI_MODEL:'fixture'},async()=>{calls++;throw Error('unexpected AI call');}),consentScopes=ai.status(h.user).consentScopes,record=h.store.connection(h.user,'google');h.store.saveConnection(h.user,'google',{...record,connectionId:'replaced'},'Google');await assert.rejects(ai.chat(h.user,{message:'자료를 정리해줘',consent:true,consentScopes,providers:['google']}),e=>e.status===409);assert.equal(calls,0);}finally{await h.close();}});

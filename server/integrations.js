@@ -22,7 +22,12 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     return { ...definition, clientId, clientSecret, origin, configured: !!(clientId && (clientSecret || (provider === 'notion' && env.NOTION_BASIC_AUTH)) && origin), basicAuth: provider === 'notion' ? env.NOTION_BASIC_AUTH : null, callback: origin ? `${origin}/api/integrations/${provider}/callback` : null };
   }
   async function providerRequest(url, options = {}, slack = false) {
-    let response; try { response = await fetcher(url, { ...options, signal: AbortSignal.timeout(10000) }); } catch { throw fail(502, '외부 서비스 연결이 늦어요. 다시 시도해주세요.'); }
+    let response;const safeRead=(options.method??'GET')==='GET';
+    for(let attempt=0;attempt<(safeRead?2:1);attempt++){
+      try{response=await fetcher(url,{...options,signal:AbortSignal.timeout(10000)});}catch{if(safeRead&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue;}throw fail(502,'외부 서비스 연결이 늦어요. 다시 시도해주세요.');}
+      if(safeRead&&attempt===0&&response.status>=500){await response.body?.cancel();await new Promise(resolve=>setTimeout(resolve,150));continue;}break;
+    }
+    if(response.ok&&response.status===204)return {};
     let value; try { value = await response.json(); } catch { throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
     if (!response.ok || (slack && value.ok === false)) {
       if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw fail(409, '서비스 연결을 다시 승인해주세요.');

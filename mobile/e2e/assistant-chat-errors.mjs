@@ -49,10 +49,10 @@ try{
    for(const failure of ['verification','provider','timeout','client-timeout']){
     mode=failure;await open();await composer.fill('오늘 해야 할 일을 간단히 정리해줘');await consent.tap();await composer.focus();
     const callsBefore=chatCalls.length;await send.tap();
-    await page.getByTestId('duck-chat-pending').waitFor();await visibleNearComposer(page.getByTestId('duck-chat-pending'),'sending indicator');
+    await page.getByTestId('duck-chat-pending').waitFor();const pendingBox=await page.getByTestId('duck-chat-pending').boundingBox(),conversationBox=await page.getByTestId('duck-chat-scroll').boundingBox();assert.ok(pendingBox.y>=conversationBox.y-1&&pendingBox.y+pendingBox.height<=conversationBox.y+conversationBox.height+1,'waiting is visible in the conversation');
     assert.equal(await send.isDisabled(),true,'busy tap cannot submit again');
     const alert=page.getByRole('alert');await alert.waitFor();await visibleNearComposer(alert,`${failure}, ${records} previous records, ${reducedMotion}`);
-    assert.equal(await composer.inputValue(),'오늘 해야 할 일을 간단히 정리해줘','failed input is preserved');assert.equal(await consent.getAttribute('aria-checked'),'true','consent is preserved');assert.equal(chatCalls.length,callsBefore+1,'no automatic resend');
+    assert.equal(await composer.inputValue(),'오늘 해야 할 일을 간단히 정리해줘','failed input is preserved');assert.equal(await consent.count(),0,'remembered consent does not reappear after a failed request');assert.equal(chatCalls.length,callsBefore+1,'no automatic resend');
     if(failure==='verification')assert.match(await alert.textContent(),/ME → 내 계정 → 이메일 인증/);
     else{
      assert.match(await alert.textContent(),failure==='client-timeout'?/응답 시간이 초과/:new RegExp(messages[failure]));

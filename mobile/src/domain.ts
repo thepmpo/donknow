@@ -34,11 +34,13 @@ export function serverUrl(input: string, allowLocal = false): string {
   }
   return url.origin;
 }
-export function visibleTodos(todos: Todo[], pending: Record<string, number>, now = Date.now()): Todo[] {
-  return todos.filter(todo => !todo.done || (pending[todo.id] ?? 0) > now);
+/** During the undo window, one item belongs only to the list it came from. */
+export function completionListDone(todo:Todo,pending:Record<string,number>,origins:Record<string,boolean>,now=Date.now()){return (pending[todo.id]??0)>now?(origins[todo.id]??false):todo.done;}
+export function visibleTodos(todos: Todo[], pending: Record<string, number>, now = Date.now(),origins:Record<string,boolean>={}): Todo[] {
+  return todos.filter(todo => !completionListDone(todo,pending,origins,now));
 }
-export function completedTodos(todos: Todo[]): Todo[] {
-  return todos.filter(todo => todo.done).sort((a, b) => (b.completedAt ?? '').localeCompare(a.completedAt ?? ''));
+export function completedTodos(todos: Todo[],pending:Record<string,number>={},now=Date.now(),origins:Record<string,boolean>={}): Todo[] {
+  return todos.filter(todo => completionListDone(todo,pending,origins,now)).sort((a, b) => (b.completedAt ?? '').localeCompare(a.completedAt ?? ''));
 }
 export function monthDays(month: Date): Date[] {
   const start = new Date(month.getFullYear(), month.getMonth(), 1);

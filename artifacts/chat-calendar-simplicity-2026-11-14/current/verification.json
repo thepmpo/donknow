@@ -1,0 +1,31 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "01-typing-in-conversation.png",
+    "02-checklist.png",
+    "03-compact-sources.png",
+    "04-simple-editor.png",
+    "05-calendar-choice.png",
+    "06-delete-confirmation.png",
+    "07-fortnight-two-lines.png",
+    "08-folded-two-lines.png",
+    "10-folded-chat.png",
+    "09-open-two-lines.png",
+    "11-open-chat.png",
+    "14-open-editor.png",
+    "15-folded-editor.png",
+    "16-folded-delete.png",
+    "17-small-dark-editor.png",
+    "12-todo-countdown.png",
+    "13-log-countdown.png"
+  ],
+  "chatCount": 3,
+  "deleteCount": 1,
+  "moveCount": 1,
+  "writeCount": 1,
+  "consentRemembered": true,
+  "changedConnectionRequiresConsent": true,
+  "checklistNotAutoTodo": true,
+  "bidirectionalCountdown": true,
+  "errors": []
+}

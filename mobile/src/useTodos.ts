@@ -3,7 +3,7 @@ import * as auth from './auth';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos } from './domain';
+import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos, completedTodos } from './domain';
 import type { Connection, Draft, Todo } from './domain';
 import { CONNECTION_KEY, createRepository } from './repository';
 import type { Patch, Repository } from './repository';
@@ -18,6 +18,8 @@ export function useTodos() {
     todosRef.current = next; commitTodos(next);
   }, []);
   const [pending, setPending] = useState<Record<string, number>>({});
+  const pendingOrder=useRef<Record<string,string>>({});
+  const [completionOrigins,setCompletionOrigins]=useState<Record<string,boolean>>({});const originsRef=useRef<Record<string,boolean>>({});
   const reminderOwner = connection?.mode === 'demo' ? 'demo' : user && connection?.mode === 'cloud' ? connection.baseUrl + ':' + user.id : null;
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(true);
@@ -26,7 +28,7 @@ export function useTodos() {
   const [busyIds, setBusyIds] = useState<string[]>([]);
   const [completionIds, setCompletionIds] = useState<string[]>([]);
   const writes = useRef(0);
-  type CompletionWrite = { confirmed: Todo; confirmedUntil: number | null; done: boolean; until: number | null; revision: number; promise?: Promise<boolean> };
+  type CompletionWrite = { confirmed: Todo; confirmedUntil: number | null; originDone:boolean; done: boolean; until: number | null; revision: number; promise?: Promise<boolean> };
   const completions = useRef(new Map<string, CompletionWrite>());
   const repo = useRef<Repository | null>(null);
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
@@ -35,7 +37,7 @@ export function useTodos() {
   const renderGeneration = generation.current;
   const sessionChanged = () => new Error('계정이나 서버 연결이 바뀌었어요. 현재 화면에서 다시 확인해주세요.');
   const connectingRef = useRef(false);
-  const clearTimers = useCallback(() => { timers.current.forEach(clearTimeout); timers.current.clear(); }, []);
+  const clearTimers = useCallback(() => { timers.current.forEach(clearTimeout); timers.current.clear();originsRef.current={};pendingOrder.current={};setCompletionOrigins({}); }, []);
   useEffect(() => {
     let active = true; const initialGeneration = generation.current;
     const current = () => active && initialGeneration === generation.current;
@@ -103,14 +105,15 @@ export function useTodos() {
     const saved = await mutate('create', repository => repository.create(draft));
     if (saved) setTodos(current => [...current, saved]); return saved;
   }
-  function completionDeadline(id: string, until: number | null) {
+  function completionDeadline(id: string, until: number | null,originDone=false) {
     const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id);
     if (until && until > Date.now()) {
+      originsRef.current={...originsRef.current,[id]:originDone};setCompletionOrigins(originsRef.current);
       setPending(current => ({ ...current, [id]: until }));
       timers.current.set(id, setTimeout(() => {
-        setPending(current => { const next = { ...current }; delete next[id]; return next; }); timers.current.delete(id);
+        setPending(current => { const next = { ...current }; delete next[id]; return next; });delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current}); timers.current.delete(id);
       }, until - Date.now()));
-    } else setPending(current => { const next = { ...current }; delete next[id]; return next; });
+    } else {delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current});setPending(current => { const next = { ...current }; delete next[id]; return next; });}
   }
   async function updateCompletion(id: string, done: boolean): Promise<boolean> {
     const repository = repo.current;
@@ -120,14 +123,15 @@ export function useTodos() {
     const version = generation.current;
     writes.current++;
     if (!entry) {
-      entry = { confirmed: before, confirmedUntil: pending[id] ?? null, done, until: null, revision: 0 };
+      entry = { confirmed: before, confirmedUntil: pending[id] ?? null,originDone:originsRef.current[id]??before.done, done, until: null, revision: 0 };
       completions.current.set(id, entry); busy.current.add(id);
       setBusyIds([...busy.current]); setCompletionIds([...completions.current.keys()]);
     }
-    entry.done = done; entry.until = done ? Date.now() + COMPLETION_DELAY + COMPLETION_FADE_DURATION : null; entry.revision++;
+    if(entry.originDone&&!pendingOrder.current[id])pendingOrder.current[id]=entry.confirmed.completedAt??'';
+    entry.done = done; entry.until = done!==entry.originDone ? Date.now() + COMPLETION_DELAY + COMPLETION_FADE_DURATION : null; entry.revision++;
     const optimistic: Todo = { ...before, done, completedAt: done ? (before.done && before.completedAt ? before.completedAt : new Date().toISOString()) : null };
     setTodos(current => current.map(todo => todo.id === id ? optimistic : todo));
-    completionDeadline(id, entry.until); setError('');
+    completionDeadline(id, entry.until,entry.originDone); setError('');
     if (entry.promise) return entry.promise;
     const job = entry;
     job.promise = (async () => {
@@ -147,7 +151,7 @@ export function useTodos() {
           if (e instanceof auth.AuthRequiredError) expireSession();
           else {
             setTodos(current => current.map(todo => todo.id === id ? job.confirmed : todo));
-            completionDeadline(id, job.confirmedUntil);
+            completionDeadline(id, job.confirmedUntil,job.originDone);
           }
           setError(message(e));
         }
@@ -166,12 +170,12 @@ export function useTodos() {
     const saved = await mutate(id, repository => repository.update(id, patch));
     if (!saved) return false;
     setTodos(current => current.map(todo => todo.id === id ? saved : todo));
-    if (patch.done !== undefined) completionDeadline(id, patch.done ? Date.now() + COMPLETION_DELAY + COMPLETION_FADE_DURATION : null);
+    if (patch.done !== undefined) completionDeadline(id,null);
     return true;
   }
   async function remove(id: string): Promise<boolean> {
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
-    if (removed) { setTodos(current => current.filter(todo => todo.id !== id)); const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id); setPending(current => { const next = { ...current }; delete next[id]; return next; }); }
+    if (removed) { delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current});setTodos(current => current.filter(todo => todo.id !== id)); const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id); setPending(current => { const next = { ...current }; delete next[id]; return next; }); }
     return !!removed;
   }
   function expireSession() {
@@ -230,12 +234,12 @@ export function useTodos() {
   async function deleteAccount(password: string) {
     if (connection?.mode !== 'cloud' || busy.current.size || connectingRef.current) return false;
     connectingRef.current = true; setConnecting(true);
-    try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
+    try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner,'duckduck.ai-consent.v1.'+connection.baseUrl+':'+(user?.id??'')]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
     catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

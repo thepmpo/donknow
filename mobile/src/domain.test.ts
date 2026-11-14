@@ -3,13 +3,15 @@ import assert from 'node:assert/strict';
 import { searchTodos, completedTodos, dateKey, monthDays, parseTodos, serverUrl, validDate, validateDraft, visibleTodos } from './domain.ts';
 import type { Todo } from './domain.ts';
 const todo: Todo = { id: 'one', title: '회의 준비', done: false, dueDate: '2026-10-27', category: '업무' };
-test('completion stays visible for four seconds and restores to Todo', () => {
-  const done = { ...todo, done: true, completedAt: '2026-10-27T08:00:00Z' };
-  assert.equal(visibleTodos([done], { one: 4000 }, 3999).length, 1);
-  assert.equal(visibleTodos([done], { one: 4000 }, 4000).length, 0);
-  assert.equal(completedTodos([done]).length, 1);
-  assert.equal(visibleTodos([todo], {}, 5000).length, 1);
-  assert.equal(completedTodos([todo]).length, 0);
+test('completion and restore stay in the source list until the same deadline, never both lists', () => {
+ const done={...todo,done:true,completedAt:'2026-10-27T08:00:00Z'};
+ for(const origin of [false,true]){const target=origin?todo:done,pending={one:3350},origins={one:origin};
+  assert.equal(visibleTodos([target],pending,3349,origins).length,origin?0:1);
+  assert.equal(completedTodos([target],pending,3349,origins).length,origin?1:0);
+  assert.equal(visibleTodos([target],pending,3350,origins).length,origin?1:0);
+  assert.equal(completedTodos([target],pending,3350,origins).length,origin?0:1);
+ }
+ assert.equal(visibleTodos([todo],{},5000).length,1);assert.equal(completedTodos([done]).length,1);
 });
 test('log orders completion timestamps and preserves legacy completed records', () => {
   const records = [{ ...todo, done: true }, { ...todo, id: 'later', done: true, completedAt: '2026-10-28T08:00:00Z' }, { ...todo, id: 'earlier', done: true, completedAt: '2026-10-27T08:00:00Z' }];

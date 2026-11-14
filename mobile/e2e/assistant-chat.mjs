@@ -7,9 +7,10 @@ import assert from 'node:assert/strict';
 const root=resolve(new URL('../dist-web/',import.meta.url).pathname),origin='https://duck-chat.test';
 const capture=process.env.CHAT_CAPTURE_DIR;if(capture)await mkdir(capture,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+let debugPage;
 try{
- const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});page.setDefaultTimeout(12000);await page.emulateMedia({reducedMotion:'reduce'});
- const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ const page=debugPage=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});page.setDefaultTimeout(12000);await page.emulateMedia({reducedMotion:'reduce'});
+ const errors=[];page.on('pageerror',error=>{errors.push(error.message);console.log('PAGEERROR',error.message);});
  async function visibleInConversation(locator,message){
   for(let attempt=0;attempt<30;attempt++){
    const box=await locator.boundingBox(),area=await page.getByTestId('duck-chat-scroll').boundingBox();
@@ -49,7 +50,7 @@ try{
   if(path==='/api/operations/backup')return route.fulfill({json:{enabled:false,offsite:false,lastLocalSuccess:null,failed:false}});
   throw Error('Unexpected API request '+method+' '+path);
  });
- await page.goto(origin);await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();
+ await page.goto(origin);await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();
  assert.equal(chatCalls.length,0,'opening Duck never starts AI');
  const composerBox=await page.getByTestId('duck-composer').boundingBox();assert.ok(composerBox.height<=54,'empty composer takes one compact row '+JSON.stringify(composerBox));for(const name of ['대화 도구 열기','덕에게 보내기']){const box=await page.getByRole('button',{name,exact:true}).boundingBox();assert.ok(box.width>=44&&box.height>=44);}assert.equal(await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).count(),0,'source picker stays in the optional tools');if(capture){await page.screenshot({path:resolve(capture,'01-compact-phone-chat.png')});await writeFile(resolve(capture,'composer.json'),JSON.stringify(composerBox,null,2));}
  const composer=page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true});
@@ -57,14 +58,14 @@ try{
  const longRequest='이번주 해야 할 일을 정리해주세요. '.repeat(12);await composer.fill(longRequest);assert.equal(await composer.inputValue(),longRequest);
  assert.equal(await page.getByRole('button',{name:'덕에게 보내기',exact:true}).isDisabled(),true,'explicit consent before AI');
  await page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true}).click();await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();
- await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).waitFor();assert.equal(chatCalls.length,1);assert.equal(prepareCalls.length,0);assert.equal(confirmCalls.length,0);assert.equal(await page.getByRole('dialog').count(),0,'normal AI stays in Duck conversation');
+ await page.getByTestId('assistant-checklist-1').waitFor();assert.equal(chatCalls.length,1);assert.equal(prepareCalls.length,0);assert.equal(confirmCalls.length,0);assert.equal(await page.getByRole('dialog').count(),0,'normal AI stays in Duck conversation');
  assert.ok((await page.getByTestId('duck-chat-scroll').textContent()).includes('답변 끝까지 유지'),'long answer remains visible');await visibleInConversation(page.getByTestId('duck-latest-reply').getByText('덕',{exact:true}),'new reply heading is visible instead of old history');
- await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).fill('확인 후 저장할 자료');await page.getByRole('button',{name:'Todo 추가 초안 확인',exact:true}).click();
+ await page.getByRole('button',{name:'할 일 후보 1 수정',exact:true}).click();await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).fill('확인 후 저장할 자료');await page.getByRole('button',{name:'Todo 추가 초안 확인',exact:true}).click();
  await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).waitFor();assert.equal(prepareCalls.length,1);assert.equal(prepareCalls[0].args.title,'확인 후 저장할 자료');assert.equal(todos.length,0,'preview creates no Todo');await visibleInConversation(page.getByTestId('duck-action-draft-1').getByText('Todo 추가 · 확인 대기',{exact:true}),'new preview heading is visible above old records');assert.equal(await page.getByLabel('예정일 선택',{exact:true}).count(),0,'prepared candidate date is read-only');await page.getByTestId('duck-action-draft-1').getByText('예정일: 없음',{exact:true}).waitFor();
  holdConfirm=true;await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).evaluate(button=>{button.click();button.click();});
- await page.waitForFunction(()=>document.body.textContent.includes('처리하고 있어요'));assert.equal(await page.getByRole('button',{name:'대화 도구 열기',exact:true}).isDisabled(),true,'no replacement draft during an active request');assert.equal(confirmCalls.length,1,'double tap submits once');holdConfirm=false;releaseConfirm();
+ await page.getByTestId('duck-chat-pending').waitFor();assert.equal(await page.getByRole('button',{name:'대화 도구 열기',exact:true}).isDisabled(),true,'no replacement draft during an active request');assert.equal(confirmCalls.length,1,'double tap submits once');holdConfirm=false;releaseConfirm();
  await page.getByText('Todo 추가 · 완료',{exact:true}).waitFor();assert.equal(todos.length,1);await visibleInConversation(page.getByTestId('duck-action-draft-1').getByText('Todo 추가 · 완료',{exact:true}),'completed result heading remains visible');
- await composer.fill('이어서 확인해줘');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByText('할 일 후보를 준비했어요.',{exact:true}).waitFor();assert.equal(chatCalls.length,2);assert.equal(chatCalls[1].history[1].text.length,2000,'follow-up context trims long answer');await visibleInConversation(page.getByRole('textbox',{name:'할 일 후보 1 제목',exact:true}),'candidate title remains visible below short reply');await visibleInConversation(page.getByLabel('예정일 선택',{exact:true}),'candidate date remains visible instead of scrolling to bottom of large note');
+ await composer.fill('이어서 확인해줘');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByText('할 일 후보를 준비했어요.',{exact:true}).waitFor();assert.equal(chatCalls.length,2);assert.equal(chatCalls[1].history[1].text.length,2000,'follow-up context trims long answer');await page.getByTestId('assistant-checklist-2').waitFor();await visibleInConversation(page.getByTestId('duck-latest-reply').getByText('덕',{exact:true}),'new response remains visible');await page.getByRole('button',{name:'할 일 후보 2 수정',exact:true}).click();await page.getByRole('textbox',{name:'할 일 후보 2 제목',exact:true}).waitFor();
  await page.getByTestId('duck-chat-scroll').evaluate(element=>{element.scrollTop=0;});await openDuckTools(page);await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();await visibleInConversation(page.getByTestId('duck-chat-providers').getByText('이번 대화에서 사용할 자료',{exact:true}),'opened provider panel is revealed from old scroll position');await openDuckTools(page);await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();
  await composer.fill('탭과 크기를 바꿔도 남는 입력');await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();assert.equal(await composer.inputValue(),'탭과 크기를 바꿔도 남는 입력');
  for(const width of [320,430,900]){await page.setViewportSize({width,height:844});assert.equal(await composer.inputValue(),'탭과 크기를 바꿔도 남는 입력');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow '+width);}
@@ -80,7 +81,7 @@ try{
  await page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true}).click();await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByText(`붙여넣은 내용 ${pasted.length}자 · 아직 보내지 않았어요`,{exact:true}).waitFor({state:'hidden'});assert.equal(chatCalls.at(-1).pastedText,pasted);assert.equal(chatCalls.length,3);
  await page.screenshot({path:'/tmp/duck-chat-mobile-fixture.png'});
  // A late AI answer from the first account cannot appear in the next account.
- holdChat=true;await composer.fill('이전 계정에서만 보여야 하는 질문');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.waitForFunction(()=>document.body.textContent.includes('처리하고 있어요'));
+ holdChat=true;await composer.fill('이전 계정에서만 보여야 하는 질문');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByTestId('duck-chat-pending').waitFor();
  await openMeAccount(page);await page.getByRole('button',{name:'로그아웃',exact:true}).click();await page.getByRole('button',{name:'로그인',exact:true}).waitFor();
  releaseChat();await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByLabel('비밀번호',{exact:true}).fill('test-password');await page.getByRole('button',{name:'로그인',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();
  assert.equal(await composer.inputValue(),'');assert.equal(await page.getByText('이전 계정에서만 보여야 하는 질문',{exact:true}).count(),0);assert.equal(await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).count(),0);
@@ -88,4 +89,4 @@ try{
  enabled=false;await page.reload();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByText('AI 연결은 준비 중이에요. 지금은 직접 적어 Todo로 담을 수 있어요.',{exact:true}).waitFor();
  await composer.fill('AI 없이 직접 정리');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByRole('textbox',{name:'정리한 할 일',exact:true}).waitFor();assert.equal(todos.length,0);await page.getByRole('button',{name:'Todo 리스트에 추가',exact:true}).click();await page.getByText('추가 완료 ✓',{exact:true}).waitFor();assert.equal(todos[0].title,'AI 없이 직접 정리');
  assert.deepEqual(errors,[]);console.log('PASS: inline AI consent, full answer / bounded follow-up, editable proposals, preview and single confirm, pasted text consent, tab/resize continuity, stale record read preservation, advanced-close refresh, visible new results over old history, provider reveal, read-only prepared dates, owner isolation, unavailable-AI manual fallback; mocked provider only');
-}finally{await browser.close();}
+}catch(error){console.log('DEBUG',await debugPage?.evaluate(()=>document.body.innerText.slice(-3000)));await debugPage?.screenshot({path:'/tmp/simplicity-chat-failure.png'});throw error;}finally{await browser.close();}
