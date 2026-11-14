@@ -1,0 +1,17 @@
+{
+  "codeCommit": "a2f4a2c47d442b668d756a4638a9ff42faf55804",
+  "imageCount": 801,
+  "allSourceAndPublishedHashes": true,
+  "passed": [
+    "ME flow capture with synthetic APIs",
+    "phone/folded/open Duo name and geometry",
+    "typecheck",
+    "syntax 49",
+    "iOS JS/Hermes export, not signed IPA",
+    "public HTML/images/auth/comments/XSS/320px"
+  ],
+  "competitorScope": "official documentation, not full hands-on app audit",
+  "redesignScope": "proposal only; ME labels and runtime path descriptions implemented",
+  "newNativeBuildStarted": false,
+  "remoteReceipts": "recorded in personal Notion after actual deploy/CI"
+}

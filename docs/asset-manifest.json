@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "bff86c7d6540254749aaea19954f95296e4b6298",
-  "assetCommit": "bff86c7d6540254749aaea19954f95296e4b6298",
-  "imageCount": 788,
+  "codeCommit": "a2f4a2c47d442b668d756a4638a9ff42faf55804",
+  "assetCommit": "a2f4a2c47d442b668d756a4638a9ff42faf55804",
+  "imageCount": 801,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -4644,6 +4644,97 @@
       "bytes": 43986,
       "sha256": "5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea",
       "import_path": "images/artifacts__log.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/01-me-entry.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 47151,
+      "sha256": "ed0e1a764bca8f2f313221d064e5240f1d0c55ed0c7b33dc72b5756963b2a435",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__01-me-entry.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/02-google-settings.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 46746,
+      "sha256": "09e9c2e0b9f0a06f4521ffe8f95c10e9e22175935c2da8b16dcd5efd1bb7c811",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__02-google-settings.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/03-notion-connect.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 36537,
+      "sha256": "af64f15e262665453786b08814ef7551498fa556036f741faeecf0505d4852e8",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__03-notion-connect.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/04-notifications.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 49335,
+      "sha256": "8c0e530209de109baf0c3c20261c9c6f82c916f19d44ee2e0926eb939dc99b6b",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__04-notifications.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/05-privacy.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 75942,
+      "sha256": "c47e48e0880f08bcdc559a457c146a32ee6663211a688bcdd8f43f2c8ff75172",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__05-privacy.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/05-small-privacy.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 51287,
+      "sha256": "27063e8c6e36e603e8692868ccb93b2d9a215c7bcc2fd37fd10bf94c3eb9e40b",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__05-small-privacy.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/06-account.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 47132,
+      "sha256": "9d8232457bca490f3e3fb36e7fc56b0f44ff8a789413368b3165c9fe8386fafb",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__06-account.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/07-delete-entry.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 36428,
+      "sha256": "b98833397c1702a67898b1dfe5c327863debe3d606e9886f6737b5b9a0b7b943",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__07-delete-entry.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/08-storage-operations.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 47132,
+      "sha256": "9d8232457bca490f3e3fb36e7fc56b0f44ff8a789413368b3165c9fe8386fafb",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__08-storage-operations.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/09-long-profile-name.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 47868,
+      "sha256": "57a3d5c449f50513f71761698b644fcd2b787ed331aa98c8a4bde63ad7ceb329",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__09-long-profile-name.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/09-status-recheck.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 51580,
+      "sha256": "b7341e85933288b5c1844178ca1514d66db5e5d81ce89da60f99abd90005b37b",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__09-status-recheck.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 36958,
+      "sha256": "72e6de186a102417d3d7268a61d9961e3b846175f6313fa07f23f51e1d81ea33",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__10-duo-folded-me.png"
+    },
+    {
+      "path": "artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png",
+      "category": "ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님",
+      "bytes": 70506,
+      "sha256": "0f1a34a82c042d0c5a4db9641f9d9ea0b7b3974b815313e6eb50f8e197e3b951",
+      "import_path": "images/artifacts__me-product-review-2026-11-14__current__11-duo-open-me.png"
     },
     {
       "path": "artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png",
