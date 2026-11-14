@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, u
 import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
 
-export const motion = { pressIn: 90, pressOut: 140, page: 420, feedback: 180, sheet: 240 } as const;
+export const motion = { pressIn: 90, pressOut: 140, page: 640, feedback: 180, sheet: 240 } as const;
 const ReducedMotion = createContext(true);
 const MotionAncestor = createContext(false);
 export function MotionProvider({ children }: { children: React.ReactNode }) {
@@ -35,11 +35,11 @@ export function MotionView({ children, transitionKey, style, distance = 6,disabl
     if(!seen.current){seen.current=true;if(!initial){progress.setValue(1);return;}}
     if (reduced) { progress.setValue(1); return; }
     progress.setValue(0);
-    const animation = Animated.timing(progress, { toValue: 1, duration: motion.page, easing: Easing.bezier(.22,1,.36,1), useNativeDriver: native });
+    const animation = Animated.timing(progress, { toValue: 1, duration: motion.page, easing: Easing.bezier(.32,0,.2,1), useNativeDriver: native });
     animation.start();
     return () => animation.stop();
   }, [transitionKey, reduced, progress]);
-  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity: progress, transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [distance, 0] }) },{scale:progress.interpolate({inputRange:[0,1],outputRange:[.96,1]})}] }]}>{children}</Animated.View></MotionAncestor.Provider>;
+  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity:progress.interpolate({inputRange:[0,1],outputRange:[.92,1]}), transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [distance, 0] }) },{scale:progress.interpolate({inputRange:[0,1],outputRange:[.975,1]})}] }]}>{children}</Animated.View></MotionAncestor.Provider>;
 }
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...props }: PressableProps) {
@@ -94,7 +94,7 @@ export function DraggableSheet({children,style,onDismiss,disabled=false,visible=
   const reset=()=>{offset.stopAnimation();if(current.current.reduced)offset.setValue(0);else Animated.timing(offset,{toValue:0,duration:motion.pressOut,useNativeDriver:native}).start();};
   useLayoutEffect(()=>{if(visible){offset.stopAnimation();offset.setValue(0);}},[visible,offset]);
   const zoom=useRef(new Animated.Value(reduced?1:0)).current;
-  useLayoutEffect(()=>{zoom.stopAnimation();if(reduced){zoom.setValue(1);return;}Animated.timing(zoom,{toValue:visible?1:0,duration:visible?420:240,easing:Easing.bezier(.22,1,.36,1),useNativeDriver:native}).start();return()=>zoom.stopAnimation();},[visible,reduced,zoom]);
+  useLayoutEffect(()=>{zoom.stopAnimation();if(reduced){zoom.setValue(1);return;}Animated.timing(zoom,{toValue:visible?1:0,duration:visible?640:320,easing:Easing.bezier(.32,0,.2,1),useNativeDriver:native}).start();return()=>zoom.stopAnimation();},[visible,reduced,zoom]);
   const responder=useRef(PanResponder.create({
     onMoveShouldSetPanResponderCapture:(_,gesture)=>!current.current.disabled&&gesture.dy>6&&Math.abs(gesture.dy)>Math.abs(gesture.dx)*1.3,
     onPanResponderGrant:()=>{offset.stopAnimation();Keyboard.dismiss();},
@@ -103,5 +103,5 @@ export function DraggableSheet({children,style,onDismiss,disabled=false,visible=
     onPanResponderTerminate:reset,
   })).current;
   useEffect(()=>{if(disabled){offset.stopAnimation();offset.setValue(0);}return()=>offset.stopAnimation();},[disabled,offset]);
-  return <Animated.View style={[style,{transform:[{translateY:offset},{scale:zoom.interpolate({inputRange:[0,1],outputRange:[.96,1]})}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
+  return <Animated.View style={[style,{transform:[{translateY:offset},{scale:zoom.interpolate({inputRange:[0,1],outputRange:[.975,1]})}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
 }

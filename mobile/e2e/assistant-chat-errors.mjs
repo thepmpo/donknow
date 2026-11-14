@@ -39,7 +39,7 @@ try{
    throw Error('Unexpected API request '+request.method()+' '+path);
   });
   const composer=page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}),send=page.getByRole('button',{name:'덕에게 보내기',exact:true}),consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true});
-  async function open(){historyReads=0;await page.goto(origin);await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).waitFor();}
+  async function open(){historyReads=0;await page.goto(origin);await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기',exact:true}).waitFor();}
   async function visibleNearComposer(locator,label){
    const box=await locator.boundingBox(),input=await composer.boundingBox();
    assert.ok(box&&input&&box.y>=0&&box.y+box.height<=input.y+1&&input.y+input.height<844,label+' remains visible above the composer');

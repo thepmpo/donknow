@@ -1,9 +1,10 @@
 import {openDuckTools} from './helpers.mjs';
 import {chromium} from 'playwright-core';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname} from 'node:path';
 import assert from 'node:assert/strict';
 const root=resolve(new URL('../dist-web/',import.meta.url).pathname),origin='https://duck-chat.test';
+const capture=process.env.CHAT_CAPTURE_DIR;if(capture)await mkdir(capture,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 try{
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});page.setDefaultTimeout(12000);await page.emulateMedia({reducedMotion:'reduce'});
@@ -47,9 +48,11 @@ try{
   if(path==='/api/operations/backup')return route.fulfill({json:{enabled:false,offsite:false,lastLocalSuccess:null,failed:false}});
   throw Error('Unexpected API request '+method+' '+path);
  });
- await page.goto(origin);await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'AI에 보낼 자료 선택'}).waitFor();
+ await page.goto(origin);await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();
  assert.equal(chatCalls.length,0,'opening Duck never starts AI');
+ const composerBox=await page.getByTestId('duck-composer').boundingBox();assert.ok(composerBox.height<=54,'empty composer takes one compact row '+JSON.stringify(composerBox));for(const name of ['대화 도구 열기','덕에게 보내기']){const box=await page.getByRole('button',{name,exact:true}).boundingBox();assert.ok(box.width>=44&&box.height>=44);}assert.equal(await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).count(),0,'source picker stays in the optional tools');if(capture){await page.screenshot({path:resolve(capture,'01-compact-phone-chat.png')});await writeFile(resolve(capture,'composer.json'),JSON.stringify(composerBox,null,2));}
  const composer=page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true});
+ await openDuckTools(page);await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();await page.getByTestId('duck-chat-providers').waitFor();await page.getByRole('button',{name:'대화 도구 열기',exact:true}).click();assert.equal(await page.getByTestId('duck-chat-providers').count(),0);assert.equal(await page.getByTestId('duck-chat-tools').count(),0);
  const longRequest='이번주 해야 할 일을 정리해주세요. '.repeat(12);await composer.fill(longRequest);assert.equal(await composer.inputValue(),longRequest);
  assert.equal(await page.getByRole('button',{name:'덕에게 보내기',exact:true}).isDisabled(),true,'explicit consent before AI');
  await page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true}).click();await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();
@@ -61,7 +64,7 @@ try{
  await page.waitForFunction(()=>document.body.textContent.includes('처리하고 있어요'));assert.equal(await page.getByRole('button',{name:'대화 도구 열기',exact:true}).isDisabled(),true,'no replacement draft during an active request');assert.equal(confirmCalls.length,1,'double tap submits once');holdConfirm=false;releaseConfirm();
  await page.getByText('Todo 추가 · 완료',{exact:true}).waitFor();assert.equal(todos.length,1);await visibleInConversation(page.getByTestId('duck-action-draft-1').getByText('Todo 추가 · 완료',{exact:true}),'completed result heading remains visible');
  await composer.fill('이어서 확인해줘');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByText('할 일 후보를 준비했어요.',{exact:true}).waitFor();assert.equal(chatCalls.length,2);assert.equal(chatCalls[1].history[1].text.length,2000,'follow-up context trims long answer');await visibleInConversation(page.getByRole('textbox',{name:'할 일 후보 1 제목',exact:true}),'candidate title remains visible below short reply');await visibleInConversation(page.getByLabel('예정일 선택',{exact:true}),'candidate date remains visible instead of scrolling to bottom of large note');
- await page.getByTestId('duck-chat-scroll').evaluate(element=>{element.scrollTop=0;});await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();await visibleInConversation(page.getByTestId('duck-chat-providers').getByText('이번 대화에서 사용할 자료',{exact:true}),'opened provider panel is revealed from old scroll position');await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();
+ await page.getByTestId('duck-chat-scroll').evaluate(element=>{element.scrollTop=0;});await openDuckTools(page);await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();await visibleInConversation(page.getByTestId('duck-chat-providers').getByText('이번 대화에서 사용할 자료',{exact:true}),'opened provider panel is revealed from old scroll position');await openDuckTools(page);await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();
  await composer.fill('탭과 크기를 바꿔도 남는 입력');await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();assert.equal(await composer.inputValue(),'탭과 크기를 바꿔도 남는 입력');
  for(const width of [320,430,900]){await page.setViewportSize({width,height:844});assert.equal(await composer.inputValue(),'탭과 크기를 바꿔도 남는 입력');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow '+width);}
  // An older record read cannot replace a new preview. Closing advanced controls refreshes inline records.
@@ -78,7 +81,7 @@ try{
  // A late AI answer from the first account cannot appear in the next account.
  holdChat=true;await composer.fill('이전 계정에서만 보여야 하는 질문');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.waitForFunction(()=>document.body.textContent.includes('처리하고 있어요'));
  await page.getByRole('tab',{name:'내정보',exact:true}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await page.getByRole('button',{name:'로그인',exact:true}).waitFor();
- releaseChat();await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByLabel('비밀번호',{exact:true}).fill('test-password');await page.getByRole('button',{name:'로그인',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'AI에 보낼 자료 선택'}).waitFor();
+ releaseChat();await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByLabel('비밀번호',{exact:true}).fill('test-password');await page.getByRole('button',{name:'로그인',exact:true}).click();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();
  assert.equal(await composer.inputValue(),'');assert.equal(await page.getByText('이전 계정에서만 보여야 하는 질문',{exact:true}).count(),0);assert.equal(await page.getByRole('textbox',{name:'할 일 후보 1 제목'}).count(),0);
  // Unconfigured AI keeps the existing explicit manual Todo flow.
  enabled=false;await page.reload();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByText('AI 연결은 준비 중이에요. 지금은 직접 적어 Todo로 담을 수 있어요.',{exact:true}).waitFor();

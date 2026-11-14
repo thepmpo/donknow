@@ -20,7 +20,7 @@ const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROM
 const output=process.env.DUO_CAPTURE_DIR?resolve(process.env.DUO_CAPTURE_DIR):resolve(project,'../artifacts/calendar-refinement-2026-11-13/duo');mkdirSync(output,{recursive:true});
 try{
  const page=await browser.newPage({viewport:{width:960,height:740}}),errors=[];await page.emulateMedia({reducedMotion:'reduce'});page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);
- await page.addInitScript(()=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'demo'})));
+ await page.addInitScript(()=>{if(!localStorage.getItem('duckduck.mobile.connection.v1'))localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'demo'}));});
  await page.goto(`http://127.0.0.1:${server.address().port}`);
  const geometry=(width,height,hingeStatus='fullyOpen',regions=[])=>({apiAvailable:true,hasHinge:true,hingeStatus,width,height,safeArea:{top:20,right:80,bottom:20,left:16},regions:[{kind:'occlusion',active:hingeStatus==='closed',frame:{x:width-60,y:32,width:28,height:28}},...regions]});
  async function change(g){await page.setViewportSize({width:g.width,height:g.height});await page.evaluate(g=>window.duoFixture.change(g),g);await page.getByTestId('DuoTrailingNavigation').waitFor();}
@@ -146,12 +146,26 @@ try{
  await page.emulateMedia({reducedMotion:'reduce'});await page.waitForTimeout(100);
  await fixed.getByRole('button',{name:'년월 선택',exact:true}).click();await page.waitForTimeout(100);
  const yearScroll=fixed.getByTestId('calendar-year-scroll');await yearScroll.evaluate(el=>{el.scrollTop=160;});
- const thumb=fixed.getByTestId('calendar-year-scroll-indicator');await page.waitForFunction(()=>Array.from(document.querySelectorAll('[data-testid="calendar-year-scroll-indicator"]')).some(e=>+getComputedStyle(e).opacity>.5));
- const thumbBox=await thumb.boundingBox(),viewportBox=await yearScroll.boundingBox();assert.ok(thumbBox.x>=viewportBox.x+viewportBox.width-8&&thumbBox.x+thumbBox.width<=viewportBox.x+viewportBox.width+1&&thumbBox.y>=viewportBox.y&&thumbBox.y+thumbBox.height<=viewportBox.y+viewportBox.height+1);
+ const thumb=page.getByTestId('DuoScrollIndicator');await page.waitForFunction(()=>+getComputedStyle(document.querySelector('[data-testid="DuoScrollIndicator"]')).opacity>.5);
+ const thumbBox=await thumb.boundingBox(),navBox=await page.getByTestId('DuoTrailingNavigation').boundingBox();assert.ok(thumbBox.x>navBox.x+navBox.width,'scrollbar is outside the camera-column icons');assert.ok(thumbBox.y>=navBox.y&&thumbBox.y+thumbBox.height<=navBox.y+navBox.height+1);assert.equal(await fixed.getByTestId('calendar-year-scroll-indicator').count(),0);
  assert.equal(await active.getByTestId('calendar-year-scroll-indicator').count(),0);await page.screenshot({path:resolve(output,'24-pane-edge-scrollbar.png')});await page.waitForTimeout(1350);assert.equal(+await thumb.evaluate(e=>getComputedStyle(e).opacity),0);
  await fixed.getByRole('button',{name:'월간 보기로 돌아가기',exact:true}).click();await page.waitForTimeout(100);
  await page.emulateMedia({reducedMotion:'no-preference'});await page.waitForTimeout(500);
  const stationary=await fixed.getByTestId('calendar-workspace').boundingBox(),motionFrames=page.evaluate(()=>new Promise(resolve=>{const start=performance.now(),v=[];function tick(){const f=document.querySelector('[data-testid="DuoFixedCalendarPane"] [data-testid="calendar-workspace"]'),a=document.querySelector('[data-testid="active-screen-transition"]');v.push({x:f.getBoundingClientRect().x,width:f.getBoundingClientRect().width,scale:a?new DOMMatrix(getComputedStyle(a).transform).a:1});if(performance.now()-start<750)requestAnimationFrame(tick);else resolve(v);}tick();}));
  await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();const zoomFrames=await motionFrames;assert.ok(zoomFrames.every(f=>Math.abs(f.x-stationary.x)<.1&&Math.abs(f.width-stationary.width)<.1),'opposite Calendar stays stationary');assert.ok(zoomFrames.some(f=>f.scale>.96&&f.scale<.999),'right pane zooms');
+// The real inline chat is also compact within the folded Duo body.
+ const fixtureOrigin='https://compact-chat.test',cors={'Access-Control-Allow-Origin':'http://127.0.0.1:'+server.address().port,'Access-Control-Allow-Credentials':'true','Access-Control-Allow-Headers':'Content-Type,X-Duckduck-Client','Access-Control-Allow-Methods':'GET,POST,DELETE,OPTIONS'};
+ await page.route(fixtureOrigin+'/api/**',async route=>{if(route.request().method()==='OPTIONS')return route.fulfill({status:204,headers:cors});const path=new URL(route.request().url()).pathname;let json;
+  if(path==='/api/auth/session')json={user:{id:'compact-user',email:'owner@example.test',emailVerified:true}};
+  else if(path==='/api/todos')json=[];
+  else if(path==='/api/assistant/status')json={enabled:true,actions:[],scheduledMessages:false};
+  else if(path==='/api/assistant/actions')json={actions:[{id:'example-record',label:'캘린더 일정 추가',operation:'calendar.create',status:'succeeded',args:{title:'제품 검토'},expiresAt:Date.now()+600000}]};
+  else if(path==='/api/capabilities')json={calendarWorkspace:2,calendarDetails:1,todoNotes:true};
+  else if(path==='/api/calendar/calendars')json={items:[]};
+  else if(path==='/api/calendar/events')json={items:[],calendarId:'primary',connectionState:'unconnected'};
+  else json={};return route.fulfill({json,headers:cors});
+ });
+ await page.evaluate(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),fixtureOrigin);await page.reload();await page.waitForFunction(()=>!!window.duoFixture);await change(geometry(390,844,'closed'));await page.evaluate(()=>window.duoFixture.showApp());await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기',exact:true}).waitFor().catch(async error=>{console.log((await page.locator('body').innerText()).slice(-2500));throw error;});
+ await page.waitForTimeout(750);const composer=await page.getByTestId('duck-composer').boundingBox();assert.ok(composer.height<=54&&composer.width>200);for(const label of ['대화 도구 열기','덕에게 보내기']){const b=await page.getByRole('button',{name:label,exact:true}).boundingBox();assert.ok(b.width>=44&&b.height>=44);}assert.equal(await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).count(),0);await page.screenshot({path:resolve(output,'25-compact-duo-chat.png')});
 assert.deepEqual(errors,[]);console.log('PASS: press-only lens/expansion, vertical and horizontal drag preview/release/outside cancel, keyboard activation, floating capsule 320/390/430 and safe bottom34/160% labels; selection material replaces blue fill, explicit neutral fallback/opaque states, unclipped glass host; inset hairline centered in actual pane gutter, decorative/noninteractive, fixed through scroll/tab changes, absent in portrait/folded/ordinary layouts and occupied hinge; 28pt icons/52pt targets/64pt bar, actual selection movement/rapid changes/reduced motion, explicit glass fallback/forced-colors, physical camera centerline outside body; fixed Calendar + active Todo, right-only tab changes, portrait current screen, real back, draft/month/scroll node preservation, safe gaps, short-height access and no startup fallback flash; native geometry/demo fixture only');
 }finally{await browser.close();await new Promise(done=>server.close(done));rmSync(temporary,{recursive:true,force:true});}

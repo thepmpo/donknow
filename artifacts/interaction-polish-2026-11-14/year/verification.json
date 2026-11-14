@@ -1,0 +1,18 @@
+{
+  "errors": [],
+  "checks": [
+    "12-month overview",
+    "no confirm/cancel",
+    "direct month selection",
+    "year step/back/keyboard focus",
+    "More preserves browsed year",
+    "320/390/430 and dark",
+    "scoped two-week and Today",
+    "actual opening/closing transform",
+    "reduced-motion identity",
+    "no event prefetch fanout or writes"
+  ],
+  "duringOpen": "matrix(0.645538, 0, 0, 0.645538, -39.6045, 151.276)",
+  "duringClose": "matrix(0.745003, 0, 0, 0.745003, -28.9318, 68.0362)",
+  "nativeMotionVerified": false
+}

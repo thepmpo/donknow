@@ -64,7 +64,7 @@ export function duoSafeFrame(geometry: DuoGeometry): DuoRect {
 }
 
 export type DuoSceneLayout={
- calendarBottomExtension:number; body:DuoRect; column:DuoRect|null; back:DuoRect|null; segments:DuoRect[];
+ reserved:DuoRect[]; bounds:DuoRect; calendarBottomExtension:number; body:DuoRect; column:DuoRect|null; back:DuoRect|null; segments:DuoRect[];
  panes:{leading:DuoRect;trailing:DuoRect}|null; divider:DuoRect|null;
  alignment:'trailing-occlusion'|'system-inset'|'trailing-edge';
  cameraRegion:DuoRect|null;
@@ -121,7 +121,7 @@ export function duoSceneLayout(g:DuoGeometry,workspace=true):DuoSceneLayout{
  // Never extend through a hinge/occlusion or fill a gap caused by reserved hardware.
  const footer={x:body.x,y:body.y+body.height,width:body.width,height:g.height-body.y-body.height};
  const calendarBottomExtension=footer.height>0&&footer.height<=g.safeArea.bottom+.5&&!occupied.some(area=>intersectRects(footer,area))?footer.height:0;
- return {body,column,back,segments,panes,divider,alignment,cameraRegion,calendarBottomExtension};
+ return {reserved:occupied,bounds,body,column,back,segments,panes,divider,alignment,cameraRegion,calendarBottomExtension};
 }
 export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
  const candidates=scene.segments.map(segment=>{
@@ -143,4 +143,13 @@ export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean,viewVisib
 }
 export function duoCalendarViewFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
  const {lower,upper}=calendarAccessorySlots(scene,backVisible);return upper?lower:null;
+}
+
+/** An indicator belongs beyond the unchanged tab capsule, never inside a content pane. */
+export function duoScrollIndicatorFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
+ const tabs=duoTabFrame(scene,backVisible);if(!tabs)return null;
+ const height=Math.min(tabs.height,DUO_CHROME.height),x=tabs.x+tabs.width+3;
+ if(x+3>scene.bounds.width-2)return null;
+ const track={x,y:tabs.y+tabs.height-height+4,width:3,height:Math.max(0,height-8)};
+ return scene.reserved.some(r=>intersectRects(track,r))?null:track;
 }

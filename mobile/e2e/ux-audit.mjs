@@ -67,7 +67,7 @@ try{
  await page.getByRole('button',{name:'선택한 날짜의 일정과 할 일 보기',exact:true}).click();
  await page.getByTestId('calendar-agenda').getByText('계약서 검토하기',{exact:true}).waitFor();
  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));assert.ok((await page.getByTestId('calendar-agenda').boundingBox()).y<500,'calendar jump reveals selected-day heading above navigation');await capture('16-calendar-jump-fixture');
- await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'AI에 보낼 자료 선택'}).waitFor();await capture('03-duck-start-fixture');
+ await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByRole('button',{name:'대화 도구 열기'}).waitFor();await capture('03-duck-start-fixture');
  assert.equal(await page.getByTestId('duck-chat-tools').count(),0,'optional tools begin collapsed');
  assert.ok((await page.getByTestId('duck-chat-scroll').boundingBox()).height>450,'conversation has at least 450px at 390x844');
  await page.getByRole('tab',{name:'log',exact:true}).click();await capture('04-log-fixture');

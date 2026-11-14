@@ -1,16 +1,17 @@
 import React,{createContext,useCallback,useContext,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
-import {Pressable,StyleSheet,Text,View} from 'react-native';
+import {Animated,Pressable,StyleSheet,Text,View} from 'react-native';
 import type {ReactNode} from 'react';
 import {DuoBackProvider,useDuoBackState} from './DuoBackNavigation';
-import {duoTabFrame,duoTodayFrame,duoCalendarViewFrame} from './duo-layout';
+import {duoTabFrame,duoTodayFrame,duoCalendarViewFrame,duoScrollIndicatorFrame} from './duo-layout';
 import {NavigationGlass} from './NavigationGlass';
 import {SheetBackdropProvider} from './SheetBackdrop';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from './theme';
 import type {DuoSceneLayout} from './duo-layout';
 type TodayEntry={id:symbol;day:string;onPress:()=>void;priority:number;view?:{expanded:boolean;onPress:()=>void}};
-type Chrome={scene:DuoSceneLayout|null;ready:boolean;setNavigation:React.Dispatch<React.SetStateAction<ReactNode>>;registerToday:(entry:TodayEntry)=>()=>void};
-const Context=createContext<Chrome>({scene:null,ready:true,setNavigation:()=>{},registerToday:()=>()=>{}});
+export type DuoScrollEntry={id:symbol;opacity:Animated.Value;progress:Animated.Value;fraction:number};
+type Chrome={showScroll:(entry:DuoScrollEntry)=>void;clearScroll:(id:symbol)=>void;scene:DuoSceneLayout|null;ready:boolean;setNavigation:React.Dispatch<React.SetStateAction<ReactNode>>;registerToday:(entry:TodayEntry)=>()=>void};
+const Context=createContext<Chrome>({showScroll:()=>{},clearScroll:()=>{},scene:null,ready:true,setNavigation:()=>{},registerToday:()=>()=>{}});
 export function useDuoScene(){return useContext(Context);}
 export function useDuoNavigationPortal(node:ReactNode,enabled:boolean){
  const {scene,setNavigation}=useDuoScene();
@@ -27,9 +28,17 @@ function NavigationHost({scene,children,today}:{scene:DuoSceneLayout;children:Re
 }
 /** Host stays in full native coordinates; content may be inset or split independently. */
 export function DuoChromeProvider({scene,ready,children}:{scene:DuoSceneLayout|null;ready:boolean;children:ReactNode}){
+ const [indicator,setIndicator]=useState<DuoScrollEntry|null>(null);
+ const showScroll=useCallback((entry:DuoScrollEntry)=>setIndicator(old=>old?.id===entry.id&&old.fraction===entry.fraction?old:entry),[]);
+ const clearScroll=useCallback((id:symbol)=>setIndicator(old=>old?.id===id?null:old),[]);
  const [navigation,setNavigation]=useState<ReactNode>(null),[today,setToday]=useState<TodayEntry[]>([]);
  const registerToday=useCallback((entry:TodayEntry)=>{setToday(old=>[...old.filter(e=>e.id!==entry.id),entry].sort((a,b)=>b.priority-a.priority));return()=>setToday(old=>old.filter(e=>e.id!==entry.id));},[]);
- const value=useMemo(()=>({scene,ready,setNavigation,registerToday}),[scene,ready,registerToday]);
- return <Context.Provider value={value}><SheetBackdropProvider><DuoBackProvider enabled={!!scene} frame={scene?.back??null}>{children}{scene&&navigation&&<NavigationHost scene={scene} today={today[0]}>{navigation}</NavigationHost>}</DuoBackProvider></SheetBackdropProvider></Context.Provider>;
+ const value=useMemo(()=>({scene,ready,setNavigation,registerToday,showScroll,clearScroll}),[scene,ready,registerToday,showScroll,clearScroll]);
+ return <Context.Provider value={value}><SheetBackdropProvider><DuoBackProvider enabled={!!scene} frame={scene?.back??null}>{children}{scene&&indicator&&<DuoScrollThumb scene={scene} entry={indicator}/ >}{scene&&navigation&&<NavigationHost scene={scene} today={today[0]}>{navigation}</NavigationHost>}</DuoBackProvider></SheetBackdropProvider></Context.Provider>;
+}
+function DuoScrollThumb({scene,entry}:{scene:DuoSceneLayout;entry:DuoScrollEntry}){
+ const {available}=useDuoBackState(),frame=duoScrollIndicatorFrame(scene,available);if(!frame)return null;
+ const height=Math.min(frame.height,Math.max(18,frame.height*entry.fraction));
+ return <Animated.View testID="DuoScrollIndicator" pointerEvents="none" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{position:'absolute',zIndex:40,left:frame.x,top:frame.y,width:frame.width,height,borderRadius:2,backgroundColor:colors.muted,opacity:entry.opacity,transform:[{translateY:entry.progress.interpolate({inputRange:[0,1],outputRange:[0,Math.max(0,frame.height-height)]})}]}}/>;
 }
 const styles=StyleSheet.create({navigation:{position:'absolute',zIndex:20,justifyContent:'flex-end'},today:{position:'absolute',zIndex:20,borderRadius:32,borderWidth:StyleSheet.hairlineWidth,borderColor:colors.line,alignItems:'center',justifyContent:'center',overflow:'hidden'},weekday:{fontSize:12,lineHeight:16,color:colors.text},date:{fontSize:25,lineHeight:30,color:colors.text,fontWeight:'600'}});

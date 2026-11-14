@@ -108,3 +108,7 @@ test('Calendar can distribute only the unoccupied bottom safe strip; hardware ga
  const blocked=duoSceneLayout({...g,regions:[...g.regions,{kind:'occlusion',active:true,frame:{x:0,y:720,width:960,height:20}}]});assert.equal(blocked.calendarBottomExtension,0);
  const noBottom=duoSceneLayout({...g,safeArea:{...g.safeArea,bottom:0}});assert.equal(noBottom.calendarBottomExtension,0);
 });
+test('Duo scrollbar is beyond the camera-column tabs, never inside body or reserved hardware',async()=>{
+ const {duoSceneLayout,duoScrollIndicatorFrame,duoTabFrame}=await import('./duo-layout.ts');
+ for(const [width,height,hingeStatus] of [[390,844,'closed'],[960,740,'fullyOpen'],[740,960,'fullyOpen']] as const){const g=base({width,height,hingeStatus,safeArea:{left:16,right:80,top:20,bottom:20}}),s=duoSceneLayout(g),f=duoScrollIndicatorFrame(s,false)!,tabs=duoTabFrame(s,false)!;assert.ok(f.x>tabs.x+tabs.width);assert.ok(f.x>s.body.x+s.body.width);assert.ok(f.x+f.width<=width-2);assert.equal(f.height,264);assert.ok(f.y>=tabs.y&&f.y+f.height<=tabs.y+tabs.height);assert.deepEqual(duoTabFrame(s,false),tabs);const reserved={...s,reserved:[f]};assert.equal(duoScrollIndicatorFrame(reserved,false),null);}
+});

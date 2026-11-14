@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-14",
+  "scope": "Expo web / synthetic API / explicit Duo geometry, not native iPhone",
+  "unit": {
+    "tests": 272,
+    "pass": 271,
+    "fail": 0,
+    "skipped": 1
+  },
+  "syntaxFiles": 49,
+  "typecheck": "passed",
+  "webExport": "passed",
+  "iosJsExport": "passed",
+  "ui": [
+    "Calendar continuous swipe: follows finger / outgoing+incoming / cancel without date tap or fetch",
+    "Calendar source and Duck-only edit recovery",
+    "Duo outer navigation scrollbar / opposite pane stationary / compact cloud chat",
+    "inline assistant chat / source selection / close tools and sources together / consent / history",
+    "assistant error states / retry / owner isolation",
+    "full app",
+    "global motion / countdown / undo",
+    "annual navigation",
+    "calendar workspace"
+  ],
+  "composer": {
+    "emptyHeight": 52,
+    "controlMin": 44,
+    "maxInputHeight": 108
+  },
+  "timing": {
+    "pageMs": 640,
+    "curve": [
+      0.32,
+      0,
+      0.2,
+      1
+    ],
+    "scrollIdleMs": 1000,
+    "scrollFadeMs": 240
+  },
+  "deferred": {
+    "recording": "backlog, not implemented",
+    "aiItemCheckboxes": "feasible, awaiting user decision; not implemented"
+  },
+  "lastNative": {
+    "version": "1.0.0(29)",
+    "run": "https://github.com/thepmpo/donknow/actions/runs/43543369494",
+    "source": "37a3e2842a5a2225aa8822ac8651373c200da6d2",
+    "signedIpaAt": "2026-11-14T02:03:01Z",
+    "appleUploadAt": "2026-11-14T02:03:38Z"
+  },
+  "nativeBuildStarted": false,
+  "privateReferencePublished": false,
+  "recoveryBundleSha256": "1b73da76ca222cff8a16d6b5a783eeed596d6930d90f05b5a9266990ad7b742d"
+}
