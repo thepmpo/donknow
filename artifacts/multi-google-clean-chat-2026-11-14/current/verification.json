@@ -1,0 +1,21 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "01-sent-input-empty.png",
+    "02-next-draft-preserved.png",
+    "03-retry-preserves-new-draft.png",
+    "04-multiple-google-accounts.png",
+    "05-selected-account-resources.png",
+    "06-add-account-permissions.png",
+    "07-account-disconnect-confirmation.png",
+    "08-personal-briefing-consent.png",
+    "08-personal-briefing-settings.png",
+    "09-folded-clean-chat.png",
+    "10-open-clean-chat.png",
+    "11-small-dark-clean-chat.png"
+  ],
+  "chatCount": 4,
+  "accountsRemaining": 1,
+  "keyboardImplemented": false,
+  "errors": []
+}

@@ -1,3 +1,4 @@
+import {calendarAccount} from './google-accounts.js';
 import {calendarIdentifier,calendarZone} from './calendar-time.js';
 import { fail } from './secrets.js';
 import { validDate, validNotes, validTitle } from './store.js';
@@ -34,13 +35,14 @@ export const actionDefinitions = {
  'drive.rename': {provider:'google',feature:'driveWrite',label:'Drive 파일 이름 수정',fields:{id:identifier,title:validTitle},required:['id','title']},
  'drive.updateText': {provider:'google',feature:'driveWrite',label:'Drive 텍스트 파일 내용 교체',fields:{id:identifier,text},required:['id','text']},
 };
+for(const def of Object.values(actionDefinitions))if(def.provider==='google')def.fields.connectionId=identifier;
 export function validateAction(operation, input) {
  const def=actionDefinitions[operation];
  if(!def||!input||typeof input!=='object'||Array.isArray(input))throw fail(400,'실행할 작업을 확인해주세요.');
  if(Object.keys(input).some(k=>!Object.hasOwn(def.fields,k))||def.required.some(k=>!Object.hasOwn(input,k))||Object.entries(input).some(([k,v])=>!def.fields[k](v)))throw fail(400,'작업의 대상과 내용을 확인해주세요.');
- if(operation.endsWith('.update')&&Object.keys(input).every(k=>['id','list'].includes(k)))throw fail(400,'수정할 내용을 적어주세요.');
+ if(operation.endsWith('.update')&&Object.keys(input).every(k=>['id','list','connectionId'].includes(k)))throw fail(400,'수정할 내용을 적어주세요.');
  if(operation==='calendar.update'&&input.destinationCalendarId!==undefined&&input.destinationCalendarId===input.calendarId)throw fail(400,'이동할 캘린더를 다르게 선택해주세요.');
- if(operation==='calendar.update'&&!Object.keys(input).some(k=>!['id','calendarId','expectedETag'].includes(k)))throw fail(400,'수정할 내용을 적어주세요.');
+ if(operation==='calendar.update'&&!Object.keys(input).some(k=>!['id','calendarId','expectedETag','connectionId'].includes(k)))throw fail(400,'수정할 내용을 적어주세요.');
  if(operation.startsWith('calendar.')&&(operation==='calendar.create'||['allDay','start','end','startDate','endDate','timeZone'].some(k=>Object.hasOwn(input,k)))){
   if(input.allDay){if(!input.startDate||!input.endDate||input.endDate<=input.startDate||input.start!==undefined||input.end!==undefined)throw fail(400,'종일 일정의 시작일과 종료일을 확인해주세요.');}
   else if(!instant(input.start)||!instant(input.end)||Date.parse(input.end)<=Date.parse(input.start)||input.startDate!==undefined||input.endDate!==undefined)throw fail(400,'일정 종료는 시작 이후로 정해주세요.');
@@ -61,13 +63,15 @@ function rawMail(to,subject,text,reply) {
  return Buffer.from([...lines,'',Buffer.from(text).toString('base64').match(/.{1,76}/g).join('\r\n')].join('\r\n')).toString('base64url');
 }
 export function createProviderActions({store,token,request}) {
- async function access(user,operation) {
+ async function access(user,operation,args) {
   const def=actionDefinitions[operation];if(!def||def.provider==='todo')return null;
-  const record=await token(user,def.provider);if(!record.features.includes(def.feature))throw fail(403,'이 작업의 수정·발송 권한을 먼저 연결 화면에서 승인해주세요.');return record;
+  const record=await token(user,def.provider,args?.connectionId);if(!record.features.includes(def.feature))throw fail(403,'이 작업의 수정·발송 권한을 먼저 연결 화면에서 승인해주세요.');return record;
  }
  function opts(record,method,body,etag,notion=false){return {method,headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'application/json',...(etag?{'If-Match':etag}:{}),...(notion?{'Notion-Version':'2025-09-03'}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})};}
+ function selectedArgs(user,operation,args){if(!operation.startsWith('calendar.'))return args;const selected=calendarAccount(store,user,args.calendarId??'primary',args.connectionId);let destination;if(args.destinationCalendarId){destination=calendarAccount(store,user,args.destinationCalendarId);if(destination.connectionId!==selected.connectionId)throw fail(400,'이 일정은 같은 Google 계정 안의 캘린더로 이동해주세요.');}return {...args,...(args.calendarId?{calendarId:selected.calendarId}:{}),connectionId:selected.connectionId,...(destination?{destinationCalendarId:destination.calendarId}:{})};}
  async function inspect(user,operation,args){
-  const def=actionDefinitions[operation],record=await access(user,operation);let target=null,version=null,extra={};
+  args=selectedArgs(user,operation,args);
+  const def=actionDefinitions[operation],record=await access(user,operation,args);let target=null,version=null,extra={};
   const read=async url=>request(url,opts(record,'GET'),def.provider==='slack');
   if(operation==='todo.update'){target=store.get(user,args.id);if(!target)throw fail(404,'내 할 일을 찾지 못했어요.');version=JSON.stringify(target);}
   if(operation==='gmail.markRead'||operation==='gmail.reply'){
@@ -93,7 +97,7 @@ export function createProviderActions({store,token,request}) {
    if(current.connectionId!==preview.connectionId||current.version!==preview.version||current.extra?.destinationCalendarName!==preview.extra?.destinationCalendarName)throw fail(409,'연결 또는 원본이 바뀌었어요. 내용을 다시 확인해주세요.');
    if(operation==='todo.create')return {todo:store.create(user,{title:args.title.trim(),notes:args.notes??'',dueDate:args.dueDate??null,category:'업무'})};
    if(operation==='todo.update')return {todo:store.update(user,args.id,Object.fromEntries(Object.entries(args).filter(([k])=>k!=='id')))};
-   const record=await access(user,operation);let url,method='POST',body,notion=false;
+   args=selectedArgs(user,operation,args);const record=await access(user,operation,args);let url,method='POST',body,notion=false;
    if(operation==='gmail.markRead'){url=`https://gmail.googleapis.com/gmail/v1/users/me/messages/${encode(args.id)}/modify`;body={addLabelIds:args.read?[]:['UNREAD'],removeLabelIds:args.read?['UNREAD']:[]};}
    if(operation==='gmail.reply'||operation==='gmail.send'){url='https://gmail.googleapis.com/gmail/v1/users/me/messages/send';const e=current.extra;body={raw:rawMail(e.to??args.to,e.subject??args.subject,args.text,e.replyId),...(e.threadId?{threadId:e.threadId}:{})};}
    if(operation==='slack.send'||operation==='slack.update'){url='https://slack.com/api/'+(operation==='slack.send'?'chat.postMessage':'chat.update');body={channel:args.channel,text:args.text,parse:'none',link_names:false,unfurl_links:false,unfurl_media:false,...(args.thread?{thread_ts:args.thread}:{}),...(args.ts?{ts:args.ts}:{}),...(operation==='slack.send'?{client_msg_id:actionId}:{})};}

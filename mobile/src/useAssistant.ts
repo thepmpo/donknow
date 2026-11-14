@@ -8,16 +8,16 @@ export type AssistantSource={ref:string;provider:string;kind:string;title:string
 export type AssistantDefinition={operation:string;provider:string;label:string;fields:string[];required:string[]};
 export type AssistantDraft={id:string;operation:string;label:string;args:Record<string,unknown>;targetTitle?:string;accountLabel?:string;recipient?:string;status:string;result?:{message?:string};expiresAt:number};
 export type AssistantProposal={operation:string;label:string;args:Record<string,unknown>;sourceRefs:string[]};
-export type AssistantStatus={enabled:boolean;message:string;actions:AssistantDefinition[];consentScopes?:Record<string,string>};
-export type AssistantTurn={id?:string;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[]};
+export type AssistantStatus={googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;actions:AssistantDefinition[];consentScopes?:Record<string,string>};
+export type AssistantTurn={id?:string;createdAt?:number;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[]};
 export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'덕 Todo'};
 export const assistantLabels:Record<string,string>={title:'제목',notes:'메모',dueDate:'예정일',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
 export const assistantStatusLabels:Record<string,string>={pending:'확인 대기',running:'처리 중',succeeded:'완료',failed:'실패 · 새 초안에서 다시 확인',unknown:'결과 불확실 · 원본 확인 필요',cancelled:'취소','restored-cancelled':'복원 시 취소'};
-export const assistantTargetKeys=['id','list','channel','parent','ts','thread'];
+export const assistantTargetKeys=['id','list','channel','parent','ts','thread','connectionId'];
 export const assistantValue=(key:string,value:unknown)=>key==='done'?(value?'완료':'미완료'):key==='read'?(value?'읽음':'읽지 않음'):key==='dueDate'?formatDueDate(typeof value==='string'?value:null):String(value??'없음');
 
 /** The inline chat and advanced sheet use the same consent/preview/confirm API path. */
-export function useAssistant(store:TodoStore){
+export function useAssistant(store:TodoStore,scheduledMessages:{title:string;text:string}[]=[]){
  const [status,setStatus]=useState<AssistantStatus|null>(null),[providers,setProviders]=useState<string[]>([]),[consent,setConsentState]=useState(false),[answer,setAnswer]=useState(''),[sources,setSources]=useState<AssistantSource[]>([]),[warnings,setWarnings]=useState<string[]>([]),[proposals,setProposals]=useState<AssistantProposal[]>([]),[drafts,setDrafts]=useState<AssistantDraft[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[turns,setTurns]=useState<AssistantTurn[]>([]);
  const [busyKind,setBusyKind]=useState<'chat'|'action'|'context'|null>(null),[grants,setGrants]=useState<string[]>([]),[consentReady,setConsentReady]=useState(false);
  const [errorKind,setErrorKind]=useState<'load'|'chat'|'action'|'context'|null>(null);
@@ -35,6 +35,7 @@ export function useAssistant(store:TodoStore){
  useEffect(()=>{setConsentState(!!status&&consentReady&&grants.includes(scope));},[scope,consentReady,!!status,grants]);
  function saveConsent(nextProviders:string[],nextGrants:string[]){void AsyncStorage.setItem('duckduck.ai-consent.v1.'+owner,JSON.stringify({providers:nextProviders,grants:nextGrants.filter(durableConsentScope)})).catch(()=>{});}
  function setConsent(value:boolean|((old:boolean)=>boolean)){const allow=typeof value==='function'?value(consent):value;if(!consentReady)return;const next=allow?[...new Set([...grants,scope])].slice(-16):grants.filter(g=>g!==scope);setGrants(next);setConsentState(allow);saveConsent(providers,next);}
+ async function reloadPreferences(){if(working.current)return;const version=generation.current;try{const raw=await AsyncStorage.getItem('duckduck.ai-consent.v1.'+owner);if(current(version)&&!working.current){const saved=consentPreferences(raw?JSON.parse(raw):null);setProviders(saved.providers);setGrants(saved.grants);}}catch{}}
  function current(version:number){return alive.current&&version===generation.current;}
  async function load(version=generation.current){
   const revision=draftRevision.current,sequence=++readSequence.current,errorVersion=errorRevision.current;
@@ -60,11 +61,11 @@ export function useAssistant(store:TodoStore){
   if(working.current||!status?.enabled||!consent||!message.trim()||message.length>2000||pastedText.length>10000)return false;
   const version=generation.current;
   const turnId=String(++turnSequence.current)+':'+generation.current;
-  setTurns(old=>{const failed=old.at(-1);return failed?.role==='user'&&failed.state==='failed'&&failed.text===message?old.map((turn,i)=>i===old.length-1?{...turn,id:turnId,state:'sending' as const}:turn):[...old,{id:turnId,role:'user' as const,text:message,state:'sending' as const}].slice(-40);});
+  setTurns(old=>{const failed=old.at(-1);return failed?.role==='user'&&failed.state==='failed'&&failed.text===message?old.map((turn,i)=>i===old.length-1?{...turn,id:turnId,state:'sending' as const}:turn):[...old,{id:turnId,createdAt:Date.now(),role:'user' as const,text:message,state:'sending' as const}].slice(-40);});
   const success=await run(async()=>{
-   const r=await store.featureRequest('/api/assistant/chat','POST',{message,providers,consent,consentScopes:status.consentScopes,pastedText:pastedText||undefined,history:turns.filter(turn=>turn.state!=='failed'&&turn.state!=='sending').slice(-6).map(turn=>({role:turn.role,text:turn.text.slice(0,2000)}))}).catch(async e=>{if(current(version)&&e&&typeof e==='object'&&'status' in e&&e.status===409&&e instanceof Error&&e.message.includes('자료')){await load(version);setConsentState(false);}throw e;}) as {answer:string;sources:AssistantSource[];warnings:string[];proposals:AssistantProposal[]};
+   const r=await store.featureRequest('/api/assistant/chat','POST',{message,providers,consent,consentScopes:status.consentScopes,pastedText:pastedText||undefined,history:[...scheduledMessages.slice(-1).map(m=>({role:'assistant' as const,text:(m.title+'\n'+m.text).slice(0,2000)})),...turns.filter(turn=>turn.state!=='failed'&&turn.state!=='sending').slice(-5).map(turn=>({role:turn.role,text:turn.text.slice(0,2000)}))].slice(-6)}).catch(async e=>{if(current(version)&&e&&typeof e==='object'&&'status' in e&&e.status===409&&e instanceof Error&&e.message.includes('자료')){await load(version);setConsentState(false);}throw e;}) as {answer:string;sources:AssistantSource[];warnings:string[];proposals:AssistantProposal[]};
    if(!current(version))return false;
-   setAnswer(r.answer);setTurns(old=>[...old.map(turn=>turn.id===turnId?{...turn,state:'sent' as const}:turn),{id:turnId+':reply',role:'assistant' as const,text:r.answer,proposals:r.proposals}].slice(-40));setSources(r.sources);setWarnings(r.warnings);setProposals(r.proposals);return true;
+   setAnswer(r.answer);setTurns(old=>[...old.map(turn=>turn.id===turnId?{...turn,state:'sent' as const}:turn),{id:turnId+':reply',createdAt:Date.now(),role:'assistant' as const,text:r.answer,proposals:r.proposals}].slice(-40));setSources(r.sources);setWarnings(r.warnings);setProposals(r.proposals);return true;
   },'chat')??false;
   if(!success&&current(version))setTurns(old=>old.map(turn=>turn.id===turnId?{...turn,state:'failed'}:turn));return success;
  }
@@ -76,5 +77,5 @@ export function useAssistant(store:TodoStore){
  }
  async function cancel(draft:AssistantDraft){const version=generation.current;await run(async()=>{draftRevision.current++;await store.featureRequest(`/api/assistant/actions/${draft.id}`,'DELETE');if(current(version))await load(version);});}
  function toggleProvider(provider:string){if(working.current||!consentReady)return;const next=providers.includes(provider)?providers.filter(x=>x!==provider):[...providers,provider];setProviders(next);setConsentState(false);saveConsent(next,grants);setSources([]);setProposals([]);setAnswer('');setTurns([]);}
- return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,run,read,chat,prepare,confirm,cancel,toggleProvider};
+ return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,reloadPreferences,run,read,chat,prepare,confirm,cancel,toggleProvider};
 }

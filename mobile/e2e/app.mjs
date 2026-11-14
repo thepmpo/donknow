@@ -1,3 +1,4 @@
+import {openAssistantSettings,closeAssistantSettings} from './helpers.mjs';
 import {openDuckTools,openMe,openMeAccount,openMeData,openMeService,openServicePanel} from './helpers.mjs';
 import http from 'node:http';
 import { readFile, mkdtemp, rm, readdir, mkdir } from 'node:fs/promises';
@@ -207,8 +208,7 @@ await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).fi
 await page.getByRole('button',{name:'덕에게 보내기',exact:true,disabled:true}).waitFor();
 assert.equal(aiCalls,0,'typing does not call AI');
 assert.equal(await page.getByRole('textbox',{name:'비서에게 요청',exact:true}).count(),0,'normal chat does not open the advanced sheet');
-await openDuckTools(page);await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).click();
-await page.getByRole('checkbox',{name:'Google 자료 사용',exact:true}).click();
+await openAssistantSettings(page);await page.getByRole('checkbox',{name:'Google 자료 사용',exact:true}).click();await closeAssistantSettings(page);
 await page.getByRole('button',{name:'덕에게 보내기',exact:true,disabled:true}).waitFor();
 assert.equal(await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).inputValue(),'오늘 메일에서 할 일 찾아줘');
 await page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true}).click();

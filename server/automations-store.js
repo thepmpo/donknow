@@ -5,15 +5,16 @@ const formatters=new Map();
 export function localClock(now,timezone){let f=formatters.get(timezone);if(!f){if(formatters.size>100)formatters.clear();f=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});formatters.set(timezone,f);}const p=Object.fromEntries(f.formatToParts(new Date(now)).map(x=>[x.type,x.value]));return {date:`${p.year}-${p.month}-${p.day}`,time:`${p.hour}:${p.minute}`};}
 export function nextDelivery(time,timezone,after){for(let at=(Math.floor(after/60000)+1)*60000,end=at+72*3600000;at<end;at+=60000)if(localClock(at,timezone).time===time)return at;throw fail(400,'다음 예약 시간을 계산하지 못했어요.');}
 export function validateSchedule(kind,input){
- if(!['briefing','weather'].includes(kind)||!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['enabled','time','timezone','city','providers','aiConsent'].includes(k))||typeof input.enabled!=='boolean'||typeof input.time!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(input.time))throw fail(400,'예약 종류와 시간을 확인해주세요.');
+ if(!['briefing','weather'].includes(kind)||!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['enabled','time','timezone','city','providers','aiConsent','instructions'].includes(k))||typeof input.enabled!=='boolean'||typeof input.time!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(input.time))throw fail(400,'예약 종류와 시간을 확인해주세요.');
  if(typeof input.timezone!=='string'||input.timezone.length>80)throw fail(400,'시간대를 확인해주세요.');try{localClock(Date.now(),input.timezone);}catch{throw fail(400,'지원하는 시간대를 선택해주세요.');}
+ if(input.instructions!==undefined&&(typeof input.instructions!=='string'||input.instructions.length>1000))throw fail(400,'브리핑 요청은1,000자 이내로 적어주세요.');
  const city=input.city??null,providers=input.providers??[];
  if(city!==null&&!Object.hasOwn(weatherCities,city))throw fail(400,'지원하는 도시를 선택해주세요.');
  if(kind==='weather'&&!city)throw fail(400,'날씨를 받을 도시를 선택해주세요.');
  if(!Array.isArray(providers)||providers.length>4||providers.some(p=>!['google','notion','slack','naver'].includes(p))||(kind==='weather'&&providers.length))throw fail(400,'브리핑에 쓸 자료를 선택해주세요.');
  if(input.aiConsent!==undefined&&typeof input.aiConsent!=='boolean')throw fail(400,'AI 자료 사용 동의를 확인해주세요.');
  if(kind==='briefing'&&input.enabled&&input.aiConsent!==true)throw fail(400,'예약한 자료를 AI에 보내는 데 동의해주세요.');
- return {enabled:input.enabled,time:input.time,timezone:input.timezone,city,providers:[...new Set(providers)],aiConsent:kind==='briefing'&&input.aiConsent===true};
+ return {...(input.instructions!==undefined?{instructions:input.instructions.trim()}:{}),enabled:input.enabled,time:input.time,timezone:input.timezone,city,providers:[...new Set(providers)],aiConsent:kind==='briefing'&&input.aiConsent===true};
 }
 export function automationStore(db,box){
  db.exec(`CREATE TABLE IF NOT EXISTS automation_schedules(user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,kind TEXT NOT NULL,enabled INTEGER NOT NULL,payload TEXT NOT NULL,revision INTEGER NOT NULL,next_at INTEGER NOT NULL,PRIMARY KEY(user_id,kind));
@@ -25,8 +26,8 @@ export function automationStore(db,box){
  const schedule=row=>row?{kind:row.kind,...box.open(row.payload),enabled:!!row.enabled,revision:row.revision,nextAt:row.enabled?row.next_at:null}:null;
  return {
   automationSettings(user){return ['briefing','weather'].map(kind=>schedule(db.prepare('SELECT * FROM automation_schedules WHERE user_id=? AND kind=?').get(user,kind))??{kind,enabled:false,time:kind==='briefing'?'08:00':'07:30',timezone:'Asia/Seoul',city:kind==='weather'?'seoul':null,providers:[],aiConsent:false,revision:0,nextAt:null});},
-  configureAutomation(user,kind,input,now=Date.now()){
-   const value=validateSchedule(kind,input),next=value.enabled?nextDelivery(value.time,value.timezone,now):0;
+  configureAutomation(user,kind,input,now=Date.now(),consentScopes){
+   const value={...validateSchedule(kind,input),...(kind==='briefing'&&input.enabled&&consentScopes?{consentScopes}: {})},next=value.enabled?nextDelivery(value.time,value.timezone,now):0;
    return tx(()=>{db.prepare('INSERT INTO automation_schedules VALUES (?,?,?,?,1,?) ON CONFLICT(user_id,kind) DO UPDATE SET enabled=excluded.enabled,payload=excluded.payload,revision=automation_schedules.revision+1,next_at=excluded.next_at').run(user,kind,value.enabled?1:0,box.seal(value),next);return schedule(db.prepare('SELECT * FROM automation_schedules WHERE user_id=? AND kind=?').get(user,kind));});
   },
   dueAutomations(now,user=null){return db.prepare('SELECT s.* FROM automation_schedules s JOIN users u ON u.id=s.user_id WHERE s.enabled=1 AND s.next_at<=? AND u.email_verified_at IS NOT NULL AND NOT EXISTS (SELECT 1 FROM automation_deliveries d WHERE d.user_id=s.user_id AND d.kind=s.kind AND d.status=\'running\' AND d.created_at>?)'+(user?' AND s.user_id=?':'')+' ORDER BY s.next_at LIMIT 10').all(...(user?[now,now-600000,user]:[now,now-600000])).map(row=>({...schedule(row),userId:row.user_id}));},

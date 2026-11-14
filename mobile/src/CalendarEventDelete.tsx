@@ -12,7 +12,7 @@ export function CalendarEventDelete({event,store,onDeleted,onBusy}:{event:Calend
  useEffect(()=>{if(open&&Platform.OS==='web')requestAnimationFrame(()=>{(cancel.current as unknown as HTMLElement)?.focus();});},[open]);
  function close(){if(!busy&&!locked){setOpen(false);setError('');}}
  async function execute(){if(busy)return;setBusy(true);onBusy(true);setError('');try{
-  let id=action;if(!id){const prepared=await store.featureRequest('/api/assistant/actions','POST',{operation:'calendar.delete',args:{calendarId:event.calendarId??'primary',id:event.eventId,expectedETag:event.etag}}) as {id:string};id=prepared.id;setAction(id);}
+  let id=action;if(!id){const prepared=await store.featureRequest('/api/assistant/actions','POST',{operation:'calendar.delete',args:{calendarId:event.calendarId??'primary',id:event.eventId,expectedETag:event.etag,...(event.connectionId?{connectionId:event.connectionId}: {})}}) as {id:string};id=prepared.id;setAction(id);}
   setLocked(true);const result=await store.featureRequest('/api/assistant/actions/'+id+'/confirm','POST',{confirmation:true}) as {status:string};if(result.status!=='succeeded')throw Error('삭제 결과를 확인해주세요.');
   if(alive.current){setOpen(false);store.reminders.retry();onDeleted();}
  }catch(e){if(alive.current)setError(e instanceof Error?e.message:'삭제하지 못했어요.');}finally{if(alive.current){setBusy(false);onBusy(false);}}}

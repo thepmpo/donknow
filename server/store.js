@@ -61,7 +61,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
       db.exec('BEGIN IMMEDIATE');
       try {
         db.prepare('UPDATE todos SET data = ? WHERE id = ? AND user_id = ?').run(JSON.stringify(todo), id, userId);
-        if (!remote && 'done' in patch && todo.source?.provider==='google' && todo.source.externalId.includes(':tasks:') && features.connection(userId,'google')?.taskSyncEnabled) features.queueTaskSync(userId,id,todo.done,previousDone);
+        if (!remote && 'done' in patch && todo.source?.provider==='google' && todo.source.externalId.includes(':tasks:') && features.connections(userId,'google').some(r=>r.taskSyncEnabled&&todo.source.externalId.startsWith((r.connectionId??'legacy')+':tasks:'))) features.queueTaskSync(userId,id,todo.done,previousDone);
         db.exec('COMMIT');return todo;
       } catch(error){db.exec('ROLLBACK');throw error;}
     },

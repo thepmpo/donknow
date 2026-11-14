@@ -59,7 +59,7 @@ export function Shell() {
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
       <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => setTab('todos')} onOpenTodo={onEdit} /></View>
       {tab === 'log' && <LogScreen store={store} />}
-      {tab === 'profile' && <ProfileScreen store={store} onConnection={() => setSettings(true)} />}
+      {tab === 'profile' && <ProfileScreen store={store} onOpenTodos={()=>setTab('todos')} onConnection={() => setSettings(true)} />}
     </MotionView>}</DuoWorkspace></MotionView>
     {navigationVisible && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={longPressCalendar} unread={unread} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}

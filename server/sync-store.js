@@ -9,6 +9,6 @@ export function taskSyncStore(db) {
     finishTaskSync(job,remoteDone) { const current=db.prepare('SELECT revision FROM task_sync WHERE user_id=? AND todo_id=?').get(job.user_id,job.todo_id);if(!current)return;if(current.revision===job.revision)db.prepare('DELETE FROM task_sync WHERE user_id=? AND todo_id=? AND revision=?').run(job.user_id,job.todo_id,job.revision);else db.prepare('UPDATE task_sync SET expected=? WHERE user_id=? AND todo_id=?').run(Number(remoteDone),job.user_id,job.todo_id); },
     failTaskSync(job,message,conflict=false) { const attempts=job.attempts+1;db.prepare('UPDATE task_sync SET status=?,error=?,attempts=?,next_at=? WHERE user_id=? AND todo_id=? AND revision=?').run(conflict?'conflict':attempts>=5?'failed':'pending',message,attempts,Date.now()+Math.min(300000,5000*2**attempts),job.user_id,job.todo_id,job.revision); },
     clearTaskSync(userId,todoId) { if(todoId)db.prepare('DELETE FROM task_sync WHERE user_id=? AND todo_id=?').run(userId,todoId);else db.prepare('DELETE FROM task_sync WHERE user_id=?').run(userId); },
-    retryTaskSync(userId) { db.prepare("UPDATE task_sync SET status='pending',attempts=0,next_at=? WHERE user_id=? AND status='failed'").run(Date.now(),userId); },
+    retryTaskSync(userId,todoId) { db.prepare("UPDATE task_sync SET status='pending',attempts=0,next_at=? WHERE user_id=? AND status='failed'"+(todoId?' AND todo_id=?':'')).run(...(todoId?[Date.now(),userId,todoId]:[Date.now(),userId])); },
   };
 }

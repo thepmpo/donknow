@@ -15,6 +15,7 @@ function fakeProvider(){const calls=[];let changed=false,failSend=false,delay=nu
  if(url.includes('/auth.test'))return response({ok:true,user_id:'U12345678'});
  if(method!=='GET'){if(delay)await delay;if(failSend)throw Error('secret-token-must-not-leak');return response({ok:true,id:'result-id',ts:'123.456'});}
  if(url.includes('/messages/'))return response({id:'abc123',historyId:changed?'2':'1',threadId:'thread1',payload:{mimeType:'text/plain',body:{data:Buffer.from('이번 금요일까지 자료 보내주세요.').toString('base64url')},headers:[{name:'Subject',value:'회의 자료 요청'},{name:'From',value:'보낸 사람 <sender@example.test>'},{name:'Message-ID',value:'<mail1@example.test>'}]}});
+ if(url.includes('/calendar/v3/users/me/calendarList/'))return response({summary:'기본 캘린더',accessRole:'owner'});
  if(url.includes('/calendar/'))return response({id:'event',summary:'기존 일정',etag:changed?'v2':'v1'});
  if(url.includes('/tasks/'))return response({id:'task',title:'기존 할 일',etag:changed?'v2':'v1'});
  if(url.includes('/drive/'))return response({id:'file',name:'자료.txt',version:'1',mimeType:'text/plain',capabilities:{canEdit:true}},200,{etag:changed?'v2':'v1'});
