@@ -1,5 +1,12 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 최신 실제 확인 — 1.0.0(28) native/Apple 업로드 성공
+
+[사용자 수동 실행43536270733](https://github.com/thepmpo/donknow/actions/runs/43536270733)·소스f008503ebba956615da8b948b59c68a9930197f9의validate132265916619/build-and-submit132266207178모두success다. 로그에서buildNumber27→28,서명IPA생성2026-11-14 00:52:04UTC·build성공00:52:07UTC·Apple업로드00:52:32UTC를확인했다. 연간/viewport/기기별탭단축은28에포함된다. Apple처리·TestFlight표시·설치/실기기는별도다.
+
+[상세·편집·덕알림·공통모션](calendar-events-motion-2026-11-14.md)은28이후추가구현으로새native빌드가필요하다. 이번업무에서추가native빌드를자동실행하지않는다. 아래27최신/dispatch접근거부/연간빌드대기는28이전이력이다. 무료표준Mac/기존서명·인증/수동workflow정책을유지한다.
+
+
 ## 연간 보기·줌은 새 빌드 대상
 
 [현재 계약/개별 롤백](calendar-year-overview-2026-11-14.md). 연간은27 이후 수정이다. 스위치를 끈 롤백도 기존 설치 앱에는 재빌드/업데이트로 적용한다. 인증·데이터를 삭제하거나 자동 push빌드를 켜지 않는다. 이번에는 iOS JS까지 검사하고 native 빌드는 시작하지 않는다.

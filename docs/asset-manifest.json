@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "7c3d437a18b2a2a6da15d973186ea8c572eaee27",
-  "assetCommit": "7c3d437a18b2a2a6da15d973186ea8c572eaee27",
-  "imageCount": 557,
+  "codeCommit": "bbfb061c14e2d9568477a96c8888f61bc5662e76",
+  "assetCommit": "bbfb061c14e2d9568477a96c8888f61bc5662e76",
+  "imageCount": 664,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -38,6 +38,181 @@
       "bytes": 45198,
       "sha256": "41ad47c9e93589e3c091b924550e48eee602f863c7ccc3b896c7067796b06f21",
       "import_path": "images/artifacts__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-account-settings.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 47547,
+      "sha256": "9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-apple-reminders.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 35615,
+      "sha256": "eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-action-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 32268,
+      "sha256": "e48673ac3d6751f1e26b5bd70d1cea91241010aee1bd50a22c316c1f0636852a",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-ai-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 48140,
+      "sha256": "452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-auth.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-calendar-events-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 32233,
+      "sha256": "fc98094d98a80a1f5bc68d266f920d5b80a481b52b9f109ab1e26886387e3caf",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-calendar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 32834,
+      "sha256": "7ef1743e9589232c5ccc8fd0104a9b6f9e6d082ab7ade210547ea64082d5835c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-completed-reference-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 50841,
+      "sha256": "103e7132e819ec52862e89f940ab1c38c6f3e79e6a719ed1e033bf95f588746f",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-completion-countdown-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 28015,
+      "sha256": "80c2d842b4193f664be7af56cc1da805ed16f0fb0b6a972affadc90e372e95b3",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-completion-countdown-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-duck-draft.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 34085,
+      "sha256": "5f2ef17b04bd17348795060db29972854221a559412b659a8cd177f2f8fa5f97",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-duck-draft.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-duckduck.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 34074,
+      "sha256": "4003262e41aac912f626911191bcefd7b96468eac29b88462fc5606f7b1c8f68",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-google-tasks-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 50367,
+      "sha256": "647029adafba1fa8c25f13b53fe7969f54a841b321b5bbcddad1e071950f4462",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-paste.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 43499,
+      "sha256": "297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-kakao-paste.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-share.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 30625,
+      "sha256": "8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-log.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 29315,
+      "sha256": "dfb7d6bb95cd35c5e77d2c56f90af194a9d6b99df54658472cbb7fa37c80d204",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-log.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-notes-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 22385,
+      "sha256": "133a285a2f59c2c1a99fd52bf5d3d6542c65008ba284572a6345ef7db15773fd",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-personal-export.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 54802,
+      "sha256": "ddc557910fb066a79bc4d299b9f0a8f4254483b64a681567ab6d8939551681aa",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-profile.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 48215,
+      "sha256": "e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-record-search.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 37947,
+      "sha256": "70f39fafed3edb235f428ecc32bf9d31561d253e451f1a9e52354c2e50902143",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-record-search.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-reminder.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 23432,
+      "sha256": "426d4f56745c079797486e1c06e6b787494407084849d28c1703f121d50d3cd5",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-services.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 50883,
+      "sha256": "294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-services.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-task-sync-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 58807,
+      "sha256": "13f01283543d298c073ea0282299b8eda86c54cb1ec73df8b88d873f989ee131",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-today-weather-fixture.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 42038,
+      "sha256": "4005808827bb1ef7723ed19c22aa78cb45989613e584721a325f284e92594a6e",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-today-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-todos.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 26373,
+      "sha256": "c9e7b7b910ae0c006b1c00c209bf3abfe97a76a18517ab3b74190c252c755647",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/app/mobile-verification.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 38385,
+      "sha256": "0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__app__mobile-verification.png"
     },
     {
       "path": "artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png",
@@ -1186,6 +1361,580 @@
       "bytes": 34572,
       "sha256": "e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054",
       "import_path": "images/artifacts__calendar-audit-2026-11-13__16-tab-return-resets-month.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 80087,
+      "sha256": "eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/02-day-detail.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 104675,
+      "sha256": "73d3db07c9f4810b638c3ae386915348989f1c9bad8dc04316100e0df7a606e5",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/03-event-detail.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 88821,
+      "sha256": "02ca1b52dd1343f0a486668e4aa4d666b6234cac68ce305f4ac8732fdb87f4e9",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/04-write-preview.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 99219,
+      "sha256": "41f62c0736fe0e2aad2f5a30c76f49e34d63d72118a035945a381fa0248e50b3",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/05-all-day-editor.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 90204,
+      "sha256": "32b8eb4dc41e0d4dae2d65d7ede14d936cbf112fa7c2b9ce1039a4a144b67a34",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/06-week-timeline.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 90286,
+      "sha256": "40935c5d045c1c684d260a1b0e03dc673a93bb2d307d4c4704bf2c7c9f9fa235",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/07-search-scope.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 95536,
+      "sha256": "4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/08-calendar-sources.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 89337,
+      "sha256": "2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/09-read-only-event.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 107439,
+      "sha256": "007e366dfaad3c8c370d22ca73437eb6520818b3316764197ed80ef0179cf080",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/10-partial-state.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/11-error-visible-with-cache.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/12-phone-320.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 77373,
+      "sha256": "8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/12-phone-430.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 88895,
+      "sha256": "1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/13-large-text.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 98883,
+      "sha256": "8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/14-loading-with-cache.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/15-unknown-write-no-resend.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 113379,
+      "sha256": "7c8c47020de5df57736e2ade5beeeea206c08b786c97ad65edd1390d38d1576b",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/16-dark-month-reference.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 74340,
+      "sha256": "1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/17-dark-event-reference.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 71901,
+      "sha256": "98e29e5e3c25e6eafbb6651ea7a3f491b3719aaa35a887ad1ee27881a000e5b9",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/18-light-month-reference.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 73514,
+      "sha256": "4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/19-non-json-error-keeps-events.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 83222,
+      "sha256": "e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/after/20-fortnight-expanded.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 63763,
+      "sha256": "850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__after__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/01-clean-adaptive-month.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 80087,
+      "sha256": "eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/02-day-detail.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 102321,
+      "sha256": "8d1c7ccd2ccf4d22fb62bb0f658b8d84430dbd11e4f25392cc4113eb95e2a9a9",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/03-event-detail.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82679,
+      "sha256": "9e79567d1a2fa7a99bc50bf064ffe28d10afafc0bc2b0abebb795af87b43525f",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/04-write-preview.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 100866,
+      "sha256": "dc6f5587a0a560eaedbb32c8a43e4e16bb59d2bfcdb341f3594585c4eddae6df",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/05-all-day-editor.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 96917,
+      "sha256": "d728efbabee66a745acac25fd8a404e8700acde241ae2ecebe7341bd818fc9b0",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/06-week-timeline.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 89108,
+      "sha256": "3821731eefc3f2a00bda6cd593417263e78beb8ac2721932d368e9220ee4cc54",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/07-search-scope.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 95536,
+      "sha256": "4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/08-calendar-sources.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 89337,
+      "sha256": "2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/09-read-only-event.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 99661,
+      "sha256": "06e83a5bcce97c6b143bf5ec4194c3e69c1737fc7b3465f717ebf31aea3fc97c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/10-partial-state.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/11-error-visible-with-cache.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/12-phone-320.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 77373,
+      "sha256": "8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/12-phone-430.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 88895,
+      "sha256": "1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/13-large-text.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 98883,
+      "sha256": "8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__13-large-text.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/14-loading-with-cache.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 82522,
+      "sha256": "3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/15-unknown-write-no-resend.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 111953,
+      "sha256": "43ad6dde8a6bee9ff0ae7e347f2040661d377be1258e637f5892c93f19b17313",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/16-dark-month-reference.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 74340,
+      "sha256": "1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/17-dark-event-reference.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 65944,
+      "sha256": "994aa512411b49511217f1d3606e773448de547242206a81a916fb1e46cea2b7",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/18-light-month-reference.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 73514,
+      "sha256": "4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/19-non-json-error-keeps-events.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 83222,
+      "sha256": "e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/before/20-fortnight-expanded.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 63763,
+      "sha256": "850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__before__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/01-open-calendar-todo.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 51801,
+      "sha256": "f019b5c7863dde7afeb89fb0f3584736b8944fcf13a35aa85bf4c4db348d9e12",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/02-open-calendar-duck.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 61277,
+      "sha256": "fe438441acdc27e63adeda56b18c6c0329dfa8730c2efc9dd16a6ec824c308b7",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/03-portrait-current-screen.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 37369,
+      "sha256": "323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/04-closed-camera-column.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 34356,
+      "sha256": "9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/05-back-in-camera-column.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 63122,
+      "sha256": "c2c99aa314bd8b19830e116bf7dc85b970ffac86c9a131634e2e9121bc55c291",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/06-dragging-lens-web-fallback.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 53904,
+      "sha256": "7cac125be234cc4d43db615b71b9c8cce03fdee67b7759492ca0fdd1eda83400",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/07-iphone-320-floating-tabs.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 31472,
+      "sha256": "dbdef64937d144a1d1f5cd60fa21ec09d79d0994693e16cd7a8b104150c1fda3",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/07-iphone-390-floating-tabs.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 32760,
+      "sha256": "b98fc22decf65d5855e4e67d5e25b755bdbf6dc36d1f82af50b0c20c4b2f8cb6",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/07-iphone-430-floating-tabs.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 33501,
+      "sha256": "87d3414e8c40afdedc5c7317c1cfda20479c62a1313034fdd96133293a31a889",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/08-iphone-320-text-160-percent.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 25354,
+      "sha256": "2b73f7862bf85daf8f8fc15fc7b12b95d2cdd69ab27d4daf9615f10eb5597ea3",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/08-pane-local-day-detail.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 58373,
+      "sha256": "fea265d0eb52c5ad1de37b8c72a88b90a3b03c5ca5fa707b5b3d5db7002ce2ae",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/10-folded-calendar-dark.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 36560,
+      "sha256": "3dd3669018a1f2339969cdc4dcc19883c69fff56c259f7381797d1d29eab7d55",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/11-folded-calendar-light.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 35397,
+      "sha256": "fdf14ff32cbf1f4e3d24720fc7b722fa3def17bd2ab3180c259a053edd5c7577",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/12-open-calendar-dark.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 53378,
+      "sha256": "7c6c641ca767c896e156c0b54b612fe586b43fb046b7ff274268991a00b1ef04",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/13-folded-fortnight.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 27539,
+      "sha256": "778e00c936c632f9981d5283c74b0dd00041b46d8de7452b14883fb3d4f1d1d6",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/14-open-fortnight-dark.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 47559,
+      "sha256": "3c632a4ecf5cb98ffba22fc967d16c5ecc2fe17f3e3de9071bd8cf5792f73395",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/15-long-press-left-calendar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 42332,
+      "sha256": "c680ac488531672e8d1fb228d0d9ec24b8fcbbff2599cbf26b0a0907460cc108",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/16-long-press-right-calendar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 30091,
+      "sha256": "4c3d128b20f85d2e267c60b0140a2ce353632e5232942b19bb639eeb405a4855",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/17-folded-long-press-calendar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 27468,
+      "sha256": "4d7402f13136417e329b3a79a7426f69c75cc09df02ce7f248d2c89e0329941c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/18-year-left-calendar-right-todos.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 86473,
+      "sha256": "16577b31e3a78829471b6427cbd2054acad5e04bad3d6b4175575a8dfb802531",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/19-year-right-calendar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 86996,
+      "sha256": "82b6cd9d5c386ad5ec213d26d903a7fb630e5bc7894d4bd53992c87940814edd",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/20-year-portrait.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 83591,
+      "sha256": "a0072a99fbe9ee29b3c6ed331b02ca722e7262453bdc5dc19493eeff520351d6",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/21-year-folded.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 67224,
+      "sha256": "5cbb5cdcc0fbe984e071f42caacb408aa8b3fd06f1d562d5a9971468fd7dcfac",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/22-year-duo-motion.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 85527,
+      "sha256": "dc384935d8cd19150ffcf1a5c75f1d163317120bebdb0b29f9077dfa2b61b120",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/23-year-design-comparison-state.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 92090,
+      "sha256": "8dbc5faf203930fb03a7cfbae337d6b654e317c06944e79398597777639f3359",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/duo/24-pane-edge-scrollbar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 91528,
+      "sha256": "ab8340f3341184fe924659026195198f32235417f94dae62a73ca227bc38b273",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__duo__24-pane-edge-scrollbar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/focused/01-compact-long-source.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 103508,
+      "sha256": "729129de051916feea9f8d55e34b108e680812a5b32223c79099d1e86685f982",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__focused__01-compact-long-source.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/focused/02-local-only-preview.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 102563,
+      "sha256": "371ffa609fa100f97357e33c0d823c73f9e046eeaeb953c833b8f218b15ac195",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__focused__02-local-only-preview.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/focused/03-partial-save-retry-only-duck.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 115164,
+      "sha256": "ff7d2cc85e2c05897c67faa2615ae65cda0bdd348624ed7271fb02a1e505ae3d",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__focused__03-partial-save-retry-only-duck.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/focused/04-editor-scrollbar-visible.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 95547,
+      "sha256": "8e86b3088aa6adb4e0f765efbfb63f26e28f7782737f1f41f89bda60a2b4d020",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__focused__04-editor-scrollbar-visible.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/focused/05-todo-shared-transition.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 100314,
+      "sha256": "d04d6a2add27714e335033c3af268adf2c2fd7b8ae05a8d132f4b49fc68b1ff5",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__focused__05-todo-shared-transition.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/focused/06-year-scrollbar.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 153247,
+      "sha256": "e7164afcdf9072cdf577f509d68bd0b9fc6e63e24e41d72a78cdc31bfda1fba4",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__focused__06-year-scrollbar.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/motion/22-motion-open-and-top-dim.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 40862,
+      "sha256": "0cd356854425cc55b56285ba5cad60193557eafd580e79b39e10e6a2cf3be793",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__motion__22-motion-open-and-top-dim.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/01-ordinary-year.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 153392,
+      "sha256": "689a56ab3d9f676e1768b8578d41079b7c38486be669922e79fcc23d7647b3a1",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__01-ordinary-year.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/02-ordinary-month-after-zoom.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 74834,
+      "sha256": "ec61debee28d39613b27c17b65fbff8f72981d85418d74b574c13b94e57d2a07",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__02-ordinary-month-after-zoom.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/03-year-width-320.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 150103,
+      "sha256": "7acb2751a513649e6db0a72b355b1dc4083cc67497a058df93846929e7095740",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__03-year-width-320.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/03-year-width-430.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 152255,
+      "sha256": "775b54b6cdbf0c51091786ab4ad54614ba0f1a75729a20cbf49cc6c6d9f8aee7",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__03-year-width-430.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/04-year-dark.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 151164,
+      "sha256": "8677f57606b19cfba5f2e0ffdb867b268fa61d77361543bbdc61a53df5d2735c",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__04-year-dark.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/05-opening-zoom.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 137111,
+      "sha256": "bb0f24bdf5259b3a51092d6f16d203b4af9c1491184500d1bcb0d39dbceba009",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__05-opening-zoom.png"
+    },
+    {
+      "path": "artifacts/calendar-event-review-2026-11-14/year/06-closing-zoom.png",
+      "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 179126,
+      "sha256": "c66abb17acaf5af1b41b24765a9e4ec3333cf7fdf1b9d2aa81fd0b4587e1cfc8",
+      "import_path": "images/artifacts__calendar-event-review-2026-11-14__year__06-closing-zoom.png"
     },
     {
       "path": "artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png",
