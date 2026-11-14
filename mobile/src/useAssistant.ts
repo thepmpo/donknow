@@ -1,3 +1,4 @@
+import {refreshCalendarSnapshots} from './calendar-snapshot-cache';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {consentPreferences,consentScope,durableConsentScope} from './assistant-consent';
 import {formatDueDate} from './domain';
@@ -26,7 +27,7 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
  const [errorKind,setErrorKind]=useState<'load'|'chat'|'action'|'context'|null>(null);
  const turnSequence=useRef(0);
  const checklist=useRef<Record<string,ChecklistEntry>>({}),storeRef=useRef(store);storeRef.current=store;
- const [,checklistChanged]=useState(0);
+ const [checklistRevision,checklistChanged]=useState(0);
  const alive=useRef(true),working=useRef(false),generation=useRef(0),draftRevision=useRef(0),readSequence=useRef(0),errorRevision=useRef(0);
  const owner=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;
  useEffect(()=>{
@@ -84,9 +85,9 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
  async function confirm(draft:AssistantDraft){
   if(draft.status!=='pending'||draft.expiresAt<=Date.now())return;
   const version=generation.current;
-  await run(async()=>{draftRevision.current++;try{await store.featureRequest(`/api/assistant/actions/${draft.id}/confirm`,'POST',{confirmation:true});if(current(version))await store.refresh();}finally{if(current(version))await load(version);}});
+  await run(async()=>{draftRevision.current++;try{const result=await store.featureRequest(`/api/assistant/actions/${draft.id}/confirm`,'POST',{confirmation:true}) as {status:string};if(current(version)){if(result.status==='succeeded'&&draft.operation.startsWith('calendar.'))refreshCalendarSnapshots(owner);await store.refresh();}}finally{if(current(version))await load(version);}});
  }
  async function cancel(draft:AssistantDraft){const version=generation.current;await run(async()=>{draftRevision.current++;await store.featureRequest(`/api/assistant/actions/${draft.id}`,'DELETE');if(current(version))await load(version);});}
  function toggleProvider(provider:string){if(working.current||!consentReady)return;const next=providers.includes(provider)?providers.filter(x=>x!==provider):[...providers,provider];setProviders(next);setConsentState(false);saveConsent(next,grants);setSources([]);setProposals([]);setAnswer('');setTurns([]);}
- return {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,reloadPreferences,run,read,chat,prepare,confirm,cancel,toggleProvider,checklistEntry,excludeChecklist,commitChecklist};
+ return {checklistRevision,status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,setProposals,drafts,busy,busyKind,error,errorKind,turns,setTurns,consentReady,alive,load,reloadPreferences,run,read,chat,prepare,confirm,cancel,toggleProvider,checklistEntry,excludeChecklist,commitChecklist};
 }

@@ -1,3 +1,4 @@
+import {KeyboardDismiss} from '../KeyboardUX';
 import {ScrollArea as ScrollView} from '../ScrollArea';
 import React,{useState} from 'react';
 import {KeyboardAvoidingView,Platform,Text,TextInput,View} from 'react-native';
@@ -17,7 +18,7 @@ export function AssistantSheet({store,onClose,onOpenTodos,initialMessage='',past
  async function chat(){await assistant.chat(message,pastedText);}
  const def=status?.actions.find(x=>x.operation===operation);const hasTarget=def?.required.some(k=>targetKeys.includes(k));
  return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><KeyboardAvoidingView style={{flex:1,justifyContent:'flex-end',backgroundColor:'#00000066'}} behavior={Platform.OS==='ios'?'padding':undefined}><DraggableSheet disabled={busy} onDismiss={onClose} style={{maxHeight:'94%',backgroundColor:colors.bg,borderTopLeftRadius:28,borderTopRightRadius:28,padding:22}}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:14,paddingBottom:25}}>
- <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text accessibilityRole="header" style={s.h1}>덕 비서</Text><CloseButton disabled={busy} onPress={onClose}/></View>
+ <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text accessibilityRole="header" style={[s.h1,{flex:1}]}>덕 비서</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={busy} onPress={onClose}/></View></View>
  {!store.user?<Text style={s.subtitle}>클라우드 계정으로 로그인하면 자료를 연결하고 실행할 수 있어요.</Text>:<>
  <Text style={s.subtitle}>{status?.message??'연결 상태를 확인하고 있어요.'}</Text><Text style={s.muted}>사용할 자료를 직접 선택해요. 쓰기·발송은 아래 초안의 대상과 내용을 확인한 뒤 실행해요.</Text>
  <View style={{flexDirection:'row',gap:8,flexWrap:'wrap'}}>{Object.entries(names).filter(([p])=>p!=='todo').map(([p,n])=><Pressable key={p} accessibilityRole="checkbox" accessibilityLabel={`${n} 자료 사용`} accessibilityState={{checked:providers.includes(p)}} disabled={busy} onPress={()=>assistant.toggleProvider(p)} style={{minHeight:44,padding:10,backgroundColor:providers.includes(p)?colors.pale:colors.surface,borderRadius:12}}><Text>{providers.includes(p)?'☑':'□'} {n}</Text></Pressable>)}</View>

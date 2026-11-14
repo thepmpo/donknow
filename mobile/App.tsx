@@ -1,5 +1,6 @@
 import {DuoWorkspace} from './src/DuoWorkspace';
-import {enableKeyboardDone} from './src/keyboard-done';
+import {disableLegacyKeyboardAccessory} from './src/keyboard-done';
+import {KeyboardDismiss,KeyboardUXProvider,useKeyboardUX} from './src/KeyboardUX';
 import {useDuoScene} from './src/DuoChrome';
 import {listenForDuckNotification} from './src/push';
 import { DuoSafeSurface, useDuoTrailingNavigation } from './src/DuoLayout';
@@ -22,8 +23,10 @@ import { DuckScreen } from './src/screens/DuckScreen';
 import { LogScreen } from './src/screens/LogScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { ConnectionScreen } from './src/screens/ConnectionScreen';
-export function Shell() {
-  useEffect(enableKeyboardDone,[]);
+export function Shell({keyboardOccluded}:{keyboardOccluded?:boolean}={}){return <KeyboardUXProvider occlusion={keyboardOccluded}><ShellContent/></KeyboardUXProvider>;}
+function ShellContent() {
+  const keyboard=useKeyboardUX();
+  useEffect(disableLegacyKeyboardAccessory,[]);
   const store = useTodos();
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
@@ -35,7 +38,7 @@ export function Shell() {
   const calendarSequence=useRef(0),[calendarNavigation,setCalendarNavigation]=useState<{target:'active'|'fixed';request:CalendarNavigationRequest}|null>(null);
   const calendarScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
   const requestCalendar=useCallback((action:'today'|'fortnight',target:'active'|'fixed'='active',resetToToday=false)=>setCalendarNavigation({target,request:{id:++calendarSequence.current,action,resetToToday,scope:calendarScope}}),[calendarScope]);
-  const selectTab=useCallback((next:AppTab)=>{if(next==='calendar'&&(!duo||tab==='calendar'))requestCalendar('today');setTab(next);},[duo,tab,requestCalendar]);
+  const selectTab=useCallback((next:AppTab)=>{keyboard.dismiss();if(next==='calendar'&&(!duo||tab==='calendar'))requestCalendar('today');setTab(next);},[duo,tab,requestCalendar]);
   const longPressCalendar=useCallback(()=>{
    const target=duo&&split&&tab!=='calendar'?'fixed':'active';
    requestCalendar('fortnight',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');
@@ -53,17 +56,17 @@ export function Shell() {
   const rightPane=scene?.panes?{marginLeft:scene.panes.trailing.x-scene.body.x,width:scene.panes.trailing.width}:null;
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
   return <KeyboardAvoidingView style={[styles.root,duo&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View style={[styles.header,duo&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text></View>
+    <View style={[styles.header,duo&&styles.duoHeader]}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text>{(!navigationVisible||tab!=='duck'&&tab!=='calendar')&&!editor&&<KeyboardDismiss fallback/>}</View>
     {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},rightPane]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
     {!!store.error && (tab!=='calendar'||split) && <View style={[styles.errorBar,rightPane]}><Text accessibilityRole="alert" style={styles.error}>{store.error}</Text>{store.connection && <Pressable accessibilityRole="button" accessibilityLabel="데이터 다시 불러오기" onPress={() => { void store.refresh(); }} style={styles.retry}><Text style={{ color: colors.blue, fontSize: 11 }}>다시 시도</Text></Pressable>}</View>}
     <MotionView variant="navigation" disabled={split} testID="screen-transition" style={[styles.content]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : split?'duo-split':tab}><DuoWorkspace enabled={navigationVisible} fixed={<CalendarScreen fixedPane navigationRequest={calendarNavigation?.target==='fixed'?calendarNavigation.request:undefined} key={`${store.connection?.mode}-${store.connection?.mode==='cloud'?store.connection.baseUrl:''}-${store.user?.id??'demo'}`} store={store} active={navigationVisible&&split} onAdd={onAdd} onEdit={onEdit}/>}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <MotionView variant="navigation" testID="active-screen-transition" disabled={!split} transitionKey={tab} distance={0} style={styles.content}>
       <View style={[styles.content,tab!=='calendar'&&styles.hidden]} accessibilityElementsHidden={tab!=='calendar'} importantForAccessibility={tab==='calendar'?'auto':'no-hide-descendants'}><CalendarScreen navigationRequest={calendarNavigation?.target==='active'?calendarNavigation.request:undefined} key={`${store.connection?.mode}-${store.connection?.mode==='cloud'?store.connection.baseUrl:''}-${store.user?.id??'demo'}`} store={store} active={tab==='calendar'} onAdd={onAdd} onEdit={onEdit}/></View>
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
-      <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => setTab('todos')} onOpenLog={() => setTab('log')} onOpenTodo={onEdit} /></View>
+      <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => selectTab('todos')} onOpenLog={() => selectTab('log')} onOpenTodo={onEdit} /></View>
       {tab === 'log' && <LogScreen store={store} />}
-      {tab === 'profile' && <ProfileScreen store={store} onOpenTodos={()=>setTab('todos')} onConnection={() => setSettings(true)} />}
+      {tab === 'profile' && <ProfileScreen store={store} onOpenTodos={()=>selectTab('todos')} onConnection={() => setSettings(true)} />}
     </MotionView>}</DuoWorkspace></MotionView>
-    {navigationVisible && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={longPressCalendar} unread={unread} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
+    {navigationVisible && (duo||!keyboard.occluding) && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={longPressCalendar} unread={unread} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView>;
 }

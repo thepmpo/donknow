@@ -1,11 +1,12 @@
 import {Platform} from 'react-native';
 import {requireOptionalNativeModule} from 'expo';
 type KeyboardDoneModule={setEnabled:(enabled:boolean)=>Promise<void>};
-/** UIKit owns the real keyboard and its accessory; no fake keyboard is drawn. */
-export function enableKeyboardDone(){
+/** Retire option 2. Option 1 uses app controls and never installs an OS toolbar. */
+export function disableLegacyKeyboardAccessory(){
  if(Platform.OS!=='ios')return()=>{};
  const module=requireOptionalNativeModule<KeyboardDoneModule>('DuckduckKeyboard');
  if(!module)return()=>{}; // Existing binaries need a native update for this module.
- void module.setEnabled(true).catch(()=>{});
+ // Option 1 replaces the OS toolbar, including the prominent iOS 27 Done pill.
+ void module.setEnabled(false).catch(()=>{});
  return()=>{void module.setEnabled(false).catch(()=>{});};
 }

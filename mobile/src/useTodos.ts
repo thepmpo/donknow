@@ -1,3 +1,4 @@
+import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
 import { useReminders } from './useReminders';
 import * as auth from './auth';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -21,6 +22,7 @@ export function useTodos() {
   const pendingOrder=useRef<Record<string,string>>({});
   const [completionOrigins,setCompletionOrigins]=useState<Record<string,boolean>>({});const originsRef=useRef<Record<string,boolean>>({});
   const reminderOwner = connection?.mode === 'demo' ? 'demo' : user && connection?.mode === 'cloud' ? connection.baseUrl + ':' + user.id : null;
+  const calendarOwner=useRef<string|null>(null);calendarOwner.current=reminderOwner==='demo'?null:reminderOwner;
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
@@ -83,6 +85,7 @@ export function useTodos() {
       const repository = createRepository(checked);
       const data = checked.mode === 'cloud' && !account ? [] : await repository.list();
       await AsyncStorage.setItem(CONNECTION_KEY, JSON.stringify(checked));
+      const nextOwner=checked.mode==='cloud'&&account?checked.baseUrl+':'+account.id:null;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
       generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setLoading(false); return true;
     } catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false); }
@@ -179,6 +182,7 @@ export function useTodos() {
     return !!removed;
   }
   function expireSession() {
+    if(calendarOwner.current)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=null;
     generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
   }
   async function authenticate(email: string, password: string, register: boolean): Promise<boolean> {
@@ -186,6 +190,7 @@ export function useTodos() {
     connectingRef.current = true; generation.current++; setConnecting(true); setError(''); setNotice('');
     try {
       const account = await auth.authenticate(connection.baseUrl, email, password, register);
+      const nextOwner=connection.baseUrl+':'+account.id;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
       const repository = createRepository(connection);
       generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);
       try{const data = await repository.list();setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
@@ -208,13 +213,14 @@ export function useTodos() {
     try {
       const result = await auth.request(connection.baseUrl, path, method, body);
       if (version !== generation.current) throw sessionChanged();
+      if(method==='DELETE'&&/^\/api\/integrations\/google(?:\?|$)/.test(path))forgetCalendarSnapshots(connection.baseUrl+':'+user?.id);
       return result;
     } catch (e) {
       if (version !== generation.current) throw sessionChanged();
       if (e instanceof auth.AuthRequiredError) expireSession();
       throw e;
     }
-  }, [connection, renderGeneration]);
+  }, [connection, renderGeneration,user?.id]);
   const reminders = useReminders(todos, reminderOwner,connection?.mode==='cloud'&&user?featureRequest:undefined);
   async function refreshAccount() {
     if (connection?.mode !== 'cloud') return;

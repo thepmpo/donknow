@@ -1,0 +1,215 @@
+{
+  "syntheticOnly": true,
+  "nativeKeyboardAndFPSNotVerified": true,
+  "captures": [
+    "01-message-times-and-tail.png",
+    "02-phone-inline-dismiss-and-tail.png",
+    "03-folded-chat.png",
+    "04-open-chat.png",
+    "05-open-portrait-chat.png",
+    "06-cached-events-during-refresh.png",
+    "07-editor-keyboard-no-save-or-grid-gap.png",
+    "08-expanded-fields-follow-scroll.png",
+    "09-confirmed-event-before-slow-refetch.png",
+    "10a-adjacent-preview-with-fixed-weekdays.png",
+    "10-month-rest-fixed-weekdays.png",
+    "11-folded-keyboard-editor.png",
+    "12-open-keyboard-editor.png",
+    "13-open-portrait-keyboard-editor.png",
+    "14-both-panes-retain-confirmation-after-old-read.png",
+    "15-editable-draft-before-calendar-write-access.png"
+  ],
+  "eventReads": 14,
+  "writes": 2,
+  "chatCalls": 1,
+  "frames": [
+    {
+      "t": 0,
+      "x": 260,
+      "old": -130,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 41,
+      "x": 256.749,
+      "old": -133.251,
+      "width": 390.0000305175781,
+      "weekdayX": 0
+    },
+    {
+      "t": 56,
+      "x": 208.631,
+      "old": -181.369,
+      "width": 390.0000305175781,
+      "weekdayX": 0
+    },
+    {
+      "t": 72,
+      "x": 177.976,
+      "old": -212.024,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 88,
+      "x": 141.98,
+      "old": -248.02,
+      "width": 389.9999694824219,
+      "weekdayX": 0
+    },
+    {
+      "t": 104,
+      "x": 110.576,
+      "old": -279.424,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 120,
+      "x": 85.077,
+      "old": -304.923,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 136,
+      "x": 64.7599,
+      "old": -325.24,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 152,
+      "x": 48.6109,
+      "old": -341.389,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 168,
+      "x": 35.7794,
+      "old": -354.221,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 184,
+      "x": 25.6185,
+      "old": -364.382,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 200,
+      "x": 17.6437,
+      "old": -372.356,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 216,
+      "x": 11.4889,
+      "old": -378.511,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 232,
+      "x": 6.87296,
+      "old": -383.127,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 248,
+      "x": 3.57613,
+      "old": -386.424,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 264,
+      "x": 1.42379,
+      "old": -388.576,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 280,
+      "x": 0.274928,
+      "old": -389.725,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 296,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 312,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 328,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 344,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 360,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 376,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 392,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 408,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    },
+    {
+      "t": 424,
+      "x": 0,
+      "old": null,
+      "width": 390,
+      "weekdayX": 0
+    }
+  ],
+  "extent": {
+    "y": 378,
+    "height": 332,
+    "total": 713
+  },
+  "errors": []
+}

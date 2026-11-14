@@ -1,3 +1,4 @@
+import {KeyboardDismiss} from '../KeyboardUX';
 import {ScrollArea as ScrollView} from '../ScrollArea';
 import { DraggableSheet, useModalDismiss } from '../motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from '../motion';
@@ -47,7 +48,7 @@ export function RecordSearchSheet({ store, onClose: onDismiss, onOpenTodo }: { s
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={()=>onClose()}>
     <KeyboardAvoidingView style={styles.backdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <DraggableSheet visible={visible} style={styles.sheet} onDismiss={()=>onClose()}>
-        <View style={styles.heading}><Text style={s.sectionTitle}>할 일과 기록 찾기</Text><CloseButton onPress={()=>onClose()} /></View>
+        <View style={styles.heading}><Text style={[s.sectionTitle,{flex:1}]}>할 일과 기록 찾기</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton onPress={()=>onClose()} /></View></View>
         <Text style={styles.note}>덕에 저장한 제목으로 찾아요. 연결한 Google Tasks도 따로 검색할 수 있어요. 완료 기록은 참고만 해요.</Text>
         <TextInput accessibilityLabel="할 일과 기록 검색" placeholder="예: 회의 자료" value={query} onChangeText={changeQuery} maxLength={120} autoCorrect={false} returnKeyType="search" style={styles.input} />
         <View style={styles.filters} accessibilityRole="tablist">{filters.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={`${item.title} 기록`} accessibilityState={{ selected: item.id === filter }} onPress={() => { setFilter(item.id); setLimit(30); setMessage(''); }} style={[styles.filter, item.id === filter && styles.active]}><Text style={{ color: item.id === filter ? colors.blue : colors.muted }}>{item.title}</Text></Pressable>)}</View>

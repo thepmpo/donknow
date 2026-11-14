@@ -10,8 +10,8 @@ import type {AppTab} from '../../src/AppNavigation';
 import {BackButton} from '../../src/ui';
 import type {DuoGeometry} from '../../src/duo-layout';
 const {createRoot}=require('react-dom/client') as {createRoot:(element:Element)=>{render:(node:React.ReactNode)=>void}};
-const host=globalThis as unknown as {duoFixture:{change:(value:DuoGeometry|null)=>void;setReady:(value:boolean)=>void;mounts:number;unmounts:number;showApp:()=>void;setBottomInset:(value:number)=>void}};
-host.duoFixture={change:()=>{},setReady:()=>{},mounts:0,unmounts:0,showApp:()=>{},setBottomInset:()=>{}};
+const host=globalThis as unknown as {duoFixture:{change:(value:DuoGeometry|null)=>void;setReady:(value:boolean)=>void;keyboard:(value:boolean|undefined)=>void;mounts:number;unmounts:number;showApp:()=>void;setBottomInset:(value:number)=>void}};
+host.duoFixture={change:()=>{},setReady:()=>{},keyboard:()=>{},mounts:0,unmounts:0,showApp:()=>{},setBottomInset:()=>{}};
 function Work(){
  const [bottomInset,setBottomInset]=useState(0);host.duoFixture.setBottomInset=setBottomInset;
  const [draft,setDraft]=useState(''),[tab,setTab]=useState<AppTab>('todos'),[editing,setEditing]=useState(false),[busy,setBusy]=useState(false);const duo=useDuoTrailingNavigation();
@@ -25,11 +25,12 @@ function Work(){
  </View>;
 }
 function Fixture(){
+ const [keyboard,setKeyboard]=useState<boolean|undefined>(undefined);host.duoFixture.keyboard=setKeyboard;
  const [geometry,setGeometry]=useState<DuoGeometry|null>(null),[app,setApp]=useState(false),[ready,setReady]=useState(true);host.duoFixture.change=setGeometry;host.duoFixture.showApp=()=>setApp(true);host.duoFixture.setReady=setReady;
  const camera=geometry?.regions.find(r=>r.kind==='occlusion')?.frame;
  return <SafeAreaProvider initialMetrics={{frame:{x:0,y:0,width:960,height:740},insets:{top:0,right:0,bottom:0,left:0}}}><View style={{flex:1,minHeight:0}}>
   {geometry&&camera&&<View pointerEvents="none" style={{position:'absolute',left:geometry.width-geometry.safeArea.right,top:0,bottom:0,width:geometry.safeArea.right,backgroundColor:'#edf8ff'}}/>}
-  <DuoLayoutFrame geometry={geometry} enabled={!!geometry} ready={ready}>{app?<Shell/>:<Work/>}</DuoLayoutFrame>
+  <DuoLayoutFrame geometry={geometry} enabled={!!geometry} ready={ready}>{app?<Shell keyboardOccluded={keyboard}/>:<Work/>}</DuoLayoutFrame>
   {camera&&<View pointerEvents="none" testID="fixture-camera-marker" style={{position:'absolute',left:camera.x,top:camera.y,width:camera.width,height:camera.height,borderRadius:camera.width/2,backgroundColor:'#111',zIndex:100}}/>}
  </View></SafeAreaProvider>;
 }

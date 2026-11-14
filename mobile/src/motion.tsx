@@ -88,13 +88,13 @@ export function useModalDismiss(onDismiss: () => void) {
   return { visible, close };
 }
 
-export function DraggableSheet({children,style,onDismiss,disabled=false,visible=true,testID}:{children:React.ReactNode;testID?:string;style?:ViewProps['style'];onDismiss:()=>void;disabled?:boolean;visible?:boolean}) {
+export function DraggableSheet({children,style,onDismiss,disabled=false,visible=true,testID,presentation='zoom'}:{children:React.ReactNode;testID?:string;presentation?:'zoom'|'none';style?:ViewProps['style'];onDismiss:()=>void;disabled?:boolean;visible?:boolean}) {
   const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current;
   const current=useRef({reduced,disabled,onDismiss});current.current={reduced,disabled,onDismiss};
   const reset=()=>{offset.stopAnimation();if(current.current.reduced)offset.setValue(0);else Animated.timing(offset,{toValue:0,duration:motion.pressOut,useNativeDriver:native}).start();};
   useLayoutEffect(()=>{if(visible){offset.stopAnimation();offset.setValue(0);}},[visible,offset]);
   const zoom=useRef(new Animated.Value(reduced?1:0)).current;
-  useLayoutEffect(()=>{zoom.stopAnimation();if(reduced){zoom.setValue(1);return;}Animated.timing(zoom,{toValue:visible?1:0,duration:visible?640:320,easing:Easing.bezier(.32,0,.2,1),useNativeDriver:native}).start();return()=>zoom.stopAnimation();},[visible,reduced,zoom]);
+  useLayoutEffect(()=>{zoom.stopAnimation();if(reduced||presentation==='none'){zoom.setValue(1);return;}Animated.timing(zoom,{toValue:visible?1:0,duration:visible?280:200,easing:Easing.bezier(.32,0,.2,1),useNativeDriver:native}).start();return()=>zoom.stopAnimation();},[visible,reduced,zoom,presentation]);
   const responder=useRef(PanResponder.create({
     onMoveShouldSetPanResponderCapture:(_,gesture)=>!current.current.disabled&&gesture.dy>6&&Math.abs(gesture.dy)>Math.abs(gesture.dx)*1.3,
     onPanResponderGrant:()=>{offset.stopAnimation();Keyboard.dismiss();},

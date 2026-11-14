@@ -1,3 +1,4 @@
+import {KeyboardDismiss} from './KeyboardUX';
 import {ScrollArea as ScrollView} from './ScrollArea';
 import { useDuoTrailingNavigation } from './DuoLayout';
 import {useDuoBackAction} from './DuoBackNavigation';
@@ -138,7 +139,7 @@ export function TodoEditor({ todo, dueDate, store, onClose: onDismiss }: { todo?
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
   return <Modal visible={visible} transparent animationType="slide" onRequestClose={() => { if (!saving) onClose(); }}>
     <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <DraggableSheet testID="todo-editor-surface" visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><CloseButton disabled={saving} onPress={onClose} /></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
+      <DraggableSheet testID="todo-editor-surface" visible={visible} style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
         <TextInput accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
         <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/><NotesField value={notes} onChange={setNotes} disabled={saving} />
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} disabled={saving} trackColor={{ true: colors.blue }} /></View>

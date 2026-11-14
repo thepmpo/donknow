@@ -36,6 +36,7 @@ try{
     if(responseMode==='success')return route.fulfill({json:{answer:'요청한 내용을 확인했어요.',sources:[],warnings:[],proposals:[]}});
     return route.fulfill({status:responseMode==='verification'?403:responseMode==='unauthorized'?401:502,json:{error:messages[responseMode]||'다시 로그인해주세요.'}});
    }
+   if(path==='/api/capabilities')return route.fulfill({json:{assistant:true}});
    throw Error('Unexpected API request '+request.method()+' '+path);
   });
   const composer=page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}),send=page.getByRole('button',{name:'덕에게 보내기',exact:true}),consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true});

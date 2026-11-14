@@ -1,3 +1,9 @@
+# Design QA — Chat / keyboard option 1 / responsive calendar
+
+**final result: blocked** — new native keyboard/IME, device FPS, VoiceOver and Keychain restart validation remain pending. Actual Expo web/synthetic API, supplied geometry/keyboard occlusion, retained data and transition checks pass. [Contract](docs/interaction-repair-2026-11-14.md) · [current evidence and source comparison](docs/interaction-repair-qa-2026-11-14.md). User build33 succeeded before this change. No new native build is claimed.
+
+---
+
 # Design QA — Calendar comfort / 2026-11-14
 
 **final result: blocked** — user choice of Today background scope and actual native wheel/bounce/notification/VoiceOver verification remain pending. Implemented Expo web/synthetic API and ordinary/folded/open geometry checks pass. [Contract](docs/calendar-comfort-2026-11-14.md) · [reference comparison, evidence and limitations](docs/calendar-comfort-qa-2026-11-14.md). No new native build was requested.

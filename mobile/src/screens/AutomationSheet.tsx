@@ -1,3 +1,4 @@
+import {KeyboardDismiss} from '../KeyboardUX';
 import {ScrollArea as ScrollView} from '../ScrollArea';
 import {connectPush,disconnectPush} from '../push';
 import React,{useEffect,useRef,useState} from 'react';
@@ -15,7 +16,7 @@ export function AutomationSheet({store,onClose}:{store:TodoStore;onClose:()=>voi
  function change(patch:Partial<Schedule>){setSchedules(old=>old.map(v=>v.kind===kind?{...v,...patch}:v));setMessage('');}
  async function save(){if(!current||working.current)return;working.current=true;setBusy(true);setError('');try{const {enabled,time,timezone,city,providers,aiConsent,instructions}=current;const result=await store.featureRequest('/api/automations/'+kind,'POST',{enabled,time,timezone,city,providers,aiConsent,...(kind==='briefing'?{instructions:instructions??''}:{})}) as Schedule;if(alive.current){setSchedules(old=>old.map(v=>v.kind===kind?result:v));setMessage(result.enabled?'예약했어요. 정한 시간에 덕 채팅으로 보내드릴게요.':'예약을 껐어요. 이미 받은 메시지는 그대로예요.');}}catch(e){if(alive.current)setError(e instanceof Error?e.message:'예약을 저장하지 못했어요.');}finally{working.current=false;if(alive.current)setBusy(false);}}
  return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><View style={s.modalBackdrop}><DraggableSheet style={s.sheet} disabled={busy} onDismiss={onClose}>
-  <View style={s.sheetHeader}><Text style={s.sectionTitle}>브리핑·날씨 예약</Text><CloseButton onPress={onClose} disabled={busy}/></View>
+  <View style={s.sheetHeader}><Text style={[s.sectionTitle,{flex:1}]}>브리핑·날씨 예약</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton onPress={onClose} disabled={busy}/></View></View>
   <ScrollView testID="briefing-settings-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:16,paddingBottom:24}} keyboardShouldPersistTaps="handled">
    <Text style={s.subtitle}>덕이 먼저 채팅으로 보내드려요. 앱을 닫아도 예약 메시지는 계정에 저장돼요.</Text>
    <View style={{flexDirection:'row',gap:8}}>{(['briefing','weather'] as const).map(value=><Button key={value} title={value==='briefing'?'오늘 브리핑':'도시 날씨'} quiet disabled={busy} onPress={()=>{setKind(value);setError('');setMessage('');}}/>)}</View>
