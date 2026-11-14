@@ -1,5 +1,69 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-15:start -->
+### 2026-11-15 — 당일 저장된 작업
+
+실제 정리: 01:31 KST. 새 저장 작업 29개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [c4eebbd](https://github.com/sjfieni/donknow/commit/c4eebbd699c071a27e0712cb4d9db91df83d961c) · 11-14 06:07 · Fit calendar viewport and retain cached schedules during refresh
+
+- [bfa3742](https://github.com/sjfieni/donknow/commit/bfa37425d70c1bd2261cbb9e2dd0429a7df6b139) · 11-14 06:11 · Record calendar viewport and refresh contract with verified build 27 boundary
+
+- [63b27ff](https://github.com/sjfieni/donknow/commit/63b27ffc33832a135d0db1726262ea849a87388c) · 11-14 06:26 · Record device-specific calendar questions and Apple video review
+
+- [3401030](https://github.com/sjfieni/donknow/commit/340103049933e317f31b8f8eb721c05df5714639) · 11-14 06:39 · Add approved device-specific Calendar tab shortcuts
+
+- [bea2aa9](https://github.com/sjfieni/donknow/commit/bea2aa906954f6a8a1ec47d22b789bcc3a362cc6) · 11-14 06:41 · Publish Calendar shortcut decisions and verified implementation handoff
+
+- [7c3d437](https://github.com/sjfieni/donknow/commit/7c3d437a18b2a2a6da15d973186ea8c572eaee27) · 11-14 07:30 · Add reversible Calendar year overview with pane-scoped zoom
+
+- [f008503](https://github.com/sjfieni/donknow/commit/f008503ebba956615da8b948b59c68a9930197f9) · 11-14 07:33 · Record approved annual Calendar design and isolated rollback procedure
+
+- [bbfb061](https://github.com/sjfieni/donknow/commit/bbfb061c14e2d9568477a96c8888f61bc5662e76) · 11-14 10:44 · Refine Calendar sheets, preserve source fields and add Duck event alerts
+
+- [37a3e28](https://github.com/sjfieni/donknow/commit/37a3e2842a5a2225aa8822ac8651373c200da6d2) · 11-14 10:47 · Document Calendar source sync, event alerts and device-specific motion
+
+- [78b9e0a](https://github.com/sjfieni/donknow/commit/78b9e0a245d51f4070050141cdb0a2dc7a19305e) · 11-14 12:09 · Smooth Calendar period gestures and move Duo indicators beyond navigation
+
+- [382ad90](https://github.com/sjfieni/donknow/commit/382ad90a395d8360ed542e6c000cf059a55f3f26) · 11-14 12:12 · Record motion reference, compact chat and deferred recording decisions
+
+- [bff86c7](https://github.com/sjfieni/donknow/commit/bff86c7d6540254749aaea19954f95296e4b6298) · 11-14 13:32 · Quiet tab transitions and refine folded Calendar, Todo focus and action history
+
+- [3cfd43e](https://github.com/sjfieni/donknow/commit/3cfd43e6f8d0afaa38d9e9eba12ef7ab948a0397) · 11-14 13:35 · Publish refined navigation contract, Profile audit and build 30 receipt
+
+- [a2f4a2c](https://github.com/sjfieni/donknow/commit/a2f4a2c47d442b668d756a4638a9ff42faf55804) · 11-14 13:55 · Rename Profile to ME and record source-backed product design review
+
+- [1ff8652](https://github.com/sjfieni/donknow/commit/1ff865202bc28149549702c0df462a63238065b4) · 11-14 13:59 · Publish ME naming and product design comparison with fresh evidence
+
+- [5926283](https://github.com/sjfieni/donknow/commit/59262832404f9f24f3d48e7183c545bad9b911e2) · 11-14 14:31 · Refine ME account, service, notification and data flows
+
+- [bdc158a](https://github.com/sjfieni/donknow/commit/bdc158a136035d7f612858c99e69b012e1221a28) · 11-14 14:34 · Publish implemented ME flows, fresh screens and reproducible handoff
+
+- [24e38cd](https://github.com/sjfieni/donknow/commit/24e38cd3250cd1c79071d0be928b3b5066856553) · 11-14 16:54 · Simplify chat and calendar editing with scoped consent and safe source actions
+
+- [60462e2](https://github.com/sjfieni/donknow/commit/60462e2f35de01f87ee18f20e48dbd5619f3b0dc) · 11-14 16:57 · Publish chat and calendar simplicity contract, QA and current screens
+
+- [5d546ba](https://github.com/sjfieni/donknow/commit/5d546bab7b1646209e0f78758af336c0257ae8ab) · 11-14 18:04 · Add multiple Google accounts and personalized briefings with a clean chat composer
+
+- [c2354f1](https://github.com/sjfieni/donknow/commit/c2354f177ae62f0cec9cbefb5118e16cc3332c62) · 11-14 18:08 · Publish multiple-account flows, clean chat screens and keyboard design previews
+
+- [9efa6d8](https://github.com/sjfieni/donknow/commit/9efa6d8fc701af3d3255e8b1923cf660e032b8b3) · 11-14 19:29 · Add keyboard Done accessory across iPhone inputs
+
+- [a08a9f3](https://github.com/sjfieni/donknow/commit/a08a9f385a965a8835695d2e12f7a2f689b622e3) · 11-14 19:33 · Publish approved keyboard accessory contract and verification scope
+
+- [0c2e8fd](https://github.com/sjfieni/donknow/commit/0c2e8fd9adce6c70e81afccbee8723914df8a86d) · 11-14 20:10 · Connect chat checklist gestures to Todo and completed log
+
+- [c4792b0](https://github.com/sjfieni/donknow/commit/c4792b0265a1eb99ac9deb57da3a3f498429f36f) · 11-14 20:14 · Publish chat checklist evidence and handoff
+
+- [aa389fc](https://github.com/sjfieni/donknow/commit/aa389fcb401dda8802074b7f48a2359a034c6b51) · 11-14 20:50 · Improve date completion, exact reminder previews and calendar readability
+
+- [d9db78b](https://github.com/sjfieni/donknow/commit/d9db78b1f6dc5b2175da5e293a3290f6cfb090ff) · 11-14 20:54 · Publish calendar comfort evidence and implementation handoff
+
+- [fbcc096](https://github.com/sjfieni/donknow/commit/fbcc0967e2d4486f2c60904836d02f9d1fa5da3a) · 11-14 22:37 · Fix chat keyboard layout, calendar retention and swipe responsiveness
+
+- [f8a9b36](https://github.com/sjfieni/donknow/commit/f8a9b36dab21b8213281511a9f3bcc3647398d1d) · 11-14 22:41 · Publish chat and calendar interaction evidence
+<!-- daily:2026-11-15:end -->
+
 ## 2026-11-14 — 채팅 시각·키보드 1번·즉시 표시·달력 전환
 
 [현재 계약](interaction-repair-2026-11-14.md) · [QA·새 화면](interaction-repair-qa-2026-11-14.md). 일반 iPhone·Duo 접힘/펼침 모두 적용하라는 답변을 받았다. 채팅 말풍선 옆에 시각을 표시하고, 입력/입력창 높이/키보드 영역 변화 때 마지막 내용을 보여준다. 직접 과거 대화를 읽거나 실행 항목을 확인하는 스크롤은 보존한다. **키보드는 이전2번 OS 완료 바를 끄고 사용자가 고른1번 입력창 안 keyboard-close 버튼**으로 바꾼다. 다른 편집/입력에는 시트 제목 옆 또는 공통 헤더의 작은 같은 버튼을 제공한다. 닫기는 내용 유지·저장/전송0이며 날짜 피커의 별도 완료와 다르다.
