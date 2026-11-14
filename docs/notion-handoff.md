@@ -1,11 +1,21 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-14 · 한국 시간 · 기능 코드 5926283 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-14 · 한국 시간 · 기능 코드 24e38cd · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
 
 ### 가장 먼저 읽을 현재 기준 — 2026-11-14
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
 
 #### 2026-11-14 — ME 재설계 전체 구현
 
@@ -298,6 +308,17 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — ME 재설계 전체 구현
 
@@ -1059,6 +1080,17 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 저녁 7시 자동 정리
 
 ### 매일 개발 정리
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — ME 재설계 전체 구현
 
@@ -2105,10 +2137,12 @@ bff86c7 Quiet tab transitions and refine folded Calendar, Todo focus and action 
 a2f4a2c Rename Profile to ME and record source-backed product design review
 1ff8652 Publish ME naming and product design comparison with fresh evidence
 5926283 Refine ME account, service, notification and data flows
+bdc158a Publish implemented ME flows, fresh screens and reproducible handoff
+24e38cd Simplify chat and calendar editing with scoped consent and safe source actions
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 5926283에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 24e38cd에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -2134,4097 +2168,4227 @@ a2f4a2c Rename Profile to ME and record source-backed product design review
 ### 할 일
 파일: `artifacts/mobile-todos.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 25,323 bytes · SHA-256 `1d0ba19a16ff81c7f5865bde24124330e5d461e33c1126056cf8aaba242e02ce`
-![artifacts/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-todos.png)
+![artifacts/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-todos.png)
 
 ### 캘린더
 파일: `artifacts/mobile-calendar.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,348 bytes · SHA-256 `17c3c9086799cbb9a5e4c20a7d7f023d5523ce3873fe4144eab6d572ca60b66a`
-![artifacts/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-calendar.png)
+![artifacts/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-calendar.png)
 
 ### 덕 첫 화면
 파일: `artifacts/mobile-duckduck.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 32,025 bytes · SHA-256 `4366a85f119bc1dbf652e94e297b1469c93bb1d92e2ad444507a53977e41b5cb`
-![artifacts/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-duckduck.png)
+![artifacts/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-duckduck.png)
 
 ### 완료 기록
 파일: `artifacts/mobile-log.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 28,197 bytes · SHA-256 `30da3a1dc4237ac688eb65021cc4a8085a6219c1ff69bc84150f380fbf76e93e`
-![artifacts/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-log.png)
+![artifacts/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-log.png)
 
 ### 내정보
 파일: `artifacts/mobile-profile.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 45,198 bytes · SHA-256 `41ad47c9e93589e3c091b924550e48eee602f863c7ccc3b896c7067796b06f21`
-![artifacts/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-profile.png)
+![artifacts/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-profile.png)
 
 ### mobile account settings
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-account-settings.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 47,547 bytes · SHA-256 `9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-account-settings.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-apple-reminders.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 35,615 bytes · SHA-256 `eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-apple-reminders.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-apple-reminders.png)
 
 ### 비서 초안 확인과 Todo 실행 · 테스트
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-action-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 32,268 bytes · SHA-256 `e48673ac3d6751f1e26b5bd70d1cea91241010aee1bd50a22c316c1f0636852a`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-action-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-action-fixture.png)
 
 ### AI 근거·Todo 제안 · 모의 응답
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-ai-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 48,140 bytes · SHA-256 `452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-ai-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-assistant-ai-fixture.png)
 
 ### 로그인
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-auth.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 35,193 bytes · SHA-256 `89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-auth.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-auth.png)
 
 ### 일정·할 일 분리와 시간 표시 · 테스트
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-calendar-events-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 32,233 bytes · SHA-256 `fc98094d98a80a1f5bc68d266f920d5b80a481b52b9f109ab1e26886387e3caf`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-calendar-events-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-calendar-events-fixture.png)
 
 ### 캘린더
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-calendar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 32,834 bytes · SHA-256 `7ef1743e9589232c5ccc8fd0104a9b6f9e6d082ab7ade210547ea64082d5835c`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-calendar.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-calendar.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-completed-reference-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 50,841 bytes · SHA-256 `103e7132e819ec52862e89f940ab1c38c6f3e79e6a719ed1e033bf95f588746f`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-completed-reference-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-completed-reference-fixture.png)
 
 ### 완료 3→1 카운트다운 · 체험 화면
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-completion-countdown-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 28,015 bytes · SHA-256 `80c2d842b4193f664be7af56cc1da805ed16f0fb0b6a972affadc90e372e95b3`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-completion-countdown-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-completion-countdown-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-completion-countdown-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-completion-countdown-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-duck-draft.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 34,085 bytes · SHA-256 `5f2ef17b04bd17348795060db29972854221a559412b659a8cd177f2f8fa5f97`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-duck-draft.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-duck-draft.png)
 
 ### 덕 첫 화면
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-duckduck.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 34,074 bytes · SHA-256 `4003262e41aac912f626911191bcefd7b96468eac29b88462fc5606f7b1c8f68`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-duckduck.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-duckduck.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-google-tasks-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 50,367 bytes · SHA-256 `647029adafba1fa8c25f13b53fe7969f54a841b321b5bbcddad1e071950f4462`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-google-tasks-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-paste.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 43,499 bytes · SHA-256 `297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-paste.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-share.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 30,625 bytes · SHA-256 `8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-share.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-kakao-share.png)
 
 ### 완료 기록
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-log.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 29,315 bytes · SHA-256 `dfb7d6bb95cd35c5e77d2c56f90af194a9d6b99df54658472cbb7fa37c80d204`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-log.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-log.png)
 
 ### 메모·글머리표·닫기 손잡이
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-notes-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 22,385 bytes · SHA-256 `133a285a2f59c2c1a99fd52bf5d3d6542c65008ba284572a6345ef7db15773fd`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-notes-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-notes-fixture.png)
 
 ### mobile personal export
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-personal-export.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 54,802 bytes · SHA-256 `ddc557910fb066a79bc4d299b9f0a8f4254483b64a681567ab6d8939551681aa`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-personal-export.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-personal-export.png)
 
 ### 내정보
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-profile.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 48,215 bytes · SHA-256 `e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-profile.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-profile.png)
 
 ### 기록 찾기
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-record-search.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 37,947 bytes · SHA-256 `70f39fafed3edb235f428ecc32bf9d31561d253e451f1a9e52354c2e50902143`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-record-search.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-reminder.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 23,432 bytes · SHA-256 `426d4f56745c079797486e1c06e6b787494407084849d28c1703f121d50d3cd5`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-reminder.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-services.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 50,883 bytes · SHA-256 `294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-services.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-task-sync-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 58,807 bytes · SHA-256 `13f01283543d298c073ea0282299b8eda86c54cb1ec73df8b88d873f989ee131`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-task-sync-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-task-sync-fixture.png)
 
 ### mobile today weather fixture
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-today-weather-fixture.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 42,038 bytes · SHA-256 `4005808827bb1ef7723ed19c22aa78cb45989613e584721a325f284e92594a6e`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-today-weather-fixture.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-today-weather-fixture.png)
 
 ### 할 일
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-todos.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 26,373 bytes · SHA-256 `c9e7b7b910ae0c006b1c00c209bf3abfe97a76a18517ab3b74190c252c755647`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-todos.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-todos.png)
 
 ### mobile verification
 파일: `artifacts/calendar-event-review-2026-11-14/app/mobile-verification.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 38,385 bytes · SHA-256 `0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e`
-![artifacts/calendar-event-review-2026-11-14/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/app/mobile-verification.png)
+![artifacts/calendar-event-review-2026-11-14/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/app/mobile-verification.png)
 
 ### mobile account settings
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,547 bytes · SHA-256 `9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-apple-reminders.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,615 bytes · SHA-256 `eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-apple-reminders.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-apple-reminders.png)
 
 ### 비서 초안 확인과 Todo 실행 · 테스트
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-action-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,773 bytes · SHA-256 `40cfc074db776f5927b2fc45ddb073f76fa52a82349a876ceb60ca5a294d3bb9`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-action-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-action-fixture.png)
 
 ### AI 근거·Todo 제안 · 모의 응답
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-ai-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,140 bytes · SHA-256 `452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-ai-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-assistant-ai-fixture.png)
 
 ### 로그인
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-auth.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,193 bytes · SHA-256 `89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-auth.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-auth.png)
 
 ### 일정·할 일 분리와 시간 표시 · 테스트
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-calendar-events-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,177 bytes · SHA-256 `b3bffb1c55b90add1809af2611c0922433cae609021ffec54a03b243c39303ed`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-calendar-events-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-calendar-events-fixture.png)
 
 ### 캘린더
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-calendar.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,815 bytes · SHA-256 `e1bdc7021683e641f736cf28fc3bd70b0b7bbbf2bd1706dc7c2a2cc9f6acbafc`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-calendar.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-calendar.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-completed-reference-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,521 bytes · SHA-256 `37cbb686baf59b4520a9476e258d4608cb36afc179622bb5b04e766044a83a43`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-completed-reference-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-completed-reference-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-duck-draft.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,137 bytes · SHA-256 `9a53d580d97429080258ebe8f2c665bd5e233a0d8dab21e9e7d57f4fbc03af68`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-duck-draft.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-duck-draft.png)
 
 ### 덕 첫 화면
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-duckduck.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,072 bytes · SHA-256 `8e56df5b67ef3d3405b1bce5698ac62f2f22a1935e3584c70b67e910590fe4ac`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-duckduck.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-duckduck.png)
 
 ### 외부 기록 검색 · 테스트
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-external-search-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,437 bytes · SHA-256 `0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-external-search-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-external-search-fixture.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-google-tasks-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,179 bytes · SHA-256 `d78c0d9939604d7093738f3413cd2f9841eebf129eb9fa59dee03dd94983ba7b`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-google-tasks-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-paste.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 43,499 bytes · SHA-256 `297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-paste.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-share.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 30,625 bytes · SHA-256 `8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-share.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-kakao-share.png)
 
 ### 완료 기록
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-log.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 29,938 bytes · SHA-256 `530a1e1eb4a4507b32a97796531c140d9a2c31c2b7350ae274e921c1ea57844f`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-log.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-log.png)
 
 ### 메모·글머리표·닫기 손잡이
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-notes-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 22,314 bytes · SHA-256 `df7c97b68d34e694898b98ade501432ec1502c33f6cff91cf8de74fe4c68c26e`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-notes-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-notes-fixture.png)
 
 ### mobile personal export
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-personal-export.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 54,728 bytes · SHA-256 `2e6fdaeea4f7802a7c07135c480b3f7a431b86911d80e5e158aa4be4e7189778`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-personal-export.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-personal-export.png)
 
 ### 내정보
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-profile.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,215 bytes · SHA-256 `e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-profile.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-profile.png)
 
 ### 기록 찾기
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-record-search.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 38,022 bytes · SHA-256 `b770fd71be459554d1b15f2605d999f6367415c6c893edec0661b5a882bd9e26`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-record-search.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-reminder.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 23,432 bytes · SHA-256 `426d4f56745c079797486e1c06e6b787494407084849d28c1703f121d50d3cd5`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-reminder.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-services.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,883 bytes · SHA-256 `294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-services.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-task-sync-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 58,700 bytes · SHA-256 `97713ef26c00cfd60ffc27e880e9da19b8b4f8d87086b36520e9a458248e62a7`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-task-sync-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-task-sync-fixture.png)
 
 ### mobile today weather fixture
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-today-weather-fixture.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 41,961 bytes · SHA-256 `8171edf7c301261a653a165caa6a120b06f26c17de84536ebbbead2484685de2`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-today-weather-fixture.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-today-weather-fixture.png)
 
 ### 할 일
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-todos.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 26,591 bytes · SHA-256 `464221211e23473583494ca1a91351d9531ba7bbe193c5cf1fbb10349bc543bb`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-todos.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-todos.png)
 
 ### mobile verification
 파일: `artifacts/calendar-navigation-2026-11-14/app/mobile-verification.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 38,385 bytes · SHA-256 `0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e`
-![artifacts/calendar-navigation-2026-11-14/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/app/mobile-verification.png)
+![artifacts/calendar-navigation-2026-11-14/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/app/mobile-verification.png)
 
 ### mobile account settings
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-account-settings.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,547 bytes · SHA-256 `9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-account-settings.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-apple-reminders.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,615 bytes · SHA-256 `eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-apple-reminders.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-apple-reminders.png)
 
 ### 비서 초안 확인과 Todo 실행 · 테스트
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-action-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,773 bytes · SHA-256 `40cfc074db776f5927b2fc45ddb073f76fa52a82349a876ceb60ca5a294d3bb9`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-action-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-action-fixture.png)
 
 ### AI 근거·Todo 제안 · 모의 응답
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-ai-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,140 bytes · SHA-256 `452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-ai-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-assistant-ai-fixture.png)
 
 ### 로그인
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-auth.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,193 bytes · SHA-256 `89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-auth.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-auth.png)
 
 ### 일정·할 일 분리와 시간 표시 · 테스트
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-calendar-events-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,177 bytes · SHA-256 `b3bffb1c55b90add1809af2611c0922433cae609021ffec54a03b243c39303ed`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-calendar-events-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-calendar-events-fixture.png)
 
 ### 캘린더
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-calendar.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,815 bytes · SHA-256 `e1bdc7021683e641f736cf28fc3bd70b0b7bbbf2bd1706dc7c2a2cc9f6acbafc`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-calendar.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-calendar.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-completed-reference-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,521 bytes · SHA-256 `37cbb686baf59b4520a9476e258d4608cb36afc179622bb5b04e766044a83a43`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-completed-reference-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-completed-reference-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-duck-draft.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,040 bytes · SHA-256 `88baf31ea2c57c1ce62e89e163b410ecdcf4dfba49c679f21662c0490c73ba6b`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-duck-draft.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-duck-draft.png)
 
 ### 덕 첫 화면
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-duckduck.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,072 bytes · SHA-256 `8e56df5b67ef3d3405b1bce5698ac62f2f22a1935e3584c70b67e910590fe4ac`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-duckduck.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-duckduck.png)
 
 ### 외부 기록 검색 · 테스트
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-external-search-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,437 bytes · SHA-256 `0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-external-search-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-external-search-fixture.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-google-tasks-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,179 bytes · SHA-256 `d78c0d9939604d7093738f3413cd2f9841eebf129eb9fa59dee03dd94983ba7b`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-google-tasks-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-paste.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 43,499 bytes · SHA-256 `297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-paste.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-share.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 30,625 bytes · SHA-256 `8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-share.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-kakao-share.png)
 
 ### 완료 기록
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-log.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 29,648 bytes · SHA-256 `9f6b742e53e7aad76b5f72a860c44d9058c1715b9375e4582db110da8e3a1f56`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-log.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-log.png)
 
 ### 메모·글머리표·닫기 손잡이
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-notes-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 22,314 bytes · SHA-256 `df7c97b68d34e694898b98ade501432ec1502c33f6cff91cf8de74fe4c68c26e`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-notes-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-notes-fixture.png)
 
 ### mobile personal export
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-personal-export.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 54,728 bytes · SHA-256 `2e6fdaeea4f7802a7c07135c480b3f7a431b86911d80e5e158aa4be4e7189778`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-personal-export.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-personal-export.png)
 
 ### 내정보
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-profile.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,215 bytes · SHA-256 `e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-profile.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-profile.png)
 
 ### 기록 찾기
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-record-search.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 38,022 bytes · SHA-256 `b770fd71be459554d1b15f2605d999f6367415c6c893edec0661b5a882bd9e26`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-record-search.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-reminder.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 23,468 bytes · SHA-256 `fdc9f8aba825898bea412b7b471307674450bbe06d64bbbccdcb23dab0622c7d`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-reminder.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-services.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,883 bytes · SHA-256 `294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-services.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-task-sync-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 58,700 bytes · SHA-256 `97713ef26c00cfd60ffc27e880e9da19b8b4f8d87086b36520e9a458248e62a7`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-task-sync-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-task-sync-fixture.png)
 
 ### mobile today weather fixture
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-today-weather-fixture.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 41,893 bytes · SHA-256 `4f9cd8d010dc12860b7e8a979902fa952faa180d27683bf922c7c343f028410e`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-today-weather-fixture.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-today-weather-fixture.png)
 
 ### 할 일
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-todos.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 26,591 bytes · SHA-256 `464221211e23473583494ca1a91351d9531ba7bbe193c5cf1fbb10349bc543bb`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-todos.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-todos.png)
 
 ### mobile verification
 파일: `artifacts/calendar-viewport-2026-11-13/app/mobile-verification.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 38,385 bytes · SHA-256 `0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e`
-![artifacts/calendar-viewport-2026-11-13/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/app/mobile-verification.png)
+![artifacts/calendar-viewport-2026-11-13/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/app/mobile-verification.png)
 
 ### mobile account settings
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-account-settings.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,547 bytes · SHA-256 `9047078e37feecd29f197d02111b610335bcdf5bcce5c72ae7224bee38b3476d`
-![artifacts/calendar-year-2026-11-14/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-account-settings.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-apple-reminders.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,615 bytes · SHA-256 `eef36301772bbc405d4b764331ee984321cdbb7a6627bc9c2f39b292de1f9a8b`
-![artifacts/calendar-year-2026-11-14/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-apple-reminders.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-apple-reminders.png)
 
 ### 비서 초안 확인과 Todo 실행 · 테스트
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-assistant-action-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,773 bytes · SHA-256 `40cfc074db776f5927b2fc45ddb073f76fa52a82349a876ceb60ca5a294d3bb9`
-![artifacts/calendar-year-2026-11-14/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-assistant-action-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-assistant-action-fixture.png)
 
 ### AI 근거·Todo 제안 · 모의 응답
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-assistant-ai-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,140 bytes · SHA-256 `452e24cd68c7451865a219d3a8891b64c3a37eedcff08d0ca18b956b68b058e4`
-![artifacts/calendar-year-2026-11-14/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-assistant-ai-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-assistant-ai-fixture.png)
 
 ### 로그인
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-auth.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,193 bytes · SHA-256 `89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26`
-![artifacts/calendar-year-2026-11-14/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-auth.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-auth.png)
 
 ### 일정·할 일 분리와 시간 표시 · 테스트
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-calendar-events-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,383 bytes · SHA-256 `0e98fe05f09c0fc49bda82574fd6377753ac8fbbcc50e2df7eff54730c218db7`
-![artifacts/calendar-year-2026-11-14/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-calendar-events-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-calendar-events-fixture.png)
 
 ### 캘린더
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-calendar.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 33,034 bytes · SHA-256 `ce6abd2290ad1d1b8ff4e253a0329664472fc6361d2cd897820731d360e35420`
-![artifacts/calendar-year-2026-11-14/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-calendar.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-calendar.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-completed-reference-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,521 bytes · SHA-256 `37cbb686baf59b4520a9476e258d4608cb36afc179622bb5b04e766044a83a43`
-![artifacts/calendar-year-2026-11-14/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-completed-reference-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-completed-reference-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-duck-draft.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,040 bytes · SHA-256 `88baf31ea2c57c1ce62e89e163b410ecdcf4dfba49c679f21662c0490c73ba6b`
-![artifacts/calendar-year-2026-11-14/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-duck-draft.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-duck-draft.png)
 
 ### 덕 첫 화면
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-duckduck.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,074 bytes · SHA-256 `4003262e41aac912f626911191bcefd7b96468eac29b88462fc5606f7b1c8f68`
-![artifacts/calendar-year-2026-11-14/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-duckduck.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-duckduck.png)
 
 ### 외부 기록 검색 · 테스트
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-external-search-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,437 bytes · SHA-256 `0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8`
-![artifacts/calendar-year-2026-11-14/app/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-external-search-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-external-search-fixture.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-google-tasks-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,179 bytes · SHA-256 `d78c0d9939604d7093738f3413cd2f9841eebf129eb9fa59dee03dd94983ba7b`
-![artifacts/calendar-year-2026-11-14/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-google-tasks-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-kakao-paste.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 43,499 bytes · SHA-256 `297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0`
-![artifacts/calendar-year-2026-11-14/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-kakao-paste.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-kakao-share.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 30,625 bytes · SHA-256 `8dddb892f9e6a40b75ef7ce464e215ed464a10cd89bd71d01d2ae04a3d5f8721`
-![artifacts/calendar-year-2026-11-14/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-kakao-share.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-kakao-share.png)
 
 ### 완료 기록
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-log.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 29,425 bytes · SHA-256 `23c44afed85b1e0633c44bcac62809877d48369f7675e9444cc1c00171750d6c`
-![artifacts/calendar-year-2026-11-14/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-log.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-log.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-log.png)
 
 ### 메모·글머리표·닫기 손잡이
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-notes-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 22,314 bytes · SHA-256 `df7c97b68d34e694898b98ade501432ec1502c33f6cff91cf8de74fe4c68c26e`
-![artifacts/calendar-year-2026-11-14/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-notes-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-notes-fixture.png)
 
 ### mobile personal export
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-personal-export.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 54,728 bytes · SHA-256 `2e6fdaeea4f7802a7c07135c480b3f7a431b86911d80e5e158aa4be4e7189778`
-![artifacts/calendar-year-2026-11-14/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-personal-export.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-personal-export.png)
 
 ### 내정보
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-profile.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,215 bytes · SHA-256 `e1c68cd6e2cb46746bf87b626087a40ddb78f2344e5378278c3c7eb3db9c47e9`
-![artifacts/calendar-year-2026-11-14/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-profile.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-profile.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-profile.png)
 
 ### 기록 찾기
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-record-search.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 38,022 bytes · SHA-256 `b770fd71be459554d1b15f2605d999f6367415c6c893edec0661b5a882bd9e26`
-![artifacts/calendar-year-2026-11-14/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-record-search.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-reminder.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 23,432 bytes · SHA-256 `426d4f56745c079797486e1c06e6b787494407084849d28c1703f121d50d3cd5`
-![artifacts/calendar-year-2026-11-14/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-reminder.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-services.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 50,883 bytes · SHA-256 `294341bea68d831c5644c92ec20ab5e0584a0f53e9cde6a9eb138668dca1311d`
-![artifacts/calendar-year-2026-11-14/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-services.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-task-sync-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 58,700 bytes · SHA-256 `97713ef26c00cfd60ffc27e880e9da19b8b4f8d87086b36520e9a458248e62a7`
-![artifacts/calendar-year-2026-11-14/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-task-sync-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-task-sync-fixture.png)
 
 ### mobile today weather fixture
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-today-weather-fixture.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 42,003 bytes · SHA-256 `d220887d81a871225f01af3e2c19b2382b8816f028c55ebca5a85281ff85271e`
-![artifacts/calendar-year-2026-11-14/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-today-weather-fixture.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-today-weather-fixture.png)
 
 ### 할 일
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-todos.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 26,591 bytes · SHA-256 `464221211e23473583494ca1a91351d9531ba7bbe193c5cf1fbb10349bc543bb`
-![artifacts/calendar-year-2026-11-14/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-todos.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-todos.png)
 
 ### mobile verification
 파일: `artifacts/calendar-year-2026-11-14/app/mobile-verification.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 38,385 bytes · SHA-256 `0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e`
-![artifacts/calendar-year-2026-11-14/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/app/mobile-verification.png)
+![artifacts/calendar-year-2026-11-14/app/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/app/mobile-verification.png)
 
 ### mobile demo
 파일: `artifacts/duck-website-2026-11-13/mobile-demo.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 68,613 bytes · SHA-256 `c5b5d5a65f2dbbf52dec7897023d2f5ff6298b16c8dfa5f5a78038728e52a660`
-![artifacts/duck-website-2026-11-13/mobile-demo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-demo.png)
+![artifacts/duck-website-2026-11-13/mobile-demo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-demo.png)
 
 ### mobile faq
 파일: `artifacts/duck-website-2026-11-13/mobile-faq.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 61,332 bytes · SHA-256 `dfeb846b0f1dfc7a717cd24c0cde19113cee1d8ac7ce4f40e42f373fc26a1ea0`
-![artifacts/duck-website-2026-11-13/mobile-faq.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-faq.png)
+![artifacts/duck-website-2026-11-13/mobile-faq.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-faq.png)
 
 ### mobile footer
 파일: `artifacts/duck-website-2026-11-13/mobile-footer.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 89,073 bytes · SHA-256 `ed0bbdcfb09832d742da308dff215db848d2016a22ff0d77db70aa32bf1a4bb0`
-![artifacts/duck-website-2026-11-13/mobile-footer.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-footer.png)
+![artifacts/duck-website-2026-11-13/mobile-footer.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-footer.png)
 
 ### mobile hero comparison
 파일: `artifacts/duck-website-2026-11-13/mobile-hero-comparison.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 436,806 bytes · SHA-256 `995fa24b217849c8d75e56de64130d6504388b2b2ae5f70e4041657e52b95382`
-![artifacts/duck-website-2026-11-13/mobile-hero-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-hero-comparison.png)
+![artifacts/duck-website-2026-11-13/mobile-hero-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-hero-comparison.png)
 
 ### mobile hero
 파일: `artifacts/duck-website-2026-11-13/mobile-hero.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 231,713 bytes · SHA-256 `55383b4a290b61f8f6406da4d6d13caa07b7cbda359ab39dd92cb9ab3b9dde13`
-![artifacts/duck-website-2026-11-13/mobile-hero.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-hero.png)
+![artifacts/duck-website-2026-11-13/mobile-hero.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-hero.png)
 
 ### mobile intro
 파일: `artifacts/duck-website-2026-11-13/mobile-intro.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 98,375 bytes · SHA-256 `c0cad852a3a9bc8d867dcd0afdb38700aeba2a8e956585eefb89e4cc2110a33d`
-![artifacts/duck-website-2026-11-13/mobile-intro.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-intro.png)
+![artifacts/duck-website-2026-11-13/mobile-intro.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-intro.png)
 
 ### mobile menu
 파일: `artifacts/duck-website-2026-11-13/mobile-menu.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 237,261 bytes · SHA-256 `6291db4a5d9128585e5fc018e5732b3f88be386ae6c867a9fac85465f4909257`
-![artifacts/duck-website-2026-11-13/mobile-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-menu.png)
+![artifacts/duck-website-2026-11-13/mobile-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-menu.png)
 
 ### mobile open
 파일: `artifacts/duck-website-2026-11-13/mobile-open.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 119,384 bytes · SHA-256 `d69da222d97f3099e355c5e66310efeba174841296cf72cc64c40f8f0eb05fe9`
-![artifacts/duck-website-2026-11-13/mobile-open.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-open.png)
+![artifacts/duck-website-2026-11-13/mobile-open.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-open.png)
 
 ### mobile research
 파일: `artifacts/duck-website-2026-11-13/mobile-research.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 184,261 bytes · SHA-256 `db292e0836f22e0c9d0a1946e43fd7f47c7db0bd90c9f95ce71fc94b5c98b5e2`
-![artifacts/duck-website-2026-11-13/mobile-research.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-research.png)
+![artifacts/duck-website-2026-11-13/mobile-research.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-research.png)
 
 ### mobile security
 파일: `artifacts/duck-website-2026-11-13/mobile-security.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 68,878 bytes · SHA-256 `de004acd71f7cfdb44c694061ae33dcdc278ff7123bfe72e171e4c97778141d2`
-![artifacts/duck-website-2026-11-13/mobile-security.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/mobile-security.png)
+![artifacts/duck-website-2026-11-13/mobile-security.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/mobile-security.png)
 
 ### mobile account settings
 파일: `artifacts/mobile-account-settings.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 45,935 bytes · SHA-256 `16bb756695a79df542fd66f4205f6680a1c719ba7365af7c27eebf1a7a96769d`
-![artifacts/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-account-settings.png)
+![artifacts/mobile-account-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-account-settings.png)
 
 ### 아이폰 미리 알림
 파일: `artifacts/mobile-apple-reminders.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 34,240 bytes · SHA-256 `e593c913e5fb134409aca999bd05c83a5ca6b57eb0b48feb095294c2c4534b74`
-![artifacts/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-apple-reminders.png)
+![artifacts/mobile-apple-reminders.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-apple-reminders.png)
 
 ### 비서 초안 확인과 Todo 실행 · 테스트
 파일: `artifacts/mobile-assistant-action-fixture.png`
 분류: 모의 응답 테스트 화면 · 36,227 bytes · SHA-256 `ed649eb1dd2148be1808a4acc3b35e0cc18b2eabe929ceb71a43d17285b4d727`
-![artifacts/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-assistant-action-fixture.png)
+![artifacts/mobile-assistant-action-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-assistant-action-fixture.png)
 
 ### AI 근거·Todo 제안 · 모의 응답
 파일: `artifacts/mobile-assistant-ai-fixture.png`
 분류: 모의 응답 테스트 화면 · 41,428 bytes · SHA-256 `6e64d555d23b063f8b221b203434e606402b9d23ff2c09cc5af56c9aa344f5eb`
-![artifacts/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-assistant-ai-fixture.png)
+![artifacts/mobile-assistant-ai-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-assistant-ai-fixture.png)
 
 ### 로그인
 파일: `artifacts/mobile-auth.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 35,110 bytes · SHA-256 `ca4e199a3010ae315fe20d2143661bdbcff23ee2848b627388f71b8526152b59`
-![artifacts/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-auth.png)
+![artifacts/mobile-auth.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-auth.png)
 
 ### 일정·할 일 분리와 시간 표시 · 테스트
 파일: `artifacts/mobile-calendar-events-fixture.png`
 분류: 모의 응답 테스트 화면 · 29,085 bytes · SHA-256 `771673cb77ceac0f6723326661577ccc34d22686730145cefb51b510a105db7c`
-![artifacts/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-calendar-events-fixture.png)
+![artifacts/mobile-calendar-events-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-calendar-events-fixture.png)
 
 ### 완료 기록 참고 · 테스트
 파일: `artifacts/mobile-completed-reference-fixture.png`
 분류: 모의 응답 테스트 화면 · 49,035 bytes · SHA-256 `7237cd528f21dc88aab7a62799ad48453f58cd7547d8159d0c53f0e515daf26c`
-![artifacts/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-completed-reference-fixture.png)
+![artifacts/mobile-completed-reference-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-completed-reference-fixture.png)
 
 ### 완료 3→1 카운트다운 · 체험 화면
 파일: `artifacts/mobile-completion-countdown-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,959 bytes · SHA-256 `f8e38b222a917c881f01fa316bd7d5b73a76363ac3e11badeb564926f410fb3f`
-![artifacts/mobile-completion-countdown-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-completion-countdown-fixture.png)
+![artifacts/mobile-completion-countdown-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-completion-countdown-fixture.png)
 
 ### 할 일 초안
 파일: `artifacts/mobile-duck-draft.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 32,858 bytes · SHA-256 `c06a1fefd36ac3860231b99e416e8b655ddb29bdd68bdf1b7a52c7529548f597`
-![artifacts/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-duck-draft.png)
+![artifacts/mobile-duck-draft.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-duck-draft.png)
 
 ### 외부 기록 검색 · 테스트
 파일: `artifacts/mobile-external-search-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,437 bytes · SHA-256 `0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8`
-![artifacts/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-external-search-fixture.png)
+![artifacts/mobile-external-search-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-external-search-fixture.png)
 
 ### Google 가져오기 · 테스트
 파일: `artifacts/mobile-google-tasks-fixture.png`
 분류: 모의 응답 테스트 화면 · 48,713 bytes · SHA-256 `e25032a713a1c31367e120551c9f7d6557ac768bf2d4accfe24ab92381003613`
-![artifacts/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-google-tasks-fixture.png)
+![artifacts/mobile-google-tasks-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-google-tasks-fixture.png)
 
 ### 대화 붙여넣기
 파일: `artifacts/mobile-kakao-paste.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 46,082 bytes · SHA-256 `9c265171361c16fd3a6a60ca2f42257c15bd9c7c3dc8814f65b308d164fb06f1`
-![artifacts/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-kakao-paste.png)
+![artifacts/mobile-kakao-paste.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-kakao-paste.png)
 
 ### 공유
 파일: `artifacts/mobile-kakao-share.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 30,586 bytes · SHA-256 `565db0f6232270aaa931dfae9f8a7ef41ebe260a8d5bfa7662668d493ba2ed28`
-![artifacts/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-kakao-share.png)
+![artifacts/mobile-kakao-share.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-kakao-share.png)
 
 ### 메모·글머리표·닫기 손잡이
 파일: `artifacts/mobile-notes-fixture.png`
 분류: 체험 데이터 메모/시트 검증 · 22,083 bytes · SHA-256 `20fa7332ab3f0ec91f916176af10ea9881f56acdf0a6d2907761cfdc3c4ca9f6`
-![artifacts/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-notes-fixture.png)
+![artifacts/mobile-notes-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-notes-fixture.png)
 
 ### mobile overview
 파일: `artifacts/mobile-overview.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 145,614 bytes · SHA-256 `0c4a7c633b3390d6c41352d549f6f6dbfde79824f4099ac10cf5bad62d361a80`
-![artifacts/mobile-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-overview.png)
+![artifacts/mobile-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-overview.png)
 
 ### mobile personal export
 파일: `artifacts/mobile-personal-export.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 53,350 bytes · SHA-256 `8cc8ffb91a2ac3e7e50e1d1b2bebc1ab5181f0337c5aa2f529b5faf4f9c30093`
-![artifacts/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-personal-export.png)
+![artifacts/mobile-personal-export.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-personal-export.png)
 
 ### 기록 찾기
 파일: `artifacts/mobile-record-search.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 37,978 bytes · SHA-256 `24b8ae52644dfbbb3a06549470e4b0a41c501b0a45466ea4b788608e35d981d8`
-![artifacts/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-record-search.png)
+![artifacts/mobile-record-search.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-record-search.png)
 
 ### 알림 설정
 파일: `artifacts/mobile-reminder.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 22,056 bytes · SHA-256 `079dc3f6c59ad886be9f89d365333d9f3b4d84e0b9dbf7a5b614383ad99ec5f6`
-![artifacts/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-reminder.png)
+![artifacts/mobile-reminder.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-reminder.png)
 
 ### 서비스 연결
 파일: `artifacts/mobile-services.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 47,383 bytes · SHA-256 `4d37f89c8accf0919692dfb3dbebbbc70b35229cd7ad228098209e32071b3380`
-![artifacts/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-services.png)
+![artifacts/mobile-services.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-services.png)
 
 ### Google 완료 동기화 · 테스트
 파일: `artifacts/mobile-task-sync-fixture.png`
 분류: 모의 응답 테스트 화면 · 53,956 bytes · SHA-256 `11890b0d015d30567c6c0cc074fb30e71cc4106bf5297dde61bc9b1559d71afc`
-![artifacts/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-task-sync-fixture.png)
+![artifacts/mobile-task-sync-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-task-sync-fixture.png)
 
 ### mobile today weather fixture
 파일: `artifacts/mobile-today-weather-fixture.png`
 분류: 모의 응답 테스트 화면 · 42,443 bytes · SHA-256 `a6f9deb2ae9cf9f7e31433a7df3589376743bf924e4ea41fa11ce52ed636d141`
-![artifacts/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-today-weather-fixture.png)
+![artifacts/mobile-today-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-today-weather-fixture.png)
 
 ### 한 화면에 8개 · 목록 밀도 확인
 파일: `artifacts/mobile-todo-density-fixture.png`
 분류: 체험 데이터 8개 목록 밀도 검증 · 40,033 bytes · SHA-256 `66094189b1e7b506fe195b099130a2ee18064b464ee44679cb4c56d7085e460a`
-![artifacts/mobile-todo-density-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-todo-density-fixture.png)
+![artifacts/mobile-todo-density-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-todo-density-fixture.png)
 
 ### mobile verification
 파일: `artifacts/mobile-verification.png`
 분류: 네이티브 기반 웹의 격리 테스트 화면 · 36,930 bytes · SHA-256 `74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34`
-![artifacts/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/mobile-verification.png)
+![artifacts/mobile-verification.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/mobile-verification.png)
 
 ### after error fixture
 파일: `artifacts/assistant-feedback/after-error-fixture.png`
 분류: 모의 응답 테스트 화면 · 48,862 bytes · SHA-256 `81b3ad709157f36ec788698861add95a8be124687cbbcc5569d4105918ec6f1f`
-![artifacts/assistant-feedback/after-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/assistant-feedback/after-error-fixture.png)
+![artifacts/assistant-feedback/after-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/assistant-feedback/after-error-fixture.png)
 
 ### before error fixture
 파일: `artifacts/assistant-feedback/before-error-fixture.png`
 분류: 모의 응답 테스트 화면 · 43,491 bytes · SHA-256 `1ab64c757c7ed2fb13942dd55d5b0eca83079fb238bba5595a5d0ffe7c1e4259`
-![artifacts/assistant-feedback/before-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/assistant-feedback/before-error-fixture.png)
+![artifacts/assistant-feedback/before-error-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/assistant-feedback/before-error-fixture.png)
 
 ### 01 month adaptive and toolbar
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 89,761 bytes · SHA-256 `5af202a1ec202a8da7ec31357b7b208001fdf7c0c289aac488ad8ac03bfc3072`
-![artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/02-day-detail.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 102,475 bytes · SHA-256 `02961f4a91cb2130ded2abbfb53d8f66712ceb6e93a815239505e5975cd570ae`
-![artifacts/calendar-apple-reference-2026-11-13/after/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/02-day-detail.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/03-event-detail.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 82,996 bytes · SHA-256 `e8c64b6d9f1e8a90de003f862ee890886f3df4909abdaf8c59817e02b53cd96e`
-![artifacts/calendar-apple-reference-2026-11-13/after/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/03-event-detail.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/04-write-preview.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 104,275 bytes · SHA-256 `320f65b64037a9425511b7b481e37fbbdfed593118eace0b144c92fa6e3344db`
-![artifacts/calendar-apple-reference-2026-11-13/after/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/04-write-preview.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/05-all-day-editor.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 97,025 bytes · SHA-256 `9938f0ab431a31208f35811680d9c708466253358b9063d6372546620eea6a5a`
-![artifacts/calendar-apple-reference-2026-11-13/after/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/05-all-day-editor.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/06-week-timeline.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 83,585 bytes · SHA-256 `60b4f652183249909257f5f3ad8059b26c588bb82b38006e86a04f9e9d137fbf`
-![artifacts/calendar-apple-reference-2026-11-13/after/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/06-week-timeline.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/07-search-scope.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 95,506 bytes · SHA-256 `080e64d76b1115c19c7fae66e177e033d02ee9ee0b947205c6ac7d693dd7c356`
-![artifacts/calendar-apple-reference-2026-11-13/after/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/07-search-scope.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/08-calendar-sources.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 92,325 bytes · SHA-256 `de08cfdc53a095e8489ebc200a3ae380238457da3da7ca9e255e444b69673c7f`
-![artifacts/calendar-apple-reference-2026-11-13/after/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/08-calendar-sources.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/09-read-only-event.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 99,916 bytes · SHA-256 `bcb0cfdcb35d1c0d2db6c3adf0d35e4664200fb7c4b97d8cc9c77d1eb7f72a19`
-![artifacts/calendar-apple-reference-2026-11-13/after/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/09-read-only-event.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/10-partial-state.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 104,114 bytes · SHA-256 `172b087b602383b90512b2f14f06e9a709ed2c45a3b0028bef79480d0dc6eb17`
-![artifacts/calendar-apple-reference-2026-11-13/after/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/10-partial-state.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/11-error-visible-with-cache.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 106,130 bytes · SHA-256 `e438f79a94d4b47e16d9bc3331bd02e33d2e68fea19e83bf71c55dce69e8dac3`
-![artifacts/calendar-apple-reference-2026-11-13/after/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/11-error-visible-with-cache.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/12-phone-320.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 83,547 bytes · SHA-256 `4029739c946dec71ac5a4d30b06d6fbb56dc75f687e7448f5021bd66648e7956`
-![artifacts/calendar-apple-reference-2026-11-13/after/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/12-phone-320.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/12-phone-430.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 96,101 bytes · SHA-256 `265a1cff5dfb33af80ffbdf622a9d99cec51764cd6ef625b5e1599d6719d8a9a`
-![artifacts/calendar-apple-reference-2026-11-13/after/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/12-phone-430.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/13-large-text.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 94,597 bytes · SHA-256 `643b9d6c9ddd3b39041cde45a7a06cc6864c7742f4893e72dbd5525a063d0e21`
-![artifacts/calendar-apple-reference-2026-11-13/after/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/13-large-text.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/14-loading-with-cache.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 95,192 bytes · SHA-256 `c13d22d88bcf64afee994d87a57fa54ecaee08e5e80737fc49d058188c56db2b`
-![artifacts/calendar-apple-reference-2026-11-13/after/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/14-loading-with-cache.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/15-unknown-write-no-resend.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 119,042 bytes · SHA-256 `c695a37f46d35ceb68399a886e34dcb91309cf040203433d79340efb90a6d1dd`
-![artifacts/calendar-apple-reference-2026-11-13/after/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/15-unknown-write-no-resend.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/16-dark-month-reference.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 89,833 bytes · SHA-256 `83f38f888fa4460b46be14edd25d12e184856da11ed2ae33de5d3f2eec9631ca`
-![artifacts/calendar-apple-reference-2026-11-13/after/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/16-dark-month-reference.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/17-dark-event-reference.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 74,716 bytes · SHA-256 `b76467d57fe36cafc4a4be1b19a7ac241e82625f20b728bacb345e1c9505be54`
-![artifacts/calendar-apple-reference-2026-11-13/after/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/17-dark-event-reference.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/18-light-month-reference.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 93,839 bytes · SHA-256 `2a0557c9972f0bd05b4b775aa84812505d770feeea6c76614034fc38bbc9f7b3`
-![artifacts/calendar-apple-reference-2026-11-13/after/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/18-light-month-reference.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-apple-reference-2026-11-13/after/19-non-json-error-keeps-events.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 107,674 bytes · SHA-256 `ad31ac0e5d11d10dc992ab2382981d9aea496f8d4a557ea539fe48eab527227d`
-![artifacts/calendar-apple-reference-2026-11-13/after/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/after/19-non-json-error-keeps-events.png)
+![artifacts/calendar-apple-reference-2026-11-13/after/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/after/19-non-json-error-keeps-events.png)
 
 ### 01 month adaptive and toolbar
 파일: `artifacts/calendar-apple-reference-2026-11-13/before/01-month-adaptive-and-toolbar.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 42,917 bytes · SHA-256 `2cd606d8d36793a6dbeae286e974d7e8b2b4e5dcb392b6ddd2f91cbb515c180b`
-![artifacts/calendar-apple-reference-2026-11-13/before/01-month-adaptive-and-toolbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/before/01-month-adaptive-and-toolbar.png)
+![artifacts/calendar-apple-reference-2026-11-13/before/01-month-adaptive-and-toolbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/before/01-month-adaptive-and-toolbar.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-apple-reference-2026-11-13/before/02-day-detail.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 48,541 bytes · SHA-256 `4e34b8749a73cc90b8e70792f5da021cc74daaeded767012d3c2030d7af4f550`
-![artifacts/calendar-apple-reference-2026-11-13/before/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/before/02-day-detail.png)
+![artifacts/calendar-apple-reference-2026-11-13/before/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/before/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-apple-reference-2026-11-13/before/03-event-detail.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 43,626 bytes · SHA-256 `b97d403b86f4c1c1681f0f9d412961b39acc0fae8cfe13298ea19176fd6788f8`
-![artifacts/calendar-apple-reference-2026-11-13/before/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/before/03-event-detail.png)
+![artifacts/calendar-apple-reference-2026-11-13/before/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/before/03-event-detail.png)
 
 ### 04 server error before
 파일: `artifacts/calendar-apple-reference-2026-11-13/before/04-server-error-before.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 49,603 bytes · SHA-256 `d0169b6591511064b1ecfe6f1d2e6b0340ee7b569afe696fb4b840e0ba39128d`
-![artifacts/calendar-apple-reference-2026-11-13/before/04-server-error-before.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/before/04-server-error-before.png)
+![artifacts/calendar-apple-reference-2026-11-13/before/04-server-error-before.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/before/04-server-error-before.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/01-open-calendar-todo.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 55,878 bytes · SHA-256 `75baffa791b2aa456343ba0774bca567993d9799f204446199532baef02547a0`
-![artifacts/calendar-apple-reference-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/01-open-calendar-todo.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/02-open-calendar-duck.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 61,844 bytes · SHA-256 `238e18a0e6be261d0addedb556da3cacbb0c0499edc6b4fc6939de9310efd80e`
-![artifacts/calendar-apple-reference-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/02-open-calendar-duck.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/03-portrait-current-screen.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-apple-reference-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/03-portrait-current-screen.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/04-closed-camera-column.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-apple-reference-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/04-closed-camera-column.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/05-back-in-camera-column.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 63,631 bytes · SHA-256 `db69f4adbdeb10c2b7ad762f3afc7d8daecb06bdc33d7e3a83213a8bfbb0f809`
-![artifacts/calendar-apple-reference-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/05-back-in-camera-column.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/06-dragging-lens-web-fallback.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 58,039 bytes · SHA-256 `c9efe335e6192a5789953c94571951e6b7ec0d12f6aca7fa6f7dc8275ced030d`
-![artifacts/calendar-apple-reference-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-320-floating-tabs.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 38,629 bytes · SHA-256 `7d3dd0f1ae763869e9684b1b00ed1753c9834fb1b6d06f629881c00b4f37cbaa`
-![artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-390-floating-tabs.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 40,100 bytes · SHA-256 `a029aed907a51b6bad5e9fd9f5556467d6ba4fb9b0ba47cd1b8d712c70bedcce`
-![artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-430-floating-tabs.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 40,305 bytes · SHA-256 `3b7d02a22a197bdd26b8a5afaa7ff9a6e01a075d4bd38e744137c5bcf04b57df`
-![artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/08-iphone-320-text-160-percent.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 25,267 bytes · SHA-256 `1a8ff676007b59cf81bfe2280170400ffcc65ee43b3c2d245e8937da3b447e64`
-![artifacts/calendar-apple-reference-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/08-pane-local-day-detail.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 61,844 bytes · SHA-256 `370612e45a45c6eb8f915bd6aef9748a93a0167fa1e48c9be12e9bbf7d3c8cbf`
-![artifacts/calendar-apple-reference-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/10-folded-calendar-dark.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 40,495 bytes · SHA-256 `701cf561e80199f9adcc465cb42b5dcaceb1e25056978fa7ea9b504cd239cf47`
-![artifacts/calendar-apple-reference-2026-11-13/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/10-folded-calendar-dark.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/11-folded-calendar-light.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 40,294 bytes · SHA-256 `432cbb63c76b8aa944c46856c0cf02e420a9c8386c9516712737edce96e52a64`
-![artifacts/calendar-apple-reference-2026-11-13/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/11-folded-calendar-light.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/calendar-apple-reference-2026-11-13/duo/12-open-calendar-dark.png`
 분류: Apple 참고 정정 전후 · 합성 데이터 Expo 웹/격리 API·Duo 기하 fixture · native/실계정 아님 · 55,157 bytes · SHA-256 `37c347dfc5c2209b2f67334a519a698f54ddaf1798cff0f1b9cc1d7d1ac757fb`
-![artifacts/calendar-apple-reference-2026-11-13/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-apple-reference-2026-11-13/duo/12-open-calendar-dark.png)
+![artifacts/calendar-apple-reference-2026-11-13/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-apple-reference-2026-11-13/duo/12-open-calendar-dark.png)
 
 ### 01 month overview
 파일: `artifacts/calendar-audit-2026-11-13/01-month-overview.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 34,572 bytes · SHA-256 `e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054`
-![artifacts/calendar-audit-2026-11-13/01-month-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/01-month-overview.png)
+![artifacts/calendar-audit-2026-11-13/01-month-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/01-month-overview.png)
 
 ### 02 selected day agenda
 파일: `artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 53,457 bytes · SHA-256 `733641d468f568cae79a33cd312201d6c39ef8dbdd4c86e8f0f53f3d3bffb6c4`
-![artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png)
+![artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png)
 
 ### 03 event title no detail
 파일: `artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 53,457 bytes · SHA-256 `733641d468f568cae79a33cd312201d6c39ef8dbdd4c86e8f0f53f3d3bffb6c4`
-![artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png)
+![artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png)
 
 ### 04 create todo sheet
 파일: `artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 24,279 bytes · SHA-256 `6cb471145f636cf643846c1f26b68810f853f35ba0163c17acfdd9ac953cd8ad`
-![artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png)
+![artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png)
 
 ### 05 week view
 파일: `artifacts/calendar-audit-2026-11-13/05-week-view.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 49,956 bytes · SHA-256 `7d7e8f48e0a9fe3161debcb092d68c83b93ebee249ffe8e4d9cb2c68b81070ee`
-![artifacts/calendar-audit-2026-11-13/05-week-view.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/05-week-view.png)
+![artifacts/calendar-audit-2026-11-13/05-week-view.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/05-week-view.png)
 
 ### 06 week next control
 파일: `artifacts/calendar-audit-2026-11-13/06-week-next-control.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 38,609 bytes · SHA-256 `c0853b5fdfdd9700e6277a77de9909a5dffc0b0b0e44e82c05bdc70c841a2042`
-![artifacts/calendar-audit-2026-11-13/06-week-next-control.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/06-week-next-control.png)
+![artifacts/calendar-audit-2026-11-13/06-week-next-control.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/06-week-next-control.png)
 
 ### 07 month year picker
 파일: `artifacts/calendar-audit-2026-11-13/07-month-year-picker.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 28,766 bytes · SHA-256 `a4e65167d358457125f834b0db2eaff12b525fb0ab8ea57914114563da5266e2`
-![artifacts/calendar-audit-2026-11-13/07-month-year-picker.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/07-month-year-picker.png)
+![artifacts/calendar-audit-2026-11-13/07-month-year-picker.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/07-month-year-picker.png)
 
 ### 08 empty day
 파일: `artifacts/calendar-audit-2026-11-13/08-empty-day.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 36,515 bytes · SHA-256 `2f2b2380124b8241a5a022513defae368351dab985bd845ef4b1524fc7e5d667`
-![artifacts/calendar-audit-2026-11-13/08-empty-day.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/08-empty-day.png)
+![artifacts/calendar-audit-2026-11-13/08-empty-day.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/08-empty-day.png)
 
 ### 09 error month top
 파일: `artifacts/calendar-audit-2026-11-13/09-error-month-top.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 33,169 bytes · SHA-256 `181edff45217d3b3dd9d98a4657f3a9e51255cafc657e0ad26cb228fb1466f44`
-![artifacts/calendar-audit-2026-11-13/09-error-month-top.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/09-error-month-top.png)
+![artifacts/calendar-audit-2026-11-13/09-error-month-top.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/09-error-month-top.png)
 
 ### 10 error agenda
 파일: `artifacts/calendar-audit-2026-11-13/10-error-agenda.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 48,084 bytes · SHA-256 `9a58f9f62fa705f33a874be1804b0d262f5319b021a971519f1483f9dd87417e`
-![artifacts/calendar-audit-2026-11-13/10-error-agenda.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/10-error-agenda.png)
+![artifacts/calendar-audit-2026-11-13/10-error-agenda.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/10-error-agenda.png)
 
 ### 11 loading month top
 파일: `artifacts/calendar-audit-2026-11-13/11-loading-month-top.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 33,169 bytes · SHA-256 `181edff45217d3b3dd9d98a4657f3a9e51255cafc657e0ad26cb228fb1466f44`
-![artifacts/calendar-audit-2026-11-13/11-loading-month-top.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/11-loading-month-top.png)
+![artifacts/calendar-audit-2026-11-13/11-loading-month-top.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/11-loading-month-top.png)
 
 ### 12 small phone
 파일: `artifacts/calendar-audit-2026-11-13/12-small-phone.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 31,056 bytes · SHA-256 `28241b6b9087701ac576fdff85a1acc52df2ca72c703ffb48ae95fd4de66ee49`
-![artifacts/calendar-audit-2026-11-13/12-small-phone.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/12-small-phone.png)
+![artifacts/calendar-audit-2026-11-13/12-small-phone.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/12-small-phone.png)
 
 ### 13 large text simulation
 파일: `artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 43,594 bytes · SHA-256 `0abdf81711cc96a79ecd2aeca9fbeb09e1b6641080ebacd35c51d0353fbeb628`
-![artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png)
+![artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png)
 
 ### 14 duo fixed calendar
 파일: `artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 56,503 bytes · SHA-256 `9e3fc47b548e9035d5697f461e578ecc617c33826a0f987a64ef973f6cc53d1d`
-![artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png)
+![artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png)
 
 ### 15 selected other day
 파일: `artifacts/calendar-audit-2026-11-13/15-selected-other-day.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 34,516 bytes · SHA-256 `6f7ee306751062addb6d5ce7194dc46def51064d92ef8d26ba983fd19971b965`
-![artifacts/calendar-audit-2026-11-13/15-selected-other-day.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/15-selected-other-day.png)
+![artifacts/calendar-audit-2026-11-13/15-selected-other-day.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/15-selected-other-day.png)
 
 ### 16 tab return resets month
 파일: `artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png`
 분류: 캘린더 UX 감사 · 실제 앱 웹/격리 API · native/실기기 아님 · 34,572 bytes · SHA-256 `e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054`
-![artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png)
+![artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 80,087 bytes · SHA-256 `eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863`
-![artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png)
+![artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-event-review-2026-11-14/after/02-day-detail.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 104,675 bytes · SHA-256 `73d3db07c9f4810b638c3ae386915348989f1c9bad8dc04316100e0df7a606e5`
-![artifacts/calendar-event-review-2026-11-14/after/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/02-day-detail.png)
+![artifacts/calendar-event-review-2026-11-14/after/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-event-review-2026-11-14/after/03-event-detail.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 88,821 bytes · SHA-256 `02ca1b52dd1343f0a486668e4aa4d666b6234cac68ce305f4ac8732fdb87f4e9`
-![artifacts/calendar-event-review-2026-11-14/after/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/03-event-detail.png)
+![artifacts/calendar-event-review-2026-11-14/after/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-event-review-2026-11-14/after/04-write-preview.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 99,219 bytes · SHA-256 `41f62c0736fe0e2aad2f5a30c76f49e34d63d72118a035945a381fa0248e50b3`
-![artifacts/calendar-event-review-2026-11-14/after/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/04-write-preview.png)
+![artifacts/calendar-event-review-2026-11-14/after/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-event-review-2026-11-14/after/05-all-day-editor.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 90,204 bytes · SHA-256 `32b8eb4dc41e0d4dae2d65d7ede14d936cbf112fa7c2b9ce1039a4a144b67a34`
-![artifacts/calendar-event-review-2026-11-14/after/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/05-all-day-editor.png)
+![artifacts/calendar-event-review-2026-11-14/after/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-event-review-2026-11-14/after/06-week-timeline.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 90,286 bytes · SHA-256 `40935c5d045c1c684d260a1b0e03dc673a93bb2d307d4c4704bf2c7c9f9fa235`
-![artifacts/calendar-event-review-2026-11-14/after/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/06-week-timeline.png)
+![artifacts/calendar-event-review-2026-11-14/after/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-event-review-2026-11-14/after/07-search-scope.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 95,536 bytes · SHA-256 `4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3`
-![artifacts/calendar-event-review-2026-11-14/after/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/07-search-scope.png)
+![artifacts/calendar-event-review-2026-11-14/after/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-event-review-2026-11-14/after/08-calendar-sources.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 89,337 bytes · SHA-256 `2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215`
-![artifacts/calendar-event-review-2026-11-14/after/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/08-calendar-sources.png)
+![artifacts/calendar-event-review-2026-11-14/after/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-event-review-2026-11-14/after/09-read-only-event.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 107,439 bytes · SHA-256 `007e366dfaad3c8c370d22ca73437eb6520818b3316764197ed80ef0179cf080`
-![artifacts/calendar-event-review-2026-11-14/after/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/09-read-only-event.png)
+![artifacts/calendar-event-review-2026-11-14/after/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-event-review-2026-11-14/after/10-partial-state.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-event-review-2026-11-14/after/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/10-partial-state.png)
+![artifacts/calendar-event-review-2026-11-14/after/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-event-review-2026-11-14/after/11-error-visible-with-cache.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-event-review-2026-11-14/after/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/11-error-visible-with-cache.png)
+![artifacts/calendar-event-review-2026-11-14/after/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-event-review-2026-11-14/after/12-phone-320.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 77,373 bytes · SHA-256 `8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0`
-![artifacts/calendar-event-review-2026-11-14/after/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/12-phone-320.png)
+![artifacts/calendar-event-review-2026-11-14/after/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-event-review-2026-11-14/after/12-phone-430.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 88,895 bytes · SHA-256 `1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c`
-![artifacts/calendar-event-review-2026-11-14/after/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/12-phone-430.png)
+![artifacts/calendar-event-review-2026-11-14/after/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-event-review-2026-11-14/after/13-large-text.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 98,883 bytes · SHA-256 `8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb`
-![artifacts/calendar-event-review-2026-11-14/after/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/13-large-text.png)
+![artifacts/calendar-event-review-2026-11-14/after/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-event-review-2026-11-14/after/14-loading-with-cache.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-event-review-2026-11-14/after/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/14-loading-with-cache.png)
+![artifacts/calendar-event-review-2026-11-14/after/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-event-review-2026-11-14/after/15-unknown-write-no-resend.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 113,379 bytes · SHA-256 `7c8c47020de5df57736e2ade5beeeea206c08b786c97ad65edd1390d38d1576b`
-![artifacts/calendar-event-review-2026-11-14/after/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/15-unknown-write-no-resend.png)
+![artifacts/calendar-event-review-2026-11-14/after/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-event-review-2026-11-14/after/16-dark-month-reference.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 74,340 bytes · SHA-256 `1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5`
-![artifacts/calendar-event-review-2026-11-14/after/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/16-dark-month-reference.png)
+![artifacts/calendar-event-review-2026-11-14/after/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-event-review-2026-11-14/after/17-dark-event-reference.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 71,901 bytes · SHA-256 `98e29e5e3c25e6eafbb6651ea7a3f491b3719aaa35a887ad1ee27881a000e5b9`
-![artifacts/calendar-event-review-2026-11-14/after/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/17-dark-event-reference.png)
+![artifacts/calendar-event-review-2026-11-14/after/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-event-review-2026-11-14/after/18-light-month-reference.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 73,514 bytes · SHA-256 `4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb`
-![artifacts/calendar-event-review-2026-11-14/after/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/18-light-month-reference.png)
+![artifacts/calendar-event-review-2026-11-14/after/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-event-review-2026-11-14/after/19-non-json-error-keeps-events.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 83,222 bytes · SHA-256 `e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209`
-![artifacts/calendar-event-review-2026-11-14/after/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/19-non-json-error-keeps-events.png)
+![artifacts/calendar-event-review-2026-11-14/after/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/calendar-event-review-2026-11-14/after/20-fortnight-expanded.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 63,763 bytes · SHA-256 `850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c`
-![artifacts/calendar-event-review-2026-11-14/after/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/after/20-fortnight-expanded.png)
+![artifacts/calendar-event-review-2026-11-14/after/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/after/20-fortnight-expanded.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/calendar-event-review-2026-11-14/before/01-clean-adaptive-month.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 80,087 bytes · SHA-256 `eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863`
-![artifacts/calendar-event-review-2026-11-14/before/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/01-clean-adaptive-month.png)
+![artifacts/calendar-event-review-2026-11-14/before/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-event-review-2026-11-14/before/02-day-detail.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 102,321 bytes · SHA-256 `8d1c7ccd2ccf4d22fb62bb0f658b8d84430dbd11e4f25392cc4113eb95e2a9a9`
-![artifacts/calendar-event-review-2026-11-14/before/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/02-day-detail.png)
+![artifacts/calendar-event-review-2026-11-14/before/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-event-review-2026-11-14/before/03-event-detail.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,679 bytes · SHA-256 `9e79567d1a2fa7a99bc50bf064ffe28d10afafc0bc2b0abebb795af87b43525f`
-![artifacts/calendar-event-review-2026-11-14/before/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/03-event-detail.png)
+![artifacts/calendar-event-review-2026-11-14/before/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-event-review-2026-11-14/before/04-write-preview.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 100,866 bytes · SHA-256 `dc6f5587a0a560eaedbb32c8a43e4e16bb59d2bfcdb341f3594585c4eddae6df`
-![artifacts/calendar-event-review-2026-11-14/before/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/04-write-preview.png)
+![artifacts/calendar-event-review-2026-11-14/before/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-event-review-2026-11-14/before/05-all-day-editor.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 96,917 bytes · SHA-256 `d728efbabee66a745acac25fd8a404e8700acde241ae2ecebe7341bd818fc9b0`
-![artifacts/calendar-event-review-2026-11-14/before/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/05-all-day-editor.png)
+![artifacts/calendar-event-review-2026-11-14/before/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-event-review-2026-11-14/before/06-week-timeline.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 89,108 bytes · SHA-256 `3821731eefc3f2a00bda6cd593417263e78beb8ac2721932d368e9220ee4cc54`
-![artifacts/calendar-event-review-2026-11-14/before/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/06-week-timeline.png)
+![artifacts/calendar-event-review-2026-11-14/before/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-event-review-2026-11-14/before/07-search-scope.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 95,536 bytes · SHA-256 `4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3`
-![artifacts/calendar-event-review-2026-11-14/before/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/07-search-scope.png)
+![artifacts/calendar-event-review-2026-11-14/before/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-event-review-2026-11-14/before/08-calendar-sources.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 89,337 bytes · SHA-256 `2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215`
-![artifacts/calendar-event-review-2026-11-14/before/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/08-calendar-sources.png)
+![artifacts/calendar-event-review-2026-11-14/before/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-event-review-2026-11-14/before/09-read-only-event.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 99,661 bytes · SHA-256 `06e83a5bcce97c6b143bf5ec4194c3e69c1737fc7b3465f717ebf31aea3fc97c`
-![artifacts/calendar-event-review-2026-11-14/before/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/09-read-only-event.png)
+![artifacts/calendar-event-review-2026-11-14/before/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-event-review-2026-11-14/before/10-partial-state.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-event-review-2026-11-14/before/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/10-partial-state.png)
+![artifacts/calendar-event-review-2026-11-14/before/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-event-review-2026-11-14/before/11-error-visible-with-cache.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-event-review-2026-11-14/before/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/11-error-visible-with-cache.png)
+![artifacts/calendar-event-review-2026-11-14/before/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-event-review-2026-11-14/before/12-phone-320.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 77,373 bytes · SHA-256 `8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0`
-![artifacts/calendar-event-review-2026-11-14/before/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/12-phone-320.png)
+![artifacts/calendar-event-review-2026-11-14/before/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-event-review-2026-11-14/before/12-phone-430.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 88,895 bytes · SHA-256 `1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c`
-![artifacts/calendar-event-review-2026-11-14/before/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/12-phone-430.png)
+![artifacts/calendar-event-review-2026-11-14/before/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-event-review-2026-11-14/before/13-large-text.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 98,883 bytes · SHA-256 `8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb`
-![artifacts/calendar-event-review-2026-11-14/before/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/13-large-text.png)
+![artifacts/calendar-event-review-2026-11-14/before/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-event-review-2026-11-14/before/14-loading-with-cache.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-event-review-2026-11-14/before/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/14-loading-with-cache.png)
+![artifacts/calendar-event-review-2026-11-14/before/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-event-review-2026-11-14/before/15-unknown-write-no-resend.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 111,953 bytes · SHA-256 `43ad6dde8a6bee9ff0ae7e347f2040661d377be1258e637f5892c93f19b17313`
-![artifacts/calendar-event-review-2026-11-14/before/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/15-unknown-write-no-resend.png)
+![artifacts/calendar-event-review-2026-11-14/before/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-event-review-2026-11-14/before/16-dark-month-reference.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 74,340 bytes · SHA-256 `1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5`
-![artifacts/calendar-event-review-2026-11-14/before/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/16-dark-month-reference.png)
+![artifacts/calendar-event-review-2026-11-14/before/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-event-review-2026-11-14/before/17-dark-event-reference.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 65,944 bytes · SHA-256 `994aa512411b49511217f1d3606e773448de547242206a81a916fb1e46cea2b7`
-![artifacts/calendar-event-review-2026-11-14/before/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/17-dark-event-reference.png)
+![artifacts/calendar-event-review-2026-11-14/before/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-event-review-2026-11-14/before/18-light-month-reference.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 73,514 bytes · SHA-256 `4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb`
-![artifacts/calendar-event-review-2026-11-14/before/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/18-light-month-reference.png)
+![artifacts/calendar-event-review-2026-11-14/before/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-event-review-2026-11-14/before/19-non-json-error-keeps-events.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 83,222 bytes · SHA-256 `e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209`
-![artifacts/calendar-event-review-2026-11-14/before/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/19-non-json-error-keeps-events.png)
+![artifacts/calendar-event-review-2026-11-14/before/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/calendar-event-review-2026-11-14/before/20-fortnight-expanded.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 63,763 bytes · SHA-256 `850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c`
-![artifacts/calendar-event-review-2026-11-14/before/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/before/20-fortnight-expanded.png)
+![artifacts/calendar-event-review-2026-11-14/before/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/before/20-fortnight-expanded.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-event-review-2026-11-14/duo/01-open-calendar-todo.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 51,801 bytes · SHA-256 `f019b5c7863dde7afeb89fb0f3584736b8944fcf13a35aa85bf4c4db348d9e12`
-![artifacts/calendar-event-review-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/01-open-calendar-todo.png)
+![artifacts/calendar-event-review-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-event-review-2026-11-14/duo/02-open-calendar-duck.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 61,277 bytes · SHA-256 `fe438441acdc27e63adeda56b18c6c0329dfa8730c2efc9dd16a6ec824c308b7`
-![artifacts/calendar-event-review-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/02-open-calendar-duck.png)
+![artifacts/calendar-event-review-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-event-review-2026-11-14/duo/03-portrait-current-screen.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-event-review-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/03-portrait-current-screen.png)
+![artifacts/calendar-event-review-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-event-review-2026-11-14/duo/04-closed-camera-column.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-event-review-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/04-closed-camera-column.png)
+![artifacts/calendar-event-review-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-event-review-2026-11-14/duo/05-back-in-camera-column.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 63,122 bytes · SHA-256 `c2c99aa314bd8b19830e116bf7dc85b970ffac86c9a131634e2e9121bc55c291`
-![artifacts/calendar-event-review-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/05-back-in-camera-column.png)
+![artifacts/calendar-event-review-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-event-review-2026-11-14/duo/06-dragging-lens-web-fallback.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 53,904 bytes · SHA-256 `7cac125be234cc4d43db615b71b9c8cce03fdee67b7759492ca0fdd1eda83400`
-![artifacts/calendar-event-review-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-event-review-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-event-review-2026-11-14/duo/07-iphone-320-floating-tabs.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 31,472 bytes · SHA-256 `dbdef64937d144a1d1f5cd60fa21ec09d79d0994693e16cd7a8b104150c1fda3`
-![artifacts/calendar-event-review-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-event-review-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-event-review-2026-11-14/duo/07-iphone-390-floating-tabs.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 32,760 bytes · SHA-256 `b98fc22decf65d5855e4e67d5e25b755bdbf6dc36d1f82af50b0c20c4b2f8cb6`
-![artifacts/calendar-event-review-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-event-review-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-event-review-2026-11-14/duo/07-iphone-430-floating-tabs.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 33,501 bytes · SHA-256 `87d3414e8c40afdedc5c7317c1cfda20479c62a1313034fdd96133293a31a889`
-![artifacts/calendar-event-review-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-event-review-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-event-review-2026-11-14/duo/08-iphone-320-text-160-percent.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 25,354 bytes · SHA-256 `2b73f7862bf85daf8f8fc15fc7b12b95d2cdd69ab27d4daf9615f10eb5597ea3`
-![artifacts/calendar-event-review-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-event-review-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-event-review-2026-11-14/duo/08-pane-local-day-detail.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 58,373 bytes · SHA-256 `fea265d0eb52c5ad1de37b8c72a88b90a3b03c5ca5fa707b5b3d5db7002ce2ae`
-![artifacts/calendar-event-review-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-event-review-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/calendar-event-review-2026-11-14/duo/10-folded-calendar-dark.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 36,560 bytes · SHA-256 `3dd3669018a1f2339969cdc4dcc19883c69fff56c259f7381797d1d29eab7d55`
-![artifacts/calendar-event-review-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/10-folded-calendar-dark.png)
+![artifacts/calendar-event-review-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/calendar-event-review-2026-11-14/duo/11-folded-calendar-light.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 35,397 bytes · SHA-256 `fdf14ff32cbf1f4e3d24720fc7b722fa3def17bd2ab3180c259a053edd5c7577`
-![artifacts/calendar-event-review-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/11-folded-calendar-light.png)
+![artifacts/calendar-event-review-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/calendar-event-review-2026-11-14/duo/12-open-calendar-dark.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 53,378 bytes · SHA-256 `7c6c641ca767c896e156c0b54b612fe586b43fb046b7ff274268991a00b1ef04`
-![artifacts/calendar-event-review-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/12-open-calendar-dark.png)
+![artifacts/calendar-event-review-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/calendar-event-review-2026-11-14/duo/13-folded-fortnight.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 27,539 bytes · SHA-256 `778e00c936c632f9981d5283c74b0dd00041b46d8de7452b14883fb3d4f1d1d6`
-![artifacts/calendar-event-review-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/13-folded-fortnight.png)
+![artifacts/calendar-event-review-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/calendar-event-review-2026-11-14/duo/14-open-fortnight-dark.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 47,559 bytes · SHA-256 `3c632a4ecf5cb98ffba22fc967d16c5ecc2fe17f3e3de9071bd8cf5792f73395`
-![artifacts/calendar-event-review-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/14-open-fortnight-dark.png)
+![artifacts/calendar-event-review-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/14-open-fortnight-dark.png)
 
 ### 15 long press left calendar
 파일: `artifacts/calendar-event-review-2026-11-14/duo/15-long-press-left-calendar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 42,332 bytes · SHA-256 `c680ac488531672e8d1fb228d0d9ec24b8fcbbff2599cbf26b0a0907460cc108`
-![artifacts/calendar-event-review-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/15-long-press-left-calendar.png)
+![artifacts/calendar-event-review-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/15-long-press-left-calendar.png)
 
 ### 16 long press right calendar
 파일: `artifacts/calendar-event-review-2026-11-14/duo/16-long-press-right-calendar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 30,091 bytes · SHA-256 `4c3d128b20f85d2e267c60b0140a2ce353632e5232942b19bb639eeb405a4855`
-![artifacts/calendar-event-review-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/16-long-press-right-calendar.png)
+![artifacts/calendar-event-review-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/16-long-press-right-calendar.png)
 
 ### 17 folded long press calendar
 파일: `artifacts/calendar-event-review-2026-11-14/duo/17-folded-long-press-calendar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 27,468 bytes · SHA-256 `4d7402f13136417e329b3a79a7426f69c75cc09df02ce7f248d2c89e0329941c`
-![artifacts/calendar-event-review-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/17-folded-long-press-calendar.png)
+![artifacts/calendar-event-review-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/17-folded-long-press-calendar.png)
 
 ### 18 year left calendar right todos
 파일: `artifacts/calendar-event-review-2026-11-14/duo/18-year-left-calendar-right-todos.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 86,473 bytes · SHA-256 `16577b31e3a78829471b6427cbd2054acad5e04bad3d6b4175575a8dfb802531`
-![artifacts/calendar-event-review-2026-11-14/duo/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/18-year-left-calendar-right-todos.png)
+![artifacts/calendar-event-review-2026-11-14/duo/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/18-year-left-calendar-right-todos.png)
 
 ### 19 year right calendar
 파일: `artifacts/calendar-event-review-2026-11-14/duo/19-year-right-calendar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 86,996 bytes · SHA-256 `82b6cd9d5c386ad5ec213d26d903a7fb630e5bc7894d4bd53992c87940814edd`
-![artifacts/calendar-event-review-2026-11-14/duo/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/19-year-right-calendar.png)
+![artifacts/calendar-event-review-2026-11-14/duo/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/19-year-right-calendar.png)
 
 ### 20 year portrait
 파일: `artifacts/calendar-event-review-2026-11-14/duo/20-year-portrait.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 83,591 bytes · SHA-256 `a0072a99fbe9ee29b3c6ed331b02ca722e7262453bdc5dc19493eeff520351d6`
-![artifacts/calendar-event-review-2026-11-14/duo/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/20-year-portrait.png)
+![artifacts/calendar-event-review-2026-11-14/duo/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/20-year-portrait.png)
 
 ### 21 year folded
 파일: `artifacts/calendar-event-review-2026-11-14/duo/21-year-folded.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 67,224 bytes · SHA-256 `5cbb5cdcc0fbe984e071f42caacb408aa8b3fd06f1d562d5a9971468fd7dcfac`
-![artifacts/calendar-event-review-2026-11-14/duo/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/21-year-folded.png)
+![artifacts/calendar-event-review-2026-11-14/duo/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/21-year-folded.png)
 
 ### 22 year duo motion
 파일: `artifacts/calendar-event-review-2026-11-14/duo/22-year-duo-motion.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 85,527 bytes · SHA-256 `dc384935d8cd19150ffcf1a5c75f1d163317120bebdb0b29f9077dfa2b61b120`
-![artifacts/calendar-event-review-2026-11-14/duo/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/22-year-duo-motion.png)
+![artifacts/calendar-event-review-2026-11-14/duo/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/22-year-duo-motion.png)
 
 ### 23 year design comparison state
 파일: `artifacts/calendar-event-review-2026-11-14/duo/23-year-design-comparison-state.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 92,090 bytes · SHA-256 `8dbc5faf203930fb03a7cfbae337d6b654e317c06944e79398597777639f3359`
-![artifacts/calendar-event-review-2026-11-14/duo/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/23-year-design-comparison-state.png)
+![artifacts/calendar-event-review-2026-11-14/duo/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/23-year-design-comparison-state.png)
 
 ### 24 pane edge scrollbar
 파일: `artifacts/calendar-event-review-2026-11-14/duo/24-pane-edge-scrollbar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 91,528 bytes · SHA-256 `ab8340f3341184fe924659026195198f32235417f94dae62a73ca227bc38b273`
-![artifacts/calendar-event-review-2026-11-14/duo/24-pane-edge-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/duo/24-pane-edge-scrollbar.png)
+![artifacts/calendar-event-review-2026-11-14/duo/24-pane-edge-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/duo/24-pane-edge-scrollbar.png)
 
 ### 01 compact long source
 파일: `artifacts/calendar-event-review-2026-11-14/focused/01-compact-long-source.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 103,508 bytes · SHA-256 `729129de051916feea9f8d55e34b108e680812a5b32223c79099d1e86685f982`
-![artifacts/calendar-event-review-2026-11-14/focused/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/focused/01-compact-long-source.png)
+![artifacts/calendar-event-review-2026-11-14/focused/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/focused/01-compact-long-source.png)
 
 ### 02 local only preview
 파일: `artifacts/calendar-event-review-2026-11-14/focused/02-local-only-preview.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 102,563 bytes · SHA-256 `371ffa609fa100f97357e33c0d823c73f9e046eeaeb953c833b8f218b15ac195`
-![artifacts/calendar-event-review-2026-11-14/focused/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/focused/02-local-only-preview.png)
+![artifacts/calendar-event-review-2026-11-14/focused/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/focused/02-local-only-preview.png)
 
 ### 03 partial save retry only duck
 파일: `artifacts/calendar-event-review-2026-11-14/focused/03-partial-save-retry-only-duck.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 115,164 bytes · SHA-256 `ff7d2cc85e2c05897c67faa2615ae65cda0bdd348624ed7271fb02a1e505ae3d`
-![artifacts/calendar-event-review-2026-11-14/focused/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/focused/03-partial-save-retry-only-duck.png)
+![artifacts/calendar-event-review-2026-11-14/focused/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/focused/03-partial-save-retry-only-duck.png)
 
 ### 04 editor scrollbar visible
 파일: `artifacts/calendar-event-review-2026-11-14/focused/04-editor-scrollbar-visible.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 95,547 bytes · SHA-256 `8e86b3088aa6adb4e0f765efbfb63f26e28f7782737f1f41f89bda60a2b4d020`
-![artifacts/calendar-event-review-2026-11-14/focused/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/focused/04-editor-scrollbar-visible.png)
+![artifacts/calendar-event-review-2026-11-14/focused/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/focused/04-editor-scrollbar-visible.png)
 
 ### 05 todo shared transition
 파일: `artifacts/calendar-event-review-2026-11-14/focused/05-todo-shared-transition.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 100,314 bytes · SHA-256 `d04d6a2add27714e335033c3af268adf2c2fd7b8ae05a8d132f4b49fc68b1ff5`
-![artifacts/calendar-event-review-2026-11-14/focused/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/focused/05-todo-shared-transition.png)
+![artifacts/calendar-event-review-2026-11-14/focused/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/focused/05-todo-shared-transition.png)
 
 ### 06 year scrollbar
 파일: `artifacts/calendar-event-review-2026-11-14/focused/06-year-scrollbar.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 153,247 bytes · SHA-256 `e7164afcdf9072cdf577f509d68bd0b9fc6e63e24e41d72a78cdc31bfda1fba4`
-![artifacts/calendar-event-review-2026-11-14/focused/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/focused/06-year-scrollbar.png)
+![artifacts/calendar-event-review-2026-11-14/focused/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/focused/06-year-scrollbar.png)
 
 ### 22 motion open and top dim
 파일: `artifacts/calendar-event-review-2026-11-14/motion/22-motion-open-and-top-dim.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 40,862 bytes · SHA-256 `0cd356854425cc55b56285ba5cad60193557eafd580e79b39e10e6a2cf3be793`
-![artifacts/calendar-event-review-2026-11-14/motion/22-motion-open-and-top-dim.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/motion/22-motion-open-and-top-dim.png)
+![artifacts/calendar-event-review-2026-11-14/motion/22-motion-open-and-top-dim.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/motion/22-motion-open-and-top-dim.png)
 
 ### 01 ordinary year
 파일: `artifacts/calendar-event-review-2026-11-14/year/01-ordinary-year.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 153,392 bytes · SHA-256 `689a56ab3d9f676e1768b8578d41079b7c38486be669922e79fcc23d7647b3a1`
-![artifacts/calendar-event-review-2026-11-14/year/01-ordinary-year.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/01-ordinary-year.png)
+![artifacts/calendar-event-review-2026-11-14/year/01-ordinary-year.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/01-ordinary-year.png)
 
 ### 02 ordinary month after zoom
 파일: `artifacts/calendar-event-review-2026-11-14/year/02-ordinary-month-after-zoom.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 74,834 bytes · SHA-256 `ec61debee28d39613b27c17b65fbff8f72981d85418d74b574c13b94e57d2a07`
-![artifacts/calendar-event-review-2026-11-14/year/02-ordinary-month-after-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/02-ordinary-month-after-zoom.png)
+![artifacts/calendar-event-review-2026-11-14/year/02-ordinary-month-after-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/02-ordinary-month-after-zoom.png)
 
 ### 03 year width 320
 파일: `artifacts/calendar-event-review-2026-11-14/year/03-year-width-320.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 150,103 bytes · SHA-256 `7acb2751a513649e6db0a72b355b1dc4083cc67497a058df93846929e7095740`
-![artifacts/calendar-event-review-2026-11-14/year/03-year-width-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/03-year-width-320.png)
+![artifacts/calendar-event-review-2026-11-14/year/03-year-width-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/03-year-width-320.png)
 
 ### 03 year width 430
 파일: `artifacts/calendar-event-review-2026-11-14/year/03-year-width-430.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 152,255 bytes · SHA-256 `775b54b6cdbf0c51091786ab4ad54614ba0f1a75729a20cbf49cc6c6d9f8aee7`
-![artifacts/calendar-event-review-2026-11-14/year/03-year-width-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/03-year-width-430.png)
+![artifacts/calendar-event-review-2026-11-14/year/03-year-width-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/03-year-width-430.png)
 
 ### 04 year dark
 파일: `artifacts/calendar-event-review-2026-11-14/year/04-year-dark.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 151,164 bytes · SHA-256 `8677f57606b19cfba5f2e0ffdb867b268fa61d77361543bbdc61a53df5d2735c`
-![artifacts/calendar-event-review-2026-11-14/year/04-year-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/04-year-dark.png)
+![artifacts/calendar-event-review-2026-11-14/year/04-year-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/04-year-dark.png)
 
 ### 05 opening zoom
 파일: `artifacts/calendar-event-review-2026-11-14/year/05-opening-zoom.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 137,111 bytes · SHA-256 `bb0f24bdf5259b3a51092d6f16d203b4af9c1491184500d1bcb0d39dbceba009`
-![artifacts/calendar-event-review-2026-11-14/year/05-opening-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/05-opening-zoom.png)
+![artifacts/calendar-event-review-2026-11-14/year/05-opening-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/05-opening-zoom.png)
 
 ### 06 closing zoom
 파일: `artifacts/calendar-event-review-2026-11-14/year/06-closing-zoom.png`
 분류: 상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님 · 179,126 bytes · SHA-256 `c66abb17acaf5af1b41b24765a9e4ec3333cf7fdf1b9d2aa81fd0b4587e1cfc8`
-![artifacts/calendar-event-review-2026-11-14/year/06-closing-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-event-review-2026-11-14/year/06-closing-zoom.png)
+![artifacts/calendar-event-review-2026-11-14/year/06-closing-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-event-review-2026-11-14/year/06-closing-zoom.png)
 
 ### 01 ordinary enter today
 파일: `artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,087 bytes · SHA-256 `99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f`
-![artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png)
+![artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/01-ordinary-enter-today.png)
 
 ### 02 ordinary long press fortnight
 파일: `artifacts/calendar-navigation-2026-11-14/02-ordinary-long-press-fortnight.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 52,201 bytes · SHA-256 `7e5aee00470b54f3404bc464e0edfb0788860330facf6fdc52d7df57a3a95258`
-![artifacts/calendar-navigation-2026-11-14/02-ordinary-long-press-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/02-ordinary-long-press-fortnight.png)
+![artifacts/calendar-navigation-2026-11-14/02-ordinary-long-press-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/02-ordinary-long-press-fortnight.png)
 
 ### 03 ordinary long press from other tab
 파일: `artifacts/calendar-navigation-2026-11-14/03-ordinary-long-press-from-other-tab.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 56,354 bytes · SHA-256 `31eb23fc91dacda8639c42a9fcb991893b2d20e1516802aceb363f53b5998bf6`
-![artifacts/calendar-navigation-2026-11-14/03-ordinary-long-press-from-other-tab.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/03-ordinary-long-press-from-other-tab.png)
+![artifacts/calendar-navigation-2026-11-14/03-ordinary-long-press-from-other-tab.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/03-ordinary-long-press-from-other-tab.png)
 
 ### 04 ordinary motion enabled shortcut
 파일: `artifacts/calendar-navigation-2026-11-14/04-ordinary-motion-enabled-shortcut.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 56,650 bytes · SHA-256 `da4532cf010948b894fc2126fdebacc790cc7f18c133af1e636b96a195a97b3e`
-![artifacts/calendar-navigation-2026-11-14/04-ordinary-motion-enabled-shortcut.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/04-ordinary-motion-enabled-shortcut.png)
+![artifacts/calendar-navigation-2026-11-14/04-ordinary-motion-enabled-shortcut.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/04-ordinary-motion-enabled-shortcut.png)
 
 ### before ordinary month
 파일: `artifacts/calendar-navigation-2026-11-14/before/before-ordinary-month.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,087 bytes · SHA-256 `99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f`
-![artifacts/calendar-navigation-2026-11-14/before/before-ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/before/before-ordinary-month.png)
+![artifacts/calendar-navigation-2026-11-14/before/before-ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/before/before-ordinary-month.png)
 
 ### before ordinary today menu
 파일: `artifacts/calendar-navigation-2026-11-14/before/before-ordinary-today-menu.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 78,680 bytes · SHA-256 `a3dec9866506835cc8156369d074303eec6da1f1ce6e82bbecd22e6ade63a8db`
-![artifacts/calendar-navigation-2026-11-14/before/before-ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/before/before-ordinary-today-menu.png)
+![artifacts/calendar-navigation-2026-11-14/before/before-ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/before/before-ordinary-today-menu.png)
 
 ### before ordinary todos
 파일: `artifacts/calendar-navigation-2026-11-14/before/before-ordinary-todos.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,883 bytes · SHA-256 `6e5af017d5f847d915cea2377fb3cefd15b5abee335e36ed5de6e3909c8b05eb`
-![artifacts/calendar-navigation-2026-11-14/before/before-ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/before/before-ordinary-todos.png)
+![artifacts/calendar-navigation-2026-11-14/before/before-ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/before/before-ordinary-todos.png)
 
 ### cache account isolation
 파일: `artifacts/calendar-navigation-2026-11-14/cache/cache-account-isolation.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,092 bytes · SHA-256 `f7d3a65338158db285d03e64e2da473303855968e19cc649e01e4401b212d0f7`
-![artifacts/calendar-navigation-2026-11-14/cache/cache-account-isolation.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/cache/cache-account-isolation.png)
+![artifacts/calendar-navigation-2026-11-14/cache/cache-account-isolation.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/cache/cache-account-isolation.png)
 
 ### cache authoritative delete
 파일: `artifacts/calendar-navigation-2026-11-14/cache/cache-authoritative-delete.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 75,676 bytes · SHA-256 `f347b1b78604907f4f3051f0f02623bad6e939486e12b02d72ea92d535b38ea0`
-![artifacts/calendar-navigation-2026-11-14/cache/cache-authoritative-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/cache/cache-authoritative-delete.png)
+![artifacts/calendar-navigation-2026-11-14/cache/cache-authoritative-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/cache/cache-authoritative-delete.png)
 
 ### cache fast source first
 파일: `artifacts/calendar-navigation-2026-11-14/cache/cache-fast-source-first.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 75,877 bytes · SHA-256 `a65d30c3c0b38b58028bb8aa80cf30fbb938ed1e58ad9c920920353186d6aa19`
-![artifacts/calendar-navigation-2026-11-14/cache/cache-fast-source-first.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/cache/cache-fast-source-first.png)
+![artifacts/calendar-navigation-2026-11-14/cache/cache-fast-source-first.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/cache/cache-fast-source-first.png)
 
 ### cache immediate fortnight
 파일: `artifacts/calendar-navigation-2026-11-14/cache/cache-immediate-fortnight.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 58,010 bytes · SHA-256 `75416216f94149ced8e2c74f9846dffbeda0514caeff43f9586e897485fe5a6b`
-![artifacts/calendar-navigation-2026-11-14/cache/cache-immediate-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/cache/cache-immediate-fortnight.png)
+![artifacts/calendar-navigation-2026-11-14/cache/cache-immediate-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/cache/cache-immediate-fortnight.png)
 
 ### cache updated month
 파일: `artifacts/calendar-navigation-2026-11-14/cache/cache-updated-month.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 75,877 bytes · SHA-256 `a65d30c3c0b38b58028bb8aa80cf30fbb938ed1e58ad9c920920353186d6aa19`
-![artifacts/calendar-navigation-2026-11-14/cache/cache-updated-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/cache/cache-updated-month.png)
+![artifacts/calendar-navigation-2026-11-14/cache/cache-updated-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/cache/cache-updated-month.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-navigation-2026-11-14/duo/01-open-calendar-todo.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 52,235 bytes · SHA-256 `af136cf606e074866e95add63b10be0d0c73413601b0b33fb8a675c73d10074c`
-![artifacts/calendar-navigation-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/01-open-calendar-todo.png)
+![artifacts/calendar-navigation-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-navigation-2026-11-14/duo/02-open-calendar-duck.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 61,292 bytes · SHA-256 `9e707750565adb8c4ffc6ad009a3db181f227a31c9d03a2981a6e8fbf2148944`
-![artifacts/calendar-navigation-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/02-open-calendar-duck.png)
+![artifacts/calendar-navigation-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-navigation-2026-11-14/duo/03-portrait-current-screen.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-navigation-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/03-portrait-current-screen.png)
+![artifacts/calendar-navigation-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-navigation-2026-11-14/duo/04-closed-camera-column.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-navigation-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/04-closed-camera-column.png)
+![artifacts/calendar-navigation-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-navigation-2026-11-14/duo/05-back-in-camera-column.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 63,122 bytes · SHA-256 `06cc362c67a647f8f40b14833c823ad6073e5c9867be8ed79df02a532798c186`
-![artifacts/calendar-navigation-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/05-back-in-camera-column.png)
+![artifacts/calendar-navigation-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-navigation-2026-11-14/duo/06-dragging-lens-web-fallback.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 54,368 bytes · SHA-256 `09980033d82905955676301023ac71f1949c2e17a4d41bfd6d411e611b8bef6d`
-![artifacts/calendar-navigation-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-navigation-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-navigation-2026-11-14/duo/07-iphone-320-floating-tabs.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 31,437 bytes · SHA-256 `7c0dba3d0ae6e68cda7c292bdff09db27247f1c77603b1322a90b971cadfd85e`
-![artifacts/calendar-navigation-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-navigation-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-navigation-2026-11-14/duo/07-iphone-390-floating-tabs.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,737 bytes · SHA-256 `4365d3abb8eedf5a1610d90829b9fa3e63c1bfbcdf51f557dcb451268166c05e`
-![artifacts/calendar-navigation-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-navigation-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-navigation-2026-11-14/duo/07-iphone-430-floating-tabs.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 33,314 bytes · SHA-256 `3c5ca274130899998355fe1e8c67c7b54e31ecabaf09ccee55db572828e26569`
-![artifacts/calendar-navigation-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-navigation-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-navigation-2026-11-14/duo/08-iphone-320-text-160-percent.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 25,517 bytes · SHA-256 `c2e6147eb21e98484729d0a8108f6e9823b4dfc71b767a463c8b965370cc6e3f`
-![artifacts/calendar-navigation-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-navigation-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-navigation-2026-11-14/duo/08-pane-local-day-detail.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 60,952 bytes · SHA-256 `3650189ffb64b7c5b5840065d524b3893b032b0f9c4fd86acd189768c7afbef2`
-![artifacts/calendar-navigation-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-navigation-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/calendar-navigation-2026-11-14/duo/10-folded-calendar-dark.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 36,728 bytes · SHA-256 `8fb8d8e13f68e71cd3789847bb2f4d0d7fd394cbc62436a57822544b0cb59301`
-![artifacts/calendar-navigation-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/10-folded-calendar-dark.png)
+![artifacts/calendar-navigation-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/calendar-navigation-2026-11-14/duo/11-folded-calendar-light.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,497 bytes · SHA-256 `6719282e38ed0cd413bcc238f4f9af4ef6a6ad82797fdb2c241e4355a53020a9`
-![artifacts/calendar-navigation-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/11-folded-calendar-light.png)
+![artifacts/calendar-navigation-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/calendar-navigation-2026-11-14/duo/12-open-calendar-dark.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 53,545 bytes · SHA-256 `fb5dbd64f9c680f9884aaf1087e0780f71598486bd000c50b007c38f25ddcf84`
-![artifacts/calendar-navigation-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/12-open-calendar-dark.png)
+![artifacts/calendar-navigation-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/calendar-navigation-2026-11-14/duo/13-folded-fortnight.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 27,675 bytes · SHA-256 `e7c650ae163edc1f49ba0212a577e8922ad696d7a66d91a440b755115a716c9a`
-![artifacts/calendar-navigation-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/13-folded-fortnight.png)
+![artifacts/calendar-navigation-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/calendar-navigation-2026-11-14/duo/14-open-fortnight-dark.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,660 bytes · SHA-256 `80308f46b83b823ff5ba37482710612edd3f9fd65494141c9152344e907a1871`
-![artifacts/calendar-navigation-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/14-open-fortnight-dark.png)
+![artifacts/calendar-navigation-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/14-open-fortnight-dark.png)
 
 ### 15 long press left calendar
 파일: `artifacts/calendar-navigation-2026-11-14/duo/15-long-press-left-calendar.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 42,635 bytes · SHA-256 `809c0e959b3bf82f3c7b824a18ac70fee9874f8ab4e5658876b4747df71d257d`
-![artifacts/calendar-navigation-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/15-long-press-left-calendar.png)
+![artifacts/calendar-navigation-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/15-long-press-left-calendar.png)
 
 ### 16 long press right calendar
 파일: `artifacts/calendar-navigation-2026-11-14/duo/16-long-press-right-calendar.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 30,141 bytes · SHA-256 `c72ae813b11f48f86fba648c39759fa4df278d0d4eca75e305301609262127ef`
-![artifacts/calendar-navigation-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/16-long-press-right-calendar.png)
+![artifacts/calendar-navigation-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/16-long-press-right-calendar.png)
 
 ### 17 folded long press calendar
 파일: `artifacts/calendar-navigation-2026-11-14/duo/17-folded-long-press-calendar.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 27,484 bytes · SHA-256 `3b32f72d16379ff94cd8fda4bd123cf4708ff75ee820546c9a0f55384bcec9f8`
-![artifacts/calendar-navigation-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/duo/17-folded-long-press-calendar.png)
+![artifacts/calendar-navigation-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/duo/17-folded-long-press-calendar.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/01-clean-adaptive-month.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 79,609 bytes · SHA-256 `96237bccec3c839d0147104734e190e7f353e15ffbd95fba3d466bbb307b7ac3`
-![artifacts/calendar-navigation-2026-11-14/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/01-clean-adaptive-month.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/02-day-detail.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 101,889 bytes · SHA-256 `fd5fb6618324ad30e13b75cfdf472286c6b4ba7a0ef3f361370c7ec2dc78b138`
-![artifacts/calendar-navigation-2026-11-14/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/02-day-detail.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/03-event-detail.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,219 bytes · SHA-256 `d1bfe9803346ab9bb6f364f7314cd61b4cb27ba5eae8bd7283921ab8f16ae039`
-![artifacts/calendar-navigation-2026-11-14/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/03-event-detail.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/04-write-preview.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 100,432 bytes · SHA-256 `6a29f93572934c3fbdd710562fee03f73f2c1f55dd7609b7b8ffc3b79653ec16`
-![artifacts/calendar-navigation-2026-11-14/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/04-write-preview.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/05-all-day-editor.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 96,489 bytes · SHA-256 `b63e853e0df0edad782780f8e71e34e2c38bbd41f553077afbdc6803e48c7acb`
-![artifacts/calendar-navigation-2026-11-14/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/05-all-day-editor.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/06-week-timeline.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,635 bytes · SHA-256 `e3e73b76970c75b2840cf8eff6eeee0155d8874207dba25b6e7da19b16557348`
-![artifacts/calendar-navigation-2026-11-14/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/06-week-timeline.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/07-search-scope.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 95,079 bytes · SHA-256 `c2cfa4001cc4010f9e3b0e3024a4ec7b9ce1c68b71478ae3b019e3bfe685f92c`
-![artifacts/calendar-navigation-2026-11-14/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/07-search-scope.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/08-calendar-sources.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,891 bytes · SHA-256 `5d2e085837bdba36bb21660898ad5a2d4f74895700793fad68f530e8ad1c8834`
-![artifacts/calendar-navigation-2026-11-14/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/08-calendar-sources.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/09-read-only-event.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 99,217 bytes · SHA-256 `32612be62cf4808e9b9a20d8a529c34377564e0caa5a160a5b0f2ccba8ee08d4`
-![artifacts/calendar-navigation-2026-11-14/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/09-read-only-event.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/10-partial-state.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,034 bytes · SHA-256 `3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478`
-![artifacts/calendar-navigation-2026-11-14/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/10-partial-state.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/11-error-visible-with-cache.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,034 bytes · SHA-256 `3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478`
-![artifacts/calendar-navigation-2026-11-14/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/11-error-visible-with-cache.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/12-phone-320.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 76,910 bytes · SHA-256 `73700eacdfd8c2c402d092c229b5a930b5b8ccf32204766228eb0a5c3fab0ba7`
-![artifacts/calendar-navigation-2026-11-14/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/12-phone-320.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/12-phone-430.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,428 bytes · SHA-256 `0653ad5b4d98998830f15c1d44e0ad8335414f2229a874b23a86d90e4efd834b`
-![artifacts/calendar-navigation-2026-11-14/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/12-phone-430.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/13-large-text.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 97,779 bytes · SHA-256 `307276841a5935261c711a9fdcbf370e7470d453750e80ad4fd64fd0e90eaae8`
-![artifacts/calendar-navigation-2026-11-14/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/13-large-text.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/14-loading-with-cache.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,034 bytes · SHA-256 `3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478`
-![artifacts/calendar-navigation-2026-11-14/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/14-loading-with-cache.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/15-unknown-write-no-resend.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 111,522 bytes · SHA-256 `f402e0e63092490b7d4294039f8484f69e019e7be51d637106bc7c638b8a88a1`
-![artifacts/calendar-navigation-2026-11-14/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/15-unknown-write-no-resend.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/16-dark-month-reference.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,888 bytes · SHA-256 `27a4bcb2f4bd3d60b0b8c83506751f0829ab61984f5b5f89ff4c97c2d7066acc`
-![artifacts/calendar-navigation-2026-11-14/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/16-dark-month-reference.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/17-dark-event-reference.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 65,942 bytes · SHA-256 `f9f2585dc991992b8e634a01b85c23abd5cc027354618e2d28963dc4062a1593`
-![artifacts/calendar-navigation-2026-11-14/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/17-dark-event-reference.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/18-light-month-reference.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,046 bytes · SHA-256 `4b2c6eb92749166d2869aa6759a78ab618f55f48554855d840f8c5dd5ef0cc23`
-![artifacts/calendar-navigation-2026-11-14/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/18-light-month-reference.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/19-non-json-error-keeps-events.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,746 bytes · SHA-256 `47615b8965e5620215e19bb31d962ad982f5a344e9cb9bfb1bf2f41c86ca75d1`
-![artifacts/calendar-navigation-2026-11-14/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/19-non-json-error-keeps-events.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/calendar-navigation-2026-11-14/workspace/20-fortnight-expanded.png`
 분류: 캘린더 단축·년월 변경전 비교 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 63,281 bytes · SHA-256 `16626e4627680834ab7590e26a844399911d486bbf48f77d205acfee49a39a38`
-![artifacts/calendar-navigation-2026-11-14/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-navigation-2026-11-14/workspace/20-fortnight-expanded.png)
+![artifacts/calendar-navigation-2026-11-14/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-navigation-2026-11-14/workspace/20-fortnight-expanded.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 81,286 bytes · SHA-256 `1265af37e914de5e6f369315387ebec222962d9a6e0cefaa95c042e26ba598e2`
-![artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png)
+![artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-refinement-2026-11-13/02-day-detail.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 101,914 bytes · SHA-256 `8f9fc93333318747157b9bd1adec199e6d90197be024da36cd9baaf96901ecf2`
-![artifacts/calendar-refinement-2026-11-13/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/02-day-detail.png)
+![artifacts/calendar-refinement-2026-11-13/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-refinement-2026-11-13/03-event-detail.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 82,345 bytes · SHA-256 `d013d32ab341086647d003285817e9094e67c8c64388812265e61ffbf0caeeb6`
-![artifacts/calendar-refinement-2026-11-13/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/03-event-detail.png)
+![artifacts/calendar-refinement-2026-11-13/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-refinement-2026-11-13/04-write-preview.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 100,461 bytes · SHA-256 `96ad1e462102d0d7c7a9fe6680c59123d78eccf0bc6371d21263f2f6b40123b9`
-![artifacts/calendar-refinement-2026-11-13/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/04-write-preview.png)
+![artifacts/calendar-refinement-2026-11-13/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-refinement-2026-11-13/05-all-day-editor.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 96,518 bytes · SHA-256 `b9c0a7905d0dcf1eeb902d5d4c60eb8bcf4717db7da64c79c5330b1e3e943f12`
-![artifacts/calendar-refinement-2026-11-13/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/05-all-day-editor.png)
+![artifacts/calendar-refinement-2026-11-13/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-refinement-2026-11-13/06-week-timeline.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 78,640 bytes · SHA-256 `1da1eb44eee1a41a9dffc322af1a6b6def0b958c15e3ea7a10be201f391817d4`
-![artifacts/calendar-refinement-2026-11-13/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/06-week-timeline.png)
+![artifacts/calendar-refinement-2026-11-13/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-refinement-2026-11-13/07-search-scope.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 90,847 bytes · SHA-256 `1a62a6a1e2f84c39fd09d6b84ce13fe180d3401acffa3f4ca2fa75f0be60b9c3`
-![artifacts/calendar-refinement-2026-11-13/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/07-search-scope.png)
+![artifacts/calendar-refinement-2026-11-13/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-refinement-2026-11-13/08-calendar-sources.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 88,309 bytes · SHA-256 `52824ffab8390ed95e4d413a95be8d127ebbec5e29b1de2eada171f7ef24e4f1`
-![artifacts/calendar-refinement-2026-11-13/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/08-calendar-sources.png)
+![artifacts/calendar-refinement-2026-11-13/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-refinement-2026-11-13/09-read-only-event.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 99,238 bytes · SHA-256 `677420a7eec014ccf12cbe89ad0e24670e034ea4dac4edbb2c827def84782c7a`
-![artifacts/calendar-refinement-2026-11-13/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/09-read-only-event.png)
+![artifacts/calendar-refinement-2026-11-13/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-refinement-2026-11-13/10-partial-state.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 83,726 bytes · SHA-256 `166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7`
-![artifacts/calendar-refinement-2026-11-13/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/10-partial-state.png)
+![artifacts/calendar-refinement-2026-11-13/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-refinement-2026-11-13/11-error-visible-with-cache.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 83,726 bytes · SHA-256 `166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7`
-![artifacts/calendar-refinement-2026-11-13/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/11-error-visible-with-cache.png)
+![artifacts/calendar-refinement-2026-11-13/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-refinement-2026-11-13/12-phone-320.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 78,994 bytes · SHA-256 `2c2573fea966e20ae2cb298cfe82b4232ce85d5b9d64c2fa8c988ad8f788b856`
-![artifacts/calendar-refinement-2026-11-13/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/12-phone-320.png)
+![artifacts/calendar-refinement-2026-11-13/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-refinement-2026-11-13/12-phone-430.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 91,570 bytes · SHA-256 `701df22e1483f9342383465c069042510e76cdd420e5d35c348a0c73974f095f`
-![artifacts/calendar-refinement-2026-11-13/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/12-phone-430.png)
+![artifacts/calendar-refinement-2026-11-13/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-refinement-2026-11-13/13-large-text.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 97,230 bytes · SHA-256 `e80a34588c2ff7274023d35a740fb18998d72c038b163c5db6e7aa5927cf5063`
-![artifacts/calendar-refinement-2026-11-13/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/13-large-text.png)
+![artifacts/calendar-refinement-2026-11-13/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-refinement-2026-11-13/14-loading-with-cache.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 83,726 bytes · SHA-256 `166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7`
-![artifacts/calendar-refinement-2026-11-13/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/14-loading-with-cache.png)
+![artifacts/calendar-refinement-2026-11-13/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-refinement-2026-11-13/15-unknown-write-no-resend.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 111,525 bytes · SHA-256 `5eb4011ace7f9ab3d63075d9a8943cee6ca0cda37bede12765207e14bba77879`
-![artifacts/calendar-refinement-2026-11-13/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/15-unknown-write-no-resend.png)
+![artifacts/calendar-refinement-2026-11-13/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-refinement-2026-11-13/16-dark-month-reference.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 82,394 bytes · SHA-256 `36c5a59d3569fef8d11cc9de7c3fedae043ad56914ad8a1eba14648626eaedca`
-![artifacts/calendar-refinement-2026-11-13/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/16-dark-month-reference.png)
+![artifacts/calendar-refinement-2026-11-13/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-refinement-2026-11-13/17-dark-event-reference.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 71,891 bytes · SHA-256 `d8562793876ac1800e69254573eb2b2ce1e8c9ead0897827e918b34b53557647`
-![artifacts/calendar-refinement-2026-11-13/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/17-dark-event-reference.png)
+![artifacts/calendar-refinement-2026-11-13/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-refinement-2026-11-13/18-light-month-reference.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 83,603 bytes · SHA-256 `7c49bdb6d1dfc76d5ada427f4615651f4088ac2c05704bf4f4c9174764e43fba`
-![artifacts/calendar-refinement-2026-11-13/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/18-light-month-reference.png)
+![artifacts/calendar-refinement-2026-11-13/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-refinement-2026-11-13/19-non-json-error-keeps-events.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 83,726 bytes · SHA-256 `166f04fa4ed513c5af2348df3598c8d56ed6a704bd09e03637d9a844d53ac5c7`
-![artifacts/calendar-refinement-2026-11-13/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/19-non-json-error-keeps-events.png)
+![artifacts/calendar-refinement-2026-11-13/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/calendar-refinement-2026-11-13/20-fortnight-expanded.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 63,038 bytes · SHA-256 `61aed0fa5e12ac460557fcf0ea33d6061d195dab2dd135d56a3fa278bea9a1d2`
-![artifacts/calendar-refinement-2026-11-13/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/20-fortnight-expanded.png)
+![artifacts/calendar-refinement-2026-11-13/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/20-fortnight-expanded.png)
 
 ### 21 integration status retained
 파일: `artifacts/calendar-refinement-2026-11-13/21-integration-status-retained.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 104,029 bytes · SHA-256 `0f394f1a642ed486781624f81dab53f6d0dd412d0d894dd05330d2a15ef4b6ec`
-![artifacts/calendar-refinement-2026-11-13/21-integration-status-retained.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/21-integration-status-retained.png)
+![artifacts/calendar-refinement-2026-11-13/21-integration-status-retained.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/21-integration-status-retained.png)
 
 ### 22 motion open and top dim
 파일: `artifacts/calendar-refinement-2026-11-13/22-motion-open-and-top-dim.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 40,157 bytes · SHA-256 `1d2a5433821c67a4d455816cd04103873575b936d0bf55d2d68dafa4e3dfe69c`
-![artifacts/calendar-refinement-2026-11-13/22-motion-open-and-top-dim.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/22-motion-open-and-top-dim.png)
+![artifacts/calendar-refinement-2026-11-13/22-motion-open-and-top-dim.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/22-motion-open-and-top-dim.png)
 
 ### before after month
 파일: `artifacts/calendar-refinement-2026-11-13/before-after-month.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 154,370 bytes · SHA-256 `1a09886c6395705c96977cfada212aef4ad776850c56ea2903e21ff3d3b9c138`
-![artifacts/calendar-refinement-2026-11-13/before-after-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/before-after-month.png)
+![artifacts/calendar-refinement-2026-11-13/before-after-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/before-after-month.png)
 
 ### before after sheet
 파일: `artifacts/calendar-refinement-2026-11-13/before-after-sheet.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 130,430 bytes · SHA-256 `a92c5aad764d48817d85feb7200cd30519e0de4d8a77ea12b82bc10bdc4c0aaf`
-![artifacts/calendar-refinement-2026-11-13/before-after-sheet.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/before-after-sheet.png)
+![artifacts/calendar-refinement-2026-11-13/before-after-sheet.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/before-after-sheet.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-refinement-2026-11-13/duo/01-open-calendar-todo.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 52,164 bytes · SHA-256 `b010dc242a59b216217d73fb453df8d608ed0c0bfab50131a3d88e5406df180f`
-![artifacts/calendar-refinement-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/01-open-calendar-todo.png)
+![artifacts/calendar-refinement-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-refinement-2026-11-13/duo/02-open-calendar-duck.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 61,210 bytes · SHA-256 `1810d921928165437b5624484c5a0dfd25bc235ae925baa06cef0583dd36fa94`
-![artifacts/calendar-refinement-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/02-open-calendar-duck.png)
+![artifacts/calendar-refinement-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-refinement-2026-11-13/duo/03-portrait-current-screen.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-refinement-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/03-portrait-current-screen.png)
+![artifacts/calendar-refinement-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-refinement-2026-11-13/duo/04-closed-camera-column.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-refinement-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/04-closed-camera-column.png)
+![artifacts/calendar-refinement-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-refinement-2026-11-13/duo/05-back-in-camera-column.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 63,230 bytes · SHA-256 `2481bece720e0e27a4b166c5e8b6d977bba8fb629b9d44e145706ee364928893`
-![artifacts/calendar-refinement-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/05-back-in-camera-column.png)
+![artifacts/calendar-refinement-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-refinement-2026-11-13/duo/06-dragging-lens-web-fallback.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 54,292 bytes · SHA-256 `10d24b90e59f0c93dc6d961ee953a1a6eabd45ea90fc0d6d73d388a1d4baf6a4`
-![artifacts/calendar-refinement-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-refinement-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-refinement-2026-11-13/duo/07-iphone-320-floating-tabs.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 31,316 bytes · SHA-256 `5d7fb77f19490c7244d14e87e0a826f2e99f1ffb7d0d4a095b48702df10ba2e8`
-![artifacts/calendar-refinement-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-refinement-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-refinement-2026-11-13/duo/07-iphone-390-floating-tabs.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 32,603 bytes · SHA-256 `bc177d56cac6c888fe606019e0d438e5e3ea6db207787d7634044209cb344f4e`
-![artifacts/calendar-refinement-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-refinement-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-refinement-2026-11-13/duo/07-iphone-430-floating-tabs.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 33,188 bytes · SHA-256 `a86808cbcee68bf2ab17305a6b8633d1e60130451daee36b4cf6df7b4a83305e`
-![artifacts/calendar-refinement-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-refinement-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-refinement-2026-11-13/duo/08-iphone-320-text-160-percent.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 25,274 bytes · SHA-256 `d919f440433a160c65b76d60e9f4914b903a66212968c6f284986cefde0618f4`
-![artifacts/calendar-refinement-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-refinement-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-refinement-2026-11-13/duo/08-pane-local-day-detail.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 59,139 bytes · SHA-256 `9c7b6d42823f35b29897bf4ca5c08e3bff26c2757a4a3ececd30f29dc185712d`
-![artifacts/calendar-refinement-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-refinement-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/calendar-refinement-2026-11-13/duo/10-folded-calendar-dark.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 36,630 bytes · SHA-256 `33d4a70c4a0cc2744d83acfce371c31cca71a16d7c90b1f2af6fb6eaa5ed488c`
-![artifacts/calendar-refinement-2026-11-13/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/10-folded-calendar-dark.png)
+![artifacts/calendar-refinement-2026-11-13/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/calendar-refinement-2026-11-13/duo/11-folded-calendar-light.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 35,524 bytes · SHA-256 `73422c56b52255bc3ca1b4a543dda54db7093628a2be9a357116548cdc260d9f`
-![artifacts/calendar-refinement-2026-11-13/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/11-folded-calendar-light.png)
+![artifacts/calendar-refinement-2026-11-13/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/calendar-refinement-2026-11-13/duo/12-open-calendar-dark.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 54,592 bytes · SHA-256 `a8db7a1468c2e856ac69e9417317cb5278b400ef6e0b49db1ebbc7b665160b72`
-![artifacts/calendar-refinement-2026-11-13/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/12-open-calendar-dark.png)
+![artifacts/calendar-refinement-2026-11-13/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/calendar-refinement-2026-11-13/duo/13-folded-fortnight.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 27,577 bytes · SHA-256 `76f4b619567d9cf2e6099fdbf90aad74fc796e086587dd313427bfd1b9ce209b`
-![artifacts/calendar-refinement-2026-11-13/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/13-folded-fortnight.png)
+![artifacts/calendar-refinement-2026-11-13/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/calendar-refinement-2026-11-13/duo/14-open-fortnight-dark.png`
 분류: 캘린더 정리·14일·시트·연동 · 실제 Expo/합성API·Duo 기하 fixture · native/실계정 아님 · 47,723 bytes · SHA-256 `f1f0d7a278cf4f7a36dcf76c9305f7852f2fcd647753e732164277dfe2f6ace8`
-![artifacts/calendar-refinement-2026-11-13/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-refinement-2026-11-13/duo/14-open-fortnight-dark.png)
+![artifacts/calendar-refinement-2026-11-13/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-refinement-2026-11-13/duo/14-open-fortnight-dark.png)
 
 ### before ordinary month
 파일: `artifacts/calendar-viewport-2026-11-13/before-ordinary-month.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,089 bytes · SHA-256 `a58e06680471a35b4581553cd6102c2110bf31ba053b41d02b0872ed115b8969`
-![artifacts/calendar-viewport-2026-11-13/before-ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/before-ordinary-month.png)
+![artifacts/calendar-viewport-2026-11-13/before-ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/before-ordinary-month.png)
 
 ### before ordinary today menu
 파일: `artifacts/calendar-viewport-2026-11-13/before-ordinary-today-menu.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,186 bytes · SHA-256 `f89ccfacd80f1aaa7b90d28a6c0702dfd8695234b3fd265cf10a9729fe4815fc`
-![artifacts/calendar-viewport-2026-11-13/before-ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/before-ordinary-today-menu.png)
+![artifacts/calendar-viewport-2026-11-13/before-ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/before-ordinary-today-menu.png)
 
 ### before ordinary todos
 파일: `artifacts/calendar-viewport-2026-11-13/before-ordinary-todos.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,883 bytes · SHA-256 `6e5af017d5f847d915cea2377fb3cefd15b5abee335e36ed5de6e3909c8b05eb`
-![artifacts/calendar-viewport-2026-11-13/before-ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/before-ordinary-todos.png)
+![artifacts/calendar-viewport-2026-11-13/before-ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/before-ordinary-todos.png)
 
 ### cache account isolation
 파일: `artifacts/calendar-viewport-2026-11-13/cache-account-isolation.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,092 bytes · SHA-256 `f7d3a65338158db285d03e64e2da473303855968e19cc649e01e4401b212d0f7`
-![artifacts/calendar-viewport-2026-11-13/cache-account-isolation.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/cache-account-isolation.png)
+![artifacts/calendar-viewport-2026-11-13/cache-account-isolation.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/cache-account-isolation.png)
 
 ### cache authoritative delete
 파일: `artifacts/calendar-viewport-2026-11-13/cache-authoritative-delete.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 75,676 bytes · SHA-256 `f347b1b78604907f4f3051f0f02623bad6e939486e12b02d72ea92d535b38ea0`
-![artifacts/calendar-viewport-2026-11-13/cache-authoritative-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/cache-authoritative-delete.png)
+![artifacts/calendar-viewport-2026-11-13/cache-authoritative-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/cache-authoritative-delete.png)
 
 ### cache fast source first
 파일: `artifacts/calendar-viewport-2026-11-13/cache-fast-source-first.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 75,877 bytes · SHA-256 `a65d30c3c0b38b58028bb8aa80cf30fbb938ed1e58ad9c920920353186d6aa19`
-![artifacts/calendar-viewport-2026-11-13/cache-fast-source-first.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/cache-fast-source-first.png)
+![artifacts/calendar-viewport-2026-11-13/cache-fast-source-first.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/cache-fast-source-first.png)
 
 ### cache immediate fortnight
 파일: `artifacts/calendar-viewport-2026-11-13/cache-immediate-fortnight.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 58,010 bytes · SHA-256 `75416216f94149ced8e2c74f9846dffbeda0514caeff43f9586e897485fe5a6b`
-![artifacts/calendar-viewport-2026-11-13/cache-immediate-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/cache-immediate-fortnight.png)
+![artifacts/calendar-viewport-2026-11-13/cache-immediate-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/cache-immediate-fortnight.png)
 
 ### cache updated month
 파일: `artifacts/calendar-viewport-2026-11-13/cache-updated-month.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 75,877 bytes · SHA-256 `a65d30c3c0b38b58028bb8aa80cf30fbb938ed1e58ad9c920920353186d6aa19`
-![artifacts/calendar-viewport-2026-11-13/cache-updated-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/cache-updated-month.png)
+![artifacts/calendar-viewport-2026-11-13/cache-updated-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/cache-updated-month.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-viewport-2026-11-13/duo/01-open-calendar-todo.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 52,235 bytes · SHA-256 `af136cf606e074866e95add63b10be0d0c73413601b0b33fb8a675c73d10074c`
-![artifacts/calendar-viewport-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/01-open-calendar-todo.png)
+![artifacts/calendar-viewport-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-viewport-2026-11-13/duo/02-open-calendar-duck.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 61,292 bytes · SHA-256 `9e707750565adb8c4ffc6ad009a3db181f227a31c9d03a2981a6e8fbf2148944`
-![artifacts/calendar-viewport-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/02-open-calendar-duck.png)
+![artifacts/calendar-viewport-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-viewport-2026-11-13/duo/03-portrait-current-screen.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-viewport-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/03-portrait-current-screen.png)
+![artifacts/calendar-viewport-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-viewport-2026-11-13/duo/04-closed-camera-column.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-viewport-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/04-closed-camera-column.png)
+![artifacts/calendar-viewport-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-viewport-2026-11-13/duo/05-back-in-camera-column.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 63,122 bytes · SHA-256 `06cc362c67a647f8f40b14833c823ad6073e5c9867be8ed79df02a532798c186`
-![artifacts/calendar-viewport-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/05-back-in-camera-column.png)
+![artifacts/calendar-viewport-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-viewport-2026-11-13/duo/06-dragging-lens-web-fallback.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 54,368 bytes · SHA-256 `09980033d82905955676301023ac71f1949c2e17a4d41bfd6d411e611b8bef6d`
-![artifacts/calendar-viewport-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-viewport-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-viewport-2026-11-13/duo/07-iphone-320-floating-tabs.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 31,437 bytes · SHA-256 `7c0dba3d0ae6e68cda7c292bdff09db27247f1c77603b1322a90b971cadfd85e`
-![artifacts/calendar-viewport-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-viewport-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-viewport-2026-11-13/duo/07-iphone-390-floating-tabs.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,737 bytes · SHA-256 `4365d3abb8eedf5a1610d90829b9fa3e63c1bfbcdf51f557dcb451268166c05e`
-![artifacts/calendar-viewport-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-viewport-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-viewport-2026-11-13/duo/07-iphone-430-floating-tabs.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 33,314 bytes · SHA-256 `3c5ca274130899998355fe1e8c67c7b54e31ecabaf09ccee55db572828e26569`
-![artifacts/calendar-viewport-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-viewport-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-viewport-2026-11-13/duo/08-iphone-320-text-160-percent.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 25,364 bytes · SHA-256 `1df835d5cd39cbbf5dcbae91370bf0861197f1195360817f21f6d78e861c5909`
-![artifacts/calendar-viewport-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-viewport-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-viewport-2026-11-13/duo/08-pane-local-day-detail.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 60,952 bytes · SHA-256 `3650189ffb64b7c5b5840065d524b3893b032b0f9c4fd86acd189768c7afbef2`
-![artifacts/calendar-viewport-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-viewport-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/calendar-viewport-2026-11-13/duo/10-folded-calendar-dark.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 36,728 bytes · SHA-256 `8fb8d8e13f68e71cd3789847bb2f4d0d7fd394cbc62436a57822544b0cb59301`
-![artifacts/calendar-viewport-2026-11-13/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/10-folded-calendar-dark.png)
+![artifacts/calendar-viewport-2026-11-13/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/calendar-viewport-2026-11-13/duo/11-folded-calendar-light.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,497 bytes · SHA-256 `6719282e38ed0cd413bcc238f4f9af4ef6a6ad82797fdb2c241e4355a53020a9`
-![artifacts/calendar-viewport-2026-11-13/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/11-folded-calendar-light.png)
+![artifacts/calendar-viewport-2026-11-13/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/calendar-viewport-2026-11-13/duo/12-open-calendar-dark.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 53,545 bytes · SHA-256 `fb5dbd64f9c680f9884aaf1087e0780f71598486bd000c50b007c38f25ddcf84`
-![artifacts/calendar-viewport-2026-11-13/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/12-open-calendar-dark.png)
+![artifacts/calendar-viewport-2026-11-13/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/calendar-viewport-2026-11-13/duo/13-folded-fortnight.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 27,675 bytes · SHA-256 `e7c650ae163edc1f49ba0212a577e8922ad696d7a66d91a440b755115a716c9a`
-![artifacts/calendar-viewport-2026-11-13/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/13-folded-fortnight.png)
+![artifacts/calendar-viewport-2026-11-13/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/calendar-viewport-2026-11-13/duo/14-open-fortnight-dark.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,660 bytes · SHA-256 `80308f46b83b823ff5ba37482710612edd3f9fd65494141c9152344e907a1871`
-![artifacts/calendar-viewport-2026-11-13/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/duo/14-open-fortnight-dark.png)
+![artifacts/calendar-viewport-2026-11-13/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/duo/14-open-fortnight-dark.png)
 
 ### ordinary dark
 파일: `artifacts/calendar-viewport-2026-11-13/ordinary-dark.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 79,730 bytes · SHA-256 `9eb3f5d125d74badfbb9bd42ec88b8af676482a51e05de2ab17afd7fce0d0aa1`
-![artifacts/calendar-viewport-2026-11-13/ordinary-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/ordinary-dark.png)
+![artifacts/calendar-viewport-2026-11-13/ordinary-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/ordinary-dark.png)
 
 ### ordinary fortnight
 파일: `artifacts/calendar-viewport-2026-11-13/ordinary-fortnight.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 56,354 bytes · SHA-256 `31eb23fc91dacda8639c42a9fcb991893b2d20e1516802aceb363f53b5998bf6`
-![artifacts/calendar-viewport-2026-11-13/ordinary-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/ordinary-fortnight.png)
+![artifacts/calendar-viewport-2026-11-13/ordinary-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/ordinary-fortnight.png)
 
 ### ordinary month
 파일: `artifacts/calendar-viewport-2026-11-13/ordinary-month.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,087 bytes · SHA-256 `99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f`
-![artifacts/calendar-viewport-2026-11-13/ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/ordinary-month.png)
+![artifacts/calendar-viewport-2026-11-13/ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/ordinary-month.png)
 
 ### ordinary six week month
 파일: `artifacts/calendar-viewport-2026-11-13/ordinary-six-week-month.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 78,873 bytes · SHA-256 `cb5b191e856344753b43b531de8f0319cfb0cc1eea9795772321a057a22ed883`
-![artifacts/calendar-viewport-2026-11-13/ordinary-six-week-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/ordinary-six-week-month.png)
+![artifacts/calendar-viewport-2026-11-13/ordinary-six-week-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/ordinary-six-week-month.png)
 
 ### ordinary today menu
 파일: `artifacts/calendar-viewport-2026-11-13/ordinary-today-menu.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 78,680 bytes · SHA-256 `a3dec9866506835cc8156369d074303eec6da1f1ce6e82bbecd22e6ade63a8db`
-![artifacts/calendar-viewport-2026-11-13/ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/ordinary-today-menu.png)
+![artifacts/calendar-viewport-2026-11-13/ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/ordinary-today-menu.png)
 
 ### ordinary todos
 파일: `artifacts/calendar-viewport-2026-11-13/ordinary-todos.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,883 bytes · SHA-256 `6e5af017d5f847d915cea2377fb3cefd15b5abee335e36ed5de6e3909c8b05eb`
-![artifacts/calendar-viewport-2026-11-13/ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/ordinary-todos.png)
+![artifacts/calendar-viewport-2026-11-13/ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/ordinary-todos.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/01-clean-adaptive-month.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 79,609 bytes · SHA-256 `96237bccec3c839d0147104734e190e7f353e15ffbd95fba3d466bbb307b7ac3`
-![artifacts/calendar-viewport-2026-11-13/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/01-clean-adaptive-month.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/02-day-detail.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 101,889 bytes · SHA-256 `fd5fb6618324ad30e13b75cfdf472286c6b4ba7a0ef3f361370c7ec2dc78b138`
-![artifacts/calendar-viewport-2026-11-13/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/02-day-detail.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/03-event-detail.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,219 bytes · SHA-256 `d1bfe9803346ab9bb6f364f7314cd61b4cb27ba5eae8bd7283921ab8f16ae039`
-![artifacts/calendar-viewport-2026-11-13/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/03-event-detail.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/04-write-preview.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 100,432 bytes · SHA-256 `6a29f93572934c3fbdd710562fee03f73f2c1f55dd7609b7b8ffc3b79653ec16`
-![artifacts/calendar-viewport-2026-11-13/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/04-write-preview.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/05-all-day-editor.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 96,489 bytes · SHA-256 `b63e853e0df0edad782780f8e71e34e2c38bbd41f553077afbdc6803e48c7acb`
-![artifacts/calendar-viewport-2026-11-13/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/05-all-day-editor.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/06-week-timeline.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,635 bytes · SHA-256 `e3e73b76970c75b2840cf8eff6eeee0155d8874207dba25b6e7da19b16557348`
-![artifacts/calendar-viewport-2026-11-13/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/06-week-timeline.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/07-search-scope.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 95,079 bytes · SHA-256 `c2cfa4001cc4010f9e3b0e3024a4ec7b9ce1c68b71478ae3b019e3bfe685f92c`
-![artifacts/calendar-viewport-2026-11-13/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/07-search-scope.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/08-calendar-sources.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,891 bytes · SHA-256 `5d2e085837bdba36bb21660898ad5a2d4f74895700793fad68f530e8ad1c8834`
-![artifacts/calendar-viewport-2026-11-13/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/08-calendar-sources.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/09-read-only-event.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 99,217 bytes · SHA-256 `32612be62cf4808e9b9a20d8a529c34377564e0caa5a160a5b0f2ccba8ee08d4`
-![artifacts/calendar-viewport-2026-11-13/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/09-read-only-event.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/10-partial-state.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,034 bytes · SHA-256 `3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478`
-![artifacts/calendar-viewport-2026-11-13/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/10-partial-state.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/11-error-visible-with-cache.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,034 bytes · SHA-256 `3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478`
-![artifacts/calendar-viewport-2026-11-13/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/11-error-visible-with-cache.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/12-phone-320.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 76,910 bytes · SHA-256 `73700eacdfd8c2c402d092c229b5a930b5b8ccf32204766228eb0a5c3fab0ba7`
-![artifacts/calendar-viewport-2026-11-13/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/12-phone-320.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/12-phone-430.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,428 bytes · SHA-256 `0653ad5b4d98998830f15c1d44e0ad8335414f2229a874b23a86d90e4efd834b`
-![artifacts/calendar-viewport-2026-11-13/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/12-phone-430.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/13-large-text.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 97,779 bytes · SHA-256 `307276841a5935261c711a9fdcbf370e7470d453750e80ad4fd64fd0e90eaae8`
-![artifacts/calendar-viewport-2026-11-13/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/13-large-text.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/14-loading-with-cache.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,034 bytes · SHA-256 `3dbfec2900bfcce2880d537ac19841f5e1134a4476adc5fa08311f4117bdb478`
-![artifacts/calendar-viewport-2026-11-13/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/14-loading-with-cache.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/15-unknown-write-no-resend.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 111,522 bytes · SHA-256 `f402e0e63092490b7d4294039f8484f69e019e7be51d637106bc7c638b8a88a1`
-![artifacts/calendar-viewport-2026-11-13/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/15-unknown-write-no-resend.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/16-dark-month-reference.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,888 bytes · SHA-256 `27a4bcb2f4bd3d60b0b8c83506751f0829ab61984f5b5f89ff4c97c2d7066acc`
-![artifacts/calendar-viewport-2026-11-13/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/16-dark-month-reference.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/17-dark-event-reference.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 65,942 bytes · SHA-256 `f9f2585dc991992b8e634a01b85c23abd5cc027354618e2d28963dc4062a1593`
-![artifacts/calendar-viewport-2026-11-13/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/17-dark-event-reference.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/18-light-month-reference.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,046 bytes · SHA-256 `4b2c6eb92749166d2869aa6759a78ab618f55f48554855d840f8c5dd5ef0cc23`
-![artifacts/calendar-viewport-2026-11-13/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/18-light-month-reference.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/19-non-json-error-keeps-events.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,746 bytes · SHA-256 `47615b8965e5620215e19bb31d962ad982f5a344e9cb9bfb1bf2f41c86ca75d1`
-![artifacts/calendar-viewport-2026-11-13/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/19-non-json-error-keeps-events.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/calendar-viewport-2026-11-13/workspace/20-fortnight-expanded.png`
 분류: 캘린더 viewport·캐시·일반폰 버튼 · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 63,281 bytes · SHA-256 `16626e4627680834ab7590e26a844399911d486bbf48f77d205acfee49a39a38`
-![artifacts/calendar-viewport-2026-11-13/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-viewport-2026-11-13/workspace/20-fortnight-expanded.png)
+![artifacts/calendar-viewport-2026-11-13/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-viewport-2026-11-13/workspace/20-fortnight-expanded.png)
 
 ### 01 month adaptive and toolbar
 파일: `artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 42,917 bytes · SHA-256 `2cd606d8d36793a6dbeae286e974d7e8b2b4e5dcb392b6ddd2f91cbb515c180b`
-![artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png)
+![artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-workspace-2026-11-13/02-day-detail.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 48,541 bytes · SHA-256 `4e34b8749a73cc90b8e70792f5da021cc74daaeded767012d3c2030d7af4f550`
-![artifacts/calendar-workspace-2026-11-13/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/02-day-detail.png)
+![artifacts/calendar-workspace-2026-11-13/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-workspace-2026-11-13/03-event-detail.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 43,626 bytes · SHA-256 `b97d403b86f4c1c1681f0f9d412961b39acc0fae8cfe13298ea19176fd6788f8`
-![artifacts/calendar-workspace-2026-11-13/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/03-event-detail.png)
+![artifacts/calendar-workspace-2026-11-13/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-workspace-2026-11-13/04-write-preview.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 51,456 bytes · SHA-256 `416ed58e96e378833b0846aeac29f22d5c20510484c7d1186ec7b2046b28d733`
-![artifacts/calendar-workspace-2026-11-13/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/04-write-preview.png)
+![artifacts/calendar-workspace-2026-11-13/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-workspace-2026-11-13/05-all-day-editor.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 45,458 bytes · SHA-256 `3470566a28dc681eb40c2fe987e4c7efc292dcce9800bff29d6e23e459f55014`
-![artifacts/calendar-workspace-2026-11-13/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/05-all-day-editor.png)
+![artifacts/calendar-workspace-2026-11-13/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-workspace-2026-11-13/06-week-timeline.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 39,872 bytes · SHA-256 `561ee87a7b9aed0b45fe7dd4c925c369bec747cf48b5593d7d31c99c5755c630`
-![artifacts/calendar-workspace-2026-11-13/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/06-week-timeline.png)
+![artifacts/calendar-workspace-2026-11-13/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-workspace-2026-11-13/07-search-scope.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 45,552 bytes · SHA-256 `2b4aa8d75343de843dc76ca06963246d61f3ea7299113c181548e58f64860629`
-![artifacts/calendar-workspace-2026-11-13/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/07-search-scope.png)
+![artifacts/calendar-workspace-2026-11-13/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-workspace-2026-11-13/08-calendar-sources.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 45,365 bytes · SHA-256 `e4d9a2bda18e7debfe187e058ccab96d1f462c569f4c288c99432e0a9f31aa44`
-![artifacts/calendar-workspace-2026-11-13/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/08-calendar-sources.png)
+![artifacts/calendar-workspace-2026-11-13/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-workspace-2026-11-13/09-read-only-event.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 48,105 bytes · SHA-256 `e68a4b61bce110889521154937a79607d6008fce24e27d3a9eaf49463a7ce0d8`
-![artifacts/calendar-workspace-2026-11-13/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/09-read-only-event.png)
+![artifacts/calendar-workspace-2026-11-13/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-workspace-2026-11-13/10-partial-state.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 46,888 bytes · SHA-256 `810697f1ac72fa179f9b236f0425ef46e992238541c03159909987e470eb023a`
-![artifacts/calendar-workspace-2026-11-13/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/10-partial-state.png)
+![artifacts/calendar-workspace-2026-11-13/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-workspace-2026-11-13/11-error-visible-with-cache.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 59,508 bytes · SHA-256 `89477812533b6de397a223d01bcc8d58f1aa427aaefbb12f1fce6b8947d423bd`
-![artifacts/calendar-workspace-2026-11-13/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/11-error-visible-with-cache.png)
+![artifacts/calendar-workspace-2026-11-13/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-workspace-2026-11-13/12-phone-320.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 39,776 bytes · SHA-256 `665ec1b9260aeececd798c9e30c251fe1cde7a695ffe655c130882dbe252fb1b`
-![artifacts/calendar-workspace-2026-11-13/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/12-phone-320.png)
+![artifacts/calendar-workspace-2026-11-13/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-workspace-2026-11-13/12-phone-430.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 45,412 bytes · SHA-256 `eae986d1497254b9fd9fd5a7f6c05491a7186dc96a4462593df90a8aca0f85f8`
-![artifacts/calendar-workspace-2026-11-13/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/12-phone-430.png)
+![artifacts/calendar-workspace-2026-11-13/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-workspace-2026-11-13/13-large-text.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 48,308 bytes · SHA-256 `9e23631173c110b4d2f42604d452ddc1e5051c7a16408147172ce6b3d28007e5`
-![artifacts/calendar-workspace-2026-11-13/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/13-large-text.png)
+![artifacts/calendar-workspace-2026-11-13/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-workspace-2026-11-13/14-loading-with-cache.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 44,470 bytes · SHA-256 `bdd64824fa1adfe94071e8b0ec67529e32e8446b78cd676d24f8585e0df1678f`
-![artifacts/calendar-workspace-2026-11-13/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/14-loading-with-cache.png)
+![artifacts/calendar-workspace-2026-11-13/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-workspace-2026-11-13/15-unknown-write-no-resend.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 57,887 bytes · SHA-256 `62738dd3bab5cdc5226f8c829f5a724484dff40b99c794f475fa798c7f5944ca`
-![artifacts/calendar-workspace-2026-11-13/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/15-unknown-write-no-resend.png)
+![artifacts/calendar-workspace-2026-11-13/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/15-unknown-write-no-resend.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-workspace-2026-11-13/duo/01-open-calendar-todo.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 58,861 bytes · SHA-256 `e2f50489e7a67bec72dd390c33ec6ef517bf2ea094f17edc165f938d1d1bce78`
-![artifacts/calendar-workspace-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/01-open-calendar-todo.png)
+![artifacts/calendar-workspace-2026-11-13/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-workspace-2026-11-13/duo/02-open-calendar-duck.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 70,724 bytes · SHA-256 `1a8f46116ed6142dacbd0c030242f334c311568745861394953675d73faba24c`
-![artifacts/calendar-workspace-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/02-open-calendar-duck.png)
+![artifacts/calendar-workspace-2026-11-13/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-workspace-2026-11-13/duo/03-portrait-current-screen.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-workspace-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/03-portrait-current-screen.png)
+![artifacts/calendar-workspace-2026-11-13/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-workspace-2026-11-13/duo/04-closed-camera-column.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-workspace-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/04-closed-camera-column.png)
+![artifacts/calendar-workspace-2026-11-13/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-workspace-2026-11-13/duo/05-back-in-camera-column.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 73,229 bytes · SHA-256 `85407fc0c596cbcdf9c91d3315a595d6e9590311a94f208283a20b6a068771d5`
-![artifacts/calendar-workspace-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/05-back-in-camera-column.png)
+![artifacts/calendar-workspace-2026-11-13/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-workspace-2026-11-13/duo/06-dragging-lens-web-fallback.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 61,027 bytes · SHA-256 `62c53a08da34dc4a3c9bbed8d8fde742341e77e6ff347f1ee6ff7238ed3b0cf6`
-![artifacts/calendar-workspace-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-workspace-2026-11-13/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-workspace-2026-11-13/duo/07-iphone-320-floating-tabs.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 43,586 bytes · SHA-256 `2f2f73d12e4750d5ad937e6ac43bbdf60d50d667c745c90a58053b2557d8ab66`
-![artifacts/calendar-workspace-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-workspace-2026-11-13/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-workspace-2026-11-13/duo/07-iphone-390-floating-tabs.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 45,485 bytes · SHA-256 `18ee27dfb41a560645c93c6a5a584a441dbf327c49dc3fe4bb2dbaaaf4eaeaa2`
-![artifacts/calendar-workspace-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-workspace-2026-11-13/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-workspace-2026-11-13/duo/07-iphone-430-floating-tabs.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 45,289 bytes · SHA-256 `bc26871fb9d2343480572528fc86ccb73c39ae2238e94f325bb380a6fddd026d`
-![artifacts/calendar-workspace-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-workspace-2026-11-13/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-workspace-2026-11-13/duo/08-iphone-320-text-160-percent.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 25,569 bytes · SHA-256 `b613403f6f9b2d44d2323d4cdf7782a66436893a894bd9e97fbbddb364799207`
-![artifacts/calendar-workspace-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-workspace-2026-11-13/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-workspace-2026-11-13/duo/08-pane-local-day-detail.png`
 분류: 캘린더 개선 후 실제 Expo 웹·격리 API/Duo fixture · native/실계정 아님 · 59,792 bytes · SHA-256 `c30437c2d01d508038c552bfe6c95db3f4ca593dd9497fa2c33453842869881b`
-![artifacts/calendar-workspace-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-workspace-2026-11-13/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-workspace-2026-11-13/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-workspace-2026-11-13/duo/08-pane-local-day-detail.png)
 
 ### 01 ordinary year
 파일: `artifacts/calendar-year-2026-11-14/01-ordinary-year.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 152,935 bytes · SHA-256 `3e0d89713de7fb2862071eb43fcc9c61bcfcba300058bbf59fbe948ae73e07ec`
-![artifacts/calendar-year-2026-11-14/01-ordinary-year.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/01-ordinary-year.png)
+![artifacts/calendar-year-2026-11-14/01-ordinary-year.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/01-ordinary-year.png)
 
 ### 02 ordinary month after zoom
 파일: `artifacts/calendar-year-2026-11-14/02-ordinary-month-after-zoom.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,834 bytes · SHA-256 `ec61debee28d39613b27c17b65fbff8f72981d85418d74b574c13b94e57d2a07`
-![artifacts/calendar-year-2026-11-14/02-ordinary-month-after-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/02-ordinary-month-after-zoom.png)
+![artifacts/calendar-year-2026-11-14/02-ordinary-month-after-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/02-ordinary-month-after-zoom.png)
 
 ### 03 year width 320
 파일: `artifacts/calendar-year-2026-11-14/03-year-width-320.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 149,662 bytes · SHA-256 `33413cd4ed60baeaccf235a09891d21b286f19d60a480f17681c5f12a977d7f2`
-![artifacts/calendar-year-2026-11-14/03-year-width-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/03-year-width-320.png)
+![artifacts/calendar-year-2026-11-14/03-year-width-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/03-year-width-320.png)
 
 ### 03 year width 430
 파일: `artifacts/calendar-year-2026-11-14/03-year-width-430.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 151,772 bytes · SHA-256 `cbed2dd186d909e394e88b2f65a456467ac3fcd167672cb9594ed489fd13d591`
-![artifacts/calendar-year-2026-11-14/03-year-width-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/03-year-width-430.png)
+![artifacts/calendar-year-2026-11-14/03-year-width-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/03-year-width-430.png)
 
 ### 04 year dark
 파일: `artifacts/calendar-year-2026-11-14/04-year-dark.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 150,776 bytes · SHA-256 `e41ea2a8b6da8c05fce175e54a7d38116dbcd9c0e8b4b3b8ccb790e1bf254303`
-![artifacts/calendar-year-2026-11-14/04-year-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/04-year-dark.png)
+![artifacts/calendar-year-2026-11-14/04-year-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/04-year-dark.png)
 
 ### 05 opening zoom
 파일: `artifacts/calendar-year-2026-11-14/05-opening-zoom.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 136,208 bytes · SHA-256 `f11c1b01e17213f2eaeea599b516dfb9880281730754f51eb294d612634a55c1`
-![artifacts/calendar-year-2026-11-14/05-opening-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/05-opening-zoom.png)
+![artifacts/calendar-year-2026-11-14/05-opening-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/05-opening-zoom.png)
 
 ### 06 closing zoom
 파일: `artifacts/calendar-year-2026-11-14/06-closing-zoom.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 175,532 bytes · SHA-256 `2cd8ab3dde0884dc5bb7b9dd86ed9e71f572a736c0e36406a443900dcd7a26d7`
-![artifacts/calendar-year-2026-11-14/06-closing-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/06-closing-zoom.png)
+![artifacts/calendar-year-2026-11-14/06-closing-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/06-closing-zoom.png)
 
 ### cache account isolation
 파일: `artifacts/calendar-year-2026-11-14/cache/cache-account-isolation.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,583 bytes · SHA-256 `22c5fd9084ac686f5bda05a8093d0526a141cbfc3489f8f45fb4f582cfe21ee3`
-![artifacts/calendar-year-2026-11-14/cache/cache-account-isolation.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/cache/cache-account-isolation.png)
+![artifacts/calendar-year-2026-11-14/cache/cache-account-isolation.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/cache/cache-account-isolation.png)
 
 ### cache authoritative delete
 파일: `artifacts/calendar-year-2026-11-14/cache/cache-authoritative-delete.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 76,148 bytes · SHA-256 `93ce10d0723f19ed5deeb2228d182ef02252c960d09032d86352975dfced683d`
-![artifacts/calendar-year-2026-11-14/cache/cache-authoritative-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/cache/cache-authoritative-delete.png)
+![artifacts/calendar-year-2026-11-14/cache/cache-authoritative-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/cache/cache-authoritative-delete.png)
 
 ### cache fast source first
 파일: `artifacts/calendar-year-2026-11-14/cache/cache-fast-source-first.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 76,350 bytes · SHA-256 `ebdce1e02087170d312898736897a6494fa4de2021d5c43ccb2f463e8b7089cd`
-![artifacts/calendar-year-2026-11-14/cache/cache-fast-source-first.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/cache/cache-fast-source-first.png)
+![artifacts/calendar-year-2026-11-14/cache/cache-fast-source-first.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/cache/cache-fast-source-first.png)
 
 ### cache immediate fortnight
 파일: `artifacts/calendar-year-2026-11-14/cache/cache-immediate-fortnight.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 58,486 bytes · SHA-256 `fc2424f771c396f14e4511192cad9de8dbd5d6db847dde995355a8818c7cb5a8`
-![artifacts/calendar-year-2026-11-14/cache/cache-immediate-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/cache/cache-immediate-fortnight.png)
+![artifacts/calendar-year-2026-11-14/cache/cache-immediate-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/cache/cache-immediate-fortnight.png)
 
 ### cache updated month
 파일: `artifacts/calendar-year-2026-11-14/cache/cache-updated-month.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 76,350 bytes · SHA-256 `ebdce1e02087170d312898736897a6494fa4de2021d5c43ccb2f463e8b7089cd`
-![artifacts/calendar-year-2026-11-14/cache/cache-updated-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/cache/cache-updated-month.png)
+![artifacts/calendar-year-2026-11-14/cache/cache-updated-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/cache/cache-updated-month.png)
 
 ### design comparison
 파일: `artifacts/calendar-year-2026-11-14/design-comparison.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 1,119,432 bytes · SHA-256 `de1873e37a2c78e72a2e8f960ad6395872224439442f89abbf8ab23088e3fa72`
-![artifacts/calendar-year-2026-11-14/design-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/design-comparison.png)
+![artifacts/calendar-year-2026-11-14/design-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/design-comparison.png)
 
 ### 01 open calendar todo
 파일: `artifacts/calendar-year-2026-11-14/duo/01-open-calendar-todo.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 52,436 bytes · SHA-256 `98ae0d6f3d6e09fa25d161c3f364c84c9a2280de51b6e7190944bc85248cdb3f`
-![artifacts/calendar-year-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/01-open-calendar-todo.png)
+![artifacts/calendar-year-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/calendar-year-2026-11-14/duo/02-open-calendar-duck.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 61,487 bytes · SHA-256 `8758cf49ced132d817b8e4361c1bf3ccb918f86c3da9e7e8b939ef99552ee13c`
-![artifacts/calendar-year-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/02-open-calendar-duck.png)
+![artifacts/calendar-year-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/calendar-year-2026-11-14/duo/03-portrait-current-screen.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/calendar-year-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/03-portrait-current-screen.png)
+![artifacts/calendar-year-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/calendar-year-2026-11-14/duo/04-closed-camera-column.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/calendar-year-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/04-closed-camera-column.png)
+![artifacts/calendar-year-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/calendar-year-2026-11-14/duo/05-back-in-camera-column.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 63,322 bytes · SHA-256 `7547d8d4c65043eba08bcdf97a986251e589ab45dfee8aefae8688bfbc15d4d6`
-![artifacts/calendar-year-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/05-back-in-camera-column.png)
+![artifacts/calendar-year-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/calendar-year-2026-11-14/duo/06-dragging-lens-web-fallback.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 54,567 bytes · SHA-256 `a122526f3c5d58fb529f169d72da87720c45887f3b93a7fc02eeb0a5938aca9d`
-![artifacts/calendar-year-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/06-dragging-lens-web-fallback.png)
+![artifacts/calendar-year-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/calendar-year-2026-11-14/duo/07-iphone-320-floating-tabs.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 31,635 bytes · SHA-256 `7e508341a790004b9c3c63777af74d5905c1f9be35f25d1aba546882723dd950`
-![artifacts/calendar-year-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/07-iphone-320-floating-tabs.png)
+![artifacts/calendar-year-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/calendar-year-2026-11-14/duo/07-iphone-390-floating-tabs.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 32,956 bytes · SHA-256 `6f180790df1694f11d0ea6a49147425954201e785953640d833582aad3bc94b6`
-![artifacts/calendar-year-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/07-iphone-390-floating-tabs.png)
+![artifacts/calendar-year-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/calendar-year-2026-11-14/duo/07-iphone-430-floating-tabs.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 33,519 bytes · SHA-256 `73d8fb5a62e4e604fa566e64c0189783cecf588afdc73fca57b5edd17c7de84e`
-![artifacts/calendar-year-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/07-iphone-430-floating-tabs.png)
+![artifacts/calendar-year-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/calendar-year-2026-11-14/duo/08-iphone-320-text-160-percent.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 25,392 bytes · SHA-256 `2ba129414f713b4ddc177a4b629a87d1400e40308f354221955994e708d36993`
-![artifacts/calendar-year-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/08-iphone-320-text-160-percent.png)
+![artifacts/calendar-year-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/calendar-year-2026-11-14/duo/08-pane-local-day-detail.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 61,145 bytes · SHA-256 `7ce4aeaa8dcd3aea4e840f956cb380bcc254f040e83ccbadefb03acc21bcc573`
-![artifacts/calendar-year-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/08-pane-local-day-detail.png)
+![artifacts/calendar-year-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/calendar-year-2026-11-14/duo/10-folded-calendar-dark.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 36,918 bytes · SHA-256 `591d54227101c78baf6b7a54f74bb62f9880dd15e635b3c9fbcfc7147da49282`
-![artifacts/calendar-year-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/10-folded-calendar-dark.png)
+![artifacts/calendar-year-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/calendar-year-2026-11-14/duo/11-folded-calendar-light.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 35,705 bytes · SHA-256 `ed1e0899186ec825de25bcbdea76bdabba1ee81070f9ec6f803a4ed49cac610f`
-![artifacts/calendar-year-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/11-folded-calendar-light.png)
+![artifacts/calendar-year-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/calendar-year-2026-11-14/duo/12-open-calendar-dark.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 53,742 bytes · SHA-256 `59055a2552d324b86ad06764ad4577ea9c1cba37bd204de49646cb67a3c6cfde`
-![artifacts/calendar-year-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/12-open-calendar-dark.png)
+![artifacts/calendar-year-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/calendar-year-2026-11-14/duo/13-folded-fortnight.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 27,886 bytes · SHA-256 `bf9710e7757797d0cf755500108861eef277c0905c91bab1277cce39c1c23f3f`
-![artifacts/calendar-year-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/13-folded-fortnight.png)
+![artifacts/calendar-year-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/calendar-year-2026-11-14/duo/14-open-fortnight-dark.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 47,864 bytes · SHA-256 `482e0025ee79360d4ef801d65b6765be3a779b2ffbd3eb5c5f20c3b67938e1b4`
-![artifacts/calendar-year-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/14-open-fortnight-dark.png)
+![artifacts/calendar-year-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/14-open-fortnight-dark.png)
 
 ### 15 long press left calendar
 파일: `artifacts/calendar-year-2026-11-14/duo/15-long-press-left-calendar.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 42,845 bytes · SHA-256 `784ce859dcff14b8f6ba4f7ed6a904a7b82de82917590b7d358a1f7fca8f2b51`
-![artifacts/calendar-year-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/15-long-press-left-calendar.png)
+![artifacts/calendar-year-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/15-long-press-left-calendar.png)
 
 ### 16 long press right calendar
 파일: `artifacts/calendar-year-2026-11-14/duo/16-long-press-right-calendar.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 30,350 bytes · SHA-256 `44a0e45882a508ec44375b67437488a566b74f4a3b57108e0052b01f7763efa2`
-![artifacts/calendar-year-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/16-long-press-right-calendar.png)
+![artifacts/calendar-year-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/16-long-press-right-calendar.png)
 
 ### 17 folded long press calendar
 파일: `artifacts/calendar-year-2026-11-14/duo/17-folded-long-press-calendar.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 27,697 bytes · SHA-256 `55476df7740175ebc5753a1ef4312f637d44202de7a054bac49a03af6ada2ae7`
-![artifacts/calendar-year-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/17-folded-long-press-calendar.png)
+![artifacts/calendar-year-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/17-folded-long-press-calendar.png)
 
 ### 18 year left calendar right todos
 파일: `artifacts/calendar-year-2026-11-14/duo/18-year-left-calendar-right-todos.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 86,959 bytes · SHA-256 `b5d1627afec57cae0c50606633a5ce727c99858b85a9598490b735b0137e706d`
-![artifacts/calendar-year-2026-11-14/duo/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/18-year-left-calendar-right-todos.png)
+![artifacts/calendar-year-2026-11-14/duo/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/18-year-left-calendar-right-todos.png)
 
 ### 19 year right calendar
 파일: `artifacts/calendar-year-2026-11-14/duo/19-year-right-calendar.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 87,355 bytes · SHA-256 `f96f2c545805ab787de037d5e4be3bf14c55a4aef12dd1f0fcdfc6e4f346568e`
-![artifacts/calendar-year-2026-11-14/duo/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/19-year-right-calendar.png)
+![artifacts/calendar-year-2026-11-14/duo/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/19-year-right-calendar.png)
 
 ### 20 year portrait
 파일: `artifacts/calendar-year-2026-11-14/duo/20-year-portrait.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 83,739 bytes · SHA-256 `5d37c8a60c1760c860a587a744ca98258df9aa0461a172cfc483763ab03f173a`
-![artifacts/calendar-year-2026-11-14/duo/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/20-year-portrait.png)
+![artifacts/calendar-year-2026-11-14/duo/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/20-year-portrait.png)
 
 ### 21 year folded
 파일: `artifacts/calendar-year-2026-11-14/duo/21-year-folded.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 67,465 bytes · SHA-256 `8dea5bb2e553c29524acd92c2acb4a71d573fa9da296b6e31624ed6bb631ec09`
-![artifacts/calendar-year-2026-11-14/duo/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/21-year-folded.png)
+![artifacts/calendar-year-2026-11-14/duo/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/21-year-folded.png)
 
 ### 22 year duo motion
 파일: `artifacts/calendar-year-2026-11-14/duo/22-year-duo-motion.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 84,176 bytes · SHA-256 `1ed505ab18e184a9ea01beb3a8f8a49e155e17917215a536928ac1f44a40e929`
-![artifacts/calendar-year-2026-11-14/duo/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/22-year-duo-motion.png)
+![artifacts/calendar-year-2026-11-14/duo/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/22-year-duo-motion.png)
 
 ### 23 year design comparison state
 파일: `artifacts/calendar-year-2026-11-14/duo/23-year-design-comparison-state.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 92,528 bytes · SHA-256 `9e11e61778f4b55dafb6f8816426f0a97c722844e718a86d3bd772bb3b3c8130`
-![artifacts/calendar-year-2026-11-14/duo/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/duo/23-year-design-comparison-state.png)
+![artifacts/calendar-year-2026-11-14/duo/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/duo/23-year-design-comparison-state.png)
 
 ### 01 ordinary enter today
 파일: `artifacts/calendar-year-2026-11-14/gestures/01-ordinary-enter-today.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,580 bytes · SHA-256 `d25247d215d9c25401da707db746ac4a2146f3b6a2f70459300525d1fb043410`
-![artifacts/calendar-year-2026-11-14/gestures/01-ordinary-enter-today.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/gestures/01-ordinary-enter-today.png)
+![artifacts/calendar-year-2026-11-14/gestures/01-ordinary-enter-today.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/gestures/01-ordinary-enter-today.png)
 
 ### 02 ordinary long press fortnight
 파일: `artifacts/calendar-year-2026-11-14/gestures/02-ordinary-long-press-fortnight.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 52,697 bytes · SHA-256 `4a6607acd00dce074e7d649cf7d027410ef0216d050c28834748bb1a8aaffaae`
-![artifacts/calendar-year-2026-11-14/gestures/02-ordinary-long-press-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/gestures/02-ordinary-long-press-fortnight.png)
+![artifacts/calendar-year-2026-11-14/gestures/02-ordinary-long-press-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/gestures/02-ordinary-long-press-fortnight.png)
 
 ### 03 ordinary long press from other tab
 파일: `artifacts/calendar-year-2026-11-14/gestures/03-ordinary-long-press-from-other-tab.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 56,828 bytes · SHA-256 `b2fc4f553dae1bfa62cb9311e760c151ce559728b0f8e4c55e357d373e3c9ed8`
-![artifacts/calendar-year-2026-11-14/gestures/03-ordinary-long-press-from-other-tab.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/gestures/03-ordinary-long-press-from-other-tab.png)
+![artifacts/calendar-year-2026-11-14/gestures/03-ordinary-long-press-from-other-tab.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/gestures/03-ordinary-long-press-from-other-tab.png)
 
 ### 04 ordinary motion enabled shortcut
 파일: `artifacts/calendar-year-2026-11-14/gestures/04-ordinary-motion-enabled-shortcut.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 57,111 bytes · SHA-256 `02ad51924617541254d4f0293774f380f7eb0d1f715dd6034424010a645411d3`
-![artifacts/calendar-year-2026-11-14/gestures/04-ordinary-motion-enabled-shortcut.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/gestures/04-ordinary-motion-enabled-shortcut.png)
+![artifacts/calendar-year-2026-11-14/gestures/04-ordinary-motion-enabled-shortcut.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/gestures/04-ordinary-motion-enabled-shortcut.png)
 
 ### selected year overview
 파일: `artifacts/calendar-year-2026-11-14/proposals/selected-year-overview.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 1,308,495 bytes · SHA-256 `554fb3988080e165dc1e2135c714c502d4e926f885868315e20580d0eb04e14e`
-![artifacts/calendar-year-2026-11-14/proposals/selected-year-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/proposals/selected-year-overview.png)
+![artifacts/calendar-year-2026-11-14/proposals/selected-year-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/proposals/selected-year-overview.png)
 
 ### unselected compact
 파일: `artifacts/calendar-year-2026-11-14/proposals/unselected-compact.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 1,162,101 bytes · SHA-256 `53568581dbab185270b7a96a3c227a7fe87aefc4c8d39f3948576e0d950d4dcf`
-![artifacts/calendar-year-2026-11-14/proposals/unselected-compact.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/proposals/unselected-compact.png)
+![artifacts/calendar-year-2026-11-14/proposals/unselected-compact.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/proposals/unselected-compact.png)
 
 ### unselected sheet
 파일: `artifacts/calendar-year-2026-11-14/proposals/unselected-sheet.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 1,317,243 bytes · SHA-256 `c9f9726ec200264ec17406b860014b081f211d329326a9b4a345dd8ca37bb1eb`
-![artifacts/calendar-year-2026-11-14/proposals/unselected-sheet.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/proposals/unselected-sheet.png)
+![artifacts/calendar-year-2026-11-14/proposals/unselected-sheet.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/proposals/unselected-sheet.png)
 
 ### rollback legacy picker open
 파일: `artifacts/calendar-year-2026-11-14/rollback-legacy-picker-open.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 78,680 bytes · SHA-256 `a3dec9866506835cc8156369d074303eec6da1f1ce6e82bbecd22e6ade63a8db`
-![artifacts/calendar-year-2026-11-14/rollback-legacy-picker-open.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/rollback-legacy-picker-open.png)
+![artifacts/calendar-year-2026-11-14/rollback-legacy-picker-open.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/rollback-legacy-picker-open.png)
 
 ### rollback legacy picker restored
 파일: `artifacts/calendar-year-2026-11-14/rollback-legacy-picker-restored.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,087 bytes · SHA-256 `99d957a61102b89fd4ae6a6714b6e8595ebebcbd068d69bc0926e4623712111f`
-![artifacts/calendar-year-2026-11-14/rollback-legacy-picker-restored.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/rollback-legacy-picker-restored.png)
+![artifacts/calendar-year-2026-11-14/rollback-legacy-picker-restored.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/rollback-legacy-picker-restored.png)
 
 ### ordinary dark
 파일: `artifacts/calendar-year-2026-11-14/viewport/ordinary-dark.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 80,164 bytes · SHA-256 `47690684f5c601d6c3cbb79f305aa24bd27c67c2d4c208412758ee34e29a02f0`
-![artifacts/calendar-year-2026-11-14/viewport/ordinary-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/viewport/ordinary-dark.png)
+![artifacts/calendar-year-2026-11-14/viewport/ordinary-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/viewport/ordinary-dark.png)
 
 ### ordinary fortnight
 파일: `artifacts/calendar-year-2026-11-14/viewport/ordinary-fortnight.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 56,828 bytes · SHA-256 `b2fc4f553dae1bfa62cb9311e760c151ce559728b0f8e4c55e357d373e3c9ed8`
-![artifacts/calendar-year-2026-11-14/viewport/ordinary-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/viewport/ordinary-fortnight.png)
+![artifacts/calendar-year-2026-11-14/viewport/ordinary-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/viewport/ordinary-fortnight.png)
 
 ### ordinary month
 파일: `artifacts/calendar-year-2026-11-14/viewport/ordinary-month.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,580 bytes · SHA-256 `d25247d215d9c25401da707db746ac4a2146f3b6a2f70459300525d1fb043410`
-![artifacts/calendar-year-2026-11-14/viewport/ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/viewport/ordinary-month.png)
+![artifacts/calendar-year-2026-11-14/viewport/ordinary-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/viewport/ordinary-month.png)
 
 ### ordinary six week month
 파일: `artifacts/calendar-year-2026-11-14/viewport/ordinary-six-week-month.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 79,343 bytes · SHA-256 `a285a2e8c0876f4ecadfa75a48636015f5753d0fb09a7004b9365dfb21ada41c`
-![artifacts/calendar-year-2026-11-14/viewport/ordinary-six-week-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/viewport/ordinary-six-week-month.png)
+![artifacts/calendar-year-2026-11-14/viewport/ordinary-six-week-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/viewport/ordinary-six-week-month.png)
 
 ### ordinary today menu
 파일: `artifacts/calendar-year-2026-11-14/viewport/ordinary-today-menu.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,977 bytes · SHA-256 `7414dae43e7911c75784e3226f216412cc5a8b94beaf7037d6d98053126fd568`
-![artifacts/calendar-year-2026-11-14/viewport/ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/viewport/ordinary-today-menu.png)
+![artifacts/calendar-year-2026-11-14/viewport/ordinary-today-menu.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/viewport/ordinary-today-menu.png)
 
 ### ordinary todos
 파일: `artifacts/calendar-year-2026-11-14/viewport/ordinary-todos.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 48,883 bytes · SHA-256 `6e5af017d5f847d915cea2377fb3cefd15b5abee335e36ed5de6e3909c8b05eb`
-![artifacts/calendar-year-2026-11-14/viewport/ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/viewport/ordinary-todos.png)
+![artifacts/calendar-year-2026-11-14/viewport/ordinary-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/viewport/ordinary-todos.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/calendar-year-2026-11-14/workspace/01-clean-adaptive-month.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 80,087 bytes · SHA-256 `eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863`
-![artifacts/calendar-year-2026-11-14/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/01-clean-adaptive-month.png)
+![artifacts/calendar-year-2026-11-14/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/calendar-year-2026-11-14/workspace/02-day-detail.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 102,321 bytes · SHA-256 `8d1c7ccd2ccf4d22fb62bb0f658b8d84430dbd11e4f25392cc4113eb95e2a9a9`
-![artifacts/calendar-year-2026-11-14/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/02-day-detail.png)
+![artifacts/calendar-year-2026-11-14/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/calendar-year-2026-11-14/workspace/03-event-detail.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,679 bytes · SHA-256 `9e79567d1a2fa7a99bc50bf064ffe28d10afafc0bc2b0abebb795af87b43525f`
-![artifacts/calendar-year-2026-11-14/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/03-event-detail.png)
+![artifacts/calendar-year-2026-11-14/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/calendar-year-2026-11-14/workspace/04-write-preview.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 100,866 bytes · SHA-256 `dc6f5587a0a560eaedbb32c8a43e4e16bb59d2bfcdb341f3594585c4eddae6df`
-![artifacts/calendar-year-2026-11-14/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/04-write-preview.png)
+![artifacts/calendar-year-2026-11-14/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/calendar-year-2026-11-14/workspace/05-all-day-editor.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 96,917 bytes · SHA-256 `d728efbabee66a745acac25fd8a404e8700acde241ae2ecebe7341bd818fc9b0`
-![artifacts/calendar-year-2026-11-14/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/05-all-day-editor.png)
+![artifacts/calendar-year-2026-11-14/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/calendar-year-2026-11-14/workspace/06-week-timeline.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 89,108 bytes · SHA-256 `3821731eefc3f2a00bda6cd593417263e78beb8ac2721932d368e9220ee4cc54`
-![artifacts/calendar-year-2026-11-14/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/06-week-timeline.png)
+![artifacts/calendar-year-2026-11-14/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/calendar-year-2026-11-14/workspace/07-search-scope.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 95,536 bytes · SHA-256 `4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3`
-![artifacts/calendar-year-2026-11-14/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/07-search-scope.png)
+![artifacts/calendar-year-2026-11-14/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/calendar-year-2026-11-14/workspace/08-calendar-sources.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 89,337 bytes · SHA-256 `2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215`
-![artifacts/calendar-year-2026-11-14/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/08-calendar-sources.png)
+![artifacts/calendar-year-2026-11-14/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/calendar-year-2026-11-14/workspace/09-read-only-event.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 99,661 bytes · SHA-256 `06e83a5bcce97c6b143bf5ec4194c3e69c1737fc7b3465f717ebf31aea3fc97c`
-![artifacts/calendar-year-2026-11-14/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/09-read-only-event.png)
+![artifacts/calendar-year-2026-11-14/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/calendar-year-2026-11-14/workspace/10-partial-state.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-year-2026-11-14/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/10-partial-state.png)
+![artifacts/calendar-year-2026-11-14/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/calendar-year-2026-11-14/workspace/11-error-visible-with-cache.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-year-2026-11-14/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/11-error-visible-with-cache.png)
+![artifacts/calendar-year-2026-11-14/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/calendar-year-2026-11-14/workspace/12-phone-320.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 77,373 bytes · SHA-256 `8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0`
-![artifacts/calendar-year-2026-11-14/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/12-phone-320.png)
+![artifacts/calendar-year-2026-11-14/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/calendar-year-2026-11-14/workspace/12-phone-430.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 88,895 bytes · SHA-256 `1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c`
-![artifacts/calendar-year-2026-11-14/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/12-phone-430.png)
+![artifacts/calendar-year-2026-11-14/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/calendar-year-2026-11-14/workspace/13-large-text.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 98,883 bytes · SHA-256 `8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb`
-![artifacts/calendar-year-2026-11-14/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/13-large-text.png)
+![artifacts/calendar-year-2026-11-14/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/calendar-year-2026-11-14/workspace/14-loading-with-cache.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/calendar-year-2026-11-14/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/14-loading-with-cache.png)
+![artifacts/calendar-year-2026-11-14/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/calendar-year-2026-11-14/workspace/15-unknown-write-no-resend.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 111,953 bytes · SHA-256 `43ad6dde8a6bee9ff0ae7e347f2040661d377be1258e637f5892c93f19b17313`
-![artifacts/calendar-year-2026-11-14/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/15-unknown-write-no-resend.png)
+![artifacts/calendar-year-2026-11-14/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/calendar-year-2026-11-14/workspace/16-dark-month-reference.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 74,340 bytes · SHA-256 `1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5`
-![artifacts/calendar-year-2026-11-14/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/16-dark-month-reference.png)
+![artifacts/calendar-year-2026-11-14/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/calendar-year-2026-11-14/workspace/17-dark-event-reference.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 65,944 bytes · SHA-256 `994aa512411b49511217f1d3606e773448de547242206a81a916fb1e46cea2b7`
-![artifacts/calendar-year-2026-11-14/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/17-dark-event-reference.png)
+![artifacts/calendar-year-2026-11-14/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/calendar-year-2026-11-14/workspace/18-light-month-reference.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 73,514 bytes · SHA-256 `4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb`
-![artifacts/calendar-year-2026-11-14/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/18-light-month-reference.png)
+![artifacts/calendar-year-2026-11-14/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/calendar-year-2026-11-14/workspace/19-non-json-error-keeps-events.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 83,222 bytes · SHA-256 `e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209`
-![artifacts/calendar-year-2026-11-14/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/19-non-json-error-keeps-events.png)
+![artifacts/calendar-year-2026-11-14/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/calendar-year-2026-11-14/workspace/20-fortnight-expanded.png`
 분류: 연간 보기·줌·OFF복원/시안(합성제안) · 실제 Expo/합성API·Duo기하 fixture · native/실계정 아님 · 63,763 bytes · SHA-256 `850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c`
-![artifacts/calendar-year-2026-11-14/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-year-2026-11-14/workspace/20-fortnight-expanded.png)
+![artifacts/calendar-year-2026-11-14/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-year-2026-11-14/workspace/20-fortnight-expanded.png)
 
 ### calendar
 파일: `artifacts/calendar.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 67,096 bytes · SHA-256 `eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351`
-![artifacts/calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar.png)
+![artifacts/calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar.png)
+
+### 01 compact long source
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/01-compact-long-source.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 87,354 bytes · SHA-256 `2c90e50d959e4cc5b824430ff1007cc5f7c8424425acd60cf45f207d04c6676d`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/01-compact-long-source.png)
+
+### 02 local only preview
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/02-local-only-preview.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 102,336 bytes · SHA-256 `d5eb84637787ebcb3a356feef5df5b2c7a60d448588ad90737f98ff2d7580362`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/02-local-only-preview.png)
+
+### 03 partial save retry only duck
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/03-partial-save-retry-only-duck.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 114,918 bytes · SHA-256 `0f0b8c18a1bc53186d4c2701eb9573bb82a4a3265748b3d1de0772454c7e1c1e`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/03-partial-save-retry-only-duck.png)
+
+### 04 editor scrollbar visible
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/04-editor-scrollbar-visible.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 95,329 bytes · SHA-256 `f46f7ab030d9cf491d882f5041ae71e8e965b3d7f9afb99a60231e08a9dec167`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/04-editor-scrollbar-visible.png)
+
+### 05 todo shared transition
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/05-todo-shared-transition.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 99,994 bytes · SHA-256 `0fb2de4557bb995ec71eec033144ad4e27caf94c9fef2d5e589468fec1bd4fe6`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/05-todo-shared-transition.png)
+
+### 06 year scrollbar
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/06-year-scrollbar.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 153,044 bytes · SHA-256 `2bd28e9bf195ea65e51861e5aa966c985afaeed4665ee72b5a0a3739c18d9925`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/06-year-scrollbar.png)
+
+### 07 month after continuous swipe
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/07-month-after-continuous-swipe.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 74,699 bytes · SHA-256 `1471bd7433ad373f2c2b3b69c4faf6bec22b7b871fdf98676b0ec54d4f085265`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/07-month-after-continuous-swipe.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/07-month-after-continuous-swipe.png)
+
+### 08 continuous swipe midpoint
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/08-continuous-swipe-midpoint.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 75,362 bytes · SHA-256 `b4a45b853668854bd0b93b6932a7007caf4a476d2739b0907414f0b98a7d88e7`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/08-continuous-swipe-midpoint.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/08-continuous-swipe-midpoint.png)
+
+### 01 compact phone chat
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/before-chat/01-compact-phone-chat.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 17,755 bytes · SHA-256 `9dcf27609c1e5bc3898d9d52518d53ac0c3aa19033535a7beb74c572598b0576`
+![artifacts/chat-calendar-simplicity-2026-11-14/before-chat/01-compact-phone-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/before-chat/01-compact-phone-chat.png)
+
+### 01 typing in conversation
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/01-typing-in-conversation.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 23,989 bytes · SHA-256 `ff772ef0d79757da03e76efdca928bb7a8d60f4b7f41ff15e83635e5eb891f95`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/01-typing-in-conversation.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/01-typing-in-conversation.png)
+
+### 02 checklist
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/02-checklist.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 39,392 bytes · SHA-256 `9bea09bd2ed31a39da7d15ef24eb6860546253706a2e2c450ecbf85c1c425fb8`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/02-checklist.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/02-checklist.png)
+
+### 03 compact sources
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/03-compact-sources.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 39,191 bytes · SHA-256 `ee346f4c6d72b8fc962899c734ec9417c6c42c0a733b2d98901a745b5ebce085`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/03-compact-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/03-compact-sources.png)
+
+### 04 simple editor
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/04-simple-editor.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 38,975 bytes · SHA-256 `d92caf0dd7660be6b5297943691cb30a49d9fea41a36b19e737bb7234f315971`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/04-simple-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/04-simple-editor.png)
+
+### 05 calendar choice
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/05-calendar-choice.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 38,615 bytes · SHA-256 `200b20d8d3877b4783319b0c5258d9ad1f892713f3828a2c03e7d793b9b24d44`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/05-calendar-choice.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/05-calendar-choice.png)
+
+### 06 delete confirmation
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/06-delete-confirmation.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 43,435 bytes · SHA-256 `f03a4e38dbce75f1dfe5cc893f017f91b87bf9c4c7c725569245b53797975ecc`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/06-delete-confirmation.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/06-delete-confirmation.png)
+
+### 07 fortnight two lines
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/07-fortnight-two-lines.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 26,484 bytes · SHA-256 `b246d91e6ef6d4daae107f6f31813fdbdccf38279288e5411362dbdd5efad3c6`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/07-fortnight-two-lines.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/07-fortnight-two-lines.png)
+
+### 08 folded two lines
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/08-folded-two-lines.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 28,426 bytes · SHA-256 `09627144f4c59a5504a8311a2ffb3b67ef3b317a36d249efe41d941a50763dae`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/08-folded-two-lines.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/08-folded-two-lines.png)
+
+### 09 open two lines
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/09-open-two-lines.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 49,512 bytes · SHA-256 `7de7eabc08cb042ea2685260d008206edf72165fa833dcd7aac0f188228dbb44`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/09-open-two-lines.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/09-open-two-lines.png)
+
+### 10 folded chat
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/10-folded-chat.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 37,170 bytes · SHA-256 `c3c0b0ab124659c2b0d93376e65fd41dc761c40fe32016670c618fc79f8ddf79`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/10-folded-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/10-folded-chat.png)
+
+### 11 open chat
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/11-open-chat.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 65,412 bytes · SHA-256 `a3838a0ab82588bd658cd1ca630cba828cb57a4c4c6f4b383b62b1dc2974e107`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/11-open-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/11-open-chat.png)
+
+### 12 todo countdown
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/12-todo-countdown.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 26,898 bytes · SHA-256 `e2d10828a910c6635e30e5877fd459bf884b5d1641eb1055c4d7ef4199ceee44`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/12-todo-countdown.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/12-todo-countdown.png)
+
+### 13 log countdown
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/13-log-countdown.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 28,028 bytes · SHA-256 `02dd1c807cc4f5e67cdd2ddd89c80b425fec68e179302b3d8d4624a501ad0929`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/13-log-countdown.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/13-log-countdown.png)
+
+### 14 open editor
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/14-open-editor.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 70,451 bytes · SHA-256 `2eaf66a9cc9f0d4a733b84bedce7c86b2b596ac929c3d5212e1706c7de100e6c`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/14-open-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/14-open-editor.png)
+
+### 15 folded editor
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/15-folded-editor.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 37,432 bytes · SHA-256 `3af4c75d45a4060a56107440b8992ae73589f9db460f47e230292fbbcf437262`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/15-folded-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/15-folded-editor.png)
+
+### 16 folded delete
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/16-folded-delete.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 44,190 bytes · SHA-256 `e57dcd90435770f21d874d4f6150d67569faab43d5417e172bd5840a705f9d91`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/16-folded-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/16-folded-delete.png)
+
+### 17 small dark editor
+파일: `artifacts/chat-calendar-simplicity-2026-11-14/current/17-small-dark-editor.png`
+분류: 채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 32,341 bytes · SHA-256 `a6ceb31c88af624b322747ff8aa11ccd2b88ef7db60e30d084c8a6804a63bcdf`
+![artifacts/chat-calendar-simplicity-2026-11-14/current/17-small-dark-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/chat-calendar-simplicity-2026-11-14/current/17-small-dark-editor.png)
 
 ### design guide fixture
 파일: `artifacts/design-guide-fixture.png`
 분류: 모의 응답 테스트 화면 · 438,564 bytes · SHA-256 `abf3a2720d95b5148b3334a2bd6d1aa428cbac4cb15ed58b6a72256acba75cc3`
-![artifacts/design-guide-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/design-guide-fixture.png)
+![artifacts/design-guide-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/design-guide-fixture.png)
 
 ### desktop demo
 파일: `artifacts/duck-website-2026-11-13/desktop-demo.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 263,675 bytes · SHA-256 `b186dab1d6052268d85e34c4ef2562dcf2f4a511502a1ef1314609435bea9832`
-![artifacts/duck-website-2026-11-13/desktop-demo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-demo.png)
+![artifacts/duck-website-2026-11-13/desktop-demo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-demo.png)
 
 ### desktop faq
 파일: `artifacts/duck-website-2026-11-13/desktop-faq.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 113,627 bytes · SHA-256 `e1a31fbde0f30ddb745dc6c08f0f07ee49946beb2e7bfe3792abf86d67de5e61`
-![artifacts/duck-website-2026-11-13/desktop-faq.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-faq.png)
+![artifacts/duck-website-2026-11-13/desktop-faq.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-faq.png)
 
 ### desktop footer
 파일: `artifacts/duck-website-2026-11-13/desktop-footer.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 204,285 bytes · SHA-256 `b37b56b14696b0fa957fc15e87c17733186df2ecc6280a495cfd78573d6b16b4`
-![artifacts/duck-website-2026-11-13/desktop-footer.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-footer.png)
+![artifacts/duck-website-2026-11-13/desktop-footer.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-footer.png)
 
 ### desktop hero comparison
 파일: `artifacts/duck-website-2026-11-13/desktop-hero-comparison.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 1,050,636 bytes · SHA-256 `8f35adc2a370458b550f91fcb6e6a55893ed495875d289219912924246ce21f2`
-![artifacts/duck-website-2026-11-13/desktop-hero-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-hero-comparison.png)
+![artifacts/duck-website-2026-11-13/desktop-hero-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-hero-comparison.png)
 
 ### desktop hero
 파일: `artifacts/duck-website-2026-11-13/desktop-hero.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 567,582 bytes · SHA-256 `f84f73466a536e91b3228de7f2387b61f3f3bbb23b2f99d29988e3507ce3846e`
-![artifacts/duck-website-2026-11-13/desktop-hero.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-hero.png)
+![artifacts/duck-website-2026-11-13/desktop-hero.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-hero.png)
 
 ### desktop intro
 파일: `artifacts/duck-website-2026-11-13/desktop-intro.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 299,578 bytes · SHA-256 `9d424cb37774dcb8bca9f99963c4042145781b7d3f7c2380a32c8363944efc87`
-![artifacts/duck-website-2026-11-13/desktop-intro.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-intro.png)
+![artifacts/duck-website-2026-11-13/desktop-intro.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-intro.png)
 
 ### desktop open comparison
 파일: `artifacts/duck-website-2026-11-13/desktop-open-comparison.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 1,068,710 bytes · SHA-256 `52a86f6f1972f25272443c66ce1bfb8aeddda35f3721bfd5928ca4be61874bf5`
-![artifacts/duck-website-2026-11-13/desktop-open-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-open-comparison.png)
+![artifacts/duck-website-2026-11-13/desktop-open-comparison.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-open-comparison.png)
 
 ### desktop open
 파일: `artifacts/duck-website-2026-11-13/desktop-open.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 534,417 bytes · SHA-256 `11d020b3564dfaf5f1925adf6b6066e543c5f1e680f4fce4aaeb80c441140887`
-![artifacts/duck-website-2026-11-13/desktop-open.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-open.png)
+![artifacts/duck-website-2026-11-13/desktop-open.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-open.png)
 
 ### desktop research
 파일: `artifacts/duck-website-2026-11-13/desktop-research.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 399,501 bytes · SHA-256 `f98d1b81cf07b6b1c50709b2000190e232d8cc574ca0e3e39afe081f73633e0d`
-![artifacts/duck-website-2026-11-13/desktop-research.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-research.png)
+![artifacts/duck-website-2026-11-13/desktop-research.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-research.png)
 
 ### desktop security
 파일: `artifacts/duck-website-2026-11-13/desktop-security.png`
 분류: 덕 소개 웹 프로토타입 · 원본 비교용/합성 데이터 · native/실계정 아님 · 114,871 bytes · SHA-256 `434dbf9446fe7884cc18e4371cf3e41865203b6e50e05bdef344fb67df5b2017`
-![artifacts/duck-website-2026-11-13/desktop-security.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duck-website-2026-11-13/desktop-security.png)
+![artifacts/duck-website-2026-11-13/desktop-security.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duck-website-2026-11-13/desktop-security.png)
 
 ### duckduck
 파일: `artifacts/duckduck.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 53,117 bytes · SHA-256 `f773dfd7a01bf87c0deaabe2f3c9751bb6c6bd5cf883e830e1df6687c6b863b3`
-![artifacts/duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duckduck.png)
+![artifacts/duckduck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duckduck.png)
 
 ### 1 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 25,747 bytes · SHA-256 `7ded58293e3d4f9300a638e45be9b5d16a5d656970d1b5ee3fb2a990979333cd`
-![artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/1-geometry-fixture.png)
 
 ### 10 back closed demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,464 bytes · SHA-256 `47ef1dc2ca8f032c07e842b77e765f2633596f3194573a6eb25542db62933e4c`
-![artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
 
 ### 2 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 25,692 bytes · SHA-256 `f07f6c3b90c2a53d5539f26362ba3a3ac932abe5a51da2e3b16c97a97ee735c2`
-![artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/2-geometry-fixture.png)
 
 ### 3 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,980 bytes · SHA-256 `53936ae78c82c4eaa64e150c12af1736df64322624166cb73d25bc969dfc0c81`
-![artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/3-geometry-fixture.png)
 
 ### 4 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 21,824 bytes · SHA-256 `1c99077c228f9e7f191318638e2d9737607a304c6b1a96748d486d5838f2326b`
-![artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/4-geometry-fixture.png)
 
 ### 5 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 20,724 bytes · SHA-256 `7f9c480f177f3c6dd04c8e817d6d224e23de86cc4b86a6157a2d645553f99b81`
-![artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/5-geometry-fixture.png)
 
 ### 6 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 25,747 bytes · SHA-256 `7ded58293e3d4f9300a638e45be9b5d16a5d656970d1b5ee3fb2a990979333cd`
-![artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/6-geometry-fixture.png)
 
 ### 7 duck closed demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 30,241 bytes · SHA-256 `1d35a8a4d6037ebaafe16bf1b129b810e0198e41d5808729c22ff88eeaa19774`
-![artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
 
 ### 7 geometry fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,565 bytes · SHA-256 `eb22e2b5e7f25ece37d1dec62d32020134c8de4c52654ee2f7a601249b0bf8b2`
-![artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/7-geometry-fixture.png)
 
 ### 8 duck open demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,405 bytes · SHA-256 `302e7968246e471b2f1d65be85347877ebfdd8464f94296be08a2a8e85c9ee00`
-![artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
 
 ### 9 back open demo fixture
 파일: `artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 34,756 bytes · SHA-256 `e500a12fd8fcc17ab3afbdad2c630c51dd1e99579f574f3e8547475367aa3e9e`
-![artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png)
+![artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/9-back-open-demo-fixture.png)
 
 ### 01 open calendar todo
 파일: `artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 44,869 bytes · SHA-256 `8bd459fcea58219eba946605b45216f5dfab6e31e10261efef468fca2ceefe42`
-![artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
+![artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 49,907 bytes · SHA-256 `b8bf8afb6335ddd8b611bb2f52f55699fc381126741eee408a0d55961117cb4f`
-![artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
+![artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 35,079 bytes · SHA-256 `4b7ef94903c68b7d47008c78fd71176fbc321426b1ad7d4970d8bcc214e5ff86`
-![artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
+![artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 32,145 bytes · SHA-256 `896559a03c39d6a71e3a3ea6f3843287c373f0660edad6c4fa46fcb4a94cf741`
-![artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
+![artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 51,556 bytes · SHA-256 `dc8538d2d38c991cc0a35d3b8cf0b05a31455a148622c0c44012a4a096293fd9`
-![artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
+![artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
 
 ### approved wireframe
 파일: `artifacts/duo-camera-column-2026-11-13/approved-wireframe.png`
 분류: 사용자 승인 위치 확인 시안 · 실기기 아님 · 1,159,387 bytes · SHA-256 `47f156fd9283b142a8dd28e38c54714a88d01a4759ff83d96852dfe27035e334`
-![artifacts/duo-camera-column-2026-11-13/approved-wireframe.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
+![artifacts/duo-camera-column-2026-11-13/approved-wireframe.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
 
 ### geometry 1
 파일: `artifacts/duo-camera-column-2026-11-13/geometry-1.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,013 bytes · SHA-256 `4a36bd77fee0df781c51139f1f934d984affb523441d863b2da8f1cb37e8fe96`
-![artifacts/duo-camera-column-2026-11-13/geometry-1.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/geometry-1.png)
+![artifacts/duo-camera-column-2026-11-13/geometry-1.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/geometry-1.png)
 
 ### geometry 2
 파일: `artifacts/duo-camera-column-2026-11-13/geometry-2.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,860 bytes · SHA-256 `36d7dc3a81a31a696e33d72916d7392e6bcc9fcb29aac5d63d357cb93dce0c58`
-![artifacts/duo-camera-column-2026-11-13/geometry-2.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/geometry-2.png)
+![artifacts/duo-camera-column-2026-11-13/geometry-2.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/geometry-2.png)
 
 ### geometry 3
 파일: `artifacts/duo-camera-column-2026-11-13/geometry-3.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 30,247 bytes · SHA-256 `98679f2db0f47ae7bd29580cb988a26dfb5c52d6ef2a283b2e7c01016457729d`
-![artifacts/duo-camera-column-2026-11-13/geometry-3.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/geometry-3.png)
+![artifacts/duo-camera-column-2026-11-13/geometry-3.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/geometry-3.png)
 
 ### geometry 4
 파일: `artifacts/duo-camera-column-2026-11-13/geometry-4.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,880 bytes · SHA-256 `6fdce3c1917519d702caf29ed0bea4a77b4ac0cd183c91fb10eb2cd1918e9fe8`
-![artifacts/duo-camera-column-2026-11-13/geometry-4.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/geometry-4.png)
+![artifacts/duo-camera-column-2026-11-13/geometry-4.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/geometry-4.png)
 
 ### geometry 5
 파일: `artifacts/duo-camera-column-2026-11-13/geometry-5.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 26,860 bytes · SHA-256 `36d7dc3a81a31a696e33d72916d7392e6bcc9fcb29aac5d63d357cb93dce0c58`
-![artifacts/duo-camera-column-2026-11-13/geometry-5.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/geometry-5.png)
+![artifacts/duo-camera-column-2026-11-13/geometry-5.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/geometry-5.png)
 
 ### geometry 6
 파일: `artifacts/duo-camera-column-2026-11-13/geometry-6.png`
 분류: 카메라 열·분할 화면 격리 웹 fixture · 실기기 아님 · 22,889 bytes · SHA-256 `9df11e2dd10ae07cee47baee9c1153a3afff64afec097211590465675a12780d`
-![artifacts/duo-camera-column-2026-11-13/geometry-6.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/geometry-6.png)
+![artifacts/duo-camera-column-2026-11-13/geometry-6.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/geometry-6.png)
 
 ### 01 open calendar todo
 파일: `artifacts/duo-divider-implemented-2026-11-13/01-open-calendar-todo.png`
 분류: 승인 구분선 실제 앱 웹 fixture · native/실기기 아님 · 47,697 bytes · SHA-256 `9f6cdb42aa2f744a6faf0528086fb9facb092cd99c4b5c710b0d63233e8a5502`
-![artifacts/duo-divider-implemented-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-divider-implemented-2026-11-13/01-open-calendar-todo.png)
+![artifacts/duo-divider-implemented-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-divider-implemented-2026-11-13/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/duo-divider-implemented-2026-11-13/02-open-calendar-duck.png`
 분류: 승인 구분선 실제 앱 웹 fixture · native/실기기 아님 · 52,673 bytes · SHA-256 `ac46d0f35796814802281a036812d0d549843d415d7b9ec728b0f22325bd96cd`
-![artifacts/duo-divider-implemented-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-divider-implemented-2026-11-13/02-open-calendar-duck.png)
+![artifacts/duo-divider-implemented-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-divider-implemented-2026-11-13/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/duo-divider-implemented-2026-11-13/03-portrait-current-screen.png`
 분류: 승인 구분선 실제 앱 웹 fixture · native/실기기 아님 · 37,841 bytes · SHA-256 `6218cd0d5e8c13663a51640415b3be27990aa9d930290430cdd4f65abc50b92f`
-![artifacts/duo-divider-implemented-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-divider-implemented-2026-11-13/03-portrait-current-screen.png)
+![artifacts/duo-divider-implemented-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-divider-implemented-2026-11-13/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/duo-divider-implemented-2026-11-13/04-closed-camera-column.png`
 분류: 승인 구분선 실제 앱 웹 fixture · native/실기기 아님 · 34,816 bytes · SHA-256 `8d6dd7c2657cde0f62980356185cedd98e909c6fe255c309b0d9fc9f17d81458`
-![artifacts/duo-divider-implemented-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-divider-implemented-2026-11-13/04-closed-camera-column.png)
+![artifacts/duo-divider-implemented-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-divider-implemented-2026-11-13/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/duo-divider-implemented-2026-11-13/05-back-in-camera-column.png`
 분류: 승인 구분선 실제 앱 웹 fixture · native/실기기 아님 · 54,792 bytes · SHA-256 `3be343518eac4b87d56333fa1dfb8c9b7c068d5c3bf39a3dc1ef0eb116dc19b0`
-![artifacts/duo-divider-implemented-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-divider-implemented-2026-11-13/05-back-in-camera-column.png)
+![artifacts/duo-divider-implemented-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-divider-implemented-2026-11-13/05-back-in-camera-column.png)
 
 ### recommended inset hairline
 파일: `artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png`
 분류: AI 생성 구분선 추천 원본 · 이후 승인/구현 · 1,124,082 bytes · SHA-256 `2bf25a639287ec2ad4ea3b9301ecc3530c7a3618bdc3eb81dc3fd4a83614bae3`
-![artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png)
+![artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-divider-proposal-2026-11-13/recommended-inset-hairline.png)
 
 ### 01 open calendar todo
 파일: `artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png`
 분류: 파란 선택 표시 수정 후 웹 fallback · native/실기기 아님 · 48,264 bytes · SHA-256 `657fc3d0f5da65fd0a35634dc1331bd64b647194132dda2e31f6b8ea8067f588`
-![artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png)
+![artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/duo-glass-selection-fix-2026-11-13/02-open-calendar-duck.png`
 분류: 파란 선택 표시 수정 후 웹 fallback · native/실기기 아님 · 53,252 bytes · SHA-256 `7928dbc5d5c3ccd3a263b56f2c80bd4924262114664146fa7531fcb3ab915008`
-![artifacts/duo-glass-selection-fix-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-glass-selection-fix-2026-11-13/02-open-calendar-duck.png)
+![artifacts/duo-glass-selection-fix-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-glass-selection-fix-2026-11-13/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/duo-glass-selection-fix-2026-11-13/03-portrait-current-screen.png`
 분류: 파란 선택 표시 수정 후 웹 fallback · native/실기기 아님 · 38,373 bytes · SHA-256 `369bc2ffaa325679fcdd883da980f1d22f87145da90ef717a265df6fec60ed32`
-![artifacts/duo-glass-selection-fix-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-glass-selection-fix-2026-11-13/03-portrait-current-screen.png)
+![artifacts/duo-glass-selection-fix-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-glass-selection-fix-2026-11-13/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/duo-glass-selection-fix-2026-11-13/04-closed-camera-column.png`
 분류: 파란 선택 표시 수정 후 웹 fallback · native/실기기 아님 · 35,349 bytes · SHA-256 `170acf0ee1712f3c99c6bc5f58bd247602c1d5d060a93451f475ca99aba7d0f5`
-![artifacts/duo-glass-selection-fix-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-glass-selection-fix-2026-11-13/04-closed-camera-column.png)
+![artifacts/duo-glass-selection-fix-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-glass-selection-fix-2026-11-13/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/duo-glass-selection-fix-2026-11-13/05-back-in-camera-column.png`
 분류: 파란 선택 표시 수정 후 웹 fallback · native/실기기 아님 · 55,272 bytes · SHA-256 `51db7c662b2e72c26d65c2e9c09135b540443a03bf9ab71495163e294448c51c`
-![artifacts/duo-glass-selection-fix-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-glass-selection-fix-2026-11-13/05-back-in-camera-column.png)
+![artifacts/duo-glass-selection-fix-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-glass-selection-fix-2026-11-13/05-back-in-camera-column.png)
 
 ### 01 open calendar todo
 파일: `artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 47,565 bytes · SHA-256 `dc9f9894b06fd72aa56eadd5a95350cb5fe4a3b5cce794a95382b7116e994040`
-![artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png)
+![artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/duo-liquid-glass-2026-11-13/02-open-calendar-duck.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 52,489 bytes · SHA-256 `2f34748d3eac41023bd96fc805aa2b171ac55ffdcd1941edc0427f639cac81ae`
-![artifacts/duo-liquid-glass-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/02-open-calendar-duck.png)
+![artifacts/duo-liquid-glass-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 37,841 bytes · SHA-256 `6218cd0d5e8c13663a51640415b3be27990aa9d930290430cdd4f65abc50b92f`
-![artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png)
+![artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 34,816 bytes · SHA-256 `8d6dd7c2657cde0f62980356185cedd98e909c6fe255c309b0d9fc9f17d81458`
-![artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png)
+![artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 54,589 bytes · SHA-256 `9dc424823b238d4e238a0ae7a3da0f19c11615893a6f3aebeea3376f5e42580c`
-![artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png)
+![artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png)
 
 ### geometry 1
 파일: `artifacts/duo-liquid-glass-2026-11-13/geometry-1.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 29,190 bytes · SHA-256 `01e824485bba60191873b7a6c356d6a706e2f04443e8ab280da819e2ca9fbfe5`
-![artifacts/duo-liquid-glass-2026-11-13/geometry-1.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/geometry-1.png)
+![artifacts/duo-liquid-glass-2026-11-13/geometry-1.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/geometry-1.png)
 
 ### geometry 2
 파일: `artifacts/duo-liquid-glass-2026-11-13/geometry-2.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 30,092 bytes · SHA-256 `51e8f0662232e911c2cc5a9637c1dd1a3b7af3b740c449d335ee3e7f6a979deb`
-![artifacts/duo-liquid-glass-2026-11-13/geometry-2.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/geometry-2.png)
+![artifacts/duo-liquid-glass-2026-11-13/geometry-2.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/geometry-2.png)
 
 ### geometry 3
 파일: `artifacts/duo-liquid-glass-2026-11-13/geometry-3.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 33,487 bytes · SHA-256 `6c58069032599259e5d72343df2b6fae9e3bc4d1fd7424b09c43d948b185ffca`
-![artifacts/duo-liquid-glass-2026-11-13/geometry-3.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/geometry-3.png)
+![artifacts/duo-liquid-glass-2026-11-13/geometry-3.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/geometry-3.png)
 
 ### geometry 4
 파일: `artifacts/duo-liquid-glass-2026-11-13/geometry-4.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 30,095 bytes · SHA-256 `1a6095cfc042f5a6d606c4f3f7fb1e13ed1d0b591917b8a62a4b8625c028881c`
-![artifacts/duo-liquid-glass-2026-11-13/geometry-4.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/geometry-4.png)
+![artifacts/duo-liquid-glass-2026-11-13/geometry-4.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/geometry-4.png)
 
 ### geometry 5
 파일: `artifacts/duo-liquid-glass-2026-11-13/geometry-5.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 30,092 bytes · SHA-256 `51e8f0662232e911c2cc5a9637c1dd1a3b7af3b740c449d335ee3e7f6a979deb`
-![artifacts/duo-liquid-glass-2026-11-13/geometry-5.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/geometry-5.png)
+![artifacts/duo-liquid-glass-2026-11-13/geometry-5.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/geometry-5.png)
 
 ### geometry 6
 파일: `artifacts/duo-liquid-glass-2026-11-13/geometry-6.png`
 분류: 내비게이션 확대·Glass 웹 대체 재질 fixture · native 아님 · 25,980 bytes · SHA-256 `54ce2185b7ed297556423125f4cb6026d275cecdd06f2840b730c35c286e72d1`
-![artifacts/duo-liquid-glass-2026-11-13/geometry-6.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/geometry-6.png)
+![artifacts/duo-liquid-glass-2026-11-13/geometry-6.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/geometry-6.png)
 
 ### 1 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,146 bytes · SHA-256 `73bc0928280ae602f163c6a85a6d8e4e087a597f0b1c1b152c40703979646b51`
-![artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/1-geometry-fixture.png)
 
 ### 2 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,057 bytes · SHA-256 `899157ad156d6d8335cf2541671ca36729b4074b536073f5050a1d5be699e036`
-![artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/2-geometry-fixture.png)
 
 ### 3 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 22,358 bytes · SHA-256 `8a0128b7fa871eede4d86e6d4e2bc2657e355dd1dd09e75eb7216c3e05afb9de`
-![artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/3-geometry-fixture.png)
 
 ### 4 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 19,220 bytes · SHA-256 `36edf4183b7e7882a83b8b76ee54cc35253bdf77f9aa5c97ace85d3f97ca7218`
-![artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/4-geometry-fixture.png)
 
 ### 5 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 18,153 bytes · SHA-256 `f3a0e2e1506d1c719b0ba3a34c4d4a5098d08ee7a3dfb4ccee5b7ed786eb89db`
-![artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/5-geometry-fixture.png)
 
 ### 6 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,146 bytes · SHA-256 `73bc0928280ae602f163c6a85a6d8e4e087a597f0b1c1b152c40703979646b51`
-![artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/6-geometry-fixture.png)
 
 ### 7 duck closed demo fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 30,670 bytes · SHA-256 `3ab8372fba3ff9df1e3316edac8cbd42d32bccdd310557c4e7389ed3da8e1112`
-![artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
 ### 7 geometry fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,478 bytes · SHA-256 `56f0e8ffd255163a1711d90b12f11754abf37780d82515dcce1f8e661ab2b963`
-![artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/7-geometry-fixture.png)
 
 ### 8 duck open demo fixture
 파일: `artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,973 bytes · SHA-256 `c1fb8ca1c9fbd1e155b2576d48c2d727587e4d1e5bcff652cab503e739b9a79e`
-![artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 ### 1 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,501 bytes · SHA-256 `c5b746a865752a98073bbacdab0b5a406071b3e654860172e87c81d529b2f67b`
-![artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/1-geometry-fixture.png)
 
 ### 2 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,422 bytes · SHA-256 `4d28d178aac54bd0bb57a3649e2705186ea4a1abcca60f30f2399a5faf30389a`
-![artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/2-geometry-fixture.png)
 
 ### 3 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 22,732 bytes · SHA-256 `74ceb5995761e2851993fc0ba8c32087b93a1abb3a7fe9d13a11f525057152a1`
-![artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/3-geometry-fixture.png)
 
 ### 4 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 19,613 bytes · SHA-256 `f0a66d975e6c90fce1d1bda9d8df240807c38f4bd6c171ec5be18f8e0817a544`
-![artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/4-geometry-fixture.png)
 
 ### 5 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 18,566 bytes · SHA-256 `ea0a60611851e5b2f8979d3db53c069eebf2d330b80d8e49d53e7f5ce0e6ad87`
-![artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/5-geometry-fixture.png)
 
 ### 6 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,501 bytes · SHA-256 `c5b746a865752a98073bbacdab0b5a406071b3e654860172e87c81d529b2f67b`
-![artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/6-geometry-fixture.png)
 
 ### 7 duck closed demo fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,037 bytes · SHA-256 `d3fea9ef0fe4354eeb8db00f556b9f117c8f985c74b86ff344c862a8fceac2bb`
-![artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
 ### 7 geometry fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,478 bytes · SHA-256 `56f0e8ffd255163a1711d90b12f11754abf37780d82515dcce1f8e661ab2b963`
-![artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/7-geometry-fixture.png)
 
 ### 8 duck open demo fixture
 파일: `artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png`
 분류: 모의 응답 테스트 화면 · 33,168 bytes · SHA-256 `76d53c85a73e29482d4eb5ba2e72abc276e5f8b52e9333727908f35439a204ed`
-![artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 ### features overview
 파일: `artifacts/features-overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 133,916 bytes · SHA-256 `a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba`
-![artifacts/features-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/features-overview.png)
+![artifacts/features-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/features-overview.png)
 
 ### 01 compact long source
 파일: `artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 87,554 bytes · SHA-256 `e5c035a5752ac798e398e2752c7dd51141ac726d4ef6a5e916b556e4370fae14`
-![artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png)
+![artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png)
 
 ### 02 local only preview
 파일: `artifacts/interaction-polish-2026-11-14/calendar/02-local-only-preview.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 102,563 bytes · SHA-256 `371ffa609fa100f97357e33c0d823c73f9e046eeaeb953c833b8f218b15ac195`
-![artifacts/interaction-polish-2026-11-14/calendar/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/02-local-only-preview.png)
+![artifacts/interaction-polish-2026-11-14/calendar/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/02-local-only-preview.png)
 
 ### 03 partial save retry only duck
 파일: `artifacts/interaction-polish-2026-11-14/calendar/03-partial-save-retry-only-duck.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 115,164 bytes · SHA-256 `ff7d2cc85e2c05897c67faa2615ae65cda0bdd348624ed7271fb02a1e505ae3d`
-![artifacts/interaction-polish-2026-11-14/calendar/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/03-partial-save-retry-only-duck.png)
+![artifacts/interaction-polish-2026-11-14/calendar/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/03-partial-save-retry-only-duck.png)
 
 ### 04 editor scrollbar visible
 파일: `artifacts/interaction-polish-2026-11-14/calendar/04-editor-scrollbar-visible.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 95,547 bytes · SHA-256 `8e86b3088aa6adb4e0f765efbfb63f26e28f7782737f1f41f89bda60a2b4d020`
-![artifacts/interaction-polish-2026-11-14/calendar/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/04-editor-scrollbar-visible.png)
+![artifacts/interaction-polish-2026-11-14/calendar/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/04-editor-scrollbar-visible.png)
 
 ### 05 todo shared transition
 파일: `artifacts/interaction-polish-2026-11-14/calendar/05-todo-shared-transition.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 100,314 bytes · SHA-256 `d04d6a2add27714e335033c3af268adf2c2fd7b8ae05a8d132f4b49fc68b1ff5`
-![artifacts/interaction-polish-2026-11-14/calendar/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/05-todo-shared-transition.png)
+![artifacts/interaction-polish-2026-11-14/calendar/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/05-todo-shared-transition.png)
 
 ### 06 year scrollbar
 파일: `artifacts/interaction-polish-2026-11-14/calendar/06-year-scrollbar.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 153,247 bytes · SHA-256 `e7164afcdf9072cdf577f509d68bd0b9fc6e63e24e41d72a78cdc31bfda1fba4`
-![artifacts/interaction-polish-2026-11-14/calendar/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/06-year-scrollbar.png)
+![artifacts/interaction-polish-2026-11-14/calendar/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/06-year-scrollbar.png)
 
 ### 07 month after continuous swipe
 파일: `artifacts/interaction-polish-2026-11-14/calendar/07-month-after-continuous-swipe.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 74,885 bytes · SHA-256 `2c11bb222b68c0b6348bcede03b6dd5ff054f1613b11733ce9c2781605240ba2`
-![artifacts/interaction-polish-2026-11-14/calendar/07-month-after-continuous-swipe.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/07-month-after-continuous-swipe.png)
+![artifacts/interaction-polish-2026-11-14/calendar/07-month-after-continuous-swipe.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/07-month-after-continuous-swipe.png)
 
 ### 08 continuous swipe midpoint
 파일: `artifacts/interaction-polish-2026-11-14/calendar/08-continuous-swipe-midpoint.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 75,325 bytes · SHA-256 `9340a596aafef84b9c65dab2bcac3868f11a7912fa1a90c1685cefd60a447907`
-![artifacts/interaction-polish-2026-11-14/calendar/08-continuous-swipe-midpoint.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/calendar/08-continuous-swipe-midpoint.png)
+![artifacts/interaction-polish-2026-11-14/calendar/08-continuous-swipe-midpoint.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/calendar/08-continuous-swipe-midpoint.png)
 
 ### 01 compact phone chat
 파일: `artifacts/interaction-polish-2026-11-14/chat/01-compact-phone-chat.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 38,019 bytes · SHA-256 `02f36c092a7c5c6d645690fd0d3658529c2ad6fd1caa8852ecec2f9aa47ce40e`
-![artifacts/interaction-polish-2026-11-14/chat/01-compact-phone-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/chat/01-compact-phone-chat.png)
+![artifacts/interaction-polish-2026-11-14/chat/01-compact-phone-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/chat/01-compact-phone-chat.png)
 
 ### 01 open calendar todo
 파일: `artifacts/interaction-polish-2026-11-14/duo/01-open-calendar-todo.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 51,801 bytes · SHA-256 `f019b5c7863dde7afeb89fb0f3584736b8944fcf13a35aa85bf4c4db348d9e12`
-![artifacts/interaction-polish-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/01-open-calendar-todo.png)
+![artifacts/interaction-polish-2026-11-14/duo/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/interaction-polish-2026-11-14/duo/02-open-calendar-duck.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 61,326 bytes · SHA-256 `1d8bca77dfd615a2ad293fe76beaf7b319889f3a0b2c8bea4f6007b0d4d530ac`
-![artifacts/interaction-polish-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/02-open-calendar-duck.png)
+![artifacts/interaction-polish-2026-11-14/duo/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/interaction-polish-2026-11-14/duo/03-portrait-current-screen.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 37,335 bytes · SHA-256 `d8930fb6f069b7d430cb561ab7841f94d91bacb9f8e19a063d626e25e1d96609`
-![artifacts/interaction-polish-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/03-portrait-current-screen.png)
+![artifacts/interaction-polish-2026-11-14/duo/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/interaction-polish-2026-11-14/duo/04-closed-camera-column.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 34,385 bytes · SHA-256 `8fcc5549c44771fd70150eafdf220402838884253406caa491ac41e20110ec4c`
-![artifacts/interaction-polish-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/04-closed-camera-column.png)
+![artifacts/interaction-polish-2026-11-14/duo/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/interaction-polish-2026-11-14/duo/05-back-in-camera-column.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 63,122 bytes · SHA-256 `c2c99aa314bd8b19830e116bf7dc85b970ffac86c9a131634e2e9121bc55c291`
-![artifacts/interaction-polish-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/05-back-in-camera-column.png)
+![artifacts/interaction-polish-2026-11-14/duo/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/interaction-polish-2026-11-14/duo/06-dragging-lens-web-fallback.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 53,931 bytes · SHA-256 `4a8bd96178179ded04c402ce2107c957f812309b39fc605bcb028f43b7b70d22`
-![artifacts/interaction-polish-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/06-dragging-lens-web-fallback.png)
+![artifacts/interaction-polish-2026-11-14/duo/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/interaction-polish-2026-11-14/duo/07-iphone-320-floating-tabs.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 31,472 bytes · SHA-256 `dbdef64937d144a1d1f5cd60fa21ec09d79d0994693e16cd7a8b104150c1fda3`
-![artifacts/interaction-polish-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/07-iphone-320-floating-tabs.png)
+![artifacts/interaction-polish-2026-11-14/duo/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/interaction-polish-2026-11-14/duo/07-iphone-390-floating-tabs.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 32,760 bytes · SHA-256 `b98fc22decf65d5855e4e67d5e25b755bdbf6dc36d1f82af50b0c20c4b2f8cb6`
-![artifacts/interaction-polish-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/07-iphone-390-floating-tabs.png)
+![artifacts/interaction-polish-2026-11-14/duo/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/interaction-polish-2026-11-14/duo/07-iphone-430-floating-tabs.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 33,501 bytes · SHA-256 `87d3414e8c40afdedc5c7317c1cfda20479c62a1313034fdd96133293a31a889`
-![artifacts/interaction-polish-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/07-iphone-430-floating-tabs.png)
+![artifacts/interaction-polish-2026-11-14/duo/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/interaction-polish-2026-11-14/duo/08-iphone-320-text-160-percent.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 25,377 bytes · SHA-256 `6a76c37cef72c46fe652feb470007beeb5603af7de5f0b2bddb3cd53a73878c6`
-![artifacts/interaction-polish-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/08-iphone-320-text-160-percent.png)
+![artifacts/interaction-polish-2026-11-14/duo/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/interaction-polish-2026-11-14/duo/08-pane-local-day-detail.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 58,373 bytes · SHA-256 `fea265d0eb52c5ad1de37b8c72a88b90a3b03c5ca5fa707b5b3d5db7002ce2ae`
-![artifacts/interaction-polish-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/08-pane-local-day-detail.png)
+![artifacts/interaction-polish-2026-11-14/duo/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/interaction-polish-2026-11-14/duo/10-folded-calendar-dark.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 36,560 bytes · SHA-256 `3dd3669018a1f2339969cdc4dcc19883c69fff56c259f7381797d1d29eab7d55`
-![artifacts/interaction-polish-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/10-folded-calendar-dark.png)
+![artifacts/interaction-polish-2026-11-14/duo/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/interaction-polish-2026-11-14/duo/11-folded-calendar-light.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 35,397 bytes · SHA-256 `fdf14ff32cbf1f4e3d24720fc7b722fa3def17bd2ab3180c259a053edd5c7577`
-![artifacts/interaction-polish-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/11-folded-calendar-light.png)
+![artifacts/interaction-polish-2026-11-14/duo/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/interaction-polish-2026-11-14/duo/12-open-calendar-dark.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 53,378 bytes · SHA-256 `7c6c641ca767c896e156c0b54b612fe586b43fb046b7ff274268991a00b1ef04`
-![artifacts/interaction-polish-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/12-open-calendar-dark.png)
+![artifacts/interaction-polish-2026-11-14/duo/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/interaction-polish-2026-11-14/duo/13-folded-fortnight.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 27,539 bytes · SHA-256 `778e00c936c632f9981d5283c74b0dd00041b46d8de7452b14883fb3d4f1d1d6`
-![artifacts/interaction-polish-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/13-folded-fortnight.png)
+![artifacts/interaction-polish-2026-11-14/duo/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/interaction-polish-2026-11-14/duo/14-open-fortnight-dark.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 47,559 bytes · SHA-256 `3c632a4ecf5cb98ffba22fc967d16c5ecc2fe17f3e3de9071bd8cf5792f73395`
-![artifacts/interaction-polish-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/14-open-fortnight-dark.png)
+![artifacts/interaction-polish-2026-11-14/duo/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/14-open-fortnight-dark.png)
 
 ### 15 long press left calendar
 파일: `artifacts/interaction-polish-2026-11-14/duo/15-long-press-left-calendar.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 42,332 bytes · SHA-256 `c680ac488531672e8d1fb228d0d9ec24b8fcbbff2599cbf26b0a0907460cc108`
-![artifacts/interaction-polish-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/15-long-press-left-calendar.png)
+![artifacts/interaction-polish-2026-11-14/duo/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/15-long-press-left-calendar.png)
 
 ### 16 long press right calendar
 파일: `artifacts/interaction-polish-2026-11-14/duo/16-long-press-right-calendar.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 30,091 bytes · SHA-256 `4c3d128b20f85d2e267c60b0140a2ce353632e5232942b19bb639eeb405a4855`
-![artifacts/interaction-polish-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/16-long-press-right-calendar.png)
+![artifacts/interaction-polish-2026-11-14/duo/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/16-long-press-right-calendar.png)
 
 ### 17 folded long press calendar
 파일: `artifacts/interaction-polish-2026-11-14/duo/17-folded-long-press-calendar.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 27,464 bytes · SHA-256 `038ce75e3b1dad857142496ef82889acdf757662e756b66917e0d6082e2d63af`
-![artifacts/interaction-polish-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/17-folded-long-press-calendar.png)
+![artifacts/interaction-polish-2026-11-14/duo/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/17-folded-long-press-calendar.png)
 
 ### 18 year left calendar right todos
 파일: `artifacts/interaction-polish-2026-11-14/duo/18-year-left-calendar-right-todos.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 86,497 bytes · SHA-256 `148e18ec39af666cd149ab041ae00193b58b1f3635014837083901fe4ac26f89`
-![artifacts/interaction-polish-2026-11-14/duo/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/18-year-left-calendar-right-todos.png)
+![artifacts/interaction-polish-2026-11-14/duo/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/18-year-left-calendar-right-todos.png)
 
 ### 19 year right calendar
 파일: `artifacts/interaction-polish-2026-11-14/duo/19-year-right-calendar.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 86,967 bytes · SHA-256 `71aa905f672122ca8942f7023f77b0ec15dcb87de178689d696a00afcf7b9fca`
-![artifacts/interaction-polish-2026-11-14/duo/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/19-year-right-calendar.png)
+![artifacts/interaction-polish-2026-11-14/duo/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/19-year-right-calendar.png)
 
 ### 20 year portrait
 파일: `artifacts/interaction-polish-2026-11-14/duo/20-year-portrait.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 83,591 bytes · SHA-256 `a0072a99fbe9ee29b3c6ed331b02ca722e7262453bdc5dc19493eeff520351d6`
-![artifacts/interaction-polish-2026-11-14/duo/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/20-year-portrait.png)
+![artifacts/interaction-polish-2026-11-14/duo/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/20-year-portrait.png)
 
 ### 21 year folded
 파일: `artifacts/interaction-polish-2026-11-14/duo/21-year-folded.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 67,224 bytes · SHA-256 `5cbb5cdcc0fbe984e071f42caacb408aa8b3fd06f1d562d5a9971468fd7dcfac`
-![artifacts/interaction-polish-2026-11-14/duo/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/21-year-folded.png)
+![artifacts/interaction-polish-2026-11-14/duo/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/21-year-folded.png)
 
 ### 22 year duo motion
 파일: `artifacts/interaction-polish-2026-11-14/duo/22-year-duo-motion.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 85,120 bytes · SHA-256 `598a20145fad3680884ac54d13588a4fa0eb330a80365d0140489adfbabb8d6a`
-![artifacts/interaction-polish-2026-11-14/duo/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/22-year-duo-motion.png)
+![artifacts/interaction-polish-2026-11-14/duo/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/22-year-duo-motion.png)
 
 ### 23 year design comparison state
 파일: `artifacts/interaction-polish-2026-11-14/duo/23-year-design-comparison-state.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 92,130 bytes · SHA-256 `5088088c896c50fc94d2d04cab9b2e5768cc81ec5130e830ee07fa4b726e5a87`
-![artifacts/interaction-polish-2026-11-14/duo/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/23-year-design-comparison-state.png)
+![artifacts/interaction-polish-2026-11-14/duo/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/23-year-design-comparison-state.png)
 
 ### 24 pane edge scrollbar
 파일: `artifacts/interaction-polish-2026-11-14/duo/24-pane-edge-scrollbar.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 91,561 bytes · SHA-256 `4b464a9ed908800473f4506bf431a6a3933ad912c33c59e5d7aec24227fd6a35`
-![artifacts/interaction-polish-2026-11-14/duo/24-pane-edge-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/24-pane-edge-scrollbar.png)
+![artifacts/interaction-polish-2026-11-14/duo/24-pane-edge-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/24-pane-edge-scrollbar.png)
 
 ### 25 compact duo chat
 파일: `artifacts/interaction-polish-2026-11-14/duo/25-compact-duo-chat.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 26,300 bytes · SHA-256 `e7be2e079b79b9048ab7d31ff4ccc38eb64b5b3d45ad5d4f04f3cfeb338b12c3`
-![artifacts/interaction-polish-2026-11-14/duo/25-compact-duo-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/duo/25-compact-duo-chat.png)
+![artifacts/interaction-polish-2026-11-14/duo/25-compact-duo-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/duo/25-compact-duo-chat.png)
 
 ### 01 clean adaptive month
 파일: `artifacts/interaction-polish-2026-11-14/workspace/01-clean-adaptive-month.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 80,087 bytes · SHA-256 `eaf3ba0855fd032abbcf85484d17683f22091fb4519350687f94e109590c7863`
-![artifacts/interaction-polish-2026-11-14/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/01-clean-adaptive-month.png)
+![artifacts/interaction-polish-2026-11-14/workspace/01-clean-adaptive-month.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/01-clean-adaptive-month.png)
 
 ### 02 day detail
 파일: `artifacts/interaction-polish-2026-11-14/workspace/02-day-detail.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 104,675 bytes · SHA-256 `73d3db07c9f4810b638c3ae386915348989f1c9bad8dc04316100e0df7a606e5`
-![artifacts/interaction-polish-2026-11-14/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/02-day-detail.png)
+![artifacts/interaction-polish-2026-11-14/workspace/02-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/02-day-detail.png)
 
 ### 03 event detail
 파일: `artifacts/interaction-polish-2026-11-14/workspace/03-event-detail.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 86,767 bytes · SHA-256 `b9a18d2fde9e3c0527c1bff09db9988a301c5e0e6a920b6d2b46afc8b8006eda`
-![artifacts/interaction-polish-2026-11-14/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/03-event-detail.png)
+![artifacts/interaction-polish-2026-11-14/workspace/03-event-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/03-event-detail.png)
 
 ### 04 write preview
 파일: `artifacts/interaction-polish-2026-11-14/workspace/04-write-preview.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 99,219 bytes · SHA-256 `41f62c0736fe0e2aad2f5a30c76f49e34d63d72118a035945a381fa0248e50b3`
-![artifacts/interaction-polish-2026-11-14/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/04-write-preview.png)
+![artifacts/interaction-polish-2026-11-14/workspace/04-write-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/04-write-preview.png)
 
 ### 05 all day editor
 파일: `artifacts/interaction-polish-2026-11-14/workspace/05-all-day-editor.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 90,204 bytes · SHA-256 `32b8eb4dc41e0d4dae2d65d7ede14d936cbf112fa7c2b9ce1039a4a144b67a34`
-![artifacts/interaction-polish-2026-11-14/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/05-all-day-editor.png)
+![artifacts/interaction-polish-2026-11-14/workspace/05-all-day-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/05-all-day-editor.png)
 
 ### 06 week timeline
 파일: `artifacts/interaction-polish-2026-11-14/workspace/06-week-timeline.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 90,286 bytes · SHA-256 `40935c5d045c1c684d260a1b0e03dc673a93bb2d307d4c4704bf2c7c9f9fa235`
-![artifacts/interaction-polish-2026-11-14/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/06-week-timeline.png)
+![artifacts/interaction-polish-2026-11-14/workspace/06-week-timeline.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/06-week-timeline.png)
 
 ### 07 search scope
 파일: `artifacts/interaction-polish-2026-11-14/workspace/07-search-scope.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 95,536 bytes · SHA-256 `4b7deea74fb8d2a0e3d4ccf24cb586fd57318a59108e20994dc69a4bddc180a3`
-![artifacts/interaction-polish-2026-11-14/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/07-search-scope.png)
+![artifacts/interaction-polish-2026-11-14/workspace/07-search-scope.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/07-search-scope.png)
 
 ### 08 calendar sources
 파일: `artifacts/interaction-polish-2026-11-14/workspace/08-calendar-sources.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 89,337 bytes · SHA-256 `2c363f26c696138ad826f69de68eb89465f128d6cad7bbd03f0c4f94dae6c215`
-![artifacts/interaction-polish-2026-11-14/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/08-calendar-sources.png)
+![artifacts/interaction-polish-2026-11-14/workspace/08-calendar-sources.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/08-calendar-sources.png)
 
 ### 09 read only event
 파일: `artifacts/interaction-polish-2026-11-14/workspace/09-read-only-event.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 95,721 bytes · SHA-256 `5bd1ee9d133375f64b8953218313d7919cf4115674046bb7d4466b18c1a04485`
-![artifacts/interaction-polish-2026-11-14/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/09-read-only-event.png)
+![artifacts/interaction-polish-2026-11-14/workspace/09-read-only-event.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/09-read-only-event.png)
 
 ### 10 partial state
 파일: `artifacts/interaction-polish-2026-11-14/workspace/10-partial-state.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/interaction-polish-2026-11-14/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/10-partial-state.png)
+![artifacts/interaction-polish-2026-11-14/workspace/10-partial-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/10-partial-state.png)
 
 ### 11 error visible with cache
 파일: `artifacts/interaction-polish-2026-11-14/workspace/11-error-visible-with-cache.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/interaction-polish-2026-11-14/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/11-error-visible-with-cache.png)
+![artifacts/interaction-polish-2026-11-14/workspace/11-error-visible-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/11-error-visible-with-cache.png)
 
 ### 12 phone 320
 파일: `artifacts/interaction-polish-2026-11-14/workspace/12-phone-320.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 77,373 bytes · SHA-256 `8a289db7758624527e8922e1e7400a0fbb6a434eab76f3d8e5aaf838f8ec29a0`
-![artifacts/interaction-polish-2026-11-14/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/12-phone-320.png)
+![artifacts/interaction-polish-2026-11-14/workspace/12-phone-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/12-phone-320.png)
 
 ### 12 phone 430
 파일: `artifacts/interaction-polish-2026-11-14/workspace/12-phone-430.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 88,895 bytes · SHA-256 `1d68f2e9d68bc1d1feacbcb41bca5f4391a56d1b368eb21cce90322872d0d49c`
-![artifacts/interaction-polish-2026-11-14/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/12-phone-430.png)
+![artifacts/interaction-polish-2026-11-14/workspace/12-phone-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/12-phone-430.png)
 
 ### 13 large text
 파일: `artifacts/interaction-polish-2026-11-14/workspace/13-large-text.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 98,883 bytes · SHA-256 `8d792c2721ce660e8599562ed32fec015bc6556f5038a2c14c942536caba89bb`
-![artifacts/interaction-polish-2026-11-14/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/13-large-text.png)
+![artifacts/interaction-polish-2026-11-14/workspace/13-large-text.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/13-large-text.png)
 
 ### 14 loading with cache
 파일: `artifacts/interaction-polish-2026-11-14/workspace/14-loading-with-cache.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 82,522 bytes · SHA-256 `3b63c5cedb6490d386d25a2be3c23c3ef2cc60d4c982e0071e3be0620a37e744`
-![artifacts/interaction-polish-2026-11-14/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/14-loading-with-cache.png)
+![artifacts/interaction-polish-2026-11-14/workspace/14-loading-with-cache.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/14-loading-with-cache.png)
 
 ### 15 unknown write no resend
 파일: `artifacts/interaction-polish-2026-11-14/workspace/15-unknown-write-no-resend.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 113,379 bytes · SHA-256 `7c8c47020de5df57736e2ade5beeeea206c08b786c97ad65edd1390d38d1576b`
-![artifacts/interaction-polish-2026-11-14/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/15-unknown-write-no-resend.png)
+![artifacts/interaction-polish-2026-11-14/workspace/15-unknown-write-no-resend.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/15-unknown-write-no-resend.png)
 
 ### 16 dark month reference
 파일: `artifacts/interaction-polish-2026-11-14/workspace/16-dark-month-reference.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 74,340 bytes · SHA-256 `1000e35c35198b812d8b57c5965add6b86198199a209dbb9f3b279a9fa2edaa5`
-![artifacts/interaction-polish-2026-11-14/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/16-dark-month-reference.png)
+![artifacts/interaction-polish-2026-11-14/workspace/16-dark-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/16-dark-month-reference.png)
 
 ### 17 dark event reference
 파일: `artifacts/interaction-polish-2026-11-14/workspace/17-dark-event-reference.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 71,901 bytes · SHA-256 `98e29e5e3c25e6eafbb6651ea7a3f491b3719aaa35a887ad1ee27881a000e5b9`
-![artifacts/interaction-polish-2026-11-14/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/17-dark-event-reference.png)
+![artifacts/interaction-polish-2026-11-14/workspace/17-dark-event-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/17-dark-event-reference.png)
 
 ### 18 light month reference
 파일: `artifacts/interaction-polish-2026-11-14/workspace/18-light-month-reference.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 73,514 bytes · SHA-256 `4efeff0bdaa01037de8221b7e881eb318c0aa12bfdd6d35149b4684f692cb1bb`
-![artifacts/interaction-polish-2026-11-14/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/18-light-month-reference.png)
+![artifacts/interaction-polish-2026-11-14/workspace/18-light-month-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/18-light-month-reference.png)
 
 ### 19 non json error keeps events
 파일: `artifacts/interaction-polish-2026-11-14/workspace/19-non-json-error-keeps-events.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 83,222 bytes · SHA-256 `e37956bbd836055cae2c3339caed2dcd503b5d45446f18774b5c377e08243209`
-![artifacts/interaction-polish-2026-11-14/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/19-non-json-error-keeps-events.png)
+![artifacts/interaction-polish-2026-11-14/workspace/19-non-json-error-keeps-events.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/19-non-json-error-keeps-events.png)
 
 ### 20 fortnight expanded
 파일: `artifacts/interaction-polish-2026-11-14/workspace/20-fortnight-expanded.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 63,763 bytes · SHA-256 `850e8cf9b94eaa87a3243b932ea8646b70d850435db8e9071627f6b26bfdf60c`
-![artifacts/interaction-polish-2026-11-14/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/workspace/20-fortnight-expanded.png)
+![artifacts/interaction-polish-2026-11-14/workspace/20-fortnight-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/workspace/20-fortnight-expanded.png)
 
 ### 01 ordinary year
 파일: `artifacts/interaction-polish-2026-11-14/year/01-ordinary-year.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 153,392 bytes · SHA-256 `689a56ab3d9f676e1768b8578d41079b7c38486be669922e79fcc23d7647b3a1`
-![artifacts/interaction-polish-2026-11-14/year/01-ordinary-year.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/01-ordinary-year.png)
+![artifacts/interaction-polish-2026-11-14/year/01-ordinary-year.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/01-ordinary-year.png)
 
 ### 02 ordinary month after zoom
 파일: `artifacts/interaction-polish-2026-11-14/year/02-ordinary-month-after-zoom.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 74,834 bytes · SHA-256 `ec61debee28d39613b27c17b65fbff8f72981d85418d74b574c13b94e57d2a07`
-![artifacts/interaction-polish-2026-11-14/year/02-ordinary-month-after-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/02-ordinary-month-after-zoom.png)
+![artifacts/interaction-polish-2026-11-14/year/02-ordinary-month-after-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/02-ordinary-month-after-zoom.png)
 
 ### 03 year width 320
 파일: `artifacts/interaction-polish-2026-11-14/year/03-year-width-320.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 150,103 bytes · SHA-256 `7acb2751a513649e6db0a72b355b1dc4083cc67497a058df93846929e7095740`
-![artifacts/interaction-polish-2026-11-14/year/03-year-width-320.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/03-year-width-320.png)
+![artifacts/interaction-polish-2026-11-14/year/03-year-width-320.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/03-year-width-320.png)
 
 ### 03 year width 430
 파일: `artifacts/interaction-polish-2026-11-14/year/03-year-width-430.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 152,255 bytes · SHA-256 `775b54b6cdbf0c51091786ab4ad54614ba0f1a75729a20cbf49cc6c6d9f8aee7`
-![artifacts/interaction-polish-2026-11-14/year/03-year-width-430.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/03-year-width-430.png)
+![artifacts/interaction-polish-2026-11-14/year/03-year-width-430.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/03-year-width-430.png)
 
 ### 04 year dark
 파일: `artifacts/interaction-polish-2026-11-14/year/04-year-dark.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 151,164 bytes · SHA-256 `8677f57606b19cfba5f2e0ffdb867b268fa61d77361543bbdc61a53df5d2735c`
-![artifacts/interaction-polish-2026-11-14/year/04-year-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/04-year-dark.png)
+![artifacts/interaction-polish-2026-11-14/year/04-year-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/04-year-dark.png)
 
 ### 05 opening zoom
 파일: `artifacts/interaction-polish-2026-11-14/year/05-opening-zoom.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 133,606 bytes · SHA-256 `1f1003635b422b6b11b9fa60f3b1955d750a98736bb8d550dc3184fea85b91b3`
-![artifacts/interaction-polish-2026-11-14/year/05-opening-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/05-opening-zoom.png)
+![artifacts/interaction-polish-2026-11-14/year/05-opening-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/05-opening-zoom.png)
 
 ### 06 closing zoom
 파일: `artifacts/interaction-polish-2026-11-14/year/06-closing-zoom.png`
 분류: 느린 연속 모션·Duo 아이콘 바깥 스크롤바·작은 채팅 · Expo/합성 API·기하 fixture · 사용자 원본/실기기 아님 · 178,091 bytes · SHA-256 `eaa0c6b247a20fe29bfa1fe0d106f2e9a4ef4b5e08eb86b9b9759c5be31b80b9`
-![artifacts/interaction-polish-2026-11-14/year/06-closing-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/interaction-polish-2026-11-14/year/06-closing-zoom.png)
+![artifacts/interaction-polish-2026-11-14/year/06-closing-zoom.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/interaction-polish-2026-11-14/year/06-closing-zoom.png)
 
 ### log
 파일: `artifacts/log.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 43,986 bytes · SHA-256 `5d2165ae58a95fc81fdf3c9d4b219c1b27078f7f44435b7adf6b3820ac2a14ea`
-![artifacts/log.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/log.png)
+![artifacts/log.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/log.png)
 
 ### 01 me entry
 파일: `artifacts/me-product-review-2026-11-14/current/01-me-entry.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 47,151 bytes · SHA-256 `ed0e1a764bca8f2f313221d064e5240f1d0c55ed0c7b33dc72b5756963b2a435`
-![artifacts/me-product-review-2026-11-14/current/01-me-entry.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/01-me-entry.png)
+![artifacts/me-product-review-2026-11-14/current/01-me-entry.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/01-me-entry.png)
 
 ### 02 google settings
 파일: `artifacts/me-product-review-2026-11-14/current/02-google-settings.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 46,746 bytes · SHA-256 `09e9c2e0b9f0a06f4521ffe8f95c10e9e22175935c2da8b16dcd5efd1bb7c811`
-![artifacts/me-product-review-2026-11-14/current/02-google-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/02-google-settings.png)
+![artifacts/me-product-review-2026-11-14/current/02-google-settings.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/02-google-settings.png)
 
 ### 03 notion connect
 파일: `artifacts/me-product-review-2026-11-14/current/03-notion-connect.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 36,537 bytes · SHA-256 `af64f15e262665453786b08814ef7551498fa556036f741faeecf0505d4852e8`
-![artifacts/me-product-review-2026-11-14/current/03-notion-connect.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/03-notion-connect.png)
+![artifacts/me-product-review-2026-11-14/current/03-notion-connect.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/03-notion-connect.png)
 
 ### 04 notifications
 파일: `artifacts/me-product-review-2026-11-14/current/04-notifications.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 49,335 bytes · SHA-256 `8c0e530209de109baf0c3c20261c9c6f82c916f19d44ee2e0926eb939dc99b6b`
-![artifacts/me-product-review-2026-11-14/current/04-notifications.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/04-notifications.png)
+![artifacts/me-product-review-2026-11-14/current/04-notifications.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/04-notifications.png)
 
 ### 05 privacy
 파일: `artifacts/me-product-review-2026-11-14/current/05-privacy.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 75,942 bytes · SHA-256 `c47e48e0880f08bcdc559a457c146a32ee6663211a688bcdd8f43f2c8ff75172`
-![artifacts/me-product-review-2026-11-14/current/05-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/05-privacy.png)
+![artifacts/me-product-review-2026-11-14/current/05-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/05-privacy.png)
 
 ### 05 small privacy
 파일: `artifacts/me-product-review-2026-11-14/current/05-small-privacy.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 51,287 bytes · SHA-256 `27063e8c6e36e603e8692868ccb93b2d9a215c7bcc2fd37fd10bf94c3eb9e40b`
-![artifacts/me-product-review-2026-11-14/current/05-small-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/05-small-privacy.png)
+![artifacts/me-product-review-2026-11-14/current/05-small-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/05-small-privacy.png)
 
 ### 06 account
 파일: `artifacts/me-product-review-2026-11-14/current/06-account.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 47,132 bytes · SHA-256 `9d8232457bca490f3e3fb36e7fc56b0f44ff8a789413368b3165c9fe8386fafb`
-![artifacts/me-product-review-2026-11-14/current/06-account.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/06-account.png)
+![artifacts/me-product-review-2026-11-14/current/06-account.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/06-account.png)
 
 ### 07 delete entry
 파일: `artifacts/me-product-review-2026-11-14/current/07-delete-entry.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 36,428 bytes · SHA-256 `b98833397c1702a67898b1dfe5c327863debe3d606e9886f6737b5b9a0b7b943`
-![artifacts/me-product-review-2026-11-14/current/07-delete-entry.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/07-delete-entry.png)
+![artifacts/me-product-review-2026-11-14/current/07-delete-entry.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/07-delete-entry.png)
 
 ### 08 storage operations
 파일: `artifacts/me-product-review-2026-11-14/current/08-storage-operations.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 47,132 bytes · SHA-256 `9d8232457bca490f3e3fb36e7fc56b0f44ff8a789413368b3165c9fe8386fafb`
-![artifacts/me-product-review-2026-11-14/current/08-storage-operations.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/08-storage-operations.png)
+![artifacts/me-product-review-2026-11-14/current/08-storage-operations.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/08-storage-operations.png)
 
 ### 09 long profile name
 파일: `artifacts/me-product-review-2026-11-14/current/09-long-profile-name.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 47,868 bytes · SHA-256 `57a3d5c449f50513f71761698b644fcd2b787ed331aa98c8a4bde63ad7ceb329`
-![artifacts/me-product-review-2026-11-14/current/09-long-profile-name.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/09-long-profile-name.png)
+![artifacts/me-product-review-2026-11-14/current/09-long-profile-name.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/09-long-profile-name.png)
 
 ### 09 status recheck
 파일: `artifacts/me-product-review-2026-11-14/current/09-status-recheck.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 51,580 bytes · SHA-256 `b7341e85933288b5c1844178ca1514d66db5e5d81ce89da60f99abd90005b37b`
-![artifacts/me-product-review-2026-11-14/current/09-status-recheck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/09-status-recheck.png)
+![artifacts/me-product-review-2026-11-14/current/09-status-recheck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/09-status-recheck.png)
 
 ### 10 duo folded me
 파일: `artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 36,958 bytes · SHA-256 `72e6de186a102417d3d7268a61d9961e3b846175f6313fa07f23f51e1d81ea33`
-![artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png)
+![artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png)
 
 ### 11 duo open me
 파일: `artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png`
 분류: ME 명칭 통일·공식 서비스 흐름 비교·프로필/연결/알림 점검 · 실제 Expo/합성 API·Duo 기하 · 제안은 미구현/실기기 아님 · 70,506 bytes · SHA-256 `0f1a34a82c042d0c5a4db9641f9d9ea0b7b3974b815313e6eb50f8e197e3b951`
-![artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png)
+![artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png)
 
 ### 01 me overview
 파일: `artifacts/me-settings-2026-11-14/current/01-me-overview.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 49,589 bytes · SHA-256 `0a8bc6b98fa50c26925b1b39633b4b35715c0d84cd91c857b2bb85edf82ca4ee`
-![artifacts/me-settings-2026-11-14/current/01-me-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/01-me-overview.png)
+![artifacts/me-settings-2026-11-14/current/01-me-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/01-me-overview.png)
 
 ### 02 google overview
 파일: `artifacts/me-settings-2026-11-14/current/02-google-overview.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 35,988 bytes · SHA-256 `42667457bc907e7473dc42567f4615bf353c9aaa8100f5f92748cd0260855a8f`
-![artifacts/me-settings-2026-11-14/current/02-google-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/02-google-overview.png)
+![artifacts/me-settings-2026-11-14/current/02-google-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/02-google-overview.png)
 
 ### 03 google permissions
 파일: `artifacts/me-settings-2026-11-14/current/03-google-permissions.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 49,745 bytes · SHA-256 `f0b0e2bef800115aef23b5ac7878b8cb4fe27a3f4dc3606efc21e5023ef9a351`
-![artifacts/me-settings-2026-11-14/current/03-google-permissions.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/03-google-permissions.png)
+![artifacts/me-settings-2026-11-14/current/03-google-permissions.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/03-google-permissions.png)
 
 ### 04 completed reference
 파일: `artifacts/me-settings-2026-11-14/current/04-completed-reference.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 51,950 bytes · SHA-256 `9bda8fab3102c531d30504e292d768086b046be05de48a840d7cfe104b9abcb8`
-![artifacts/me-settings-2026-11-14/current/04-completed-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/04-completed-reference.png)
+![artifacts/me-settings-2026-11-14/current/04-completed-reference.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/04-completed-reference.png)
 
 ### 05 stale connection
 파일: `artifacts/me-settings-2026-11-14/current/05-stale-connection.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 50,619 bytes · SHA-256 `df8da88985cf9e03fcf03a33b385368f3c383ce9100cf1e46cc5d2e55d9d4ffc`
-![artifacts/me-settings-2026-11-14/current/05-stale-connection.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/05-stale-connection.png)
+![artifacts/me-settings-2026-11-14/current/05-stale-connection.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/05-stale-connection.png)
 
 ### 06 account delete
 파일: `artifacts/me-settings-2026-11-14/current/06-account-delete.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 35,135 bytes · SHA-256 `2c00cca4814929fc8249630914e71db65c710efc091effe697f355403977838f`
-![artifacts/me-settings-2026-11-14/current/06-account-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/06-account-delete.png)
+![artifacts/me-settings-2026-11-14/current/06-account-delete.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/06-account-delete.png)
 
 ### 07 long name overview
 파일: `artifacts/me-settings-2026-11-14/current/07-long-name-overview.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 51,466 bytes · SHA-256 `9d563cecfde433f0377784c66ed3783a3fb736c5cda3c30896980e13326d9481`
-![artifacts/me-settings-2026-11-14/current/07-long-name-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/07-long-name-overview.png)
+![artifacts/me-settings-2026-11-14/current/07-long-name-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/07-long-name-overview.png)
 
 ### 08 notifications
 파일: `artifacts/me-settings-2026-11-14/current/08-notifications.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 30,489 bytes · SHA-256 `a47f045ab64aa4e11ee28bdd0d47b013345f49133e289f954e7ac2f4e6023874`
-![artifacts/me-settings-2026-11-14/current/08-notifications.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/08-notifications.png)
+![artifacts/me-settings-2026-11-14/current/08-notifications.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/08-notifications.png)
 
 ### 09 privacy
 파일: `artifacts/me-settings-2026-11-14/current/09-privacy.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 79,636 bytes · SHA-256 `6762ce333151cd9175f53aa44ca0328cb30156e8322a1168478711bbe5393e83`
-![artifacts/me-settings-2026-11-14/current/09-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/09-privacy.png)
+![artifacts/me-settings-2026-11-14/current/09-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/09-privacy.png)
 
 ### 10 advanced
 파일: `artifacts/me-settings-2026-11-14/current/10-advanced.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 39,098 bytes · SHA-256 `6411ee6db4998555d6eebb58666f2bf1e7b6059f5e7522199430481368ee000d`
-![artifacts/me-settings-2026-11-14/current/10-advanced.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/10-advanced.png)
+![artifacts/me-settings-2026-11-14/current/10-advanced.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/10-advanced.png)
 
 ### 11 export
 파일: `artifacts/me-settings-2026-11-14/current/11-export.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 36,426 bytes · SHA-256 `ae3b58b67f0e6f4ce915d7ba97c63e67f1d37efc2da302f2dafcac7b19b06482`
-![artifacts/me-settings-2026-11-14/current/11-export.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/11-export.png)
+![artifacts/me-settings-2026-11-14/current/11-export.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/11-export.png)
 
 ### 12 notion connect
 파일: `artifacts/me-settings-2026-11-14/current/12-notion-connect.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 36,821 bytes · SHA-256 `3864aea9171ad5f4fe8500a228edc4f4b9977271c3b02410d230fc87e1a38818`
-![artifacts/me-settings-2026-11-14/current/12-notion-connect.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/12-notion-connect.png)
+![artifacts/me-settings-2026-11-14/current/12-notion-connect.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/12-notion-connect.png)
 
 ### 13 folded overview
 파일: `artifacts/me-settings-2026-11-14/current/13-folded-overview.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 36,016 bytes · SHA-256 `b3105969c44a43ec13074be838579fe21180690a613610b15106e8f1d322b5f8`
-![artifacts/me-settings-2026-11-14/current/13-folded-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/13-folded-overview.png)
+![artifacts/me-settings-2026-11-14/current/13-folded-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/13-folded-overview.png)
 
 ### 14 open overview
 파일: `artifacts/me-settings-2026-11-14/current/14-open-overview.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 72,829 bytes · SHA-256 `0419f7c341602619cdf509f5c4fec3fc5ff811dbd920f4ace7a9d9339689bb02`
-![artifacts/me-settings-2026-11-14/current/14-open-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/14-open-overview.png)
+![artifacts/me-settings-2026-11-14/current/14-open-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/14-open-overview.png)
 
 ### 15 folded account
 파일: `artifacts/me-settings-2026-11-14/current/15-folded-account.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 35,468 bytes · SHA-256 `5c7fa02621b68b6ba943ab89c371befe9dc51ae12b7eebbe0b5dbecce7ee826b`
-![artifacts/me-settings-2026-11-14/current/15-folded-account.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/15-folded-account.png)
+![artifacts/me-settings-2026-11-14/current/15-folded-account.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/15-folded-account.png)
 
 ### 16 open account
 파일: `artifacts/me-settings-2026-11-14/current/16-open-account.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 70,117 bytes · SHA-256 `0a4fcf5066b18de6fd004a6b843b1527e45c95efa137067636d0fc84b4cbb67b`
-![artifacts/me-settings-2026-11-14/current/16-open-account.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/16-open-account.png)
+![artifacts/me-settings-2026-11-14/current/16-open-account.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/16-open-account.png)
 
 ### 17 small dark
 파일: `artifacts/me-settings-2026-11-14/current/17-small-dark.png`
 분류: ME 재설계 구현·계정/서비스/알림/데이터·복구/기기별 검수 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님 · 40,003 bytes · SHA-256 `889a7a3b7644e499083de8f8f36c3bd70853fe4af84cbcbc1b88bd4aff58a434`
-![artifacts/me-settings-2026-11-14/current/17-small-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/17-small-dark.png)
+![artifacts/me-settings-2026-11-14/current/17-small-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/17-small-dark.png)
 
 ### 01 open calendar todo
 파일: `artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 47,357 bytes · SHA-256 `075dd31e4e28815b31c6c62a1d8c618dc1638064b379b625ea2928d1cf765b5b`
-![artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png)
+![artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/navigation-interaction-2026-11-13/02-open-calendar-duck.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 52,269 bytes · SHA-256 `8f9021d619d505a34158fae822332c626d9d15283f7a8994ab647730050cce34`
-![artifacts/navigation-interaction-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/02-open-calendar-duck.png)
+![artifacts/navigation-interaction-2026-11-13/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/navigation-interaction-2026-11-13/03-portrait-current-screen.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 37,369 bytes · SHA-256 `323688cbb014fd3994e2d5422f8ceea079bab5f2e6666cc50c5814cab3a45539`
-![artifacts/navigation-interaction-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/03-portrait-current-screen.png)
+![artifacts/navigation-interaction-2026-11-13/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/navigation-interaction-2026-11-13/04-closed-camera-column.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 34,356 bytes · SHA-256 `9c87bdd093887105f642f451b6ee0fe8ac5e71414d4eb1b20c7f1ee336cec31e`
-![artifacts/navigation-interaction-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/04-closed-camera-column.png)
+![artifacts/navigation-interaction-2026-11-13/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/navigation-interaction-2026-11-13/05-back-in-camera-column.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 54,458 bytes · SHA-256 `6ce1facfafdd90d9ef96bfc952f4150fce1a51d173264c3cb43b8b6fb675d8a6`
-![artifacts/navigation-interaction-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/05-back-in-camera-column.png)
+![artifacts/navigation-interaction-2026-11-13/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 49,524 bytes · SHA-256 `041428a85af2662503ea6bd22207a045c1960b5e314e97fdf7be9165e400da54`
-![artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png)
+![artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/navigation-interaction-2026-11-13/07-iphone-320-floating-tabs.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 32,771 bytes · SHA-256 `833544221650f1122128c01f6651f100a2eafedc9fc21ebbd8c6f6e43af5015d`
-![artifacts/navigation-interaction-2026-11-13/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/07-iphone-320-floating-tabs.png)
+![artifacts/navigation-interaction-2026-11-13/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 33,367 bytes · SHA-256 `3c1bb26257ceccc44968e4e5027aa16bfc6614b07b717fde200cb9ee9e31ef6b`
-![artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png)
+![artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/navigation-interaction-2026-11-13/07-iphone-430-floating-tabs.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 33,120 bytes · SHA-256 `e3873226972b44a1837207343483814633e207efb0d6456cc479fb821fd061d0`
-![artifacts/navigation-interaction-2026-11-13/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/07-iphone-430-floating-tabs.png)
+![artifacts/navigation-interaction-2026-11-13/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/navigation-interaction-2026-11-13/08-iphone-320-text-160-percent.png`
 분류: 상태별 내비게이션·일반 iPhone·Duo 웹 fixture · native/실기기 아님 · 25,375 bytes · SHA-256 `e6a28b4ef6f0499017a8ad7cf90cf1f3d81a909f318ed1e2e8fe12cc242702d0`
-![artifacts/navigation-interaction-2026-11-13/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/08-iphone-320-text-160-percent.png)
+![artifacts/navigation-interaction-2026-11-13/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/08-iphone-320-text-160-percent.png)
 
 ### 01 folded calendar
 파일: `artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 34,039 bytes · SHA-256 `e95a7452d9f289c1e2a5cc395837280ccc44efec1d52241c9530a83c2d7d3b1d`
-![artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png)
 
 ### 03 short column calendar
 파일: `artifacts/navigation-refinement-2026-11-14/before/03-short-column-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 29,539 bytes · SHA-256 `3c78c353ec5f60b20edd06d621e8ad1c2937bd22ca804dbb25a72e0d6294967f`
-![artifacts/navigation-refinement-2026-11-14/before/03-short-column-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/before/03-short-column-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/before/03-short-column-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/before/03-short-column-calendar.png)
 
 ### 04 folded chat
 파일: `artifacts/navigation-refinement-2026-11-14/before/04-folded-chat.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 32,732 bytes · SHA-256 `d07372637ffd6fe88b34ae5705d0d77545cc812365dd9b034096d9846e1bc90e`
-![artifacts/navigation-refinement-2026-11-14/before/04-folded-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/before/04-folded-chat.png)
+![artifacts/navigation-refinement-2026-11-14/before/04-folded-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/before/04-folded-chat.png)
 
 ### 01 compact long source
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/01-compact-long-source.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 87,817 bytes · SHA-256 `03eb9877b0b12ad170515b2f7c4b81981a7c21d2f85198728cbe0b2ee0a19b0c`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/01-compact-long-source.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/01-compact-long-source.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/01-compact-long-source.png)
 
 ### 02 local only preview
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/02-local-only-preview.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 102,827 bytes · SHA-256 `40f7e0498ee7665ad7ed0a4da54eb417bfbbfef651501013d480e9ac4925c44f`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/02-local-only-preview.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/02-local-only-preview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/02-local-only-preview.png)
 
 ### 03 partial save retry only duck
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/03-partial-save-retry-only-duck.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 115,413 bytes · SHA-256 `697b63c619d6a963d6e25d6e8f935a778432c57e39c8eac254b540d2de53e992`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/03-partial-save-retry-only-duck.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/03-partial-save-retry-only-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/03-partial-save-retry-only-duck.png)
 
 ### 04 editor scrollbar visible
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/04-editor-scrollbar-visible.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 95,806 bytes · SHA-256 `c691e27eb03471f3ab6c572b96be9669a083b5ceeb9fb16a004b808a50732aee`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/04-editor-scrollbar-visible.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/04-editor-scrollbar-visible.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/04-editor-scrollbar-visible.png)
 
 ### 05 todo shared transition
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/05-todo-shared-transition.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 100,314 bytes · SHA-256 `d04d6a2add27714e335033c3af268adf2c2fd7b8ae05a8d132f4b49fc68b1ff5`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/05-todo-shared-transition.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/05-todo-shared-transition.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/05-todo-shared-transition.png)
 
 ### 06 year scrollbar
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/06-year-scrollbar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 153,528 bytes · SHA-256 `6b56b4f8314a4905bc06b85fbcb9bdff03e53baa53b6edee763ca4a11c334a23`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/06-year-scrollbar.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/06-year-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/06-year-scrollbar.png)
 
 ### 07 month after continuous swipe
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/07-month-after-continuous-swipe.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 75,180 bytes · SHA-256 `cd7eb010d99b8cda28c225d1bba8c0c8299fa1d5ba9c62c022737e8101c4e964`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/07-month-after-continuous-swipe.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/07-month-after-continuous-swipe.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/07-month-after-continuous-swipe.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/07-month-after-continuous-swipe.png)
 
 ### 08 continuous swipe midpoint
 파일: `artifacts/navigation-refinement-2026-11-14/calendar-final/08-continuous-swipe-midpoint.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 75,266 bytes · SHA-256 `160ac5f914ccd54b9993892b04b7defc01f188db11148af4d29ac83cd3c610c4`
-![artifacts/navigation-refinement-2026-11-14/calendar-final/08-continuous-swipe-midpoint.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/calendar-final/08-continuous-swipe-midpoint.png)
+![artifacts/navigation-refinement-2026-11-14/calendar-final/08-continuous-swipe-midpoint.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/calendar-final/08-continuous-swipe-midpoint.png)
 
 ### 01 compact phone chat
 파일: `artifacts/navigation-refinement-2026-11-14/chat/01-compact-phone-chat.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 18,002 bytes · SHA-256 `af74c38f71daebb4ccc701d5c81c78dd94167d43283388a8b49fe808da910bee`
-![artifacts/navigation-refinement-2026-11-14/chat/01-compact-phone-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/chat/01-compact-phone-chat.png)
+![artifacts/navigation-refinement-2026-11-14/chat/01-compact-phone-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/chat/01-compact-phone-chat.png)
 
 ### 01 folded calendar
 파일: `artifacts/navigation-refinement-2026-11-14/current/01-folded-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 34,290 bytes · SHA-256 `759311f588fd683305e9204df6a713ed7af65506f67c693a7026b8f05bd5e396`
-![artifacts/navigation-refinement-2026-11-14/current/01-folded-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/01-folded-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/current/01-folded-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/01-folded-calendar.png)
 
 ### 01 open calendar
 파일: `artifacts/navigation-refinement-2026-11-14/current/01-open-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 39,779 bytes · SHA-256 `54de5d3d6e5dcc50c283a5096f3739b8c2cc2b31ace9167a6bdb9bb8cb330f95`
-![artifacts/navigation-refinement-2026-11-14/current/01-open-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/01-open-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/current/01-open-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/01-open-calendar.png)
 
 ### 01 phone calendar
 파일: `artifacts/navigation-refinement-2026-11-14/current/01-phone-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 32,135 bytes · SHA-256 `a2e0d0da21f72428dd577502250321ed25ef99529346f690d419812fa94e5981`
-![artifacts/navigation-refinement-2026-11-14/current/01-phone-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/01-phone-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/current/01-phone-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/01-phone-calendar.png)
 
 ### 02 folded editor
 파일: `artifacts/navigation-refinement-2026-11-14/current/02-folded-editor.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 16,232 bytes · SHA-256 `3f6d60d45e6971867e597c7d26f238bc307e92051610104a005d34b7744358dc`
-![artifacts/navigation-refinement-2026-11-14/current/02-folded-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/02-folded-editor.png)
+![artifacts/navigation-refinement-2026-11-14/current/02-folded-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/02-folded-editor.png)
 
 ### 02 open editor
 파일: `artifacts/navigation-refinement-2026-11-14/current/02-open-editor.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 38,322 bytes · SHA-256 `7f34b869127a6ea6c36576691a31df13e5038a388e75f299b0f25c8676f7d8d2`
-![artifacts/navigation-refinement-2026-11-14/current/02-open-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/02-open-editor.png)
+![artifacts/navigation-refinement-2026-11-14/current/02-open-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/02-open-editor.png)
 
 ### 02 phone editor
 파일: `artifacts/navigation-refinement-2026-11-14/current/02-phone-editor.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 21,946 bytes · SHA-256 `e323422298d7f2f9e9127d0d0796559b2eced32a4cbcebdea0a966bbc5de09d9`
-![artifacts/navigation-refinement-2026-11-14/current/02-phone-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/02-phone-editor.png)
+![artifacts/navigation-refinement-2026-11-14/current/02-phone-editor.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/02-phone-editor.png)
 
 ### 03 compact column calendar
 파일: `artifacts/navigation-refinement-2026-11-14/current/03-compact-column-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 32,581 bytes · SHA-256 `9c22df38f021a4a18c1c89eb65449cdde5e37134a69d2bb785ee3dcf27a05fa2`
-![artifacts/navigation-refinement-2026-11-14/current/03-compact-column-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/03-compact-column-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/current/03-compact-column-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/03-compact-column-calendar.png)
 
 ### 03 short column calendar
 파일: `artifacts/navigation-refinement-2026-11-14/current/03-short-column-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 31,159 bytes · SHA-256 `2ae27771a20914a7e23fd647bb6e5d813713d914f792015d98004b4c210e3e9c`
-![artifacts/navigation-refinement-2026-11-14/current/03-short-column-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/03-short-column-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/current/03-short-column-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/03-short-column-calendar.png)
 
 ### 04 folded chat
 파일: `artifacts/navigation-refinement-2026-11-14/current/04-folded-chat.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 34,555 bytes · SHA-256 `4a87a1e3f0f2e3c0d29cc1aa9ca8e099e7034b9dc4d1366e3ff3b52bcec8213f`
-![artifacts/navigation-refinement-2026-11-14/current/04-folded-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/04-folded-chat.png)
+![artifacts/navigation-refinement-2026-11-14/current/04-folded-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/04-folded-chat.png)
 
 ### 05 history compact
 파일: `artifacts/navigation-refinement-2026-11-14/current/05-history-compact.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 39,399 bytes · SHA-256 `c962ebc1946442083b61da9db5070a99f60bee44379fe0201ec05cca57bf5c18`
-![artifacts/navigation-refinement-2026-11-14/current/05-history-compact.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/05-history-compact.png)
+![artifacts/navigation-refinement-2026-11-14/current/05-history-compact.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/05-history-compact.png)
 
 ### 05 history expanded
 파일: `artifacts/navigation-refinement-2026-11-14/current/05-history-expanded.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 40,409 bytes · SHA-256 `1dca75ed817dca5d7c7ce9d62bc47c5a6870002764da2f97be09a404c34b5ca2`
-![artifacts/navigation-refinement-2026-11-14/current/05-history-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/05-history-expanded.png)
+![artifacts/navigation-refinement-2026-11-14/current/05-history-expanded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/05-history-expanded.png)
 
 ### 06 profile start
 파일: `artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 48,360 bytes · SHA-256 `3d2fc612ac344f5d40aaf35f45d4a576345e6ed96d62037202da83b009fcc61e`
-![artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png)
+![artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png)
 
 ### 07 profile account
 파일: `artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 47,571 bytes · SHA-256 `a02497a60ea69282967dbbfede085812a319ad2b3c7a3f56871dc7ecdcaec5ae`
-![artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png)
+![artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png)
 
 ### 08 profile google
 파일: `artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 47,178 bytes · SHA-256 `6be047247e43c88e2e798e944c1cb697444b1c8de128990b7dae901e39cd9778`
-![artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png)
+![artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png)
 
 ### 09 profile return
 파일: `artifacts/navigation-refinement-2026-11-14/current/09-profile-return.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 48,360 bytes · SHA-256 `3d2fc612ac344f5d40aaf35f45d4a576345e6ed96d62037202da83b009fcc61e`
-![artifacts/navigation-refinement-2026-11-14/current/09-profile-return.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/09-profile-return.png)
+![artifacts/navigation-refinement-2026-11-14/current/09-profile-return.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/09-profile-return.png)
 
 ### 10 profile storage
 파일: `artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 49,970 bytes · SHA-256 `60e6fc848af089e379b5475837715f6783e7c7c603ad59a5514fa3a8e7ec4c95`
-![artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png)
+![artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png)
 
 ### 11 profile privacy
 파일: `artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 64,488 bytes · SHA-256 `2f4ab9419120150cdb99053846288af071ee57a3b744181b946cb51ee931bcce`
-![artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png)
+![artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png)
 
 ### 12 account delete entry
 파일: `artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 36,885 bytes · SHA-256 `8abf46c9075299d7ad8cea658b2c8f7916829e7a05d9631035e251be2c5e3359`
-![artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png)
+![artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png)
 
 ### 12 notion unconnected
 파일: `artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 36,997 bytes · SHA-256 `3084e09a3b7dc18bec040e2fbbf6988249b21112c98cbdb20e1e61ad53302866`
-![artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png)
+![artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png)
 
 ### 12 profile backup
 파일: `artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 47,261 bytes · SHA-256 `5a3dd00c91f701df45c8cb7800d73cc195acb21adb1dfaa252581baf26915d1e`
-![artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png)
+![artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png)
 
 ### 13 month rest
 파일: `artifacts/navigation-refinement-2026-11-14/current/13-month-rest.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 33,013 bytes · SHA-256 `50e718b79591f36c653986ea4755af941f6ac9005b1e4b2e8cddfb59d3376cb7`
-![artifacts/navigation-refinement-2026-11-14/current/13-month-rest.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/13-month-rest.png)
+![artifacts/navigation-refinement-2026-11-14/current/13-month-rest.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/13-month-rest.png)
 
 ### 01 open calendar todo
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/01-open-calendar-todo.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 52,098 bytes · SHA-256 `04f2f5f4308a7c6a2654e8388f50410872d3c5506111af8cc5583dee9d109ef5`
-![artifacts/navigation-refinement-2026-11-14/duo-final/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/01-open-calendar-todo.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/01-open-calendar-todo.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/01-open-calendar-todo.png)
 
 ### 02 open calendar duck
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/02-open-calendar-duck.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 61,599 bytes · SHA-256 `9c4bfeb3380b30c6713ade64ce179595047f94913a68ad1dd5bad8d5fef76525`
-![artifacts/navigation-refinement-2026-11-14/duo-final/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/02-open-calendar-duck.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/02-open-calendar-duck.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/02-open-calendar-duck.png)
 
 ### 03 portrait current screen
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/03-portrait-current-screen.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 37,335 bytes · SHA-256 `d8930fb6f069b7d430cb561ab7841f94d91bacb9f8e19a063d626e25e1d96609`
-![artifacts/navigation-refinement-2026-11-14/duo-final/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/03-portrait-current-screen.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/03-portrait-current-screen.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/03-portrait-current-screen.png)
 
 ### 04 closed camera column
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/04-closed-camera-column.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 34,385 bytes · SHA-256 `8fcc5549c44771fd70150eafdf220402838884253406caa491ac41e20110ec4c`
-![artifacts/navigation-refinement-2026-11-14/duo-final/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/04-closed-camera-column.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/04-closed-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/04-closed-camera-column.png)
 
 ### 05 back in camera column
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/05-back-in-camera-column.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 63,401 bytes · SHA-256 `14442c9cb52dad93089470f6aba34d6a8391badd0c7b09fa9bea81a549262d89`
-![artifacts/navigation-refinement-2026-11-14/duo-final/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/05-back-in-camera-column.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/05-back-in-camera-column.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/05-back-in-camera-column.png)
 
 ### 06 dragging lens web fallback
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/06-dragging-lens-web-fallback.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 54,204 bytes · SHA-256 `718942aeea00a8ddcd8ec3f036cc5fb7f99312e637ef47d9008dcb39b882c9bd`
-![artifacts/navigation-refinement-2026-11-14/duo-final/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/06-dragging-lens-web-fallback.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/06-dragging-lens-web-fallback.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/06-dragging-lens-web-fallback.png)
 
 ### 07 iphone 320 floating tabs
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-320-floating-tabs.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 31,668 bytes · SHA-256 `684cfa4ceb3c4bc2a554171411e895523c90572b23620e4f14999982a15cd37f`
-![artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-320-floating-tabs.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-320-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-320-floating-tabs.png)
 
 ### 07 iphone 390 floating tabs
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-390-floating-tabs.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 32,915 bytes · SHA-256 `e36b626d736a57c60505df9c8142057cba9ac165cd1db1b25b7d538baa71409c`
-![artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-390-floating-tabs.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-390-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-390-floating-tabs.png)
 
 ### 07 iphone 430 floating tabs
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-430-floating-tabs.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 33,656 bytes · SHA-256 `22471246d29b61213c68eabc761b0d76000f89d877c8098f28d12d28d9a35755`
-![artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-430-floating-tabs.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-430-floating-tabs.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/07-iphone-430-floating-tabs.png)
 
 ### 08 iphone 320 text 160 percent
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/08-iphone-320-text-160-percent.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 25,375 bytes · SHA-256 `9c24084c0cb1e59ff6b7a9e2ca3664a89f378757c46dd11f02019ae1a56296ae`
-![artifacts/navigation-refinement-2026-11-14/duo-final/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/08-iphone-320-text-160-percent.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/08-iphone-320-text-160-percent.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/08-iphone-320-text-160-percent.png)
 
 ### 08 pane local day detail
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/08-pane-local-day-detail.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 58,373 bytes · SHA-256 `fea265d0eb52c5ad1de37b8c72a88b90a3b03c5ca5fa707b5b3d5db7002ce2ae`
-![artifacts/navigation-refinement-2026-11-14/duo-final/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/08-pane-local-day-detail.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/08-pane-local-day-detail.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/08-pane-local-day-detail.png)
 
 ### 10 folded calendar dark
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/10-folded-calendar-dark.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 36,814 bytes · SHA-256 `8fa80fb1444062be5d76d39e5b640bcc108cc25b08c36696145ba5562125342f`
-![artifacts/navigation-refinement-2026-11-14/duo-final/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/10-folded-calendar-dark.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/10-folded-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/10-folded-calendar-dark.png)
 
 ### 11 folded calendar light
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/11-folded-calendar-light.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 35,653 bytes · SHA-256 `f4c58fd0576b1c954bc5f6a0e8a58a8c576398091d368c5935ef916472c611e9`
-![artifacts/navigation-refinement-2026-11-14/duo-final/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/11-folded-calendar-light.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/11-folded-calendar-light.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/11-folded-calendar-light.png)
 
 ### 12 open calendar dark
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/12-open-calendar-dark.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 53,641 bytes · SHA-256 `1ae3166c955e6553770573f56aada8617de56e8d595ac27c329ec73ea400f340`
-![artifacts/navigation-refinement-2026-11-14/duo-final/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/12-open-calendar-dark.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/12-open-calendar-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/12-open-calendar-dark.png)
 
 ### 13 folded fortnight
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/13-folded-fortnight.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 27,710 bytes · SHA-256 `864cef4fa0f9ac3b1bdda44bee12fcdfd12b161b9e49358947f76285d7c19fd4`
-![artifacts/navigation-refinement-2026-11-14/duo-final/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/13-folded-fortnight.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/13-folded-fortnight.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/13-folded-fortnight.png)
 
 ### 14 open fortnight dark
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/14-open-fortnight-dark.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 47,664 bytes · SHA-256 `b71a4782c92fbf23922065f21c2c69523c82f4532332856b410e3acb8f1fd2b6`
-![artifacts/navigation-refinement-2026-11-14/duo-final/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/14-open-fortnight-dark.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/14-open-fortnight-dark.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/14-open-fortnight-dark.png)
 
 ### 15 long press left calendar
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/15-long-press-left-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 42,526 bytes · SHA-256 `4de3912dba0c13492065c68750a821d40125e5de1f2986ad2bb8396059d243af`
-![artifacts/navigation-refinement-2026-11-14/duo-final/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/15-long-press-left-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/15-long-press-left-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/15-long-press-left-calendar.png)
 
 ### 16 long press right calendar
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/16-long-press-right-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 30,304 bytes · SHA-256 `097b585e9fbc49aa3b32492a222503538ad6f4571cfccc0dc9e859452d291e7e`
-![artifacts/navigation-refinement-2026-11-14/duo-final/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/16-long-press-right-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/16-long-press-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/16-long-press-right-calendar.png)
 
 ### 17 folded long press calendar
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/17-folded-long-press-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 27,654 bytes · SHA-256 `fe44fb7d2b06f4525f0d784f0ecf23c46b32ce93d2f4ef5926558ad67f22ca67`
-![artifacts/navigation-refinement-2026-11-14/duo-final/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/17-folded-long-press-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/17-folded-long-press-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/17-folded-long-press-calendar.png)
 
 ### 18 year left calendar right todos
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/18-year-left-calendar-right-todos.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 86,734 bytes · SHA-256 `331d6cbb6e4f7d6c46d5286b25a1533918e6d04a2e4a44bb73e3d9145e544f32`
-![artifacts/navigation-refinement-2026-11-14/duo-final/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/18-year-left-calendar-right-todos.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/18-year-left-calendar-right-todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/18-year-left-calendar-right-todos.png)
 
 ### 19 year right calendar
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/19-year-right-calendar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 87,182 bytes · SHA-256 `6dcb6f373f31b47a67f7929881756097faa2e8938964cb5ee93edcd839c4363d`
-![artifacts/navigation-refinement-2026-11-14/duo-final/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/19-year-right-calendar.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/19-year-right-calendar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/19-year-right-calendar.png)
 
 ### 20 year portrait
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/20-year-portrait.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 83,900 bytes · SHA-256 `e63826984e65cba892968468689944c1181fbd0f68d9250ae0c14a7eb2bee63c`
-![artifacts/navigation-refinement-2026-11-14/duo-final/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/20-year-portrait.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/20-year-portrait.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/20-year-portrait.png)
 
 ### 21 year folded
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/21-year-folded.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 67,468 bytes · SHA-256 `68e0e5812824adf13f82f153a416fef05efc1b89b5d0c673f136273f19671bc8`
-![artifacts/navigation-refinement-2026-11-14/duo-final/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/21-year-folded.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/21-year-folded.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/21-year-folded.png)
 
 ### 22 year duo motion
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/22-year-duo-motion.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 85,990 bytes · SHA-256 `4ca57bacbcad4daa8c7e70f683269a5db56ffe7736290885925e09e9e1a32fa1`
-![artifacts/navigation-refinement-2026-11-14/duo-final/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/22-year-duo-motion.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/22-year-duo-motion.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/22-year-duo-motion.png)
 
 ### 23 year design comparison state
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/23-year-design-comparison-state.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 92,435 bytes · SHA-256 `eeb8a5aef4857a01993c8ce1198569a4b386c03e4c2aa1bab48c8e3bf96633c8`
-![artifacts/navigation-refinement-2026-11-14/duo-final/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/23-year-design-comparison-state.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/23-year-design-comparison-state.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/23-year-design-comparison-state.png)
 
 ### 24 pane edge scrollbar
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/24-pane-edge-scrollbar.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 91,813 bytes · SHA-256 `c8bb96bc0d7c14dd4db39ced289e0877450524fa9e254ca5c6ad2e70951a35c7`
-![artifacts/navigation-refinement-2026-11-14/duo-final/24-pane-edge-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/24-pane-edge-scrollbar.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/24-pane-edge-scrollbar.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/24-pane-edge-scrollbar.png)
 
 ### 25 compact duo chat
 파일: `artifacts/navigation-refinement-2026-11-14/duo-final/25-compact-duo-chat.png`
 분류: 약한 메뉴·연속 월 이동·접힘 2주·키보드·작은 실행 기록·내정보 점검 · 실제 Expo/합성 API·기하 · native/사용자 원본 아님 · 17,555 bytes · SHA-256 `df9e564cf4c8f4cd352a61593b5518a862ee0acc68d0b971c78a16cbfef292cd`
-![artifacts/navigation-refinement-2026-11-14/duo-final/25-compact-duo-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/duo-final/25-compact-duo-chat.png)
+![artifacts/navigation-refinement-2026-11-14/duo-final/25-compact-duo-chat.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/duo-final/25-compact-duo-chat.png)
 
 ### overview
 파일: `artifacts/overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 137,266 bytes · SHA-256 `108db53c7dee5028aa39c2e147e46df6e1f75e523b535aecdcdf4a89daaee73d`
-![artifacts/overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/overview.png)
+![artifacts/overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/overview.png)
 
 ### polish overview
 파일: `artifacts/polish-overview.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 92,820 bytes · SHA-256 `32526ebc62dbdd7cc29df1ef44fda820df843d2f17a52cce19f15b702785edef`
-![artifacts/polish-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/polish-overview.png)
+![artifacts/polish-overview.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/polish-overview.png)
 
 ### 01 request consent fixture after
 파일: `artifacts/product-design-audit/01-request-consent-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 36,539 bytes · SHA-256 `661e44e4379d01a8690eb6afb79301c271c5a2783236bde4203eed3b3cd8b455`
-![artifacts/product-design-audit/01-request-consent-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/01-request-consent-fixture-after.png)
+![artifacts/product-design-audit/01-request-consent-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/01-request-consent-fixture-after.png)
 
 ### 01 request consent fixture
 파일: `artifacts/product-design-audit/01-request-consent-fixture.png`
 분류: 모의 응답 테스트 화면 · 36,539 bytes · SHA-256 `661e44e4379d01a8690eb6afb79301c271c5a2783236bde4203eed3b3cd8b455`
-![artifacts/product-design-audit/01-request-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/01-request-consent-fixture.png)
+![artifacts/product-design-audit/01-request-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/01-request-consent-fixture.png)
 
 ### 02 edit proposal fixture after
 파일: `artifacts/product-design-audit/02-edit-proposal-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 39,493 bytes · SHA-256 `0972fd9d0a81e4698aa9391dfe0faa82b17bc2347a9b55e60e8ce30b5564d2f3`
-![artifacts/product-design-audit/02-edit-proposal-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
+![artifacts/product-design-audit/02-edit-proposal-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
 
 ### 02 edit proposal fixture
 파일: `artifacts/product-design-audit/02-edit-proposal-fixture.png`
 분류: 모의 응답 테스트 화면 · 33,721 bytes · SHA-256 `1a3c7d8d4550ad433740ff8b8868a545f2696bda931906aa8d352f9988f4e37d`
-![artifacts/product-design-audit/02-edit-proposal-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/02-edit-proposal-fixture.png)
+![artifacts/product-design-audit/02-edit-proposal-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/02-edit-proposal-fixture.png)
 
 ### 03 confirm fixture after
 파일: `artifacts/product-design-audit/03-confirm-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 43,400 bytes · SHA-256 `60daa5c3ef58802765b8a1371d8c5d4172a1386adfad9ca2f14931083bc0f88b`
-![artifacts/product-design-audit/03-confirm-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/03-confirm-fixture-after.png)
+![artifacts/product-design-audit/03-confirm-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/03-confirm-fixture-after.png)
 
 ### 03 confirm fixture
 파일: `artifacts/product-design-audit/03-confirm-fixture.png`
 분류: 모의 응답 테스트 화면 · 43,364 bytes · SHA-256 `b7b71ce67948fcf8dfcea308af5ff70e2134fa177c9dacb21e8b6dc0cc47b93e`
-![artifacts/product-design-audit/03-confirm-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/03-confirm-fixture.png)
+![artifacts/product-design-audit/03-confirm-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/03-confirm-fixture.png)
 
 ### 04 result fixture after
 파일: `artifacts/product-design-audit/04-result-fixture-after.png`
 분류: 모의 응답 테스트 화면 · 40,104 bytes · SHA-256 `5dfbc6ca260af354beb86b700284313bbb3b05f5f9f7385f3d45777322627822`
-![artifacts/product-design-audit/04-result-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/04-result-fixture-after.png)
+![artifacts/product-design-audit/04-result-fixture-after.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/04-result-fixture-after.png)
 
 ### 04 result fixture
 파일: `artifacts/product-design-audit/04-result-fixture.png`
 분류: 모의 응답 테스트 화면 · 40,112 bytes · SHA-256 `2eb84cfb35b376a03713706e85f423e3bbdd476f247743463b3b6cf19fa8a2a4`
-![artifacts/product-design-audit/04-result-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/04-result-fixture.png)
+![artifacts/product-design-audit/04-result-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/04-result-fixture.png)
 
 ### profile
 파일: `artifacts/profile.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 80,270 bytes · SHA-256 `373274654c0efb441423218ea34ac8a68548ba52121bc3acb366cd4bb800e184`
-![artifacts/profile.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/profile.png)
+![artifacts/profile.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/profile.png)
 
 ### 01 chat fixture
 파일: `artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,672 bytes · SHA-256 `1fcd13bf05151eac44509f791cf24b166eb6ea391aacb319ded054486e6aabc0`
-![artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
+![artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
 
 ### 02 briefing fixture
 파일: `artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png`
 분류: 모의 응답 테스트 화면 · 34,223 bytes · SHA-256 `6ea0d7fb964e2b425139e925faa10cf71b4c98fdad3ec65509142f1cd20a40b6`
-![artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
+![artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
 
 ### 03 small weather fixture
 파일: `artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,467 bytes · SHA-256 `879d7c4742bb4043bcd358c6c4f16007f84cafb7082f7dc0ed9f58654f069c0d`
-![artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
+![artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
 
 ### todos
 파일: `artifacts/todos.png`
 분류: 단계별 개요 또는 초기 웹 프로토타입 · 57,566 bytes · SHA-256 `8edebde479223a9cf2377144ccf88ac1125c9b7852603c8f9300b3965065f3bc`
-![artifacts/todos.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/todos.png)
+![artifacts/todos.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/todos.png)
 
 ### 01 todos fixture
 파일: `artifacts/ux-audit-2026-11-12/01-todos-fixture.png`
 분류: 모의 응답 테스트 화면 · 35,602 bytes · SHA-256 `c244805d100d30399e96739e078e9fd30f5b02b37f9756d8e1f69b9aa0200c6b`
-![artifacts/ux-audit-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
+![artifacts/ux-audit-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
 
 ### 02 calendar fixture
 파일: `artifacts/ux-audit-2026-11-12/02-calendar-fixture.png`
 분류: 모의 응답 테스트 화면 · 29,873 bytes · SHA-256 `4d18aa53b412d39e2bd24c86aa81c67e50a6769ee3be5c55704d6c1fe2e66245`
-![artifacts/ux-audit-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
+![artifacts/ux-audit-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
 
 ### 03 duck start fixture
 파일: `artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png`
 분류: 모의 응답 테스트 화면 · 32,282 bytes · SHA-256 `25f523877f2c0c403b8bfdd88f63de0edce254b11bce5e9b3573491922ca926a`
-![artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
+![artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
 
 ### 04 log fixture
 파일: `artifacts/ux-audit-2026-11-12/04-log-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,640 bytes · SHA-256 `4d6bf721e71411d9cebbae1f44cb28e8a01129723186bd6267ccd6a5d24f82fd`
-![artifacts/ux-audit-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
+![artifacts/ux-audit-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
 
 ### 05 profile fixture
 파일: `artifacts/ux-audit-2026-11-12/05-profile-fixture.png`
 분류: 모의 응답 테스트 화면 · 46,166 bytes · SHA-256 `0fb8d6c5f15250c40f47963992b5a76c6c8b990b88a1a0708306c77d112aa5db`
-![artifacts/ux-audit-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
+![artifacts/ux-audit-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
 
 ### 06 google permissions fixture
 파일: `artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png`
 분류: 모의 응답 테스트 화면 · 49,489 bytes · SHA-256 `b0887d6da3ddac22a04c9c40653b106e6116b5d572b3d86460c1e572cb8a6c85`
-![artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
+![artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
 
 ### 07 request before consent fixture
 파일: `artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png`
 분류: 모의 응답 테스트 화면 · 36,744 bytes · SHA-256 `0cdba7a39bb69c4b83a5abd7fcd00b6886770dfe579528c03b1283b52d068031`
-![artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
+![artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
 
 ### 08 ai candidate fixture
 파일: `artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,410 bytes · SHA-256 `c50cbef477e847784e141d14997d726e4fb7d05eb896428210a16195436bcdce`
-![artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
+![artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
 
 ### 09 confirmation fixture
 파일: `artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png`
 분류: 모의 응답 테스트 화면 · 45,114 bytes · SHA-256 `4ac537a551fd16b2ad8d53b9159a0e6601e87be26cc4d64dbb7e3807df739ee6`
-![artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
+![artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
 
 ### 10 succeeded fixture
 파일: `artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png`
 분류: 모의 응답 테스트 화면 · 41,828 bytes · SHA-256 `a1a6f2e56ed4a267a5639bc40a0e0a441c2c1cc5016adf99e32f35bce8150b17`
-![artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
+![artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
 
 ### 11 added todo fixture
 파일: `artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png`
 분류: 모의 응답 테스트 화면 · 38,274 bytes · SHA-256 `d10bca4dfda62168b43e52c9ae4cda5591275c2f8bf1da1515faef634ff4faf4`
-![artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
+![artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
 
 ### 12 edit sheet fixture
 파일: `artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 24,305 bytes · SHA-256 `e6bcc15b51f11ff9809c05b45a1b1cab92b3fe0a0325b3806881bedc2fe4249f`
-![artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
+![artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
 
 ### 13 paste sheet fixture
 파일: `artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 49,375 bytes · SHA-256 `215f9c42f1888a5f66de669662959994fedc4afd8538c17c6bb9efca02b6c88d`
-![artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
+![artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
 
 ### 14 duck small fixture
 파일: `artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png`
 분류: 모의 응답 테스트 화면 · 35,152 bytes · SHA-256 `8fccb659ae2553870801fc6fc36429c106fefd8bbe0e41fd48f4b5952d4d8b69`
-![artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
+![artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
 
 ### 15 error retry fixture
 파일: `artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png`
 분류: 모의 응답 테스트 화면 · 46,545 bytes · SHA-256 `7dafa5fb04691b9ed5542dc619bd90aea1aa00f281cddf149c32edcc888c6d1e`
-![artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
+![artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
 
 ### 01 todos fixture
 파일: `artifacts/ux-fixes-2026-11-12/01-todos-fixture.png`
 분류: 모의 응답 테스트 화면 · 35,584 bytes · SHA-256 `817d97deaf9962348ee303fd2871c423589f5bc54e4171cfb90ba7893828ce84`
-![artifacts/ux-fixes-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/01-todos-fixture.png)
+![artifacts/ux-fixes-2026-11-12/01-todos-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/01-todos-fixture.png)
 
 ### 02 calendar fixture
 파일: `artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,684 bytes · SHA-256 `105a54a33edc1e84aaa07e8fc94a9e275a70a188e6d39073f208f94b679ed768`
-![artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png)
+![artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/02-calendar-fixture.png)
 
 ### 03 duck start fixture
 파일: `artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png`
 분류: 모의 응답 테스트 화면 · 28,795 bytes · SHA-256 `d4520c8422756e5dd9247fa666874aa7624a81585397f2031eb8c922c66810e6`
-![artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png)
+![artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/03-duck-start-fixture.png)
 
 ### 04 log fixture
 파일: `artifacts/ux-fixes-2026-11-12/04-log-fixture.png`
 분류: 모의 응답 테스트 화면 · 26,528 bytes · SHA-256 `a380d75399abd7b804e82c3575691d10f9abbffe584ff417991b12e3a84c935d`
-![artifacts/ux-fixes-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/04-log-fixture.png)
+![artifacts/ux-fixes-2026-11-12/04-log-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/04-log-fixture.png)
 
 ### 05 profile fixture
 파일: `artifacts/ux-fixes-2026-11-12/05-profile-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,549 bytes · SHA-256 `4ad16d3211e188d8486a569950bc801502e0e77c49340cf5dc8d771dda035471`
-![artifacts/ux-fixes-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/05-profile-fixture.png)
+![artifacts/ux-fixes-2026-11-12/05-profile-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/05-profile-fixture.png)
 
 ### 06 google permissions fixture
 파일: `artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png`
 분류: 모의 응답 테스트 화면 · 45,904 bytes · SHA-256 `9b5fa8bcbc476bddd439caad2af225cd23f473b100c9d275c024067af87f7f5c`
-![artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
+![artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
 
 ### 07 request before consent fixture
 파일: `artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png`
 분류: 모의 응답 테스트 화면 · 31,971 bytes · SHA-256 `7cb2d908ff2ede41ab5d3476e4f1dc34a4b84ac4e7c5d867daacf5c45ae877f6`
-![artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png)
+![artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/07-request-before-consent-fixture.png)
 
 ### 08 ai candidate fixture
 파일: `artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,843 bytes · SHA-256 `1a80b2e8bdf5f84ddd4017f59f559aa03a0a9fb57e93892277381a75860c9082`
-![artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
+![artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
 
 ### 09 confirmation fixture
 파일: `artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png`
 분류: 모의 응답 테스트 화면 · 47,828 bytes · SHA-256 `f0cc8d44132777fab6f1b3e480c789fa9ab8f56f516fb1c2f1683df5a83d8ca8`
-![artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png)
+![artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/09-confirmation-fixture.png)
 
 ### 10 succeeded fixture
 파일: `artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png`
 분류: 모의 응답 테스트 화면 · 38,881 bytes · SHA-256 `1a9cf5b1fc9d0390d762c12c3a17926fa9c64654dff7473e84baf5fc9bbc836a`
-![artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
+![artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
 
 ### 11 added todo fixture
 파일: `artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png`
 분류: 모의 응답 테스트 화면 · 38,758 bytes · SHA-256 `31659fc8b3b1926530f991fae70ab9e2330dd585f19223543c8a9a8ef93985a5`
-![artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png)
+![artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/11-added-todo-fixture.png)
 
 ### 12 edit sheet fixture
 파일: `artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 23,729 bytes · SHA-256 `677e40ed43184c043ef210f3c5d76b7eb24febb2f4f54fff3002554b064a4fa3`
-![artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png)
+![artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/12-edit-sheet-fixture.png)
 
 ### 13 paste sheet fixture
 파일: `artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,895 bytes · SHA-256 `fac3db5fc36bd874707d3c8130b86efe47733748029d0eb63acc2170b328e8f3`
-![artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
+![artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
 
 ### 14 duck small fixture
 파일: `artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png`
 분류: 모의 응답 테스트 화면 · 27,725 bytes · SHA-256 `3cf084fd329002d4fb1c4c85f91d9bffa8878e8cba11cc4e8f735277d8bf2a82`
-![artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png)
+![artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/14-duck-small-fixture.png)
 
 ### 15 error retry fixture
 파일: `artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png`
 분류: 모의 응답 테스트 화면 · 42,142 bytes · SHA-256 `1874e06586b532dd4c9b24a15167081fd3944096ddbd4311c86aad37ebd1fcbb`
-![artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png)
+![artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/15-error-retry-fixture.png)
 
 ### 16 calendar jump fixture
 파일: `artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png`
 분류: 모의 응답 테스트 화면 · 39,453 bytes · SHA-256 `e16b68c808fc6a602056b8a8d27966bb734c5c6faea1bbcf51a0b91870ddada4`
-![artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
+![artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
 
 ### 17 account jump fixture
 파일: `artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png`
 분류: 모의 응답 테스트 화면 · 37,884 bytes · SHA-256 `15daed71f8f4251681ed39f25264c929aae27416f4400ba67f21bcf970069368`
-![artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
+![artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
 
 ### 18 expanded permissions fixture
 파일: `artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png`
 분류: 모의 응답 테스트 화면 · 57,480 bytes · SHA-256 `8ce1427cb0fa7dac45a62945ccfa4193740325deb6c8337ea54c825d690840b8`
-![artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
+![artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
 
 ### 19 small editor fixture
 파일: `artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png`
 분류: 모의 응답 테스트 화면 · 17,449 bytes · SHA-256 `d06909105ea8a75dcd41b307592882187d30fa54e2070e370d7cac234ebfcee6`
-![artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
+![artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
 
 ### android icon background
 파일: `mobile/assets/android-icon-background.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 17,549 bytes · SHA-256 `fb139c2dee362ebf2070e23b96da6fc0d43f8492de38b8af1fd7223e19b5861d`
-![mobile/assets/android-icon-background.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/mobile/assets/android-icon-background.png)
+![mobile/assets/android-icon-background.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/mobile/assets/android-icon-background.png)
 
 ### android icon foreground
 파일: `mobile/assets/android-icon-foreground.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 78,796 bytes · SHA-256 `9e3d0315a33c6799de601dd34cd8bf8cc3a8d16f3bf75592baec2ceb7240b391`
-![mobile/assets/android-icon-foreground.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/mobile/assets/android-icon-foreground.png)
+![mobile/assets/android-icon-foreground.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/mobile/assets/android-icon-foreground.png)
 
 ### android icon monochrome
 파일: `mobile/assets/android-icon-monochrome.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 4,140 bytes · SHA-256 `6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83`
-![mobile/assets/android-icon-monochrome.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/mobile/assets/android-icon-monochrome.png)
+![mobile/assets/android-icon-monochrome.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/mobile/assets/android-icon-monochrome.png)
 
 ### favicon
 파일: `mobile/assets/favicon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 1,129 bytes · SHA-256 `a4e030697a7571b3e95d31860e4da55d2f98e5e861e2b55e414f45a8556828ba`
-![mobile/assets/favicon.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/mobile/assets/favicon.png)
+![mobile/assets/favicon.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/mobile/assets/favicon.png)
 
 ### icon
 파일: `mobile/assets/icon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 393,493 bytes · SHA-256 `119462bb78eb240a65c869fc067ee599639b3cb5a41953f25c07b17d2a8c7e0f`
-![mobile/assets/icon.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/mobile/assets/icon.png)
+![mobile/assets/icon.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/mobile/assets/icon.png)
 
 ### splash icon
 파일: `mobile/assets/splash-icon.png`
 분류: 앱 초기 리소스·최종 브랜딩 미확정 · 17,547 bytes · SHA-256 `5f4c0a732b6325bf4071d9124d2ae67e037cb24fcc9c482ef82bea742109a3b8`
-![mobile/assets/splash-icon.png](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/mobile/assets/splash-icon.png)
+![mobile/assets/splash-icon.png](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/mobile/assets/splash-icon.png)
 
 
 ## 6. 댓글로 수정 요청하기
 
-공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 818개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
+공개 문서 주소는 https://duckduck-test.onrender.com/project 입니다. 배포 후 문서와 이미지 844개를 별도 파일 없이 읽을 수 있습니다. 하단의 댓글 영역에서 덕 계정으로 로그인하고 이메일 인증을 마친 뒤 요청을 남깁니다.
 
 - 각 절/이미지의 수정 요청 버튼으로 위치를 지정할 수 있습니다.
 - 댓글은 서버 DB에 저장되며 작성자만 수정·삭제·반영 확인할 수 있습니다.
@@ -6262,7 +6426,7 @@ a2f4a2c Rename Profile to ME and record source-backed product design review
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/59262832404f9f24f3d48e7183c545bad9b911e2
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/24e38cd3250cd1c79071d0be928b3b5066856553
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -6422,6 +6586,17 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ### 原文 / AGENTS.md
 
 ### duckduck 개발·인계 지침
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — ME 재설계 전체 구현
 
@@ -6740,6 +6915,105 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 原文 / docs/chat-calendar-simplicity-2026-11-14.md
+
+### 채팅·캘린더 단순화와 양방향 완료 이동
+
+사용자의 추가 수정 요청을 구현했다. 일반 iPhone/Duo 각각 질문을 보냈고, 이전에 확정한 하단 탭/카메라 열·분할 범위를 유지하는 기본안으로 진행한다고 알렸다. 체크리스트의 완료는 채팅 항목 표시, Todo 저장은 별도 확인으로 구현했다. 이전 ‘체크리스트 보류’와 ‘완료 즉시 log 노출’은 이 절에서 대체한다.
+
+#### AI 동의와 자료 안내
+
+선택 자료와 내 Todo를 AI에 보낸다는 동의는 최초에 명시적으로 받는다. 동의한 범위는 기기·Duck 계정·서버별 `duckduck.ai-consent.v1.<owner>`에 선택 서비스와 최대16개의 승인 범위만 저장한다. 원문·토큰을 저장하지 않는다. 서버가 제공하는 consentScopes는 연결 ID/외부 계정/권한의 SHA256이며 정상 토큰 갱신/만료시각 변화는 범위를 바꾸지 않는다.
+
+같은 범위의 다음 메시지와 앱 재실행에서는 체크를 반복하지 않는다. ＋→AI에 보낼 자료 선택에서 해제할 수 있다. 새 자료 범위/연결 계정/권한에는 새 동의가 필요하며 붙여넣은 원문은 매번 별도로 확인한다. 계정 삭제 시 이 설정도 지운다. 범위 정보를 주지 않는 구 서버에서는 재실행 간 동의를 저장하지 않는다.
+
+화면에 오래 남은 동의도 서버가 자료 수집 전·후 실제 연결과 비교한다. 바뀐 연결은409로 거절해 AI에 보내지 않고, 앱은 상태만 다시 읽어 동의란을 보여준다. AI 요청을 자동 재전송하지 않는다. 구31 앱의 명시 consent 요청은 호환을 유지한다. 이메일 인증/현재 사용자/외부 실행 확인은 그대로다.
+
+‘확인한 자료와 안내 보기’는 AI가 참고한 자료와 조회 한계를 보던 버튼이었다. 이제 큰 버튼 대신 **자료 N개 → 근거 보기** 한 행으로 열고 닫는다. 부분 조회/오류 안내를 지우거나 전체 자료를 다 확인했다고 주장하지 않는다.
+
+#### 대화의 반응과 체크리스트
+
+보내면 질문 말풍선을 즉시 추가한다. 응답 전에는 대화 안에 작은 점과 ‘덕이 답변을 준비하고 있어요’를 표시한다. 문맥 읽기/실제 변경 처리 단계는 다른 문구로 구분한다. 답변을 받았을 때만 실제 내용을 표시하고 220ms의 작은 fade/3pt 이동을 사용한다. 가짜 스트리밍/진행률은 없다. 동작 줄이기에서는 즉시 표시한다. 입력창은 대기 중에도 다음 문장을 쓸 수 있고, 먼저 보낸 요청이 끝났다고 새 입력을 지우지 않는다. 중복 전송은 막는다.
+
+긴 답변/후속 답변은 시작 부분을 드러내고, 제안이나 실행 결과를 누르면 그 위치로 이동한다. 레이아웃 좌표를 저장한 뒤50ms 시점에 다시 확인해 이미 완료된 layout 이벤트도 놓치지 않는다. 기존 말풍선을 재마운트하지 않아 이전 체크 상태를 잃지 않는다. 실패한 같은 문장의 재시도는 같은 실패 말풍선을 대체한다.
+
+AI의 구조화된 Todo 제안에는 체크박스·할 일 아님·할 일로 추가가 있다. 완료는 채팅 항목에만 표시하고 실제 Todo를 자동 생성/완료하지 않는다. 제외는 되돌릴 수 있다. ‘할 일로 추가’는 초안을 확인한 뒤 명시적으로 실행해야 저장한다. 제목/날짜/메모 수정은 ⋯ 안에 둔다. 저장 성공은 실제 작업 상태로 확인한다. 제안은 해당 답변에 붙여 두므로 후속 답변/탭 이동에서도 상태를 유지한다.
+
+체크리스트와 대화는 현재 대화 메모리 안의 상태이며, 앱 종료 후 전체 대화 복원이나 제외 결과를 AI의 영구 기억으로 보내는 기능은 아니다. 이미 저장한 Todo/서버 실행 기록과 기기별 자료 동의는 별도로 남는다. 모든 문장을 임의로 Todo로 추출하는 기능도 아니다.
+
+#### 일정의 보기·편집·저장
+
+상세의 편집은 오른쪽 끝에 맞췄다. 일반폰 닫기는 편집 왼쪽, Duo의 원형 뒤로가기/닫기는 기존 물리 카메라 열이다. 편집은 제목·종일/날짜·캘린더·덕 알림을 먼저 보여준다. 장소·메모는 펼쳐서 수정하며 저장 버튼은 아래에 유지한다. 새 일정은 종일 기본값, 시간표의 특정 시각에서 만든 일정은 시간 일정이다. 기존 일정의 종일/시간 설정은 유지한다. 종일을 끄면 시간 선택을 표시한다.
+
+‘Google에서 관리하는 정보’, 큰 알림 선택 카드, ‘덕에만 저장’, 별도 ‘덕 전용 메모’ 입력을 제거했다. 제목·시간·장소·메모 중 바꾼 공통 필드만 원본에 PATCH한다. 초대받은 사람/반복/원본 알림/기타 원본 속성을 덮어쓰지 않는다. 일정을 먼저 저장했다고 미확인 로컬 저장까지 성공으로 표시하지 않으며 실패한 알림 저장만 다시 시도한다.
+
+덕 앱 알림은 작은 선택 행으로 접었다 펼친다. 기기 권한과 기존 알림 계획을 유지하며 원본 Google 알림과 동일하다고 표시하지 않는다. 과거 별도 메모·URL·첨부 링크는 삭제하지 않고 상세의 ‘이전 메모·링크’에 접어 보존한다. 새로 같은 내용을 두 메모 칸에 작성하게 하지 않는다. 원본 메모가4,000자를 넘으면 잘라 덮어쓰지 않는다.
+
+#### 여러 캘린더와 원본 이동·삭제
+
+현재 연결한 Google 계정의 캘린더 목록을 이름으로 고를 수 있다. 쓰기 가능한 목록과 읽기 전용 목록을 구분하고, 페이지 더 보기를 유지한다. 조회 필터는 기존처럼 최대10개 동시 선택이다. 이 변경은 여러 Google 계정 동시 로그인이나 Outlook/Apple Calendar 연결을 새로 만든 것이 아니다.
+
+기존 일정의 저장 캘린더를 바꾸면 출발/도착 권한과 원본 ETag를 확인하고 Google events.move로 이동한다. 추가 편집은 이동한 일정의 새 ETag로 PATCH한다. 생일/특수 일정·타인 주최 일정 등 Google이 이동을 허용하지 않는 경우에는 거절한다. 이동 후 추가 PATCH 실패는 부분 성공이므로 unknown으로 남겨 자동 반복하지 않는다. 기존 보조 정보는 새 일정 키로 보존한다.
+
+상세의 **덕 알림 바로 아래에 빨간 일정 삭제**를 둔다. 누르면 제목·캘린더 이름·원본에서도 삭제됨을 보여주는 확인 모달이 열리며 기본 초점은 취소다. 반복 일정은 현재 이 한 건임을 밝힌다. 확인 전 원본 삭제 요청은 없다. 서버의 사용자/쓰기 권한/ETag와 일회성 실행 확인을 거쳐 DELETE하며 정상204 빈 응답도 성공으로 읽는다. 같은 작업 확인을 반복해도 DELETE를 반복하지 않는다. 결과 불확실은 다시 삭제 대신 결과 확인을 제공한다.
+
+성공한 삭제/이동은 모든 기간 캐시에서 즉시 제거하고 재조회한다. 늦은 조회가 삭제한 일정을 되살리지 않도록 세대를 무효화한다. 외부 안전 GET만 네트워크/5xx에서150ms 뒤 최대1회 복구하며 쓰기/삭제/메일/AI는 자동 재실행하지 않는다. 정상 토큰 갱신·마지막 확인 자료 유지·소유자/연결 격리를 보존한다. 무료 서버의 깨우기 지연이나 외부 장애를 없앴다고 주장하지 않는다.
+
+2주 보기의 일정/할 일 제목은 최대2줄+…이다. 이 보기에서만 작은 아이콘을 생략해 약6자 이상의 제목을 읽을 공간을 확보한다. 한 줄6자를 모든 화면에서 강제해 글자를 작게 만들지 않는다. 너비/큰 글자/실제 가용 높이에 따라 정보량은 조정된다. 월간은 기존 한 줄과 화면 채우기를 유지한다.
+
+#### Todo ↔ log의 3초와 페이드
+
+`completionOrigins`로 어느 목록에서 시작했는지 보존한다. 체크는 즉시 바뀌지만, **처음3초는 원래 목록에만 남고 →350ms fade/접힘 →목적 목록에 나타난다.** Todo→log와 log→Todo 모두 같다. 대기 중 반대 목록에 복사본이 보이지 않는다. 되돌리면 타이머/페이드를 취소하고 원래 상태를 유지한다. log에서 복귀 중인 항목의 기존 완료시각/순서도 보존한다.
+
+리스트의 표시 시점과 서버 저장은 구분한다. 기존 낙관적 저장·같은 항목의 순차 쓰기·실패 복구·늦은 응답 무시·계정 변경 격리를 유지한다. 실패하면 원래 목록으로 복원한다. 숫자 요약도 같은 표시 목록 기준으로 계산한다. 동작 줄이기에서는 대기는 유지하고 fade만 생략한다.
+
+#### 재현과 배포 기준
+
+구현: useAssistant/assistant-consent/AssistantChat/AssistantChecklist/ChatFeedback, CalendarEventEditor/Delete/Sheet/Screen·calendar-edit-model·useCalendarData, provider-actions/integrations/assistant/action-store, useTodos/domain/TodoRow/LogScreen이다. [새 QA·화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md)을 함께 읽는다. 공통 원칙과 덕 전용 수치/카메라 열은 분리해 재사용한다.
+
+직전 실제 앱은 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)의 **1.0.0(31)**·bdc158a, 서명 IPA06:53:52UTC/Apple 업로드06:54:24UTC 성공이다. 이번 추가 수정은31 이후이므로 새 앱 빌드/TestFlight 설치가 필요하다. 실제 Google 계정 수정/삭제·native 수신/키보드/VoiceOver·모션 FPS는 자동 검사로 대체하지 않는다. 무료/수동 빌드·기존 데이터/인증/서명·복구 bundle·AI사무실/소개 사이트 보류를 유지한다.
+
+### 原文 / docs/chat-calendar-simplicity-qa-2026-11-14.md
+
+### 채팅·캘린더 단순화 검증 — 2026-11-14
+
+[재현·구현 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md). 실제 Expo 앱을 합성 계정/API로 실행했다. 개인 Google 자료를 읽거나 실제 일정·할 일을 삭제하지 않았다. 일반 iPhone과 Duo 접힘·펼침의 기존 배치를 유지하는 기본안을 알리고 진행했으며, 새 질문에 답변을 받았다고 기록하지 않는다.
+
+#### 확인한 결과
+
+| 흐름 | 확인한 동작 | 현재 화면 |
+| --- | --- | --- |
+| 응답 대기 | 보낸 질문 즉시 표시, 실제 요청 중 말풍선, 다음 입력 보존, 실패 재시도 중복 방지 | [대기](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/01-typing-in-conversation.png) |
+| AI 자료 동의 | 같은 범위는 재실행 후에도 기억. 연결 계정/권한이 바뀌면 앱 재실행 없이도409로 차단하고 새 동의 요청. 자동 AI 재전송 없음 | [작은 자료 행](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/03-compact-sources.png) |
+| 체크리스트 | 채팅 안 완료 표시, 제외·되돌리기, 별도 확인 후 Todo 저장. 후속 답변·탭 이동에도 기존 체크 상태 보존 | [체크리스트](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/02-checklist.png) |
+| 일정 편집 | 제목/종일·날짜/캘린더/작은 알림 행, 접힌 장소·공통 메모, 아래 저장. 별도 덕 메모·대형 설명 제거 | [편집](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/04-simple-editor.png) |
+| 캘린더 선택 | 현재 연결 계정의 여러 캘린더, 읽기 전용 선택 차단, 원본·목적 목록 확인 후 이동 | [목록](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/05-calendar-choice.png) |
+| 일정 삭제 | 덕 알림 아래 삭제, 취소 시 요청0회, 확인 후 원본 DELETE1회,204 성공 처리, 오래된 ETag 거절 | [확인창](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/06-delete-confirmation.png) |
+| 2주 보기 | 제목2줄·말줄임, 작은 선행 아이콘 제거, 표시 슬롯 높이 반영 | [일반폰](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/07-fortnight-two-lines.png) · [접힘](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/08-folded-two-lines.png) · [펼침](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/09-open-two-lines.png) |
+| Duo 대화·편집 | 카메라 열과 반대쪽 고정 캘린더 보존, 펼칠 때 체크 상태 보존 | [대화](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/10-folded-chat.png) · [펼침 편집](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/14-open-editor.png) · [접힘 편집](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/15-folded-editor.png) |
+| 좁은 화면·다크 | 320폭에서도 본문 가로 넘침 없음, 스크롤·저장 접근 유지 | [다크 편집](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/17-small-dark-editor.png) |
+| 할 일↔log | 양방향 원래 목록에만3초,350ms fade 후 이동. 목적 목록 조기 중복 없음. 되돌림 취소·실패 복구·완료시각/순서 보존 | [할 일 대기](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/12-todo-countdown.png) · [log 대기](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/13-log-countdown.png) |
+
+화면 전체는 [current](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current)에17장, 수정 전은 [before-calendar](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/before-calendar)8장과 [before-chat](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/before-chat)1장이다. 수정 전 채팅 캡처는 초기 화면으로, 반복 동의의 시각적 증거로 쓰지 않는다. 반복 동의 원인은 사용자 보고와 상태/저장 코드로 확인했다. 최신 [검증 결과 JSON](https://github.com/thepmpo/donknow/blob/main/artifacts/chat-calendar-simplicity-2026-11-14/current/verification.json)은 합성 chat3회·Todo쓰기1회·이동1회·삭제1회, 런타임 오류0건이다.
+
+#### 실행한 검사
+
+- 전체 단위 검사 **284개:283통과·실패0·기존 선택1제외**. 동의 범위/토큰 갱신 안정성·바뀐 범위의 모델 호출 전 차단, HTTP409 보존, 원본 삭제·이동·부분 실패unknown·안전 GET1회 복구를 포함한다.
+- `npm run check`: 서버·웹·도구49개 문법 검사 통과. `npm --prefix mobile run typecheck` 통과.
+- `npm --prefix mobile run export:web`, `npm --prefix mobile run export:ios` 통과. iOS JS export는 서명 IPA 빌드가 아니다.
+- `node mobile/e2e/chat-calendar-simplicity.mjs` 통과. 실제 Expo fixture·합성 API·일반폰/Duo 기하·밝게/어둡게·체크리스트·범위 변경·확인/취소·3초와 fade 중간 프레임을 검증한다. `verification.json`에 결과를 남겼다.
+- 기존 전체 앱/API 흐름, Duo 레이아웃·상태 보존, AI 대화/긴 답변·명시 실행, AI403/502/timeout·입력/동의 보존, 캘린더 부분 저장·기간 전환·연간 rollback, 계정별 캐시·오류/페이지/늦은 응답, 연동 상태 복구, 세션 만료/계정 전환, 모션·되돌리기 회귀 검사를 통과했다.
+
+#### 검증의 범위와 남은 실제 기기 확인
+
+웹 캡처의 날짜 컨트롤은 브라우저 기본 위젯이다. native 날짜 선택기·실제 키보드·VoiceOver·OS 알림 권한/발송·프레임률·실계정 Google 수정/이동/삭제·오프라인 복귀는 새 앱에서 별도로 확인한다. 웹에서 가로 넘침이 없었다는 사실을 native 전체 검수로 표현하지 않는다.
+
+캘린더는 현재 Google 계정 안의 여러 목록이며, 여러 Google 계정이나 Apple/Outlook 인증을 새로 구현한 것이 아니다. 2주 제목은2줄이며 좁은 칸마다6글자씩을 보장하거나 글자를 무리하게 줄이지 않는다. 체크리스트의 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 채팅/체크리스트의 앱 종료 후 복원은 이번 범위가 아니다.
+
+Pickle 실사이트 재확인은 `ERR_TUNNEL_CONNECTION_FAILED`로 차단됐다. 새 라이브 비교를 완료했다고 주장하지 않고, 사용자 제공 화면과 현재 Duck의 확인된 흐름을 기준으로 단순화했다.
+
+실제 기존 native 영수증은 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097), 소스 `bdc158a136035d7f612858c99e69b012e1221a28`, **1.0.0(31)**이다. 서명 IPA2026-11-14 06:53:52UTC, Apple 업로드06:54:24UTC 성공이다. **이 문서의 새 수정은31 이후이며 새 native 빌드와 TestFlight 업데이트가 필요하다.** 예전 실행을 다시 돌려 최신 코드가 들어간다고 안내하지 않는다. 새 빌드 요청 결과는 작업 최종 영수증에 별도로 기록한다.
+
 ### 原文 / docs/me-settings-2026-11-14.md
 
 ### ME — 계정·연결·알림·데이터 구현 계약
@@ -6838,9 +7112,9 @@ ProfileScreen(계층/owner/복귀), MeSettings(공통 시각), IntegrationsScree
 | Duo접힘·펼침 계정 | [15](https://github.com/thepmpo/donknow/blob/main/artifacts/me-settings-2026-11-14/current/15-folded-account.png) · [16](https://github.com/thepmpo/donknow/blob/main/artifacts/me-settings-2026-11-14/current/16-open-account.png) |
 | 작은 다크 화면 | [17](https://github.com/thepmpo/donknow/blob/main/artifacts/me-settings-2026-11-14/current/17-small-dark.png) |
 
-![현재 ME](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/01-me-overview.png)
-![Google 관리](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/02-google-overview.png)
-![펼친 Duo 계정](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-settings-2026-11-14/current/16-open-account.png)
+![현재 ME](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/01-me-overview.png)
+![Google 관리](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/02-google-overview.png)
+![펼친 Duo 계정](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-settings-2026-11-14/current/16-open-account.png)
 
 #### 한계와 업데이트
 
@@ -6879,23 +7153,23 @@ Apple·Google·Todoist는 아래 공식 안내를 직접 읽었다. 다른 서�
 모두 현재 Expo 앱과 예시 API를 사용했다. Google 읽기 연결/Notion 미연결/Slack 운영 설정 없음이라는 상태를 구분했다. 원본 화면은 [current](https://github.com/thepmpo/donknow/blob/main/artifacts/me-product-review-2026-11-14/current)에 보관한다.
 
 1. **ME 진입 — 이름 변경 정상, 첫 화면의 우선순위 개선 필요.** ME 제목/하단 탭이 일치한다. ‘나의 공간’ 소개·동기부여 문구·큰 계정 이동 버튼·프로필 카드가 반복된다. 자주 찾는 알림 진입이 첫 화면 밖으로 밀린다.
-   ![1. ME 진입](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/01-me-entry.png)
+   ![1. ME 진입](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/01-me-entry.png)
 2. **서비스 연결 — 상태 표시 가능, 진입과 선택이 중복된다.** ME에서 Google을 고른 뒤 다시 Google/Slack/Notion 탭을 제시한다. 이 테스트 상태에서 버튼11개와 별도 권한 체크박스가 있었다. Google 행을 누르면 Google 관리로 바로 가고, 연결 상태·사용할 자료를 우선 제시해야 한다. Notion 첫 연결에는 연결 버튼을 먼저 두는 게 명확하다.
-   ![2. 연결된 Google](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/02-google-settings.png)
-   ![2. 처음 연결하는 Notion](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/03-notion-connect.png)
+   ![2. 연결된 Google](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/02-google-settings.png)
+   ![2. 처음 연결하는 Notion](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/03-notion-connect.png)
 3. **알림 찾기 — 웹의 기능 구분 정상, 위치는 개선 필요.** 통계와 미리 알림 가져오기가 알림보다 먼저 나온다. 알림은 별도 설정 구역으로 올리고, 자료 가져오기는 연결 관리 안으로 넣는 편이 자연스럽다. 웹의 native 알림 스위치는 비활성으로 구분되어 있었다. native에서 거절됐을 때 실제 OS 설정 이동·복귀 흐름은 별도 확인해야 한다. 현재 코드에는 이미 아이폰 설정에서 허용하라는 안내가 있으므로 안내 자체가 없다고 하지 않는다.
-   ![3. 알림 구역](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/04-notifications.png)
+   ![3. 알림 구역](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/04-notifications.png)
 4. **데이터·개인정보 — 읽을 수 있으나 문장과 보관 범위 설명 개선 필요.** 320×568에서도 닫기44pt가 화면 안에 있었다. 잘렸다고 보고하지 않는다. 긴 한 문단을 저장 위치/AI 자료 사용/외부 연결/삭제로 나누고, ‘덕 초안’이 입력 중 문장인지 준비한 실행 초안인지 저장된 실행 기록인지 구분해야 한다.
-   ![4. 짧고 좁은 화면의 개인정보](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/05-small-privacy.png)
+   ![4. 짧고 좁은 화면의 개인정보](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/05-small-privacy.png)
 5. **계정 관리·삭제 — 보호 절차 정상, 계정의 위치는 모호하다.** ‘내 계정 관리’는 새 화면 대신 같은 페이지 아래로 이동한다. 계정 전용 화면을 열어 이름·이메일·인증·로그아웃을 모으는 편이 예측 가능하다. 삭제는 비밀번호와 별도 체크를 요구하며 실행 전까지 비활성이다. 이 기능을 운영용 고급 설정 속에 숨기지 말고 계정 안에서 찾을 수 있게 유지해야 한다. 실제 삭제는 하지 않았다.
-   ![5. 계정 관리](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/06-account.png)
-   ![5. 삭제 진입만 확인](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/07-delete-entry.png)
+   ![5. 계정 관리](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/06-account.png)
+   ![5. 삭제 진입만 확인](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/07-delete-entry.png)
 6. **저장·운영 설명 — 일반 사용자에게 과도하다.** 서버 연결 주소·클라우드 DB·무료 서버 재시작·백업 한도가 개인 설정과 같은 크기로 표시된다. 사용자에게 필요한 저장 상태만 먼저 보여주고 운영 정보는 고급 정보로 옮긴다. 실제 최근 동기화 시각이 없으면 성공 시각을 만들어 표시하지 않는다. 프로토타입 푸터도 실제 배포 상태에 맞게 정리할 필요가 있다.
-   ![6. 운영 설명](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/08-storage-operations.png)
+   ![6. 운영 설명](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/08-storage-operations.png)
 7. **긴 이름·일시 오류·Duo — 상태 보존은 정상, 설명과 밀도 개선 필요.** 긴 이름은 줄바꿈됐지만 Duo 접힘에서는 이름이 세 줄로 늘고 마지막 한 글자가 남아 카드가 커졌다. 최대 두 줄·전체 이름을 읽을 수 있는 상세/접근성 이름을 함께 검토해야 한다. 일시 조회 실패에서도 기존 Google 연결을 지우지 않은 점은 유지해야 한다. ‘읽기 연결/쓰기 포함/설정 대기’만으로는 어떤 계정과 어떤 기능을 사용할 수 있는지 알기 어렵다. 표시 이름은 현재 기기별 저장이므로 여러 기기에서 동일한 계정 이름이라고 오해하지 않도록 범위를 설명해야 한다. Duo의 ME 제목·접근성 이름·카메라 열과 펼친 왼쪽 고정 캘린더도 확인했다.
-   ![7. 기존 연결을 보존한 확인 필요 상태](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/09-status-recheck.png)
-   ![7. Duo 접힘의 ME](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png)
-   ![7. Duo 펼침의 ME](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png)
+   ![7. 기존 연결을 보존한 확인 필요 상태](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/09-status-recheck.png)
+   ![7. Duo 접힘의 ME](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/10-duo-folded-me.png)
+   ![7. Duo 펼침의 ME](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/me-product-review-2026-11-14/current/11-duo-open-me.png)
 
 #### 추천하는 ME 구조 — 아직 미구현
 
@@ -7011,21 +7285,21 @@ Apple·Google·Todoist는 아래 공식 안내를 직접 읽었다. 다른 서�
 #### 순서별 화면과 상태
 
 1. **내정보 진입 — 개선 필요.** 이름·짧은 소개·큰 계정 이동 버튼·프로필 카드가 먼저 나온다. 서비스 연결은 그 아래에 있어 알림 설정은 첫 화면에서 보이지 않는다. 반복 소개와 여백을 줄이고 이름/계정을 한 구역으로 묶으면 좋다.
-   ![1. 내정보 시작](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png)
+   ![1. 내정보 시작](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/06-profile-start.png)
 2. **내 계정 관리 — 이동 동작 정상, 경로는 길다.** 버튼은 새 계정 화면을 여는 대신 긴 같은 페이지 아래로 이동한다. 이메일·인증·비밀번호·로그아웃·삭제가 보이며 파괴적 삭제에는 별도 확인이 있다. 계정 전용 화면으로 나누면 뒤로가기가 더 예측 가능하다.
-   ![2. 계정 구역](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png)
+   ![2. 계정 구역](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/07-profile-account.png)
 3. **Google 연결 설정 — 동작 가능, 선택 과다.** 읽기 연결인데 수정 권한·재승인·상태 새로고침·Tasks 동기화·점검·해제를 한 화면에서 다룬다. 처음에는 ‘연결 상태/사용할 자료/연결 관리’만 보이고 쓰기·동기화·점검은 필요한 때 펼치면 좋다. 이번에는 OAuth나 원본 쓰기를 실행하지 않았다.
-   ![3. 연결된 Google](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png)
+   ![3. 연결된 Google](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/08-profile-google.png)
 4. **Notion 미연결과 돌아가기 — 정상, 안내 개선 필요.** 연결 전 추가 읽기·쓰기 권한 버튼이 주요 연결 버튼보다 먼저 보인다. 첫 연결에는 간단한 설명과 연결 버튼을 우선하고 고급 권한은 선택 사항으로 두는 편이 명확하다. 돌아가기는 내정보 첫 위치로 복귀하므로 이전 스크롤 위치 보존도 검토할 만하다.
-   ![4. 미연결 Notion](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png)
+   ![4. 미연결 Notion](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/12-notion-unconnected.png)
 5. **알림·저장과 연결 — 정보 구조 개선 필요.** Todo 통계와 미리 알림 가져오기가 알림 앞에 있고 서버 설정이 그 다음에 있다. 추천 순서는 ‘계정/서비스 연결/알림/데이터·개인정보’다. 서버 주소는 일반 사용자의 자주 쓰는 설정이 아니므로 고급 설정 안으로 분리하는 게 좋다. 웹에서 native 알림을 켜지 못한다는 구분은 정상이다.
-   ![5. 알림과 저장](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png)
+   ![5. 알림과 저장](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/10-profile-storage.png)
 6. **개인정보 설명 — 내용 정정·가독성 개선 필요.** 한 덩어리의 긴 문단이며 제목/소제목 없이 저장·AI·연결·삭제를 모두 설명한다. ‘덕 초안은 앱을 닫으면 사라짐’은 서버에 남는 실행 기록과 기기 입력 초안을 구분해야 한다. 저장 위치/AI에 보내는 자료/연결 해제/계정 삭제로 나누고 짧은 화면에서는 스크롤 가능 여부도 별도 검사해야 한다.
-   ![6. 개인정보 안내](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png)
+   ![6. 개인정보 안내](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/11-profile-privacy.png)
 7. **클라우드 DB·백업 — 일반 사용자에게 불필요하게 상세.** 무료 서버 재시작·DB·백업 설정·무료 한도는 운영 정보다. ‘데이터 저장 상태’ 한 줄과 오류가 있을 때의 안내를 먼저 보여주고 기술 내용은 고급 정보로 이동할 수 있다. ‘iPhone 앱 프로토타입’ 문구도 출시 상태에 맞게 정리해야 한다.
-   ![7. 운영 설명과 푸터](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png)
+   ![7. 운영 설명과 푸터](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/12-profile-backup.png)
 8. **계정 삭제 진입 — 확인 구조 정상.** 비밀번호+삭제 확인 체크를 요구하고 기본 실행 버튼은 비활성이다. 실제 삭제는 하지 않았다. 이 확인과 데이터 내보내기·로그아웃·복구 기능은 정리 과정에서도 보존해야 한다.
-   ![8. 삭제 진입까지만 확인](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png)
+   ![8. 삭제 진입까지만 확인](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-refinement-2026-11-14/current/12-account-delete-entry.png)
 
 #### 먼저 바꿀 순서
 
@@ -8228,7 +8502,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계1 · 390pt 월: 제목/도구/42칸/선택일 안내/하단 바
 
-![390pt 월: 제목/도구/42칸/선택일 안내/하단 바](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/01-month-overview.png)
+![390pt 월: 제목/도구/42칸/선택일 안내/하단 바](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/01-month-overview.png)
 
 장점: 월전체와오늘을바로고를수있다.
 
@@ -8238,7 +8512,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계2 · 선택일로 이동: 종일/시간/겹침/할 일/완료 상태
 
-![선택일로 이동: 종일/시간/겹침/할 일/완료 상태](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png)
+![선택일로 이동: 종일/시간/겹침/할 일/완료 상태](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/02-selected-day-agenda.png)
 
 장점: 선택일점프와일정/Todo분리가동작한다.
 
@@ -8248,7 +8522,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계2 · 외부 일정 제목을 눌러도 상세 화면은 열리지 않음
 
-![외부 일정 제목을 눌러도 상세 화면은 열리지 않음](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png)
+![외부 일정 제목을 눌러도 상세 화면은 열리지 않음](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/03-event-title-no-detail.png)
 
 장점: 조회만으로원본을바꾸지않는다.
 
@@ -8258,7 +8532,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계3 · 선택 날짜에서 추가: Todo만 표시, 저장하지 않음
 
-![선택 날짜에서 추가: Todo만 표시, 저장하지 않음](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png)
+![선택 날짜에서 추가: Todo만 표시, 저장하지 않음](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/04-create-todo-sheet.png)
 
 장점: 선택날짜가Todo작성에이어지고닫기/메모/저장이있다.
 
@@ -8268,7 +8542,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계4 · 주 보기:7날짜와 아젠다, 시간표 없음
 
-![주 보기:7날짜와 아젠다, 시간표 없음](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/05-week-view.png)
+![주 보기:7날짜와 아젠다, 시간표 없음](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/05-week-view.png)
 
 장점: 7일선택과선택일목록이함께보인다.
 
@@ -8278,7 +8552,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계4 · 주 보기에서도 다음달 버튼은12월1일로 이동
 
-![주 보기에서도 다음달 버튼은12월1일로 이동](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/06-week-next-control.png)
+![주 보기에서도 다음달 버튼은12월1일로 이동](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/06-week-next-control.png)
 
 장점: 다음기간버튼자체는반응한다.
 
@@ -8288,7 +8562,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계5 · 년월 이동 시트: 웹 대체 select, native는 코드에 날짜 spinner
 
-![년월 이동 시트: 웹 대체 select, native는 코드에 날짜 spinner](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/07-month-year-picker.png)
+![년월 이동 시트: 웹 대체 select, native는 코드에 날짜 spinner](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/07-month-year-picker.png)
 
 장점: 년월직접이동·취소가가능하다.
 
@@ -8298,7 +8572,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계1 · 오늘13일과 선택20일의 시각 구분
 
-![오늘13일과 선택20일의 시각 구분](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/15-selected-other-day.png)
+![오늘13일과 선택20일의 시각 구분](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/15-selected-other-day.png)
 
 장점: 선택20일과오늘13일의외형은서로다르다.
 
@@ -8308,7 +8582,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계6 · 빈 날짜의 일정/할 일 구분과 안내
 
-![빈 날짜의 일정/할 일 구분과 안내](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/08-empty-day.png)
+![빈 날짜의 일정/할 일 구분과 안내](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/08-empty-day.png)
 
 장점: 선택일과빈상태가표시된다.
 
@@ -8318,7 +8592,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계4 · 다른 탭을 다녀오면12월에서오늘11월로 초기화
 
-![다른 탭을 다녀오면12월에서오늘11월로 초기화](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png)
+![다른 탭을 다녀오면12월에서오늘11월로 초기화](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/16-tab-return-resets-month.png)
 
 장점: 다른탭에서돌아오는동작은빠르다.
 
@@ -8328,7 +8602,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계6 · 공급자 오류 상태: 화면 위에는 오류가 보이지 않음
 
-![공급자 오류 상태: 화면 위에는 오류가 보이지 않음](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/09-error-month-top.png)
+![공급자 오류 상태: 화면 위에는 오류가 보이지 않음](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/09-error-month-top.png)
 
 장점: Todo는연결실패에도계속볼수있다.
 
@@ -8338,7 +8612,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계6 · 공급자 오류 상태: 아래 아젠다의 빈 안내와 오류/재시도 동시 표시
 
-![공급자 오류 상태: 아래 아젠다의 빈 안내와 오류/재시도 동시 표시](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/10-error-agenda.png)
+![공급자 오류 상태: 아래 아젠다의 빈 안내와 오류/재시도 동시 표시](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/10-error-agenda.png)
 
 장점: 실제오류문구와재시도가있다.
 
@@ -8348,7 +8622,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계6 · 공급자 대기 중: 월 화면의 로딩 발견성
 
-![공급자 대기 중: 월 화면의 로딩 발견성](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/11-loading-month-top.png)
+![공급자 대기 중: 월 화면의 로딩 발견성](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/11-loading-month-top.png)
 
 장점: 대기중에가짜일정을보여주지않는다.
 
@@ -8358,7 +8632,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계1 · 320×667:42칸과본문/하단 바 관계
 
-![320×667:42칸과본문/하단 바 관계](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/12-small-phone.png)
+![320×667:42칸과본문/하단 바 관계](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/12-small-phone.png)
 
 장점: 좁은폭에서도탭을조작할수있다.
 
@@ -8368,7 +8642,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계1 · 320pt·글자160% CSS 시뮬레이션, native Dynamic Type 검사가 아님
 
-![320pt·글자160% CSS 시뮬레이션, native Dynamic Type 검사가 아님](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png)
+![320pt·글자160% CSS 시뮬레이션, native Dynamic Type 검사가 아님](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/13-large-text-simulation.png)
 
 장점: 글꼴확대자체는막지않는다.
 
@@ -8378,7 +8652,7 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 
 ##### 단계1 · Duo 기하 fixture: 왼쪽Calendar 고정/오른쪽Todo, 실제 기기 아님
 
-![Duo 기하 fixture: 왼쪽Calendar 고정/오른쪽Todo, 실제 기기 아님](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png)
+![Duo 기하 fixture: 왼쪽Calendar 고정/오른쪽Todo, 실제 기기 아님](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/calendar-audit-2026-11-13/14-duo-fixed-calendar.png)
 
 장점: Duo카메라열/좌Calendar고정/우Todo계약이유지된다.
 
@@ -8400,6 +8674,17 @@ CA-03/07/09/14/15/17/18/20. 시간표·여러날/겹침·일정작성/수정·�
 ### 原文 / docs/continuation-guide.md
 
 ### 덕 — 다른 채팅에서 그대로 이어 만드는 현재 기준서
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — ME 재설계 전체 구현
 
@@ -8760,9 +9045,9 @@ idle→press→drag→release/cancel 용어·전이, 미리보기와 실제 선�
 - Duo 카메라 중심선·64/272/52/28·분할선·입력/월/스크롤 보존·짧은 높이 스크롤 회귀 통과. 탭의 실제 좌표를 유지하면서 ScrollView 안쪽에 확대 여유를 분리했다(바 padding2+items padding3). 유리 가장자리의 실제 기기 품질은 별도다.
 - 새 화면10개는 아래 별도 폴더에 보존하며 과거 승인 시안·검사 화면은 덮지 않았다. 공개 문서/이미지 해시는 문서 커밋 전에 검사한다.
 
-![일반 iPhone · 떠 있는 탭 바 · 웹 대체 재질](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png)
+![일반 iPhone · 떠 있는 탭 바 · 웹 대체 재질](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/07-iphone-390-floating-tabs.png)
 
-![끌어서 미리보기 · 실제 탭은 Todo 유지 · 웹 대체 재질](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png)
+![끌어서 미리보기 · 실제 탭은 Todo 유지 · 웹 대체 재질](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/navigation-interaction-2026-11-13/06-dragging-lens-web-fallback.png)
 
 증거 폴더: `artifacts/navigation-interaction-2026-11-13/`. 첫5개는 Duo 각 상태,06은 끌기,07은 일반 iPhone3폭,08은320pt/라벨160%다. 카메라 점과 파란 열은 fixture의 위치 설명일 뿐 제품 그래픽이 아니다.
 
@@ -8791,7 +9076,7 @@ idle→press→drag→release/cancel 용어·전이, 미리보기와 실제 선�
 
 #### 수정 후 웹 확인용 이미지
 
-![파란 선택 채움 제거 · 웹 블러 대체 재질](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png)
+![파란 선택 채움 제거 · 웹 블러 대체 재질](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-glass-selection-fix-2026-11-13/01-open-calendar-todo.png)
 
 이 이미지는 실제 앱 컴포넌트의 기하/체험 데이터 웹 fixture다. native Glass/실기기 사진이 아니며 OS의 굴절/재질/상호작용 품질을 보장하는 시안으로 쓰지 않는다. 파란 카메라 열·검은 점은 위치 안내이고 제품에 그리지 않는다.
 
@@ -8891,9 +9176,9 @@ main `e7e0ea2`를 일반 push했고 [자동 검사43341877783](https://github.co
 
 소스 `5c1ae41`. **기존 빌드16은57aee29로 요청돼 이 세로 수정이 들어 있지 않다.** 웹 배포가 기존 TestFlight 바이너리를 바꾸지 않으며, 아이폰 반영에는 최신 main의 새 수동 빌드가 필요하다. 자동 빌드·유료 전환·기존 인증/데이터 변경은 하지 않는다. 아래 이전226×48 가로/기존 헤더 배치 기록은 폐기된 해석으로 읽는다.
 
-![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 #### 2026-11-13 추가 정정 — 오른쪽 세로 묶음은 아래, 원형 뒤로가기는 위
 
@@ -8956,11 +9241,11 @@ main `e7e0ea2`를 일반 push했고 [자동 검사43341877783](https://github.co
 
 UI는 현재 Expo 웹 번들로 시간·도시·자료·AI 동의·독립 날씨·320px 저장 버튼·미확인/읽음·새 메시지 도착 중 입력 유지·다른 계정 격리를 검사했다.
 
-![덕 채팅으로 도착한 모의 브리핑](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
+![덕 채팅으로 도착한 모의 브리핑](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png)
 
-![브리핑 시간·자료·동의 설정](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
+![브리핑 시간·자료·동의 설정](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/scheduled-messages-2026-11-13/02-briefing-fixture.png)
 
-![작은 화면에서도 예약 저장 표시](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
+![작은 화면에서도 예약 저장 표시](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/scheduled-messages-2026-11-13/03-small-weather-fixture.png)
 
 구현: `server/automations-store.js`, `server/automations.js`, `server/scheduler-auth.js`, `server/push.js`, `server/feature-routes.js`, `mobile/src/useAutomations.ts`, `mobile/src/screens/AutomationSheet.tsx`, `mobile/src/screens/AssistantChat.tsx`, `mobile/src/push.ts`, `scripts/deliver-briefings.mjs`.
 
@@ -9010,31 +9295,31 @@ UI는 현재 Expo 웹 번들로 시간·도시·자료·AI 동의·독립 날씨
 
 ##### 후보 확인 버튼 — 수정 전 / 후
 
-![수정 전: 확인 버튼이 아래로 밀림](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
+![수정 전: 확인 버튼이 아래로 밀림](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
 
-![수정 후: 제목·날짜·초안 확인 우선](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
+![수정 후: 제목·날짜·초안 확인 우선](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/08-ai-candidate-fixture.png)
 
 ##### 권한 선택 — 기본 / 펼친 상태
 
-![읽기와 선택 권한 후 연결](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
+![읽기와 선택 권한 후 연결](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/06-google-permissions-fixture.png)
 
-![선택한 쓰기 권한 아래 연결 버튼](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
+![선택한 쓰기 권한 아래 연결 버튼](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/18-expanded-permissions-fixture.png)
 
 ##### 편집창 — 수정 전 / 작은 화면 수정 후
 
-![수정 전 편집창](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
+![수정 전 편집창](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
 
-![수정 후320px에서도 저장 버튼 전체 표시](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
+![수정 후320px에서도 저장 버튼 전체 표시](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/19-small-editor-fixture.png)
 
 ##### 완료 / 붙여넣기 / 바로가기
 
-![접힌 완료와 결과 보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
+![접힌 완료와 결과 보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/10-succeeded-fixture.png)
 
-![붙여넣기를 채팅으로 가져오기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
+![붙여넣기를 채팅으로 가져오기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/13-paste-sheet-fixture.png)
 
-![선택한 날짜 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
+![선택한 날짜 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/16-calendar-jump-fixture.png)
 
-![내 계정 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
+![내 계정 본문으로 이동](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-fixes-2026-11-12/17-account-jump-fixture.png)
 
 전체19개 원본은 [캡처 폴더](https://github.com/thepmpo/donknow/blob/main/artifacts/ux-fixes-2026-11-12), DOM 측정·호출 수는 [capture-metadata.json](https://github.com/thepmpo/donknow/blob/main/artifacts/ux-fixes-2026-11-12/capture-metadata.json)에 보존한다. 이전 감사 원본은 덮어쓰지 않는다.
 
@@ -9110,91 +9395,91 @@ P1은 현재 작업의 조작·가독성 개선 우선순위이고 모든 항목
 
 6개 미완료 항목과 긴 제목이 구분되고 추가 버튼을 찾을 수 있다. 체크 표시의 시각 크기는26px지만 소스의 hitSlop9로 확장되므로 시각 크기만으로 터치 실패라고 판정하지 않는다.
 
-![01 Todo 목록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
+![01 Todo 목록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/01-todos-fixture.png)
 
 ##### 2. 월간 캘린더 — 개선 필요
 
 42칸 그리드는 유지되지만 긴 일정 이름이 줄임표로 짧아진다. 선택일의 자세한 할 일 목록은 첫 화면 아래에 있어 추가 스크롤이 필요하다.
 
-![02 월간 캘린더 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
+![02 월간 캘린더 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/02-calendar-fixture.png)
 
 ##### 3. 덕 첫 화면 — 개선 필요
 
 인사와 입력창은 명확하다. 오늘 브리핑·비서·기록 찾기·대화 붙여넣기와 자료 선택이 고정되어 대화 영역을 차지한다.
 
-![03 덕 첫 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
+![03 덕 첫 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/03-duck-start-fixture.png)
 
 ##### 4. 완료 기록 — 대체로 양호
 
 완료 항목과 되돌리기가 분명하다. 빈 공간이 크고 첫 사용자가 log의 의미를 바로 이해하기는 어려울 수 있다. 탭 이름 변경은 확정 IA와 별도 합의가 필요하다.
 
-![04 완료 기록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
+![04 완료 기록 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/04-log-fixture.png)
 
 ##### 5. 내정보 — 개선 필요
 
 표시 이름·통계·미리 알림이 상단을 차지한다. 서비스 목록과 계정 관련 행동은 아래로 내려가야 한다.
 
-![05 내정보 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
+![05 내정보 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/05-profile-fixture.png)
 
 ##### 6. Google 연결 권한 — 개선 필요
 
 읽기 선택·연결·새로고침·추가 쓰기 권한이 길게 이어진다. 쓰기 권한은 연결 버튼 아래에 있어 고른 뒤 위로 돌아가야 한다.
 
-![06 Google 연결 권한 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
+![06 Google 연결 권한 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/06-google-permissions-fixture.png)
 
 ##### 7. 요청 입력·동의 전 — 개선 필요
 
 동의 전 요청0회와 전송 버튼 비활성은 확인했다. 작은 동의 문구와 비활성 화살표만으로는 다음 행동이 충분히 드러나지 않는다.
 
-![07 요청 입력·동의 전 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
+![07 요청 입력·동의 전 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/07-request-before-consent-fixture.png)
 
 ##### 8. AI 답변·후보 편집 — 우선 개선
 
 후보 제목과 날짜는 보이지만 확인 버튼은 첫 화면에서 아래로 밀린다. 고정 도구 영역이 후보 작성 공간을 줄인다.
 
-![08 AI 답변·후보 편집 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
+![08 AI 답변·후보 편집 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/08-ai-candidate-fixture.png)
 
 ##### 9. 실행 전 확인 — 양호·문구 개선
 
 확인 전 Todo 수8개로 유지된다. 실행과 취소 버튼이 명확하다. 비어 있는 메모와 YYYY-MM-DD 같은 내부 형식 표기는 줄일 수 있다.
 
-![09 실행 전 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
+![09 실행 전 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/09-confirmation-fixture.png)
 
 ##### 10. 실행 완료 — 양호·기록 정리 필요
 
 완료 상태와 Todo 보기 버튼이 보인다. 완료 카드와 이전 후보가 대화에 계속 남아 다음 대화의 초점을 분산한다.
 
-![10 실행 완료 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
+![10 실행 완료 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/10-succeeded-fixture.png)
 
 ##### 11. 추가된 Todo 확인 — 양호
 
 격리 모의 API에서 확인한 항목1개가 새로 표시되고 목록 수가7개 미완료로 바뀐다. 실제 서버 저장은 별도의 임시 서버 회귀에서 검증했다.
 
-![11 추가된 Todo 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
+![11 추가된 Todo 확인 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/11-added-todo-fixture.png)
 
 ##### 12. 할 일 편집 시트 — 대체로 양호
 
 제목·날짜·메모·저장과 닫기 흐름이 분명하다. 웹 예정일 입력의 기계적인 표기와 작은 부가 설명은 개선 여지가 있다.
 
-![12 할 일 편집 시트 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
+![12 할 일 편집 시트 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/12-edit-sheet-fixture.png)
 
 ##### 13. 대화 붙여넣기 — 개선 필요
 
 목록 초안 나누기·AI 분석 준비·수동 입력의 선택지가 한 화면에 있다. 분석 준비와 실제 전송의 차이를 사용자가 여러 설명을 읽어야 이해한다.
 
-![13 대화 붙여넣기 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
+![13 대화 붙여넣기 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/13-paste-sheet-fixture.png)
 
 ##### 14. 320×700 작은 화면 — 개선 필요
 
 가로 넘침은 없지만 Todo 리스트 탭 이름의 마지막 글자가 분리되고 결과 카드가 더욱 좁아진다.
 
-![14 320×700 작은 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
+![14 320×700 작은 화면 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/14-duck-small-fixture.png)
 
 ##### 15. 오류와 재시도 — 양호
 
 오류가 입력창 위에 나타나고 입력·동의가 유지된다. 다시 보내기가 보여 복구 행동을 알 수 있다.
 
-![15 오류와 재시도 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
+![15 오류와 재시도 — 격리 모의 자료](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/ux-audit-2026-11-12/15-error-retry-fixture.png)
 
 #### 구현·검증·계정 확인의 구분
 
@@ -9324,7 +9609,7 @@ JSON 문법과 서버 요청 scope/redirect 일치는 로컬 검증했다. Slack
 
 390×844px 터치 화면, 입력창 포커스, 모션 사용, 이전 기록 5개에서 모의 403과 502 응답을 각각 재현했다. 파란 전송 버튼은 요청을 1회 보냈지만 실패 뒤 입력만 그대로 남았다. 오류 문구는 대화 스크롤의 맨 끝에 출력돼 화면 밖에 숨었다. 확인한 오류 위치는 y=2290.5였고, 보이는 대화 영역은 y=115~453.5였다. 401은 기존 로그인 화면으로 정상 이동했다.
 
-![수정 전: 실패 문구가 화면 아래에 숨은 모의 화면](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/assistant-feedback/before-error-fixture.png)
+![수정 전: 실패 문구가 화면 아래에 숨은 모의 화면](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/assistant-feedback/before-error-fixture.png)
 
 사용자가 겪은 실제 API 실패가 이메일 미인증, 키 권한, 모델 접근, 잔액, 네트워크 중 어느 것인지는 아직 확정하지 않았다. 모의 재현은 무반응처럼 보이는 화면 결함을 확인한 것이며 실제 계정의 원인을 추정하는 근거로 쓰지 않는다.
 
@@ -9338,7 +9623,7 @@ JSON 문법과 서버 요청 scope/redirect 일치는 로컬 검증했다. Slack
 
 #### 수정 결과와 실제 검증
 
-![수정 후: 입력창 바로 위의 오류와 다시 보내기 — 모의 응답](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/assistant-feedback/after-error-fixture.png)
+![수정 후: 입력창 바로 위의 오류와 다시 보내기 — 모의 응답](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/assistant-feedback/after-error-fixture.png)
 
 입력창 위 고정 위치에 즉시 처리 표시와 실패 안내를 둔다. 이메일 미인증은 서버가 반환한 경우에만 **내정보 → 내 계정 → 이메일 인증**을 안내한다. 오래된 클라이언트의 인증 상태로 전송을 미리 막지 않는다. 상태와 이전 실행 기록은 독립적으로 읽고, 초기 조회 실패에는 **AI 연결 다시 확인**을 제공한다. 새 요청 뒤 늦게 온 초기 조회 오류가 현재 오류를 덮지 못한다.
 
@@ -9381,25 +9666,25 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 
 ##### 1. 요청 입력·자료 동의 — 기본 흐름 정상
 
-![1 요청 입력과 동의 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/01-request-consent-fixture.png)
+![1 요청 입력과 동의 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/01-request-consent-fixture.png)
 
 입력창 가까이에 자료 사용 동의가 있고 동의 전 전송이 비활성화된다. 요청을 입력하는 것만으로 AI 호출·Todo 생성이 발생하지 않았다. 작은 설명문·체크 상태의 실제 화면 낭독과 큰 글자 사용성은 실기기에서 확인해야 한다.
 
 ##### 2. 후보 편집 — 이동 위치 수정 완료
 
-![2 후보 편집 전 자동 이동 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/02-edit-proposal-fixture.png)
+![2 후보 편집 전 자동 이동 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/02-edit-proposal-fixture.png)
 
 응답 후 맨 아래로 이동해 후보 제목·날짜가 위로 가려지고 빈 메모와 버튼만 보였다. 저장된 실행 기록이 있으면 더 오래된 기록으로 이동할 수도 있다. 새 답변·후보와 방금 만든 초안 위치를 기준으로 이동해야 한다. 기존 메모 편집 높이·토큰을 임의로 줄이는 대신 이동 동작을 바로잡는다.
 
 ##### 3. 실행 미리보기 — 확인 경계 정상, 읽기 전용 표시 보완 완료
 
-![3 실행 확인 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/03-confirm-fixture.png)
+![3 실행 확인 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/03-confirm-fixture.png)
 
 실행 전 제목·대상과 확인 버튼을 볼 수 있고 이 시점에는 Todo가 만들어지지 않는다. 소스 검토에서는 준비된 후보의 제목·메모는 잠겨도 날짜 선택기는 열리는 문제를 확인했다. 변경이 반영되지 않는 입력처럼 보이지 않게 준비 후 날짜를 읽기 전용으로 표시한다.
 
 ##### 4. 저장 결과 — 완료와 다음 이동 정상
 
-![4 완료 결과 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/04-result-fixture.png)
+![4 완료 결과 · 모의 데이터](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/04-result-fixture.png)
 
 명시적 확인 후 Todo가 1개 생성되고 완료 상태와 Todo로 이동하는 버튼이 나타났다. 현재 검토 계정은 실행 이력이 짧다. 이력이 많은 경우에도 방금 실행한 결과가 바로 보이도록 별도 회귀가 필요하다.
 
@@ -9426,13 +9711,13 @@ Product Design 설치 완료 알림 뒤 기존 덕 작업을 이어서 요청 �
 
 수정 후에도 390×844px의 같은 흐름을 새로 실행해 각 캡처를 열어 확인했다. 2단계의 전후 이미지를 함께 비교해 제목·날짜가 가려졌던 문제가 해소됐음을 확인했다. 아래 네 이미지는 수정 후의 모의 데이터 화면이다.
 
-![1 수정 후 · 요청 입력과 자료 동의](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/01-request-consent-fixture-after.png)
+![1 수정 후 · 요청 입력과 자료 동의](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/01-request-consent-fixture-after.png)
 
-![2 수정 후 · 답변과 후보 제목·날짜](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
+![2 수정 후 · 답변과 후보 제목·날짜](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/02-edit-proposal-fixture-after.png)
 
-![3 수정 후 · 확인 대기와 실행](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/03-confirm-fixture-after.png)
+![3 수정 후 · 확인 대기와 실행](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/03-confirm-fixture-after.png)
 
-![4 수정 후 · 완료와 Todo 이동](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/product-design-audit/04-result-fixture-after.png)
+![4 수정 후 · 완료와 Todo 이동](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/product-design-audit/04-result-fixture-after.png)
 
 검증 결과:
 
@@ -9644,13 +9929,13 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 
 ##### 확대 후 미리보기 — 웹의 대체 재질
 
-![펼친 가로 · 확대된 선택 표시와 왼쪽 캘린더/오른쪽 Todo](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png)
+![펼친 가로 · 확대된 선택 표시와 왼쪽 캘린더/오른쪽 Todo](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/01-open-calendar-todo.png)
 
-![접힘 · 같은 카메라 열의64pt 바와28pt 아이콘](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png)
+![접힘 · 같은 카메라 열의64pt 바와28pt 아이콘](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/04-closed-camera-column.png)
 
-![세로 · 현재 선택 화면 하나와 확대된 내비게이션](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png)
+![세로 · 현재 선택 화면 하나와 확대된 내비게이션](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/03-portrait-current-screen.png)
 
-![원형 실제 뒤로가기와 같은 재질의 확대된 세로 바](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png)
+![원형 실제 뒤로가기와 같은 재질의 확대된 세로 바](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-liquid-glass-2026-11-13/05-back-in-camera-column.png)
 
 캡처의 파란 열·검은 카메라는 위치 검증 안내이며 제품에는 그리지 않는다. native Glass의 굴절/빛·OS 접근성 설정과 실제 손가락 터치는 새 빌드 설치 후 확인한다. 웹 검수의 성공을 native Glass 완료로 올리지 않는다.
 
@@ -9694,17 +9979,17 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 ##### 승인 그림과 새 캡처
 
-![사용자가 승인한 카메라 열 기준 그림 · 파란 열은 안내 표시](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
+![사용자가 승인한 카메라 열 기준 그림 · 파란 열은 안내 표시](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/approved-wireframe.png)
 
-![펼친 가로: 왼쪽 캘린더 고정·오른쪽 Todo](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
+![펼친 가로: 왼쪽 캘린더 고정·오른쪽 Todo](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/01-open-calendar-todo.png)
 
-![탭 선택: 왼쪽 캘린더 유지·오른쪽 덕](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
+![탭 선택: 왼쪽 캘린더 유지·오른쪽 덕](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/02-open-calendar-duck.png)
 
-![펼친 세로: 현재 덕 화면 하나](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
+![펼친 세로: 현재 덕 화면 하나](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/03-portrait-current-screen.png)
 
-![접힘: 카메라와 같은 세로선의 내비게이션](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
+![접힘: 카메라와 같은 세로선의 내비게이션](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/04-closed-camera-column.png)
 
-![실제 상세 경로에서만 카메라 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
+![실제 상세 경로에서만 카메라 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-camera-column-2026-11-13/05-back-in-camera-column.png)
 
 캡처는 실제 앱 컴포넌트에 테스트 기하를 전달한 **격리 웹 fixture**다. 파란색/카메라 점은 fixture에만 있으며 운영 앱에는 없다. 실제 Duo 사진·Apple 하드웨어 치수의 증거로 사용하지 않는다. 제품에는 URL/폭으로 Duo를 켜는 숨은 스위치를 추가하지 않았다.
 
@@ -9732,11 +10017,11 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 소스 `87849a2`. Duo 전환·동일한 위/아래8pt·세로 열·원형 경계·루트 숨김·상세 진입/복귀 시 표시/해제·비활성 보호·짧은 높이 마지막 탭 접근·실제 채팅 보내기 비가림·초안 유지 검사를 통과했다. 전체221개 중220통과·기존 선택1개 제외, 문법·타입·웹/iOS JS·전체 앱·채팅·오류 회귀를 통과했다. 캡처는 격리 웹 미리보기이며 실제 Duo/Swift/키보드 검수는 별도다. 빌드16은 이전57aee29이므로 새 설치 앱에는 최신 main의 수동 빌드가 필요하다. 추가 EAS 빌드를 요청하지 않았다. 이전의 위쪽 세로 배치 설명은 이 정정 이전 기록이다.
 
-![접힘: 오른쪽 세로 묶음을 아래로 이동](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힘: 오른쪽 세로 묶음을 아래로 이동](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼침: 같은 아래쪽 세로 배치](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
+![펼침: 같은 아래쪽 세로 배치](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/8-duck-open-demo-fixture.png)
 
-![상세 화면: 배터리 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
+![상세 화면: 배터리 아래 원형 뒤로가기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-bottom-stack-2026-11-13/10-back-closed-demo-fixture.png)
 
 #### 2026-11-13 최종 정정 — Duo 오른쪽 세로 배열
 
@@ -9748,9 +10033,9 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 소스 `5c1ae41`. **기존 빌드16은57aee29로 요청돼 이 세로 수정이 들어 있지 않다.** 웹 배포가 기존 TestFlight 바이너리를 바꾸지 않으며, 아이폰 반영에는 최신 main의 새 수동 빌드가 필요하다. 자동 빌드·유료 전환·기존 인증/데이터 변경은 하지 않는다. 아래 이전226×48 가로/기존 헤더 배치 기록은 폐기된 해석으로 읽는다.
 
-![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 #### 2026-11-13 — 배터리 아래 기존 헤더 오른쪽으로 정정
 
@@ -9762,9 +10047,9 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 자동 검사는 실제 앱의 AppNavigation 컴포넌트와 Shell을 사용한다. Expo 공식 export:embed 웹 resolver로 묶어 아이콘·BlurView를 그대로 사용하며, 기존의 손으로 만든 resolver는 웹/네이티브 의존성을 다 처리하지 못해 교체했다. 접힘·펼침·책·테이블·320px·일반 기기 전환에서 탭·입력·편집·스크롤·자식 identity 보존,44px·상단/우측 위치·전체 폭 본문·중복 하단 탭 없음을 검증한다. 실제 iPhone/Duo·키보드·Swift 빌드는 별도다.
 
-![접힌 Duo: 실제 앱 체험 데이터의 새 탭 배치](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 Duo: 실제 앱 체험 데이터의 새 탭 배치](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 Duo: 같은 위치와 전체 폭 본문](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 Duo: 같은 위치와 전체 폭 본문](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-top-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 스크린샷은 네이티브 기하를 주입한 격리 웹 fixture이며 실기기 캡처가 아니다. 코드에 웹 URL/모델명으로 Duo를 켜는 우회는 추가하지 않았다. 재현: `npm --prefix mobile run test:duo`.
 
@@ -11842,6 +12127,11 @@ P: 새 후보/단계 상태의 semantic token 이름(예: suggestion/awaitingApp
 
 ### 재사용 가능한 제품·AI 협업 디자인 원칙
 
+#### 2026-11-14 — 자료 동의·대화 반응·한 목록에서만 이동
+
+동의는 같은 기기/계정/자료 범위에서 기억하되 계정·권한 교체에는 이전 동의를 재사용하지 않는다. 로컬 토큰 갱신과 연결 교체를 구분하고 전송 직전 서버도 범위를 확인한다. 대기 중 실제 상태를 대화 안에 보여주며 가짜 진행률/스트리밍을 만들지 않는다. 이미 쓴 다음 문장과 이전 제안 체크를 보존한다. 캘린더 필드는 사용자 목적 기준으로 하나만 제공하고 원본/보조 저장 모델을 큰 입력 구역으로 그대로 노출하지 않는다. 외부 삭제는 구체적 대상/원본 반영을 확인하고 불확실한 결과를 자동 반복하지 않는다. 목록 이동의 대기 시간에는 출발 목록만 표시한다. [덕 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md)의3초/350ms/Google/카메라 좌표는 제품별 선택이다.
+
+
 #### 2026-11-14 — 설정의 실제 적용과 복귀 보존
 
 설정 첫 화면은 요약과 목적별 진입을 제공하고, 특정 서비스를 골랐다면 같은 서비스 선택을 반복시키지 않는다. 현재 승인 범위와 작성 중 권한 초안을 분리하고 실행/해제는 확인을 남긴다. 고급 운영 정보와 반복 읽기는 명시 진입 때만 제공한다. 일시 조회 실패는 마지막 연결과 함께 설명하며 성공 시 오류를 지운다. 하위 화면을 닫을 때 목록 위치·접근성 진입 문맥을 복원한다. [덕의 ME 구현](https://github.com/thepmpo/donknow/blob/main/docs/me-settings-2026-11-14.md)의 수치/카메라 열/기기별 이름 키는 덕 전용이고 공통 원칙과 분리해 재사용한다.
@@ -11978,6 +12268,17 @@ Apple 공식 원칙과 제품 구현값을 구분한다. 다른 OS에서 native 
 ### 原文 / docs/current-ui-comparison.md
 
 ### 현재 UI·기능 통합 대조 — 2026-11-10
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — ME 재설계 전체 구현
 
@@ -12167,9 +12468,9 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 소스 `5c1ae41`. **기존 빌드16은57aee29로 요청돼 이 세로 수정이 들어 있지 않다.** 웹 배포가 기존 TestFlight 바이너리를 바꾸지 않으며, 아이폰 반영에는 최신 main의 새 수동 빌드가 필요하다. 자동 빌드·유료 전환·기존 인증/데이터 변경은 하지 않는다. 아래 이전226×48 가로/기존 헤더 배치 기록은 폐기된 해석으로 읽는다.
 
-![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
+![접힌 상태의 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/7-duck-closed-demo-fixture.png)
 
-![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/59262832404f9f24f3d48e7183c545bad9b911e2/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
+![펼친 상태도 오른쪽 세로 배열 · 격리 웹 미리보기](https://raw.githubusercontent.com/thepmpo/donknow/24e38cd3250cd1c79071d0be928b3b5066856553/artifacts/duo-vertical-navigation-2026-11-13/8-duck-open-demo-fixture.png)
 
 #### 2026-11-13 — 예약 브리핑·날씨와 Duo 배치 정정
 
@@ -12475,6 +12776,17 @@ Notion 연결 관리에서 콘텐츠 읽기·추가·수정 capability와 대상
 ### 原文 / docs/testflight-automation.md
 
 ### iPhone 테스트 수동 빌드·자동 제출
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — 사용자 실행30 실제 성공
 
@@ -13581,6 +13893,17 @@ expo-blur를 새로 추가했으므로 기존 TestFlight 앱에서 OTA만으로 
 ### 原文 / docs/design-guide.md
 
 ### duckduck 디자인 적용 기준
+
+#### 2026-11-14 — 채팅·캘린더 단순화와 양방향 3초 이동
+
+[현재 계약](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-2026-11-14.md) · [QA·새 화면](https://github.com/thepmpo/donknow/blob/main/docs/chat-calendar-simplicity-qa-2026-11-14.md). 반복 AI 동의는 기기/계정/연결·권한 범위별로 기억하고 붙여넣기는 별도 확인한다. 근거는 작은 행, 대기 표시는 실제 요청 중 말풍선이다. AI 제안의 체크·제외·명시 Todo 추가를 답변별로 유지한다. 완료는 채팅 표시이며 실제 Todo 자동 완료가 아니다. 전체 대화의 앱 재시작 복원도 아니다.
+
+일정 편집은 기본 항목/작은 알림 행/접힌 장소·메모/아래 저장으로 줄였다. 공통 필드는 원본에 저장하고 기존 별도 자료는 접어서 보존한다. Google 캘린더 목록 선택·이동, 덕 알림 아래 원본 삭제 확인·ETag·204/일회 실행·부분 이동 unknown/캐시 제거를 구현했다. 현재 Google 계정의 여러 캘린더이며 여러 외부 계정 동시 연결은 아니다. 2주 제목2줄+…·일반폰/Duo 배치는 유지한다.
+
+Todo↔log는 **원래 목록에3초 →350ms fade →목적 목록**이며 반대쪽에 미리 나타나지 않는다. 되돌리기/실패 복구/기존 완료시각·목록 순서/줄인 모션을 보존한다. 안전 GET만 최대1회 복구하고 AI·외부 쓰기는 자동 재실행하지 않는다. 실계정/native 검수와 합성 Expo/기하 검수를 구분한다.
+
+실제 [43567941097](https://github.com/thepmpo/donknow/actions/runs/43567941097)·bdc158a의 **1.0.0(31)** 서명 IPA06:53:52UTC·Apple 업로드06:54:24UTC 성공을 확인했다. **이번 추가 수정은31 이후이며 새 앱 빌드/설치가 필요하다.** 새 dispatch가 막히면 실제 차단을 기록하고 예전31 Re-run을 안내하지 않는다. 무료/수동 정책·기존 데이터/인증/서명·복구 bundle·사무실/소개 사이트 보류를 유지한다. 아래 체크리스트 보류/즉시 log/큰 덕 전용 입력/30최신은 이전 이력이다.
+
 
 #### 2026-11-14 — ME 재설계 전체 구현
 

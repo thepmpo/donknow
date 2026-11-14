@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "59262832404f9f24f3d48e7183c545bad9b911e2",
-  "assetCommit": "59262832404f9f24f3d48e7183c545bad9b911e2",
-  "imageCount": 818,
+  "codeCommit": "24e38cd3250cd1c79071d0be928b3b5066856553",
+  "assetCommit": "24e38cd3250cd1c79071d0be928b3b5066856553",
+  "imageCount": 844,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -3657,6 +3657,188 @@
       "bytes": 67096,
       "sha256": "eefb3dbfb4f5f95ca664fd530064ee3595113e5d6d018c52d4d506a1d990f351",
       "import_path": "images/artifacts__calendar.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/01-compact-long-source.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 87354,
+      "sha256": "2c90e50d959e4cc5b824430ff1007cc5f7c8424425acd60cf45f207d04c6676d",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__01-compact-long-source.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/02-local-only-preview.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 102336,
+      "sha256": "d5eb84637787ebcb3a356feef5df5b2c7a60d448588ad90737f98ff2d7580362",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__02-local-only-preview.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/03-partial-save-retry-only-duck.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 114918,
+      "sha256": "0f0b8c18a1bc53186d4c2701eb9573bb82a4a3265748b3d1de0772454c7e1c1e",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__03-partial-save-retry-only-duck.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/04-editor-scrollbar-visible.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 95329,
+      "sha256": "f46f7ab030d9cf491d882f5041ae71e8e965b3d7f9afb99a60231e08a9dec167",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__04-editor-scrollbar-visible.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/05-todo-shared-transition.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 99994,
+      "sha256": "0fb2de4557bb995ec71eec033144ad4e27caf94c9fef2d5e589468fec1bd4fe6",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__05-todo-shared-transition.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/06-year-scrollbar.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 153044,
+      "sha256": "2bd28e9bf195ea65e51861e5aa966c985afaeed4665ee72b5a0a3739c18d9925",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__06-year-scrollbar.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/07-month-after-continuous-swipe.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 74699,
+      "sha256": "1471bd7433ad373f2c2b3b69c4faf6bec22b7b871fdf98676b0ec54d4f085265",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__07-month-after-continuous-swipe.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-calendar/08-continuous-swipe-midpoint.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 75362,
+      "sha256": "b4a45b853668854bd0b93b6932a7007caf4a476d2739b0907414f0b98a7d88e7",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-calendar__08-continuous-swipe-midpoint.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/before-chat/01-compact-phone-chat.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 17755,
+      "sha256": "9dcf27609c1e5bc3898d9d52518d53ac0c3aa19033535a7beb74c572598b0576",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__before-chat__01-compact-phone-chat.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/01-typing-in-conversation.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 23989,
+      "sha256": "ff772ef0d79757da03e76efdca928bb7a8d60f4b7f41ff15e83635e5eb891f95",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__01-typing-in-conversation.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/02-checklist.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 39392,
+      "sha256": "9bea09bd2ed31a39da7d15ef24eb6860546253706a2e2c450ecbf85c1c425fb8",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__02-checklist.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/03-compact-sources.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 39191,
+      "sha256": "ee346f4c6d72b8fc962899c734ec9417c6c42c0a733b2d98901a745b5ebce085",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__03-compact-sources.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/04-simple-editor.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 38975,
+      "sha256": "d92caf0dd7660be6b5297943691cb30a49d9fea41a36b19e737bb7234f315971",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__04-simple-editor.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/05-calendar-choice.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 38615,
+      "sha256": "200b20d8d3877b4783319b0c5258d9ad1f892713f3828a2c03e7d793b9b24d44",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__05-calendar-choice.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/06-delete-confirmation.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 43435,
+      "sha256": "f03a4e38dbce75f1dfe5cc893f017f91b87bf9c4c7c725569245b53797975ecc",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__06-delete-confirmation.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/07-fortnight-two-lines.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 26484,
+      "sha256": "b246d91e6ef6d4daae107f6f31813fdbdccf38279288e5411362dbdd5efad3c6",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__07-fortnight-two-lines.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/08-folded-two-lines.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 28426,
+      "sha256": "09627144f4c59a5504a8311a2ffb3b67ef3b317a36d249efe41d941a50763dae",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__08-folded-two-lines.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/09-open-two-lines.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 49512,
+      "sha256": "7de7eabc08cb042ea2685260d008206edf72165fa833dcd7aac0f188228dbb44",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__09-open-two-lines.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/10-folded-chat.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 37170,
+      "sha256": "c3c0b0ab124659c2b0d93376e65fd41dc761c40fe32016670c618fc79f8ddf79",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__10-folded-chat.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/11-open-chat.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 65412,
+      "sha256": "a3838a0ab82588bd658cd1ca630cba828cb57a4c4c6f4b383b62b1dc2974e107",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__11-open-chat.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/12-todo-countdown.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 26898,
+      "sha256": "e2d10828a910c6635e30e5877fd459bf884b5d1641eb1055c4d7ef4199ceee44",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__12-todo-countdown.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/13-log-countdown.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 28028,
+      "sha256": "02dd1c807cc4f5e67cdd2ddd89c80b425fec68e179302b3d8d4624a501ad0929",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__13-log-countdown.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/14-open-editor.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 70451,
+      "sha256": "2eaf66a9cc9f0d4a733b84bedce7c86b2b596ac929c3d5212e1706c7de100e6c",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__14-open-editor.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/15-folded-editor.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 37432,
+      "sha256": "3af4c75d45a4060a56107440b8992ae73589f9db460f47e230292fbbcf437262",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__15-folded-editor.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/16-folded-delete.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 44190,
+      "sha256": "e57dcd90435770f21d874d4f6150d67569faab43d5417e172bd5840a705f9d91",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__16-folded-delete.png"
+    },
+    {
+      "path": "artifacts/chat-calendar-simplicity-2026-11-14/current/17-small-dark-editor.png",
+      "category": "채팅·캘린더 단순화·원본 삭제/이동·양방향3초 · 실제 Expo/합성 API·Duo 기하 · native/실계정 아님",
+      "bytes": 32341,
+      "sha256": "a6ceb31c88af624b322747ff8aa11ccd2b88ef7db60e30d084c8a6804a63bcdf",
+      "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__17-small-dark-editor.png"
     },
     {
       "path": "artifacts/design-guide-fixture.png",
