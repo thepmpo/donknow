@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "0c2e8fd9adce6c70e81afccbee8723914df8a86d",
-  "assetCommit": "0c2e8fd9adce6c70e81afccbee8723914df8a86d",
-  "imageCount": 870,
+  "codeCommit": "aa389fcb401dda8802074b7f48a2359a034c6b51",
+  "assetCommit": "aa389fcb401dda8802074b7f48a2359a034c6b51",
+  "imageCount": 882,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -1361,6 +1361,90 @@
       "bytes": 34572,
       "sha256": "e42b3736c270580f4f25b6a51644f3077d91bd2caf18848bc20a7bd3eabc4054",
       "import_path": "images/artifacts__calendar-audit-2026-11-13__16-tab-return-resets-month.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/01-empty-list-no-scroll.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 24184,
+      "sha256": "469b6112d384f8b12a36bff3e6f7c97a5c9ab9b64b06e1fca7507a4de7b5e5bf",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__01-empty-list-no-scroll.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/02-date-done-and-exact-alert.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 29204,
+      "sha256": "0c2b6ff0f3ef867e76eaa3b730aff86d7bf2ee9c5d04780c726fd26fcf524ecd",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__02-date-done-and-exact-alert.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/02a-date-done-keeps-form-draft.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 28223,
+      "sha256": "acb6ae55717adc16c55daff200220b1733d289bd2f1a325637afda59d9fc100c",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__02a-date-done-keeps-form-draft.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/03-short-form-stops-scrolling.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 25610,
+      "sha256": "4fc46bb32c4b7b99ad2b4c5d492757ccc98ba7441be4da58c1ca745a2b04f19d",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__03-short-form-stops-scrolling.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/04-fortnight-start-only.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 28499,
+      "sha256": "c28f0d8c466a9e7055c538b8a6e4941173458d47bbf0d7f6ed8022094d9ed2fc",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__04-fortnight-start-only.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/05-dark-detail-layer.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 47251,
+      "sha256": "7a750804fdc1bb3a4d99bb9e497e03667e19b6ff775fff14925d1b57515c7ab0",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__05-dark-detail-layer.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/06-dark-alert-menu.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 43307,
+      "sha256": "7edd05a35aec9ee153d3cd8d16894e61a137c2e4520a00f60184b85467dab1a3",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__06-dark-alert-menu.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/07-month-only-week-lines.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 72852,
+      "sha256": "234388f727a9e0a15b4a1954e2df3c7f1da6c49869402fdb2b5c67d9abee8a9d",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__07-month-only-week-lines.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/08-folded-dark-detail.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 39563,
+      "sha256": "c9129165acde0546d29e12e676164ebc0d70bc85259bd05530a9f331a612d362",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__08-folded-dark-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/09-open-dark-detail.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 75050,
+      "sha256": "c8768dcf9737703619271a4dbf037e82a641ce2abfc5791f50a6a9bf6ef50c92",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__09-open-dark-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/10-open-portrait-detail.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 52474,
+      "sha256": "8c0698f0961757ac054162f57b9d16eda953bca8b857d3ff7c59c2c0f34d378b",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__10-open-portrait-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-comfort-2026-11-14/current/11-small-dark-editor.png",
+      "category": "날짜 완료·정확한 알림·월/2주 선과 시각 · 실제 Expo/합성 API·기하 · native/실계정/오늘 음영 미검수",
+      "bytes": 32594,
+      "sha256": "305e9d89340df0da11d64921b19e452949137a94f972b7f12388ff37490d2d38",
+      "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__11-small-dark-editor.png"
     },
     {
       "path": "artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png",
