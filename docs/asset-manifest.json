@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "9efa6d8fc701af3d3255e8b1923cf660e032b8b3",
-  "assetCommit": "5d546bab7b1646209e0f78758af336c0257ae8ab",
-  "imageCount": 860,
+  "codeCommit": "0c2e8fd9adce6c70e81afccbee8723914df8a86d",
+  "assetCommit": "0c2e8fd9adce6c70e81afccbee8723914df8a86d",
+  "imageCount": 870,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -3839,6 +3839,76 @@
       "bytes": 32341,
       "sha256": "a6ceb31c88af624b322747ff8aa11ccd2b88ef7db60e30d084c8a6804a63bcdf",
       "import_path": "images/artifacts__chat-calendar-simplicity-2026-11-14__current__17-small-dark-editor.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/01-one-reply-many-items.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 41887,
+      "sha256": "41cf611c4587212f07425416a690afa35dc2ffcaff1267a8a359a25e867aaece",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__01-one-reply-many-items.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/02-complete-in-chat.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 41588,
+      "sha256": "17fdfd7d6a3306b1b677331aefea3250f140677ec1bd13a40c48ee3aaedf9bf6",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__02-complete-in-chat.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/03-complete-in-log.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 24140,
+      "sha256": "26db55bcfa250b46f3c1e809169302bc927d44722789b1a710d186d68a12250b",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__03-complete-in-log.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/04-x-only-no-write.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 41631,
+      "sha256": "9df801bddf162998c874914543d19b32c0701a549d08796126fd83186e043ed6",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__04-x-only-no-write.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/05-existing-todo-completed-once.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 28621,
+      "sha256": "98ee39d7e3d3f6318fffd7fd56ca149916a54bceeb6f96c6db55f3bc8f1bc32c",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__05-existing-todo-completed-once.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/06-uncertain-no-replay.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 45580,
+      "sha256": "cde34580f03ca7ab0f7c67ffbc2fa59eb5d1855be5cb80baf63375fe85ed4892",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__06-uncertain-no-replay.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/07-lost-response-reconciled.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 45233,
+      "sha256": "c43d4a2e69d84b0ac2554c75dec6eb4dcac737481ea47563192347816a334588",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__07-lost-response-reconciled.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/08-folded-added.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 43375,
+      "sha256": "7ed0251786fb2c3d88d766a14ee9ae167c38f1fe99737a86531f34c26cd2d4f8",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__08-folded-added.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/09-open-same-state.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 76938,
+      "sha256": "311491b4e3b267a2a7ddde65c30d8003a3a78bd000992f49e62463368a2d596a",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__09-open-same-state.png"
+    },
+    {
+      "path": "artifacts/chat-checklist-2026-11-14/current/10-small-dark.png",
+      "category": "채팅 체크/X/Todo 저장 · 실제 Expo·합성 API/기하 · native/실계정 아님",
+      "bytes": 39422,
+      "sha256": "a0de277199754cbd679169b171564a3fed3bf979d21a0d06fe5a43f39a813127",
+      "import_path": "images/artifacts__chat-checklist-2026-11-14__current__10-small-dark.png"
     },
     {
       "path": "artifacts/design-guide-fixture.png",
