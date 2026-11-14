@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-14",
-  "codeCommit": "aa389fcb401dda8802074b7f48a2359a034c6b51",
-  "assetCommit": "aa389fcb401dda8802074b7f48a2359a034c6b51",
-  "imageCount": 882,
+  "codeCommit": "fbcc0967e2d4486f2c60904836d02f9d1fa5da3a",
+  "assetCommit": "fbcc0967e2d4486f2c60904836d02f9d1fa5da3a",
+  "imageCount": 898,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -4973,6 +4973,118 @@
       "bytes": 178091,
       "sha256": "eaa0c6b247a20fe29bfa1fe0d106f2e9a4ef4b5e08eb86b9b9759c5be31b80b9",
       "import_path": "images/artifacts__interaction-polish-2026-11-14__year__06-closing-zoom.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/01-message-times-and-tail.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 65403,
+      "sha256": "06f32f11004b8ce54acb1a3006ea22d3114c4855f7773bccf01eb2f466c14ddd",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__01-message-times-and-tail.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/02-phone-inline-dismiss-and-tail.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 34546,
+      "sha256": "2ebe3af4f08da90dd2efb21ab94125210ece22c29ef79d945571544c79e92916",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__02-phone-inline-dismiss-and-tail.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/03-folded-chat.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 36134,
+      "sha256": "70c1bad70e2512cd234cc0dfe8a538515fc398542f5a40c10794638291093558",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__03-folded-chat.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/04-open-chat.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 68651,
+      "sha256": "8948ffb15d523ebe5088be751a44409263f87141183516ed02eb805ee8879bcf",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__04-open-chat.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/05-open-portrait-chat.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 73691,
+      "sha256": "b374cebedc499dd508a921a79c8ae1229f54ba3611e4483c1ef28a4d7156a2a1",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__05-open-portrait-chat.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/06-cached-events-during-refresh.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 33481,
+      "sha256": "3f7e719db0827b12682c6fd2230d4c9cbc3f9335205b7ea3ad1864916deba292",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__06-cached-events-during-refresh.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/07-editor-keyboard-no-save-or-grid-gap.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 17816,
+      "sha256": "ea48d421b29ea61d64f8c3b15036d4bd8198fce980b1001c169dc50767a0efe1",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__07-editor-keyboard-no-save-or-grid-gap.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/08-expanded-fields-follow-scroll.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 15497,
+      "sha256": "245a486b3dce2ea3afc27fc2658fabe1e4846e609a5d40351abe420c7f26e860",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__08-expanded-fields-follow-scroll.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/09-confirmed-event-before-slow-refetch.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 33687,
+      "sha256": "660f89a3e1350fbe8b198220dc9f18b4ec1c0a3cd194926fd01c3c2e03865bf4",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__09-confirmed-event-before-slow-refetch.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/10-month-rest-fixed-weekdays.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 33353,
+      "sha256": "b46107c9abd7041783622629e5ed9cd36d6ed939ff9b249495cd634657eb450e",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__10-month-rest-fixed-weekdays.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/10a-adjacent-preview-with-fixed-weekdays.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 33716,
+      "sha256": "c148200a4cbe76dd4025807c8aca260c30e47a967c8b34e69c42a16481e411ae",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__10a-adjacent-preview-with-fixed-weekdays.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/11-folded-keyboard-editor.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 26808,
+      "sha256": "943903abfaac38536b9861cb124571ac86f8edfbe8d1d5cbc0eb1547d96a4c3f",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__11-folded-keyboard-editor.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/12-open-keyboard-editor.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 53387,
+      "sha256": "45f721a9918974ae2bdcf71a3f553e3a5c523fed136861c7a514401d71393070",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__12-open-keyboard-editor.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/13-open-portrait-keyboard-editor.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 60253,
+      "sha256": "997ffc6fc1da3210c1334818fde64df2c552b4778f109f095eea0c40d6608676",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__13-open-portrait-keyboard-editor.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/14-both-panes-retain-confirmation-after-old-read.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 44053,
+      "sha256": "8245b2ce6038beb9b1ee6a6d91a70190054ed0ddd524b5bf220bdf6ef3f73d54",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__14-both-panes-retain-confirmation-after-old-read.png"
+    },
+    {
+      "path": "artifacts/interaction-repair-2026-11-14/current/15-editable-draft-before-calendar-write-access.png",
+      "category": "채팅 시각·키보드1번·즉시 표시·월 전환 · 실제 Expo/합성 API·Duo 기하/키보드 가림 · native/실계정 아님",
+      "bytes": 68497,
+      "sha256": "e22fa4573a2c2eaa93166fb67f2e4394cbf21bb2a10d2731cc64e330a0530480",
+      "import_path": "images/artifacts__interaction-repair-2026-11-14__current__15-editable-draft-before-calendar-write-access.png"
     },
     {
       "path": "artifacts/log.png",
