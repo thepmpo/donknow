@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "a0899756a606d486b056876be5547f52205e1f50",
-  "assetCommit": "39205b0dbd0308daa746ca22c617b45e3bcaedac",
-  "imageCount": 942,
+  "codeCommit": "ed7c4016f0d3c1f8bb680358111f78609b526346",
+  "assetCommit": "ed7c4016f0d3c1f8bb680358111f78609b526346",
+  "imageCount": 955,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -971,6 +971,41 @@
       "import_path": "images/artifacts__mobile-verification.png"
     },
     {
+      "path": "artifacts/assistant-agent-2026-11-15/current/01-ordinary-memory-opt-in.png",
+      "category": "대화·장기 기억 관리·채팅 복원 · 실제 Expo/합성 API·root Duo 기하 · native/실계정 아님",
+      "bytes": 50281,
+      "sha256": "561e40cb0a5ec8be160a25eb9bbf69db886d187e5cb4d62908bcb04103d2d5cf",
+      "import_path": "images/artifacts__assistant-agent-2026-11-15__current__01-ordinary-memory-opt-in.png"
+    },
+    {
+      "path": "artifacts/assistant-agent-2026-11-15/current/02-memory-note.png",
+      "category": "대화·장기 기억 관리·채팅 복원 · 실제 Expo/합성 API·root Duo 기하 · native/실계정 아님",
+      "bytes": 49886,
+      "sha256": "3205c0d1d2c76f03b72a576b80f0066366b5699e98aedf53c2e5a0d4189a45dd",
+      "import_path": "images/artifacts__assistant-agent-2026-11-15__current__02-memory-note.png"
+    },
+    {
+      "path": "artifacts/assistant-agent-2026-11-15/current/03-restored-chat-completed.png",
+      "category": "대화·장기 기억 관리·채팅 복원 · 실제 Expo/합성 API·root Duo 기하 · native/실계정 아님",
+      "bytes": 29135,
+      "sha256": "da0dbe93ee89b41973d4940ad46d94c51d5636d3b36b84c4c2606f1551a887c3",
+      "import_path": "images/artifacts__assistant-agent-2026-11-15__current__03-restored-chat-completed.png"
+    },
+    {
+      "path": "artifacts/assistant-agent-2026-11-15/current/04-folded-restored-chat.png",
+      "category": "대화·장기 기억 관리·채팅 복원 · 실제 Expo/합성 API·root Duo 기하 · native/실계정 아님",
+      "bytes": 27648,
+      "sha256": "9328027fcdd1b9ca92d922fa6a545aa31eef6715d99943c5160dcc1bfc1f9dbd",
+      "import_path": "images/artifacts__assistant-agent-2026-11-15__current__04-folded-restored-chat.png"
+    },
+    {
+      "path": "artifacts/assistant-agent-2026-11-15/current/05-open-dark-memory.png",
+      "category": "대화·장기 기억 관리·채팅 복원 · 실제 Expo/합성 API·root Duo 기하 · native/실계정 아님",
+      "bytes": 71173,
+      "sha256": "0fcb23b931321ac27f7d0b0af8541eb289cb3753795f05d148a45d3c0e8235da",
+      "import_path": "images/artifacts__assistant-agent-2026-11-15__current__05-open-dark-memory.png"
+    },
+    {
       "path": "artifacts/assistant-briefing-2026-11-15/01-chat-fixture.png",
       "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
       "bytes": 41101,
@@ -1165,6 +1200,62 @@
       "bytes": 43491,
       "sha256": "1ab64c757c7ed2fb13942dd55d5b0eca83079fb238bba5595a5d0ffe7c1e4259",
       "import_path": "images/artifacts__assistant-feedback__before-error-fixture.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/dark-editor-dim.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 33081,
+      "sha256": "7515b03bcc4baebcb45cb4b72605c6f1889161e2b8fa56f25fd20e0703b0987d",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__dark-editor-dim.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/folded-before.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 16316,
+      "sha256": "220a14f1924717c23e3436396acd915197a0e67da280b6f9ee32919062f9fbe6",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__folded-before.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/folded-editor-dim.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 28853,
+      "sha256": "81b7ab66f75ef03c6ca478b35bc764a1bf84210677e87ed4c20aa8e08bc17abf",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__folded-editor-dim.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/folded-keyboard-clear.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 30528,
+      "sha256": "46936c514d263ddcfe20d2e3bb510cbee189283513517ae17dbe9a60b785d5ae",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__folded-keyboard-clear.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/open-before.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 18176,
+      "sha256": "631cd8b3506dc5db7795bd5251aedc1149c5672e2442931e678494c223a28051",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__open-before.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/open-editor-dim.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 35025,
+      "sha256": "cc3825064c38bc3abfc5bccc3fe4d23bb5063f8c0e06c6258fd7ee0ded4a7182",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__open-editor-dim.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/open-keyboard-clear.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 37965,
+      "sha256": "4d3366193890c2d8e019af673ac07756c5062a460f09571166fbff201a187641",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__open-keyboard-clear.png"
+    },
+    {
+      "path": "artifacts/background-controls-2026-11-15/current/ordinary-bottom-dim.png",
+      "category": "배경 dim/disable·앞 X/키보드 유지·중첩 복원 · Expo/합성 Duo 기하 · native 아님",
+      "bytes": 22903,
+      "sha256": "8ee77524461cd48664a9eae6e3912c9cd15ca0d54e52db85840be3352d02e908",
+      "import_path": "images/artifacts__background-controls-2026-11-15__current__ordinary-bottom-dim.png"
     },
     {
       "path": "artifacts/calendar-apple-reference-2026-11-13/after/01-month-adaptive-and-toolbar.png",
