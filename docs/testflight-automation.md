@@ -1,5 +1,14 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-15 22:30 UTC — 영상 UX/UI 수정본 빌드 요청·시작 거부
+
+사용자가 방금 수정본 빌드를 요청했다. main `de2f9aa`는 구현 `8d7545e`/`d47d246`와 검수·공개 문서를 포함한다. 추가된 원격 변경은 일일 문서뿐이며 앱/워크플로 변경은 없다. 진행 중 iPhone 실행은 없고, 마지막 확인은1.0.0(41)·43716180572다.
+
+기존 무료 Mac 수동 workflow를 main으로 실행하려 했으나 CLI의 workflow GET과 숫자 workflow407665801에 대한 직접 dispatch POST 모두 `Forbidden`으로 거부됐다. 연결 도구에는 새 dispatch 기능이 없다. 자동 승인 심사 거부로 표시된 것은 아니며 GitHub 요청 경로의 거부다. 새 run·번호·IPA·Apple 업로드는 생성되지 않았다. [기록](native-build-request-2026-11-15.json).
+
+필요한 조작은 [기존 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)의 **Run workflow → Branch:main → Run workflow**다. 새 run의 소스 SHA·validate/native 서명·Apple 제출을 각각 확인해야 한다. 기존 성공41의 재실행으로 새 수정본을 받았다고 보고하지 않는다. 유료 runner/Expo cloud/자동 push 빌드나 서명 변경으로 우회하지 않는다.
+
+
 ## 2026-11-15 — iPhone41 서명·Apple 업로드 실제 성공
 
 [실행43716180572](https://github.com/thepmpo/donknow/actions/runs/43716180572), 소스1fbedb144a48bd6212131c1f9d97496e55381df6, validate132818104061와 build-and-submit132818320551 모두success다. 로그의40→41 증가12:56:09 UTC·buildNumber41·서명 성공13:05:05 UTC·App Store Connect 업로드 성공13:05:39 UTC를 확인했다. 제출390d431f-c6df-4d43-9aee-54f4fc674cf0이다. GitHub 화면의 실행31은 TestFlight 번호가 아니다.

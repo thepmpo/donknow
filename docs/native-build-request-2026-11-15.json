@@ -1,0 +1,51 @@
+{
+  "requestedAtUtc": "2026-11-15T22:30:27Z",
+  "requestedAction": "Build the latest Things/Pickle UX revision for iPhone and submit to TestFlight using the existing free GitHub Mac workflow",
+  "verifiedMain": "de2f9aaf786f44e80480d4eda35c8e550f55d376",
+  "includesAppImplementation": [
+    "8d7545e844751c45ef59a16732e4b539b9957372",
+    "d47d24631cdd8fddac053a0ad39170bc67ff9c9c"
+  ],
+  "workflowId": 407665801,
+  "workflowPath": ".github/workflows/ios-testflight.yml",
+  "attempts": [
+    {
+      "method": "gh workflow run on main",
+      "result": "GET workflow metadata Forbidden"
+    },
+    {
+      "method": "gh workflow run with explicit network permission",
+      "result": "GET workflow metadata Forbidden"
+    },
+    {
+      "method": "gh api POST numeric workflow dispatch with ref=main",
+      "result": "POST dispatch Forbidden"
+    }
+  ],
+  "newRunCreated": false,
+  "newBuildNumberAllocated": false,
+  "newIpaBuilt": false,
+  "newAppleSubmission": false,
+  "latestConfirmedNative": {
+    "version": "1.0.0",
+    "buildNumber": "41",
+    "runId": 43716180572,
+    "sourceSha": "1fbedb144a48bd6212131c1f9d97496e55381df6",
+    "appleUploadSucceeded": true
+  },
+  "requiredUserAction": {
+    "url": "https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml",
+    "steps": [
+      "Run workflow",
+      "Branch: main",
+      "Run workflow"
+    ]
+  },
+  "preserved": [
+    "Existing free standard Mac runner",
+    "Manual-only workflow",
+    "Existing Expo/signing/App Store credentials",
+    "No paid build fallback",
+    "Original recovery bundle"
+  ]
+}
