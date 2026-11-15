@@ -753,13 +753,19 @@ project = (OUT/'duckduck-handoff.html').read_text()
 # Keep the online document small; immutable images load only near the viewport.
 asset_dir = ROOT/'public/project-assets'
 asset_dir.mkdir(exist_ok=True)
+image_sources = {}
 for item in manifest:
     data = (ROOT/item['path']).read_bytes()
     suffix = Path(item['path']).suffix.lower()
     filename = item['sha256'] + suffix
     (asset_dir/filename).write_bytes(data)
     encoded = base64.b64encode(data).decode()
-    project = re.sub(r'src="data:[^;]+;base64,'+re.escape(encoded)+r'"', 'loading="lazy" decoding="async" width="960" height="720" src="/project-assets/'+filename+'"', project)
+    image_sources.setdefault(encoded, filename)
+# Rewrite embedded images in one pass instead of scanning the full HTML for each image.
+def publish_image(match):
+    filename = image_sources.get(match[1])
+    return 'loading="lazy" decoding="async" width="960" height="720" src="/project-assets/'+filename+'"' if filename else match[0]
+project = re.sub(r'src="data:[^;]+;base64,([A-Za-z0-9+/=]+)"', publish_image, project)
 toc_groups = [
     ('먼저 볼 내용', 1, 4), ('화면과 수정 요청', 5, 6),
     ('이어가기·바로가기', 7, 8), ('개발 구조와 설정', 9, 12),

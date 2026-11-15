@@ -89,7 +89,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenLog=onOpenTodos, onOpenTo
       {!!status&&<Text accessibilityLiveRegion="polite" style={styles.status}>{status}</Text>}
       {false&&shortcuts}
       <View style={styles.composer}><TextInput accessibilityLabel="덕에게 이야기하기" value={input} onChangeText={setInput} maxLength={120} placeholder="덕에게 이야기하기" placeholderTextColor={colors.muted} style={styles.input} onSubmitEditing={send} returnKeyType="send" /><KeyboardDismiss/><Pressable accessibilityRole="button" accessibilityLabel="덕에게 보내기" disabled={!input.trim()} onPress={send} style={[styles.send, !input.trim() && { opacity: .4 }]}><Text style={styles.sendText}>↑</Text></Pressable></View>
-      <Text style={styles.note}>{assistantState==='loading'?'AI 연결 상태를 확인하고 있어요.':assistantState==='failed'?'AI 연결을 확인하지 못했어요. 지금은 직접 적어 Todo로 담을 수 있어요.':assistantState==='unavailable'?'AI 연결은 준비 중이에요. 지금은 직접 적어 Todo로 담을 수 있어요.':'직접 적어 Todo로 담거나, 비서에서 연결한 자료로 요청해보세요.'}</Text>
+      <Text style={styles.note}>ME에서 로그인하면 덕과 대화할 수 있어요.</Text>
     </>}
     {scheduling&&<AutomationSheet store={store} onClose={()=>setScheduling(false)}/>}
     {todayOpen&&<TodaySheet store={store} onClose={()=>setTodayOpen(false)} onSchedule={scheduleAvailable?()=>{setTodayOpen(false);setScheduling(true);}:undefined}/>}
