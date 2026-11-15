@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "1a4ad78a1428754bff1c6acb64d6e3ccbe7cc557",
-  "assetCommit": "1a4ad78a1428754bff1c6acb64d6e3ccbe7cc557",
-  "imageCount": 916,
+  "codeCommit": "a0899756a606d486b056876be5547f52205e1f50",
+  "assetCommit": "39205b0dbd0308daa746ca22c617b45e3bcaedac",
+  "imageCount": 942,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -969,6 +969,188 @@
       "bytes": 36930,
       "sha256": "74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34",
       "import_path": "images/artifacts__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/01-chat-fixture.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 41101,
+      "sha256": "7d32bbf3623ad9e085c3a3367c6b13e5fe52889ea95670fd89496063a6582a7f",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__01-chat-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/02-briefing-fixture.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 62894,
+      "sha256": "1c1f9c93603e47c3ed01a12a153f62ba66b64be85afece5dc78fb509e6ec9b43",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__02-briefing-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/03-small-weather-fixture.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 31441,
+      "sha256": "4e64f8b8f5405b1221c069039a3b67db7ce1307f54478b877e0b617c2c7eb54a",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__03-small-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/04-hourly-fixture.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 42982,
+      "sha256": "770e0ddb04d837a1afc3a58a5f0d05ff434363d10473d63c452c79ccd406b9ff",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__04-hourly-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/05-checklist-state-fixture.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 41022,
+      "sha256": "912a41b28f8112b0e8c2748f86b5359b9b207d9ecb86b92d78bd4b1e0d1bb307",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__05-checklist-state-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/duo/01-ordinary-briefing.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 39040,
+      "sha256": "aa21cdc977dca125acb5dbe672b30b459d521ef7a38c8d195ade7d570af98659",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__duo__01-ordinary-briefing.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/duo/02-folded-gestures.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 38770,
+      "sha256": "a948f6d99e4a39860df5d7451ecff68c1e5778dbcdf811c7aa0a5bf59d1aaf0d",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__duo__02-folded-gestures.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/duo/03-open-panes.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 65812,
+      "sha256": "78528783dfdcd088edce2ce20518916bd640b3aa583e0abc3e75a27e76284797",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__duo__03-open-panes.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/duo/04-open-me-depth.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 68286,
+      "sha256": "b2363dcf3fdc1e7ec7bb2a736ae5c88a59eb536c0e40ab0aa1d026f8daace1cc",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__duo__04-open-me-depth.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/01-me-overview.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 41777,
+      "sha256": "42ba232af3e4fdf6e732858df10fa360eb8c6c193f7535d95038a948dfd348d2",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__01-me-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/02-google-overview.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 35988,
+      "sha256": "42667457bc907e7473dc42567f4615bf353c9aaa8100f5f92748cd0260855a8f",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__02-google-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/03-google-permissions.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 49740,
+      "sha256": "dbcaaa4c3e0b3ca5cba2bb0cba3c8331279efe560dd94d7533fa81b5d699e179",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__03-google-permissions.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/04-completed-reference.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 51950,
+      "sha256": "9bda8fab3102c531d30504e292d768086b046be05de48a840d7cfe104b9abcb8",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__04-completed-reference.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/05-stale-connection.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 46498,
+      "sha256": "313c0790236d5d0f663a68cf0550325b114c5294ca126f13eb7abf7e399f0736",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__05-stale-connection.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/06-account-delete.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 35135,
+      "sha256": "2c00cca4814929fc8249630914e71db65c710efc091effe697f355403977838f",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__06-account-delete.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/07-long-name-overview.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 43657,
+      "sha256": "a35ff917b1c2217e6744c2accd74ecf43d227cea958dbed19eac204a6c7a988a",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__07-long-name-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/08-notifications.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 30489,
+      "sha256": "a47f045ab64aa4e11ee28bdd0d47b013345f49133e289f954e7ac2f4e6023874",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__08-notifications.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/09-privacy.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 64841,
+      "sha256": "c914f8d1729b8a333e8bc26f91d498d2616da4a4b2956dd95d526cea9703c13f",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__09-privacy.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/10-advanced.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 37878,
+      "sha256": "61647981523ab890532aae0821ab39425a4d542a2181b8e30e3fbc36172e02e5",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__10-advanced.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/11-export.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 35297,
+      "sha256": "51b5d10090aace000befaacdbd080c9566fb5661dc45971777dce9f01f656098",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__11-export.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/12-notion-connect.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 36821,
+      "sha256": "01c878c05f889d1f61920cb2ba24de90bdc72e32ef16fd6e9f84794897820785",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__12-notion-connect.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/13-folded-overview.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 38965,
+      "sha256": "75982ea107d4ad5ff2ecd0e8c967157c0de0b18799849b1a44988f89e5aa5202",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__13-folded-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/14-open-overview.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 73042,
+      "sha256": "eb6aca65f8c19efb3dac2fd0a4b29193b3f05ea5c9c1b5237c2abc518d37d280",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__14-open-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/15-folded-account.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 36942,
+      "sha256": "f99c846b402e02974eca6f445ca4d7435243db7267328802ec44ef4dc3e0b93d",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__15-folded-account.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/16-open-account.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 72369,
+      "sha256": "d5011f55955cbf508d0bf5405576f1b306708a945ac1665bcbd26834f1d90af0",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__16-open-account.png"
+    },
+    {
+      "path": "artifacts/assistant-briefing-2026-11-15/me/17-small-dark.png",
+      "category": "시간별 브리핑·문서 확인·ME 깊이·체크 상태 · Expo/합성 API·Duo 기하 · native/실계정/실시간 수신 아님",
+      "bytes": 41845,
+      "sha256": "fc3b8a2418d1ec0209b9aecc5312d9119ffa0b3dfd5b74adfc8c9b7dcd95307e",
+      "import_path": "images/artifacts__assistant-briefing-2026-11-15__me__17-small-dark.png"
     },
     {
       "path": "artifacts/assistant-feedback/after-error-fixture.png",
