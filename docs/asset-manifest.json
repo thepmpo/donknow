@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "59fe7e2b26e56ece16113dd3201334ba370f04af",
-  "assetCommit": "59fe7e2b26e56ece16113dd3201334ba370f04af",
-  "imageCount": 1062,
+  "codeCommit": "92c7e341498ad674c00006c6e4b594f313b96409",
+  "assetCommit": "92c7e341498ad674c00006c6e4b594f313b96409",
+  "imageCount": 1127,
   "images": [
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/01-iphone-light.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 32545,
+      "sha256": "e2767843c646ab415438d6f69014ff123d08a22d61c7b955868fea9fc363a324",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__01-iphone-light.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/08-duo-upcoming-clean.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 24985,
+      "sha256": "f07f04436ab126dbdf114d340ddb34191c04c138250b446531090294884d01e4",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__08-duo-upcoming-clean.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/04-duo-open-light.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 55771,
+      "sha256": "ca443be84725f369827bf7eb47993eb8e907f91abf6a71bdc36002191949f6d8",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__04-duo-open-light.png"
+    },
     {
       "path": "artifacts/mobile-todos.png",
       "category": "네이티브 기반 웹의 격리 테스트 화면",
@@ -1144,6 +1165,146 @@
       "bytes": 36930,
       "sha256": "74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34",
       "import_path": "images/artifacts__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-account-settings.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 42364,
+      "sha256": "b3f06507973c56c96159738041a6350aaa2a70fae884dabb17a0988dfac40de6",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-apple-reminders.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 33810,
+      "sha256": "9a23bfe216bc45c62d9f3a442ec8923011993e19362782b0e8c5fd5940deb0cf",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-assistant-action-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 40055,
+      "sha256": "4c2b23bb89d44d9a9645af2b27cda6b0391dca8bd014e1c6f10b1d36af36831e",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-assistant-ai-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 35413,
+      "sha256": "4dd89e13f7b7afbd434aa15b26da04778eb0b977cfc8aa03c2bbcb2fd7c8045b",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-auth.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-calendar-events-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 32536,
+      "sha256": "5ddda4aa2d8ab4f363c69146abc0460df15e6bdf55737f69c96701f9ba76da6e",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-calendar.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 33233,
+      "sha256": "8119b477f628cd30eed6b9dc042c00db36d261f420432c5fd8a3cf2f737529a6",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-completed-reference-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 54276,
+      "sha256": "31d0fa3acc89b08bb7290177d300ec243b07bc45374af81b18721e80769b7a88",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-duckduck.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 29535,
+      "sha256": "a9d25f8c20769479b94792c15a5b4c7afcb39f434a894d514dee99ebe593353a",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-google-tasks-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 53819,
+      "sha256": "c0112c60365fa2692dffecef180cfe47f74dbbd20ed3273046354b1754c2e6a6",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-kakao-share.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 27656,
+      "sha256": "af56b9264afa5edbdce22605b2a594c4be7e0ab42a68c5323e78c51209b5d676",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-log.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 30957,
+      "sha256": "445443db98a9838271ec08b42d00a4ae199e11e1e72a191951bcc6e143edc56d",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-log.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-notes-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 24376,
+      "sha256": "344e2f66e56b05f153038ab6c8531b6b67a5bf27c2dbaddb3d50fcb7aa9cfe53",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-personal-export.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 38846,
+      "sha256": "f4cf89b29148370e601115d355856fc2172018e44124bf1806399d380fc442a3",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-profile.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 42860,
+      "sha256": "e03966703eb70775b629b36ca4bd66eeb7efb2715aa31e533a477015c63ebbca",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-reminder.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 30630,
+      "sha256": "d920af97c6210659ae2e68db03693d0e3e54a84e19989711d4c6b41f74c77be5",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-services.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 51266,
+      "sha256": "902056b609354bbf7c17497cbac6cb552ed12ec23e32f0ba725c32d06d56dd99",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-services.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-task-sync-fixture.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 64181,
+      "sha256": "bf6d27cd9ddba93cd3834244e4c3d100ff21786c305e02c4451f694937f01a4b",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-todos.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 23784,
+      "sha256": "ff57031bf6ef1f482ea3cb63d1fc2b526d31525a31177c8d976797e6d829ace9",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/app/mobile-verification.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 36667,
+      "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-verification.png"
     },
     {
       "path": "artifacts/assistant-agent-2026-11-15/current/01-ordinary-memory-opt-in.png",
@@ -7150,6 +7311,300 @@
       "bytes": 31467,
       "sha256": "879d7c4742bb4043bcd358c6c4f16007f84cafb7082f7dc0ed9f58654f069c0d",
       "import_path": "images/artifacts__scheduled-messages-2026-11-13__03-small-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/02-iphone-dark.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 32486,
+      "sha256": "1dc0d102596894746282a1053f2354cf14c930cb86de2f7edf9e4d01cd6c5344",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__02-iphone-dark.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/03-duo-folded-dark.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 25732,
+      "sha256": "b7e5172817dd0641405afd17c40aef90ac16b381feea090d83e1fc3f88aae744",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__03-duo-folded-dark.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/05-small-phone.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 29324,
+      "sha256": "65ec321df31657af026c51660b349e35678483bcb6e7e7483821bf3ca353f1ff",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__05-small-phone.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/06-original-source-edit.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 25324,
+      "sha256": "a1daf1d109c1c14bc5a2d714e7a36e84a7d352d4a7d096c47f0276f3d3ba5f4a",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__06-original-source-edit.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/07-chat-defaults-phone-hidden.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 25883,
+      "sha256": "e4cd06efcfd212b9f73e4c74de2394cc69f3474303de5e146a564d7b03a19e83",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__07-chat-defaults-phone-hidden.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/09-month-line-starts-on-first.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 33348,
+      "sha256": "416e3fa9e5629af63f65ee035dd0c49204e0b764abd30e0b1d0a83f15664138d",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__09-month-line-starts-on-first.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/01-clean-adaptive-month.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 81464,
+      "sha256": "e0f6651bbbd7feb7d12325090d84a884f763c7282745bdc46f693e3c3d018701",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/02-day-detail.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 104433,
+      "sha256": "1caa668a9775be62a4dcbc2911af00078c7441479ee39658c602f57d56e03633",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/03-event-detail.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 85494,
+      "sha256": "b730079c260d6f0446e45cd7a080abb0df59579410b66f1a074d07424d8d2efb",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/04-write-preview.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 75050,
+      "sha256": "3f050d77bcbf3b2dddc0faeb7e0d088576bf010ff01b732b4017445139a8481e",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/05-all-day-editor.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 68310,
+      "sha256": "88168d798b316657e2c15de00ebc41696995d57dc85107e8aee77d5acde17fca",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/06-week-timeline.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 91054,
+      "sha256": "62511dcb1de6590f06c1d856daaac8d303da57b08dd4cdcb2c90f4d9c7ecc2f0",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__06-week-timeline.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/07-search-scope.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 97085,
+      "sha256": "f77246366bd2849fcc01a9d9b4a14df58423ad8cbc7b0a4da9f42139ad51b11b",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/08-calendar-sources.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 91105,
+      "sha256": "b9db0db84886cc52e4eeeb1ff7ef637b154cc7c434ada9be25d5c3b1dc234aab",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/09-read-only-event.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 96763,
+      "sha256": "41327b631643bff79360cb1d072dea27f24ecad9920ceb0efa73cc97413f9804",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/10-partial-state.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 84234,
+      "sha256": "be06e27974949c9db838a5d0e89384b8e5c57840721e4d00874782cdaa710239",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/11-error-visible-with-cache.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 84234,
+      "sha256": "be06e27974949c9db838a5d0e89384b8e5c57840721e4d00874782cdaa710239",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/12-phone-320.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 78635,
+      "sha256": "43c6be83bb2e237a5714189fe70895470275a02b6bc64e77f6dc87842207d35c",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/12-phone-430.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 90730,
+      "sha256": "898bb1a7b99d3afb1e377750f91b4c7cdbf4e5aed846da40330bc383589a1b51",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/13-large-text.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 99079,
+      "sha256": "17739111ae162a12a49cdc6eac54236a31ce5322fcd592e3e315571caa39f4f3",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__13-large-text.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/14-loading-with-cache.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 84234,
+      "sha256": "be06e27974949c9db838a5d0e89384b8e5c57840721e4d00874782cdaa710239",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/15-unknown-write-no-resend.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 92595,
+      "sha256": "5cdbd468257b04bd36440429a5de7caf77221b4b2948471b939f39f2c52ccd97",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/16-dark-month-reference.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 75631,
+      "sha256": "c97d0d1e594621a3fa721132da2b7dbd89de3f7abf5e6c7f29b498f395ed0e8c",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/17-dark-event-reference.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 70574,
+      "sha256": "36c7dce495ee5a0fc04fbf1284551ad6f1ccd1ceffae33d36c34476a6bb8b6ae",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/18-light-month-reference.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 74601,
+      "sha256": "1b9b6bb8f167ff9125e7c3e8d950299af39f54a767cac425ba6d4c350d909e34",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/19-non-json-error-keeps-events.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 84234,
+      "sha256": "be06e27974949c9db838a5d0e89384b8e5c57840721e4d00874782cdaa710239",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/20-fortnight-expanded.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 74826,
+      "sha256": "de8b30cd01f21aea7edc7558923a23b0d51cc9fbd8384acb85b3f9cf202ae1ad",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-account-isolation.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 75474,
+      "sha256": "9a6c0d8329afb345401b8e2b75a654ca427794e4f54696174dde1a2a1d4e73d6",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-account-isolation.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-authoritative-delete.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 76998,
+      "sha256": "f1e436b8b08221576906bf69ac40ac2690621785a326fd37f260c3ffaaa54a70",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-authoritative-delete.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-cold-reload.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 78654,
+      "sha256": "eea6ab9c1e599f87012736b10fb57e0595f0acd542ae61154183ca958be6bcd2",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-cold-reload.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-fast-source-first.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 77198,
+      "sha256": "300e0fc136a6668fde2546e65728602f912f03187fe7ea0ed506ac361f12f533",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-fast-source-first.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-foreground-refresh.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 77246,
+      "sha256": "526d57b8d8285309d539323c44ad036ee21e8210650fb943321ac81352f8fca2",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-foreground-refresh.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-immediate-fortnight.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 62555,
+      "sha256": "b9857fa1bed8ebe175c77c197201a5963f5c267f4429baacdadc16592ca052af",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-immediate-fortnight.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/calendar/cache-updated-month.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 77198,
+      "sha256": "300e0fc136a6668fde2546e65728602f912f03187fe7ea0ed506ac361f12f533",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__calendar__cache-updated-month.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/chat/01-compact-phone-chat.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 17185,
+      "sha256": "e96eda71a4fa150fc69c06f19f8a31a698be41d723b70d5974cdd37dd718422e",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__chat__01-compact-phone-chat.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/01-status-pending-keeps-chat.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 33754,
+      "sha256": "03315a1d402b45120f63b1c730335443b34a3c423dc31a3c80a69f7d045266a4",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__01-status-pending-keeps-chat.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/02-phone-composer-visible.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 20852,
+      "sha256": "8b199199bc4f4a09932113a8bd946c1b2225fc1ed8844b94b4c22902fc07f630",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__02-phone-composer-visible.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/03-folded-composer-visible.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 25459,
+      "sha256": "d9b59c591336202856caa5bc8688321b7fae7876a7ea347edd54dd8393d6cae9",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__03-folded-composer-visible.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/04-unfolded-composer-visible.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 56418,
+      "sha256": "9b18871330175a5f903bb94f24f187918c830204dc5589a8017d6d523c2710fa",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__04-unfolded-composer-visible.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/05-draft-editable-before-permission.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 41792,
+      "sha256": "e20a40d7ce47ec80b6a575aef8c8abdad14bff32281c4dcdae933f8814f42de8",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__05-draft-editable-before-permission.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/06-calendar-notes-revealed.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 15852,
+      "sha256": "b1aac20a20be019a56da8e26b4022ba059ddf0a79bb60d991f760f008c29b4d2",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__06-calendar-notes-revealed.png"
+    },
+    {
+      "path": "artifacts/things-source-repair-2026-11-15/interaction/07-background-refresh-keeps-new-write.png",
+      "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
+      "bytes": 26892,
+      "sha256": "476f7ecccab3658077289cd20e8d94645f17a0b72adb17fc4b72e601966fb789",
+      "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__07-background-refresh-keeps-new-write.png"
     },
     {
       "path": "artifacts/todos.png",
