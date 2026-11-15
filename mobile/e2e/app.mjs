@@ -42,7 +42,7 @@ await page.route('https://duckduck-api.test/**',async route=>{
 await page.goto('https://duckduck-api.test/');
 await page.getByRole('button',{name:'화면 먼저 체험하기',exact:true}).click();
 await page.getByRole('tab',{name:'Todo 리스트',exact:true}).waitFor();
-assert.equal(await page.getByRole('tab').count(),5);assert.equal(await page.getByTestId(/^todo-/).filter({visible:true}).count(),2);
+assert.equal(await page.getByTestId('BottomNavigation').getByRole('tab').count(),5);assert.equal(await page.getByTestId(/^todo-/).filter({visible:true}).count(),2);
 // Verify shared layout at phone widths and with enlarged text before screenshots.
 for(const width of [320,390,430]){
  await page.setViewportSize({width,height:844});

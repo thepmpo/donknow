@@ -1,3 +1,4 @@
+import {createBudgetedAiFetch} from './ai-budget.js';
 import {createHash} from 'node:crypto';
 import {fail} from './secrets.js';
 const digest=s=>createHash('sha256').update(s).digest('hex');
@@ -8,8 +9,9 @@ export function agentMemoryStore(db,box){
  return {agentVectors(user){return db.prepare('SELECT * FROM agent_vectors WHERE user_id=?').all(user).map(r=>({ref:r.ref,fingerprint:r.fingerprint,model:r.model,vector:box.open(r.payload)}));},saveAgentVectors(user,rows){for(const r of rows)db.prepare('INSERT INTO agent_vectors VALUES (?,?,?,?,?) ON CONFLICT(user_id,ref) DO UPDATE SET fingerprint=excluded.fingerprint,model=excluded.model,payload=excluded.payload').run(user,r.ref,r.fingerprint,r.model,box.seal(r.vector));},deleteAgentVectors(user,refs=null){if(refs)for(const ref of refs)db.prepare('DELETE FROM agent_vectors WHERE user_id=? AND ref=?').run(user,ref);else db.prepare('DELETE FROM agent_vectors WHERE user_id=?').run(user);}};
 }
 export function createAgentMemory(store,{env=process.env,fetcher=fetch}={}){
+ const budgetFetch=createBudgetedAiFetch(store,{env,fetcher});
  const model=env.OPENAI_EMBEDDING_MODEL||'text-embedding-3-small';
- async function embed(texts,user){const r=await fetcher('https://api.openai.com/v1/embeddings',{method:'POST',headers:{Authorization:'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json','OpenAI-Safety-Identifier':digest(user)},body:JSON.stringify({model,input:texts,dimensions:512}),signal:AbortSignal.timeout(20000)});if(!r.ok){await r.body?.cancel();throw fail(502,'의미 검색을 잠시 사용할 수 없어 전체 대화에서 단어로 찾았어요.');}const p=await r.json();if(p.data?.length!==texts.length||p.data.some(x=>!Array.isArray(x.embedding)||x.embedding.length!==512||x.embedding.some(n=>!Number.isFinite(n))))throw fail(502,'의미 검색 결과를 확인하지 못했어요.');return p.data.sort((a,b)=>a.index-b.index).map(x=>x.embedding);}
+ async function embed(texts,user){const r=await budgetFetch(user,'https://api.openai.com/v1/embeddings',{method:'POST',headers:{Authorization:'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json','OpenAI-Safety-Identifier':digest(user)},body:JSON.stringify({model,input:texts,dimensions:512}),signal:AbortSignal.timeout(20000)});if(!r.ok){await r.body?.cancel();throw fail(502,'의미 검색을 잠시 사용할 수 없어 전체 대화에서 단어로 찾았어요.');}const p=await r.json();if(p.data?.length!==texts.length||p.data.some(x=>!Array.isArray(x.embedding)||x.embedding.length!==512||x.embedding.some(n=>!Number.isFinite(n))))throw fail(502,'의미 검색 결과를 확인하지 못했어요.');return p.data.sort((a,b)=>a.index-b.index).map(x=>x.embedding);}
  return {async search(user,query){
   if(typeof query!=='string'||!query.trim()||query.length>120)throw fail(400,'찾을 내용을120자 이내로 적어주세요.');const revision=store.memorySettings(user).revision;if(!store.memorySettings(user).enabled)return {turns:[],partial:false,mode:'off'};
   const all=store.exportAssistantMemory(user),rows=[...all.memories.map(m=>({...m,ref:'memory:'+m.id,role:'memory'})),...all.turns.filter(t=>t.state!=='failed'&&t.state!=='sending').map(t=>({...t,ref:'conversation:'+t.id})),...store.agentPrivateNotes(user).map(n=>({...n,ref:'note:'+n.id,role:'note'}))].map(r=>({...r,fingerprint:digest(r.text)}));

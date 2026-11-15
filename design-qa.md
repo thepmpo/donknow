@@ -1,3 +1,35 @@
+# Current QA — combined Todo date/source design
+
+final result: passed
+
+## Evidence and comparison
+
+Selected truth is `artifacts/todo-organize-2026-11-16/reference/selected-combined.png`, with the displayed source-view and date-move alternatives in the same reference directory. These are generated synthetic design references. Actual implementation captures are `10-design-date.png`, `11-design-source.png`, and `12-design-date-drag.png` in `artifacts/todo-organize-2026-11-16/`. The source-view reference853×1844 and date-move reference852×1846 were normalized to390 CSS pixels wide, with at most1px height crop to844. Actual Expo/Chromium viewport390×844/deviceScaleFactor1. Full `comparison-source.png`/`comparison-date.png` and focused `comparison-*-detail.png` place reference and actual render together; both full boards and the final focused boards were opened. Date drag intentionally scrolls while holding two tasks; it is not an idle-page header comparison.
+
+## Findings and corrections
+
+- P2 fixed: compact rows hid required dates/provenance. Both views now show date and actual provider plus source-open action when a supported link exists.
+- P2 fixed: source grouping did not follow the selected order. Explicit Slack, Google Tasks, Calendar/Gmail, Reminders and other-provider ordering is deterministic, with manual items retained.
+- P2 fixed: multi-item dragging needed a stable measured list viewport and real write acknowledgement. Auto-scroll uses ScrollView bounds; both selected tasks reach the new date and partial failures retain failed selection without repeating successful writes.
+- P2 fixed: the floating drag card obscured the insertion rule. Position now leaves the destination line visible. The focused final board shows an unobscured blue rule, and the browser asserts both viewport visibility and non-overlap with the preview.
+- Existing regression selectors counted the new view tabs as Todo rows. Updated their IDs and scoped the navigation assertion to BottomNavigation; no task expectation was reduced. Full app regression passes again.
+
+No actionable P0/P1/P2 remains in this agreed structure adaptation. P3: native typography/drag/touch rhythm still needs the installed iPhone build.
+
+## Fidelity surfaces and intentional constraints
+
+Typography uses the existing Korean system font,34pt date,21pt provider heading,readable16–17pt task titles and caption metadata. Source copy/language and sample tasks differ intentionally. Existing Duck spacing and44pt minimum touch areas take precedence over shrinking targets to match raster text. Source list includes dates/provenance, date layout includes event lines; selection actions clear the bottom navigation. Blue action/selection and semantic dark/light backgrounds retain Duck tokens. Actual Ionicons preserve existing product assets rather than fabricate Slack/Apple brand art. No new decorative image is needed. Existing Duck mascot,ordinary5tabs,Duo camera rail/opposite calendar and inline editor remain. Unknown channel names and unsupported Apple deep links are not invented.
+
+## Functional verification
+
+New actual browser suite:19 captures,0page errors,ordinary light/dark,320width,390phone,folded/open Duo geometry,date/source switch,source links,selection distinct from completion,single/multiple drag,date original-sync path,persistent order,free receive-only and exhausted-budget draft. Existing reference suite26 captures passed; ordinary full app and Duo geometry/navigation regressions passed. Server/unit/HTTP:405 total,404pass,0fail,1existing optional skip.103 syntax checks,typecheck,web and iOS JS exports,isolated iOS prebuild/provider/import check pass. The latest preview-position change was additionally recaptured and type/export checked.
+
+These are actual compiled Expo UI with synthetic API/accounts/geometry. They do not prove native UIKit/IME/VoiceOver/EventKit/iCloud/push,physical Duo,real provider writes,successful paid model generation or live billing. Signed iOS archive/TestFlight and backend deployment are recorded separately in `docs/todo-build-status-2026-11-16.md`. The known API credit-balance issue is not accepted as fixed by cost protection.
+
+---
+
+Previous QA retained below:
+
 # Current Things / Pickle reference-flow implementation QA
 
 final result: passed

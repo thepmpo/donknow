@@ -1,4 +1,5 @@
 import { featureStore } from './features-store.js';
+import {fail} from './secrets.js';
 import { openDatabase } from './database.js';
 import { randomUUID, randomBytes, scrypt as scryptCallback, timingSafeEqual, createHash } from 'node:crypto';
 import { promisify } from 'node:util';
@@ -52,6 +53,17 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     },
     logout(token) { if (token) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(digest(token)); },
     list, get,
+    reorder(userId,ids){
+      if(!Array.isArray(ids)||!ids.length||ids.length>2000||ids.some(id=>typeof id!=='string'||id.length>128)||new Set(ids).size!==ids.length)throw fail(400,'옮길 할 일을 다시 선택해주세요.');
+      db.exec('BEGIN IMMEDIATE');try{
+        const current=list(userId),byId=new Map(current.map(t=>[t.id,t]));
+        if(ids.some(id=>!byId.has(id)||byId.get(id).done))throw fail(409,'목록이 바뀌었어요. 다시 확인하고 옮겨주세요.');
+        const ordered=[...ids,...current.filter(t=>!t.done&&!ids.includes(t.id)).map(t=>t.id)];
+        const changed=ordered.flatMap((id,order)=>{const todo=byId.get(id);return todo.order===order?[]:[{...todo,order}];});
+        for(let i=0;i<changed.length;i+=100){const page=changed.slice(i,i+100);db.prepare('INSERT INTO todos(id,user_id,data) VALUES '+page.map(()=>'(?,?,?)').join(',')+' ON CONFLICT(id) DO UPDATE SET data=excluded.data WHERE todos.user_id=excluded.user_id').run(...page.flatMap(todo=>[todo.id,userId,JSON.stringify(todo)]));}
+        db.exec('COMMIT');return list(userId);
+      }catch(error){db.exec('ROLLBACK');throw error;}
+    },
     create(userId, draft, { done = false } = {}) { const now=new Date().toISOString(); const todo = { ...draft, id: randomUUID(), done: done===true, createdAt:now,...(done===true?{completedAt:now}:{}) }; db.prepare('INSERT INTO todos VALUES (?, ?, ?)').run(todo.id, userId, JSON.stringify(todo)); return todo; },
     update(userId, id, patch, { remote = false } = {}) {
       const todo = get(userId, id); if (!todo) return null;

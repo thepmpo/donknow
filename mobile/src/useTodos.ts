@@ -202,6 +202,15 @@ export function useTodos() {
     for(const entry of calendarSnapshots(owner).values())try{const zone=JSON.parse(entry.family)[1];entry.items=entry.items.map(event=>importedCalendarPatch(saved,event,zone,fields));}catch{}
     persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);refreshCalendarSnapshots(owner);
   }
+  async function reorder(ids:string[]):Promise<boolean>{
+    if(!repo.current||busy.current.size||connectingRef.current)return false;
+    const version=generation.current,previous=new Map(todosRef.current.map(t=>[t.id,t.order])),ranks=new Map(ids.map((id,i)=>[id,i]));
+    setTodos(old=>old.map(t=>ranks.has(t.id)?{...t,order:ranks.get(t.id)}:t));
+    const result=await mutate('order',repository=>repository.reorder(ids));
+    if(version!==generation.current)return false;
+    if(!result){setTodos(old=>old.map(t=>previous.has(t.id)?{...t,order:previous.get(t.id)}:t));return false;}
+    const saved=new Map(result.map(t=>[t.id,t.order]));setTodos(old=>old.map(t=>saved.has(t.id)?{...t,order:saved.get(t.id)}:t));return true;
+  }
   async function remove(id: string): Promise<boolean> {
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
     if (removed) { delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current});setTodos(current => current.filter(todo => todo.id !== id)); const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id); setPending(current => { const next = { ...current }; delete next[id]; return next; }); }
@@ -272,6 +281,6 @@ export function useTodos() {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

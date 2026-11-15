@@ -1,0 +1,33 @@
+{
+  "fixture": "actual Expo UI, synthetic API and Duo geometry; no native EventKit/IME/source-write claims",
+  "captures": [
+    "01-date-default",
+    "02-source-default",
+    "03-source-manual-order",
+    "04-date-drag",
+    "05-date-after-drop",
+    "05a-two-tasks-drag",
+    "06-iphone-light",
+    "06-iphone-light-source",
+    "07-duo-folded-dark",
+    "07-duo-folded-dark-source",
+    "08-duo-open-light",
+    "08-duo-open-light-source",
+    "09-small-phone",
+    "09-small-phone-source",
+    "10-design-date",
+    "11-design-source",
+    "12-design-date-drag",
+    "13-free-receive-only",
+    "14-budget-exhausted-draft"
+  ],
+  "errors": [],
+  "checks": [
+    "date/source switch",
+    "source labels and dates",
+    "source-preserving persisted order",
+    "selection distinct from completion",
+    "native drag across dates",
+    "ordinary/folded/open/320 width"
+  ]
+}

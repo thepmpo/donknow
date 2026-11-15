@@ -66,7 +66,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await drain();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, calendarWorkspace:2, calendarDetails:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1, calendarWorkspace:2, calendarDetails:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -83,6 +83,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },
     async private(req, path, url, user, json, send, sessionToken) {
+      if(path==='/api/ai/usage'&&req.method==='GET'){send(200,store.aiBudget(user.id));return true;}
       if(!defaultedUsers.has(user.id)&&initializeAssistantDefaults(store,assistant,user)){defaultedUsers.add(user.id);if(defaultedUsers.size>1000)defaultedUsers.delete(defaultedUsers.values().next().value);}
       if(path==='/api/todos'&&req.method==='GET')for(const t of store.list(user.id))if(t.source&&['device-required','unknown'].includes(t.sourceSync?.state)&&Date.now()-(t.sourceSync.at??0)>60000)try{assistantNotice(store,user.id,{code:t.sourceSync.state==='device-required'?'device-required':'source-unknown',provider:t.source.provider,title:t.title,todoId:t.id});}catch{}
       if(path==='/api/assistant/notices'&&req.method==='POST'){send(200,assistantNotice(store,user.id,await json(req)));return true;}
@@ -106,7 +107,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(briefingItem&&req.method==='POST'){
         if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
         if(limited('briefing-item:'+user.id))throw fail(429,'잠시 뒤 다시 선택해주세요.');
-        const body=await json(req);send(200,store.applyBriefingItem(user.id,briefingItem[1],briefingItem[2],body.action,body.args));return true;
+        const body=await json(req);send(200,store.applyBriefingItem(user.id,briefingItem[1],briefingItem[2],body.action,body.args,false,{allowCreate:assistant.status(user.id).usage?.funded!==false}));return true;
       }
       if(path.startsWith('/api/assistant/memory')&&['POST','PATCH','DELETE'].includes(req.method)&&limited('memory:'+user.id))throw fail(429,'잠시 후 다시 변경해주세요.');
       if(path==='/api/assistant/events/notion/setup'){
@@ -128,7 +129,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(memory&&['PATCH','DELETE'].includes(req.method)){send(200,req.method==='DELETE'?store.forgetMemory(user.id,memory[1]):store.saveMemory(user.id,(await json(req)).text,{id:memory[1]}));return true;}
       if(path==='/api/assistant/conversation'&&req.method==='GET'){send(200,store.conversation(user.id,{before:url.searchParams.get('before')}));return true;}
       const conversationItem=/^\/api\/assistant\/conversation\/([^/]+)\/items\/([a-f0-9]{64})$/.exec(path);
-      if(conversationItem&&req.method==='POST'){if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');if(limited('conversation-item:'+user.id))throw fail(429,'잠시 후 다시 선택해주세요.');const body=await json(req);send(200,store.applyConversationItem(user.id,conversationItem[1],conversationItem[2],body.action,body.args));return true;}
+      if(conversationItem&&req.method==='POST'){if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');if(limited('conversation-item:'+user.id))throw fail(429,'잠시 후 다시 선택해주세요.');const body=await json(req);send(200,store.applyConversationItem(user.id,conversationItem[1],conversationItem[2],body.action,body.args,{allowCreate:assistant.status(user.id).usage?.funded!==false}));return true;}
       if(path==='/api/assistant/messages'&&req.method==='GET'){
         const after=url.searchParams.get('after')||'';send(200,{messages:store.assistantMessages(user.id,after),incremental:!!after});
         if(process.env.NODE_ENV!=='test')void automations.tick(user.id).catch(()=>undefined);return true;

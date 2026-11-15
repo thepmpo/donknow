@@ -1,3 +1,4 @@
+import {aiBudgetStore} from './ai-budget.js';
 import {agentSyncStore} from './agent-sync.js';
 import {agentChannelStore} from './agent-channels.js';
 import {agentEventStore} from './agent-events.js';
@@ -49,6 +50,7 @@ export async function featureStore(db, directory, env = process.env) {
     const result = await scrypt(password, row.salt, 64); return timingSafeEqual(result, Buffer.from(row.password_hash, 'hex'));
   }
   return {
+    ...aiBudgetStore(db),
     ...calendarDetailsStore(db,box),
     ...connectionStore(db,box,transaction),
     ...automationStore(db,box),
@@ -133,7 +135,7 @@ export async function featureStore(db, directory, env = process.env) {
         for(const id of keys){const item=resources.get(id);if(!item)throw fail(400,'자료를 새로고침한 뒤 다시 선택해주세요.');if(item.completed===true)throw fail(400,'완료된 기록은 참고만 할 수 있어요. 미완료 할 일만 가져와주세요.');}
         const created=[],result=ids.map(id=>{
           const old=previous.get(id);if(old)return {todo:old,created:false};
-          const item=resources.get(id),todo={id:randomUUID(),title:item.title.slice(0,120),category:'업무',done:false,dueDate:item.dueDate??null,reminderAt:null,createdAt:new Date().toISOString(),source:{provider,externalId:item.id,...Object.fromEntries(['calendarId','eventId','connectionId','modifiedAt','timeZone'].filter(k=>typeof item[k]==='string').map(k=>[k,item[k]])),...(typeof item.dueTimeZone==='string'?{timeZone:item.dueTimeZone}: {})},...(typeof item.notes==='string'?{notes:item.notes.slice(0,4000)}:{}),...(item.dueTime!==undefined?{dueTime:item.dueTime}:{})};
+          const item=resources.get(id),todo={id:randomUUID(),title:item.title.slice(0,120),category:'업무',done:false,dueDate:item.dueDate??null,reminderAt:null,createdAt:new Date().toISOString(),source:{provider,externalId:item.id,...Object.fromEntries(['url','calendarId','eventId','connectionId','modifiedAt','timeZone'].filter(k=>typeof item[k]==='string').map(k=>[k,item[k]])),...(typeof item.dueTimeZone==='string'?{timeZone:item.dueTimeZone}: {})},...(typeof item.notes==='string'?{notes:item.notes.slice(0,4000)}:{}),...(item.dueTime!==undefined?{dueTime:item.dueTime}:{})};
           created.push({id,todo});previous.set(id,todo);return {todo,created:true};
         });
         for(let i=0;i<created.length;i+=100){const page=created.slice(i,i+100);

@@ -1,3 +1,5 @@
+import {Text,View} from 'react-native';
+import {colors} from './theme';
 import React,{useEffect,useRef,useState} from 'react';
 import {AssistantChecklist} from './AssistantChecklist';
 import {parseTodos} from './domain';
@@ -5,7 +7,7 @@ import type {Todo} from './domain';
 import type {BriefingItem} from './useAutomations';
 import type {TodoStore} from './useTodos';
 import type {AssistantProposal} from './useAssistant';
-export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpenLog,conversation=false}:{store:TodoStore;messageId:string;item:BriefingItem;number:number;conversation?:boolean;onOpenTodos:()=>void;onOpenLog:()=>void}){
+export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpenLog,conversation=false,canTransfer=true}:{canTransfer?:boolean;store:TodoStore;messageId:string;item:BriefingItem;number:number;conversation?:boolean;onOpenTodos:()=>void;onOpenLog:()=>void}){
  const [state,setState]=useState({todoId:item.todoId??undefined,excluded:item.excluded,todo:item.todo??undefined,busy:false,error:''});
  const mounted=useRef(true),working=useRef(false),owner=useRef('');
  const identity=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;owner.current=identity;
@@ -24,5 +26,6 @@ export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpe
   finally{working.current=false;}
  }
  const linked=state.todo??store.todos.find(t=>t.id===state.todoId);
+ if(!canTransfer&&!linked)return <View style={{paddingVertical:8,gap:4}}><Text style={{fontSize:16,lineHeight:24,color:colors.text}}>{item.title}</Text>{item.dueDate&&<Text style={{fontSize:13,color:colors.muted}}>{item.dueDate}</Text>}</View>;
  return <AssistantChecklist proposal={{operation:'todo.create',label:'할 일',args:{title:item.title,notes:item.notes??'',dueDate:item.dueDate??null},sourceRefs:item.sourceRefs??[]}} number={number} busy={false} entry={state} todo={linked} onAction={(proposal,done)=>act(done?'complete':'todo',proposal)} onExclude={excluded=>{void act(excluded?'exclude':'restore');}} onOpenTodos={onOpenTodos} onOpenLog={onOpenLog}/>;
 }

@@ -1,3 +1,4 @@
+import {originalTodoLink} from './server/todo-source-link.js';
 import {sendJson} from './server/http-json.js';
 import {probeAiConnection} from './server/ai-transport.js';
 import { createTaskSync } from './server/task-sync.js';
@@ -117,6 +118,7 @@ const server = http.createServer(async (req, res) => {
       if (path === '/api/auth/session' && req.method === 'GET') return send(200, session);
       if (path === '/api/auth/logout' && req.method === 'POST') { store.logout(token); return send(200, { ok: true }, { 'Set-Cookie': cookie('', 0) }); }
       if (path === '/api/todos' && req.method === 'GET') return send(200, store.list(session.user.id));
+      if(path==='/api/todo-order'&&req.method==='PUT'){if(limited('todo-order:'+session.user.id))return send(429,{error:'잠시 뒤 다시 옮겨주세요.'});return send(200,store.reorder(session.user.id,(await json(req)).ids));}
       if (path === '/api/todos' && req.method === 'POST') {
         const body = await json(req);
         if (!validNotes(body.notes ?? '')) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' });
@@ -124,6 +126,7 @@ const server = http.createServer(async (req, res) => {
         const todo = store.create(session.user.id, { title: body.title.trim(), category: ['일상', '업무', '건강'].includes(body.category) ? body.category : '일상', dueDate: body.dueDate ?? null, reminderAt: body.reminderAt ?? null, notes: body.notes ?? '' });
         return send(201, todo);
       }
+      const sourceLink=/^\/api\/todos\/([^/]+)\/source-link$/.exec(path);if(sourceLink&&req.method==='GET')return send(200,await originalTodoLink(store,integrations,session.user.id,sourceLink[1]));
       if (path.startsWith('/api/todos/')) {
         const id = path.slice('/api/todos/'.length), userId = session.user.id;
         if (!store.get(userId, id)) return send(404, { error: '할 일을 찾을 수 없어요.' });

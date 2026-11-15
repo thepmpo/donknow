@@ -11,6 +11,28 @@ import {createUrgentMonitor} from '../server/urgent-monitor.js';
 const hourly={enabled:true,time:'09:00',timezone:'Asia/Seoul',repeat:'hourly',startHour:9,endHour:18,weekdaysOnly:true,providers:[],aiConsent:true};
 const monday=Date.parse('2026-11-16T00:00:00Z');
 async function setup(){const dir=await mkdtemp(join(tmpdir(),'duck-assistant-briefing-'));let store=await openStore(dir);const account=await store.register('briefing@example.test','fixture-password-123');store.queueAccountMail(account.user.id,'verify');const mail=store.claimMail();store.verifyEmail(account.user.id,/인증번호: (\d{6})/.exec(mail.message.text)[1]);return {dir,user:account.user.id,get store(){return store;},async restart(){store.close();store=await openStore(dir);},async close(){store.close();await rm(dir,{recursive:true,force:true});}};}
+test('unfunded briefing receives linked information without a model call; transfer requires funding and keeps original identity',async()=>{
+ const h=await setup();try{
+  const source={ref:'google:connected:tasks:list:task',provider:'google',kind:'task',title:'원본 요청',text:'본문',dueDate:'2026-11-17',completed:false,locator:{list:'list',id:'task',connectionId:'connected'}};
+  let calls=0;const assistant={status:()=>({usage:{funded:false,remainingKrw:0}}),context:async()=>({sources:[source],warnings:[]}),chat:async()=>{calls++;throw Error('must not call');}};
+  h.store.configureAutomation(h.user,'briefing',hourly,monday-60000);
+  await createAutomations(h.store,assistant,()=>{throw Error('not used');},{now:()=>monday}).tick();
+  const message=h.store.assistantMessages(h.user)[0],item=message.items[0];assert.equal(calls,0);assert.match(message.text,/원본 요청/);assert.match(message.warnings.join(' '),/의미 분석은 하지/);assert.equal(h.store.list(h.user).length,0);
+  assert.throws(()=>h.store.applyBriefingItem(h.user,message.id,item.key,'todo',undefined,false,{allowCreate:false}),e=>e.status===403);assert.equal(h.store.list(h.user).length,0);
+  const result=h.store.applyBriefingItem(h.user,message.id,item.key,'todo',undefined,false,{allowCreate:true});assert.deepEqual(result.todo.source,{provider:'google',externalId:'connected:tasks:list:task',connectionId:'connected'});
+  assert.equal(h.store.applyBriefingItem(h.user,message.id,item.key,'complete',undefined,false,{allowCreate:false}).todo.done,true,'existing Todo remains usable after allowance exhaustion');
+ }finally{await h.close();}
+});
+test('unchanged briefing skips model calls while time changes and removed sources trigger a fresh summary',async()=>{
+ const h=await setup();try{
+  let clock=monday,calls=0,sources=[{ref:'google:connected:calendar:event',provider:'google',kind:'event',title:'회의',text:'',dueDate:'2026-11-16',completed:false,startAt:'2026-11-16T10:00:00+09:00'}];
+  const assistant={status:()=>({usage:{funded:true,remainingKrw:4000}}),context:async()=>({sources,warnings:[]}),chat:async(_u,_b,_c,checked)=>{calls++;assert.deepEqual(checked.sources,sources);return {answer:'확인한 회의',sources,warnings:[],proposals:[]};}};
+  h.store.configureAutomation(h.user,'briefing',hourly,clock-60000);const tick=()=>createAutomations(h.store,assistant,()=>{throw Error('not used');},{now:()=>clock}).tick();
+  await tick();assert.equal(calls,1);clock+=3600000;await tick();assert.equal(calls,1);assert.match(h.store.assistantMessages(h.user).at(-1).text,/새 변화가 없어요/);
+  sources=[{...sources[0],startAt:'2026-11-16T11:30:00+09:00'}];clock+=3600000;await tick();assert.equal(calls,2);
+  sources=[];clock+=3600000;await tick();assert.equal(calls,3,'removal is a change rather than an unchanged empty subset');
+ }finally{await h.close();}
+});
 test('hourly windows honor weekdays, inclusive end hour, DST identity and invalid ranges',()=>{
  assert.equal(new Date(nextAutomationDelivery(hourly,Date.parse('2026-11-13T09:00:00Z'))).toISOString(),'2026-11-16T00:00:00.000Z');
  assert.equal(hourlySlot(hourly,Date.parse('2026-11-14T00:00:00Z')),null);

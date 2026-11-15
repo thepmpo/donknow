@@ -74,6 +74,25 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     ...createProviderWatches({store,env,token,request:providerRequest}),
     ...createAgentSync({store,token,request:providerRequest}),
     ...createIntegrationAgentTools({store,token,request:providerRequest,fetcher}),
+    async originalLink(userId,todo){
+      const source=todo.source;if(!source)return null;
+      const external=source.externalId;
+      if(source.provider==='slack'){
+        const m=/^message:([^:]+):(\d+\.\d+)$/.exec(external);if(!m)return null;
+        const record=await token(userId,'slack');if(!record.features.includes('messages'))throw fail(403,'Slack 메시지 읽기 권한을 확인해주세요.');
+        const value=await providerRequest('https://slack.com/api/chat.getPermalink?'+new URLSearchParams({channel:m[1],message_ts:m[2]}),{headers:{Authorization:'Bearer '+record.accessToken}});return value.permalink??null;
+      }
+      if(source.provider==='google'){
+        const m=/^([^:]+):(tasks|calendar|calendar2|gmail|drive):(.+)$/.exec(external);if(!m)return null;
+        const record=await token(userId,'google',m[1]==='legacy'?undefined:m[1]),headers={Authorization:'Bearer '+record.accessToken};
+        if(m[2]==='tasks'&&record.features.some(f=>['tasks','tasksWrite'].includes(f))){const parts=m[3].split(':');if(parts.length!==2)return null;const item=await providerRequest('https://tasks.googleapis.com/tasks/v1/lists/'+encodeURIComponent(parts[0])+'/tasks/'+encodeURIComponent(parts[1]),{headers});return item.webViewLink??null;}
+        if(['calendar','calendar2'].includes(m[2])&&record.features.some(f=>['calendar','calendarWrite'].includes(f))){const locator=store.importedSourceLocator(userId,todo.id)??source,calendarId=locator.calendarId??(m[2]==='calendar'?'primary':null),eventId=locator.eventId??(m[2]==='calendar'?m[3]:null);if(!calendarId||!eventId)return null;const item=await providerRequest('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(calendarId)+'/events/'+encodeURIComponent(eventId),{headers});return item.htmlLink??null;}
+        if(m[2]==='gmail'&&record.features.includes('gmail'))return 'https://mail.google.com/mail/?'+new URLSearchParams({authuser:record.label??''})+'#all/'+encodeURIComponent(m[3]);
+        if(m[2]==='drive'&&record.features.includes('drive')){const item=await providerRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(m[3])+'?fields=webViewLink',{headers});return item.webViewLink??null;}
+      }
+      if(source.provider==='notion'&&external.startsWith('page:')){const record=await token(userId,'notion');if(!record.features.includes('pages'))return null;const page=await providerRequest('https://api.notion.com/v1/pages/'+encodeURIComponent(external.slice(5)),{headers:{Authorization:'Bearer '+record.accessToken,'Notion-Version':'2022-06-28'}});return page.url??null;}
+      return null;
+    },
     status(userId,snapshot) { return Object.entries(definitions).map(([provider, definition]) => { const config = settings(provider), connection = snapshot?snapshot[provider]?.[0]??null:store.connection(userId, provider); return { provider, name: definition.name, configured: config.configured, connected: !!connection, label: connection?.label ?? null, features: connection?.features ?? [], availableFeatures: definition.features, taskSyncEnabled: !!connection?.taskSyncEnabled, updatedAt: connection?.updatedAt ?? null,...(provider==='google'?{accounts:(snapshot?.google??googleAccounts(store,userId)).map(r=>({connectionId:r.connectionId,label:r.label,features:r.features,taskSyncEnabled:!!r.taskSyncEnabled,updatedAt:r.updatedAt}))}:{}) }; }); },
     start(userId, provider, features, native = false, options={}) {
       const config = settings(provider); if (!config.configured) throw fail(503, '관리자가 이 서비스의 OAuth 앱을 등록하면 연결할 수 있어요.');
@@ -131,14 +150,14 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         const start=month?month+'-01':today;const end=month?new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5)),1)).toISOString().slice(0,10):new Date(Date.parse(today+'T00:00:00Z')+30*86400000).toISOString().slice(0,10);
         const query = new URLSearchParams({ timeMin:start+'T00:00:00+09:00',timeMax:end+'T00:00:00+09:00',timeZone:'Asia/Seoul',singleEvents:'true',orderBy:'startTime',maxResults:'50',...(cursor?{pageToken:cursor}:{}) });
         const value = await providerRequest('https://www.googleapis.com/calendar/v3/calendars/primary/events?' + query, { headers });
-        items = (value.items ?? []).filter(item => item.status !== 'cancelled').map(item => ({ id: 'calendar:' + item.id, title: title(item.summary), dueDate: item.start?.date ?? (item.start?.dateTime ? new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.start.dateTime)) : null), kind: 'event',startAt:item.start?.dateTime??null,endAt:item.end?.dateTime??null,allDay:!!item.start?.date,endDate:item.end?.date??(item.end?.dateTime?new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.end.dateTime)):null) })); nextCursor = value.nextPageToken ?? null;
+        items = (value.items ?? []).filter(item => item.status !== 'cancelled').map(item => ({ id: 'calendar:' + item.id, title: title(item.summary), url:item.htmlLink, dueDate: item.start?.date ?? (item.start?.dateTime ? new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.start.dateTime)) : null), kind: 'event',startAt:item.start?.dateTime??null,endAt:item.end?.dateTime??null,allDay:!!item.start?.date,endDate:item.end?.date??(item.end?.dateTime?new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.end.dateTime)):null) })); nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'tasks') {
         if (channel && (typeof channel !== 'string' || channel.length > 1024)) throw fail(400, '목록을 다시 선택해주세요.');
         const path = channel ? `lists/${encodeURIComponent(channel)}/tasks` : 'users/@me/lists';
         const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus === 'completed' ? 'true' : 'false', showHidden: taskStatus === 'completed' ? 'true' : 'false', showDeleted: 'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
         const value = await providerRequest('https://www.googleapis.com/tasks/v1/' + path + '?' + query, { headers });
-        items = (value.items ?? []).filter(item => !item.deleted && (!channel || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null } : { id: item.id, title: title(item.title), kind: 'tasklist' });
+        items = (value.items ?? []).filter(item => !item.deleted && (!channel || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null } : { id: item.id, title: title(item.title), kind: 'tasklist' });
         nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'drive') {
