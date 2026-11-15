@@ -15,7 +15,7 @@ export type AssistantSource={ref:string;provider:string;kind:string;title:string
 export type AssistantDefinition={operation:string;provider:string;label:string;fields:string[];required:string[]};
 export type AssistantDraft={id:string;operation:string;label:string;args:Record<string,unknown>;targetTitle?:string;accountLabel?:string;recipient?:string;status:string;result?:{message?:string;todo?:Todo};expiresAt:number};
 export type AssistantProposal={operation:string;label:string;args:Record<string,unknown>;sourceRefs:string[]};
-export type AssistantStatus={googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;agent?:{backgroundChat?:boolean;persistentJobs?:boolean;voice?:boolean;persona?:{name:string;appearance:{color:string;eyes:string;glasses:boolean;accessory:string}}};memory?:{enabled:boolean;revision:number;count:number;turnCount:number};actions:AssistantDefinition[];consentScopes?:Record<string,string>};
+export type AssistantStatus={connections?:{provider:string;connected:boolean}[];googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;agent?:{backgroundChat?:boolean;persistentJobs?:boolean;voice?:boolean;persona?:{name:string;appearance:{color:string;eyes:string;glasses:boolean;accessory:string}}};memory?:{enabled:boolean;revision:number;count:number;turnCount:number};actions:AssistantDefinition[];consentScopes?:Record<string,string>};
 export type AssistantTurn={id?:string;createdAt?:number;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[];items?:BriefingItem[];jobs?:AgentJob[];files?:AgentFile[];citations?:{url:string;title:string}[];responsibilities?:{id:string;title:string}[]};
 export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'덕 Todo'};
 export const assistantLabels:Record<string,string>={title:'제목',notes:'메모',dueDate:'예정일',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
@@ -28,6 +28,7 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
  const [status,setStatus]=useState<AssistantStatus|null>(null),[providers,setProviders]=useState<string[]>([]),[consent,setConsentState]=useState(false),[answer,setAnswer]=useState(''),[sources,setSources]=useState<AssistantSource[]>([]),[warnings,setWarnings]=useState<string[]>([]),[proposals,setProposals]=useState<AssistantProposal[]>([]),[drafts,setDrafts]=useState<AssistantDraft[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[turns,setTurns]=useState<AssistantTurn[]>([]);
  const [busyKind,setBusyKind]=useState<'chat'|'action'|'context'|null>(null),[grants,setGrants]=useState<string[]>([]),[consentReady,setConsentReady]=useState(false);
  const [errorKind,setErrorKind]=useState<'load'|'chat'|'action'|'context'|null>(null);
+ const defaultsPending=useRef(false);const [defaultVersion,defaultChanged]=useState(0);
  const turnSequence=useRef(0),pendingRequest=useRef<{signature:string;id:string}|null>(null);
  const checklist=useRef<Record<string,ChecklistEntry>>({}),storeRef=useRef(store);storeRef.current=store;
  const [checklistRevision,checklistChanged]=useState(0);
@@ -36,12 +37,13 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
  useEffect(()=>{
   alive.current=true;const version=++generation.current;draftRevision.current++;readSequence.current++;errorRevision.current++;
   pendingRequest.current=null;setStatus(null);setProviders([]);setConsentState(false);setGrants([]);setConsentReady(false);setBusyKind(null);checklist.current={};
-  AsyncStorage.getItem('duckduck.ai-consent.v1.'+owner).then(raw=>{if(current(version)){const saved=consentPreferences(raw?JSON.parse(raw):null);setProviders(saved.providers);setGrants(saved.grants);setConsentReady(true);}}).catch(()=>{if(current(version))setConsentReady(true);});setAnswer('');setSources([]);setWarnings([]);setProposals([]);setDrafts([]);setTurns([]);setError('');setErrorKind(null);working.current=false;setBusy(false);setBusyKind(null);
+  AsyncStorage.getItem('duckduck.ai-consent.v1.'+owner).then(raw=>{if(current(version)){defaultsPending.current=raw===null;defaultChanged(v=>v+1);const saved=consentPreferences(raw?JSON.parse(raw):null);setProviders(saved.providers);setGrants(saved.grants);setConsentReady(true);}}).catch(()=>{if(current(version))setConsentReady(true);});setAnswer('');setSources([]);setWarnings([]);setProposals([]);setDrafts([]);setTurns([]);setError('');setErrorKind(null);working.current=false;setBusy(false);setBusyKind(null);
   if(store.user&&store.connection?.mode==='cloud')void load(version);
   if(store.user&&store.connection?.mode==='cloud')void recover(version);
   return()=>{alive.current=false;generation.current++;};
  },[owner]);
  useEffect(()=>onAssistantUpdated(change=>{if(change.owner!==owner)return;if(change.clear){setTurns([]);setAnswer('');setProposals([]);checklist.current={};}void load();}),[owner]);
+ useEffect(()=>{if(!defaultsPending.current||!consentReady||!status?.consentScopes)return;const next=(status.connections??[]).filter(c=>c.connected).map(c=>c.provider).filter(p=>['google','slack','notion','naver'].includes(p)),key=consentScope(next,status.consentScopes);if(!durableConsentScope(key))return;defaultsPending.current=false;setProviders(next);setGrants([key]);setConsentState(true);saveConsent(next,[key]);},[status,consentReady,defaultVersion]);
  const scope=consentScope(providers,status?.consentScopes);
  useEffect(()=>{setConsentState(!!status&&consentReady&&grants.includes(scope));},[scope,consentReady,!!status,grants]);
  function saveConsent(nextProviders:string[],nextGrants:string[]){void AsyncStorage.setItem('duckduck.ai-consent.v1.'+owner,JSON.stringify({providers:nextProviders,grants:nextGrants.filter(durableConsentScope)})).catch(()=>{});}

@@ -32,7 +32,8 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
  const source=sources.find(c=>c.id===draft.calendarId),canWrite=event?event.canWrite===true:source?.canWrite===true;
  const localPatch=metadataAvailable?calendarDuckPatch(draft,event):{},hasLocal=Object.keys(localPatch).length>0;
  const connectionId=event?.connectionId??source?.connectionId;
- async function work(fn:()=>Promise<void>){if(busy)return;setBusy(true);onBusy(true);setError('');try{await fn();}catch(e){setError(e instanceof Error?e.message:'일정을 저장하지 못했어요.');}finally{setBusy(false);onBusy(false);}}
+ function notify(unknown:boolean){void store.featureRequest('/api/assistant/notices','POST',{code:unknown?'calendar-unknown':'calendar-failed',provider:'google',title:draft.title}).catch(()=>{});}
+ async function work(fn:()=>Promise<void>){if(busy)return;setBusy(true);onBusy(true);setError('');try{await fn();}catch(e){setError(e instanceof Error?e.message:'일정을 저장하지 못했어요.');if(locked||pending||e instanceof Error&&/권한|연결|버전/.test(e.message))notify(locked);}finally{setBusy(false);onBusy(false);}}
  async function prepare(){await work(async()=>{
   const args=calendarWriteArgs(draft,event,!metadataAvailable);
   if(!args&&!hasLocal)throw Error('변경한 내용이 없어요.');
@@ -57,7 +58,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   onActionState({pending,locked:true});
   const result=await store.featureRequest('/api/assistant/actions/'+pending.id+'/confirm','POST',{confirmation:true}) as CalendarPending;
   if(result.status==='succeeded'){const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true);return;}
-  setError('실행 결과를 확인해주세요. 자동으로 다시 저장하지 않아요.');
+  setError('실행 결과를 확인해주세요. 자동으로 다시 저장하지 않아요.');notify(true);
  });}
  async function check(){await work(async()=>{
   if(!pending)return;
@@ -65,7 +66,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   const result=await store.featureRequest('/api/assistant/actions/'+pending.id) as CalendarPending;
   if(result.status==='succeeded'){const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true);}
   else if(['failed','cancelled','expired'].includes(result.status)||(result.status==='pending'&&result.expiresAt!==undefined&&result.expiresAt<Date.now())){if(result.status==='pending')await store.featureRequest('/api/assistant/actions/'+pending.id,'DELETE');onActionState(null);setError('이 저장은 실행되지 않았어요. 내용을 확인하고 새 미리보기를 만들어주세요.');}
-  else setError(result.status==='unknown'?'저장 결과가 불확실해요. Google 원본을 확인해주세요. 다시 저장하지 마세요.':'현재 상태: '+result.status+'. 덕의 실행 기록에서도 확인할 수 있어요.');
+  else {if(result.status==='unknown')notify(true);setError(result.status==='unknown'?'저장 결과가 불확실해요. Google 원본을 확인해주세요. 다시 저장하지 마세요.':'현재 상태: '+result.status+'. 덕의 실행 기록에서도 확인할 수 있어요.');}
  });}
  async function cancelPreview(){await work(async()=>{if(pending&&pending.id!=='duck-local')await store.featureRequest('/api/assistant/actions/'+pending.id,'DELETE');onActionState(null);});}
  // A local new draft stays editable while its calendar permission is being read.

@@ -134,9 +134,10 @@ const server = http.createServer(async (req, res) => {
           if ('dueDate' in body) { if (!validDate(body.dueDate)) return send(400, { error: '날짜를 확인해주세요.' }); patch.dueDate = body.dueDate; }
           if ('reminderAt' in body) { if (!validReminder(body.reminderAt)) return send(400, { error: '알림 시간을 확인해주세요.' }); patch.reminderAt = body.reminderAt; }
           if ('notes' in body) { if (!validNotes(body.notes)) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' }); patch.notes = body.notes; }
+          if('dueTime' in body){if(body.dueTime!==null&&(typeof body.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(body.dueTime)))return send(400,{error:'예정 시간을 확인해주세요.'});patch.dueTime=body.dueTime;}
           if ('done' in body) { if (typeof body.done !== 'boolean') return send(400, { error: '완료 상태가 올바르지 않아요.' }); patch.done = body.done; }
           if (!Object.keys(patch).length) return send(400, { error: '변경할 내용이 없어요.' });
-          const saved=store.update(userId,id,patch);taskSync.wake();return send(200,saved);
+          const saved=await features.updateTodo(userId,id,patch);taskSync.wake();return send(200,saved);
         }
       }
       return send(405, { error: '지원하지 않는 요청이에요.' });

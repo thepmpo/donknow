@@ -35,6 +35,7 @@ try{
   if(p==='/api/integrations')return done([{provider:'google',configured:true,connected:true,features:['calendar']}]);
   throw Error('Unexpected request '+method+' '+p);
  });
+ await page.addInitScript(origin=>localStorage.setItem('duckduck.ai-consent.v1.'+origin+':owner',JSON.stringify({providers:[],grants:[]})),origin);
  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.getByRole('textbox',{name:'할 일 제목',exact:true}).waitFor();assert.ok(todoReads>=2,'one non-JSON Todo read is recovered before rendering an error');
  await page.evaluate(()=>window.keyboardDevice.mode('app'));await page.getByRole('tab',{name:'duckduck',exact:true}).click();const composer=page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true});await composer.waitFor();await composer.fill('노션 내용을 확인해줘');assert.equal(await button('덕에게 보내기').isDisabled(),true);assert.equal(chatCalls,0);assert.equal(await page.getByText('할 일로 정리하기',{exact:true}).count(),0);await capture('01-status-pending-keeps-chat');
  statusPending=false;statusWaiters.splice(0).forEach(r=>r());const consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true});await consent.waitFor();assert.equal(await composer.inputValue(),'노션 내용을 확인해줘');await consent.click();await button('덕에게 보내기').click();await page.getByText('문서를 함께 확인해볼게요.',{exact:true}).waitFor();assert.equal(chatCalls,1);assert.equal(await composer.inputValue(),'');

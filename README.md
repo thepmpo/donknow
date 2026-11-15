@@ -1,5 +1,7 @@
 # duckduck
 
+최신: [Things형 Todo·원본 내용/시간 저장·초기 전체 ON](docs/things-source-repair-2026-11-15.md) · [실제 AI 잔액 오류](docs/ai-connection-investigation-2026-11-15.md). 마지막 native41(1fbedb1)은 Apple 업로드 성공이고 이번 수정은41 이후입니다. 정상 AI 생성·실기기 EventKit 검수는 별도이며 새 수동 앱 빌드가 필요합니다.
+
 [최신: 캘린더 저장본·AI·미리 알림 안정화](docs/connection-stability-2026-11-15.md) · 실서명/Apple 업로드 성공40 이후 수정이며 새 앱 빌드가 필요합니다.
 
 [Dots 공개 기능 전체 대응](docs/dots-parity-2026-11-15.md) · [검사·화면](docs/dots-full-qa-2026-11-15.md) · [채널·컴퓨터·모델 활성화](docs/dots-full-setup-2026-11-15.md)

@@ -1,5 +1,7 @@
 # duckduck iPhone 앱
 
+최신: [Things형 Todo·원본 내용/시간 저장·초기 전체 ON](../docs/things-source-repair-2026-11-15.md) · [실제 AI 잔액 오류](../docs/ai-connection-investigation-2026-11-15.md). 마지막 native41(1fbedb1)은 Apple 업로드 성공이고 이번 수정은41 이후입니다. 정상 AI 생성·실기기 EventKit 검수는 별도이며 새 수동 앱 빌드가 필요합니다.
+
 현재 UI·동작은 [전체 기준](../docs/continuation-guide.md)과 [내비게이션 구현 계약](../docs/liquid-glass-navigation.md)을 먼저 읽습니다. 일반 iPhone 하단 capsule·Duo 카메라 열·상태별 Glass/취소·OS 대체 정책이 최신 기준입니다.
 
 React Native + Expo SDK 58 + TypeScript로 만든 iPhone 앱 기반입니다. 기존 HTML을 WebView에 넣지 않고 React Native 화면으로 구현했습니다. 현재 다섯 탭, Todo 편집·예정일 선택, 좌우 스와이프, 완료 후 5초 동안 되돌리기, log, 캘린더, 덕에서 Todo로 추가하는 흐름을 제공합니다.

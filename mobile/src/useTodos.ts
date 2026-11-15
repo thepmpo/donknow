@@ -1,4 +1,7 @@
 import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
+import {updateAppleSource} from './apple-source-edit';
+import {importedCalendarPatch} from './calendar-source-edit';
+import {calendarSnapshots,invalidateCalendarSnapshotReads,persistCalendarSnapshots,broadcastCalendarSnapshots,refreshCalendarSnapshots} from './calendar-snapshot-cache';
 import { useReminders } from './useReminders';
 import * as auth from './auth';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -170,11 +173,34 @@ export function useTodos() {
   }
   async function update(id: string, patch: Patch): Promise<boolean> {
     if (typeof patch.done === 'boolean' && Object.keys(patch).length === 1) return updateCompletion(id, patch.done);
-    const saved = await mutate(id, repository => repository.update(id, patch));
-    if (!saved) return false;
-    setTodos(current => current.map(todo => todo.id === id ? saved : todo));
-    if (patch.done !== undefined) completionDeadline(id,null);
+    const version=generation.current,before=todosRef.current.find(t=>t.id===id),fields={...before?.sourceSync?.patch,...Object.fromEntries(Object.entries(patch).filter(([k,v])=>JSON.stringify(v??null)!==JSON.stringify(before?.[k as keyof Todo]??null)))};
+    const saved=await mutate(id,async repository=>{
+      const local=await repository.update(id,patch);
+      return local.source?.provider==='apple-reminders'&&local.sourceSync?.state==='device-required'?updateAppleSource(local,featureRequest,()=>generation.current===version):local;
+    });
+    if(!saved||version!==generation.current)return false;
+    reflectOriginal(saved,fields);
+    if(saved.sourceSync&&saved.sourceSync.state!=='succeeded')setNotice('덕에 저장했지만 원본 반영은 확인이 필요해요. 항목을 열어 다시 시도하거나 원본 앱에서 확인해주세요.');
+    setTodos(current=>current.map(todo=>todo.id===id?saved:todo));
+    if(patch.done!==undefined)completionDeadline(id,null);
     return true;
+  }
+  async function retrySource(id:string){
+    const version=generation.current,fields=todosRef.current.find(t=>t.id===id)?.sourceSync?.patch??{};
+    const saved=await mutate(id,async()=>{
+      const local=await featureRequest('/api/todos/'+id+'/source-retry','POST',{}) as Todo;
+      return local.source?.provider==='apple-reminders'?updateAppleSource(local,featureRequest,()=>version===generation.current):local;
+    });
+    if(!saved||version!==generation.current)return false;
+    reflectOriginal(saved,fields);
+    setTodos(old=>old.map(t=>t.id===id?saved:t));
+    return saved.sourceSync?.state==='succeeded';
+  }
+  function reflectOriginal(saved:Todo,fields:Record<string,unknown>){
+    const owner=calendarOwner.current;if(!owner||saved.source?.provider!=='google'||!saved.source.externalId.includes(':calendar')||saved.sourceSync?.state!=='succeeded')return;
+    invalidateCalendarSnapshotReads(owner);
+    for(const entry of calendarSnapshots(owner).values())try{const zone=JSON.parse(entry.family)[1];entry.items=entry.items.map(event=>importedCalendarPatch(saved,event,zone,fields));}catch{}
+    persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);refreshCalendarSnapshots(owner);
   }
   async function remove(id: string): Promise<boolean> {
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
@@ -246,6 +272,6 @@ export function useTodos() {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

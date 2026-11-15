@@ -16,6 +16,7 @@ try{
    // Exercise the real AbortController/error mapping without a one-minute test.
    const original=setTimeout;window.setTimeout=(handler,delay,...args)=>original(handler,delay===60000?600:delay,...args);
   },{origin});
+  let responseGate,holdResponse=false;
   await page.route(origin+'/**',async route=>{
    const request=route.request(),path=new URL(request.url()).pathname;
    if(!path.startsWith('/api/')){
@@ -30,12 +31,14 @@ try{
    }
    if(path==='/api/assistant/actions'){historyReads++;return historyFailure?route.fulfill({status:503,json:{error:'최근 실행 기록을 불러오지 못했어요.'}}):route.fulfill({json:{actions:Array.from({length:recordCount},(_,index)=>({id:'old-'+index,operation:'todo.create',label:'이전 기록 '+index,status:'succeeded',args:{title:'예전 업무',notes:'오래된 기록 '.repeat(30)},expiresAt:Date.now()-1000}))}});}
    if(path==='/api/assistant/chat'){
+    if(holdResponse)await new Promise(resolve=>{responseGate=resolve;});
     chatCalls.push(request.postDataJSON());const responseMode=mode;
     await new Promise(resolve=>setTimeout(resolve,responseMode==='client-timeout'?900:200));
     if(responseMode==='client-timeout'){try{await route.fulfill({json:{answer:'늦은 답변',sources:[],warnings:[],proposals:[]}});}catch{}return;}
     if(responseMode==='success')return route.fulfill({json:{answer:'요청한 내용을 확인했어요.',sources:[],warnings:[],proposals:[]}});
     return route.fulfill({status:responseMode==='verification'?403:responseMode==='unauthorized'?401:502,json:{error:messages[responseMode]||'다시 로그인해주세요.'}});
    }
+   if(path==='/api/calendar/events')return route.fulfill({json:{items:[],connectionState:'unconnected'}});
    if(path==='/api/capabilities')return route.fulfill({json:{assistant:true}});
    throw Error('Unexpected API request '+request.method()+' '+path);
   });
@@ -48,10 +51,10 @@ try{
   for(const records of [5,0]){
    recordCount=records;await page.setViewportSize({width:records?390:320,height:844});
    for(const failure of ['verification','provider','timeout','client-timeout']){
-    mode=failure;await open();await composer.fill('오늘 해야 할 일을 간단히 정리해줘');await consent.tap();await composer.focus();
+    mode=failure;holdResponse=true;responseGate=null;await open();await composer.fill('오늘 해야 할 일을 간단히 정리해줘');await consent.tap();await composer.focus();
     const callsBefore=chatCalls.length;await send.tap();
     await page.getByTestId('duck-chat-pending').waitFor();const pendingBox=await page.getByTestId('duck-chat-pending').boundingBox(),conversationBox=await page.getByTestId('duck-chat-scroll').boundingBox();assert.ok(pendingBox.y>=conversationBox.y-1&&pendingBox.y+pendingBox.height<=conversationBox.y+conversationBox.height+1,'waiting is visible in the conversation');
-    assert.equal(await send.isDisabled(),true,'busy tap cannot submit again');
+    assert.equal(await send.isDisabled(),true,'busy tap cannot submit again');while(!responseGate)await page.waitForTimeout(10);holdResponse=false;responseGate();
     const alert=page.getByRole('alert');await alert.waitFor();await visibleNearComposer(alert,`${failure}, ${records} previous records, ${reducedMotion}`);
     assert.equal(await composer.inputValue(),'오늘 해야 할 일을 간단히 정리해줘','failed input is preserved');assert.equal(await consent.count(),0,'remembered consent does not reappear after a failed request');assert.equal(chatCalls.length,callsBefore+1,'no automatic resend');
     if(failure==='verification')assert.match(await alert.textContent(),/ME → 내 계정 → 이메일 인증/);

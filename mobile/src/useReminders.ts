@@ -12,7 +12,7 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
   const generation = useRef(0), queue = useRef<Promise<unknown>>(Promise.resolve());
   const currentOwner = useRef(owner); currentOwner.current = owner;
   const calendarCache=useRef<{owner:string|null;items:CalendarReminder[]}>({owner:null,items:[]});
-  useEffect(() => { let active = true; setReady(false); setEnabled(false);setPermission('unknown');setError('');setBusy(false); AsyncStorage.getItem('duckduck.reminders.' + (owner ?? 'none')).then(value => { if (active) { setEnabled(value === 'true'); setReady(true); } }).catch(() => { if (active) setReady(true); }); return () => { active = false; }; }, [owner]);
+  useEffect(() => { let active = true; setReady(false); setEnabled(false);setPermission('unknown');setError('');setBusy(false); AsyncStorage.getItem('duckduck.reminders.' + (owner ?? 'none')).then(value => { if (active) { setEnabled(value !== 'false'); setReady(true); } }).catch(() => { if (active) setReady(true); }); return () => { active = false; }; }, [owner]);
   useEffect(() => { const listener = AppState.addEventListener('change', state => { if (state === 'active') setVersion(value => value + 1); }); return () => listener.remove(); }, []);
   useEffect(() => {
     const run = ++generation.current;
@@ -21,7 +21,7 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
       if (run !== generation.current) return;
       const notifications = await import('expo-notifications');
       notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: false, shouldSetBadge: false }) });
-      const permission = await notifications.getPermissionsAsync();
+      let permission = await notifications.getPermissionsAsync();if(enabled&&owner&&owner!=='demo'&&!permission.granted&&permission.canAskAgain&&permission.status!=='denied')permission=await notifications.requestPermissionsAsync();
       const allowed = permission.granted || permission.ios?.status === notifications.IosAuthorizationStatus.PROVISIONAL;
       if (run !== generation.current) return;
       setPermission(allowed?'allowed':permission.status==='denied'?'denied':'unknown');

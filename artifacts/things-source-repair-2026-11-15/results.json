@@ -1,0 +1,25 @@
+{
+  "fixture": "actual Expo app, synthetic API and Duo geometry; no native EventKit/keyboard claims",
+  "captures": [
+    "01-iphone-light",
+    "02-iphone-dark",
+    "03-duo-folded-dark",
+    "04-duo-open-light",
+    "05-small-phone",
+    "06-original-source-edit",
+    "08-duo-upcoming-clean",
+    "07-chat-defaults-phone-hidden",
+    "09-month-line-starts-on-first"
+  ],
+  "errors": [],
+  "checks": [
+    "date grouping",
+    "appointments",
+    "inline add date",
+    "original source retry",
+    "3-second completion/log/restore",
+    "default connected read sources",
+    "phone hidden / attachments retained",
+    "iPhone / folded / open / 320px"
+  ]
+}

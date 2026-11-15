@@ -1,5 +1,11 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-15 — iPhone41 서명·Apple 업로드 실제 성공
+
+[실행43716180572](https://github.com/thepmpo/donknow/actions/runs/43716180572), 소스1fbedb144a48bd6212131c1f9d97496e55381df6, validate132818104061와 build-and-submit132818320551 모두success다. 로그의40→41 증가12:56:09 UTC·buildNumber41·서명 성공13:05:05 UTC·App Store Connect 업로드 성공13:05:39 UTC를 확인했다. 제출390d431f-c6df-4d43-9aee-54f4fc674cf0이다. GitHub 화면의 실행31은 TestFlight 번호가 아니다.
+
+Apple 처리/실제 설치는 별도이며 [Things·원본 저장 수정](things-source-repair-2026-11-15.md)은41 이후다. 지금 변경은 새 main 수동 빌드/설치가 필요하다. 이 UI 요청에서 새 native workflow를 시작하지 않았고 기존 무료 Mac/서명/Bundle ID/수동 정책을 유지한다.
+
 ## 2026-11-15 — iPhone37 실패 수정·Swift import와 SDK58 호환 검사
 
 [수정·검증 계약](native-build-fix-2026-11-15.md). 사용자 실행43696660983·4461282는validate성공/native실패·Apple제출skipped다. 실제 오류는DuckShortcuts.swift4의 `ambiguous implicit access level for import of DuckduckDuo; internal elsewhere`다. 단축어 import를명시internal로맞췄고 같은 SDK58의 Doctor 버전 경고를 정리했다. 실제 Expo prebuild/로컬 provider/import 비교와 assistant bridge 자동 연결 검사를 validate에 추가했다.95문법·354중353통과/실패0/선택1제외·타입·web/iOS JS·일반앱/Duo회귀·Python99통과/선택1제외를 확인했다. 온라인 Doctor의 두 네트워크 실패는 전체 성공으로 표시하지 않는다. Linux검사는 실제Swift archive/서명/Apple성공이 아니다.

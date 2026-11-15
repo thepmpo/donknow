@@ -1,10 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {listenAssistantEntry} from './src/assistant-entry';
 import type {AssistantChatRequest} from './src/screens/AssistantChat';
 import {DuoWorkspace} from './src/DuoWorkspace';
 import {configureKeyboardAccessory} from './src/keyboard-done';
 import {KeyboardDismiss,KeyboardUXProvider,useKeyboardUX} from './src/KeyboardUX';
 import {useDuoScene} from './src/DuoChrome';
-import {listenForDuckNotification} from './src/push';
+import {connectPush,pushPreferenceKey,listenForDuckNotification} from './src/push';
 import { DuoSafeSurface, useDuoTrailingNavigation } from './src/DuoLayout';
 import {AppNavigation} from './src/AppNavigation';
 import type {AppTab} from './src/AppNavigation';
@@ -29,6 +30,8 @@ export function Shell({keyboardOccluded,keyboardTop}:{keyboardOccluded?:boolean;
 function ShellContent() {
   const keyboard=useKeyboardUX();
   const store = useTodos();
+  const pushAttempt=useRef<string|null>(null);
+  useEffect(()=>{if(Platform.OS!=='ios'||!store.user||store.reminders.permission!=='allowed')return;const owner=pushPreferenceKey(store);if(pushAttempt.current===owner)return;pushAttempt.current=owner;let active=true;void AsyncStorage.getItem(owner).then(value=>{if(value===null&&active&&store.isCurrentSession())return connectPush(store);}).catch(()=>{if(active&&store.isCurrentSession())store.setNotice('도착 알림을 연결하지 못했어요. ME → 브리핑·날씨 예약에서 다시 연결할 수 있어요.');});return()=>{active=false;};},[store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo',store.reminders.permission]);
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
   const duo=useDuoTrailingNavigation();

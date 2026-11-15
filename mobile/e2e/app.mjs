@@ -168,7 +168,8 @@ await page.setViewportSize({width:320,height:844});assert.equal(await page.evalu
 await page.evaluate(async()=>{const todos=await(await fetch('/api/todos')).json();const todo=todos.find(t=>t.title==='비서가 확인 후 추가한 일');const r=await fetch('/api/todos/'+todo.id,{method:'DELETE',headers:{'Content-Type':'application/json','X-Duckduck-Client':'web'}});if(!r.ok)throw Error('Fixture cleanup failed');});await page.reload();await page.getByRole('button',{name:'실제 클라우드 API 저장 검증 수정',exact:true}).waitFor();await page.getByRole('tab',{name:'ME',exact:true}).click();
 // Today briefing and manual paste entries are intentionally hidden pending the user's next planning request.
 
-// Fixture AI: consent is required; model suggestions never execute by themselves.
+// Explicit prior opt-out is preserved even with new first-run defaults; suggestions never execute by themselves.
+await page.evaluate(async()=>{const session=await(await fetch('/api/auth/session')).json();localStorage.setItem('duckduck.ai-consent.v1.'+location.origin+':'+session.user.id,JSON.stringify({providers:[],grants:[]}));});
 const assistantStatus=await page.evaluate(async()=>await(await fetch('/api/assistant/status')).json());
 const assistantStatusFixture=route=>route.fulfill({json:{...assistantStatus,enabled:true,message:'테스트 응답 · AI 제안 흐름'}});
 let aiCalls=0;const assistantChatFixture=route=>{const b=route.request().postDataJSON();assert.equal(b.consent,true);assert.ok(b.providers.includes('google'));aiCalls++;return route.fulfill({json:{answer:'테스트 메일에 회의 자료 요청이 있어요. Todo로 정리해볼까요?',warnings:['테스트 공급자 응답이에요.'],sources:[{ref:'google:fixture-mail',provider:'google',kind:'mail',title:'테스트: 회의 자료 요청',text:'자료를 확인하고 답장해주세요.',locator:{id:'abc123'}}],proposals:[{operation:'todo.create',label:'Todo 추가',args:{title:'테스트: 회의 자료 보내기',notes:'메일 요청 확인',dueDate:null},sourceRefs:['google:fixture-mail']}]}});};

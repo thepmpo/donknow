@@ -4,7 +4,7 @@ import { parseTodos, sampleTodos, validateDraft } from './domain';
 import type { Connection, Draft, Todo } from './domain';
 export const CONNECTION_KEY = 'duckduck.mobile.connection.v1';
 const DEMO_KEY = 'duckduck.mobile.demo.todos.v1';
-export type Patch = Partial<Pick<Todo, 'title' | 'done' | 'dueDate' | 'reminderAt' | 'notes'>>;
+export type Patch = Partial<Pick<Todo, 'title' | 'done' | 'dueDate' | 'dueTime' | 'reminderAt' | 'notes'>>;
 export interface Repository {
   list(): Promise<Todo[]>;
   create(draft: Draft): Promise<Todo>;

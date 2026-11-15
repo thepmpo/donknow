@@ -1,0 +1,10 @@
+{
+  "capCalls": 3,
+  "eventCalls": 28,
+  "errors": [],
+  "holdsReleased": 0,
+  "cache": "session memory, account/server/timezone scoped, 12 periods",
+  "foregroundRefreshSeconds": 30,
+  "slowPollDeduplicated": true,
+  "nativeDeviceVerified": false
+}

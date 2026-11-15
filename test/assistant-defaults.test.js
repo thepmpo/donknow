@@ -1,0 +1,10 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {openStore} from '../server/store.js';import {initializeAssistantDefaults} from '../server/assistant-defaults.js';
+test('first verified settings initialize actual weekday hourly briefing/all connected sources/all alerts, and preserve explicit OFF',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'assistant-defaults-')),store=await openStore(dir);try{const {user}=await store.register('defaults@example.test','fixture-password-123'),scopes={google:'scope',notion:'scope2'},assistant={status:()=>({consentScopes:scopes,connections:[{provider:'google',connected:true},{provider:'notion',connected:true},{provider:'slack',connected:false}]})};
+ assert.equal(initializeAssistantDefaults(store,assistant,user),false);assert.equal(store.automationSettings(user.id)[0].revision,0);
+ initializeAssistantDefaults(store,assistant,{...user,emailVerified:true});let briefing=store.automationSettings(user.id).find(s=>s.kind==='briefing');assert.equal(briefing.enabled,true);assert.equal(briefing.repeat,'hourly');assert.equal(briefing.startHour,9);assert.equal(briefing.endHour,18);assert.equal(briefing.weekdaysOnly,true);assert.equal(briefing.urgentAlerts,true);assert.deepEqual(briefing.providers,['google','notion']);assert.equal(briefing.aiConsent,true);assert.equal(store.agentProfile(user.id).quietStart,store.agentProfile(user.id).quietEnd);
+ store.configureAutomation(user.id,'briefing',{...Object.fromEntries(Object.entries(briefing).filter(([k])=>['enabled','time','timezone','city','providers','aiConsent','repeat','startHour','endHour','weekdaysOnly','urgentAlerts'].includes(k))),enabled:false},Date.now(),scopes);
+ initializeAssistantDefaults(store,assistant,{...user,emailVerified:true});briefing=store.automationSettings(user.id).find(s=>s.kind==='briefing');assert.equal(briefing.enabled,false);assert.equal(store.agentProfile(user.id).voice,false);
+ }finally{store.close();await rm(dir,{recursive:true,force:true});}
+});

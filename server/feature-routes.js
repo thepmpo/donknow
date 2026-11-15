@@ -1,4 +1,7 @@
 import {readComputerBody} from './agent-computer-routes.js';
+import {assistantNotice} from './assistant-notices.js';
+import {createSourceEdits} from './source-edits.js';
+import {initializeAssistantDefaults} from './assistant-defaults.js';
 import {createAgentChannels} from './agent-channels.js';
 import {createAgentEvents} from './agent-events.js';
 import {createAgentVoice} from './agent-voice.js';
@@ -18,7 +21,10 @@ import { fail } from './secrets.js';
 const validEmail = value => typeof value === 'string' && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
 export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress) {
-  const assistant=createAssistant(store,integrations);
+  let sourceEdits;
+  const assistant=createAssistant(store,integrations,process.env,fetch,{updateTodo:(...args)=>sourceEdits.save(...args)});
+  sourceEdits=createSourceEdits({store,assistant,integrations});
+  const defaultedUsers=new Set();
   const memory=createAgentMemory(store),computer=createAgentComputer(store);
   const agent=createAgentEngine({store,assistant,integrations,memory,computer});
   const channels=createAgentChannels({store,assistant,engine:agent});agent.attachNotifications(()=>{setImmediate(()=>void channels.tick().then(()=>pushSender.tick()).catch(()=>undefined));});
@@ -34,6 +40,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   const drain=async()=>{store.expireAgentCalls();await agentEvents.poll();await agentEvents.dispatch();await channels.tick();await agent.tick();const result=await events.tick();await automations.tick();await integrations.renewAssistantWatches();await pushSender.tick();return result;};
   const scheduledWorker=process.env.NODE_ENV==='test'?null:setInterval(()=>{void drain().catch(()=>undefined);},60000);scheduledWorker?.unref();
   return {
+    updateTodo:(user,id,patch)=>sourceEdits.save(user,id,patch),
     close(){channels.close();agent.close();if(scheduledWorker)clearInterval(scheduledWorker);},
     async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
@@ -76,6 +83,12 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },
     async private(req, path, url, user, json, send, sessionToken) {
+      if(!defaultedUsers.has(user.id)&&initializeAssistantDefaults(store,assistant,user)){defaultedUsers.add(user.id);if(defaultedUsers.size>1000)defaultedUsers.delete(defaultedUsers.values().next().value);}
+      if(path==='/api/todos'&&req.method==='GET')for(const t of store.list(user.id))if(t.source&&['device-required','unknown'].includes(t.sourceSync?.state)&&Date.now()-(t.sourceSync.at??0)>60000)try{assistantNotice(store,user.id,{code:t.sourceSync.state==='device-required'?'device-required':'source-unknown',provider:t.source.provider,title:t.title,todoId:t.id});}catch{}
+      if(path==='/api/assistant/notices'&&req.method==='POST'){send(200,assistantNotice(store,user.id,await json(req)));return true;}
+      const sourceResult=/^\/api\/todos\/([a-f0-9-]{36})\/source-result$/.exec(path),sourceRetry=/^\/api\/todos\/([a-f0-9-]{36})\/source-retry$/.exec(path);
+      if(sourceResult&&req.method==='POST'){send(200,sourceEdits.deviceResult(user.id,sourceResult[1],await json(req)));return true;}
+      if(sourceRetry&&req.method==='POST'){send(200,await sourceEdits.save(user.id,sourceRetry[1],{},{retry:true}));return true;}
       if(await agentRoutes(req,path,url,user,json,send))return true;
       if(path==='/api/notifications/device'){
         if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
@@ -137,11 +150,12 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       const detail=/^\/api\/integrations\/(google|notion)\/detail$/.exec(path);if(detail&&req.method==='GET'){if(limited('detail:'+user.id))throw fail(429,'잠시 후 다시 조회해주세요.');const id=url.searchParams.get('id');if(typeof id!=='string'||id.length>1200)throw fail(400,'자료를 확인해주세요.');send(200,await integrations.readSource(user.id,detail[1],id));return true;}
 
       if (path === '/api/integrations/apple-reminders/import' && req.method === 'POST') {
-        const body = await json(req);
+        const body = await readComputerBody(req,256*1024);
         if (!body || !Array.isArray(body.items) || !body.items.length || body.items.length > 20) throw fail(400, '최대 20개를 선택해주세요.');
         const items = body.items.map(item => {
           if (!item || item.completed !== false || typeof item.id !== 'string' || !item.id || item.id.length > 200 || typeof item.title !== 'string' || !item.title.trim() || item.title.length > 120 || (item.dueDate != null && (typeof item.dueDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(item.dueDate) || !Number.isFinite(Date.parse(item.dueDate)) || new Date(item.dueDate).toISOString().slice(0,10) !== item.dueDate))) throw fail(400, '할 일과 날짜를 확인해주세요.');
-          return { id: item.id, title: item.title.trim(), dueDate: item.dueDate ?? null, kind: 'task', completed: false };
+          if(item.notes!==undefined&&(typeof item.notes!=='string'||item.notes.length>4000)||item.dueTime!=null&&(!item.dueDate||typeof item.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(item.dueTime))||item.modifiedAt!==undefined&&(typeof item.modifiedAt!=='string'||!Number.isFinite(Date.parse(item.modifiedAt))))throw fail(400,'원본 메모와 예정 시간을 확인해주세요.');
+          return { id: item.id, title: item.title.trim(), dueDate: item.dueDate ?? null,notes:item.notes??'',dueTime:item.dueTime??null,...(item.modifiedAt?{modifiedAt:item.modifiedAt}:{}), kind: 'task', completed: false };
         });
         store.cacheResources(user.id, 'apple-reminders', items);
         send(200, { results: store.importResources(user.id, 'apple-reminders', [...new Set(items.map(item => item.id))]) }); return true;

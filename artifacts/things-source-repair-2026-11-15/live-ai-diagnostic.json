@@ -1,0 +1,22 @@
+{
+  "release": "72cd426563bf4100ca6fa3748223e2372126b44d",
+  "readProbe": {
+    "at": "2026-11-15T13:27:55Z",
+    "status": 403
+  },
+  "temporaryInferenceProbe": {
+    "at": "2026-11-15T13:27:59Z",
+    "status": 429,
+    "code": "credit_balance_exhausted",
+    "privateInput": false,
+    "store": false,
+    "removedInFinalCode": true
+  },
+  "native": {
+    "run": 43716180572,
+    "buildNumber": 41,
+    "source": "1fbedb144a48bd6212131c1f9d97496e55381df6",
+    "signedAt": "2026-11-15T13:05:05Z",
+    "uploadedToAppleAt": "2026-11-15T13:05:39Z"
+  }
+}

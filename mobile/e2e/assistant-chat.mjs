@@ -47,10 +47,12 @@ try{
   if(path==='/api/todos'&&method==='GET')return route.fulfill({json:todos});
   if(path==='/api/todos'&&method==='POST'){const todo={...body,id:'manual-1',done:false,createdAt:new Date().toISOString()};todos.push(todo);return route.fulfill({json:todo});}
   if(path==='/api/capabilities')return route.fulfill({json:{todoNotes:true,assistantChecklist:1,assistant:enabled,externalActions:true}});
+  if(path==='/api/calendar/events')return route.fulfill({json:{items:[],connectionState:'unconnected'}});
   if(path==='/api/integrations')return route.fulfill({json:[]});
   if(path==='/api/operations/backup')return route.fulfill({json:{enabled:false,offsite:false,lastLocalSuccess:null,failed:false}});
   throw Error('Unexpected API request '+method+' '+path);
  });
+ await page.addInitScript(origin=>localStorage.setItem('duckduck.ai-consent.v1.'+origin+':first-user',JSON.stringify({providers:[],grants:[]})),origin);
  await page.goto(origin);await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();await page.getByRole('tab',{name:'duckduck',exact:true}).click();await page.getByTestId('duck-composer').waitFor();
  assert.equal(chatCalls.length,0,'opening Duck never starts AI');
  const composerBox=await page.getByTestId('duck-composer').boundingBox();assert.ok(composerBox.height<=54,'empty composer takes one compact row '+JSON.stringify(composerBox));for(const name of ['덕에게 보내기']){const box=await page.getByRole('button',{name,exact:true}).boundingBox();assert.ok(box.width>=44&&box.height>=44);}assert.equal(await page.getByRole('button',{name:'AI에 보낼 자료 선택',exact:true}).count(),0,'source picker stays in the optional tools');if(capture){await page.screenshot({path:resolve(capture,'01-compact-phone-chat.png')});await writeFile(resolve(capture,'composer.json'),JSON.stringify(composerBox,null,2));}
