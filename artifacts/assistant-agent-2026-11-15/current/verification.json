@@ -1,0 +1,286 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "01-ordinary-memory-opt-in.png",
+    "02-memory-note.png",
+    "03-restored-chat-completed.png",
+    "04-folded-restored-chat.png",
+    "05-open-dark-memory.png"
+  ],
+  "calls": [
+    {
+      "p": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "p": "/api/todos",
+      "method": "GET"
+    },
+    {
+      "p": "/api/capabilities",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/calendar/events",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/integrations",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "POST"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "POST"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory/11111111-1111-1111-1111-111111111111",
+      "method": "PATCH"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation/saved-answer/items/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "POST"
+    },
+    {
+      "p": "/api/todos",
+      "method": "GET"
+    },
+    {
+      "p": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "p": "/api/todos",
+      "method": "GET"
+    },
+    {
+      "p": "/api/capabilities",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/calendar/events",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/capabilities",
+      "method": "GET"
+    },
+    {
+      "p": "/api/calendar/events",
+      "method": "GET"
+    },
+    {
+      "p": "/api/calendar/calendars",
+      "method": "GET"
+    },
+    {
+      "p": "/api/integrations",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory/11111111-1111-1111-1111-111111111111",
+      "method": "DELETE"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "DELETE"
+    },
+    {
+      "p": "/api/assistant/memory/settings",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/memory",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/status",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/actions",
+      "method": "GET"
+    },
+    {
+      "p": "/api/assistant/conversation",
+      "method": "GET"
+    }
+  ],
+  "ownerMemoryOptIn": true,
+  "editForget": true,
+  "conversationChecklistRestored": true,
+  "stableTodoId": "stable-todo",
+  "fullClearPreservesTodo": true,
+  "errors": []
+}

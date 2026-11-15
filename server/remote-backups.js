@@ -1,3 +1,4 @@
+import {suspendRestoredAssistant} from './assistant-restore.js';
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from 'node:crypto';
 import { gzipSync, gunzipSync } from 'node:zlib';
 import { writeFile, readFile, stat, rm } from 'node:fs/promises';
@@ -48,6 +49,7 @@ export async function restoreRemoteBackup({file,env=process.env,remoteFactory}){
   if(db.prepare('SELECT key_hash FROM crypto_metadata WHERE id=1').get()?.key_hash!==data.fingerprint)throw new Error('Restored key fingerprint is invalid');
   // Recovery restores data, not old login capabilities or delayed external side effects.
   const names=new Set(data.tables.map(table=>table.name));
+  suspendRestoredAssistant(db);
   for(const name of ['sessions','oauth_states','account_actions','task_sync','push_devices','push_outbox'])if(names.has(name))db.exec('DELETE FROM '+identifier(name));
   if(names.has('assistant_actions'))db.exec("UPDATE assistant_actions SET status='restored-cancelled' WHERE status IN ('pending','running')");
   if(names.has('automation_schedules'))db.exec('UPDATE automation_schedules SET enabled=0,next_at=0,revision=revision+1');

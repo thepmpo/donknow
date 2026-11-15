@@ -50,6 +50,8 @@ const server = http.createServer(async (req, res) => {
   const send = (status,data,headers={}) => sendJson(res,status,data,headers);
   try {
     const url = new URL(req.url, 'http://localhost'), path = url.pathname;
+    // Only fixed, cryptographically authenticated provider receivers bypass app CSRF headers.
+    if (await features.webhook(req,path,send)) return;
     if (await features.callback(req, res, path, url)) return;
     const servicePages = { '/privacy': 'privacy.html', '/privacy/': 'privacy.html', '/support': 'support.html', '/support/': 'support.html' };
     if (Object.hasOwn(servicePages, path)) {

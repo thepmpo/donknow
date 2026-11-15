@@ -20,9 +20,10 @@ export function briefingStore(db,box){
    for(const m of decorated)for(const item of m.items??[])if(!items.has(item.key))items.set(item.key,item);
    return [...items.values()].filter(item=>!item.excluded&&!item.todo?.done).slice(0,40);
   },
-  applyBriefingItem(user,messageId,key,action,args){
+  applyConversationItem(user,messageId,key,action,args){return this.applyBriefingItem(user,messageId,key,action,args,true);},
+  applyBriefingItem(user,messageId,key,action,args,conversation=false){
    if(!['complete','todo','exclude','restore'].includes(action)||typeof key!=='string'||!/^[a-f0-9]{64}$/.test(key))throw fail(400,'체크리스트 동작을 확인해주세요.');
-   const row=db.prepare('SELECT payload FROM assistant_messages WHERE id=? AND user_id=?').get(messageId,user);
+   const row=db.prepare('SELECT payload FROM '+(conversation?'assistant_conversations':'assistant_messages')+' WHERE id=? AND user_id=?').get(messageId,user);
    if(!row)throw fail(404,'내 브리핑을 찾을 수 없어요.');
    const item=box.open(row.payload).items?.find(i=>i.key===key);if(!item)throw fail(404,'이 브리핑의 항목이 아니에요.');
    let linked=state(user,key)?.todoId??item.todoId??null;

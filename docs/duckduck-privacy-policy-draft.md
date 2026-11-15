@@ -56,3 +56,9 @@ iPhone 미리 알림·알림 권한은 iPhone 설정에서 변경할 수 있다.
 시행일과 최종 공개 검토는 [출시 메타데이터](app-store-metadata.json)에 각각 `null`, `false`로 유지한다. 수탁사 실제 계약·국가/지역·보관 조건, 법령상 보존 의무·국외 이전 고지, 정책 변경 고지 절차를 확인하고 정식 정책을 확정해야 한다. 준비한 주소는 [개인정보 처리 안내](https://duckduck-test.onrender.com/privacy)이며 Render 배포 후 공개 응답을 별도로 확인한다.
 
 검증 근거: `server/store.js`, `server/features-store.js`, `server/action-store.js`, `server/feature-routes.js`, `server/assistant.js`, `server/mail.js`, `server/comments-store.js`, `.github/workflows/remote-backup.yml`, `mobile/src/auth.ts`, `mobile/src/screens/ProfileScreen.tsx`.
+
+## 2026-11-15 — 선택형 대화·기억과 변경 수신
+
+ME에서 대화와 기억을 명시적으로 켜면 이후의 대화·답변·제안·검증된 사용자 선호/지속 요청을 계정별 암호화 저장한다. 기본은 꺼짐이다. 기억의 근거는 실제 자기 사용자 문장이며 문서의 명령을 그대로 사용자 기억으로 승인하지 않는다. 다른 기기/재시작 뒤 복원·다음 대화/브리핑 참고·수정/잊기/전체 삭제/개인 내보내기를 지원한다. 별도 붙여넣은 원문 전체는 자동 보관하지 않되 답변의 인용과 제안은 남을 수 있다. 전체 삭제는 Todo/log·외부 실행 감사 기록과 구분한다. 백업의 기존 보관 기간은 그대로다.
+
+중요 변화에 동의하고 공급자 수신을 등록한 계정의 이벤트만 서명/소유권을 검증해 확인한다. 큐 내용은 암호화하며 처리/취소/최종 실패 원문은 삭제한다. 외부 전달/수정은 별도 권한과 확인이 필요하다. 실제 수신·push는 서비스/기기 설정과 네트워크에 따라 지연될 수 있다.

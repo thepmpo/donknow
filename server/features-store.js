@@ -1,5 +1,7 @@
 import {briefingStore} from './briefing-store.js';
 import {urgentStore} from './urgent-store.js';
+import {assistantMemoryStore} from './assistant-memory-store.js';
+import {assistantRealtimeStore} from './assistant-realtime-store.js';
 import {calendarDetailsStore} from './calendar-details-store.js';
 import {connectionStore} from './google-accounts.js';
 import {pushStore} from './push.js';
@@ -44,6 +46,8 @@ export async function featureStore(db, directory, env = process.env) {
     ...automationStore(db,box),
     ...briefingStore(db,box),
     ...urgentStore(db,box),
+    ...assistantMemoryStore(db,box),
+    ...assistantRealtimeStore(db,box),
     ...pushStore(db,box),
     ...taskSyncStore(db),
     ...actionStore(db,box),

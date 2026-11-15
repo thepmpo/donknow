@@ -1,3 +1,4 @@
+import {createProviderWatches} from './provider-watches.js';
 import {readNotionDocument} from './notion-document.js';
 import {googleAccounts,googleConnection} from './google-accounts.js';
 import {createCalendarWorkspace} from './calendar-workspace.js';
@@ -68,6 +69,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     return locks.get(key);
   }
   return {
+    ...createProviderWatches({store,env,token,request:providerRequest}),
     status(userId) { return Object.entries(definitions).map(([provider, definition]) => { const config = settings(provider), connection = store.connection(userId, provider); return { provider, name: definition.name, configured: config.configured, connected: !!connection, label: connection?.label ?? null, features: connection?.features ?? [], availableFeatures: definition.features, taskSyncEnabled: !!connection?.taskSyncEnabled, updatedAt: connection?.updatedAt ?? null,...(provider==='google'?{accounts:googleAccounts(store,userId).map(r=>({connectionId:r.connectionId,label:r.label,features:r.features,taskSyncEnabled:!!r.taskSyncEnabled,updatedAt:r.updatedAt}))}:{}) }; }); },
     start(userId, provider, features, native = false, options={}) {
       const config = settings(provider); if (!config.configured) throw fail(503, '관리자가 이 서비스의 OAuth 앱을 등록하면 연결할 수 있어요.');
@@ -83,7 +85,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const state = store.createOAuthState(userId, provider, { verifier, features: [...new Set(selected)], native,...(provider==='google'?{mode:options.mode,expectedConnectionId:options.connectionId}: {}) });
       const url = new URL(config.auth); url.searchParams.set('client_id', config.clientId); url.searchParams.set('redirect_uri', config.callback); url.searchParams.set('response_type', 'code'); url.searchParams.set('state', state);
       if (provider === 'google') { url.searchParams.set('scope', ['openid','email',...selected.map(feature => googleScopes[feature])].join(' ')); url.searchParams.set('access_type', 'offline'); url.searchParams.set('prompt', 'consent select_account'); url.searchParams.set('code_challenge', createHash('sha256').update(verifier).digest('base64url')); url.searchParams.set('code_challenge_method', 'S256'); }
-      if (provider === 'slack') url.searchParams.set('scope', 'channels:read,channels:history,groups:read,groups:history'+(selected.includes('messagesWrite')?',chat:write':''));
+      if (provider === 'slack') url.searchParams.set('user_scope', 'channels:read,channels:history,groups:read,groups:history,im:read,im:history,mpim:read,mpim:history'+(selected.includes('messagesWrite')?',chat:write':''));
       if (provider === 'notion') url.searchParams.set('owner', 'user');
       return { url: url.toString() };
     },
@@ -92,7 +94,8 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (!state || !store.account(state.userId)) throw fail(400, '연결 요청이 만료됐어요. 앱에서 다시 시작해주세요.');
       if (query.get('error') || !query.get('code')) throw fail(400, '서비스 연결이 취소됐어요.');
       const config = settings(provider);
-      const value = await exchange(provider, { code: query.get('code'), redirect_uri: config.callback, ...(provider === 'slack' ? {} : { grant_type: 'authorization_code' }), ...(provider === 'google' ? { code_verifier: state.verifier } : {}) });
+      let value = await exchange(provider, { code: query.get('code'), redirect_uri: config.callback, ...(provider === 'slack' ? {} : { grant_type: 'authorization_code' }), ...(provider === 'google' ? { code_verifier: state.verifier } : {}) });
+      if(provider==='slack'&&value.authed_user?.access_token)value={...value,access_token:value.authed_user.access_token,refresh_token:value.authed_user.refresh_token,expires_in:value.authed_user.expires_in,scope:value.authed_user.scope,slackUserId:value.authed_user.id,tokenType:'user'};
       if (typeof value.access_token !== 'string' || !value.access_token) throw fail(502, '외부 서비스 인증 응답을 확인해주세요.');
       let previous = store.connection(state.userId, provider);
       let accountId, label;
@@ -102,11 +105,12 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(provider==='google'){if(state.expectedConnectionId){const expected=googleConnection(store,state.userId,state.expectedConnectionId);if(expected?.accountId!==accountId)throw fail(409,'선택한 계정으로 다시 승인해주세요. 다른 계정은 계정 추가에서 연결할 수 있어요.');}if(state.mode)previous=googleAccounts(store,state.userId).find(r=>r.accountId===accountId)??null;}
       const features = provider === 'google' && typeof value.scope === 'string' ? state.features.filter(feature => {const scopes=value.scope.split(' ');return scopes.includes(googleScopes[feature])||(feature==='tasks'&&scopes.includes(googleScopes.tasksWrite))||(feature==='gmail'&&scopes.includes(googleScopes.gmailModify))||(feature==='calendar'&&scopes.includes(googleScopes.calendarWrite))||(feature==='drive'&&scopes.includes(googleScopes.driveContent));}) : provider==='google'?state.features.filter(f=>readFeatures.includes(f)):state.features;
       if(provider==='slack'&&(typeof value.scope!=='string'||!value.scope.split(',').includes('chat:write'))){const i=features.indexOf('messagesWrite');if(i>=0)features.splice(i,1);}
+      if(provider==='slack'&&value.tokenType==='user'){const scopes=new Set((value.scope??'').split(','));for(const feature of [...features])if(feature==='channels'&&!scopes.has('channels:read')||feature==='messages'&&!scopes.has('channels:history'))features.splice(features.indexOf(feature),1);}
       if (!features.length) throw fail(403, '선택한 정보에 대한 읽기 권한이 승인되지 않았어요.');
-      const connectionId=accountId && previous?.accountId===accountId ? previous.connectionId : randomUUID();
+      const connectionId=accountId && previous?.accountId===accountId && (provider!=='slack'||previous.slackUserId===(value.slackUserId??value.authed_user?.id??null)) ? previous.connectionId : randomUUID();
       if(!state.mode||previous)store.clearResourceCache(state.userId,provider,state.mode?previous?.connectionId:undefined);
       const save=provider==='google'&&state.mode&&store.saveGoogleAccount?(payload,label)=>store.saveGoogleAccount(state.userId,payload,label):(payload,label)=>store.saveConnection(state.userId,provider,payload,label);
-      save({ accessToken: value.access_token, refreshToken: value.refresh_token ?? (accountId && previous?.accountId===accountId ? previous.refreshToken : null) ?? null, expiresAt: expiresAt(value.expires_in), features, taskSyncEnabled: !!(features.includes('tasksWrite') && previous?.accountId===accountId && previous?.taskSyncEnabled), accountId:accountId??null,connectionId }, label);
+      save({ accessToken: value.access_token, refreshToken: value.refresh_token ?? (accountId && previous?.accountId===accountId ? previous.refreshToken : null) ?? null, expiresAt: expiresAt(value.expires_in), features, taskSyncEnabled: !!(features.includes('tasksWrite') && previous?.accountId===accountId && previous?.taskSyncEnabled), accountId:accountId??null,connectionId,...(provider==='slack'?{slackUserId:value.slackUserId??value.authed_user?.id??null,tokenType:value.tokenType??'bot',botUserId:value.bot_user_id??null}:{}) }, label);
       return { native: state.native };
     },
     async resources(userId, provider, feature, channel, cursor, taskStatus = 'incomplete', month, connectionId) {
@@ -141,11 +145,11 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         for (let index = 0; index < messages.length; index += 4) { const batch = await Promise.all(messages.slice(index, index + 4).map(async item => { if (!/^[a-f0-9]+$/i.test(item.id)) throw fail(502, '메일 식별자를 읽을 수 없어요.'); const detail = await providerRequest(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${item.id}?format=metadata&metadataHeaders=Subject`, { headers }); return { id: 'gmail:' + item.id, title: title(detail.payload?.headers?.find(header => header.name.toLowerCase() === 'subject')?.value, '제목 없는 메일'), dueDate: null, kind: 'mail' }; })); items.push(...batch); }
       }
       if (provider === 'slack' && feature === 'channels') {
-        const value = await providerRequest('https://slack.com/api/conversations.list?' + new URLSearchParams({ types:'public_channel,private_channel',exclude_archived:'true',limit:'50',...(cursor?{cursor}:{}) }), { headers }, true);
-        items = (value.channels ?? []).map(item => ({ id: item.id, title: title(item.name), kind: 'channel' })); nextCursor = value.response_metadata?.next_cursor || null;
+        const value = await providerRequest('https://slack.com/api/conversations.list?' + new URLSearchParams({ types:record.tokenType==='user'?'public_channel,private_channel,im,mpim':'public_channel,private_channel',exclude_archived:'true',limit:'50',...(cursor?{cursor}:{}) }), { headers }, true);
+        items = (value.channels ?? []).map(item => ({ id: item.id, title: title(item.name,item.is_im?'개인 메시지':'대화'), kind: 'channel' })); nextCursor = value.response_metadata?.next_cursor || null;
       }
       if (provider === 'slack' && feature === 'messages') {
-        if (typeof channel !== 'string' || !/^[CG][A-Z0-9]{8,30}$/.test(channel)) throw fail(400, 'Slack 채널을 선택해주세요.');
+        if (typeof channel !== 'string' || !/^[CGD][A-Z0-9]{8,30}$/.test(channel)) throw fail(400, 'Slack 채널을 선택해주세요.');
         const value = await providerRequest('https://slack.com/api/conversations.history?' + new URLSearchParams({ channel, limit: '50', ...(cursor ? { cursor } : {}) }), { headers }, true);
         items = (value.messages ?? []).filter(item => typeof item.text === 'string' && item.text.trim()).map(item => ({ id: `message:${channel}:${item.ts}`, title: title(item.text), text:item.text.slice(0,8000), dueDate: null, kind: 'message' })); nextCursor = value.response_metadata?.next_cursor || null;
       }
@@ -177,6 +181,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(store.connection(userId,provider,record.connectionId)?.connectionId!==record.connectionId)throw fail(409,'연결이 바뀌었어요.');
       return {items,partial:!!(value.has_more||value.nextPageToken),canReadBody:provider==='notion'||record.features.includes('driveContent')};
     },
+    async readChangedNotionPage(userId,connectionId,id){const record=await token(userId,'notion');if(record.connectionId!==connectionId||!record.features.includes('pages'))throw fail(409,'문서 연결이 바뀌었어요.');const page=await providerRequest('https://api.notion.com/v1/pages/'+encodeURIComponent(id),{headers:{Authorization:'Bearer '+record.accessToken,'Notion-Version':'2025-09-03'}});if(page.archived||page.in_trash)throw fail(404,'삭제한 문서예요.');const result=await this.readSource(userId,'notion',connectionId+':page:'+id);return {...result,title:title(Object.values(page.properties??{}).find(p=>p.type==='title')?.title?.map(t=>t.plain_text??t.text?.content??'').join(''),'Notion 문서')};},
     async readSource(userId,provider,id) {
       const selected=provider==='google'?googleAccounts(store,userId).find(r=>id.startsWith((r.connectionId??'legacy')+':')):null;const record=await token(userId,provider,selected?.connectionId);const prefix=(record.connectionId??'legacy')+':';if(!id.startsWith(prefix))throw fail(409,'연결한 계정이 바뀌었어요.');const source=id.slice(prefix.length);const headers={Authorization:'Bearer '+record.accessToken};let result;
       if(provider==='google'&&source.startsWith('gmail:')&&record.features.includes('gmail')){const v=await providerRequest('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encodeURIComponent(source.slice(6))+'?format=full',{headers});const recipients=(v.payload?.headers??[]).filter(h=>['to','cc'].includes(h.name.toLowerCase())).map(h=>h.value).join(', ').slice(0,1000);result={text:mailText(v),recipients,title:v.payload?.headers?.find(h=>h.name.toLowerCase()==='subject')?.value??'메일',id:source.slice(6)};}
@@ -234,6 +239,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(provider==='google'&&!connectionId){store.invalidateOAuthStates?.(userId,provider);const results=[];for(const r of googleAccounts(store,userId))results.push(await this.disconnect(userId,provider,r.connectionId));return {revoked:results.every(r=>r.revoked)};}
       const record = provider==='google'?googleConnection(store,userId,connectionId):store.connection(userId, provider); if (!record) return { revoked: true };
       if(provider==='google')store.invalidateOAuthStates?.(userId,provider,record.connectionId);
+      store.cancelAssistantWatches?.(userId,record.connectionId);
       const config = settings(provider); let revoked = false;
       try {
         if (provider === 'google') { const response = await fetcher('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ token: record.refreshToken ?? record.accessToken }), signal: AbortSignal.timeout(5000) }); revoked = response.ok; }

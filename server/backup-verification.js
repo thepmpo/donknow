@@ -32,6 +32,9 @@ export async function verifyRemoteBackup({ file, env = process.env }) {
     if(names.has('automation_schedules')&&db.prepare('SELECT 1 FROM automation_schedules WHERE enabled=1 LIMIT 1').get())throw new Error('Restored database contains enabled schedules');
     if(names.has('automation_deliveries')&&db.prepare("SELECT 1 FROM automation_deliveries WHERE status='running' LIMIT 1").get())throw new Error('Restored database contains active deliveries');
     if(names.has('assistant_actions')&&db.prepare("SELECT 1 FROM assistant_actions WHERE status IN ('pending','running') LIMIT 1").get())throw new Error('Restored database contains actionable assistant drafts');
+    if(names.has('assistant_event_queue')&&count('assistant_event_queue'))throw new Error('Restored database contains pending assistant events');
+    if(names.has('assistant_watches')&&db.prepare("SELECT 1 FROM assistant_watches WHERE status IN ('pending','ready') LIMIT 1").get())throw new Error('Restored database contains active provider watches');
+    if(names.has('assistant_conversation_runs')&&db.prepare("SELECT 1 FROM assistant_conversation_runs WHERE status='running' LIMIT 1").get())throw new Error('Restored database contains a running conversation');
     const box = await secretBox('', configuredTokenKey(target).toString('base64'), '');
     for (const row of db.prepare('SELECT payload FROM integrations').all()) if (box.open(row.payload).taskSyncEnabled) throw new Error('Restored external synchronization must be disabled');
     for (const row of db.prepare('SELECT id,data FROM todos').all()) {

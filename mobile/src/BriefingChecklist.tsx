@@ -5,7 +5,7 @@ import type {Todo} from './domain';
 import type {BriefingItem} from './useAutomations';
 import type {TodoStore} from './useTodos';
 import type {AssistantProposal} from './useAssistant';
-export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpenLog}:{store:TodoStore;messageId:string;item:BriefingItem;number:number;onOpenTodos:()=>void;onOpenLog:()=>void}){
+export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpenLog,conversation=false}:{store:TodoStore;messageId:string;item:BriefingItem;number:number;conversation?:boolean;onOpenTodos:()=>void;onOpenLog:()=>void}){
  const [state,setState]=useState({todoId:item.todoId??undefined,excluded:item.excluded,todo:item.todo??undefined,busy:false,error:''});
  const mounted=useRef(true),working=useRef(false),owner=useRef('');
  const identity=`${store.connection?.mode==='cloud'?store.connection.baseUrl:'demo'}:${store.user?.id??''}`;owner.current=identity;
@@ -15,7 +15,7 @@ export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpe
  async function act(action:'complete'|'todo'|'exclude'|'restore',proposal?:AssistantProposal){
   if(working.current)return;working.current=true;const captured=identity;setState(old=>({...old,busy:true,error:''}));
   try{
-   const result=await store.featureRequest(`/api/assistant/messages/${encodeURIComponent(messageId)}/items/${item.key}`,'POST',{action,...(proposal?{args:proposal.args}:{})}) as {todoId:string|null;excluded:boolean;todo:Todo|null};
+   const result=await store.featureRequest(`/api/assistant/${conversation?'conversation':'messages'}/${encodeURIComponent(messageId)}/items/${item.key}`,'POST',{action,...(proposal?{args:proposal.args}:{})}) as {todoId:string|null;excluded:boolean;todo:Todo|null};
    const todo=result.todo?parseTodos([result.todo])[0]:undefined;
    if(!mounted.current||owner.current!==captured)return;
    setState({todoId:result.todoId??undefined,excluded:result.excluded,todo,busy:false,error:''});
