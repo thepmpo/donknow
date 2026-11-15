@@ -4,13 +4,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {MotionPressable as Pressable} from './motion';
 import {colors,typography} from './theme';
 import {dateKey} from './domain';
+import {ScrollRevealRegion} from './useFocusedField';
 type Mode='date'|'time';
 export function DateTimePickerPanel({label,value,mode,onChange,onDone,onCancel,disabled=false}:{label:string;value:string;mode:Mode;onChange:(value:string)=>void;onDone:(value:string)=>void;onCancel:()=>void;disabled?:boolean}){
  const dark=useColorScheme()==='dark',nativeValue=mode==='date'?new Date(value+'T12:00:00'):new Date(2000,0,1,Number(value.slice(0,2)),Number(value.slice(3)));
- return <View style={s.picker} testID={'date-time-picker-'+label}>
-  <View style={s.toolbar}><Text numberOfLines={1} style={[s.label,{flex:1}]}>{label} 선택</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 완료'} disabled={disabled} onPress={()=>onDone(value)} style={s.control}><Text style={[s.link,{fontWeight:'600'}]}>완료</Text></Pressable></View>
+ return <ScrollRevealRegion testID={'date-time-picker-'+label}><View style={s.picker}>
+  <View style={s.toolbar}><Text numberOfLines={1} style={[s.label,{flex:1}]}>{label.endsWith('선택')?label:label+' 선택'}</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 완료'} disabled={disabled} onPress={()=>onDone(value)} style={s.control}><Text style={[s.link,{fontWeight:'600'}]}>완료</Text></Pressable></View>
   {Platform.OS!=='web'&&<DateTimePicker accessibilityLabel={label+' 조절'} value={nativeValue} mode={mode} display={Platform.OS==='ios'?'spinner':'default'} locale="ko-KR" themeVariant={dark?'dark':'light'} textColor={dark?'#f5f5f7':'#191f28'} onChange={(event,date)=>{if(event.type==='dismissed'){onCancel();return;}if(!date)return;const next=mode==='date'?dateKey(date):`${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;onChange(next);if(Platform.OS!=='ios')onDone(next);}} style={{alignSelf:'stretch',height:Platform.OS==='ios'?216:undefined}}/>}
- </View>;
+ </View></ScrollRevealRegion>;
 }
 /** Wheel changes edit the form draft; Done closes the picker without saving the form. */
 export function DateTimeField({label,value,onChange,mode='date',disabled=false,clearable=false,stacked=false,inputLabel=label,activePicker,onPickerChange}:{label:string;value:string|null;onChange:(value:string|null)=>void;mode?:Mode;disabled?:boolean;clearable?:boolean;stacked?:boolean;inputLabel?:string;activePicker?:string|null;onPickerChange?:(value:string|null)=>void}){

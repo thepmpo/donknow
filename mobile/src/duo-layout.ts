@@ -123,17 +123,27 @@ export function duoSceneLayout(g:DuoGeometry,workspace=true):DuoSceneLayout{
  const calendarBottomExtension=footer.height>0&&footer.height<=g.safeArea.bottom+.5&&!occupied.some(area=>intersectRects(footer,area))?footer.height:0;
  return {reserved:occupied,bounds,body,column,back,segments,panes,divider,alignment,cameraRegion,calendarBottomExtension};
 }
-export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
+/** Separate keyboard and close actions share the camera centerline, never a slot. */
+export function duoDismissFrames(scene:DuoSceneLayout,backVisible:boolean,keyboardVisible:boolean){
+ if(!keyboardVisible)return {back:backVisible?scene.back:null,keyboard:null};
+ if(!backVisible)return {back:null,keyboard:scene.back};
+ const segment=scene.segments.find(r=>r.height>=44*2+CHROME_GAP);
+ if(!segment)return {back:scene.back,keyboard:null};
+ const size=Math.min(CHROME_WIDTH,Math.floor((segment.height-CHROME_GAP)/2));
+ const keyboard={x:segment.x+(segment.width-size)/2,y:segment.y,width:size,height:size};
+ return {keyboard,back:{...keyboard,y:keyboard.y+size+CHROME_GAP}};
+}
+export function duoTabFrame(scene:DuoSceneLayout,backVisible:boolean,controlsBottom?:number):DuoRect|null{
  const candidates=scene.segments.map(segment=>{
-  if(backVisible&&scene.back&&intersectRects(segment,scene.back)){const y=scene.back.y+scene.back.height+CHROME_GAP;return{...segment,y,height:Math.max(0,segment.y+segment.height-y)};}return segment;
+  if(backVisible&&scene.back&&intersectRects(segment,scene.back)){const y=Math.max(scene.back.y+scene.back.height,controlsBottom??0)+CHROME_GAP;return{...segment,y,height:Math.max(0,segment.y+segment.height-y)};}return segment;
  }).filter(r=>r.height>=DUO_CHROME.itemSize+12).sort((a,b)=>(b.y+b.height)-(a.y+a.height));
  return candidates[0]??null;
 }
 
 /** Two safe accessory slots above the unchanged tabs. Today takes the upper slot
  * when the calendar switch is visible; otherwise it stays directly above tabs. */
-function calendarAccessorySlots(scene:DuoSceneLayout,backVisible:boolean){
- const frame=duoTabFrame(scene,backVisible);if(!frame)return {lower:null,upper:null};
+function calendarAccessorySlots(scene:DuoSceneLayout,backVisible:boolean,controlsBottom?:number){
+ const frame=duoTabFrame(scene,backVisible,controlsBottom);if(!frame)return {lower:null,upper:null};
  const tabTop=frame.y+frame.height-Math.min(frame.height,DUO_CHROME.height),available=tabTop-DUO_CHROME.gap-frame.y;
  // Folded windows may reserve a taller camera/status interval. Preserve both
  // shortcuts down to 44pt before falling back to the Calendar heading.
@@ -144,16 +154,16 @@ function calendarAccessorySlots(scene:DuoSceneLayout,backVisible:boolean){
  const lower={x,y,width:height,height},upper=pairSize>=44?{...lower,y:y-DUO_CHROME.gap-height}:null;
  return {lower,upper};
 }
-export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean,viewVisible=false):DuoRect|null{
- const {lower,upper}=calendarAccessorySlots(scene,backVisible);return viewVisible&&upper?upper:lower;
+export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean,viewVisible=false,controlsBottom?:number):DuoRect|null{
+ const {lower,upper}=calendarAccessorySlots(scene,backVisible,controlsBottom);return viewVisible&&upper?upper:lower;
 }
-export function duoCalendarViewFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
- const {lower,upper}=calendarAccessorySlots(scene,backVisible);return upper?lower:null;
+export function duoCalendarViewFrame(scene:DuoSceneLayout,backVisible:boolean,controlsBottom?:number):DuoRect|null{
+ const {lower,upper}=calendarAccessorySlots(scene,backVisible,controlsBottom);return upper?lower:null;
 }
 
 /** An indicator belongs beyond the unchanged tab capsule, never inside a content pane. */
-export function duoScrollIndicatorFrame(scene:DuoSceneLayout,backVisible:boolean):DuoRect|null{
- const tabs=duoTabFrame(scene,backVisible);if(!tabs)return null;
+export function duoScrollIndicatorFrame(scene:DuoSceneLayout,backVisible:boolean,controlsBottom?:number):DuoRect|null{
+ const tabs=duoTabFrame(scene,backVisible,controlsBottom);if(!tabs)return null;
  const height=Math.min(tabs.height,DUO_CHROME.height),x=tabs.x+tabs.width+3;
  if(x+3>scene.bounds.width-2)return null;
  const track={x,y:tabs.y+tabs.height-height+4,width:3,height:Math.max(0,height-8)};

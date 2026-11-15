@@ -1,0 +1,199 @@
+{
+  "syntheticOnly": true,
+  "nativeKeyboardAndWheelNotVerified": true,
+  "captures": [
+    "01-folded-inline-date",
+    "01-folded-fixed-sheet-writing",
+    "02-phone-inline-date",
+    "02-phone-fixed-sheet-writing",
+    "03-open-landscape-inline-date",
+    "03-open-landscape-fixed-sheet-writing",
+    "04-open-portrait-inline-date",
+    "04-open-portrait-fixed-sheet-writing",
+    "05-simple-reminder-options",
+    "06-camera-column-alignment"
+  ],
+  "measurements": [
+    {
+      "name": "01-folded",
+      "picker": {
+        "x": 40,
+        "y": 326,
+        "width": 281,
+        "height": 260
+      },
+      "viewport": {
+        "x": 40,
+        "y": 200,
+        "width": 281,
+        "height": 404
+      },
+      "pickerOffset": 0,
+      "nativeWheelGeometryOnly": true
+    },
+    {
+      "name": "01-folded",
+      "before": {
+        "x": 16,
+        "y": 80,
+        "width": 329,
+        "height": 540
+      },
+      "after": {
+        "x": 16,
+        "y": 80,
+        "width": 329,
+        "height": 540
+      },
+      "field": {
+        "x": 40,
+        "y": 211.5,
+        "width": 281,
+        "height": 220
+      },
+      "viewport": {
+        "x": 40,
+        "y": 200,
+        "width": 281,
+        "height": 158
+      },
+      "keyboardTop": 358
+    },
+    {
+      "name": "02-phone",
+      "picker": {
+        "x": 24,
+        "y": 330.40625,
+        "width": 342,
+        "height": 260
+      },
+      "viewport": {
+        "x": 24,
+        "y": 204.40625,
+        "width": 342,
+        "height": 623.59375
+      },
+      "pickerOffset": 0,
+      "nativeWheelGeometryOnly": true
+    },
+    {
+      "name": "02-phone",
+      "before": {
+        "x": 0,
+        "y": 84.40625,
+        "width": 390,
+        "height": 759.59375
+      },
+      "after": {
+        "x": 0,
+        "y": 84.40625,
+        "width": 390,
+        "height": 759.59375
+      },
+      "field": {
+        "x": 24,
+        "y": 240.90625,
+        "width": 342,
+        "height": 220
+      },
+      "viewport": {
+        "x": 24,
+        "y": 204.40625,
+        "width": 342,
+        "height": 268.59375
+      },
+      "keyboardTop": 473
+    },
+    {
+      "name": "03-open-landscape",
+      "picker": {
+        "x": 169,
+        "y": 326,
+        "width": 552,
+        "height": 260
+      },
+      "viewport": {
+        "x": 169,
+        "y": 200,
+        "width": 552,
+        "height": 404
+      },
+      "pickerOffset": 0,
+      "nativeWheelGeometryOnly": true
+    },
+    {
+      "name": "03-open-landscape",
+      "before": {
+        "x": 145,
+        "y": 80,
+        "width": 600,
+        "height": 540
+      },
+      "after": {
+        "x": 145,
+        "y": 80,
+        "width": 600,
+        "height": 540
+      },
+      "field": {
+        "x": 169,
+        "y": 211.5,
+        "width": 552,
+        "height": 220
+      },
+      "viewport": {
+        "x": 169,
+        "y": 200,
+        "width": 552,
+        "height": 158
+      },
+      "keyboardTop": 358
+    },
+    {
+      "name": "04-open-portrait",
+      "picker": {
+        "x": 59,
+        "y": 282,
+        "width": 552,
+        "height": 260
+      },
+      "viewport": {
+        "x": 59,
+        "y": 232,
+        "width": 552,
+        "height": 692
+      },
+      "pickerOffset": 76,
+      "nativeWheelGeometryOnly": true
+    },
+    {
+      "name": "04-open-portrait",
+      "before": {
+        "x": 35,
+        "y": 112,
+        "width": 600,
+        "height": 828
+      },
+      "after": {
+        "x": 35,
+        "y": 112,
+        "width": 600,
+        "height": 828
+      },
+      "field": {
+        "x": 59,
+        "y": 305.5,
+        "width": 552,
+        "height": 220
+      },
+      "viewport": {
+        "x": 59,
+        "y": 232,
+        "width": 552,
+        "height": 306
+      },
+      "keyboardTop": 538
+    }
+  ],
+  "errors": []
+}

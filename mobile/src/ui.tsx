@@ -1,5 +1,5 @@
 import {KeyboardDismiss,useKeyboardUX} from './KeyboardUX';
-import {useFocusedField} from './useFocusedField';
+import {ScrollRevealContext,useFocusedField,useKeyboardInset} from './useFocusedField';
 import {ScrollArea as ScrollView} from './ScrollArea';
 import { useDuoTrailingNavigation } from './DuoLayout';
 import {useDuoBackAction} from './DuoBackNavigation';
@@ -107,7 +107,7 @@ export function TodoEditor(props:TodoEditorProps){
 }
 /** Same form in the native modal's own safe surface or a geometry fixture. */
 export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy}:{todo?:Todo;dueDate:string|null;store:TodoStore;onClose:()=>void;visible?:boolean;onBusy?:(busy:boolean)=>void}){
-  const keyboard=useKeyboardUX(),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scroll);
+  const keyboard=useKeyboardUX(),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
   const [notes,setNotes] = useState(todo?.notes ?? '');
@@ -145,8 +145,8 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy}:
     }
   }
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
-  return <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <DraggableSheet testID="todo-editor-surface" visible={visible} style={[s.sheet,keyboard.occluding&&{flex:1,maxHeight:'100%',paddingBottom:12}]} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><ScrollView ref={scroll} onLayout={field.reveal} onContentSizeChange={field.reveal} onScroll={field.onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
+  return <ScrollRevealContext.Provider value={field.show}><View ref={surface} onLayout={keyboardInset.measure} style={s.modalBackdrop}>
+      <DraggableSheet testID="todo-editor-surface" visible={visible} presentation="none" style={[s.sheet,{height:'90%',maxHeight:'90%',paddingBottom:16,overflow:'hidden'}]} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><View style={{flex:1,minHeight:0,paddingBottom:Math.max(0,keyboardInset.inset-16)}}><ScrollView ref={scroll} onLayout={field.reveal} onContentSizeChange={field.reveal} onScroll={field.onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flex:1,minHeight:0}} automaticallyAdjustKeyboardInsets={false} contentInsetAdjustmentBehavior="never" contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
         <TextInput ref={titleRef} onFocus={()=>{setActivePicker(null);field.focus(titleRef.current);}} accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
         <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/><NotesField value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);field.focus(input);}} onResize={field.reveal}/>
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} disabled={saving} trackColor={{ true: colors.blue }} /></View>
@@ -154,8 +154,8 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy}:
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
         {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} /><Text style={s.muted}>공유창에서 카카오톡을 선택하세요. 웹에서 공유창을 지원하지 않으면 내용을 복사해요. 저장된 내용이 공유돼요.</Text>{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
         {!!todo && <Pressable accessibilityRole="button" disabled={saving} onPress={remove} style={s.deleteButton}><Text style={s.deleteText}>할 일 삭제</Text></Pressable>}
-      </ScrollView>{!keyboard.occluding&&<View testID="todo-editor-save" style={{paddingTop:layout.actionGap,flexShrink:0}}><Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} /></View>}</DraggableSheet>
-    </KeyboardAvoidingView>;
+      </ScrollView>{!keyboard.occluding&&!activePicker&&<View testID="todo-editor-save" style={{paddingTop:layout.actionGap,flexShrink:0}}><Button title={saving ? '저장 중…' : '저장'} loading={saving} onPress={save} disabled={saving || !title.trim()} /></View>}</View></DraggableSheet>
+    </View></ScrollRevealContext.Provider>;
 }
 export const s = StyleSheet.create({
   page: { padding: spacing.xl, paddingTop: spacing.xxl, paddingBottom: 40, flexGrow: 1 },

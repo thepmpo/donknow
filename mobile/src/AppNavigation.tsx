@@ -96,6 +96,6 @@ const styles=StyleSheet.create({
  selection:{position:'absolute',left:0,top:0},selectionMaterial:{borderRadius:27},
  badge:{position:'absolute',right:1,top:0,backgroundColor:colors.action,borderRadius:9,minWidth:18,paddingHorizontal:3,alignItems:'center'},badgeText:{fontSize:11,lineHeight:18,color:colors.white},
  items:{flexGrow:1,flexDirection:'row'},tab:{flex:1,minWidth:44,minHeight:58,paddingHorizontal:2,paddingVertical:6,alignItems:'center',justifyContent:'center',gap:4},
- verticalItems:{flexDirection:'column',padding:3},compact:{flex:0,width:layout.duoNavigationItemSize,minWidth:layout.duoNavigationItemSize,minHeight:layout.duoNavigationItemSize,padding:0,gap:0},
+ verticalItems:{flexDirection:'column',alignItems:'center',padding:3},compact:{flex:0,width:layout.duoNavigationItemSize,minWidth:layout.duoNavigationItemSize,minHeight:layout.duoNavigationItemSize,padding:0,gap:0},
  label:{fontSize:12,lineHeight:16,color:colors.muted,textAlign:'center'},selected:{color:colors.blueText,fontWeight:'600'},duck:{fontSize:24,lineHeight:28},duoDuck:{fontSize:layout.duoNavigationIconSize,lineHeight:34},
 });

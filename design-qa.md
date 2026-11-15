@@ -1,3 +1,9 @@
+# Design QA — Fixed editor and scroll reveal
+
+**final result: blocked** — Expo flow/geometry/occlusion checks pass; actual iOS keyboard/wheel, IME/VoiceOver and native modal validation remain unavailable. [3-step audit and10 fresh screens](docs/editor-viewport-qa-2026-11-15.md) · [contract](docs/editor-viewport-2026-11-15.md). Build35 predates this change.
+
+---
+
 # Design QA — Device-specific keyboard / memo visibility / today shading
 
 **final result: blocked** — Expo form/geometry/occlusion verification and app/interaction regression pass; actual iOS accessory, modal geometry, IME and VoiceOver remain pending. [Contract](docs/keyboard-device-2026-11-14.md) · [8 new captures and QA](docs/keyboard-device-qa-2026-11-14.md). User build34 predates this change. No new native build claimed.
