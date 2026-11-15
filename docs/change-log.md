@@ -1,5 +1,11 @@
 # 변경 기록
 
+## 2026-11-15 — iPhone37 실패 수정·Swift import와 SDK58 호환 검사
+
+[수정·검증 계약](native-build-fix-2026-11-15.md). 사용자 실행43696660983·4461282는validate성공/native실패·Apple제출skipped다. 실제 오류는DuckShortcuts.swift4의 `ambiguous implicit access level for import of DuckduckDuo; internal elsewhere`다. 단축어 import를명시internal로맞췄고 같은 SDK58의 Doctor 버전 경고를 정리했다. 실제 Expo prebuild/로컬 provider/import 비교와 assistant bridge 자동 연결 검사를 validate에 추가했다.95문법·354중353통과/실패0/선택1제외·타입·web/iOS JS·일반앱/Duo회귀·Python99통과/선택1제외를 확인했다. 온라인 Doctor의 두 네트워크 실패는 전체 성공으로 표시하지 않는다. Linux검사는 실제Swift archive/서명/Apple성공이 아니다.
+
+37은번호가할당된실패이며마지막성공은36이다. 실패37Re-run에는수정이없어새main workflow_dispatch가필요하다. 무료표준Mac·기존서명/Bundle ID·수동정책·데이터·원본bundle은유지한다. 새 native실행/업로드성공은실제run으로확인한뒤기록한다.
+
 ## 2026-11-15 — 새 비서 기능 빌드 요청·실행 시작 거부·최신36 확인
 
 사용자가 새 비서 기능의 iPhone 빌드를 요청했다. 앱 소스3536d56392afbf9202be297dbaac84227f214f53(main)의 검사43690595590은success이며, 다른 진행 중인 iPhone 실행은 없음을 확인했다. 기존 무료 표준Mac·수동 workflow·동일IPA 제출·기존 서명freeze 설정으로 새 main dispatch를 한 번 요청했으나 `Post https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches: Forbidden`으로 거부됐다. 연결 도구에는 새 workflow dispatch 기능이 없고 Linux에는 Xcode가 없다. **이번 요청의 새 run/IPA/Apple 업로드는 시작되지 않았다.** 자동 push 빌드·유료 runner·Expo cloud fallback·기존 자격 증명 변경으로 우회하지 않는다.

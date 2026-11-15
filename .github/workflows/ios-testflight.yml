@@ -35,6 +35,7 @@ jobs:
           GIT_CONFIG_GLOBAL: /dev/null
       - run: npm ci --prefix mobile --no-audit --no-fund
       - run: npm --prefix mobile run typecheck
+      - run: npm --prefix mobile run check:native
       - run: npm --prefix mobile run export:ios -- --max-workers 2
   build-and-submit:
     needs: validate

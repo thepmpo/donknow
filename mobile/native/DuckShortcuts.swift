@@ -1,7 +1,7 @@
 import AppIntents
 import Foundation
 import UniformTypeIdentifiers
-import DuckduckDuo
+internal import DuckduckDuo
 
 @available(iOS 16.4, *)
 struct AskDuckIntent: AppIntent {
