@@ -1,3 +1,5 @@
+import {createAgentSync} from './agent-sync.js';
+import {createIntegrationAgentTools} from './integration-agent-tools.js';
 import {createProviderWatches} from './provider-watches.js';
 import {readNotionDocument} from './notion-document.js';
 import {googleAccounts,googleConnection} from './google-accounts.js';
@@ -8,7 +10,7 @@ import { randomBytes, createHash, randomUUID } from 'node:crypto';
 import { fail } from './secrets.js';
 const definitions = {
   google: { name: 'Google', prefix: 'GOOGLE', auth: 'https://accounts.google.com/o/oauth2/v2/auth', token: 'https://oauth2.googleapis.com/token', features: ['calendar', 'gmail', 'drive', 'tasks', 'tasksWrite', 'gmailModify', 'gmailSend', 'calendarWrite', 'driveContent', 'driveWrite'] },
-  slack: { name: 'Slack', prefix: 'SLACK', auth: 'https://slack.com/oauth/v2/authorize', token: 'https://slack.com/api/oauth.v2.access', features: ['channels', 'messages', 'messagesWrite'] },
+  slack: { name: 'Slack', prefix: 'SLACK', auth: 'https://slack.com/oauth/v2/authorize', token: 'https://slack.com/api/oauth.v2.access', features: ['channels', 'messages', 'messagesWrite', 'assistantContact'] },
   notion: { name: 'Notion', prefix: 'NOTION', auth: 'https://api.notion.com/v1/oauth/authorize', token: 'https://api.notion.com/v1/oauth/token', features: ['pages', 'pagesWrite'] },
 };
 const readFeatures = ['calendar','gmail','drive','tasks','channels','messages','pages'];
@@ -70,6 +72,8 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
   }
   return {
     ...createProviderWatches({store,env,token,request:providerRequest}),
+    ...createAgentSync({store,token,request:providerRequest}),
+    ...createIntegrationAgentTools({store,token,request:providerRequest,fetcher}),
     status(userId) { return Object.entries(definitions).map(([provider, definition]) => { const config = settings(provider), connection = store.connection(userId, provider); return { provider, name: definition.name, configured: config.configured, connected: !!connection, label: connection?.label ?? null, features: connection?.features ?? [], availableFeatures: definition.features, taskSyncEnabled: !!connection?.taskSyncEnabled, updatedAt: connection?.updatedAt ?? null,...(provider==='google'?{accounts:googleAccounts(store,userId).map(r=>({connectionId:r.connectionId,label:r.label,features:r.features,taskSyncEnabled:!!r.taskSyncEnabled,updatedAt:r.updatedAt}))}:{}) }; }); },
     start(userId, provider, features, native = false, options={}) {
       const config = settings(provider); if (!config.configured) throw fail(503, '관리자가 이 서비스의 OAuth 앱을 등록하면 연결할 수 있어요.');
@@ -85,7 +89,8 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const state = store.createOAuthState(userId, provider, { verifier, features: [...new Set(selected)], native,...(provider==='google'?{mode:options.mode,expectedConnectionId:options.connectionId}: {}) });
       const url = new URL(config.auth); url.searchParams.set('client_id', config.clientId); url.searchParams.set('redirect_uri', config.callback); url.searchParams.set('response_type', 'code'); url.searchParams.set('state', state);
       if (provider === 'google') { url.searchParams.set('scope', ['openid','email',...selected.map(feature => googleScopes[feature])].join(' ')); url.searchParams.set('access_type', 'offline'); url.searchParams.set('prompt', 'consent select_account'); url.searchParams.set('code_challenge', createHash('sha256').update(verifier).digest('base64url')); url.searchParams.set('code_challenge_method', 'S256'); }
-      if (provider === 'slack') url.searchParams.set('user_scope', 'channels:read,channels:history,groups:read,groups:history,im:read,im:history,mpim:read,mpim:history'+(selected.includes('messagesWrite')?',chat:write':''));
+      if(provider==='slack'&&selected.includes('assistantContact'))url.searchParams.set('scope','chat:write,im:write,im:history,app_mentions:read,files:read');
+      if (provider === 'slack') url.searchParams.set('user_scope', 'channels:read,channels:history,groups:read,groups:history,im:read,im:history,mpim:read,mpim:history,search:read'+(selected.includes('messagesWrite')?',chat:write':''));
       if (provider === 'notion') url.searchParams.set('owner', 'user');
       return { url: url.toString() };
     },
@@ -95,7 +100,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (query.get('error') || !query.get('code')) throw fail(400, '서비스 연결이 취소됐어요.');
       const config = settings(provider);
       let value = await exchange(provider, { code: query.get('code'), redirect_uri: config.callback, ...(provider === 'slack' ? {} : { grant_type: 'authorization_code' }), ...(provider === 'google' ? { code_verifier: state.verifier } : {}) });
-      if(provider==='slack'&&value.authed_user?.access_token)value={...value,access_token:value.authed_user.access_token,refresh_token:value.authed_user.refresh_token,expires_in:value.authed_user.expires_in,scope:value.authed_user.scope,slackUserId:value.authed_user.id,tokenType:'user'};
+      if(provider==='slack'&&value.authed_user?.access_token)value={...value,botAccessToken:value.access_token,botRefreshToken:value.refresh_token,botExpiresAt:expiresAt(value.expires_in),botScope:value.scope,access_token:value.authed_user.access_token,refresh_token:value.authed_user.refresh_token,expires_in:value.authed_user.expires_in,scope:value.authed_user.scope,slackUserId:value.authed_user.id,tokenType:'user'};
       if (typeof value.access_token !== 'string' || !value.access_token) throw fail(502, '외부 서비스 인증 응답을 확인해주세요.');
       let previous = store.connection(state.userId, provider);
       let accountId, label;
@@ -106,11 +111,12 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const features = provider === 'google' && typeof value.scope === 'string' ? state.features.filter(feature => {const scopes=value.scope.split(' ');return scopes.includes(googleScopes[feature])||(feature==='tasks'&&scopes.includes(googleScopes.tasksWrite))||(feature==='gmail'&&scopes.includes(googleScopes.gmailModify))||(feature==='calendar'&&scopes.includes(googleScopes.calendarWrite))||(feature==='drive'&&scopes.includes(googleScopes.driveContent));}) : provider==='google'?state.features.filter(f=>readFeatures.includes(f)):state.features;
       if(provider==='slack'&&(typeof value.scope!=='string'||!value.scope.split(',').includes('chat:write'))){const i=features.indexOf('messagesWrite');if(i>=0)features.splice(i,1);}
       if(provider==='slack'&&value.tokenType==='user'){const scopes=new Set((value.scope??'').split(','));for(const feature of [...features])if(feature==='channels'&&!scopes.has('channels:read')||feature==='messages'&&!scopes.has('channels:history'))features.splice(features.indexOf(feature),1);}
+      if(provider==='slack'&&features.includes('assistantContact')&&(!value.botAccessToken||!value.bot_user_id||!String(value.botScope??'').split(',').includes('chat:write')))features.splice(features.indexOf('assistantContact'),1);
       if (!features.length) throw fail(403, '선택한 정보에 대한 읽기 권한이 승인되지 않았어요.');
       const connectionId=accountId && previous?.accountId===accountId && (provider!=='slack'||previous.slackUserId===(value.slackUserId??value.authed_user?.id??null)) ? previous.connectionId : randomUUID();
       if(!state.mode||previous)store.clearResourceCache(state.userId,provider,state.mode?previous?.connectionId:undefined);
       const save=provider==='google'&&state.mode&&store.saveGoogleAccount?(payload,label)=>store.saveGoogleAccount(state.userId,payload,label):(payload,label)=>store.saveConnection(state.userId,provider,payload,label);
-      save({ accessToken: value.access_token, refreshToken: value.refresh_token ?? (accountId && previous?.accountId===accountId ? previous.refreshToken : null) ?? null, expiresAt: expiresAt(value.expires_in), features, taskSyncEnabled: !!(features.includes('tasksWrite') && previous?.accountId===accountId && previous?.taskSyncEnabled), accountId:accountId??null,connectionId,...(provider==='slack'?{slackUserId:value.slackUserId??value.authed_user?.id??null,tokenType:value.tokenType??'bot',botUserId:value.bot_user_id??null}:{}) }, label);
+      save({ accessToken: value.access_token, refreshToken: value.refresh_token ?? (accountId && previous?.accountId===accountId ? previous.refreshToken : null) ?? null, expiresAt: expiresAt(value.expires_in), features, taskSyncEnabled: !!(features.includes('tasksWrite') && previous?.accountId===accountId && previous?.taskSyncEnabled), accountId:accountId??null,connectionId,...(provider==='slack'?{slackUserId:value.slackUserId??value.authed_user?.id??null,tokenType:value.tokenType??'bot',botUserId:value.bot_user_id??null,botAccessToken:value.botAccessToken??null,botRefreshToken:value.botRefreshToken??null,botExpiresAt:value.botExpiresAt??null}:{}) }, label);
       return { native: state.native };
     },
     async resources(userId, provider, feature, channel, cursor, taskStatus = 'incomplete', month, connectionId) {
@@ -164,7 +170,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     },
     naver,
     async inspect(user,operation,args){return operation.startsWith('naver.')?naver.inspect(user,operation,args):createProviderActions({store,token,request:providerRequest}).inspect(user,operation,args);},
-    async execute(user,operation,args,preview,actionId){return operation.startsWith('naver.')?naver.execute(user,operation,args,preview,actionId):createProviderActions({store,token,request:providerRequest}).execute(user,operation,args,preview,actionId);},
+    async execute(user,operation,args,preview,actionId,guard=()=>true){return operation.startsWith('naver.')?naver.execute(user,operation,args,preview,actionId,guard):createProviderActions({store,token,request:providerRequest}).execute(user,operation,args,preview,actionId,guard);},
     async searchDocuments(userId,provider,query,connectionId){
       if(!['google','notion'].includes(provider)||typeof query!=='string'||!query.trim()||query.length>120)throw fail(400,'문서 검색어를 확인해주세요.');
       const record=await token(userId,provider,connectionId),headers={Authorization:'Bearer '+record.accessToken};let value,items;

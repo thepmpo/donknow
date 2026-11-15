@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "native": false,
+  "screenshots": 11,
+  "pageErrors": [],
+  "chatRequests": 1,
+  "sourceWrites": 0,
+  "checks": [
+    "background receipt recovers",
+    "composer clears immediately",
+    "task pause/resume",
+    "real file download path",
+    "responsibilities",
+    "file list",
+    "computer consent",
+    "saved instructions",
+    "provider activation states",
+    "ordinary + Duo geometry"
+  ]
+}

@@ -1,3 +1,5 @@
+import {listenAssistantEntry} from './src/assistant-entry';
+import type {AssistantChatRequest} from './src/screens/AssistantChat';
 import {DuoWorkspace} from './src/DuoWorkspace';
 import {configureKeyboardAccessory} from './src/keyboard-done';
 import {KeyboardDismiss,KeyboardUXProvider,useKeyboardUX} from './src/KeyboardUX';
@@ -33,6 +35,7 @@ function ShellContent() {
   const {scene,ready}=useDuoScene();
   useEffect(()=>{if(ready)return configureKeyboardAccessory(duo);},[duo,ready]);
   const split=!!scene?.panes;
+  const [entry,setEntry]=useState<AssistantChatRequest|null>(null);
   const [tab, setTab] = useState<AppTab>('todos'),[unread,setUnread]=useState(0);
   const [settings, setSettings] = useState(false);
   const calendarSequence=useRef(0),[calendarNavigation,setCalendarNavigation]=useState<{target:'active'|'fixed';request:CalendarNavigationRequest}|null>(null);
@@ -44,13 +47,14 @@ function ShellContent() {
    requestCalendar('fortnight',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');
   },[duo,split,tab,requestCalendar]);
 
+  useEffect(()=>{let active=true;const stop=listenAssistantEntry(value=>{void(async()=>{const files=[];if(store.user)for(const f of value.files??[]){if(!active)return;files.push(await store.featureRequest('/api/agent/files','POST',f) as import('./src/agent').AgentFile);}if(!active)return;setEntry({id:value.id,message:value.message,autoSend:value.autoSend&&!!store.user,files});setTab('duck');})().catch(()=>{if(active)store.setError('전달한 자료를 준비하지 못했어요. 덕 채팅에서 다시 확인해주세요.');});});return()=>{active=false;stop();};},[store.user?.id,calendarScope]);
   useEffect(()=>listenForDuckNotification(()=>setTab('duck')),[]);
   const editorSequence = useRef(0);
   const [editor, setEditor] = useState<{ instance:number; todo?: Todo; date: string | null } | null>(null);
   const onAdd = (date: string | null) => { Keyboard.dismiss();setEditor({ instance:++editorSequence.current, date }); };
   const onEdit = (todo: Todo) => { Keyboard.dismiss();setEditor({ instance:++editorSequence.current, todo, date: todo.dueDate }); };
   const [duckSession, setDuckSession] = useState(0);
-  useEffect(() => { setEditor(null);setUnread(0);setCalendarNavigation(null); setDuckSession(current => current + 1); setTab('todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
+  useEffect(() => { setEditor(null);setEntry(null);setUnread(0);setCalendarNavigation(null); setDuckSession(current => current + 1); setTab('todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
   const needsAuth = store.connection?.mode === 'cloud' && !store.user;
   const navigationVisible=!!store.connection&&!settings&&!needsAuth;
   const rightPane=scene?.panes?{marginLeft:scene.panes.trailing.x-scene.body.x,width:scene.panes.trailing.width}:null;
@@ -62,7 +66,7 @@ function ShellContent() {
     <MotionView variant="navigation" disabled={split} testID="screen-transition" style={[styles.content]} transitionKey={!store.connection ? 'connection' : settings ? 'settings' : needsAuth ? 'auth' : split?'duo-split':tab}><DuoWorkspace enabled={navigationVisible} fixed={<CalendarScreen fixedPane navigationRequest={calendarNavigation?.target==='fixed'?calendarNavigation.request:undefined} key={`${store.connection?.mode}-${store.connection?.mode==='cloud'?store.connection.baseUrl:''}-${store.user?.id??'demo'}`} store={store} active={navigationVisible&&split} onAdd={onAdd} onEdit={onEdit}/>}>{!store.connection || settings ? <ConnectionScreen store={store} onDone={store.connection ? () => { setSettings(false); setDuckSession(current => current + 1); } : undefined} /> : needsAuth ? <AuthScreen store={store} onSettings={() => setSettings(true)} /> : <MotionView variant="navigation" testID="active-screen-transition" disabled={!split} transitionKey={tab} distance={0} style={styles.content}>
       <View style={[styles.content,tab!=='calendar'&&styles.hidden]} accessibilityElementsHidden={tab!=='calendar'} importantForAccessibility={tab==='calendar'?'auto':'no-hide-descendants'}><CalendarScreen navigationRequest={calendarNavigation?.target==='active'?calendarNavigation.request:undefined} key={`${store.connection?.mode}-${store.connection?.mode==='cloud'?store.connection.baseUrl:''}-${store.user?.id??'demo'}`} store={store} active={tab==='calendar'} onAdd={onAdd} onEdit={onEdit}/></View>
       {tab === 'todos' && <TodosScreen store={store} onEdit={onEdit} onAdd={onAdd} />}
-      <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => selectTab('todos')} onOpenLog={() => selectTab('log')} onOpenTodo={onEdit} /></View>
+      <View style={[styles.content, tab !== 'duck' && styles.hidden]} accessibilityElementsHidden={tab !== 'duck'} importantForAccessibility={tab !== 'duck' ? 'no-hide-descendants' : 'auto'}><DuckScreen key={`${duckSession}-${store.user?.id ?? 'demo'}`} store={store} entry={entry} active={tab==='duck'} onUnreadChange={setUnread} onOpenTodos={() => selectTab('todos')} onOpenLog={() => selectTab('log')} onOpenTodo={onEdit} /></View>
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen store={store} onOpenTodos={()=>selectTab('todos')} onConnection={() => setSettings(true)} />}
     </MotionView>}</DuoWorkspace></MotionView>

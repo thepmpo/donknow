@@ -1,3 +1,11 @@
+import {readComputerBody} from './agent-computer-routes.js';
+import {createAgentChannels} from './agent-channels.js';
+import {createAgentEvents} from './agent-events.js';
+import {createAgentVoice} from './agent-voice.js';
+import {createAgentMemory} from './agent-memory.js';
+import {createAgentComputer} from './agent-computer.js';
+import {createAgentEngine} from './agent-engine.js';
+import {createAgentRoutes} from './agent-routes.js';
 import {randomBytes} from 'node:crypto';
 import {createAssistantEvents} from './assistant-events.js';
 import {createPushSender} from './push.js';
@@ -11,15 +19,23 @@ const validEmail = value => typeof value === 'string' && value.length <= 254 && 
 const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
 export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress) {
   const assistant=createAssistant(store,integrations);
-  const conversations=createConversationAssistant(store,assistant);
+  const memory=createAgentMemory(store),computer=createAgentComputer(store);
+  const agent=createAgentEngine({store,assistant,integrations,memory,computer});
+  const channels=createAgentChannels({store,assistant,engine:agent});agent.attachNotifications(()=>{setImmediate(()=>void channels.tick().then(()=>pushSender.tick()).catch(()=>undefined));});
+  const voice=createAgentVoice({store,assistant,engine:agent});
+  const computerScopeValid=job=>{const current=assistant.status(job.userId).consentScopes;return store.account(job.userId)?.emailVerified&&job.memoryRevision===store.memorySettings(job.userId).revision&&job.providers.every(p=>job.consentScopes?.[p]===current[p]);};
+  const agentRoutes=createAgentRoutes({store,engine:agent,assistant,computer,voice,channels,limited});
+  assistant.attachAgent?.(agent);
+  const conversations=createConversationAssistant(store,assistant,memory);
+  agent.attachChat((user,body)=>conversations.chat(user,body));
   const weather=createWeather();
   const automations=createAutomations(store,assistant,weather),schedulerAuth=createSchedulerAuth(),pushSender=createPushSender(store);
-  const events=createAssistantEvents(store,assistant,integrations);
-  const drain=async()=>{const result=await events.tick();await automations.tick();await integrations.renewAssistantWatches();await pushSender.tick();return result;};
+  const events=createAssistantEvents(store,assistant,integrations,{onSlack:data=>channels.slack(data)}),agentEvents=createAgentEvents(store,assistant,integrations);
+  const drain=async()=>{store.expireAgentCalls();await agentEvents.poll();await agentEvents.dispatch();await channels.tick();await agent.tick();const result=await events.tick();await automations.tick();await integrations.renewAssistantWatches();await pushSender.tick();return result;};
   const scheduledWorker=process.env.NODE_ENV==='test'?null:setInterval(()=>{void drain().catch(()=>undefined);},60000);scheduledWorker?.unref();
   return {
-    close(){if(scheduledWorker)clearInterval(scheduledWorker);},
-    async webhook(req,path,send){if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void events.tick().then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
+    close(){channels.close();agent.close();if(scheduledWorker)clearInterval(scheduledWorker);},
+    async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
       if (!match || req.method !== 'GET') return false;
@@ -31,12 +47,19 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       return true;
     },
     async public(req, path, json, send) {
+      if(path==='/api/agent/imessage/bridge'&&req.method==='POST')return channels.imessageBridge(req,json,send);
+      if(await voice.handle(req,path,()=>readComputerBody(req,256*1024),send))return true;
+      if(path==='/api/agent/computers/claim'&&req.method==='POST'){if(limited('computer-pair:'+clientAddress(req)))throw fail(429,'연결 요청이 많아요.');const b=await json(req);send(200,store.claimAgentComputer(b.id,b.pairToken));return true;}
+      if(path==='/api/agent/computers/state'&&req.method==='POST'){const b=await json(req),c=store.authenticateAgentComputer(b.id,(req.headers.authorization??'').replace(/^Bearer /,'')),cmd=store.computerCommand(c.userId,b.commandId);if(cmd.computerId!==c.id)throw fail(403,'내 컴퓨터 작업이 아니에요.');const job=cmd.jobId?store.agentJob(c.userId,cmd.jobId):null;send(200,{cancel:cmd.status!=='running'||job&&(!['waiting_computer','running','queued'].includes(job.status)||store.agentProfile(c.userId).paused||!computerScopeValid(job))||!store.computerPolicyValid(c.userId,c.id,cmd)||cmd.privateControl&&c.status!=='user'||!cmd.privateControl&&c.status!=='agent'});return true;}
+      if(path==='/api/agent/computers/poll'&&req.method==='POST'){const b=await json(req),c=store.authenticateAgentComputer(b.id,(req.headers.authorization??'').replace(/^Bearer /,''));send(200,{command:store.pollAgentComputer(c,computerScopeValid),control:c.status,workspaces:store.computerWorkspaces(c.userId,c.id)});return true;}
+      if(path==='/api/agent/computers/result'&&req.method==='POST'){const c=store.authenticateAgentComputerSecret((req.headers.authorization??'').replace(/^Bearer /,'')),b=await readComputerBody(req);if(b.id!==c.id)throw fail(403,'내 컴퓨터를 확인해주세요.');send(200,store.finishComputer(c,b.commandId,b.lease,b.result));setImmediate(()=>void agent.tick().catch(()=>undefined));return true;}
+
       if(path==='/api/automations/tick'&&req.method==='POST'){
         if(limited('scheduler:'+clientAddress(req)))throw fail(429,'잠시 후 다시 요청해주세요.');
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await drain();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, calendarWorkspace:2, calendarDetails:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true, calendarWorkspace:2, calendarDetails:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -53,6 +76,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },
     async private(req, path, url, user, json, send, sessionToken) {
+      if(await agentRoutes(req,path,url,user,json,send))return true;
       if(path==='/api/notifications/device'){
         if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
         if(req.method==='GET'){send(200,store.pushDeviceStatus(user.id,url.searchParams.get('deviceId')));return true;}
@@ -80,12 +104,12 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       }
       if(path==='/api/assistant/memory/settings'){
         if(req.method==='GET'){send(200,store.memorySettings(user.id));return true;}
-        if(req.method==='POST'){const body=await json(req);send(200,store.configureMemory(user.id,body.enabled));return true;}
+        if(req.method==='POST'){const body=await json(req);const result=store.configureMemory(user.id,body.enabled);voice.closeUser(user.id);send(200,result);return true;}
       }
       if(path==='/api/assistant/memory'){
         if(req.method==='GET'){send(200,{memories:store.memories(user.id)});return true;}
         if(req.method==='POST'){const body=await json(req);send(201,store.saveMemory(user.id,body.text));return true;}
-        if(req.method==='DELETE'){const body=await json(req);if(body.confirmation!=='DELETE')throw fail(400,'지울 내용을 확인해주세요.');send(200,store.clearAssistantMemory(user.id,{conversations:body.conversations===true}));return true;}
+        if(req.method==='DELETE'){const body=await json(req);if(body.confirmation!=='DELETE')throw fail(400,'지울 내용을 확인해주세요.');voice.closeUser(user.id);send(200,store.clearAssistantMemory(user.id,{conversations:body.conversations===true}));return true;}
       }
       const memory=/^\/api\/assistant\/memory\/([a-f0-9-]{36})$/.exec(path);
       if(memory&&['PATCH','DELETE'].includes(req.method)){send(200,req.method==='DELETE'?store.forgetMemory(user.id,memory[1]):store.saveMemory(user.id,(await json(req)).text,{id:memory[1]}));return true;}
@@ -104,7 +128,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(path==='/api/assistant/actions'&&req.method==='POST'){if(limited('assistant-prepare:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const body=await json(req);send(201,await assistant.prepare(user.id,body.operation,body.args));return true;}
       const assistantAction=/^\/api\/assistant\/actions\/([a-f0-9-]{36})(?:\/(confirm))?$/.exec(path);
       if(assistantAction){if(req.method==='POST'&&assistantAction[2]){if(limited('assistant-execute:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const body=await json(req);send(200,await assistant.confirm(user.id,assistantAction[1],body.confirmation));return true;}if(req.method==='DELETE'&&!assistantAction[2]){if(!store.cancelAssistantAction(user.id,assistantAction[1]))throw fail(409,'취소할 수 없는 작업이에요.');send(200,{cancelled:true});return true;}if(req.method==='GET'&&!assistantAction[2]){const value=store.assistantAction(user.id,assistantAction[1]);if(!value)throw fail(404,'내 작업을 찾지 못했어요.');send(200,value);return true;}}
-      if(path==='/api/assistant/chat'&&req.method==='POST'){if(limited('assistant-chat:'+user.id))throw fail(429,'요청이 많아요. 잠시 후 다시 시도해주세요.');send(200,await conversations.chat(user.id,await json(req)));return true;}
+      if(path==='/api/assistant/chat'&&req.method==='POST'){if(limited('assistant-chat:'+user.id))throw fail(429,'요청이 많아요. 잠시 후 다시 시도해주세요.');const body=await readComputerBody(req,64*1024);delete body._channel;delete body._contactId;if(body.background===true){if(!assistant.status(user.id).enabled)throw fail(503,'AI 연결 설정을 확인해주세요.');if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');for(const id of body.attachments??[])store.agentArtifact(user.id,id);const scopes=assistant.status(user.id).consentScopes;if((body.providers??[]).some(p=>!['google','slack','notion','naver'].includes(p)||body.consentScopes?.[p]!==scopes[p]))throw fail(409,'자료 연결이 바뀌었어요. 다시 확인해주세요.');send(202,{queued:true,...agent.queueChat(user.id,body)});return true;}send(200,await conversations.chat(user.id,body));return true;}
       if(path==='/api/assistant/context'&&req.method==='POST'){if(limited('assistant-context:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const body=await json(req);send(200,await assistant.context(user.id,body.providers??[]));return true;}
       if(path==='/api/integrations/naver'&&req.method==='GET'){send(200,integrations.naver.status(user.id));return true;}
       if(path==='/api/integrations/naver'&&req.method==='POST'){if(limited('naver-connect:'+user.id))throw fail(429,'잠시 후 다시 시도해주세요.');const b=await json(req);send(200,await integrations.naver.connect(user.id,b.email,b.password,b.permissions));return true;}
@@ -122,7 +146,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         store.cacheResources(user.id, 'apple-reminders', items);
         send(200, { results: store.importResources(user.id, 'apple-reminders', [...new Set(items.map(item => item.id))]) }); return true;
       }
-      if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),todos:store.list(user.id),calendarDetails:store.exportCalendarDetails(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id),assistantMemory:store.exportAssistantMemory(user.id),assistantMessages:store.exportAssistantMessages(user.id),automationSchedules:store.automationSettings(user.id)});return true;}
+      if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),todos:store.list(user.id),calendarDetails:store.exportCalendarDetails(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id),agent:store.exportAgentData(user.id),assistantMemory:store.exportAssistantMemory(user.id),assistantMessages:store.exportAssistantMessages(user.id),automationSchedules:store.automationSettings(user.id)});return true;}
       if (path === '/api/account' && req.method === 'GET') { send(200, { user: store.account(user.id), mailConfigured: mailer.configured, mailStatus: store.mailStatus(user.id) }); return true; }
       if (path === '/api/account/verification/send' && req.method === 'POST') {
         if (store.account(user.id)?.emailVerified) { send(200, { alreadyVerified: true }); return true; }

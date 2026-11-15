@@ -5,15 +5,16 @@ import {localClock} from './automations-store.js';
 import {fail} from './secrets.js';
 const uuid=value=>typeof value==='string'&&/^[a-f\d-]{32,36}$/i.test(value);
 async function body(req){let length=0,chunks=[];for await(const chunk of req){length+=chunk.length;if(length>262144)throw fail(413,'수신 내용이 너무 커요.');chunks.push(chunk);}const raw=Buffer.concat(chunks);try{const data=JSON.parse(raw);if(!data||typeof data!=='object'||Array.isArray(data))throw Error();return {raw,data};}catch{throw fail(400,'수신 형식을 확인해주세요.');}}
-export function createAssistantEvents(store,assistant,integrations,{env=process.env,now=Date.now,fetcher=fetch}={}){
+export function createAssistantEvents(store,assistant,integrations,{env=process.env,now=Date.now,fetcher=fetch,onSlack=null}={}){
  let active=false;const monitor=createUrgentMonitor(store,assistant,{now});const googleAuth=createGooglePushAuth({audience:env.GOOGLE_PUSH_AUDIENCE??(env.PUBLIC_ORIGIN?.replace(/\/$/,'')+'/api/webhooks/gmail'),email:env.GOOGLE_PUSH_SERVICE_ACCOUNT,fetcher,now});
- const candidates=provider=>store.realtimeConnections(provider).filter(c=>{const schedule=store.automationSettings(c.userId).find(s=>s.kind==='briefing'),actual=assistant.status(c.userId).consentScopes;return schedule?.aiConsent&&schedule.consentScopes&&['todo',...schedule.providers].every(p=>schedule.consentScopes[p]===actual[p]);});
+ const candidates=provider=>store.realtimeConnections(provider).filter(c=>{const schedule=store.automationSettings(c.userId).find(s=>s.kind==='briefing'),actual=assistant.status(c.userId).consentScopes;return schedule?.aiConsent&&schedule.consentScopes&&['todo',...schedule.providers].every(p=>schedule.consentScopes[p]===actual[p])||store.agentEventConsent?.(c.userId,provider);});
  function valid(item){const s=store.automationSettings(item.userId).find(s=>s.kind==='briefing'),c=store.connection(item.userId,item.provider,item.connectionId);return store.account(item.userId)?.emailVerified&&s?.enabled&&s.urgentAlerts&&s.aiConsent&&s.revision===item.payload.scheduleRevision&&s.providers.includes(item.provider)&&c?.connectionId===item.connectionId&&s.consentScopes&&['todo',...s.providers].every(p=>s.consentScopes[p]===assistant.status(item.userId).consentScopes[p]);}
  return {
   async receive(req,path,send){const route=/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/([a-f0-9-]{36})\/([A-Za-z0-9_-]{43}))?$/.exec(path),provider=route?.[1];if(!provider)return false;if(route[2]&&provider!=='notion')throw fail(404,'수신 주소를 확인해주세요.');if(req.method!=='POST')throw fail(405,'변경 알림은 POST로 수신해요.');const {raw,data}=provider==='calendar'?{raw:null,data:null}:await body(req);
    if(provider==='slack'){
     verifySlackWebhook(raw,req.headers,env.SLACK_SIGNING_SECRET,now());if(env.SLACK_APP_ID&&data.type==='event_callback'&&data.api_app_id!==env.SLACK_APP_ID)throw fail(403,'Slack 앱이 일치하지 않아요.');
     if(data.type==='url_verification'){if(typeof data.challenge!=='string'||data.challenge.length>1000)throw fail(400,'확인 요청이 올바르지 않아요.');send(200,{challenge:data.challenge});return true;}
+    if(data.type==='event_callback'&&onSlack)await onSlack(data);
     const event=data.event;if(data.type==='event_callback'&&typeof data.event_id==='string'&&data.event_id.length<=150&&event?.type==='message'&&(!event.subtype||event.subtype==='message_changed')&&!event.bot_id){
      const message=event.subtype==='message_changed'?event.message:event;if(typeof message?.text==='string'&&message.text.trim()&&/^[CGD][A-Z0-9]{8,30}$/.test(event.channel??'')&&/^\d{10}\.\d{6}$/.test(message.ts??'')&&Number(event.event_ts??message.edited?.ts??message.ts)*1000>now()-86400000){
       for(const {userId,connection:c} of candidates('slack')){
@@ -33,11 +34,11 @@ export function createAssistantEvents(store,assistant,integrations,{env=process.
    }
    if(provider==='calendar'){
     const w=store.acceptCalendarNotification({id:req.headers['x-goog-channel-id'],token:req.headers['x-goog-channel-token'],resourceId:req.headers['x-goog-resource-id'],number:req.headers['x-goog-message-number'],state:req.headers['x-goog-resource-state']},now());
-    if(w&&req.headers['x-goog-resource-state']!=='sync'&&candidates('google').some(c=>c.userId===w.userId&&c.connection.connectionId===w.connectionId))store.enqueueAssistantEvent(w.userId,'google','calendar:'+w.id+':'+req.headers['x-goog-message-number'],w.connectionId,{kind:'refresh',receivedAt:now()});send(200,{ok:true});return true;
+    if(w&&req.headers['x-goog-resource-state']!=='sync'&&candidates('google').some(c=>c.userId===w.userId&&c.connection.connectionId===w.connectionId))store.enqueueAssistantEvent(w.userId,'google','calendar:'+w.id+':'+req.headers['x-goog-message-number'],w.connectionId,{kind:'refresh',calendarId:w.resourceKey,receivedAt:now()});send(200,{ok:true});return true;
    }
    await googleAuth(req.headers.authorization);if(!env.GOOGLE_GMAIL_PUBSUB_SUBSCRIPTION||data.subscription!==env.GOOGLE_GMAIL_PUBSUB_SUBSCRIPTION)throw fail(403,'허용된 Gmail 구독이 아니에요.');let payload;try{if(typeof data.message?.data!=='string'||data.message.data.length>10000)throw Error();payload=JSON.parse(Buffer.from(data.message.data,'base64'));}catch{throw fail(400,'Gmail 알림을 확인해주세요.');}
    if(typeof payload.emailAddress!=='string'||!/^\d{1,30}$/.test(payload.historyId??'')||typeof data.message?.messageId!=='string'||data.message.messageId.length>150)throw fail(400,'Gmail 알림 정보를 확인해주세요.');
-   for(const {userId,connection:c} of candidates('google'))if(c.features.includes('gmail')&&c.label.toLowerCase()===payload.emailAddress.toLowerCase()&&store.assistantWatches(userId,'gmail').some(w=>w.connectionId===c.connectionId&&w.status==='ready'&&w.expiresAt>now()))store.enqueueAssistantEvent(userId,'google','gmail:'+data.message.messageId,c.connectionId,{kind:'refresh',receivedAt:now()});send(200,{ok:true});return true;
+   for(const {userId,connection:c} of candidates('google'))if(c.features.includes('gmail')&&c.label.toLowerCase()===payload.emailAddress.toLowerCase()&&store.assistantWatches(userId,'gmail').some(w=>w.connectionId===c.connectionId&&w.status==='ready'&&w.expiresAt>now()))store.enqueueAssistantEvent(userId,'google','gmail:'+data.message.messageId,c.connectionId,{kind:'refresh',historyId:payload.historyId,receivedAt:now()});send(200,{ok:true});return true;
   },
   async tick(){if(active)return {events:0,sent:0};active=true;let processed=0,sent=0;try{for(let i=0;i<20;i++){
    const item=store.claimAssistantEvent(now());if(!item)break;

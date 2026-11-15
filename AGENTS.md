@@ -1,5 +1,17 @@
 # duckduck 개발·인계 지침
 
+## 2026-11-15 — Dots 공개 전체 기능 대응·지속 작업·컴퓨터·연락
+
+[현재 기능 계약](docs/dots-parity-2026-11-15.md) · [실제 검사·화면](docs/dots-full-qa-2026-11-15.md) · [활성화 절차](docs/dots-full-setup-2026-11-15.md). 이 절이 아래 이전 제한/미구현 목록보다 우선한다. 사용자는 브리핑만이 아니라 Dots의 전체 공개 기능을 요청했다. 생활부터 업무까지 긴 일을 별도로 맡기고 계속 대화하는 durable agent, 동시 위임/후속 지시·대기·승인·재개, 지속 책임/이벤트/반복·adaptive 확인, 실제 웹/원문/파일/문서/분석·코드·컴퓨터 경로를 추가했다. 검색 제목만으로 읽기·완료를 주장하지 않는다.
+
+Google 여러 계정·긴 원문·Notion 중첩/DB/체크·Gmail 첨부와 history 전체 페이지·Calendar 보조 달력/취소·Sheets/Slides·Office/PDF/이미지를 실제 도구로 읽는다. opt-in 전체 대화·확인한 사실·작업 노트를 관련 의미/키워드로 검색한다. 채널별 보이는 대화는 분리한다. Slack 전용 봇/Teams/SMS·RCS/Mac iMessage·WebRTC 음성·AppIntents/Shortcuts/선택형 Widget 경로를 구현했다. 옛 Slack 연결을 사용하지 않는다.
+
+컴퓨터 연결기는 사용자가 준비한 local/cloud host의 Docker browser/code와 명시 desktop opt-in이다. 자동 새 cloud computer/유료 worker를 만든 것이 아니다. 실제 격리 Chromium·선택 업로드/다운로드·private IP 차단, network-none 분석·작업 공간 유지·한글 Excel/PNG와 독립 Office/PDF 재읽기를 검수했다. 공개 인터넷 탐색은 환경 DNS 제한으로 미검수다. 실제 OpenAI 품질/채널 계정 등록·수신·OS 권한·native 빌드는 미확인이고 준비 상태를 설치 완료로 표시하지 않는다.
+
+원본 변경은 기존 미리보기/확인을 쓰며 정확한 대상·기간의 권한 규칙만 자동 실행한다. 규칙/연결/기억 개정을 작업과 컴퓨터 poll/heartbeat에서 재확인한다. 연구는 읽기 전용이다. 재시작은 checkpoint부터 이어가고 불확실 쓰기를 중복 재실행하지 않는다. 복원 후 작업/책임/채널/컴퓨터/통화를 정지·해제하며 이름 수정만으로 재개하지 않는다. 기존 DB/인증·서명/암호화 키와 사용자 복구 bundle은 보존한다.
+
+일반 iPhone·Duo 접힘/펼침에 같은 기능을 적용한다. 작은 작업 행·작업 메뉴 안의6분류로 채팅 공간을 유지하고 기존 카메라 열/반대 pane/키보드 X 위 별도 버튼/고정 편집창 내부 scroll reveal/배경 dim/3초 Todo↔log를 유지한다. 전체354중353통과·실패0·기존 선택1제외,94문법·타입·web/iOS JS·AppIntents/Widget prebuild·기존 앱/채팅/오류·새11장 UI와 실제 Docker 검사를 확인했다. 공개 이미지는 합성 자료/기하이며 실제 native 화면이 아니다. 최신 native1.0.0(35) 이후 소스이고 이번 요청에서 새 native workflow를 시작하지 않는다. 기존 무료/수동 배포 정책을 유지한다.
+
 ## 2026-11-15 — 배경 dim·대화와 장기 기억·공급자 수신
 
 [현재 계약](docs/assistant-agent-2026-11-15.md) · [검수·13장](docs/assistant-agent-qa-2026-11-15.md) · [실제 공급자 설정](docs/assistant-provider-setup.md) · [배경 컨트롤 계약](docs/background-controls-2026-11-15.md). 이 절이 아래 이전 상태보다 우선한다. **배경의 누를 수 없는 오늘/2주/탭/이전 X를 어둡게·disable·접근성 숨김 처리하고 앞 X와 그 위 별도 키보드는 유지**한다. 중첩이 닫힐 때 한 겹만 복원하며 위치·초안·반대 pane은 유지한다.

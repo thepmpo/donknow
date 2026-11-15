@@ -1,0 +1,22 @@
+{
+  "actualDocker": true,
+  "syntheticBrowserNetwork": true,
+  "publicWebNavigation": false,
+  "browser": [
+    "navigate",
+    "screenshot",
+    "click",
+    "type",
+    "selected upload",
+    "actual download",
+    "private IP blocked"
+  ],
+  "code": [
+    "network none",
+    "no host env",
+    "persistent workspace",
+    "pandas XLSX reload",
+    "matplotlib PNG"
+  ],
+  "externalAccountWrites": 0
+}

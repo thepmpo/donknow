@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+// Optional, user-run macOS bridge. Only the explicitly named personal sender is read.
+import {DatabaseSync} from 'node:sqlite';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {homedir} from 'node:os';
+import {join,resolve} from 'node:path';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+if(process.platform!=='darwin')throw Error('Run this bridge on the paired Mac with Messages access.');
+const flags=new Map();for(let n=2;n<process.argv.length;n+=2)flags.set(process.argv[n],process.argv[n+1]);const owner=flags.get('--owner');if(typeof owner!=='string'||!(/^(?:\+[1-9]\d{7,14}|[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$/.test(owner)))throw Error('Choose the one personal phone/email sender with --owner.');
+const directory=resolve(flags.get('--directory')||join(homedir(),'.duck-companion')),config=JSON.parse(await readFile(join(directory,'connection.json'),'utf8')),db=new DatabaseSync(join(homedir(),'Library/Messages/chat.db'),{readOnly:true}),statePath=join(directory,'imessage-cursor.json');let after;try{after=JSON.parse(await readFile(statePath,'utf8')).after;}catch{after=db.prepare('SELECT COALESCE(MAX(ROWID),0) AS n FROM message').get().n;}let stop=false;process.on('SIGINT',()=>stop=true);process.on('SIGTERM',()=>stop=true);
+async function request(body){const r=await fetch(config.server+'/api/agent/imessage/bridge',{method:'POST',headers:{Authorization:'Bearer '+config.secret,'Content-Type':'application/json'},body:JSON.stringify({id:config.id,peer:owner,...body}),signal:AbortSignal.timeout(15000),redirect:'error'});if(r.status===401){stop=true;throw Error('Connection revoked');}if(!r.ok)throw Error('Bridge request failed');return r.json();}
+const appleScript='on run argv\n tell application "Messages"\n set targetService to first service whose service type is iMessage\n set targetBuddy to buddy (item 1 of argv) of targetService\n send (item 2 of argv) to targetBuddy\n end tell\nend run';
+console.log('Reading new messages from the explicitly selected sender only. Stop with Ctrl+C.');
+try{while(!stop){try{const rows=db.prepare('SELECT m.ROWID AS rowid,m.guid,m.text FROM message m JOIN handle h ON h.ROWID=m.handle_id WHERE m.ROWID>? AND m.is_from_me=0 AND h.id=? ORDER BY m.ROWID LIMIT 30').all(after,owner);for(const row of rows){if(row.text){await request({action:'receive',eventKey:row.guid,text:row.text.slice(0,2000)});}else console.log('A message uses an unsupported protected body; forward its text with the Duck shortcut.');after=row.rowid;await writeFile(statePath,JSON.stringify({after}),{mode:0o600});}const result=await request({action:'poll'});if(result.message){const m=result.message;try{await promisify(execFile)('osascript',['-e',appleScript,owner,m.text]);await request({action:'sent',messageId:m.id,lease:m.lease});}catch{await request({action:'unknown',messageId:m.id,lease:m.lease}).catch(()=>{});}}}catch{if(!stop)console.log('Check the paired Mac, Messages permissions and connection.');}await new Promise(r=>setTimeout(r,2000));}}finally{db.close();}

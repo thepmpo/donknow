@@ -1,10 +1,12 @@
 # duckduck
 
-[현재 Dots형 비서·연결 감사](docs/assistant-briefing-2026-11-15.md) · [검사와 화면](docs/assistant-briefing-qa-2026-11-15.md)
+[Dots 공개 기능 전체 대응](docs/dots-parity-2026-11-15.md) · [검사·화면](docs/dots-full-qa-2026-11-15.md) · [채널·컴퓨터·모델 활성화](docs/dots-full-setup-2026-11-15.md)
 
 **다른 채팅에서 이어받기:** [현재 제품·구현 기준](docs/continuation-guide.md) → [Glass 상태·수치·검수](docs/liquid-glass-navigation.md) → [다른 서비스용 공통 원칙](docs/reusable-product-design-principles.md). 날짜별 이력보다 이 최신 계약을 우선합니다.
 
-토스의 단순한 화면 구성을 참고한 iPhone용 할 일 관리·개인 비서 앱입니다. 비서의 애칭은 덕이며, 하단 메뉴는 **캘린더 / Todo 리스트 / duckduck / log / 내정보**입니다. 토스와 제휴하거나 공식 자산을 사용하지 않습니다.
+토스의 단순한 화면 구성을 참고한 iPhone용 할 일 관리·개인 비서 앱입니다. 비서의 애칭은 덕이며, 하단 메뉴는 **캘린더 / Todo 리스트 / duckduck / log / ME**입니다. 토스와 제휴하거나 공식 자산을 사용하지 않습니다.
+
+이번 구현은 지속 작업·동시 위임·원문/파일 작성과 분석·컴퓨터 인계·여러 채널·음성·관련 장기 기억까지 포함합니다. 실계정 등록·사용자 OS 권한·새 native 설치는 별도이며 최신 설치본35에 자동 반영되지 않습니다.
 
 ## 구성
 

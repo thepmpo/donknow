@@ -1,3 +1,10 @@
+import {agentSyncStore} from './agent-sync.js';
+import {agentChannelStore} from './agent-channels.js';
+import {agentEventStore} from './agent-events.js';
+import {agentVoiceStore} from './agent-voice.js';
+import {agentMemoryStore} from './agent-memory.js';
+import {agentComputerStore} from './agent-computer.js';
+import {agentStore} from './agent-store.js';
 import {briefingStore} from './briefing-store.js';
 import {urgentStore} from './urgent-store.js';
 import {assistantMemoryStore} from './assistant-memory-store.js';
@@ -47,6 +54,13 @@ export async function featureStore(db, directory, env = process.env) {
     ...briefingStore(db,box),
     ...urgentStore(db,box),
     ...assistantMemoryStore(db,box),
+    ...agentStore(db,box),
+    ...agentMemoryStore(db,box),
+    ...agentComputerStore(db,box),
+    ...agentVoiceStore(db,box),
+    ...agentEventStore(db,box),
+    ...agentChannelStore(db,box),
+    ...agentSyncStore(db,box),
     ...assistantRealtimeStore(db,box),
     ...pushStore(db,box),
     ...taskSyncStore(db),

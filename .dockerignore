@@ -26,3 +26,6 @@ mobile/.gitignore
 
 deliverables
 **/__pycache__
+
+# User-provided handoff bundle is never sent into an image build.
+duckduck-functional-completion.bundle

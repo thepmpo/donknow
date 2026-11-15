@@ -8,7 +8,7 @@ let started = false;
 const inside = script => docker(['exec', name, 'node', '--input-type=module', '-e', script]);
 try {
   await docker(['volume', 'create', data]); await docker(['volume', 'create', backups]);
-  await docker(['run', '-d', '--name', name, '--read-only', '--tmpfs', '/tmp:size=64m,mode=1777', '--mount', `type=volume,src=${data},dst=/var/lib/duckduck`, '--mount', `type=volume,src=${backups},dst=/var/backups/duckduck`, '-e', 'PUBLIC_ORIGIN=https://fixture.invalid', '-e', 'BACKUP_ENABLED=1', 'duckduck:cloud-test']); started = true;
+  await docker(['run', '-d', '--name', name, '--read-only', '--tmpfs', '/tmp:size=64m,mode=1777', '--mount', `type=volume,src=${data},dst=/var/lib/duckduck`, '--mount', `type=volume,src=${backups},dst=/var/backups/duckduck`, '-e', 'PUBLIC_ORIGIN=https://fixture.invalid', '-e', 'BACKUP_ENABLED=1', process.env.DUCK_CONTAINER_IMAGE||'duckduck:cloud-test']); started = true;
   async function ready() { const until=Date.now()+20000;while(Date.now()<until){try{await inside("const r=await fetch('http://127.0.0.1:3000/api/health');if(!r.ok)process.exit(1)");return;}catch{}await new Promise(resolve=>setTimeout(resolve,100));}throw new Error('Container readiness failed'); }
   await ready();
   await inside(`

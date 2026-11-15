@@ -28,7 +28,7 @@ export function AssistantMemorySheet({store,onClose}:{store:TodoStore;onClose:()
    {!notes.length&&<Text style={s.muted}>아직 저장한 기억이 없어요.</Text>}
    <Text style={s.muted}>‘잊기’는 기억 목록만 지워요. 예전 대화에 남은 내용까지 지우려면 대화·기억 모두 지우기를 선택하세요.</Text>
    <Button title="대화·기억 모두 지우기" quiet disabled={busy} onPress={()=>setConfirm(true)}/>
-   {confirm&&<View style={{padding:16,borderRadius:18,backgroundColor:colors.grouped,gap:12}}><Text style={s.sectionTitle}>대화와 기억을 지울까요?</Text><Text style={s.muted}>저장한 Todo와 log, 연결한 서비스는 그대로예요.</Text><Button title="대화·기억 삭제 확인" disabled={busy} onPress={()=>{void run(()=>store.featureRequest('/api/assistant/memory','DELETE',{confirmation:'DELETE',conversations:true}),true);}}/><Button title="계속 보관" quiet disabled={busy} onPress={()=>setConfirm(false)}/></View>}
+   {confirm&&<View style={{padding:16,borderRadius:18,backgroundColor:colors.grouped,gap:12}}><Text style={s.sectionTitle}>대화와 기억을 지울까요?</Text><Text style={s.muted}>개인 대화·기억과 그 내용을 쓰던 작업 기록을 지워요. 저장한 파일·Todo·log와 연결한 서비스는 유지해요.</Text><Button title="대화·기억 삭제 확인" disabled={busy} onPress={()=>{void run(()=>store.featureRequest('/api/assistant/memory','DELETE',{confirmation:'DELETE',conversations:true}),true);}}/><Button title="계속 보관" quiet disabled={busy} onPress={()=>setConfirm(false)}/></View>}
    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </ScrollView></View>
  </DraggableSheet></View></Modal>;

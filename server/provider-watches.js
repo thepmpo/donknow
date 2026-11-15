@@ -7,24 +7,21 @@ export function createProviderWatches({store,env,token,request}){
  }
  return {realtimeReadiness(){const {origin,...status}=readiness();return status;},async renewAssistantWatches(now=Date.now()){
   if(running)return;running=true;try{const ready=readiness();if(!ready.origin)return;
-   for(const {userId,connection} of store.realtimeConnections('google'))for(const [provider,feature] of [['calendar','calendar'],['gmail','gmail']]){
-    if(!ready[provider]||!connection.features.includes(feature))continue;
-    const key=userId+':'+connection.connectionId+':'+provider,previous=store.assistantWatches(userId,provider).find(w=>w.connectionId===connection.connectionId);
-    if(previous?.expiresAt>now+24*3600000||attempts.get(key)>now)continue;attempts.set(key,now+15*60000);
+   for(const {userId,connection} of store.realtimeConnections('google')){
+    const connectionKey=userId+':'+connection.connectionId;if(attempts.get(connectionKey)>now)continue;attempts.set(connectionKey,now+15*60000);
     try{const record=await token(userId,'google',connection.connectionId),headers={Authorization:'Bearer '+record.accessToken,'Content-Type':'application/json'};
-     if(provider==='calendar'){
-      const secret=randomBytes(32).toString('base64url'),watch=store.prepareAssistantWatch(userId,provider,connection.connectionId,'primary',{},secret,now);
-      try{const value=await request('https://www.googleapis.com/calendar/v3/calendars/primary/events/watch',{method:'POST',headers,body:JSON.stringify({id:watch.id,type:'web_hook',address:ready.origin+'/api/webhooks/calendar',token:secret,expiration:String(now+6*86400000)})});
-       if(value.id!==watch.id||typeof value.resourceId!=='string'||!Number.isFinite(Number(value.expiration))||Number(value.expiration)<=now)throw Error('invalid_watch');
-       store.updateAssistantWatch(userId,watch.id,{resourceId:value.resourceId,expiresAt:Number(value.expiration),status:'ready'});
-      }catch(error){store.updateAssistantWatch(userId,watch.id,{status:'failed'});throw error;}
-     }else{
-      const value=await request('https://gmail.googleapis.com/gmail/v1/users/me/watch',{method:'POST',headers,body:JSON.stringify({topicName:env.GOOGLE_GMAIL_PUBSUB_TOPIC,labelIds:['INBOX'],labelFilterBehavior:'include'})});
-      if(typeof value.historyId!=='string'||!Number.isFinite(Number(value.expiration))||Number(value.expiration)<=now)throw Error('invalid_watch');
-      const watch=previous??store.prepareAssistantWatch(userId,provider,connection.connectionId,'inbox',{},randomBytes(32).toString('base64url'),now);store.updateAssistantWatch(userId,watch.id,{historyId:value.historyId,expiresAt:Number(value.expiration),status:'ready'});
+     if(ready.calendar&&connection.features.includes('calendar')){
+      let cursor=store.agentSync?.(userId,connection.connectionId,'calendar-watch-list')?.cursor??null,pages=0,created=0,remaining=[];
+      const saved=store.agentSync?.(userId,connection.connectionId,'calendar-watch-list');if(saved?.remaining)remaining=saved.remaining;
+      do{let calendars;if(remaining.length){calendars=remaining;remaining=[];}else{const value=await request('https://www.googleapis.com/calendar/v3/users/me/calendarList?'+new URLSearchParams({maxResults:'100',showDeleted:'false',...(cursor?{pageToken:cursor}:{})}),{headers});calendars=(value.items??[]).filter(c=>!c.deleted).map(c=>c.primary?'primary':c.id);cursor=value.nextPageToken??null;pages++;}
+       for(let n=0;n<calendars.length;n++){const calendar=calendars[n],previous=store.assistantWatches(userId,'calendar').find(w=>w.connectionId===connection.connectionId&&w.resourceKey===calendar);if(previous?.expiresAt>now+24*3600000)continue;if(created>=10){remaining=calendars.slice(n);break;}created++;const secret=randomBytes(32).toString('base64url'),watch=store.prepareAssistantWatch(userId,'calendar',connection.connectionId,calendar,{},secret,now);
+        try{const value=await request('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(calendar)+'/events/watch',{method:'POST',headers,body:JSON.stringify({id:watch.id,type:'web_hook',address:ready.origin+'/api/webhooks/calendar',token:secret,expiration:String(now+6*86400000)})});if(store.connection(userId,'google',connection.connectionId)?.connectionId!==connection.connectionId)throw Error('connection_changed');if(value.id!==watch.id||typeof value.resourceId!=='string'||!Number.isFinite(Number(value.expiration))||Number(value.expiration)<=now)throw Error('invalid_watch');store.updateAssistantWatch(userId,watch.id,{resourceId:value.resourceId,expiresAt:Number(value.expiration),status:'ready'});store.enqueueAgentEvent?.(userId,'google','baseline:'+watch.id,connection.connectionId,{kind:'refresh',calendarId:calendar,receivedAt:now},now);}catch{store.updateAssistantWatch(userId,watch.id,{status:'failed'});}
+       }
+      }while(cursor&&pages<5&&!remaining.length);store.saveAgentSync?.(userId,connection.connectionId,'calendar-watch-list',{cursor,remaining});if(cursor||remaining.length)attempts.set(connectionKey,now+60000);
      }
-     if(attempts.size>1000)attempts.delete(attempts.keys().next().value);
-    }catch{/* Preserve fallback polling; no credential, event body or provider error is logged. */}
+     if(ready.gmail&&connection.features.includes('gmail')){const previous=store.assistantWatches(userId,'gmail').find(w=>w.connectionId===connection.connectionId);if(!previous||previous.expiresAt<now+24*3600000){const value=await request('https://gmail.googleapis.com/gmail/v1/users/me/watch',{method:'POST',headers,body:JSON.stringify({topicName:env.GOOGLE_GMAIL_PUBSUB_TOPIC})});if(typeof value.historyId!=='string'||!Number.isFinite(Number(value.expiration))||Number(value.expiration)<=now)throw Error('invalid_watch');if(store.connection(userId,'google',connection.connectionId)?.connectionId!==connection.connectionId)throw Error('connection_changed');const watch=previous??store.prepareAssistantWatch(userId,'gmail',connection.connectionId,'all-mail',{},randomBytes(32).toString('base64url'),now);store.updateAssistantWatch(userId,watch.id,{historyId:previous?.historyId??value.historyId,expiresAt:Number(value.expiration),status:'ready'});}}
+    }catch{/* Read-only polling continues if a provider cannot register a receiver. */}
+    if(attempts.size>1000)attempts.delete(attempts.keys().next().value);
    }
   }finally{running=false;}
  }};

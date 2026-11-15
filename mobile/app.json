@@ -11,7 +11,8 @@
       "bundleIdentifier": "com.sjfieni.duckduck",
       "buildNumber": "1",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "덕과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
       }
     },
     "android": {
@@ -45,6 +46,21 @@
         "expo-calendar",
         {
           "remindersPermission": "선택한 미리 알림을 덕의 Todo로 가져오기 위해 접근 권한이 필요해요."
+        }
+      ],
+      "./plugins/with-duck-shortcuts.cjs",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "선택한 사진을 덕에게 전달하기 위해 사진을 선택해요.",
+          "cameraPermission": false,
+          "microphonePermission": "덕과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
+        }
+      ],
+      [
+        "./plugins/with-duck-widget.cjs",
+        {
+          "enabled": false
         }
       ]
     ],

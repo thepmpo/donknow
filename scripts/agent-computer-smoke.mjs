@@ -1,0 +1,24 @@
+/** Explicit local Docker verification. Browser egress uses a synthetic HTTP fixture, never a user's accounts. */
+import assert from 'node:assert/strict';
+import http from 'node:http';
+import {mkdtemp,rm,mkdir,writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {createBrowserComputer} from '../companion/browser.mjs';
+import {runSandbox} from '../companion/sandbox.mjs';
+const dir=await mkdtemp(join(tmpdir(),'duck-computer-smoke-')),workspace=join(dir,'workspace');await mkdir(workspace);let uploaded=false;
+const fixture=http.createServer((req,res)=>{if(req.url==='/file'){res.writeHead(200,{'Content-Disposition':'attachment; filename="fixture.txt"','Content-Type':'text/plain'});res.end('actual browser download');return;}if(req.url==='/uploaded'){uploaded=true;res.end('ok');return;}res.setHeader('Content-Type','text/html');res.end('<!doctype html><title>Duck synthetic browser</title><style>input,button,a{display:block;width:200px;height:42px;margin:0}</style><input id="message"><button onclick="document.title=document.querySelector(\'#message\').value">Use title</button><input type="file" onchange="fetch(\'/uploaded\')"><a href="/file">Download</a>');});
+await new Promise(r=>fixture.listen(0,'127.0.0.1',r));
+const browser=createBrowserComputer({directory:dir,proxyOptions:{lookupAddress:async host=>[{address:host==='fixture.example'?'1.1.1.1':host,family:4}],httpRequest:(options,callback)=>http.request({...options,host:'127.0.0.1',hostname:'127.0.0.1',port:fixture.address().port},callback)}});
+try{
+ const page=await browser.execute({operation:'navigate',url:'http://fixture.example/'});assert.equal(page.httpStatus,200);assert.ok(page.screenshot.startsWith('data:image/jpeg;'));
+ const typed=await browser.execute({operation:'actions',actions:[{type:'click',x:50,y:25},{type:'type',text:'Duck tested'},{type:'click',x:55,y:72}]});assert.equal(typed.title,'Duck tested');
+ await browser.execute({operation:'actions',files:[{id:'selected',name:'input.txt',mime:'text/plain',data:Buffer.from('explicit selected bytes').toString('base64')}],actions:[{type:'upload',fileIds:['selected']}]});assert.equal(uploaded,true);
+ const downloaded=await browser.execute({operation:'actions',actions:[{type:'click',x:55,y:157},{type:'wait',ms:400}]});assert.equal(Buffer.from(downloaded.files[0].data,'base64').toString(),'actual browser download');
+ const privatePage=await browser.execute({operation:'navigate',url:'http://127.0.0.1/'});assert.equal(privatePage.httpStatus,403);
+ process.env.DUCK_SMOKE_HOST_SECRET='host-only-fixture';
+ const first=await runSandbox({language:'python',code:"import os,socket\nassert 'DUCK_SMOKE_HOST_SECRET' not in os.environ\ntry:\n socket.create_connection(('1.1.1.1',443),timeout=1)\n raise AssertionError('Network unexpectedly enabled')\nexcept OSError: pass\nopen('/output/saved.txt','w').write('persisted across commands')\nprint('isolated')"},{workspace});assert.equal(first.exitCode,0);assert.match(first.stdout,/isolated/);
+ const second=await runSandbox({language:'python',code:"import pandas as pd, matplotlib\nmatplotlib.use('Agg')\nimport matplotlib.pyplot as plt\nfrom matplotlib.font_manager import FontProperties,fontManager\nfontManager.addfont('/usr/share/fonts/truetype/NotoSansKR.ttf')\nplt.rcParams['font.family']=FontProperties(fname='/usr/share/fonts/truetype/NotoSansKR.ttf').get_name()\nassert open('/output/saved.txt').read()=='persisted across commands'\ndf=pd.DataFrame({'항목':['일상','업무'],'수량':[12,30]})\ndf.to_excel('/output/분석.xlsx',index=False)\nassert pd.read_excel('/output/분석.xlsx')['수량'].sum()==42\nplt.bar(df['항목'],df['수량'])\nplt.savefig('/output/분석.png')\nprint('analysis42')"},{workspace});assert.equal(second.exitCode,0);assert.ok(second.files.some(f=>f.name==='분석.xlsx'));assert.ok(second.files.some(f=>f.name==='분석.png'));assert.match(second.stdout,/analysis42/);
+ const output=new URL('../artifacts/dots-full-2026-11-15/computer/',import.meta.url);await mkdir(output,{recursive:true});await writeFile(new URL('browser-fixture.jpg',output),Buffer.from(typed.screenshot.split(',')[1],'base64'));for(const name of ['분석.png','분석.xlsx']){const file=second.files.find(f=>f.name===name);await writeFile(new URL(name,output),Buffer.from(file.data,'base64'));}
+ const evidence={actualDocker:true,syntheticBrowserNetwork:true,publicWebNavigation:false,browser:['navigate','screenshot','click','type','selected upload','actual download','private IP blocked'],code:['network none','no host env','persistent workspace','pandas XLSX reload','matplotlib PNG'],externalAccountWrites:0};await writeFile(new URL('result.json',output),JSON.stringify(evidence,null,2));console.log(JSON.stringify(evidence));
+}finally{delete process.env.DUCK_SMOKE_HOST_SECRET;await browser.close();await new Promise(r=>fixture.close(r));await rm(dir,{recursive:true,force:true});}

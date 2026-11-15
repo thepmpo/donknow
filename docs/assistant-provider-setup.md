@@ -1,15 +1,17 @@
 # 덕 공급자 수신 설정 — 운영자 절차
 
+현재 전체 설정은 [Dots 전체 활성화 절차](dots-full-setup-2026-11-15.md)를 우선한다. 아래 절차는 기존 수신 setup 상세이며 이번 버전은 독립 agent 이벤트·여러 Calendar watch·Gmail history 이어 읽기·Slack bot 연락을 포함한다.
+
 기존의 개인 자료/자동 발송/유료 인프라를 대신 켜는 절차가 아니다. 인증 값은 서비스의 비공개 설정 화면에서만 다룬다. 채팅·Git·공개 문서에 실제 값을 넣지 않는다. ChatGPT 연결과 덕 자체 OAuth 앱은 별개다.
 
 ## 다른 Slack 워크스페이스
 
 1. https://api.slack.com/apps 에서 원하는 워크스페이스를 직접 선택하여 덕 앱을 만든다. [manifest](../config/slack-app-manifest.json)는 워크스페이스 ID를 고정하지 않는다. 최초 생성 시에는 `settings.event_subscriptions`를 잠시 제외한다. 아직 서명 키를 모르는 서버에 URL 검증부터 시도하지 않도록 하기 위해서다.
 2. 기존 무료 Render 서비스의 비공개 환경 설정에 `SLACK_CLIENT_ID`, `SLACK_CLIENT_SECRET`, `SLACK_SIGNING_SECRET`, 선택적으로 `SLACK_APP_ID`를 입력한다. `PUBLIC_ORIGIN`은 서비스의 실제 HTTPS origin을 쓴다. 기존 암호화 키/서명 키를 교체하지 않는다. 이 단계의 실제 값은 사용자/운영자만 입력한다.
-3. 서버 갱신 뒤 전체 manifest의 event_subscriptions를 적용한다. `/api/webhooks/slack`의 서명된 URL challenge가 성공하는지 Slack 화면에서 확인한다. user_events는 message.channels/groups/im/mpim이다.
-4. 덕 ME → 연결된 서비스 → Slack에서 다시 승인한다. OAuth의 워크스페이스를 확인하고 사용자 읽기 권한을 승인한다. ChatGPT의 다른 워크스페이스 연결만으로 이 단계가 완료되지는 않는다.
-5. 브리핑 예약에서 Slack을 선택하고 중요 변화·AI 동의를 켜야 해당 사용자 수신을 처리한다. 실제 멘션/DM 확인 요청을 보내 앱 수신함과 해당 기기의 push를 검사한다. 이벤트의 authorization이 설치자와 다르면 안전하게 제외한다.
-6. 쓰기가 필요할 때만 별도로 chat:write를 앱의 사용자 scope에 추가하고 덕에서 쓰기 권한을 재승인한다. 기본 manifest는 읽기 전용이다. 전달/수정에는 항상 실행 확인이 있다.
+3. 서버 갱신 뒤 전체 manifest의 event_subscriptions를 적용한다. `/api/webhooks/slack`의 서명된 URL challenge가 성공하는지 Slack 화면에서 확인한다. user_events는 message.channels/groups/im/mpim, bot_events는 message.im/app_mention이다.
+4. 덕 ME → 연결된 서비스 → Slack에서 다시 승인한다. OAuth의 워크스페이스를 확인하고 사용자 읽기·검색 권한을 승인하고, Slack에서 덕과 대화는 별도 선택한다. ChatGPT의 다른 워크스페이스 연결만으로 이 단계가 완료되지는 않는다.
+5. 브리핑 중요 변화 또는 비서 설정의 먼저 확인할 자료/지속 책임에서 Slack·AI 동의를 선택해야 조사하며, 봇 연락은 별도 소유자 연결을 확인한다. 실제 멘션/DM 확인 요청을 보내 앱 수신함과 해당 기기의 push를 검사한다. 이벤트의 authorization이 설치자와 다르면 안전하게 제외한다.
+6. 쓰기가 필요할 때만 별도로 chat:write를 앱의 사용자 scope에 추가하고 덕에서 쓰기 권한을 재승인한다. 사용자 원본 쓰기는 기본 선택하지 않으며 봇 연락 scope와 구분한다. 전달/수정에는 항상 실행 확인이 있다.
 
 실제 다른 워크스페이스/덕 앱 등록은 아직 확인되지 않았다. 이 문서가 설치 완료 증거는 아니다.
 
@@ -23,7 +25,7 @@ Notion 연결의 webhook 구독에 그 URL과 필요한 page.content_updated / p
 
 ## Google
 
-Calendar는 기존 읽기 OAuth와 중요 변화 동의로 기본 캘린더 watch를 만든다. 보조 캘린더 전체가 수신 대상은 아니다. 임의 Resource URI를 가져오지 않고 등록한 채널만 검증한다. 갱신 실패는 기존 주기 조회로 보완한다.
+Calendar는 기존 읽기 OAuth와 중요 변화/agent 동의로 접근 가능한 달력 목록을 페이지로 읽고 watch를 나눠 등록·갱신한다. syncToken/취소/만료 재기준 설정을 처리한다. 임의 Resource URI를 가져오지 않고 등록한 채널만 검증한다. 갱신 실패는 기존 주기 조회로 보완한다.
 
 Gmail은 **이미 승인·준비된** Google Cloud 프로젝트의 topic/구독이 필요하다. 새 Cloud 자원을 자동 생성하지 않는다. topic에 `gmail-api-push@system.gserviceaccount.com`의 게시 권한, 인증된 push 구독의 OIDC 서비스 계정, 덕 receiver URL을 운영자가 설정한다. 필요한 비공개 환경 이름:
 
@@ -32,7 +34,7 @@ Gmail은 **이미 승인·준비된** Google Cloud 프로젝트의 topic/구독�
 - `GOOGLE_PUSH_SERVICE_ACCOUNT` — 구독의 실제 OIDC 이메일
 - `GOOGLE_PUSH_AUDIENCE` — 기본값은 PUBLIC_ORIGIN + /api/webhooks/gmail
 
-Google의 서명된 토큰과 위 값들이 정확히 일치해야 한다. 기존 설정 여부/비용은 Cloud 담당자가 확인한다. 설정이 없으면 Gmail push는 미준비 상태이며 주기 확인만 한다. 최근 INBOX 일부를 다시 읽는 구현이며 history 전체 복원이라고 설명하지 않는다.
+Google의 서명된 토큰과 위 값들이 정확히 일치해야 한다. 기존 설정 여부/비용은 Cloud 담당자가 확인한다. 설정이 없으면 Gmail push는 미준비 상태이며 주기 확인만 한다. history 페이지와 추가/삭제/label 변화를 이어 읽고 체크포인트를 보관한다. history가 만료되면 누락 가능성을 표시하고 재기준 설정한다.
 
 ## 운영 확인
 

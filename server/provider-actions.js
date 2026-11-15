@@ -1,3 +1,4 @@
+import {convert as htmlToText} from 'html-to-text';
 import {calendarAccount} from './google-accounts.js';
 import {calendarIdentifier,calendarZone} from './calendar-time.js';
 import { fail } from './secrets.js';
@@ -53,9 +54,9 @@ const encode=encodeURIComponent;
 const rich=text=>[{type:'text',text:{content:text}}];
 const blocks=text=>text.match(/[\s\S]{1,1800}/g).map(line=>({object:'block',type:'paragraph',paragraph:{rich_text:rich(line)}}));
 const header=(value,name)=>value.payload?.headers?.find(h=>h.name.toLowerCase()===name.toLowerCase())?.value??'';
-export function mailText(value) {
+export function mailText(value,max=8000) {
  const collect=part=>{if(part.mimeType==='text/plain'&&part.body?.data)return Buffer.from(part.body.data,'base64url').toString('utf8');return (part.parts??[]).map(collect).join('\n');};
- return (collect(value.payload??{})||value.snippet||'').slice(0,8000);
+ const html=part=>part.mimeType==='text/html'&&part.body?.data?Buffer.from(part.body.data,'base64url').toString('utf8'):(part.parts??[]).map(html).join('\n');return (collect(value.payload??{})||htmlToText(html(value.payload??{}),{wordwrap:false,limits:{maxInputLength:1024*1024},selectors:[{selector:'img',format:'skip'},{selector:'script',format:'skip'},{selector:'style',format:'skip'}]})||value.snippet||'').slice(0,Math.min(1024*1024,max));
 }
 function rawMail(to,subject,text,reply) {
  const lines=[`To: ${to}`,`Subject: =?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`,`MIME-Version: 1.0`,'Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64'];
@@ -92,8 +93,9 @@ export function createProviderActions({store,token,request}) {
  }
  return {
   inspect,
-  async execute(user,operation,args,preview,actionId){
-   const current=await inspect(user,operation,args);
+  async execute(user,operation,args,preview,actionId,guard=()=>true){
+   let writes=0;const write=async(...parameters)=>{if(!guard())throw fail(writes?502:409,writes?'일부 변경 뒤 작업이 중지됐어요. 원본에서 결과를 확인해주세요.':'작업이 중지되거나 바뀌었어요.');try{const value=await request(...parameters);writes++;return value;}catch(error){if(writes)throw fail(502,'일부 변경 뒤 다음 단계를 확인하지 못했어요. 원본에서 결과를 확인해주세요.');throw error;}};
+   const current=await inspect(user,operation,args);if(!guard())throw fail(409,'작업이 중지되거나 바뀌었어요.');
    if(current.connectionId!==preview.connectionId||current.version!==preview.version||current.extra?.destinationCalendarName!==preview.extra?.destinationCalendarName)throw fail(409,'연결 또는 원본이 바뀌었어요. 내용을 다시 확인해주세요.');
    if(operation==='todo.create')return {todo:store.create(user,{title:args.title.trim(),notes:args.notes??'',dueDate:args.dueDate??null,category:'업무'},{done:args.done===true})};
    if(operation==='todo.update')return {todo:store.update(user,args.id,Object.fromEntries(Object.entries(args).filter(([k])=>k!=='id')))};
@@ -101,21 +103,21 @@ export function createProviderActions({store,token,request}) {
    if(operation==='gmail.markRead'){url=`https://gmail.googleapis.com/gmail/v1/users/me/messages/${encode(args.id)}/modify`;body={addLabelIds:args.read?[]:['UNREAD'],removeLabelIds:args.read?['UNREAD']:[]};}
    if(operation==='gmail.reply'||operation==='gmail.send'){url='https://gmail.googleapis.com/gmail/v1/users/me/messages/send';const e=current.extra;body={raw:rawMail(e.to??args.to,e.subject??args.subject,args.text,e.replyId),...(e.threadId?{threadId:e.threadId}:{})};}
    if(operation==='slack.send'||operation==='slack.update'){url='https://slack.com/api/'+(operation==='slack.send'?'chat.postMessage':'chat.update');body={channel:args.channel,text:args.text,parse:'none',link_names:false,unfurl_links:false,unfurl_media:false,...(args.thread?{thread_ts:args.thread}:{}),...(args.ts?{ts:args.ts}:{}),...(operation==='slack.send'?{client_msg_id:actionId}:{})};}
-   if(operation.startsWith('notion.')){notion=true;if(operation==='notion.create'){url='https://api.notion.com/v1/pages';body={parent:{page_id:args.parent},properties:{title:{type:'title',title:rich(args.title)}},children:blocks(args.text)};}else if(operation==='notion.append'){url=`https://api.notion.com/v1/blocks/${encode(args.id)}/children`;method='PATCH';body={children:blocks(args.text)};}else{url='https://api.notion.com/v1/pages/'+encode(args.id);method='PATCH';const page=await request(url,opts(record,'GET',undefined,null,true));const prop=Object.entries(page.properties??{}).find(([,v])=>v.type==='title')?.[0];if(!prop)throw fail(409,'제목 속성을 찾지 못했어요.');body={properties:{[prop]:{title:rich(args.title)}}};}}
+   if(operation.startsWith('notion.')){notion=true;if(operation==='notion.create'){url='https://api.notion.com/v1/pages';body={parent:{page_id:args.parent},properties:{title:{type:'title',title:rich(args.title)}},children:blocks(args.text)};}else if(operation==='notion.append'){url=`https://api.notion.com/v1/blocks/${encode(args.id)}/children`;method='PATCH';body={children:blocks(args.text)};}else{url='https://api.notion.com/v1/pages/'+encode(args.id);method='PATCH';const page=await write(url,opts(record,'GET',undefined,null,true));const prop=Object.entries(page.properties??{}).find(([,v])=>v.type==='title')?.[0];if(!prop)throw fail(409,'제목 속성을 찾지 못했어요.');body={properties:{[prop]:{title:rich(args.title)}}};}}
    if(operation.startsWith('tasks.')){url=`https://www.googleapis.com/tasks/v1/lists/${encode(args.list)}/tasks`+(args.id?'/'+encode(args.id):'');method=operation==='tasks.update'?'PATCH':'POST';body={...(args.title!==undefined?{title:args.title}:{}),...(args.notes!==undefined?{notes:args.notes}:{}),...(args.dueDate!==undefined?{due:args.dueDate?args.dueDate+'T00:00:00.000Z':null}:{}),...(args.done!==undefined?{status:args.done?'completed':'needsAction',...(!args.done?{completed:null}:{})}:{})};}
    if(operation==='calendar.delete'){url='https://www.googleapis.com/calendar/v3/calendars/'+encode(args.calendarId)+'/events/'+encode(args.id)+'?sendUpdates=none';method='DELETE';}
    else if(operation.startsWith('calendar.')){url='https://www.googleapis.com/calendar/v3/calendars/'+encode(args.calendarId??'primary')+'/events'+(args.id?'/'+encode(args.id):'')+'?sendUpdates=none';method=args.id?'PATCH':'POST';body={...(args.title!==undefined?{summary:args.title}:{}),...((args.start||args.startDate)?{start:args.allDay?{date:args.startDate,...(args.id?{dateTime:null,timeZone:null}:{})}:{dateTime:args.start,...(args.id?{date:null}:{}),...(args.timeZone?{timeZone:args.timeZone}:{})},end:args.allDay?{date:args.endDate,...(args.id?{dateTime:null,timeZone:null}:{})}:{dateTime:args.end,...(args.id?{date:null}:{}),...(args.timeZone?{timeZone:args.timeZone}:{})}}:{}),...(args.location!==undefined?{location:args.location}:{}),...(args.notes!==undefined?{description:args.notes}:{}),...(!args.id?{id:actionId.replace(/-/g,'')}: {})};}
-   if(operation==='drive.create'){const file=await request('https://www.googleapis.com/drive/v3/files',opts(record,'POST',{name:args.title,mimeType:'text/plain',appProperties:{duckduckAction:actionId}}));url='https://www.googleapis.com/upload/drive/v3/files/'+encode(file.id)+'?uploadType=media';method='PATCH';body=args.text;const result=await request(url,{method,headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'text/plain; charset=utf-8'},body});return {id:result.id??file.id};}
+   if(operation==='drive.create'){const file=await write('https://www.googleapis.com/drive/v3/files',opts(record,'POST',{name:args.title,mimeType:'text/plain',appProperties:{duckduckAction:actionId}}));url='https://www.googleapis.com/upload/drive/v3/files/'+encode(file.id)+'?uploadType=media';method='PATCH';body=args.text;const result=await write(url,{method,headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'text/plain; charset=utf-8'},body});return {id:result.id??file.id};}
    if(operation==='drive.rename'){url='https://www.googleapis.com/drive/v3/files/'+encode(args.id);method='PATCH';body={name:args.title};}
-   if(operation==='drive.updateText'){url='https://www.googleapis.com/upload/drive/v3/files/'+encode(args.id)+'?uploadType=media';const result=await request(url,{method:'PATCH',headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'text/plain; charset=utf-8','If-Match':current.version},body:args.text});return {id:result.id??args.id};}
+   if(operation==='drive.updateText'){url='https://www.googleapis.com/upload/drive/v3/files/'+encode(args.id)+'?uploadType=media';const result=await write(url,{method:'PATCH',headers:{Authorization:'Bearer '+record.accessToken,'Content-Type':'text/plain; charset=utf-8','If-Match':current.version},body:args.text});return {id:result.id??args.id};}
    if(operation==='calendar.update'&&args.destinationCalendarId){
     // Move once; a later PATCH failure is a partial write, never a retryable failure.
-    const moved=await request('https://www.googleapis.com/calendar/v3/calendars/'+encode(args.calendarId??'primary')+'/events/'+encode(args.id)+'/move?'+new URLSearchParams({destination:args.destinationCalendarId,sendUpdates:'none'}),opts(record,'POST',undefined,current.version));
-    try{if(Object.keys(body).length){if(!moved.etag)throw fail(502,'이동한 일정 버전을 확인하지 못했어요.');await request('https://www.googleapis.com/calendar/v3/calendars/'+encode(args.destinationCalendarId)+'/events/'+encode(moved.id??args.id)+'?sendUpdates=none',opts(record,'PATCH',body,moved.etag));}}
+    const moved=await write('https://www.googleapis.com/calendar/v3/calendars/'+encode(args.calendarId??'primary')+'/events/'+encode(args.id)+'/move?'+new URLSearchParams({destination:args.destinationCalendarId,sendUpdates:'none'}),opts(record,'POST',undefined,current.version));
+    try{if(Object.keys(body).length){if(!moved.etag)throw fail(502,'이동한 일정 버전을 확인하지 못했어요.');await write('https://www.googleapis.com/calendar/v3/calendars/'+encode(args.destinationCalendarId)+'/events/'+encode(moved.id??args.id)+'?sendUpdates=none',opts(record,'PATCH',body,moved.etag));}}
     catch{throw fail(502,'캘린더는 이동했지만 일부 변경을 확인하지 못했어요. 다시 실행하지 말고 일정을 새로고침해주세요.');}
     return {id:moved.id??args.id,calendarId:args.destinationCalendarId};
    }
-   const result=await request(url,opts(record,method,body,['calendar.update','calendar.delete','tasks.update','drive.rename'].includes(operation)?current.version:null,notion),operation.startsWith('slack.'));
+   const result=await write(url,opts(record,method,body,['calendar.update','calendar.delete','tasks.update','drive.rename'].includes(operation)?current.version:null,notion),operation.startsWith('slack.'));
    return {id:result.id??result.ts??(operation==='calendar.delete'?args.id:null)};
   },
  };
