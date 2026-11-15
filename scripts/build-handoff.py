@@ -812,7 +812,7 @@ for chunk in chunks[1:]:
     heading,body_part=chunk.split('</h2>',1)
     number=int(re.match(r'<h2 id="section-(\d+)">',heading)[1])+1
     if number==2:
-        body_part='<p class="status-intro">기존 Google·Notion 읽기와 백업 복원은 확인했어요. 비서의 자료 분석·Todo 제안·확인 후 실행을 추가했고 사용자가 첫 실제 AI 답변을 확인했어요. 인사는 짧게, 업무 요청은 근거와 확인을 거치도록 보완했어요. 실제 업무 저장과 외부 쓰기 확인은 남아 있어요. TestFlight는 사용자 확인 1.0.0 (12)와 이후 빌드 요청을 구분해 기록해요. 공식 톤 원칙은 앞쪽에서 확인할 수 있어요.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
+        body_part='<p class="status-intro">지속 작업·위임·원문과 파일 작성·분석·컴퓨터·연락 채널·관련 장기 기억을 구현했어요. 자동 검사와 일반폰·Duo 화면, 실제 격리 실행을 확인했어요. 실제 공급자 등록·모델 품질·기기 권한은 별도로 검수해야 해요. 최신 native는1.0.0(35)이며 이번 소스는 그 이후입니다.</p>'+re.sub(r'(<div class="table">.*?</table></div>)',r'<details class="status-details"><summary>기능별 자세한 상태 보기</summary>\1</details>',body_part,flags=re.S)
     if number==3:
         change_count=[0]
         def fold_change(match):
@@ -838,7 +838,7 @@ feedback = r'''<section id="feedback" class="feedback"><h2>댓글 · 수정 요�
 <label>댓글 상태<select id="feedback-filter"><option value="all">전체</option><option value="open">열린 요청</option><option value="resolved">반영 확인</option></select></label><button id="feedback-refresh" type="button">댓글 새로고침</button><button id="feedback-copy" type="button">AI에 전달할 댓글 복사</button><textarea id="feedback-copy-text" aria-label="AI에 전달할 요청" readonly hidden></textarea><p><a href="/api/project/comments?status=open">AI에게 전달할 열린 댓글 목록(JSON)</a></p><div id="feedback-list"></div><button id="feedback-more" type="button" hidden>댓글 더 보기</button></section><script src="/project-comments.js" defer></script>'''
 project = re.sub(r'<h1>duckduck — 제품.*?</h1>', '', project, count=1)
 project = project.replace('실제 Notion에 생성된 페이지가 아니라 <strong>한 페이지 가져오기 원본</strong>입니다.', '외부에서 읽고 댓글로 수정 요청을 남길 수 있는 프로젝트 문서입니다.')
-hero='<header class="project-hero"><span class="eyebrow">DUCKDUCK PROJECT</span><h1>덕과 함께 만드는 하루</h1><p>지금까지 만든 것, 바뀐 것, 다음에 할 일을 한곳에서 확인하세요.</p><div class="hero-meta"><span>문서 갱신 '+DATE+'</span><a href="#section-2">최근 변경 보기 →</a></div><div class="overview-cards"><a href="#section-1"><span>현재 상태</span><strong>iPhone 1.0.0 (30)</strong><small>Apple 업로드 성공 · 새 수정은 다음 빌드</small></a><a href="#section-4"><span>화면 미리보기</span><strong>다섯 탭을 한눈에</strong><small>할 일 · 캘린더 · 덕 · log · ME</small></a><a href="#feedback"><span>함께 다듬기</span><strong>수정할 점을 남겨주세요</strong><small>문서 위치와 연결되는 댓글</small></a></div></header>'
+hero='<header class="project-hero"><span class="eyebrow">DUCKDUCK PROJECT</span><h1>덕과 함께 만드는 하루</h1><p>지금까지 만든 것, 바뀐 것, 다음에 할 일을 한곳에서 확인하세요.</p><div class="hero-meta"><span>문서 갱신 '+DATE+'</span><a href="#section-2">최근 변경 보기 →</a></div><div class="overview-cards"><a href="#section-1"><span>현재 상태</span><strong>iPhone 1.0.0 (35)</strong><small>Apple 업로드 성공 · 새 수정은 다음 빌드</small></a><a href="#section-4"><span>화면 미리보기</span><strong>다섯 탭을 한눈에</strong><small>할 일 · 캘린더 · 덕 · log · ME</small></a><a href="#feedback"><span>함께 다듬기</span><strong>수정할 점을 남겨주세요</strong><small>문서 위치와 연결되는 댓글</small></a></div></header>'
 # Add the hero after the top utility nav, not inside the sidebar's navigation.
 marker='<button id="feedback-selection" type="button">선택한 문장에 댓글</button></nav>'
 project=project.replace(marker,marker+hero,1)
@@ -848,6 +848,17 @@ aside = re.search(r'<aside class="project-toc".*?</aside>', project).group(0)
 project = project.replace(aside, '', 1)
 project = project.replace('<body>', '<body class="project-layout">'+aside+'<main class="project-content">', 1)
 project = project.replace('</body>', '</main></body>', 1)
+# Resolve repository document links from the public page to their actual source.
+import posixpath
+def repository_document_link(match):
+    href=html.unescape(match[1]);path,separator,anchor=href.partition('#')
+    relative=posixpath.normpath(path if path.startswith('docs/') else 'docs/'+path)
+    if relative.startswith('../') or relative.startswith('/'):return match[0]
+    if not (ROOT/relative).is_file():
+        if (ROOT/path).is_file() and not path.startswith('../'):relative=path
+        else:return match[0]
+    return 'href="https://github.com/thepmpo/donknow/blob/main/'+html.escape(relative+('#'+anchor if separator else ''),quote=True)+'"'
+project=re.sub(r'href="((?!https?:|/|#)[^"]+\.md(?:#[^"]*)?)"',repository_document_link,project)
 (ROOT/'public/project.html').write_text(project)
 (OUT/'IMPORT-README.txt').write_text('개인 Notion의 올바른 계정/워크스페이스에 로그인한 뒤 설정 또는 사이드바의 가져오기 → Markdown & CSV에서 duckduck-notion-import.zip을 선택하세요.\nZIP에는 문서 한 개와 전체 이미지 폴더가 있습니다. 가져온 뒤 이미지 수와 마지막 지침 절이 있는지 확인하세요.\n이 ZIP은 저장소 기술 인계용입니다. 사용자용 기록은 선택한 개인 Notion의 duckduck · 제품·개발 기록에 별도로 작성하며, 비공개 페이지를 이 ZIP에 복제하지 않습니다.\nHTML은 전체 이미지가 포함된 오프라인 미리보기입니다.\nsource.zip은 별도의 전체 소스 인계용이며 Notion에 함께 가져오지 않아도 됩니다.\nAPI 키·토큰·DB·node_modules·Git 내부 데이터는 포함하지 않습니다.\n')
 with zipfile.ZipFile(OUT/'duckduck-notion-import.zip') as archive:
