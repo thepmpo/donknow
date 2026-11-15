@@ -5,6 +5,9 @@ export function aiFetch(fetcher=fetch,log=console.warn){return async(url,options
 /** Read-only model availability probe: no prompts, documents, paid generation or key values. */
 export async function probeAiConnection(env=process.env,fetcher=fetch,log=console.warn){
  env=aiEnvironment(env);if(env.AI_ENABLED!=='true'||!env.OPENAI_API_KEY||!env.OPENAI_MODEL)return;
- try{const response=await fetcher('https://api.openai.com/v1/models/'+encodeURIComponent(env.OPENAI_MODEL),{headers:{Authorization:'Bearer '+env.OPENAI_API_KEY},redirect:'error',signal:AbortSignal.timeout(10000)});if(response.body)void response.body.cancel().catch(()=>{});log(JSON.stringify({event:'ai-connection-probe',status:response.status,ok:response.ok}));}
+ try{const response=await fetcher('https://api.openai.com/v1/models/'+encodeURIComponent(env.OPENAI_MODEL),{headers:{Authorization:'Bearer '+env.OPENAI_API_KEY},redirect:'error',signal:AbortSignal.timeout(10000)});if(response.body)void response.body.cancel().catch(()=>{});log(JSON.stringify({event:'ai-connection-probe',status:response.status,ok:response.ok,format:response.headers?.get('content-type')?.includes('json')?'json':'other'}));
+  // Temporary investigation of the observed 403: a key may allow inference but deny model-list reads.
+  if(response.status===403){try{const test=await fetcher('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json'},redirect:'error',signal:AbortSignal.timeout(20000),body:JSON.stringify({model:env.OPENAI_MODEL,store:false,max_output_tokens:16,input:'Connection test. Reply OK.'})});if(test.body)void test.body.cancel().catch(()=>{});log(JSON.stringify({event:'ai-response-probe',status:test.status,ok:test.ok,format:test.headers?.get('content-type')?.includes('json')?'json':'other'}));}catch(error){log(JSON.stringify({event:'ai-response-probe',ok:false,kind:aiFailureKind(error)}));}}
+ }
  catch(error){log(JSON.stringify({event:'ai-connection-probe',ok:false,kind:aiFailureKind(error)}));}
 }

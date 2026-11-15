@@ -68,7 +68,7 @@ test('AI network and timeout failures remain private and do not retry automatica
   await safeFailure(f.assistant,name==='TypeError'?/연결하지 못했어요/:/응답 시간이 초과/);
   assert.equal(f.calls.length,1);
  }
- assert.deepEqual(logs,[]);
+ assert.deepEqual(logs.map(row=>JSON.parse(row[0])),[{event:'ai-transport-failure',kind:'timeout'},{event:'ai-transport-failure',kind:'timeout'},{event:'ai-transport-failure',kind:'network-or-request'}]);assert.equal(JSON.stringify(logs).includes(secret),false);
 });
 
 test('AI provider diagnostics preserve email verification and explicit consent before any provider call',async()=>{
