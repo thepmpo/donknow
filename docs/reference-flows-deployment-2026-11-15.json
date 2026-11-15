@@ -1,0 +1,45 @@
+{
+  "implementationCommits": [
+    "8d7545e844751c45ef59a16732e4b539b9957372",
+    "d47d24631cdd8fddac053a0ad39170bc67ff9c9c"
+  ],
+  "deployedCommit": "df4edcb9542dbacbc8511bf840249e90ac3b3a45",
+  "render": {
+    "serviceId": "srv-dbgpc0ff3r2c73abc7e0",
+    "deployId": "dep-dbst986c6qcc73a468v0",
+    "status": "live",
+    "finishedAt": "2026-11-15T15:50:52.32158Z",
+    "plan": "free",
+    "autoDeploy": "off",
+    "url": "https://duckduck-test.onrender.com"
+  },
+  "verification": {
+    "health": {
+      "ok": true,
+      "release": "df4edcb9542dbacbc8511bf840249e90ac3b3a45"
+    },
+    "projectHero": "iPhone 1.0.0 (41) / Apple 업로드 성공 · 영상 UX/UI 수정은 다음 빌드",
+    "sourceCI": {
+      "runId": 43732032056,
+      "conclusion": "success"
+    },
+    "sourceImagesHashed": 1235,
+    "referenceCaptures": 26,
+    "unitTests": {
+      "total": 391,
+      "passed": 390,
+      "failed": 0,
+      "skipped": 1
+    }
+  },
+  "limits": [
+    "No new native build or App Store upload was triggered.",
+    "Public deployment verification is health/release and project document; interactive QA used actual local Expo with synthetic accounts.",
+    "Native EventKit/iCloud, IME, VoiceOver, push and real provider writes remain device/account checks.",
+    "Existing AI credit-balance error was not fixed or charged around by this UX change."
+  ],
+  "notes": [
+    "The first public request during rollout returned 503/timeout; after Render live, both fresh requests succeeded and health returned the intended deployed commit.",
+    "This evidence-only commit does not change the deployed application."
+  ]
+}
