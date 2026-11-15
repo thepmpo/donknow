@@ -1,9 +1,37 @@
 {
-  "generatedAt": "2026-11-15",
-  "codeCommit": "92c7e341498ad674c00006c6e4b594f313b96409",
-  "assetCommit": "92c7e341498ad674c00006c6e4b594f313b96409",
-  "imageCount": 1127,
+  "generatedAt": "2026-11-16",
+  "codeCommit": "d47d24631cdd8fddac053a0ad39170bc67ff9c9c",
+  "assetCommit": "d47d24631cdd8fddac053a0ad39170bc67ff9c9c",
+  "imageCount": 1235,
   "images": [
+    {
+      "path": "artifacts/reference-flows-2026-11-15/02-iphone-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 35263,
+      "sha256": "a2f91168f688e974acaa3f297db1656bf14f55952983560aa5dfc1a54a408262",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__02-iphone-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/13-me-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 42652,
+      "sha256": "b236fe5bf4c8dd889280af4ac2b79155fedaa86b64455524c021a39e3574d56f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__13-me-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/07-chat-defaults-phone-hidden.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 28049,
+      "sha256": "dc56a73e37c8c5d349f88cd2809fadb6bed7ee3d51363b4de98dd9fa25895cd2",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__07-chat-defaults-phone-hidden.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/20-apple-intro.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 64885,
+      "sha256": "844e61490a8224e34b7d38ddd4cb908563cde968e063d3ca65a512068392353f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__20-apple-intro.png"
+    },
     {
       "path": "artifacts/things-source-repair-2026-11-15/01-iphone-light.png",
       "category": "Things형 Todo·원본 저장/초기 설정·실제 Expo·합성 API/기하·native/실계정 아님",
@@ -1165,6 +1193,146 @@
       "bytes": 36930,
       "sha256": "74e2324d28fe9ee0fa1caae13d972ef62d2f9d6226956ad0a048cb74c66d7e34",
       "import_path": "images/artifacts__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-account-settings.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 42364,
+      "sha256": "b3f06507973c56c96159738041a6350aaa2a70fae884dabb17a0988dfac40de6",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-apple-reminders.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 66635,
+      "sha256": "37f26124987c844e997e4efdeeef3ac6fca6e9620c913a1962e821c7579d9772",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-assistant-action-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 39179,
+      "sha256": "f7fd607298218ea8f52a430d9f48eb98ba4a4a1013c8e4e98ec9580c19198f10",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-assistant-ai-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 35069,
+      "sha256": "1f6bec7d6b210f0509de6c763cc711678abbd8abe09db0535cb549ec7c02ad8c",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-auth.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-calendar-events-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 32536,
+      "sha256": "5ddda4aa2d8ab4f363c69146abc0460df15e6bdf55737f69c96701f9ba76da6e",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-calendar.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33233,
+      "sha256": "8119b477f628cd30eed6b9dc042c00db36d261f420432c5fd8a3cf2f737529a6",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-completed-reference-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 48579,
+      "sha256": "d46dc8fcc41303ac64da0f0266905a60816534225f45ef4da8af143ecaed318a",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-duckduck.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 29535,
+      "sha256": "a9d25f8c20769479b94792c15a5b4c7afcb39f434a894d514dee99ebe593353a",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-google-tasks-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 47433,
+      "sha256": "a60a8c1b3844ff523dec548971b3967d6dc327157d516be11b6b1900ff883250",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-kakao-share.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 37902,
+      "sha256": "442cd949e597bdffbbdbf1857c66b7ec7c2c8f3893efe71c86c55a60053cf0d3",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-log.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 31085,
+      "sha256": "59768cbd03776e1385626dcf9725912d8bb39f137c65cf9decc7b1f11f26608e",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-log.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-notes-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33619,
+      "sha256": "f4ac6a758cd04dc3606b567dbd075506ef267d3bee8efa6e10d0baca8307ad46",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-personal-export.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 38846,
+      "sha256": "f4cf89b29148370e601115d355856fc2172018e44124bf1806399d380fc442a3",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-profile.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 42860,
+      "sha256": "e03966703eb70775b629b36ca4bd66eeb7efb2715aa31e533a477015c63ebbca",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-reminder.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 43561,
+      "sha256": "382d3cf16d4c1b161878e86ad5dbec5c29beff59d16c25e741b9de834947b52a",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-services.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 40097,
+      "sha256": "81ada64fee7420498683207a73ffcaff85d3530a16d72878a6796636d02c1778",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-services.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-task-sync-fixture.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 61947,
+      "sha256": "8fc5a37b9037b817702bee5032e9ba13912ff2b70fdf5a450630a8b753d8f24f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-todos.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 24005,
+      "sha256": "5cd60ec4e8ecc4563cdb4c11f619b0d178f96539926ebae4c9c31a71ca22e713",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/regression/mobile-verification.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 36667,
+      "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__regression__mobile-verification.png"
     },
     {
       "path": "artifacts/things-source-repair-2026-11-15/app/mobile-account-settings.png",
@@ -7290,6 +7458,594 @@
       "bytes": 80270,
       "sha256": "373274654c0efb441423218ea34ac8a68548ba52121bc3acb366cd4bb800e184",
       "import_path": "images/artifacts__profile.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/01-iphone-light.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 35274,
+      "sha256": "19750a90033b2070829aaf4bb00ce982a5e02256039933362a7ab15b0361fc62",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__01-iphone-light.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/03-duo-folded-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 26553,
+      "sha256": "9377779952079bcc57b6f205f4c9678b8f5219e22a0ffc4a01acf0792b8c5659",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__03-duo-folded-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/04-duo-open-light.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 57527,
+      "sha256": "e48cd09cba8b1eb741da13e145c3fee6a553c170940aeff403c8dc0df6fe48ab",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__04-duo-open-light.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/05-small-phone.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 31100,
+      "sha256": "1f6f4e08e5e6f9bb9d74391e0e5c684c96b8573609fd39481623bf69472f9a31",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__05-small-phone.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/06-original-source-edit.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 44875,
+      "sha256": "9e2a2cbb1ade7627ada155367a121951ef0befc18b3f26e715ca4a5e1bc7d880",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__06-original-source-edit.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/08-duo-upcoming-clean.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 26715,
+      "sha256": "3c7401441f9ba1cfcc333f43ee91af8519ea78d66b9d66b1f11890a83a1c2fb6",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__08-duo-upcoming-clean.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/09-month-line-starts-on-first.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33348,
+      "sha256": "416e3fa9e5629af63f65ee035dd0c49204e0b764abd30e0b1d0a83f15664138d",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__09-month-line-starts-on-first.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/10-selection.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 36038,
+      "sha256": "d22ea2d8fb96e3d437b119367deac3d905427f72f8618960eedb92c3fe3f0181",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__10-selection.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/10a-selection-empty.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 35049,
+      "sha256": "29cebe2649c415f1c07ac6d7c20a263ce2ff341a77e3df78e7963c809c823c0b",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__10a-selection-empty.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/11-batch-date.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 42992,
+      "sha256": "d8544b87be56ca0f2ce0068222dd3058434c01993ed06ba9a0173cfd79722172",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__11-batch-date.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/12-inline-note-keyboard.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 17995,
+      "sha256": "c74e4a7c5c508e0eaf6934f61568ad2867d3c37618178eb3c548ab9acc05e8de",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__12-inline-note-keyboard.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/12b-draft-after-failed-save.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 39670,
+      "sha256": "8a28afcc264455d7b506cb0840990e6556a47ed7343ef4041c2767cc35b7fb06",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__12b-draft-after-failed-save.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/12c-partial-batch-recovery.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 41960,
+      "sha256": "8ce03e94b73a97f7e6649306aa63161c2887970394d2a5acd2fd268df2639a40",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__12c-partial-batch-recovery.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/14-service-catalog.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 38540,
+      "sha256": "e59ae88b9182043aa24952e08435a283116ace461a5d38a3bb47d0902cd96642",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__14-service-catalog.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/15-google-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 42609,
+      "sha256": "c126e639cbcd18923636e4fab27e23dd47208a688ce2e8cc3f4d9f0cd4babb28",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__15-google-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/16-google-permissions.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 45990,
+      "sha256": "7e59ce7b2a2343cfc7d7dd29a58d52015717bfb3f7e8c1a540f8a2612751f608",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__16-google-permissions.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/17-google-recovery.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33324,
+      "sha256": "347c0e34c71480e7431b1b710c452b1f90c55f74d3011cb9c7e9849f49327271",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__17-google-recovery.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/18-notion-permission-intro.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33701,
+      "sha256": "7b4f90738484df8ee63113e09a60e46697e96a7ab761f44a6a387f782559b6ff",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__18-notion-permission-intro.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/19-unavailable-service.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 55757,
+      "sha256": "003223025c5ec2ff8bd61d3620fcef0556ec016497d83431c90f7ff65ada37f9",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__19-unavailable-service.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/21-me-folded-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 36653,
+      "sha256": "f7d314349df819bd4c8fd6b9bbae9ed928660b2e67ca349535ef4436f1e8be3e",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__21-me-folded-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/22-me-open-light.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 71584,
+      "sha256": "a31525956ae3b3526c816753a7cba0481d3cb138898903d09268c1db92b4bff0",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__22-me-open-light.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/23-me-small.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 36598,
+      "sha256": "96fe45ae9ae4f1e108c9d29c9804f5d7094196de9ffadcf5623153cc64cd0933",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__23-me-small.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/chat-regression/01-compact-phone-chat.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 17060,
+      "sha256": "03228a81d1ed9394e397bf6dff258529cfa03812c53fd33f04a96196c284c320",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__chat-regression__01-compact-phone-chat.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/01-open-calendar-todo.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 50811,
+      "sha256": "dfa08007182b49d2ba7746e014a1c19f99a0ea9070ef796e05ec00cfda2d51fe",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/02-open-calendar-duck.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 58993,
+      "sha256": "0d3a346903de6747009da264140a8fe36555fdf6e19fbfeb69c6793c86dbb44e",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/03-portrait-current-screen.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 34463,
+      "sha256": "b3d55ef7aa7cc9160362227d68c5035c4eb42872f58b2a16f4df912d15577918",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/04-closed-camera-column.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 31480,
+      "sha256": "63f091e8c6c4ba4ae0060c269dab571a0022fc6cd66d387978081497f971e82e",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/05-back-in-camera-column.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 91023,
+      "sha256": "3bd98d5d7bc6f7e76d308094f02ace9c69b9c0e5525150a42a4a1ff853b21e37",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/06-dragging-lens-web-fallback.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 52934,
+      "sha256": "aa358c8af0dbeec31740b24e7e7e99c86fc3e848fe5c10f3f1953d24dbe75c18",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/07-iphone-320-floating-tabs.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 31891,
+      "sha256": "55e988dd1bbc03bb96eea7da2f71a34bf868ad0871fe0f4b9fd0d92340cb2b87",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/07-iphone-390-floating-tabs.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33158,
+      "sha256": "f8d2a615eb91a1f3aa8aabe61afb4bd5b642ccedd2b2fc60bfb30af53b289eba",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/07-iphone-430-floating-tabs.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33907,
+      "sha256": "0e2f1c120b391944ff0099e4cbe1ed0a50b380f058d423ea05e5b1c70da98c96",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/08-iphone-320-text-160-percent.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 26469,
+      "sha256": "ee0b38273c94f4a07b8db811d47245b241ed01610707f8e5922d70d1223a623f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/08-pane-local-day-detail.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 56249,
+      "sha256": "ab9c8149776a368c4ed65a2120ec29b4e7127ab2ea8d9dc2ba2382003f80492e",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/10-folded-calendar-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 37618,
+      "sha256": "9dbdc1abe3ffc7c3e6d20eaf927f97bf1054a5e97cbb94201c8a205d639a18b7",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/11-folded-calendar-light.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 36561,
+      "sha256": "9bb85075996d67f7bbd5fa226978ad208ccb4d1f48fa4d8b96ab602f1b7bcd65",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/12-open-calendar-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 54543,
+      "sha256": "a9a2d93c8303b82af801ea6bc1e555a07701ce698b50afa5d887a1b9247b7966",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/13-folded-fortnight.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 29874,
+      "sha256": "b36e95a6191df4729f162472f84a8108931e59da57f77304a48c4ccd27e2345b",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/14-open-fortnight-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 50659,
+      "sha256": "63772bc43406e2a08058000f162d1fd5be28c1b0a3162a924a95d01b5e2c6198",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/15-long-press-left-calendar.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 40661,
+      "sha256": "b3a2b2ed18d9f6f9897083841f8d832246fabcb88e99766d601357d95a53db71",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/16-long-press-right-calendar.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 30581,
+      "sha256": "6ea093e695bea7273d17df81e2304d8b7d1dadb661ec3a0fad19aeec14ab136f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/17-folded-long-press-calendar.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 26416,
+      "sha256": "387de81f7be9778be8e3b07ec66b26cb90833a0b8fcb1b8295c1588728612acf",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/18-year-left-calendar-right-todos.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 84929,
+      "sha256": "78bba1911896a0998f53170d389ffab3c25efceccb707e2194d81b7c0583336c",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/19-year-right-calendar.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 87546,
+      "sha256": "2a4efca8c83df6ebd68ef2bd8f4b94830a88e568e7cbb3141e4d7ae831097785",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/20-year-portrait.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 84031,
+      "sha256": "9f9d57315008610166c859098c1f1505fc14ff412b7d0afb440458e9737ccf54",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/21-year-folded.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 67639,
+      "sha256": "f6d8e7b0be7b209082b6ce2f30884ba9d3071b1d40993af0224122979922912f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/22-year-duo-motion.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 85498,
+      "sha256": "cbf20f055267297a57c6ce7afeb24b65a692786d3a1a2225e06fb95559e43333",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/23-year-design-comparison-state.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 93408,
+      "sha256": "8fd5e3c71f01fab6ed1bd86e2bb3295f801e99fe238afae1165b3349a398a18a",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/24-pane-edge-scrollbar.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 92471,
+      "sha256": "6c9e7854947604f19967a5945592a03483fec95029399fef1066d028ee29ad75",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__24-pane-edge-scrollbar.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/duo-regression/25-compact-duo-chat.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 17009,
+      "sha256": "d63f1a18bbe208ccd982295c226e372bb73f0570a1e6fcc8027bfd2671f74b40",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__duo-regression__25-compact-duo-chat.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/integration-regression/21-integration-status-retained.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 68819,
+      "sha256": "e776dc91a2c970fafc69a72af808ebaa3eb09438237fa59deda7602430a24717",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__integration-regression__21-integration-status-retained.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/01-phone-memo-keyboard.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 14428,
+      "sha256": "acd668106be3ec8693d89b6ad73e29a86b0c1a4a6ef784cfbe4a90e2bdd1e32d",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__01-phone-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/02-folded-memo-keyboard.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 18364,
+      "sha256": "c23b34561ae5eeb03b3b84dc5c6ccc1d1f11d0f8b6dad8f28959af4742d17cef",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__02-folded-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/03-open-landscape-memo-keyboard.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 19205,
+      "sha256": "b037a795b3051e2be78d6b9cf8ad3f83df64907a06ccc487535421646ee306bf",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__03-open-landscape-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/04-open-portrait-memo-keyboard.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 23928,
+      "sha256": "d7c1418b59000231f956e7bafe6a77ecc7418748f13aaaf3ec186116fff8390d",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__04-open-portrait-memo-keyboard.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/05-dark-duo-today-shade.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 35594,
+      "sha256": "7f3b52a59ce9b94ecef0784998bd9178561f210224fa3a34fe7e3b58014857d9",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__05-dark-duo-today-shade.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/05-dark-phone-today-shade.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 34092,
+      "sha256": "feec2f06992e0e88d9faffccbd6f97505d54bd19ebaa1f96f1a5a5873b143c06",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__05-dark-phone-today-shade.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/05-light-duo-today-shade.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 34857,
+      "sha256": "ee6c187b565ceac7c8207911fd45f25b816982c7242fd8ab5f5aa2c8ab0a81c9",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__05-light-duo-today-shade.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/keyboard-regression/05-light-phone-today-shade.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 33441,
+      "sha256": "18033d9d135b1787b859deacc4016f0260fd2cf3ef74d3301ed88db21338d418",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__keyboard-regression__05-light-phone-today-shade.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01-me-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 41933,
+      "sha256": "5fbc0bf045bcc6b45d8ac890bde9540764ac609bd546ee2e63903e36fc9ec95c",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01-me-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01b-behavior-detail.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 29547,
+      "sha256": "6a600ab62a47c9a6097085adeb69c63429ca9d021a9bd21f34d808001e995142",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01b-behavior-detail.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01c-services-list.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 37473,
+      "sha256": "3da405f8171603b5fb23c20b2e65d6339dc09d6546c91329a2d33bde0b0c7b64",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01c-services-list.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01d-me-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 42652,
+      "sha256": "b236fe5bf4c8dd889280af4ac2b79155fedaa86b64455524c021a39e3574d56f",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01d-me-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01e-me-small-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 34104,
+      "sha256": "2bcf4c91b1073626a0af816e1f9ef24c8fd62693825d3754627615a36b4b83d6",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01e-me-small-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01f-memory-page.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 53977,
+      "sha256": "1ca5f249a1b40d61475f6407cfa58b0e0219ca8a937d31f2e907c7c6bc9064d3",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01f-memory-page.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01g-briefing-page.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 45802,
+      "sha256": "52aee93e208e4d5824cfc6021d381ad3e8fcbdba4ddee056de868f39aca2b650",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01g-briefing-page.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/01h-ai-sources-page.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 49755,
+      "sha256": "934185124fb57c8e4fb57f89fb22df1c08a228343e848ae6e2a27ed7dacbdfa2",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__01h-ai-sources-page.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/02-google-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 41632,
+      "sha256": "65544c324c88a31af21b7ac07b5a2caf94e748eeb10c6601e99feca5d2091a4c",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__02-google-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/03-google-permissions.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 48481,
+      "sha256": "2515e6c7da0eff0733b134495cc2b90b5639dfa0f0e227bdee98745f594522b7",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__03-google-permissions.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/04-completed-reference.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 45419,
+      "sha256": "0e7eaaf9b86f7e5e23f989ae6d9b73eb67b90c17c091dd9cd69acc2e51445834",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__04-completed-reference.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/05-stale-connection.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 46597,
+      "sha256": "25e1a21e7b0256511d22b22175b6dbe7313d66a44b2c6504eddf102356e26886",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__05-stale-connection.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/06-account-delete.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 34632,
+      "sha256": "d8335e448101db9a2642709d7ae6b50b722a53d9139df227284e78075330ed48",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__06-account-delete.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/07-long-name-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 43473,
+      "sha256": "bf0f091fcca7c3714fa5d23eb31aee8a16436f45099b57f3bacd639cd507241b",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__07-long-name-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/08-notifications.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 30056,
+      "sha256": "a5284d182d67849ced0f415dc38e16de4d1385410ddceb3bafc72a6e99e0bfc4",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__08-notifications.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/09-privacy.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 67739,
+      "sha256": "c966c4cf029736278cb6e9a45bb0f0558539dc6256c06ee7e7cb97e5aaa23b20",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__09-privacy.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/10-advanced.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 37409,
+      "sha256": "99850cf95a9a5375cf61ee7ea01e0c70d866ba75175c5c778b3eb33d489d2077",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__10-advanced.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/11-export.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 34794,
+      "sha256": "1b4dadbaf4b4a637167c310776fac750f17f4e5b73d873b49a3b4558d3e0c207",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__11-export.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/12-notion-connect.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 32567,
+      "sha256": "af044bb9f3268812c1c7a3484aa5757a1d42f74333dab8e3658590f907d795e0",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__12-notion-connect.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/13-folded-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 37505,
+      "sha256": "ffc2ef81c05aa712ac89e1a92cb45291fbb25ef246df7f7a133532819a491035",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__13-folded-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/14-open-overview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 72611,
+      "sha256": "06fd7f4c08604372261b14ec2a4a09307eec1ebcaac9966f2181364a24a3d4f9",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__14-open-overview.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/15-folded-account.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 36857,
+      "sha256": "879c89a6d6ff0fc8a5023a82b49b88c8c57b5ae1e4954c1be24ed0afa22f2269",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__15-folded-account.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/16-open-account.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 72365,
+      "sha256": "4dd9abe6a915d7cdc98f6789cb4f0bbc6d9d7fb31de3b8c950488c780ad9f60d",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__16-open-account.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/me-regression/17-small-dark.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 37729,
+      "sha256": "5817fff3a1c4aa18e59eec55ab0f7b7e04d527ac4411abf7b4d0a937a1bd2f3a",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__me-regression__17-small-dark.png"
+    },
+    {
+      "path": "artifacts/reference-flows-2026-11-15/preview.png",
+      "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
+      "bytes": 113675,
+      "sha256": "151379fd7dd7b6c83afcfd57d6064232f5cd15a3165a730eeb51520a54d70f09",
+      "import_path": "images/artifacts__reference-flows-2026-11-15__preview.png"
     },
     {
       "path": "artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png",
