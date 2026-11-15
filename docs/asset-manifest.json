@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "076b2bae4102d351ed1ef54e7beb4cde0cc49328",
-  "assetCommit": "076b2bae4102d351ed1ef54e7beb4cde0cc49328",
-  "imageCount": 1015,
+  "codeCommit": "b320c2607994cc6b8458c5a0b4bf66b79284f834",
+  "assetCommit": "b320c2607994cc6b8458c5a0b4bf66b79284f834",
+  "imageCount": 1048,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -1375,6 +1375,237 @@
       "bytes": 43491,
       "sha256": "1ab64c757c7ed2fb13942dd55d5b0eca83079fb238bba5595a5d0ffe7c1e4259",
       "import_path": "images/artifacts__assistant-feedback__before-error-fixture.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/before/01-me.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 41933,
+      "sha256": "5fbc0bf045bcc6b45d8ac890bde9540764ac609bd546ee2e63903e36fc9ec95c",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__before__01-me.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/before/02-behavior.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 41648,
+      "sha256": "5ada6726c1a6defaa5ebefbb22e85b613db49a19d4176765638b75d13021bc94",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__before__02-behavior.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/01-status-pending-keeps-chat.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 34360,
+      "sha256": "8682c4b08df200a230eea4547cab469d156d4da27671ce34d99fd3e479aa50b5",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__01-status-pending-keeps-chat.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/02-phone-composer-visible.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 21459,
+      "sha256": "9a5e93ac87209b68f275f8a0819cb44a4b1333dde61c82236883e9217d9a07a5",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__02-phone-composer-visible.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/03-folded-composer-visible.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 26078,
+      "sha256": "3eb492a01e791296ff84956e995b4ce9b46b6eb52e7c5e84b0b32637403e5030",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__03-folded-composer-visible.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/04-unfolded-composer-visible.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 57087,
+      "sha256": "ffadec2d507eae4a73371562bb4220f5804eb1d805ef8e34bab3c722df182a53",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__04-unfolded-composer-visible.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/05-draft-editable-before-permission.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 41792,
+      "sha256": "e20a40d7ce47ec80b6a575aef8c8abdad14bff32281c4dcdae933f8814f42de8",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__05-draft-editable-before-permission.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/06-calendar-notes-revealed.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 15852,
+      "sha256": "b1aac20a20be019a56da8e26b4022ba059ddf0a79bb60d991f760f008c29b4d2",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__06-calendar-notes-revealed.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/interaction/07-background-refresh-keeps-new-write.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 25330,
+      "sha256": "a23047bdf931c34872c4bfcb5efd681e3eabd6f09fd3cd230e14c911cea06fb8",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__interaction__07-background-refresh-keeps-new-write.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01-me-overview.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 41933,
+      "sha256": "5fbc0bf045bcc6b45d8ac890bde9540764ac609bd546ee2e63903e36fc9ec95c",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01-me-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01b-behavior-detail.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 29547,
+      "sha256": "6a600ab62a47c9a6097085adeb69c63429ca9d021a9bd21f34d808001e995142",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01b-behavior-detail.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01c-services-list.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 42203,
+      "sha256": "24c2ccac26b4a5d438b0fe40680d38d87d6b026ff04985e9829554f6ec23722c",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01c-services-list.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01d-me-dark.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 42652,
+      "sha256": "b236fe5bf4c8dd889280af4ac2b79155fedaa86b64455524c021a39e3574d56f",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01d-me-dark.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01e-me-small-dark.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 34104,
+      "sha256": "2bcf4c91b1073626a0af816e1f9ef24c8fd62693825d3754627615a36b4b83d6",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01e-me-small-dark.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01f-memory-page.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 54612,
+      "sha256": "908ff290dcdb1b8110cd59151aea396793273b9c8382fc787f54b5d150acdc0f",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01f-memory-page.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01g-briefing-page.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 46315,
+      "sha256": "ab33c9bdc9140b0db65063a58ef2b5ba3bc259e5262a5a0ca106d8e6b5d8aa79",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01g-briefing-page.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/01h-ai-sources-page.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 50274,
+      "sha256": "b98694abae881359fba0ce95a4a4b3623f8e879198b458554b5ed3f00034935f",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__01h-ai-sources-page.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/02-google-overview.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 35910,
+      "sha256": "f33581e78ac0b892ba6f0f2393feda2b72b5ceeb7f71bb4cebacda74f7363a23",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__02-google-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/03-google-permissions.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 49723,
+      "sha256": "43a67b37b9c1faa87461fccb7422ae6f99e3d514fb749eade1433d3fb2f17a47",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__03-google-permissions.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/04-completed-reference.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 51924,
+      "sha256": "6a146273969a9f5e546a0c4ebe802d6248367ae17a3420fd2c35b408d3f419fe",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__04-completed-reference.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/05-stale-connection.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 44306,
+      "sha256": "155644466d71b1ff72070b6d9e2d3d5175f811abec34db40accc3d48669f57c7",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__05-stale-connection.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/06-account-delete.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 35135,
+      "sha256": "2c00cca4814929fc8249630914e71db65c710efc091effe697f355403977838f",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__06-account-delete.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/07-long-name-overview.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 43952,
+      "sha256": "b1f3a9903f228928e88698a965818b5d6342fcc4b5dd1156bf3718985f39fd4e",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__07-long-name-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/08-notifications.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 30489,
+      "sha256": "a47f045ab64aa4e11ee28bdd0d47b013345f49133e289f954e7ac2f4e6023874",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__08-notifications.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/09-privacy.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 68272,
+      "sha256": "622669e4fa8c892f7d1cdfd679cfbf2cef952a21585dbbfe8ee1d32df076a84f",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__09-privacy.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/10-advanced.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 37872,
+      "sha256": "579bfe9c1640215cec44e7c82adbf27e24da5d1abc6b46226295b4fc0613ead5",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__10-advanced.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/11-export.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 35297,
+      "sha256": "51b5d10090aace000befaacdbd080c9566fb5661dc45971777dce9f01f656098",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__11-export.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/12-notion-connect.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 36821,
+      "sha256": "01c878c05f889d1f61920cb2ba24de90bdc72e32ef16fd6e9f84794897820785",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__12-notion-connect.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/13-folded-overview.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 37505,
+      "sha256": "ffc2ef81c05aa712ac89e1a92cb45291fbb25ef246df7f7a133532819a491035",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__13-folded-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/14-open-overview.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 72531,
+      "sha256": "538b7860e41fa104128d79a46b8943276635b371ca276fc827d87129fb8b09f3",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__14-open-overview.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/15-folded-account.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 36857,
+      "sha256": "879c89a6d6ff0fc8a5023a82b49b88c8c57b5ae1e4954c1be24ed0afa22f2269",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__15-folded-account.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/16-open-account.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 72347,
+      "sha256": "2656e8b0a1e0673c20f84d86589500ea30546bfe54eb1f404184329b815027b1",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__16-open-account.png"
+    },
+    {
+      "path": "artifacts/assistant-ux-repair-2026-11-15/me/17-small-dark.png",
+      "category": "입력/채팅 전환/Todo 통신/일정 메모/ME 페이지·실제 Expo·합성 API/기하·native 아님",
+      "bytes": 37729,
+      "sha256": "5817fff3a1c4aa18e59eec55ab0f7b7e04d527ac4411abf7b4d0a937a1bd2f3a",
+      "import_path": "images/artifacts__assistant-ux-repair-2026-11-15__me__17-small-dark.png"
     },
     {
       "path": "artifacts/background-controls-2026-11-15/current/dark-editor-dim.png",
