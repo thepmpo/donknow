@@ -4,7 +4,7 @@
 
 ## 새 흐름
 
-`node mobile/e2e/reference-flows.mjs` 통과. `artifacts/reference-flows-2026-11-15/results.json`과25개 캡처에 실제 검사 내역이 있다. 일반390×844/light·dark,320px, Duo431×640접힘·960×740펼침을 포함한다. 페이지 실행 오류0.
+`node mobile/e2e/reference-flows.mjs` 통과. `artifacts/reference-flows-2026-11-15/results.json`과26개 캡처에 실제 검사 내역이 있다. 일반390×844/light·dark,320px, Duo431×640접힘·960×740펼침을 포함한다. 페이지 실행 오류0.
 
 - 날짜/일정/새 할 일/기존 체크의 순서, 날짜에 맞는 생성, 기존3초 완료·log·복원.
 - 목록 안 편집에 별도 Todo modal이 없고, 원본 시간과 실패한 원본 저장 재시도는 기존 경로를 사용한다.

@@ -15,6 +15,8 @@ The user selected the four unique supplied videos as design/interaction referenc
 
 The first combined visual comparison of the completed changes found no remaining actionable P0/P1/P2 issue in the requested structure adaptation. The following implementation changes preceded that final comparison and were verified by browser flow checks:48→44pt base rows, a single inline editor using the existing save implementation,72–160pt compact memo with native/browser caret scrolling, toolbar clearance above the ordinary navigation, explicit batch dates/completion with partial failure, consistent service detail pages and an Apple permission introduction. A subsequent functional check caught draft loss when changing tabs; keeping the existing Todo screen mounted while hidden fixed it, and the added tab-return assertion passed. The active/inactive state does not change the compared visible layout.
 
+An additional zero-selection state check found that disabled batch actions still looked active [P2]. Explicit0.4 opacity was added to those actions and the editor-disabled selection entry. The reference flow was recaptured (`10a-selection-empty.png`) and asserts both the disabled state and dimmed appearance. The final26-capture run passed; the post-fix full comparison was reopened as `/tmp/duck-reference-comparison-final.jpg`.
+
 ## Required fidelity surfaces
 
 - Fonts/typography: system Korean font/React Native fallback;34pt bold date,16pt row,15pt appointment time,shared17pt setting title. Native SF/IME rendering needs device verification. Source English labels, large title spacing and sample data differ intentionally.
@@ -25,7 +27,7 @@ The first combined visual comparison of the completed changes found no remaining
 
 ## Functional evidence and limits
 
-The25-capture reference suite passed with0page errors: inline creation/source retry,3-second completion/log/restore,selection without writes,date batch,partial batch without replay,tab-persistent drafts,long memo caret,keyboard reveal,ME Back,provider readiness,Apple native-only state,phone hidden,attachments and source links. ME permission/import/disconnect/behavior/memory recovery,chat long-answer/action/owner and chat failure/retry regressions passed.391 unit/HTTP tests:390pass/0fail/1existing optional skip;100syntax checks,typecheck,web/iOS JS exports passed. Follow the final evidence record in `docs/reference-flows-qa-2026-11-15.md` for the later full-app/calendar/Duo/keyboard reruns.
+The26-capture reference suite passed with0page errors: inline creation/source retry,3-second completion/log/restore,selection without writes,date batch,partial batch without replay,tab-persistent drafts,long memo caret,keyboard reveal,ME Back,provider readiness,Apple native-only state,phone hidden,attachments and source links. ME permission/import/disconnect/behavior/memory recovery,chat long-answer/action/owner and chat failure/retry regressions passed.391 unit/HTTP tests:390pass/0fail/1existing optional skip;100syntax checks,typecheck,web/iOS JS exports passed. Follow the final evidence record in `docs/reference-flows-qa-2026-11-15.md` for the later full-app/calendar/Duo/keyboard reruns.
 
 Intentional scope: no fake tag/checklist/flag persistence, no price/ticket implementation from an absent price page, no phone reintroduction, no real-source writes during testing. Native keyboard/IME/VoiceOver/EventKit/iCloud/push and live model quality remain unverified. No new native build was dispatched. P3 follow-up: inspect typography and touch rhythm on the next installed iPhone build.
 
