@@ -47,12 +47,12 @@ test('hourly messages carry unfinished items, skip completed/excluded, and persi
 test('urgent watcher establishes baseline, notices addressed changes, deduplicates across workers/restarts and honors revocation',async()=>{
  const h=await setup();try{
   let clock=monday,reads=0,classified=0,release;const scopes={todo:'todo-v1',google:'scope1'};
-  let sources=[{ref:'google:account:gmail:one',provider:'google',title:'새 요청',text:'내용1',completed:false,kind:'mail'}];
+  let sources=[{ref:'google:account:gmail:one',provider:'google',title:'새 요청',text:'내용1',completed:false,kind:'mail'},{ref:'google:account:calendar:past',provider:'google',title:'이미 끝난 일정',text:'',completed:false,kind:'event',dueDate:'2026-11-16',startAt:new Date(clock-3600000).toISOString()}];
   const assistant={status:()=>({consentScopes:scopes}),async context(){reads++;return {sources,warnings:[],partial:true};},async urgentRequests(user,selected){classified++;return [{ref:selected[0].ref,reason:'지정된 확인 요청이 도착했어요.'}];}};
   h.store.configureAutomation(h.user,'briefing',{...hourly,urgentAlerts:true,providers:['google']},clock,scopes);
   const monitor=()=>createUrgentMonitor(h.store,assistant,{now:()=>clock});
   await Promise.all([monitor().tick(),monitor().tick()]);assert.equal(reads,1);assert.equal(classified,0);assert.equal(h.store.assistantMessages(h.user).length,0);
-  clock+=60000;sources=[{...sources[0],text:'내용2'}];await monitor().tick();assert.equal(classified,1);assert.equal(h.store.assistantMessages(h.user).length,1);
+  clock+=60000;sources=[{...sources[0],text:'내용2'},sources[1]];await monitor().tick();assert.equal(classified,1);assert.equal(h.store.assistantMessages(h.user).length,1);
   await h.restart();clock+=60000;await monitor().tick();assert.equal(h.store.assistantMessages(h.user).length,1);assert.equal(classified,1);
   const todo=h.store.create(h.user,{title:'곧 할 일',notes:'',category:'일상',dueDate:null,reminderAt:new Date(clock+5*60000).toISOString()});
   const workingClassifier=assistant.urgentRequests;assistant.urgentRequests=async()=>{throw Error('quota');};sources[0]={...sources[0],text:'내용-오류 중'};sources.push({ref:'todo:'+todo.id,provider:'todo',kind:'todo',title:todo.title,text:'',completed:false,locator:{id:todo.id}});clock+=60000;await monitor().tick();assert.equal(h.store.assistantMessages(h.user).length,2);assert.match(h.store.assistantMonitorStatus(h.user).error,/AI가 새 요청/);assistant.urgentRequests=workingClassifier;

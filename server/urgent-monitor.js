@@ -25,7 +25,7 @@ export function createUrgentMonitor(store,assistant,{now=Date.now}={}){
      const todo=source.provider==='todo'?store.get(item.userId,source.locator.id):null;
      const at=Date.parse(source.startAt??todo?.reminderAt??'');
      if(Number.isFinite(at)&&at>=now()&&at-now()<=15*60000)add(source,'15분 안에 시작하거나 알림 시각이 되는 내용이에요. '+source.title,'imminent:'+at);
-     else if(!source.completed&&source.dueDate===clock.date&&changed.includes(source)&&Number(clock.time.slice(0,2))>=9)add(source,'오늘까지 예정된 미완료 내용이에요. '+source.title,'due:'+clock.date);
+     else if(source.kind!=='event'&&!source.completed&&source.dueDate===clock.date&&changed.includes(source)&&Number(clock.time.slice(0,2))>=9)add(source,'오늘까지 예정된 미완료 내용이에요. '+source.title,'due:'+clock.date);
     }
     // The first read establishes a baseline, so old inbox messages do not flood alerts.
     const fresh=changed.filter(s=>s.provider!=='todo'&&!s.completed);
