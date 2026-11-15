@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-15 · 한국 시간 · 기능 코드 ed7c401 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-15 · 한국 시간 · 기능 코드 24493e0 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -396,6 +396,10 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 ### 변경 기록
+
+#### 2026-11-15 — 운영 libSQL 공개 상태 조회 수정
+
+운영 배포 후 공개 기능 목록의500을 발견했다. 실제 libSQL의 `.get(null)`이 이름 있는 매개변수 객체로 해석되어 실패하는 차이를 재현했다. 로그인 전 기억 상태는 DB를 조회하지 않고0/off를 반환하고, 로그인 후 상태/개수는 한 SQL 조회로 묶었다. 실제 libSQL HTTP fixture에 비로그인 status·기억 암호화/재시작·소유자 상태 JSON 검사를 추가했으며 전체334중333통과/실패0/기존 선택1제외다. 기능 목록의 실제 HTTP 응답까지 확인한 뒤 배포 완료라고 한다.
 
 #### 2026-11-15 — 배경 dim·대화와 장기 기억·공급자 수신
 
@@ -2476,10 +2480,12 @@ a089975 Bind searched documents to their selected account and filter stale alert
 3db82c5 Publish assistant capability audit and briefing verification
 969f0eb Dim and disable controls behind stacked modal surfaces
 ed7c401 Persist assistant conversations and verified memories with signed provider events
+15b0e67 Publish assistant memory and provider setup handoff with UI verification
+24493e0 Handle anonymous assistant status with the production libSQL driver
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: ed7c401에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 24493e0에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -7318,7 +7324,7 @@ ed7c401 Persist assistant conversations and verified memories with signed provid
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/ed7c4016f0d3c1f8bb680358111f78609b526346
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/24493e0d1f857122b1a78ee64f73db86dace7837
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -7490,6 +7496,8 @@ ME→데이터·개인정보→대화와 기억의 명시 opt-in 이후 대화·
 사용자 지시로 기존 ChatGPT Slack 연결을 해제했다. 다른 워크스페이스 재연결은 미확인이다. 옛 워크스페이스를 사용하지 않는다. 덕 Slack 앱 자체 OAuth/서명 설정과 ChatGPT 플러그인 재연결은 별개다. manifest와 보안 설정 절차를 준비했고 실계정 수신 성공은 아직 아니다. Dots와 완전 동일하다고 하지 않는다.
 
 전체334중333통과·실패0·기존 선택1제외,61문법·타입·web/iOS JS·기존 전체앱/채팅/오류·기억/배경 dim 조작을 확인했다.13장은 합성 Expo/기하이며 native·실제 공급자·모델·push 검수가 아니다. 복구 뒤 기억은 보존하되 진행 중 대화·이벤트·watch·예약은 재실행하지 않는다. native 최신35 이후 변경이고 이번 요청에서 새 native 빌드를 시작하지 않는다. 데이터/인증·서명/암호화 키/복구 bundle·무료/수동 정책을 보존하고 사무실 안내를 반복하지 않는다.
+
+운영 배포 후 공개 기능 목록의500을 발견했다. 실제 libSQL의 `.get(null)`이 이름 있는 매개변수 객체로 해석되어 실패하는 차이를 재현했다. 로그인 전 기억 상태는 DB를 조회하지 않고0/off를 반환하고, 로그인 후 상태/개수는 한 SQL 조회로 묶었다. 실제 libSQL HTTP fixture에 비로그인 status·기억 암호화/재시작·소유자 상태 JSON 검사를 추가했으며 전체334중333통과/실패0/기존 선택1제외다. 기능 목록의 실제 HTTP 응답까지 확인한 뒤 배포 완료라고 한다.
 
 #### 2026-11-15 — Dots 의미 정정·시간별 브리핑·중요 변화·문서 확인
 
@@ -7976,6 +7984,12 @@ Google/Notion 등의 서버 설정 존재, 공급자 수신 코드 존재, 사�
 #### 남은 실사용 검증
 
 다른 Slack 워크스페이스와 덕 개발자 앱 등록, 실제 공급자 서명·이벤트/push 전송, 새 iOS 빌드와 실제 Duo 접힘·펼침/키보드·화면 읽기 검수. native 최신 확인은1.0.0(35)이며 이번 코드가 포함되지 않는다. 실제 사용자 자동 발송·유료 리소스·키 변경·원본 변경은 수행하지 않았다. 기존 ChatGPT Slack 연결 해제와 새 연결 요청은 덕 앱 설치 완료와 다르다.
+
+#### 운영 libSQL 차이 추가 회귀
+
+운영 배포 후 공개 기능 목록의500을 발견했다. 실제 libSQL의 `.get(null)`이 이름 있는 매개변수 객체로 해석되어 실패하는 차이를 재현했다. 로그인 전 기억 상태는 DB를 조회하지 않고0/off를 반환하고, 로그인 후 상태/개수는 한 SQL 조회로 묶었다. 실제 libSQL HTTP fixture에 비로그인 status·기억 암호화/재시작·소유자 상태 JSON 검사를 추가했으며 전체334중333통과/실패0/기존 선택1제외다. 기능 목록의 실제 HTTP 응답까지 확인한 뒤 배포 완료라고 한다.
+
+첫 배포15b0e67은 health/문서가 정상이었지만 공개 기능 목록에서500이 확인돼 완료로 처리하지 않았다. 로그인 전 무소유자 상태 반환을 고친 다음 실제 운영 HTTP와 최종 배포 SHA를 다시 확인한다. 로컬 Node SQLite 결과만으로 운영 드라이버의 동일 동작을 가정하지 않는다.
 
 ### 原文 / docs/assistant-provider-setup.md
 
@@ -10499,6 +10513,8 @@ ME→데이터·개인정보→대화와 기억의 명시 opt-in 이후 대화·
 사용자 지시로 기존 ChatGPT Slack 연결을 해제했다. 다른 워크스페이스 재연결은 미확인이다. 옛 워크스페이스를 사용하지 않는다. 덕 Slack 앱 자체 OAuth/서명 설정과 ChatGPT 플러그인 재연결은 별개다. manifest와 보안 설정 절차를 준비했고 실계정 수신 성공은 아직 아니다. Dots와 완전 동일하다고 하지 않는다.
 
 전체334중333통과·실패0·기존 선택1제외,61문법·타입·web/iOS JS·기존 전체앱/채팅/오류·기억/배경 dim 조작을 확인했다.13장은 합성 Expo/기하이며 native·실제 공급자·모델·push 검수가 아니다. 복구 뒤 기억은 보존하되 진행 중 대화·이벤트·watch·예약은 재실행하지 않는다. native 최신35 이후 변경이고 이번 요청에서 새 native 빌드를 시작하지 않는다. 데이터/인증·서명/암호화 키/복구 bundle·무료/수동 정책을 보존하고 사무실 안내를 반복하지 않는다.
+
+운영 배포 후 공개 기능 목록의500을 발견했다. 실제 libSQL의 `.get(null)`이 이름 있는 매개변수 객체로 해석되어 실패하는 차이를 재현했다. 로그인 전 기억 상태는 DB를 조회하지 않고0/off를 반환하고, 로그인 후 상태/개수는 한 SQL 조회로 묶었다. 실제 libSQL HTTP fixture에 비로그인 status·기억 암호화/재시작·소유자 상태 JSON 검사를 추가했으며 전체334중333통과/실패0/기존 선택1제외다. 기능 목록의 실제 HTTP 응답까지 확인한 뒤 배포 완료라고 한다.
 
 #### 2026-11-15 — Dots 의미 정정·시간별 브리핑·중요 변화·문서 확인
 
@@ -16014,6 +16030,8 @@ ME→데이터·개인정보→대화와 기억의 명시 opt-in 이후 대화·
 사용자 지시로 기존 ChatGPT Slack 연결을 해제했다. 다른 워크스페이스 재연결은 미확인이다. 옛 워크스페이스를 사용하지 않는다. 덕 Slack 앱 자체 OAuth/서명 설정과 ChatGPT 플러그인 재연결은 별개다. manifest와 보안 설정 절차를 준비했고 실계정 수신 성공은 아직 아니다. Dots와 완전 동일하다고 하지 않는다.
 
 전체334중333통과·실패0·기존 선택1제외,61문법·타입·web/iOS JS·기존 전체앱/채팅/오류·기억/배경 dim 조작을 확인했다.13장은 합성 Expo/기하이며 native·실제 공급자·모델·push 검수가 아니다. 복구 뒤 기억은 보존하되 진행 중 대화·이벤트·watch·예약은 재실행하지 않는다. native 최신35 이후 변경이고 이번 요청에서 새 native 빌드를 시작하지 않는다. 데이터/인증·서명/암호화 키/복구 bundle·무료/수동 정책을 보존하고 사무실 안내를 반복하지 않는다.
+
+운영 배포 후 공개 기능 목록의500을 발견했다. 실제 libSQL의 `.get(null)`이 이름 있는 매개변수 객체로 해석되어 실패하는 차이를 재현했다. 로그인 전 기억 상태는 DB를 조회하지 않고0/off를 반환하고, 로그인 후 상태/개수는 한 SQL 조회로 묶었다. 실제 libSQL HTTP fixture에 비로그인 status·기억 암호화/재시작·소유자 상태 JSON 검사를 추가했으며 전체334중333통과/실패0/기존 선택1제외다. 기능 목록의 실제 HTTP 응답까지 확인한 뒤 배포 완료라고 한다.
 
 #### 2026-11-15 — Dots 의미 정정·시간별 브리핑·중요 변화·문서 확인
 
