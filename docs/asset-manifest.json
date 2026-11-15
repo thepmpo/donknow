@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "24493e0d1f857122b1a78ee64f73db86dace7837",
-  "assetCommit": "ed7c4016f0d3c1f8bb680358111f78609b526346",
-  "imageCount": 955,
+  "codeCommit": "8829518bd28c14d3082c4b5ca27f70d2f113edf1",
+  "assetCommit": "8829518bd28c14d3082c4b5ca27f70d2f113edf1",
+  "imageCount": 993,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -738,6 +738,181 @@
       "bytes": 38385,
       "sha256": "0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e",
       "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-account-settings.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 42395,
+      "sha256": "60e224d12aa607a4c01936e7114136126d1156fc86a99c73cb2b1cbe471fa30a",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-apple-reminders.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 33846,
+      "sha256": "cb1ca3da80717814bab97799cabd6399ffe95f254f5320c2dc73261c43a869d2",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-assistant-action-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 32653,
+      "sha256": "2491945c06ead13479137ff0b0b7a8f0e81e856e47f49e800bddeb506b5cfd3d",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-assistant-ai-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 36043,
+      "sha256": "b8819b92ada22dabea73d9df85ea43c77865d9f1564a13a4431d3a32bb643b99",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-auth.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-calendar-events-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 32544,
+      "sha256": "d04a5638083d7d35c98e5b04f8ec1fb35601fb163fe4f2e23387742be3e852ff",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-calendar.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 33239,
+      "sha256": "e72c6d5b4ba8970f2aa7a0ea291963ace70f4c990fd6f945c559882f768cfe37",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-completed-reference-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 52130,
+      "sha256": "38ca132607397dbee5a7d6c6740716f4a149aaa792af98bb300aa86714fdc2ff",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-duck-draft.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 36529,
+      "sha256": "997aabe55d540f7548b4c24f4e143facb525a16da3a0733af4cf990089a3cacb",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-duck-draft.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-duckduck.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 33799,
+      "sha256": "4a2660a944a456c5fd561dbf5b6245d5b7fbd72d2262991e77867d036daa32f8",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-external-search-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 47437,
+      "sha256": "0007c59a9bd688c47cdf870bca6395926b319ec588ccd202a3706533173a01e8",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-external-search-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-google-tasks-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 51662,
+      "sha256": "6a6cefa7d03f6cb009ac106f174cf8adc16c54e52101dd03306fd57e20eb4671",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-kakao-paste.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 43499,
+      "sha256": "297809c8e27b6ed167c14c5d55fabd452ae9f50e0000c46d7ec443fe58cab8d0",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-kakao-paste.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-kakao-share.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 27525,
+      "sha256": "975206f80c7d55e19d83b4568cf28be91e2524f8cd0a9ba3d30260ae153f0890",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-log.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 30983,
+      "sha256": "f048725429ef0a23cbc73c3ebd82161fef784e040e525b3a14480974b6b4aa88",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-log.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-notes-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 24376,
+      "sha256": "344e2f66e56b05f153038ab6c8531b6b67a5bf27c2dbaddb3d50fcb7aa9cfe53",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-personal-export.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 38846,
+      "sha256": "155aa9214509b9b3e4b95d36ba49babf473f35dc466eb9d09be912484871415d",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-profile.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 42034,
+      "sha256": "063910be2034b7eb3dd5b4208b3ddfa2150c8ab0d7a27086334af83cbaa2d7ec",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-record-search.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 37917,
+      "sha256": "5f8d1e398d4a215a028ea117ba7382ca66353004aeb223a8927d8d6939f3e32f",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-record-search.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-reminder.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 30068,
+      "sha256": "7d9a9b952d14e1f194c3303d4e09a61877acf9e2933d5596dbf99094b7053cc8",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-services.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 55625,
+      "sha256": "4836d87b579be06faf5f6d330bf13f0cbf0d811d617fa90faf2f23ec86cb5c61",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-services.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-task-sync-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 63751,
+      "sha256": "2d409f02acdaf2c6887dda4b1d7f902ad12d6f884ca82db8f3585827d7a418b2",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-today-weather-fixture.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 42190,
+      "sha256": "d33d7b2510c7e59b996789c3b844dded86413c383b2829b413a9b5b9721b4c6d",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-today-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-todos.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 26252,
+      "sha256": "214cd78a84a3efbdb9a0795a461749dbcf3a6411f6c4c72ba55b20db56846ee3",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/regression/mobile-verification.png",
+      "category": "기존 전체 앱/채팅 회귀·실제 Expo·합성 자료·native 아님",
+      "bytes": 36667,
+      "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
+      "import_path": "images/artifacts__dots-full-2026-11-15__regression__mobile-verification.png"
     },
     {
       "path": "artifacts/duck-website-2026-11-13/mobile-demo.png",
@@ -4273,6 +4448,97 @@
       "bytes": 438564,
       "sha256": "abf3a2720d95b5148b3334a2bd6d1aa428cbac4cb15ed58b6a72256acba75cc3",
       "import_path": "images/artifacts__design-guide-fixture.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/computer/browser-fixture.jpg",
+      "category": "실제 network-none Docker·합성 HTTP 사이트/분석 자료·공개 인터넷/실계정 아님",
+      "bytes": 12086,
+      "sha256": "6ff2212b53cdcbbaa24f2a98ef168335b8dbb1ce361c900e5025285275a5b4b6",
+      "import_path": "images/artifacts__dots-full-2026-11-15__computer__browser-fixture.jpg"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/computer/분석.png",
+      "category": "실제 network-none Docker·합성 HTTP 사이트/분석 자료·공개 인터넷/실계정 아님",
+      "bytes": 6486,
+      "sha256": "e5a26fda4c0f3083de8b31573f1526799bc860e453e376e1cdf28ccd0a4a366a",
+      "import_path": "images/artifacts__dots-full-2026-11-15__computer__분석.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/01-ordinary-chat-background-work.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 33551,
+      "sha256": "661099f88db9d74655e44d3896977fa3204ba74738463249f702d0f03b0f7606",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__01-ordinary-chat-background-work.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/02-ordinary-task-progress.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 33707,
+      "sha256": "0304ee9b66c7414506eff4cfb46051a4ad682f0edbe2729841507592d139cc54",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__02-ordinary-task-progress.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/03-responsibilities.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 27164,
+      "sha256": "4f8d32f21262ecf8d9d4a5dd1d0a53ce0ca06504f3b464fe3c3ff0f01d2c558b",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__03-responsibilities.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/04-files.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 17446,
+      "sha256": "afb23c362df2ee3a2679a04f0a403d0032226e19eb217c67a100ac708e4f8a78",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__04-files.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/05-computer-pairing.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 31923,
+      "sha256": "41d4f0115481c8181d7352d11117a10270c14a45898b11b3fd674a910194d5e9",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__05-computer-pairing.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/06-personal-instructions.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 34827,
+      "sha256": "7b395c4e420a2004859610f1ebd9a3099c181c327dd0b20264204f0227521548",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__06-personal-instructions.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/07-channel-readiness.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 35866,
+      "sha256": "95cac12c8c74e9423c3fe9bf0647b26d880f80f698b0d820c3a1e5d1f83c8f76",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__07-channel-readiness.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/08-duo-folded-chat.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 35123,
+      "sha256": "5d72bcf6f42ce4e9d942695df495e09b5b87e865c24cca33d522d06a31e7e35e",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__08-duo-folded-chat.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/09-duo-unfolded-chat.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 60086,
+      "sha256": "ca004060ce86156d7373fbc094ef8f86e6d1a165adeb21593deff49782e878ef",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__09-duo-unfolded-chat.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/10-duo-folded-workspace.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 42303,
+      "sha256": "57868127cc0832354f5e27306f8f16ced311a64e1845fc10bd890e44ef0af10a",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__10-duo-folded-workspace.png"
+    },
+    {
+      "path": "artifacts/dots-full-2026-11-15/current/11-duo-unfolded-workspace.png",
+      "category": "Dots 공개 전체 기능·작업/파일/기기/채널/지침·실제 Expo·합성 소유자/기하·native/실계정 아님",
+      "bytes": 66422,
+      "sha256": "179e87bcdf01ec9b3e6934da1885278a822a0e6440808de2427ee16c4d2cb244",
+      "import_path": "images/artifacts__dots-full-2026-11-15__current__11-duo-unfolded-workspace.png"
     },
     {
       "path": "artifacts/duck-website-2026-11-13/desktop-demo.png",
