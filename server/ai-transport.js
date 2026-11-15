@@ -1,0 +1,10 @@
+const codes=new Set(['ENOTFOUND','EAI_AGAIN','ECONNRESET','ECONNREFUSED','ETIMEDOUT','ENETUNREACH','UND_ERR_CONNECT_TIMEOUT','UND_ERR_SOCKET','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','CERT_HAS_EXPIRED','UNABLE_TO_VERIFY_LEAF_SIGNATURE','UNABLE_TO_GET_ISSUER_CERT_LOCALLY','ERR_INVALID_CHAR','ERR_INVALID_ARG_TYPE']);
+export function aiFailureKind(error){const code=error?.cause?.code??error?.code;if(codes.has(code))return code;if(['AbortError','TimeoutError'].includes(error?.name))return 'timeout';if(/ByteString|invalid header|header.*invalid/i.test(error?.message??''))return 'invalid-header';return 'network-or-request';}
+export const aiEnvironment=env=>({...env,OPENAI_API_KEY:env.OPENAI_API_KEY?.trim(),OPENAI_MODEL:env.OPENAI_MODEL?.trim(),OPENAI_AGENT_MODEL:env.OPENAI_AGENT_MODEL?.trim()});
+export function aiFetch(fetcher=fetch,log=console.warn){return async(url,options)=>{try{return await fetcher(url,options);}catch(error){log(JSON.stringify({event:'ai-transport-failure',kind:aiFailureKind(error)}));throw error;}};}
+/** Read-only model availability probe: no prompts, documents, paid generation or key values. */
+export async function probeAiConnection(env=process.env,fetcher=fetch,log=console.warn){
+ env=aiEnvironment(env);if(env.AI_ENABLED!=='true'||!env.OPENAI_API_KEY||!env.OPENAI_MODEL)return;
+ try{const response=await fetcher('https://api.openai.com/v1/models/'+encodeURIComponent(env.OPENAI_MODEL),{headers:{Authorization:'Bearer '+env.OPENAI_API_KEY},redirect:'error',signal:AbortSignal.timeout(10000)});if(response.body)void response.body.cancel().catch(()=>{});log(JSON.stringify({event:'ai-connection-probe',status:response.status,ok:response.ok}));}
+ catch(error){log(JSON.stringify({event:'ai-connection-probe',ok:false,kind:aiFailureKind(error)}));}
+}

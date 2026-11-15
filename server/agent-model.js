@@ -1,8 +1,10 @@
 import {createHash} from 'node:crypto';
+import {aiEnvironment,aiFetch} from './ai-transport.js';
 import {fail} from './secrets.js';
 import {safeCitation} from './agent-policy.js';
 const responseText=result=>result.output_text??(result.output??[]).flatMap(x=>x.content??[]).filter(x=>x.type==='output_text').map(x=>x.text).join('\n');
 export function createAgentModel(store,{env=process.env,fetcher=fetch}={}){
+ env=aiEnvironment(env);fetcher=aiFetch(fetcher,env.NODE_ENV==='test'?()=>{}:console.warn);
  const headers=user=>({Authorization:'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json','OpenAI-Safety-Identifier':createHash('sha256').update('duck:'+user).digest('hex')});
  return {
   capabilities(){return {enabled:env.AI_ENABLED==='true'&&!!env.OPENAI_API_KEY&&!!env.OPENAI_MODEL,web:env.ASSISTANT_WEB_SEARCH_ENABLED!=='false',hostedCode:env.ASSISTANT_HOSTED_CODE_ENABLED==='true',voice:env.ASSISTANT_VOICE_ENABLED==='true',computer:true};},

@@ -2,6 +2,7 @@ import {googleAccounts} from './google-accounts.js';
 import {createHash} from 'node:crypto';
 import {actionDefinitions,validateAction} from './provider-actions.js';
 import {fail} from './secrets.js';
+import {aiEnvironment,aiFetch} from './ai-transport.js';
 const limitText=(v,n=8000)=>String(v??'').slice(0,n);
 const visibleContext=ctx=>Object.fromEntries(Object.entries(ctx).filter(([key])=>!['agentSources','agentInputs','agentJobs','agentFiles','agentDuties','memoryUserTurnId'].includes(key)));
 // Provider messages can contain account or request details. Read a bounded body
@@ -39,6 +40,7 @@ async function providerFailure(response){
  return fail(502,message);
 }
 export function createAssistant(store,integrations,env=process.env,fetcher=fetch){
+ env=aiEnvironment(env);fetcher=aiFetch(fetcher,env.NODE_ENV==='test'?()=>{}:console.warn);
  let agentRuntime=null;
  const aiEnabled=()=>env.AI_ENABLED==='true'&&!!env.OPENAI_API_KEY&&!!env.OPENAI_MODEL;
  const catalog=()=>Object.entries(actionDefinitions).filter(([operation])=>!(operation.startsWith('naver.')&&integrations.naver?.status(null).readOnly===true)&&!(['naver.send','naver.reply'].includes(operation)&&integrations.naver?.status(null).sendAvailable===false)).map(([operation,d])=>({operation,provider:d.provider,label:d.label,feature:d.feature??null,fields:Object.keys(d.fields).filter(field=>operation!=='todo.create'||field!=='done'),required:d.required}));

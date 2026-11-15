@@ -1,4 +1,5 @@
 import {sendJson} from './server/http-json.js';
+import {probeAiConnection} from './server/ai-transport.js';
 import { createTaskSync } from './server/task-sync.js';
 import { backupScheduler } from './server/backups.js';
 import { createMailer, startMailWorker } from './server/mail.js';
@@ -155,4 +156,4 @@ const server = http.createServer(async (req, res) => {
     if (!files[path] || req.method !== 'GET') return send(404, { error: '페이지를 찾을 수 없어요.' });
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
   } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.' }); else res.end(); }
-}).listen(Number(process.env.PORT || 3000), '0.0.0.0', () => console.log('Donknow listening on port ' + server.address().port));
+}).listen(Number(process.env.PORT || 3000), '0.0.0.0', () => {console.log('Donknow listening on port ' + server.address().port);if(process.env.NODE_ENV!=='test')void probeAiConnection();});
