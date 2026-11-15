@@ -35,6 +35,8 @@ tone_html='<section id="website-motion-contract"><h2>별도 소개 사이트 · 
 calendar_audit=(root/'docs/design-guide.md').read_text().split('## 캘린더 개선 전체 구현 — 2026-11-13',1)[1]
 audit_html='<section id="calendar-audit"><h2>캘린더 개선 전체 구현 · CA-01~20</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in calendar_audit.splitlines() if line.strip())+'</section>'
 tone_html=audit_html+tone_html
+reference_flows=(root/'docs/design-guide.md').read_text().split('## 2026-11-15 — Things·피클 영상 UX/UI',1)[1].split('## ',1)[0]
+tone_html='<section id="reference-flows"><h2>Things·피클 영상 UX/UI</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in reference_flows.splitlines() if line.strip())+'</section>'+tone_html
 reference=(root/'docs/calendar-apple-reference-2026-11-13.md').read_text().split('## 사용자 확정',1)[1].split('## 검증·증거와 재개',1)[0]
 tone_html='<section id="calendar-apple-reference"><h2>기반 Apple 캘린더 참고 · 시스템 외형 · 새 계약 우선</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in reference.splitlines() if line.strip())+'</section>'+tone_html
 refinement=(root/'docs/design-guide.md').read_text().split('## 2026-11-13 — 최신 캘린더 정리·2주·시트',1)[1].split('## 2026-11-13 — 별도 소개',1)[0]

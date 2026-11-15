@@ -12,6 +12,7 @@ import {Page} from './ui';
 import {ScreenHeading} from './ScreenHeading';
 import {useDuoBackAction} from './DuoBackNavigation';
 export type MeIcon=React.ComponentProps<typeof Ionicons>['name'];
+export function MeServiceIntro({title,icon,description}:{title:string;icon:MeIcon;description:string}){return <View style={{marginTop:12,padding:20,borderRadius:24,backgroundColor:colors.surface,gap:10}}><Ionicons name={icon} size={32} color={colors.blueText}/><Text style={{...typography.section,color:colors.text}}>{title}</Text><Text style={{...typography.detail,color:colors.secondary}}>{description}</Text></View>;}
 export function MePage({title,onClose,disabled=false,children,scrollable=true}:{title:string;onClose:()=>void;disabled?:boolean;children:React.ReactNode;scrollable?:boolean}){
  const duo=useDuoBackAction(onClose,disabled),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface),insets=useSafeAreaInsets(),keyboard=useKeyboardUX();
  const heading=<View style={{flexDirection:'row',alignItems:'flex-start',gap:4}}>{!duo&&<Pressable accessibilityRole="button" accessibilityLabel="돌아가기" disabled={disabled} onPress={onClose} style={{width:44,minHeight:44,marginTop:-4.5,marginLeft:-8,alignItems:'center',justifyContent:'center'}}><Ionicons name="chevron-back" size={26} color={disabled?colors.muted:colors.blueText}/></Pressable>}<View style={{flex:1,minWidth:0}}><ScreenHeading embedded title={title}/></View></View>;

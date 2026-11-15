@@ -1,3 +1,38 @@
+# Current Things / Pickle reference-flow implementation QA
+
+final result: passed
+
+## Source and actual rendered evidence
+
+The user selected the four unique supplied videos as design/interaction references, then explicitly requested implementation. This is an adaptation inside the existing native Duck product, not a branded pixel clone or a new web/mobile template. Product Design image-to-code and design-qa were used; no new asset or plugin installation was needed. Existing system fonts, semantic tokens and Ionicons are retained.
+
+- Source visual truth: the attached `23-53-47`, `23-54-23`, `23-58-55`, and `00-11-48` recordings. The two copies of `00-11-48` are byte-identical. Extracted/inspected in `/tmp/duck-ux-video-review/`; original1398×2034px. Sources were scaled to431px width (~0.3083), yielding627px height. This density normalization is for layout/flow comparison, not a claim about original CSS points. The source footage is visibly dimmed; its overlay tint is not treated as the palette to copy.
+- Actual browser implementation: `artifacts/reference-flows-2026-11-15/08-duo-upcoming-clean.png` (431×640 CSS/px,DSF1,dark,folded,upcoming list); `12-inline-note-keyboard.png` (390×844,DSF1,dark,inline memo editing with synthetic keyboard top450); `10-selection.png`, `13-me-overview.png`, `15-google-overview.png`, `20-apple-intro.png`, and `07-chat-defaults-phone-hidden.png`.
+- Full combined comparison actually opened: `/tmp/duck-reference-comparison-full.jpg`; focus combined comparison actually opened: `/tmp/duck-reference-comparison-focus.jpg`. Source and implementation were placed in the same image inputs. Private user reference composites are not published. Both editor regions remain in their original list. The source shows a real keyboard; the browser fixture deliberately shows only the tested occlusion boundary, with no fake keyboard. Source editor date16 versus synthetic edited task date15, Korean sample text, source labels and navigation differences are explicit content/state differences, not a pixel-fidelity assertion.
+- ME/services actual captures were separately opened in `/tmp/duck-reference-current-board.jpg`, including ordinary/light-dark,small,folded/open. Source ME includes private account data; none was copied into public captures.
+
+## Findings and comparison history
+
+The first combined visual comparison of the completed changes found no remaining actionable P0/P1/P2 issue in the requested structure adaptation. The following implementation changes preceded that final comparison and were verified by browser flow checks:48→44pt base rows, a single inline editor using the existing save implementation,72–160pt compact memo with native/browser caret scrolling, toolbar clearance above the ordinary navigation, explicit batch dates/completion with partial failure, consistent service detail pages and an Apple permission introduction. A subsequent functional check caught draft loss when changing tabs; keeping the existing Todo screen mounted while hidden fixed it, and the added tab-return assertion passed. The active/inactive state does not change the compared visible layout.
+
+## Required fidelity surfaces
+
+- Fonts/typography: system Korean font/React Native fallback;34pt bold date,16pt row,15pt appointment time,shared17pt setting title. Native SF/IME rendering needs device verification. Source English labels, large title spacing and sample data differ intentionally.
+- Spacing/layout: date/rule→appointments→new item→checkbox sequence;44pt minimum edit/selection targets,with title wrapping/status expansion.16pt inline card padding; notes and tools stay in that card. Ordinary bottom tabs, Duo camera rail/opposite pane and existing page insets remain. Selection toolbar clears the bottom tabs; the date picker uses the original scrolling list. No horizontal overflow at tested320/390/431/960 widths.
+- Colors/tokens: existing light/dark semantic backgrounds,blue actions,muted metadata and danger statuses. Source dimming,charcoal brand and theme swatches are not duplicated as product settings. Public photos are synthetic fixture content.
+- Assets/icons: supplied Duck brand remains; actual Ionicons calendar,notification,checkbox,selection,plus,send and external-link glyphs. No traced screenshot UI,unrequested brand mascot or fake tags/flag controls. Focus rings are browser accessibility indicators rather than native frame styling.
+- Copy/content: concise Korean rows and service descriptions. Actual connection readiness determines CTA state. No invented subscription prices,usage percentages,tickets,successful permission grant or model success. Source speaker repetition is reduced for user messages while time remains visible.
+
+## Functional evidence and limits
+
+The25-capture reference suite passed with0page errors: inline creation/source retry,3-second completion/log/restore,selection without writes,date batch,partial batch without replay,tab-persistent drafts,long memo caret,keyboard reveal,ME Back,provider readiness,Apple native-only state,phone hidden,attachments and source links. ME permission/import/disconnect/behavior/memory recovery,chat long-answer/action/owner and chat failure/retry regressions passed.391 unit/HTTP tests:390pass/0fail/1existing optional skip;100syntax checks,typecheck,web/iOS JS exports passed. Follow the final evidence record in `docs/reference-flows-qa-2026-11-15.md` for the later full-app/calendar/Duo/keyboard reruns.
+
+Intentional scope: no fake tag/checklist/flag persistence, no price/ticket implementation from an absent price page, no phone reintroduction, no real-source writes during testing. Native keyboard/IME/VoiceOver/EventKit/iCloud/push and live model quality remain unverified. No new native build was dispatched. P3 follow-up: inspect typography and touch rhythm on the next installed iPhone build.
+
+---
+
+Previous QA, retained as history:
+
 # Current Things-inspired Todo implementation QA
 
 final result: passed

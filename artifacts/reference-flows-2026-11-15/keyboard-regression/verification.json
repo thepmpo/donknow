@@ -1,0 +1,16 @@
+{
+  "syntheticOnly": true,
+  "nativeKeyboardNotVerified": true,
+  "captures": [
+    "01-phone-memo-keyboard",
+    "02-folded-memo-keyboard",
+    "03-open-landscape-memo-keyboard",
+    "04-open-portrait-memo-keyboard",
+    "05-light-phone-today-shade",
+    "05-dark-phone-today-shade",
+    "05-light-duo-today-shade",
+    "05-dark-duo-today-shade"
+  ],
+  "writes": 0,
+  "errors": []
+}
