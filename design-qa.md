@@ -1,6 +1,6 @@
 # Current reliability regression — saved calendar and connection
 
-[13 fresh synthetic captures and verification](docs/connection-stability-2026-11-15.md). Cold reload restores the selected calendars and saved display before held reads. Cache/error/partial-source/account-isolation, app/chat/calendar/input regressions pass. Native EventKit and real accounts remain unverified; native40 predates this repair.
+[14 fresh synthetic captures and verification](docs/connection-stability-2026-11-15.md). Cold reload restores the selected calendars and saved display before held reads. Cache/error/partial-source/account-isolation, app/chat/calendar/input regressions pass. Native EventKit and real accounts remain unverified; native40 predates this repair.
 
 ---
 

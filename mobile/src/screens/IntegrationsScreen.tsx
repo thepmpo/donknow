@@ -8,6 +8,7 @@ import { AppState, Platform, StyleSheet, Text, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { Button, colors, s } from '../ui';
 import type { TodoStore } from '../useTodos';
+import {refreshCalendarSnapshots} from '../calendar-snapshot-cache';
 export type Provider = 'google' | 'slack' | 'notion';
 type Status=IntegrationStatus;
 type Item = { id: string; title: string; dueDate?: string | null; kind: string; completed?: boolean; completedAt?: string | null };
@@ -20,12 +21,13 @@ export function IntegrationsScreen({ store, initialProvider, onClose }: { store:
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState(''), [disconnecting, setDisconnecting] = useState(false);
   const [taskStatus, setTaskStatus] = useState<'incomplete' | 'completed'>('incomplete');
   const initialScopesLoaded=useRef(false);
+  const googleCalendarStatus=useRef<string|null>(null);
   const [statusRevision,setStatusRevision]=useState(0);
   const active = useRef(true), version = useRef(0), statusRead = useRef(0);
   const rootStatus=statuses.find(item=>item.provider===provider),account=rootStatus?.accounts?.find(a=>a.connectionId===accountId)??rootStatus?.accounts?.[0];const current=rootStatus&&account?{...rootStatus,label:account.label,features:account.features}:rootStatus;const connectionId=provider==='google'?account?.connectionId:undefined;
   function chooseAccount(value:GoogleAccount){version.current++;setAccountId(value.connectionId);setFeatures(value.features);setItems([]);setSelected([]);setChannel(null);setNext(null);setDisconnecting(false);setReadAttempted(false);setError('');setMessage('');setAddingAccount(false);}
   useEffect(()=>{if(account&&!addingAccount)setFeatures(account.features);},[connectionId,addingAccount]);
-  async function loadStatus() { if (!store.user) return; const run=++statusRead.current; try { const result=readIntegrationStatuses(await store.featureRequest('/api/integrations')); if (active.current&&run===statusRead.current) {setStatuses(result);setStatusStale(false);setStatusError('');setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if(active.current&&run===statusRead.current){setStatusStale(true);setStatusError(e instanceof Error?e.message:'연결 상태를 확인하지 못했어요.');} } }
+  async function loadStatus() { if (!store.user) return; const run=++statusRead.current; try { const result=readIntegrationStatuses(await store.featureRequest('/api/integrations')); if (active.current&&run===statusRead.current) {const google=result.find(item=>item.provider==='google'),signature=JSON.stringify([google?.connected,google?.features,google?.accounts?.map(a=>[a.connectionId,a.features])]);if(googleCalendarStatus.current!==null&&googleCalendarStatus.current!==signature&&store.connection?.mode==='cloud')refreshCalendarSnapshots(store.connection.baseUrl+':'+store.user?.id);googleCalendarStatus.current=signature;setStatuses(result);setStatusStale(false);setStatusError('');setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if(active.current&&run===statusRead.current){setStatusStale(true);setStatusError(e instanceof Error?e.message:'연결 상태를 확인하지 못했어요.');} } }
   useEffect(() => { active.current = true; void loadStatus(); const listener = AppState.addEventListener('change', state => { if (state === 'active') void loadStatus(); }); return () => { active.current = false; version.current++;statusRead.current++; listener.remove(); }; }, []);
 
   async function authorize(requestedFeatures = features,mode=addingAccount||!current?.connected?'add':'reauthorize') {

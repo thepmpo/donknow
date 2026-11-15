@@ -8,7 +8,7 @@ await mkdir(output,{recursive:true});
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 let account={id:'viewport-user',email:'viewport@example.test',emailVerified:true};let hold=false,fail=false,teamHold=false,title='디자인 검토',deleted=false,paged=false,capCalls=0,eventCalls=0;const errors=[],pending=[];function release(id){for(const p of pending.splice(0)){if(!id||p.id===id)p.resolve();else pending.push(p);}}
 try{
- const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,timezoneId:'Asia/Seoul'});page.on('pageerror',e=>errors.push(e.message));await page.clock.setFixedTime(new Date('2026-11-14T00:00:00Z'));await page.emulateMedia({reducedMotion:'reduce'});
+ const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,timezoneId:'Asia/Seoul'});page.on('pageerror',e=>errors.push(e.message));await page.clock.install({time:new Date('2026-11-14T00:00:00Z')});await page.emulateMedia({reducedMotion:'reduce'});
  await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
  await page.route(origin+'/**',async route=>{
   const p=new URL(route.request().url()).pathname;
@@ -52,9 +52,12 @@ try{
  await command('일정 더 불러오기');await page.getByText('업데이트 09:00',{exact:true}).waitFor();await close();assert.equal(await event('이후 삭제된 일정').count(),0);await shot('cache-authoritative-delete');paged=false;
  // Going to a different month and back keeps the current month snapshot; late responses are ignored.
  hold=true;await command('다음 달');await command('이전 달');await event(title).waitFor({timeout:500});await event('팀 일정 유지').waitFor({timeout:500});assert.equal(await event('이후 삭제된 일정').count(),0);hold=false;release();
+ async function settled(){await command('캘린더 상태·새로고침');await page.getByText(/^업데이트 /).waitFor();await close();}
+ // Visible calendars refresh without a tab switch; held reads cannot duplicate every tick.
+ await settled();const beforePoll=eventCalls;title='화면을 연 채로 갱신한 일정';await page.clock.fastForward(31000);await event(title).waitFor();assert.ok(eventCalls>beforePoll);await shot('cache-foreground-refresh');await settled();hold=true;await page.clock.fastForward(31000);const pollDeadline=Date.now()+3000;while(!pending.length){assert.ok(Date.now()<pollDeadline);await new Promise(r=>setTimeout(r,10));}const heldCount=pending.length;await page.clock.fastForward(31000);assert.equal(pending.length,heldCount,'a slow refresh is not duplicated on later timer ticks');hold=false;release();await page.waitForTimeout(80);
  // Cache and late calendar results cannot cross a Duck account boundary.
  hold=true;await command('Google 일정 새로고침');await close();await openMeAccount(page);await button('로그아웃').click();
  await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByRole('textbox',{name:'비밀번호',exact:true}).fill('fixture-password-only');title='두 번째 계정 일정';await button('로그인').click();await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();await tab('캘린더').click();await grid().waitFor();assert.equal(await event('빠른 캘린더 먼저 반영').count(),0);
  for(const p of pending.filter(p=>p.owner==='viewport-user'))p.resolve();await page.waitForTimeout(100);assert.equal(await event('빠른 캘린더 먼저 반영').count(),0,'old owner response is ignored');hold=false;release();await event(title).waitFor();await shot('cache-account-isolation');
- assert.deepEqual(errors,[]);await writeFile(resolve(output,'cache-verification.json'),JSON.stringify({capCalls,eventCalls,errors,holdsReleased:pending.length,cache:'session memory, account/server/timezone scoped, 12 periods',nativeDeviceVerified:false},null,2));console.log('PASS: immediate cached ranges, source-by-source arrival, bounded capability cache, overlap updates, refresh failure preservation, pagination/deletion, late-range response isolation');
+ assert.deepEqual(errors,[]);await writeFile(resolve(output,'cache-verification.json'),JSON.stringify({capCalls,eventCalls,errors,holdsReleased:pending.length,cache:'session memory, account/server/timezone scoped, 12 periods',foregroundRefreshSeconds:30,slowPollDeduplicated:true,nativeDeviceVerified:false},null,2));console.log('PASS: immediate cached ranges, source-by-source arrival, bounded capability cache, overlap updates, refresh failure preservation, pagination/deletion, late-range response isolation');
 }finally{await browser.close();}
