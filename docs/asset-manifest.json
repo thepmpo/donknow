@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-16",
-  "codeCommit": "d47d24631cdd8fddac053a0ad39170bc67ff9c9c",
-  "assetCommit": "d47d24631cdd8fddac053a0ad39170bc67ff9c9c",
-  "imageCount": 1235,
+  "codeCommit": "aab764955b5b9ab26849d9c584f44fd0fd7e3823",
+  "assetCommit": "aab764955b5b9ab26849d9c584f44fd0fd7e3823",
+  "imageCount": 1334,
   "images": [
+    {
+      "path": "artifacts/todo-organize-2026-11-16/10-design-date.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 44327,
+      "sha256": "473833673ee05b305365f5ce78a15f073ee5e5732f159f3d777e033bc5e1701a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__10-design-date.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/11-design-source.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 45191,
+      "sha256": "cb84e7e4aafa7059ebbff8c91237cffbc14f5c08edf8b7ba815b1accec3287b7",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__11-design-source.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/12-design-date-drag.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 42765,
+      "sha256": "8d9fed784ca6bbb1e44b6ada8bd1b976a9c0378274d1d2912df0d8df3a159a3d",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__12-design-date-drag.png"
+    },
     {
       "path": "artifacts/reference-flows-2026-11-15/02-iphone-dark.png",
       "category": "Things·피클 영상 적용/목록 안 편집·서비스 상세/실제 Expo·합성 자료·Duo 기하/native·실계정 아님",
@@ -1473,6 +1494,146 @@
       "bytes": 36667,
       "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
       "import_path": "images/artifacts__things-source-repair-2026-11-15__app__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-account-settings.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 42364,
+      "sha256": "b3f06507973c56c96159738041a6350aaa2a70fae884dabb17a0988dfac40de6",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-apple-reminders.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 66635,
+      "sha256": "37f26124987c844e997e4efdeeef3ac6fca6e9620c913a1962e821c7579d9772",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-assistant-action-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 40231,
+      "sha256": "31650da08bc6819ee880991416bddbdb1237c83e373f127a575465849c3b1b19",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-assistant-ai-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 35031,
+      "sha256": "508440a3c63eeccd4b85c6bd15d88761ff791742404e5a1b1b38a44e6a40eb47",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-auth.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-calendar-events-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 32536,
+      "sha256": "5ddda4aa2d8ab4f363c69146abc0460df15e6bdf55737f69c96701f9ba76da6e",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-calendar.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 33233,
+      "sha256": "8119b477f628cd30eed6b9dc042c00db36d261f420432c5fd8a3cf2f737529a6",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-completed-reference-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 48579,
+      "sha256": "d46dc8fcc41303ac64da0f0266905a60816534225f45ef4da8af143ecaed318a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-duckduck.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 29535,
+      "sha256": "a9d25f8c20769479b94792c15a5b4c7afcb39f434a894d514dee99ebe593353a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-google-tasks-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 47433,
+      "sha256": "a60a8c1b3844ff523dec548971b3967d6dc327157d516be11b6b1900ff883250",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-kakao-share.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 43435,
+      "sha256": "f54001cc864e9d9cce1095f6875bf45ea64d0463b4801cf2cf8f2a12e75c3f12",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-log.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 32266,
+      "sha256": "eb618730d81cdd8c2b76fa1b5667685278171dd66ad3365c33519ec1098ca8d4",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-log.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-notes-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 38581,
+      "sha256": "0f1b404a6571b6f953a306b594aacabb7ac681d021ef07776ad09c17b870700a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-personal-export.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 38846,
+      "sha256": "f4cf89b29148370e601115d355856fc2172018e44124bf1806399d380fc442a3",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-profile.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 42860,
+      "sha256": "e03966703eb70775b629b36ca4bd66eeb7efb2715aa31e533a477015c63ebbca",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-reminder.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 47343,
+      "sha256": "2b60d37016ab889df83eb49389178589949a6855f0871bab141926d57939a013",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-services.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 40097,
+      "sha256": "81ada64fee7420498683207a73ffcaff85d3530a16d72878a6796636d02c1778",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-services.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-task-sync-fixture.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 61947,
+      "sha256": "8fc5a37b9037b817702bee5032e9ba13912ff2b70fdf5a450630a8b753d8f24f",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-todos.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 28873,
+      "sha256": "46d78056f5841f6fa750b29c0c3a4f5a48d932a0ed50dc725df8d5a4066ce813",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/app-regression/mobile-verification.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 36667,
+      "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-verification.png"
     },
     {
       "path": "artifacts/assistant-agent-2026-11-15/current/01-ordinary-memory-opt-in.png",
@@ -8361,6 +8522,538 @@
       "bytes": 26892,
       "sha256": "476f7ecccab3658077289cd20e8d94645f17a0b72adb17fc4b72e601966fb789",
       "import_path": "images/artifacts__things-source-repair-2026-11-15__interaction__07-background-refresh-keeps-new-write.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/01-date-default.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 46561,
+      "sha256": "539fea14b7bc968265a2a1731fa8ccc9d693a7217616a8b31a5f56a238afd95b",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__01-date-default.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/02-source-default.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 46163,
+      "sha256": "fa7191629dc5dfbce211e69d07af08cd56938e24e6d359bb1da6310afb9dfe3d",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__02-source-default.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/03-source-manual-order.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 46872,
+      "sha256": "83309823121cb8d1a1db4d6b796f1b2daff6b0f00a60ffcfd595842ef4fd7986",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__03-source-manual-order.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/04-date-drag.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 48046,
+      "sha256": "aea1496460f5d694ce6c8a6b2878df6a742ec0a046d31b3d05c8e7ab95b67e76",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__04-date-drag.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/05-date-after-drop.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 47756,
+      "sha256": "288be09b8a1cb2137649f565a57aa16013ff16836db5d8c3e5285b8a67ea804c",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__05-date-after-drop.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/05a-two-tasks-drag.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 61993,
+      "sha256": "e65dd900f047b9383ae3f5d22e1915b77f7a130d735da939f59fba48ce439df3",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__05a-two-tasks-drag.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/06-iphone-light-source.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 46223,
+      "sha256": "b489f3ed07e5db2c5c6269a110bdd842fdebb76a1bbd650f8ade4f3157e8b941",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__06-iphone-light-source.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/06-iphone-light.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 45170,
+      "sha256": "12755af5c4e57620900122f9d4ccdcff167d48f7001925cd9fae10a4e21ba902",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__06-iphone-light.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/07-duo-folded-dark-source.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 36945,
+      "sha256": "85ebc07d8145a411bdc31e905260b02f5a1ba07e2e572b95bdaaa3d5dd523851",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__07-duo-folded-dark-source.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/07-duo-folded-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 34073,
+      "sha256": "1e0371ad8d68061f3089f8b7421e09b9410526095603ba64f7ad60fc1a6b939a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__07-duo-folded-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/08-duo-open-light-source.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 70183,
+      "sha256": "7b52ae9f253bc8baa1b13fc345fda4da7c4fc09a93029d32deb369c39c367996",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__08-duo-open-light-source.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/08-duo-open-light.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 66379,
+      "sha256": "dd95136b077451364ffffef777d919fe779afee55d391713359c9a9af5d2755a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__08-duo-open-light.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/09-small-phone-source.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 40333,
+      "sha256": "b50e7ea94b4b55d560786e2c0627763ab4a35e3ebf8d2635aae0e10c6c0954dc",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__09-small-phone-source.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/09-small-phone.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 37279,
+      "sha256": "d4c9d16442602110764d21ef9fba331bcf57fc45977ecd55cdc79f8c3824d273",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__09-small-phone.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/13-free-receive-only.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 30816,
+      "sha256": "28ecda4f766ac997abdfe8a42c675709f0af7b8a367091e8d1a9bd0f222f6689",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__13-free-receive-only.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/14-budget-exhausted-draft.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 34066,
+      "sha256": "7796108847ff509050b56173bb5110a49be7581e2bb3709df7ebef57607b1c84",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__14-budget-exhausted-draft.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/comparison-date-detail.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 230066,
+      "sha256": "05a533c4502df8f17c8e5fb3884d86575e274aeb36ac7d9d8e736dd140997fa7",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__comparison-date-detail.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/comparison-date.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 355565,
+      "sha256": "8bdb2506637d9fac83a953eb0edb0f0897bcf1d385b9f7a24b125f6932735620",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__comparison-date.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/comparison-source-detail.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 239254,
+      "sha256": "6e27fd13da3efa8244ca147b3aa7777923061312b236e38b9277ca494142c412",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__comparison-source-detail.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/comparison-source.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 356260,
+      "sha256": "97a7da6994a34f66641a710264fa804b646ff633b3aa73bf16fc73299e19a993",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__comparison-source.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/01-open-calendar-todo.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 55800,
+      "sha256": "2d59a1dc787dfd9ffcedc29f6e3137f018dffb0e1349a44888c3a41ca138a708",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__01-open-calendar-todo.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/02-open-calendar-duck.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 58993,
+      "sha256": "0d3a346903de6747009da264140a8fe36555fdf6e19fbfeb69c6793c86dbb44e",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__02-open-calendar-duck.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/03-portrait-current-screen.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 34463,
+      "sha256": "b3d55ef7aa7cc9160362227d68c5035c4eb42872f58b2a16f4df912d15577918",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__03-portrait-current-screen.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/04-closed-camera-column.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 31480,
+      "sha256": "63f091e8c6c4ba4ae0060c269dab571a0022fc6cd66d387978081497f971e82e",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__04-closed-camera-column.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/05-back-in-camera-column.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 91023,
+      "sha256": "3bd98d5d7bc6f7e76d308094f02ace9c69b9c0e5525150a42a4a1ff853b21e37",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__05-back-in-camera-column.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/06-dragging-lens-web-fallback.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 57890,
+      "sha256": "f5a64b78398f96934f43bedc3b1a37d897404cda4b2c7906509b2a6f33d6e9f3",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__06-dragging-lens-web-fallback.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/07-iphone-320-floating-tabs.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 31891,
+      "sha256": "55e988dd1bbc03bb96eea7da2f71a34bf868ad0871fe0f4b9fd0d92340cb2b87",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__07-iphone-320-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/07-iphone-390-floating-tabs.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 33158,
+      "sha256": "f8d2a615eb91a1f3aa8aabe61afb4bd5b642ccedd2b2fc60bfb30af53b289eba",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__07-iphone-390-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/07-iphone-430-floating-tabs.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 33907,
+      "sha256": "0e2f1c120b391944ff0099e4cbe1ed0a50b380f058d423ea05e5b1c70da98c96",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__07-iphone-430-floating-tabs.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/08-iphone-320-text-160-percent.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 26736,
+      "sha256": "5f4e98194927d910faa597b6ccc66ab20889b820dde8b84b0c64cffe3f4672de",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/08-pane-local-day-detail.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 61188,
+      "sha256": "7e886124e3d9ae6985f38788e9d9d9eaeb1c5204d1520e479370b6f8bda25dbb",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__08-pane-local-day-detail.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/10-folded-calendar-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 37618,
+      "sha256": "9dbdc1abe3ffc7c3e6d20eaf927f97bf1054a5e97cbb94201c8a205d639a18b7",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__10-folded-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/11-folded-calendar-light.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 36561,
+      "sha256": "9bb85075996d67f7bbd5fa226978ad208ccb4d1f48fa4d8b96ab602f1b7bcd65",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__11-folded-calendar-light.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/12-open-calendar-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 54543,
+      "sha256": "a9a2d93c8303b82af801ea6bc1e555a07701ce698b50afa5d887a1b9247b7966",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__12-open-calendar-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/13-folded-fortnight.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 29874,
+      "sha256": "b36e95a6191df4729f162472f84a8108931e59da57f77304a48c4ccd27e2345b",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__13-folded-fortnight.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/14-open-fortnight-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 50659,
+      "sha256": "63772bc43406e2a08058000f162d1fd5be28c1b0a3162a924a95d01b5e2c6198",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__14-open-fortnight-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/15-long-press-left-calendar.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 45680,
+      "sha256": "b8767c8bb8acbedd2cb20ac4f485ca17abf32114fd2d5c1061b49437a072dfb5",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/16-long-press-right-calendar.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 30581,
+      "sha256": "6ea093e695bea7273d17df81e2304d8b7d1dadb661ec3a0fad19aeec14ab136f",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/17-folded-long-press-calendar.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 26416,
+      "sha256": "387de81f7be9778be8e3b07ec66b26cb90833a0b8fcb1b8295c1588728612acf",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/18-year-left-calendar-right-todos.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 89656,
+      "sha256": "f00e1a0e7f5783f9102c59c135ee8759d1ba513ebb2ff5b6f55ab919c0d0cf2a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/19-year-right-calendar.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 87546,
+      "sha256": "2a4efca8c83df6ebd68ef2bd8f4b94830a88e568e7cbb3141e4d7ae831097785",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/20-year-portrait.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 84031,
+      "sha256": "9f9d57315008610166c859098c1f1505fc14ff412b7d0afb440458e9737ccf54",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/21-year-folded.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 67639,
+      "sha256": "f6d8e7b0be7b209082b6ce2f30884ba9d3071b1d40993af0224122979922912f",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/22-year-duo-motion.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 85200,
+      "sha256": "11a8a6b32ca57b77c9551b5be8005e79344a5d5866384f7f94810eb639a8c807",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/23-year-design-comparison-state.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 93408,
+      "sha256": "8fd5e3c71f01fab6ed1bd86e2bb3295f801e99fe238afae1165b3349a398a18a",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/24-pane-edge-scrollbar.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 92471,
+      "sha256": "6c9e7854947604f19967a5945592a03483fec95029399fef1066d028ee29ad75",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__24-pane-edge-scrollbar.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/duo-regression/25-compact-duo-chat.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 17000,
+      "sha256": "6396987d24c70ece8ab0984bf92730e4b3722a8bd58e9bc92efeeeb362f2e2d3",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__duo-regression__25-compact-duo-chat.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/reference/date-move.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 1287168,
+      "sha256": "72595fe8e3208471efa2fd729be096fb83631463a0fc935c547774bcbedac30d",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__reference__date-move.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/reference/selected-combined.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 1461985,
+      "sha256": "331c67666659ef60b234e42017cb8e647de7ba22f5f09230cdeeca36d588f366",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__reference__selected-combined.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/reference/source-view.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 1266036,
+      "sha256": "9de1b316e6c2d99cdd2c43e97b544a9a29b1d88939e97c6fabd078300e911587",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__reference__source-view.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/01-iphone-light.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 41672,
+      "sha256": "241d90db91714fcf23d6eb8630e1b97f7ce7f2667bd47c17f2cc339911b3ef1b",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__01-iphone-light.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/02-iphone-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 41714,
+      "sha256": "08e5cdf523dabfbb651704df917064f8916fe7396968eb50e7f0c960de3b6419",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__02-iphone-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/03-duo-folded-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 32626,
+      "sha256": "e35a0da40d622e0c5ac350a01a12b82c0cea865f94d645ecc9b2dc1d8f8c7dfe",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__03-duo-folded-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/04-duo-open-light.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 64134,
+      "sha256": "b13e94053874fd4a5220b79c550d3374b906c2f0bd913cfcfc8994170fa9051d",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__04-duo-open-light.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/05-small-phone.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 35610,
+      "sha256": "514ea0b6702a745f722670ea9ea0fb9496787d887e345b482e356c25f00fb2a2",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__05-small-phone.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/06-original-source-edit.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 47605,
+      "sha256": "5e919928f56b78638fecba2592ac7968d33eaa8f1ec84ecbe29371fb3055f38b",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__06-original-source-edit.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/07-chat-defaults-phone-hidden.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 28049,
+      "sha256": "dc56a73e37c8c5d349f88cd2809fadb6bed7ee3d51363b4de98dd9fa25895cd2",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__07-chat-defaults-phone-hidden.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/08-duo-upcoming-clean.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 31019,
+      "sha256": "79ac0725dae880c4d83e8c57c9f2fae2b1773cde8013a5860546a048cf42f167",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__08-duo-upcoming-clean.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/09-month-line-starts-on-first.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 33348,
+      "sha256": "416e3fa9e5629af63f65ee035dd0c49204e0b764abd30e0b1d0a83f15664138d",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__09-month-line-starts-on-first.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/10-selection.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 42030,
+      "sha256": "72d42900a6fae8647a94897f68bd4905b02dd1cd4ea5a050c34198931e48f1cd",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__10-selection.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/10a-selection-empty.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 40955,
+      "sha256": "55ba4cfc801d5670135aaf652d75d0c8923f681101a35c63057735caeac41f64",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__10a-selection-empty.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/11-batch-date.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 45633,
+      "sha256": "7453959f743179036daf28a7fa71ce1c146532fbf2c5244f11c5cc40b6048dd6",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__11-batch-date.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/12-inline-note-keyboard.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 19906,
+      "sha256": "4d96b7f414c1f4cc443f3985ea271f2d06826dab9b2657cd77fae6498a6aaad8",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__12-inline-note-keyboard.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/12b-draft-after-failed-save.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 43250,
+      "sha256": "09ae5bfd7ca1a573eb385573c08f8a49cbc3251e77552045dabceeda27e060fb",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__12b-draft-after-failed-save.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/12c-partial-batch-recovery.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 45995,
+      "sha256": "fd44775d22f1104a6690209c1b5646a573c3e40ab2c5efcf585f70f54241a4c6",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__12c-partial-batch-recovery.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/13-me-overview.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 42652,
+      "sha256": "b236fe5bf4c8dd889280af4ac2b79155fedaa86b64455524c021a39e3574d56f",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__13-me-overview.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/14-service-catalog.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 38540,
+      "sha256": "e59ae88b9182043aa24952e08435a283116ace461a5d38a3bb47d0902cd96642",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__14-service-catalog.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/15-google-overview.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 42609,
+      "sha256": "c126e639cbcd18923636e4fab27e23dd47208a688ce2e8cc3f4d9f0cd4babb28",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__15-google-overview.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/16-google-permissions.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 45990,
+      "sha256": "7e59ce7b2a2343cfc7d7dd29a58d52015717bfb3f7e8c1a540f8a2612751f608",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__16-google-permissions.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/17-google-recovery.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 33324,
+      "sha256": "347c0e34c71480e7431b1b710c452b1f90c55f74d3011cb9c7e9849f49327271",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__17-google-recovery.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/18-notion-permission-intro.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 33701,
+      "sha256": "7b4f90738484df8ee63113e09a60e46697e96a7ab761f44a6a387f782559b6ff",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__18-notion-permission-intro.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/19-unavailable-service.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 55757,
+      "sha256": "003223025c5ec2ff8bd61d3620fcef0556ec016497d83431c90f7ff65ada37f9",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__19-unavailable-service.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/20-apple-intro.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 64885,
+      "sha256": "844e61490a8224e34b7d38ddd4cb908563cde968e063d3ca65a512068392353f",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__20-apple-intro.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/21-me-folded-dark.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 36653,
+      "sha256": "f7d314349df819bd4c8fd6b9bbae9ed928660b2e67ca349535ef4436f1e8be3e",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__21-me-folded-dark.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/22-me-open-light.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 71584,
+      "sha256": "a31525956ae3b3526c816753a7cba0481d3cb138898903d09268c1db92b4bff0",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__22-me-open-light.png"
+    },
+    {
+      "path": "artifacts/todo-organize-2026-11-16/regression/23-me-small.png",
+      "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
+      "bytes": 36598,
+      "sha256": "96fe45ae9ae4f1e108c9d29c9804f5d7094196de9ffadcf5623153cc64cd0933",
+      "import_path": "images/artifacts__todo-organize-2026-11-16__regression__23-me-small.png"
     },
     {
       "path": "artifacts/todos.png",
