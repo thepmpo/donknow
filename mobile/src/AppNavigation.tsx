@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import {useReducedMotion} from './motion';
 import {colors,palette,layout,navigationMotion} from './theme';
 import {useDuoNavigationPortal,useDuoScene} from './DuoChrome';
+import {useSurfaceBlocked} from './SurfaceInteraction';
 import {NavigationGlass} from './NavigationGlass';
 import {lensPosition,shouldScrub,tabAtPoint} from './navigation-geometry';
 export const appTabs=[
@@ -18,7 +19,7 @@ export type AppTab=typeof appTabs[number]['id'];
 type Props={tab:AppTab;onSelect:(tab:AppTab)=>void;onCalendarLongPress?:()=>void;duo:boolean;bottomInset?:number;small?:boolean;unread?:number};
 const native=Platform.OS!=='web';
 function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unread=0}:Props){
- const reduced=useReducedMotion(),[frames,setFrames]=useState<Partial<Record<AppTab,LayoutRectangle>>>({});
+ const blocked=useSurfaceBlocked(),reduced=useReducedMotion(),[frames,setFrames]=useState<Partial<Record<AppTab,LayoutRectangle>>>({});
  const [preview,setPreview]=useState<AppTab|null>(null),[dragging,setDragging]=useState(false),[viewport,setViewport]=useState({width:0,height:0});
  const items=useRef<ComponentRef<typeof View>>(null),origin=useRef<{x:number;y:number}|null>(null),drag=useRef(false),suppress=useRef(false),generation=useRef(0);
  const x=useRef(new Animated.Value(0)).current,y=useRef(new Animated.Value(0)).current,scale=useRef(new Animated.Value(1)).current;
@@ -29,8 +30,8 @@ function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unrea
  const targetX=frame&&indicator?frame.x+(frame.width-indicator.width)/2:0,targetY=frame&&indicator?frame.y+(frame.height-indicator.height)/2:0;
  const stop=()=>{x.stopAnimation();y.stopAnimation();scale.stopAnimation();};
  const settle=()=>{generation.current++;drag.current=false;origin.current=null;setDragging(false);setPreview(null);};
- const current=useRef({frames,bounds,indicator,reduced,duo,overflow,onSelect,settle});
- current.current={frames,bounds,indicator,reduced,duo,overflow,onSelect,settle};
+ const current=useRef({frames,bounds,indicator,reduced,duo,overflow,blocked,onSelect,settle});
+ current.current={frames,bounds,indicator,reduced,duo,overflow,blocked,onSelect,settle};
  useLayoutEffect(()=>{
   if(direction.current!==duo){drag.current=false;origin.current=null;setDragging(false);setPreview(null);}
   if(drag.current)return;
@@ -51,7 +52,7 @@ function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unrea
  }
  useEffect(()=>{const subscription=AppState.addEventListener('change',state=>{if(state!=='active'){suppress.current=true;current.current.settle();}});return()=>subscription.remove();},[]);
  const responder=useRef(PanResponder.create({
-  onMoveShouldSetPanResponderCapture:(_,g)=>{const capture=g.numberActiveTouches===1&&!!origin.current&&shouldScrub(g.dx,g.dy,current.current.duo,current.current.overflow);if(capture)drag.current=true;return capture;},
+  onMoveShouldSetPanResponderCapture:(_,g)=>{const capture=!current.current.blocked&&g.numberActiveTouches===1&&!!origin.current&&shouldScrub(g.dx,g.dy,current.current.duo,current.current.overflow);if(capture)drag.current=true;return capture;},
   onPanResponderGrant:()=>{drag.current=true;suppress.current=true;setDragging(true);stop();scale.setValue(current.current.reduced?1:navigationMotion.pressedScale);},
   onPanResponderMove:(_,g)=>{
    const c=current.current,o=origin.current;if(g.numberActiveTouches>1){suppress.current=true;c.settle();return;}if(!o||!c.indicator)return;
@@ -62,23 +63,23 @@ function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unrea
   onPanResponderRelease:(_,g)=>{
    const c=current.current,o=origin.current;
    const hit=o?tabAtPoint<AppTab>({x:g.moveX-o.x,y:g.moveY-o.y},c.frames):null;
-   c.settle();if(hit)c.onSelect(hit);
+   c.settle();if(hit&&!c.blocked)c.onSelect(hit);
   },
   onPanResponderTerminate:()=>{suppress.current=true;current.current.settle();},
   onPanResponderTerminationRequest:()=>true,
   onPanResponderReject:()=>current.current.settle(),
  })).current;
- return <NavigationGlass style={[styles.bar,duo?styles.duo:[styles.bottom,{bottom:Math.max(bottomInset,layout.navigationBottomGap)}]]} testID={duo?'DuoTrailingNavigation':'BottomNavigation'} accessibilityRole="tablist">
-  <ScrollView horizontal={!duo} scrollEnabled={!dragging} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow:1}} style={{minWidth:0,minHeight:0}} onLayout={event=>{const {width,height}=event.nativeEvent.layout;setViewport({width,height});if(drag.current||preview!==null)settle();}}>
+ return <NavigationGlass pointerEvents={blocked?'none':'auto'} aria-hidden={blocked} accessibilityElementsHidden={blocked} importantForAccessibility={blocked?'no-hide-descendants':'auto'} style={[styles.bar,duo?styles.duo:[styles.bottom,{bottom:Math.max(bottomInset,layout.navigationBottomGap)}]]} testID={duo?'DuoTrailingNavigation':'BottomNavigation'} accessibilityRole="tablist">
+  <ScrollView horizontal={!duo} scrollEnabled={!dragging&&!blocked} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow:1}} style={{minWidth:0,minHeight:0}} onLayout={event=>{const {width,height}=event.nativeEvent.layout;setViewport({width,height});if(drag.current||preview!==null)settle();}}>
    <View ref={items} {...responder.panHandlers} testID="navigation-items" style={[styles.items,duo&&styles.verticalItems]}>
     {indicator&&<Animated.View pointerEvents="none" testID="navigation-selection" style={[styles.selection,indicator,{transform:[{translateX:x},{translateY:y},{scale}]}]}><NavigationGlass variant="selection" active={preview!==null} pointerEvents="none" style={[StyleSheet.absoluteFill,styles.selectionMaterial]}/></Animated.View>}
-    {appTabs.map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} accessibilityState={{selected:item.id===tab}} aria-selected={item.id===tab} accessibilityHint={item.id==='calendar'?'다시 누르면 오늘, 길게 누르면 2주 보기':item.id==='profile'?'계정, 서비스 연결, 알림과 개인 설정':undefined} delayLongPress={500} onLongPress={item.id==='calendar'&&onCalendarLongPress?()=>{if(!drag.current&&!suppress.current){suppress.current=true;onCalendarLongPress();}}:undefined} onPressIn={()=>begin(item.id)} onPressOut={()=>{if(!drag.current)settle();}} onPress={()=>{if(!suppress.current)onSelect(item.id);}} onLayout={event=>{const next=event.nativeEvent.layout;setFrames(old=>{const prior=old[item.id];return prior&&Object.keys(next).every(key=>next[key as keyof LayoutRectangle]===prior[key as keyof LayoutRectangle])?old:{...old,[item.id]:next};});}} style={[styles.tab,duo&&styles.compact]}>
+    {appTabs.map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} disabled={blocked} accessibilityState={{selected:item.id===tab,disabled:blocked}} aria-selected={item.id===tab} accessibilityHint={item.id==='calendar'?'다시 누르면 오늘, 길게 누르면 2주 보기':item.id==='profile'?'계정, 서비스 연결, 알림과 개인 설정':undefined} delayLongPress={500} onLongPress={item.id==='calendar'&&onCalendarLongPress?()=>{if(!drag.current&&!suppress.current){suppress.current=true;onCalendarLongPress();}}:undefined} onPressIn={()=>begin(item.id)} onPressOut={()=>{if(!drag.current)settle();}} onPress={()=>{if(!suppress.current)onSelect(item.id);}} onLayout={event=>{const next=event.nativeEvent.layout;setFrames(old=>{const prior=old[item.id];return prior&&Object.keys(next).every(key=>next[key as keyof LayoutRectangle]===prior[key as keyof LayoutRectangle])?old:{...old,[item.id]:next};});}} style={[styles.tab,duo&&styles.compact]}>
      {item.id==='duck'?<Text testID={'navigation-icon-'+item.id} style={[styles.duck,duo&&styles.duoDuck]}>🦆</Text>:<Ionicons testID={'navigation-icon-'+item.id} name={item.icon} size={duo?layout.duoNavigationIconSize:24} color={item.id===(preview??tab)?colors.blueText:palette.grey600}/>}
      {item.id==='duck'&&unread>0&&<View style={styles.badge}><Text style={styles.badgeText}>{unread>99?'99+':unread}</Text></View>}
      {!duo&&<Text numberOfLines={2} style={[styles.label,item.id===(preview??tab)&&styles.selected]}>{item.label}</Text>}
     </Pressable>)}
    </View>
-  </ScrollView>
+  </ScrollView>{blocked&&<View testID="BackgroundNavigationDim" pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim,borderRadius:duo?layout.duoNavigationWidth/2:layout.navigationRadius}]}/>}
  </NavigationGlass>;
 }
 /** Full-scene portal preserves the physical camera column through folding/rotation. */

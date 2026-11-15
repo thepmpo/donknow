@@ -1,4 +1,5 @@
 import { DuoSafeSurface } from './DuoLayout';
+import {useBlockParentSurface} from './SurfaceInteraction';
 import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
@@ -67,6 +68,7 @@ export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...pro
 // Fade the presentation while the sheet content zooms; reduce motion skips both.
 export function MotionModal({ animationType = 'slide', children, ...props }: ModalProps) {
   const reduced = useReducedMotion();
+  useBlockParentSurface(props.visible!==false,reduced||animationType==='none'?0:350);
   return <Modal {...props} animationType={reduced||animationType==='none' ? 'none' : 'fade'}><DuoSafeSurface>{children}</DuoSafeSurface></Modal>;
 }
 

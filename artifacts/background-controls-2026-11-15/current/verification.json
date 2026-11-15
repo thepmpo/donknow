@@ -1,0 +1,24 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "folded-before.png",
+    "folded-editor-dim.png",
+    "folded-keyboard-clear.png",
+    "open-before.png",
+    "open-editor-dim.png",
+    "open-keyboard-clear.png",
+    "dark-editor-dim.png",
+    "ordinary-bottom-dim.png"
+  ],
+  "counts": {
+    "today": 2,
+    "view": 2,
+    "tab": 0,
+    "back": 0,
+    "writes": 0
+  },
+  "nestedLayerRestoration": true,
+  "backgroundDisabledAndDimmed": true,
+  "foregroundControlsClear": true,
+  "errors": []
+}
