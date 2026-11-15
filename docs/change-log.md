@@ -1,5 +1,13 @@
 # 변경 기록
 
+## 2026-11-15 — 새 비서 기능 빌드 요청·실행 시작 거부·최신36 확인
+
+사용자가 새 비서 기능의 iPhone 빌드를 요청했다. 앱 소스3536d56392afbf9202be297dbaac84227f214f53(main)의 검사43690595590은success이며, 다른 진행 중인 iPhone 실행은 없음을 확인했다. 기존 무료 표준Mac·수동 workflow·동일IPA 제출·기존 서명freeze 설정으로 새 main dispatch를 한 번 요청했으나 `Post https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches: Forbidden`으로 거부됐다. 연결 도구에는 새 workflow dispatch 기능이 없고 Linux에는 Xcode가 없다. **이번 요청의 새 run/IPA/Apple 업로드는 시작되지 않았다.** 자동 push 빌드·유료 runner·Expo cloud fallback·기존 자격 증명 변경으로 우회하지 않는다.
+
+새로 확인한 마지막 성공은 [43661869084](https://github.com/thepmpo/donknow/actions/runs/43661869084)·소스3016af6363c339fa3f7a3026dfb7b28af77e01d1·**1.0.0(36)**이다. validate132652745672와 build-and-submit132652946692 모두success, 서명 빌드01:18:48 UTC·Apple 업로드01:19:18 UTC 성공이다. EAS 로그의35→36 increment와 실제 buildNumber36을 확인했다. Apple 처리·사용자 설치는 별도 미확인이다. 아래 최신35 표기는 이 실제 확인으로 대체한다.36은8829518의 새 비서 구현 전 소스이므로36의 Re-run으로 새 기능을 받을 수 없다.
+
+필요한 사용자 조작은 [무료 iPhone 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)의 **Run workflow → Branch:main → Run workflow** 한 번이다. 그 뒤 새 run의 실제 SHA/검사/native 컴파일·서명/Apple 제출을 확인하며 다음 번호는 미리 확정하지 않는다. 이번 수정은 빌드 요청/차단·기존 결과 기록뿐이고 앱·서버·인증·데이터·서명·원본 bundle을 바꾸지 않는다.
+
 ## 2026-11-15 — Dots 공개 전체 기능 대응·지속 작업·컴퓨터·연락
 
 [현재 기능 계약](dots-parity-2026-11-15.md) · [실제 검사·화면](dots-full-qa-2026-11-15.md) · [활성화 절차](dots-full-setup-2026-11-15.md). 이 절이 아래 이전 제한/미구현 목록보다 우선한다. 사용자는 브리핑만이 아니라 Dots의 전체 공개 기능을 요청했다. 생활부터 업무까지 긴 일을 별도로 맡기고 계속 대화하는 durable agent, 동시 위임/후속 지시·대기·승인·재개, 지속 책임/이벤트/반복·adaptive 확인, 실제 웹/원문/파일/문서/분석·코드·컴퓨터 경로를 추가했다. 검색 제목만으로 읽기·완료를 주장하지 않는다.
