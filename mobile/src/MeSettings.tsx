@@ -1,15 +1,28 @@
-import React,{useRef} from 'react';
+import React,{useContext,useRef} from 'react';
 import {ScrollRevealContext,useFocusedField,useKeyboardInset} from './useFocusedField';
-import {ScrollView} from 'react-native';
+import {ScrollView,TextInput} from 'react-native';
+import {ScrollArea} from './ScrollArea';
 import {StyleSheet,Text,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {MotionPressable as Pressable} from './motion';
-import {colors,typography} from './theme';
+import {colors,typography,layout} from './theme';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useKeyboardUX} from './KeyboardUX';
 import {Page} from './ui';
 import {ScreenHeading} from './ScreenHeading';
 import {useDuoBackAction} from './DuoBackNavigation';
 export type MeIcon=React.ComponentProps<typeof Ionicons>['name'];
-export function MePage({title,onClose,disabled=false,children}:{title:string;onClose:()=>void;disabled?:boolean;children:React.ReactNode}){const duo=useDuoBackAction(onClose,disabled),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);return <ScrollRevealContext.Provider value={focus.show}><View ref={surface} onLayout={keyboardInset.measure} style={{flex:1,minHeight:0}}><View onLayout={focus.reveal} style={{flex:1,minHeight:0,marginBottom:keyboardInset.inset}}><Page scrollRef={scroll} onScroll={focus.onScroll}><View style={{flexDirection:'row',alignItems:'flex-start',gap:4}}>{!duo&&<Pressable accessibilityRole="button" accessibilityLabel="돌아가기" disabled={disabled} onPress={onClose} style={{width:44,minHeight:44,marginTop:-4.5,marginLeft:-8,alignItems:'center',justifyContent:'center'}}><Ionicons name="chevron-back" size={26} color={disabled?colors.muted:colors.blueText}/></Pressable>}<View style={{flex:1,minWidth:0}}><ScreenHeading embedded title={title}/></View></View>{children}</Page></View></View></ScrollRevealContext.Provider>;}
+export function MePage({title,onClose,disabled=false,children,scrollable=true}:{title:string;onClose:()=>void;disabled?:boolean;children:React.ReactNode;scrollable?:boolean}){
+ const duo=useDuoBackAction(onClose,disabled),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface),insets=useSafeAreaInsets(),keyboard=useKeyboardUX();
+ const heading=<View style={{flexDirection:'row',alignItems:'flex-start',gap:4}}>{!duo&&<Pressable accessibilityRole="button" accessibilityLabel="돌아가기" disabled={disabled} onPress={onClose} style={{width:44,minHeight:44,marginTop:-4.5,marginLeft:-8,alignItems:'center',justifyContent:'center'}}><Ionicons name="chevron-back" size={26} color={disabled?colors.muted:colors.blueText}/></Pressable>}<View style={{flex:1,minWidth:0}}><ScreenHeading embedded title={title}/></View></View>;
+ return <ScrollRevealContext.Provider value={focus.show}><View ref={surface} collapsable={false} onLayout={keyboardInset.measure} style={{flex:1,minHeight:0}}><View onLayout={focus.reveal} style={{flex:1,minHeight:0,marginBottom:keyboardInset.inset}}>{scrollable?<Page scrollRef={scroll} onScroll={focus.onScroll}>{heading}{children}</Page>:<View testID="me-inline-detail" style={{flex:1,minHeight:0,paddingTop:layout.pageTop,paddingHorizontal:layout.pageInset,paddingBottom:keyboard.occluding?8:(duo?0:layout.navigationHeight+insets.bottom)+layout.sectionGap}}>{heading}{children}</View>}</View></View></ScrollRevealContext.Provider>;
+}
+/** Each settings form scrolls its original controls into view, without a floating copy. */
+export function MeFormScroll({children,onScroll,onLayout,onContentSizeChange,...props}:React.ComponentProps<typeof ScrollArea>){
+ const ref=useRef<React.ComponentRef<typeof ScrollView>>(null),field=useFocusedField(ref);
+ return <ScrollRevealContext.Provider value={field.show}><ScrollArea {...props} ref={ref} onScroll={e=>{field.onScroll(e);onScroll?.(e);}} onLayout={e=>{field.reveal();onLayout?.(e);}} onContentSizeChange={(w,h)=>{field.reveal();onContentSizeChange?.(w,h);}}>{children}</ScrollArea></ScrollRevealContext.Provider>;
+}
+export function MeInput(props:React.ComponentProps<typeof TextInput>){const ref=useRef<React.ComponentRef<typeof TextInput>>(null),reveal=useContext(ScrollRevealContext);return <TextInput {...props} ref={ref} onFocus={e=>{reveal(ref.current);props.onFocus?.(e);}} onBlur={e=>{reveal(null);props.onBlur?.(e);}} onContentSizeChange={e=>{if(ref.current?.isFocused())reveal(ref.current);props.onContentSizeChange?.(e);}}/>;}
 export function MeSection({title,children,compact=false}:{title?:string;children:React.ReactNode;compact?:boolean}){return <View style={styles.section}>{!!title&&<Text style={styles.heading}>{title}</Text>}<View style={[styles.group,compact&&styles.outlined]}>{React.Children.toArray(children).map((child,index)=><View key={React.isValidElement(child)?child.key??index:index} style={index&&!compact?styles.divider:undefined}>{!!index&&compact&&<View pointerEvents="none" style={styles.insetDivider}/>}{child}</View>)}</View></View>;}
 export function MeRow({title,detail,status,icon,avatar,label,onPress,disabled=false,danger=false,expanded}:{title:string;detail?:string;status?:string;icon?:MeIcon;avatar?:string;label?:string;onPress?:()=>void;disabled?:boolean;danger?:boolean;expanded?:boolean}){
  const contents=<>{(icon||avatar)&&<View style={styles.icon}>{icon?<Ionicons name={icon} size={23} color={danger?colors.danger:colors.blueText}/>:<Text style={styles.avatar}>{avatar}</Text>}</View>}<View style={styles.text}><Text numberOfLines={2} style={[styles.title,danger&&{color:colors.danger}]}>{title}</Text>{!!detail&&<Text numberOfLines={2} style={styles.detail}>{detail}</Text>}</View>{!!status&&<Text numberOfLines={3} style={styles.status}>{status}</Text>}{onPress&&!disabled&&<Ionicons name={expanded===undefined?'chevron-forward':expanded?'chevron-up':'chevron-down'} size={17} color={colors.muted}/>}</>;

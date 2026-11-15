@@ -1,7 +1,7 @@
+import {MePage,MeFormScroll as ScrollView,MeInput as TextInput} from '../MeSettings';
 import {KeyboardDismiss} from '../KeyboardUX';
-import {ScrollArea as ScrollView} from '../ScrollArea';
 import React,{useState} from 'react';
-import {KeyboardAvoidingView,Platform,Text,TextInput,View} from 'react-native';
+import {KeyboardAvoidingView,Platform,Text,View} from 'react-native';
 import {MotionModal as Modal,MotionPressable as Pressable,DraggableSheet} from '../motion';
 import {Button,CloseButton,colors,s} from '../ui';
 import type {TodoStore} from '../useTodos';
@@ -9,7 +9,7 @@ import {useAssistant,assistantNames as names,assistantLabels as labels,assistant
 import type {AssistantSource as Source} from '../useAssistant';
 function sourceArgs(op:string,source:Source){const l=source.locator??{};if(op==='notion.create')return {parent:l.id};if(op==='tasks.create')return {list:l.list,...(l.connectionId?{connectionId:l.connectionId}: {})};if(op==='slack.send')return {channel:l.channel,...(source.kind==='message'?{thread:l.ts}:{})};return l;}
 function suitable(op:string,source:Source){const provider=op.split('.')[0];if(provider==='todo')return source.provider==='todo'&&source.kind==='todo';if(provider==='gmail')return source.provider==='google'&&source.kind==='mail';if(provider==='naver')return source.provider==='naver'&&source.kind==='mail';if(provider==='calendar')return source.provider==='google'&&source.kind==='event';if(provider==='drive')return source.provider==='google'&&source.kind==='file';if(provider==='tasks')return source.provider==='google'&&['task','tasklist'].includes(source.kind)&&(op==='tasks.create'||source.kind==='task');if(provider==='notion')return source.provider==='notion'&&source.kind==='page';if(provider==='slack')return source.provider==='slack'&&(op==='slack.send'||source.kind==='message');return false;}
-export function AssistantSheet({store,onClose,onOpenTodos,initialMessage='',pastedText=''}:{store:TodoStore;onClose:()=>void;onOpenTodos:()=>void;initialMessage?:string;pastedText?:string}){
+export function AssistantSheet({store,onClose,presentation='sheet',onOpenTodos,initialMessage='',pastedText=''}:{presentation?:'page'|'sheet';store:TodoStore;onClose:()=>void;onOpenTodos:()=>void;initialMessage?:string;pastedText?:string}){
  const assistant=useAssistant(store);
  const {status,providers,consent,setConsent,answer,sources,setSources,warnings,proposals,drafts,busy,error,turns,alive,load,run,read,prepare}=assistant;
  const [message,setMessage]=useState(initialMessage),[operation,setOperation]=useState(''),[values,setValues]=useState<Record<string,unknown>>({}),[manual,setManual]=useState(false);
@@ -17,8 +17,8 @@ export function AssistantSheet({store,onClose,onOpenTodos,initialMessage='',past
  const [naverModify,setNaverModify]=useState(false),[naverSend,setNaverSend]=useState(false),[naverStatus,setNaverStatus]=useState<{configured:boolean;readOnly?:boolean;sendAvailable?:boolean}|null>(null);
  async function chat(){await assistant.chat(message,pastedText);}
  const def=status?.actions.find(x=>x.operation===operation);const hasTarget=def?.required.some(k=>targetKeys.includes(k));
- return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><KeyboardAvoidingView style={{flex:1,justifyContent:'flex-end',backgroundColor:'#00000066'}} behavior={Platform.OS==='ios'?'padding':undefined}><DraggableSheet disabled={busy} onDismiss={onClose} style={{maxHeight:'94%',backgroundColor:colors.bg,borderTopLeftRadius:28,borderTopRightRadius:28,padding:22}}><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:14,paddingBottom:25}}>
- <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text accessibilityRole="header" style={[s.h1,{flex:1}]}>덕 비서</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={busy} onPress={onClose}/></View></View>
+ const contents=<>
+<ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:14,paddingBottom:25}}>
  {!store.user?<Text style={s.subtitle}>클라우드 계정으로 로그인하면 자료를 연결하고 실행할 수 있어요.</Text>:<>
  <Text style={s.subtitle}>{status?.message??'연결 상태를 확인하고 있어요.'}</Text><Text style={s.muted}>사용할 자료를 직접 선택해요. 쓰기·발송은 아래 초안의 대상과 내용을 확인한 뒤 실행해요.</Text>
  <View style={{flexDirection:'row',gap:8,flexWrap:'wrap'}}>{Object.entries(names).filter(([p])=>p!=='todo').map(([p,n])=><Pressable key={p} accessibilityRole="checkbox" accessibilityLabel={`${n} 자료 사용`} accessibilityState={{checked:providers.includes(p)}} disabled={busy} onPress={()=>assistant.toggleProvider(p)} style={{minHeight:44,padding:10,backgroundColor:providers.includes(p)?colors.pale:colors.surface,borderRadius:12}}><Text>{providers.includes(p)?'☑':'□'} {n}</Text></Pressable>)}</View>
@@ -40,5 +40,9 @@ export function AssistantSheet({store,onClose,onOpenTodos,initialMessage='',past
  {drafts.map(d=><View key={d.id} style={s.card}><Text style={s.sectionTitle}>{d.label} · {statusLabels[d.status]??d.status}</Text>{!!d.accountLabel&&<Text style={s.subtitle}>연결 계정: {d.accountLabel}</Text>}{!!d.targetTitle&&<Text style={s.subtitle}>대상: {d.targetTitle}</Text>}{!!d.recipient&&<Text style={s.subtitle}>받는 사람: {d.recipient}</Text>}{Object.entries(d.args).filter(([k])=>!targetKeys.includes(k)).map(([k,v])=><Text key={k} selectable style={s.subtitle}>{labels[k]??k}: {showValue(k,v)}</Text>)}{d.result?.message&&<Text style={s.error}>{d.result.message}</Text>}{d.status==='unknown'&&<Text style={s.error}>원본 서비스에서 처리 결과를 확인해주세요. 다시 보내면 중복될 수 있어요.</Text>}{d.status==='pending'&&<><Text style={s.muted}>대상과 내용을 확인했나요? 승인 후 원본 서비스에 반영돼요. 초안은 10분 후 만료돼요.</Text><Button title={`${d.label} 확인하고 실행`} disabled={busy||d.expiresAt<=Date.now()} onPress={()=>{void assistant.confirm(d);}}/><Button title="작업 취소" quiet disabled={busy} onPress={()=>{void assistant.cancel(d);}}/></>}</View>)}
  <Button title="Todo 보기" quiet disabled={busy} onPress={()=>{onClose();onOpenTodos();}}/>
  </>}{!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
- </ScrollView></DraggableSheet></KeyboardAvoidingView></Modal>;
+ </ScrollView>
+ </>;
+ if(presentation==='page')return <MePage title="AI 자료·실행 관리" onClose={onClose} disabled={busy} scrollable={false}>{contents}</MePage>;
+ return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><KeyboardAvoidingView style={{flex:1,justifyContent:'flex-end',backgroundColor:'#00000066'}} behavior={Platform.OS==='ios'?'padding':undefined}><DraggableSheet disabled={busy} onDismiss={onClose} style={{maxHeight:'94%',backgroundColor:colors.bg,borderTopLeftRadius:28,borderTopRightRadius:28,padding:22}}>
+ <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text accessibilityRole="header" style={[s.h1,{flex:1}]}>덕 비서</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={busy} onPress={onClose}/></View></View>{contents}</DraggableSheet></KeyboardAvoidingView></Modal>;
 }

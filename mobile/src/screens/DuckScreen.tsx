@@ -1,3 +1,4 @@
+import {useKeyboardInset} from '../useFocusedField';
 import {KeyboardDismiss,useKeyboardUX} from '../KeyboardUX';
 import {ScrollArea as ScrollView} from '../ScrollArea';
 import {useAutomations} from '../useAutomations';
@@ -24,6 +25,8 @@ import { typography } from '../theme';
 import { CloseButton, Button, colors, DateField, s } from '../ui';
 type Card = { id: number; title: string; notes: string; dueDate: string | null; saved: boolean; saving: boolean };
 export function DuckScreen({ store, onOpenTodos, onOpenLog=onOpenTodos, onOpenTodo,active=true,onUnreadChange,entry }: { store: TodoStore; onOpenTodos: () => void; onOpenLog?:()=>void; onOpenTodo: (todo: Todo) => void; active?:boolean;onUnreadChange?:(count:number)=>void;entry?:AssistantChatRequest|null }) {
+  const surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
+  const signedIn=!!store.user&&store.connection?.mode==='cloud';
   const [manualPaste,setManualPaste]=useState(false);
   const [scheduleAvailable,setScheduleAvailable]=useState(false),[scheduling,setScheduling]=useState(false);
   const inbox=useAutomations(store,scheduleAvailable,active);
@@ -45,7 +48,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenLog=onOpenTodos, onOpenTo
   const [assistantRevision,setAssistantRevision]=useState(0);
   useEffect(()=>{let active=true;setAssistantEnabled(false);setScheduleAvailable(false);setAssistantState(store.user&&store.connection?.mode==='cloud'?'loading':'demo');if(store.user&&store.connection?.mode==='cloud')void store.featureRequest('/api/assistant/status').then(value=>{if(active){setAssistantEnabled(!!(value as {enabled?:boolean}).enabled);setScheduleAvailable((value as {scheduledMessages?:boolean}).scheduledMessages===true);setAssistantState('unavailable');}}).catch(()=>{if(active)setAssistantState('failed');});return()=>{active=false;};},[store.user?.id,store.connection?.mode,store.connection?.mode==='cloud'?store.connection.baseUrl:'']);
   const [input, setInput] = useState('');
-  useEffect(()=>{if(assistantEnabled&&input.trim()){setChatRequest({id:Date.now()+Math.random(),message:input});setInput('');}},[assistantEnabled]);
+
   const [cards, setCards] = useState<Card[]>([]);
   const [status, setStatus] = useState('');
   const [pasting, setPasting] = useState(false);
@@ -65,8 +68,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenLog=onOpenTodos, onOpenTo
   function send() {
     const title = input.trim(); if (!title) return;
     if(assistantEnabled){setChatRequest({id:Date.now()+Math.random(),message:title});setInput('');return;}
-    scrollOnNextContent.current=true;
-    setCards(current => [...current, { id: Date.now() + Math.random(), title, dueDate: dateKey(new Date()), notes: '', saved: false, saving: false }]); setInput(''); setStatus('');
+    setStatus('ME에서 로그인한 뒤 덕에게 이야기해주세요. 입력은 그대로 유지돼요.');
   }
   function change(id: number, patch: Partial<Card>) { setCards(current => current.map(card => card.id === id ? { ...card, ...patch } : card)); }
   async function transfer(card: Card) {
@@ -80,12 +82,12 @@ export function DuckScreen({ store, onOpenTodos, onOpenLog=onOpenTodos, onOpenTo
   }
   const cardContent=cards.map(card => <MotionView key={card.id} style={styles.card}><View style={styles.cardHeading}><Text style={styles.cardLabel}>{card.saved ? 'Todo에 담았어요' : '할 일로 정리하기'}</Text>{!card.saved && <Pressable accessibilityRole="button" accessibilityLabel="초안 버리기" disabled={card.saving} onPress={() => { setCards(current => current.filter(item => item.id !== card.id)); setStatus(''); }} style={styles.dismiss}><Text style={styles.cardLabel}>버리기</Text></Pressable>}</View>{card.saved ? <Text style={styles.cardTitle}>{card.title}</Text> : <TextInput accessibilityLabel="정리한 할 일" value={card.title} onChangeText={title => change(card.id, { title })} editable={!card.saving} maxLength={120} multiline style={styles.draftInput} placeholder="할 일을 적어주세요" />}{!card.saved && <DateField value={card.dueDate} onChange={dueDate => { if (!card.saving) change(card.id, { dueDate }); }} />}{!card.saved&&<NotesField label="초안 메모" value={card.notes} onChange={notes=>change(card.id,{notes})} disabled={card.saving}/>}{card.saved&&!!card.notes&&<Text style={styles.status}>{card.notes}</Text>}<Button title={card.saved ? '추가 완료 ✓' : card.saving ? '추가 중…' : 'Todo 리스트에 추가'} loading={card.saving} onPress={() => { void transfer(card); }} disabled={card.saved || card.saving || !card.title.trim() || store.busyIds.includes('create')} />{card.saved && <Button title="Todo 보기 →" quiet onPress={onOpenTodos} />}</MotionView>);
   const shortcuts=<View style={styles.shortcuts}>{scheduleAvailable&&<Pressable accessibilityRole="button" accessibilityLabel="브리핑·날씨 예약 열기" onPress={()=>setScheduling(true)} style={styles.shortcut}><Text style={styles.shortcutText}>브리핑·날씨 예약</Text></Pressable>}<Pressable accessibilityRole="button" accessibilityLabel="오늘의 브리핑 열기" onPress={()=>setTodayOpen(true)} style={styles.shortcut}><Text style={styles.shortcutText}>오늘 내용 보기</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="덕 AI 비서 열기" disabled={chatBusy} onPress={()=>{setAssistantPaste('');setAssistantMessage('');setAssistantOpen(true);}} style={styles.shortcut}><Text style={styles.shortcutText}>비서</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="할 일과 기록 찾기" onPress={() => setSearching(++searchSequence.current)} style={styles.shortcut}><Text style={styles.shortcutText}>기록 찾기</Text></Pressable><Text style={styles.cardLabel}>·</Text><Pressable accessibilityRole="button" accessibilityLabel="카카오톡 대화 붙여넣기" disabled={chatBusy} onPress={() => setPasting(true)} style={styles.shortcut}><Text style={styles.shortcutText}>대화 붙여넣기</Text></Pressable></View>;
-  return <View style={[styles.screen,{paddingBottom:keyboard.occluding?8:(duo?0:layout.navigationHeight+insets.bottom)+(duo?8:layout.navigationBottomGap)}]}>{!assistantEnabled&&<ScreenHeading embedded title="덕"/>}
+  return <View ref={surface} collapsable={false} onLayout={keyboardInset.measure} style={{flex:1,minHeight:0}}><View testID="duck-screen-content" style={[styles.screen,{marginBottom:keyboardInset.inset},{paddingBottom:keyboard.occluding?8:(duo?0:layout.navigationHeight+insets.bottom)+(duo?8:layout.navigationBottomGap)}]}>{!signedIn&&<ScreenHeading embedded title="덕"/>}
     {!!inbox.error&&<Text accessibilityRole="alert" style={styles.status}>{inbox.error}</Text>}
-    {assistantEnabled?<AssistantChat store={store} onOpenTodos={onOpenTodos} onOpenLog={onOpenLog} request={chatRequest} onBusyChange={setChatBusy} refreshVersion={assistantRevision} scheduledMessages={inbox.messages} active={active}>{cardContent}{!!status&&<Text accessibilityLiveRegion="polite" style={styles.status}>{status}</Text>}</AssistantChat>:<>
+    {signedIn?<AssistantChat store={store} onOpenTodos={onOpenTodos} onOpenLog={onOpenLog} request={chatRequest} onBusyChange={setChatBusy} refreshVersion={assistantRevision} scheduledMessages={inbox.messages} active={active}>{cardContent}{!!status&&<Text accessibilityLiveRegion="polite" style={styles.status}>{status}</Text>}</AssistantChat>:<>
       {!cards.length&&!inbox.messages.length?<View style={styles.welcome}><Text style={styles.duck}>🦆</Text><Text style={styles.greeting}>무엇을 도와드릴까요?</Text><Text style={styles.welcomeNote}>떠오른 일을 편하게 적어주세요.</Text></View>:<ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} ref={scroll} contentContainerStyle={styles.conversation} keyboardShouldPersistTaps="handled" onContentSizeChange={()=>{if(scrollOnNextContent.current){scrollOnNextContent.current=false;scroll.current?.scrollToEnd({animated:!reduced});}}}>{inbox.messages.map(message=><View key={message.id} style={s.card}><Text style={s.sectionTitle}>{message.title}</Text><Text selectable style={s.subtitle}>{message.text}</Text></View>)}{cardContent}</ScrollView>}
       {!!status&&<Text accessibilityLiveRegion="polite" style={styles.status}>{status}</Text>}
-      {shortcuts}
+      {false&&shortcuts}
       <View style={styles.composer}><TextInput accessibilityLabel="덕에게 이야기하기" value={input} onChangeText={setInput} maxLength={120} placeholder="덕에게 이야기하기" placeholderTextColor={colors.muted} style={styles.input} onSubmitEditing={send} returnKeyType="send" /><KeyboardDismiss/><Pressable accessibilityRole="button" accessibilityLabel="덕에게 보내기" disabled={!input.trim()} onPress={send} style={[styles.send, !input.trim() && { opacity: .4 }]}><Text style={styles.sendText}>↑</Text></Pressable></View>
       <Text style={styles.note}>{assistantState==='loading'?'AI 연결 상태를 확인하고 있어요.':assistantState==='failed'?'AI 연결을 확인하지 못했어요. 지금은 직접 적어 Todo로 담을 수 있어요.':assistantState==='unavailable'?'AI 연결은 준비 중이에요. 지금은 직접 적어 Todo로 담을 수 있어요.':'직접 적어 Todo로 담거나, 비서에서 연결한 자료로 요청해보세요.'}</Text>
     </>}
@@ -111,7 +113,7 @@ export function DuckScreen({ store, onOpenTodos, onOpenLog=onOpenTodos, onOpenTo
         </>}
       </ScrollView></DraggableSheet></KeyboardAvoidingView>
     </Modal>
-  </View>;
+  </View></View>;
 }
 
 const styles = StyleSheet.create({
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
   draftInput: { ...typography.body, color: colors.text, minHeight: 56, paddingVertical: 12, borderBottomWidth: 1, borderColor: colors.line },
   backdrop: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' }, sheet: { maxHeight: '90%', backgroundColor: colors.bg, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24, paddingBottom: 36 },
   pasteInput: { ...typography.detail, borderWidth: 1, borderColor: colors.line, borderRadius: 16, padding: 16, color: colors.text, minHeight: 64, backgroundColor: colors.surface },
-  screen: { flex: 1, paddingTop:layout.pageTop,paddingHorizontal: layout.pageInset, paddingBottom: 16 }, welcome: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 32, minHeight: 200 },
+  screen: { flex: 1, paddingTop:layout.pageTop,paddingHorizontal: layout.pageInset, paddingBottom: 16 }, welcome: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 32, minHeight: 0 },
   duck: { fontSize: 56, marginBottom: 24 }, greeting: { ...typography.heading, color: colors.text, textAlign: 'center' },
   conversation: { paddingVertical: 24, gap: 20 }, card: { borderRadius: 24, padding: 24, backgroundColor: colors.surface, gap: 12 },
   cardLabel: { ...typography.caption, color: colors.muted }, cardTitle: { ...typography.body, color: colors.text, fontWeight: '600' }, status: { ...typography.caption, color: colors.muted, paddingVertical: 12 },

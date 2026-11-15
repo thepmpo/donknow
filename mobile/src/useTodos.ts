@@ -29,7 +29,7 @@ export function useTodos() {
   const [error, setError] = useState('');
   const [busyIds, setBusyIds] = useState<string[]>([]);
   const [completionIds, setCompletionIds] = useState<string[]>([]);
-  const writes = useRef(0);
+  const writes = useRef(0),snapshotReady=useRef(false),refreshing=useRef(false);
   type CompletionWrite = { confirmed: Todo; confirmedUntil: number | null; originDone:boolean; done: boolean; until: number | null; revision: number; promise?: Promise<boolean> };
   const completions = useRef(new Map<string, CompletionWrite>());
   const repo = useRef<Repository | null>(null);
@@ -59,7 +59,7 @@ export function useTodos() {
           }
           if (!current()) return;
           const next = createRepository(saved); repo.current = next;
-          const data = await next.list(); if (current()) setTodos(data);
+          const data = await next.list(); if (current()) { snapshotReady.current=true;setTodos(data); }
         }
       } catch (e) { if (current()) setError(message(e)); }
       finally { if (current()) setLoading(false); }
@@ -74,7 +74,7 @@ export function useTodos() {
   }, []);
   async function connect(next: Connection) {
     if (busy.current.size || connectingRef.current) return false;
-    connectingRef.current = true; generation.current++; setConnecting(true); setError('');
+    connectingRef.current = true; refreshing.current=false;generation.current++; setConnecting(true); setError('');
     try {
       const checked: Connection = next.mode === 'cloud' ? { mode: 'cloud', baseUrl: serverUrl(next.baseUrl, __DEV__) } : next;
       let account: auth.User | null = null;
@@ -86,19 +86,19 @@ export function useTodos() {
       const data = checked.mode === 'cloud' && !account ? [] : await repository.list();
       await AsyncStorage.setItem(CONNECTION_KEY, JSON.stringify(checked));
       const nextOwner=checked.mode==='cloud'&&account?checked.baseUrl+':'+account.id:null;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
-      generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setLoading(false); return true;
+      snapshotReady.current=checked.mode==='demo'||!!account;refreshing.current=false;generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setLoading(false); return true;
     } catch (e) { setError(message(e)); return false; }
-    finally { connectingRef.current = false; setConnecting(false); }
+    finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
   async function refresh() {
-    if (!repo.current || connectingRef.current || busy.current.size) return;
-    const version = generation.current, readRevision = writes.current; setLoading(true);
-    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { setTodos(data); setError(''); } }
-    catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); } }
-    finally { if (version === generation.current) setLoading(false); }
+    if (!repo.current || connectingRef.current || busy.current.size || refreshing.current) return;
+    refreshing.current=true;const version = generation.current, readRevision = writes.current; setLoading(true);
+    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { snapshotReady.current=true;setTodos(data); setError(''); } }
+    catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) {expireSession();setError(message(e));}else if(readRevision===writes.current)setError(message(e)); } }
+    finally { if (version === generation.current) {refreshing.current=false;setLoading(false);} }
   }
   async function mutate<T>(key: string, operation: (repository: Repository) => Promise<T>): Promise<T | null> {
-    if (!repo.current || busy.current.has(key) || connectingRef.current || loading) return null;
+    if (!repo.current || busy.current.has(key) || connectingRef.current || loading&&!snapshotReady.current) return null;
     const version = generation.current; writes.current++; busy.current.add(key); setBusyIds([...busy.current]);
     try { const result = await operation(repo.current); if (version !== generation.current) return null; setError(''); return result; }
     catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); } return null; }
@@ -183,26 +183,26 @@ export function useTodos() {
   }
   function expireSession() {
     if(calendarOwner.current)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=null;
-    generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
+    snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
   }
   async function authenticate(email: string, password: string, register: boolean): Promise<boolean> {
     if (connection?.mode !== 'cloud' || connectingRef.current || busy.current.size) return false;
-    connectingRef.current = true; generation.current++; setConnecting(true); setError(''); setNotice('');
+    connectingRef.current = true; refreshing.current=false;generation.current++; setConnecting(true); setError(''); setNotice('');
     try {
       const account = await auth.authenticate(connection.baseUrl, email, password, register);
       const nextOwner=connection.baseUrl+':'+account.id;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
       const repository = createRepository(connection);
-      generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);
-      try{const data = await repository.list();setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
+      snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);
+      try{const data = await repository.list();snapshotReady.current=true;setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
     } catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); return false; }
-    finally { connectingRef.current = false; setConnecting(false); }
+    finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
   async function logout(): Promise<boolean> {
     if (connection?.mode !== 'cloud' || busy.current.size || connectingRef.current) return false;
-    connectingRef.current = true; generation.current++; setConnecting(true);
+    connectingRef.current = true; refreshing.current=false;generation.current++; setConnecting(true);
     try { await auth.logout(connection.baseUrl); const cleared=await reminders.clear(); expireSession();if(!cleared)setNotice('로그아웃했어요. 일부 알림은 아이폰 설정에서도 확인해주세요.'); setError(''); return true; }
     catch (e) { if (e instanceof auth.AuthRequiredError) { expireSession(); setError(''); return true; } setError(message(e)); return false; }
-    finally { connectingRef.current = false; setConnecting(false); }
+    finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
   const featureRequest = useCallback(async (path: string, method = 'GET', body?: unknown): Promise<unknown> => {
     if (connection?.mode !== 'cloud') throw new Error('클라우드 계정으로 로그인하면 사용할 수 있어요.');
@@ -242,7 +242,7 @@ export function useTodos() {
     connectingRef.current = true; setConnecting(true);
     try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner,'duckduck.ai-consent.v1.'+connection.baseUrl+':'+(user?.id??'')]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
     catch (e) { setError(message(e)); return false; }
-    finally { connectingRef.current = false; setConnecting(false); }
+    finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;

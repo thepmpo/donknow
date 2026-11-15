@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import {readJsonResponse,InvalidJsonResponseError,calendarReadTimeout,connectionRead,cancelledTransport} from './http-response';
+import {readJsonResponse,InvalidJsonResponseError,connectionRead,cancelledTransport} from './http-response';
 import * as SecureStore from 'expo-secure-store';
 export type User = { id: string; email: string; emailVerified: boolean };
 export class AuthRequiredError extends Error { constructor() { super('다시 로그인해주세요.'); } }
@@ -12,14 +12,14 @@ export async function request(baseUrl: string, path: string, method = 'GET', bod
       headers: { 'Content-Type': 'application/json', 'X-Duckduck-Client': Platform.OS === 'web' ? 'web' : 'native', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
-    // Only idempotent Calendar reads may recover once from a truncated/non-JSON body.
+    // Known read-only endpoints may recover once from a truncated/non-JSON body.
     // Confirmation, OAuth and all external writes are never automatically replayed.
     for(let attempt=0;;attempt++){
       let response:Response;
       try{response=await fetchResponse();}catch(error){if(attempt===0&&connectionRead(path,method)&&cancelledTransport(error)&&!controller.signal.aborted)continue;throw error;}
       if(response.status===401&&path!=='/api/auth/login')throw new AuthRequiredError();
       try{return await readJsonResponse(response);}catch(error){
-        if(attempt===0&&calendarReadTimeout(path,method)&&error instanceof InvalidJsonResponseError&&!controller.signal.aborted)continue;
+        if(attempt===0&&connectionRead(path,method)&&error instanceof InvalidJsonResponseError&&(error.status===200||error.status>=500)&&!controller.signal.aborted)continue;
         throw error;
       }
     }

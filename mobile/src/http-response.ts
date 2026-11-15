@@ -21,5 +21,5 @@ export function validCalendarPage(value:unknown):boolean{
 }
 
 /** Cold-start reads may wait for Render; never replay a write or consent. */
-export function connectionRead(path:string,method:string){return method==='GET'&&(/^\/api\/(todos|integrations|capabilities)(?:[/?]|$)/.test(path)||calendarReadTimeout(path,method));}
+export function connectionRead(path:string,method:string){return method==='GET'&&(/^\/api\/(todos|capabilities)(?:\?|$)/.test(path)||/^\/api\/integrations(?:\?|$|\/(?:google|notion|slack)\/(?:resources|task-sync|diagnose)(?:\?|$))/.test(path)||/^\/api\/assistant\/(?:status|actions|conversation|memory(?:\/settings)?)(?:\?|$)/.test(path)||/^\/api\/(?:automations|agent\/(?:profile|jobs|files|responsibilities|computers|rules|notes|contacts))(?:\?|$)/.test(path)||calendarReadTimeout(path,method));}
 export function cancelledTransport(error:unknown){return error instanceof Error&&(/fetch request has been cancel[le]+d|network request.*cancel[le]+d/i.test(error.message));}

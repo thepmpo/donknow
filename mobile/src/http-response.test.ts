@@ -29,5 +29,11 @@ test('cold-start and cancelled native reads can recover without replaying writes
  assert.equal(cancelledTransport(new Error('invalid session')),false);
 });
 
+test('assistant settings reads can recover, while authorization and every write remain excluded',()=>{
+ for(const path of ['/api/assistant/status','/api/assistant/actions','/api/assistant/memory/settings','/api/agent/profile','/api/agent/files','/api/automations'])assert.equal(connectionRead(path,'GET'),true,path);
+ for(const path of ['/api/integrations/google/authorize','/api/assistant/actions/id/confirm','/api/agent/profile/untrusted','/api/agent/contacts/code'])assert.equal(connectionRead(path,'GET'),false,path);
+ for(const method of ['POST','PATCH','DELETE'])for(const path of ['/api/agent/profile','/api/assistant/chat','/api/assistant/memory/settings'])assert.equal(connectionRead(path,method),false,path+' '+method);
+});
+
 
 test('a valid error response retains HTTP status for recovery without treating it as lost authentication',async()=>{await assert.rejects(readJsonResponse(new Response(JSON.stringify({error:'자료 연결이 바뀌었어요.'}),{status:409})),e=>e instanceof Error&&'status' in e&&e.status===409&&e.message==='자료 연결이 바뀌었어요.');});

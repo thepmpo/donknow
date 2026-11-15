@@ -59,7 +59,7 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
   ]);
   if(!latest()||revision!==draftRevision.current||errorVersion!==errorRevision.current)return;
   const failed=results.find(result=>result.status==='rejected');
-  if(failed?.status==='rejected'){setError(failed.reason instanceof Error?failed.reason.message:'비서 기능을 불러오지 못했어요.');setErrorKind('load');}
+  if(failed?.status==='rejected'){setError(failed.reason instanceof Error?failed.reason.message:'비서 기능을 불러오지 못했어요.');setErrorKind('load');}else if(errorKind==='load'){setError('');setErrorKind(null);}
  }
  async function run<T>(fn:()=>Promise<T>,kind:'chat'|'action'|'context'='action'):Promise<T|undefined>{
   if(working.current)return;const version=generation.current;working.current=true;errorRevision.current++;setBusy(true);setBusyKind(kind);setError('');setErrorKind(null);

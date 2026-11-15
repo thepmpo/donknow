@@ -1,24 +1,26 @@
-import {KeyboardDismiss} from '../KeyboardUX';
-import {ScrollArea as ScrollView} from '../ScrollArea';
+import {MePage,MeFormScroll as ScrollView,MeInput as TextInput} from '../MeSettings';
+import {KeyboardDismiss,useKeyboardUX} from '../KeyboardUX';
 import {connectPush,disconnectPush} from '../push';
 import React,{useEffect,useRef,useState} from 'react';
-import {Platform,Switch,Text,TextInput,View} from 'react-native';
+import {Platform,Switch,Text,View} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {MotionModal as Modal,DraggableSheet,MotionPressable as Pressable} from '../motion';
 import {Button,CloseButton,colors,s} from '../ui';
 import type {TodoStore} from '../useTodos';
 type Schedule={kind:'briefing'|'weather';enabled:boolean;time:string;timezone:string;city:string|null;providers:string[];aiConsent:boolean;revision:number;nextAt:number|null;instructions?:string;consentRequired?:boolean;repeat?:'daily'|'hourly';startHour?:number;endHour?:number;weekdaysOnly?:boolean;urgentAlerts?:boolean};
 const cities=[['seoul','서울'],['busan','부산'],['incheon','인천'],['daegu','대구'],['daejeon','대전'],['gwangju','광주'],['jeju','제주']];
-export function AutomationSheet({store,onClose}:{store:TodoStore;onClose:()=>void}){
+export function AutomationSheet({store,onClose,presentation='sheet'}:{presentation?:'page'|'sheet';store:TodoStore;onClose:()=>void}){
+ const keyboard=useKeyboardUX();
  const [schedules,setSchedules]=useState<Schedule[]>([]),[kind,setKind]=useState<'briefing'|'weather'>('briefing'),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState(''),[advanced,setAdvanced]=useState(false);
  const [connections,setConnections]=useState<{provider:string;connected:boolean;configured:boolean}[]|null>(null),[monitor,setMonitor]=useState<{checkedAt:number|null;error:string|null;warnings?:string[]}|null>(null);
  const alive=useRef(true),working=useRef(false);const current=schedules.find(v=>v.kind===kind);
- useEffect(()=>{alive.current=true;void store.featureRequest('/api/automations').then(r=>{if(alive.current){const value=r as {schedules:Schedule[];monitor?:{checkedAt:number|null;error:string|null;warnings?:string[]}};setMonitor(value.monitor??null);setSchedules(value.schedules.map(v=>v.consentRequired?{...v,aiConsent:false}:v));}}).catch(e=>{if(alive.current)setError(e instanceof Error?e.message:'예약을 불러오지 못했어요.');});void store.featureRequest('/api/assistant/status').then(r=>{if(alive.current)setConnections((r as {connections?:{provider:string;connected:boolean;configured:boolean}[]}).connections??null);}).catch(()=>undefined);return()=>{alive.current=false;};},[]);
+ async function load(){setError('');try{const r=await store.featureRequest('/api/automations') as {schedules:Schedule[];monitor?:{checkedAt:number|null;error:string|null;warnings?:string[]}};if(!alive.current)return;if(!Array.isArray(r.schedules))throw Error('예약 설정을 확인하지 못했어요.');setMonitor(r.monitor??null);setSchedules(r.schedules.map(v=>v.consentRequired?{...v,aiConsent:false}:v));}catch(e){if(alive.current)setError(e instanceof Error?e.message:'예약을 불러오지 못했어요.');}}
+ useEffect(()=>{alive.current=true;void load();void store.featureRequest('/api/assistant/status').then(r=>{if(alive.current)setConnections((r as {connections?:{provider:string;connected:boolean;configured:boolean}[]}).connections??null);}).catch(()=>undefined);return()=>{alive.current=false;};},[]);
+
  function change(patch:Partial<Schedule>){setSchedules(old=>old.map(v=>v.kind===kind?{...v,...patch}:v));setMessage('');}
  async function save(){if(!current||working.current)return;working.current=true;setBusy(true);setError('');try{const {enabled,time,timezone,city,providers,aiConsent,instructions,repeat='daily',startHour=9,endHour=18,weekdaysOnly=false,urgentAlerts=false}=current;const result=await store.featureRequest('/api/automations/'+kind,'POST',{enabled,time,timezone,city,providers,aiConsent,...(kind==='briefing'?{instructions:instructions??'',repeat,startHour,endHour,weekdaysOnly,urgentAlerts}:{})}) as Schedule;if(alive.current){setSchedules(old=>old.map(v=>v.kind===kind?result:v));setMessage(result.enabled?'예약했어요. 정한 시간에 덕 채팅으로 보내드릴게요.':'예약을 껐어요. 이미 받은 메시지는 그대로예요.');}}catch(e){if(alive.current)setError(e instanceof Error?e.message:'예약을 저장하지 못했어요.');}finally{working.current=false;if(alive.current)setBusy(false);}}
- return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><View style={s.modalBackdrop}><DraggableSheet style={s.sheet} disabled={busy} onDismiss={onClose}>
-  <View style={s.sheetHeader}><Text style={[s.sectionTitle,{flex:1}]}>브리핑·날씨 예약</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton onPress={onClose} disabled={busy}/></View></View>
-  <ScrollView testID="briefing-settings-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:16,paddingBottom:24}} keyboardShouldPersistTaps="handled">
+ const contents=<>
+<ScrollView testID="briefing-settings-scroll" style={{flexShrink:1}} contentContainerStyle={{gap:16,paddingBottom:24}} keyboardShouldPersistTaps="handled">
    <Text style={s.subtitle}>덕이 먼저 채팅으로 보내드려요. 앱을 닫아도 예약 메시지는 계정에 저장돼요.</Text>
    <View style={{flexDirection:'row',gap:8}}>{(['briefing','weather'] as const).map(value=><Button key={value} title={value==='briefing'?'오늘 브리핑':'도시 날씨'} quiet disabled={busy} onPress={()=>{setKind(value);setError('');setMessage('');}}/>)}</View>
    {current&&<><View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}><Text style={s.sectionTitle}>{kind==='briefing'?'브리핑 받기':'매일 날씨 받기'}</Text><Switch accessibilityLabel={kind==='briefing'?'브리핑 예약 사용':'날씨 예약 사용'} value={current.enabled} disabled={busy} onValueChange={value=>change({enabled:value})}/></View>
@@ -42,7 +44,12 @@ export function AutomationSheet({store,onClose}:{store:TodoStore;onClose:()=>voi
    <Text style={s.sectionTitle}>도착 알림</Text><Text style={s.muted}>아이폰에서도 알림을 받으려면 이 기기를 연결하세요. 잠금 화면에는 메시지 본문을 표시하지 않아요.</Text>
    <Button title="이 아이폰에 도착 알림 연결" quiet disabled={busy} onPress={()=>{setBusy(true);setError('');void connectPush(store).then(()=>{if(alive.current)setMessage('이 아이폰에 도착 알림을 연결했어요. 실제 수신은 기기와 서버 연결 상태에 따라 달라요.');}).catch(e=>{if(alive.current)setError(e instanceof Error?e.message:'알림을 연결하지 못했어요.');}).finally(()=>{if(alive.current)setBusy(false);});}}/>
    {Platform.OS==='ios'&&<Button title="이 아이폰의 도착 알림 끄기" quiet disabled={busy} onPress={()=>{setBusy(true);void disconnectPush(store).then(()=>{if(alive.current)setMessage('이 아이폰의 도착 알림을 껐어요. 채팅 메시지는 계속 저장돼요.');}).catch(()=>{if(alive.current)setError('알림 연결을 해제하지 못했어요.');}).finally(()=>{if(alive.current)setBusy(false);});}}/>}
-   {!!message&&<Text accessibilityLiveRegion="polite" style={s.subtitle}>{message}</Text>}{!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-  </ScrollView><View style={{paddingTop:16}}><Button title="예약 저장" loading={busy} disabled={busy||!current||(current.kind==='briefing'&&current.enabled&&!current.aiConsent)} onPress={()=>{void save();}}/></View>
+   {!!message&&<Text accessibilityLiveRegion="polite" style={s.subtitle}>{message}</Text>}{!!error&&<><Text accessibilityRole="alert" style={s.error}>{error}</Text><Button title="예약 설정 다시 확인" quiet disabled={busy} onPress={()=>void load()}/></>}
+  </ScrollView>{!keyboard.occluding&&<View style={{paddingTop:16}}><Button title="예약 저장" loading={busy} disabled={busy||!current||(current.kind==='briefing'&&current.enabled&&!current.aiConsent)} onPress={()=>{void save();}}/></View>}
+ </>;
+ if(presentation==='page')return <MePage title="브리핑·날씨 예약" onClose={onClose} disabled={busy} scrollable={false}>{contents}</MePage>;
+ return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><View style={s.modalBackdrop}><DraggableSheet style={s.sheet} disabled={busy} onDismiss={onClose}>
+  <View style={s.sheetHeader}><Text style={[s.sectionTitle,{flex:1}]}>브리핑·날씨 예약</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton onPress={onClose} disabled={busy}/></View></View>
+  {contents}
  </DraggableSheet></View></Modal>;
 }

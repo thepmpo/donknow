@@ -25,7 +25,7 @@ import { DuckScreen } from './src/screens/DuckScreen';
 import { LogScreen } from './src/screens/LogScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { ConnectionScreen } from './src/screens/ConnectionScreen';
-export function Shell({keyboardOccluded}:{keyboardOccluded?:boolean}={}){return <KeyboardUXProvider occlusion={keyboardOccluded}><ShellContent/></KeyboardUXProvider>;}
+export function Shell({keyboardOccluded,keyboardTop}:{keyboardOccluded?:boolean;keyboardTop?:number|null}={}){return <KeyboardUXProvider occlusion={keyboardOccluded} occlusionTop={keyboardTop}><ShellContent/></KeyboardUXProvider>;}
 function ShellContent() {
   const keyboard=useKeyboardUX();
   const store = useTodos();
@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
   brand: { ...typography.body, color: colors.text, fontWeight: '700', flexShrink: 1 }, storage: { ...typography.caption, color: colors.muted, flexShrink: 1, textAlign: 'right' },
   content: { flex: 1, minHeight: 0 }, hidden: { display: 'none' },
   duoRoot:{maxWidth:'100%'},duoHeader:{paddingHorizontal:8,gap:4},
-  errorBar: { paddingHorizontal: 20, paddingVertical: 12, backgroundColor: '#fff0f2', flexDirection: 'row', gap: 12, alignItems: 'center' },
+  errorBar: { paddingHorizontal: 20, paddingVertical: 8, backgroundColor: colors.surface, flexDirection: 'row', gap: 12, alignItems: 'center' },
   error: { ...typography.caption, flex: 1, color: colors.danger }, retry: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' },
 });

@@ -1,3 +1,11 @@
+# Current flow audit — chat, writing and ME
+
+final result: passed
+
+[Current five-step audit and33 fresh captures](docs/assistant-ux-repair-audit-2026-11-15.md) · [current behavior contract](docs/assistant-ux-repair-2026-11-15.md). The user's four new screenshots and current compiled app ground this fix. Tests cover AI-loading/no-Todo conversion, phone/folded/open keyboard occlusion, late Todo reads after new writes, calendar draft/permission refresh, and consistent ME pages with failed-save recovery. Actual UIKit/IME/VoiceOver/physical Duo and the original upstream error cause remain unverified. Native39 succeeds for the previous source, and these UI fixes require a new installation build.
+
+---
+
 # Design QA — ME grouped settings
 
 final result: passed

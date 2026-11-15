@@ -1,0 +1,84 @@
+{
+  "syntheticOnly": true,
+  "nativeKeyboardNotVerified": true,
+  "chatCalls": 1,
+  "todoReads": 4,
+  "captures": [
+    "01-status-pending-keeps-chat",
+    "02-phone-composer-visible",
+    "03-folded-composer-visible",
+    "04-unfolded-composer-visible",
+    "05-draft-editable-before-permission",
+    "06-calendar-notes-revealed",
+    "07-background-refresh-keeps-new-write"
+  ],
+  "measurements": [
+    {
+      "name": "02-phone",
+      "keyboardTop": 490,
+      "composer": {
+        "x": 24,
+        "y": 430,
+        "width": 342,
+        "height": 52
+      },
+      "viewport": {
+        "x": 24,
+        "y": 124,
+        "width": 342,
+        "height": 306
+      },
+      "reply": {
+        "x": 24,
+        "y": 239,
+        "width": 342,
+        "height": 93.5
+      }
+    },
+    {
+      "name": "03-folded",
+      "keyboardTop": 371,
+      "composer": {
+        "x": 40,
+        "y": 288,
+        "width": 287,
+        "height": 75
+      },
+      "viewport": {
+        "x": 40,
+        "y": 144,
+        "width": 287,
+        "height": 144
+      },
+      "reply": {
+        "x": 40,
+        "y": 170,
+        "width": 287,
+        "height": 93.5
+      }
+    },
+    {
+      "name": "04-unfolded",
+      "keyboardTop": 429,
+      "composer": {
+        "x": 480,
+        "y": 346,
+        "width": 376,
+        "height": 75
+      },
+      "viewport": {
+        "x": 480,
+        "y": 144,
+        "width": 376,
+        "height": 202
+      },
+      "reply": {
+        "x": 480,
+        "y": 228,
+        "width": 376,
+        "height": 93.5
+      }
+    }
+  ],
+  "errors": []
+}
