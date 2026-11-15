@@ -17,7 +17,8 @@ const root = fileURLToPath(new URL('.', import.meta.url));
 const store = await openStore(process.env.DATA_DIR || `${root}data`);
 const backupJob = backupScheduler(process.env.DATA_DIR || `${root}data`);
 const mailer = createMailer();
-const worker = startMailWorker(store, mailer, process.env.NODE_ENV === 'test' ? 20 : 2000);
+// Explicit account-mail requests still call worker.tick immediately. Idle remote DB polling is bounded.
+const worker = startMailWorker(store, mailer, process.env.NODE_ENV === 'test' ? 20 : process.env.STORE_DRIVER==='turso'?15000:2000);
 const integrations = createIntegrations(store);
 const taskSync=createTaskSync(store,integrations);
 const features = featureRoutes(store, mailer, worker, integrations, limited, clientAddress);

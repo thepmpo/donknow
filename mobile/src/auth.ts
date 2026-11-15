@@ -1,13 +1,18 @@
 import { Platform } from 'react-native';
 import {readJsonResponse,InvalidJsonResponseError,connectionRead,cancelledTransport} from './http-response';
 import * as SecureStore from 'expo-secure-store';
+import {createServerReadiness} from './server-readiness';
+const readiness=createServerReadiness({probe:async base=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(base+'/api/health',{signal:controller.signal});const data=await readJsonResponse(response) as {ok?:boolean};if(data?.ok!==true)throw new InvalidJsonResponseError(response.status);}finally{clearTimeout(timer);}}});
 export type User = { id: string; email: string; emailVerified: boolean };
 export class AuthRequiredError extends Error { constructor() { super('다시 로그인해주세요.'); } }
 const storageKey = (origin: string) => 'duckduck.session.' + Array.from(origin).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 export async function request(baseUrl: string, path: string, method = 'GET', body?: unknown): Promise<unknown> {
-  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), connectionRead(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||path==='/api/assistant/chat'||path==='/api/assistant/context'?60000:15000);
+  // Capture this session before a potentially long health wait; never send an old draft with a new login.
+  const token = Platform.OS === 'web' ? null : await SecureStore.getItemAsync(storageKey(baseUrl));
+  // A cold-start 503 must be handled before the write is sent. Never replay its POST/PATCH.
+  if(Platform.OS==='ios'&&method!=='GET'&&/^\/api\/(?:assistant\/(?:chat|actions)|calendar\/event-details)(?:\/|$)/.test(path))await readiness.wait(baseUrl);
+  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), connectionRead(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||/^\/api\/(?:assistant\/(?:chat|context|actions)|calendar\/event-details)(?:\/|$)/.test(path)?60000:15000);
   try {
-    const token = Platform.OS === 'web' ? null : await SecureStore.getItemAsync(storageKey(baseUrl));
     const fetchResponse = () => fetch(baseUrl + path, { method, credentials: 'include', signal: controller.signal,
       headers: { 'Content-Type': 'application/json', 'X-Duckduck-Client': Platform.OS === 'web' ? 'web' : 'native', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
@@ -18,7 +23,7 @@ export async function request(baseUrl: string, path: string, method = 'GET', bod
       let response:Response;
       try{response=await fetchResponse();}catch(error){if(attempt===0&&connectionRead(path,method)&&cancelledTransport(error)&&!controller.signal.aborted)continue;throw error;}
       if(response.status===401&&path!=='/api/auth/login')throw new AuthRequiredError();
-      try{return await readJsonResponse(response);}catch(error){
+      try{const data=await readJsonResponse(response);readiness.mark(baseUrl);return data;}catch(error){
         if(attempt===0&&connectionRead(path,method)&&error instanceof InvalidJsonResponseError&&(error.status===200||error.status>=500)&&!controller.signal.aborted)continue;
         throw error;
       }

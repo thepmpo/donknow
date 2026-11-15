@@ -1,6 +1,7 @@
 import {MePage} from '../MeSettings';
 import { MotionPressable as Pressable } from '../motion';
 import { reconcileApple } from '../apple-reconcile';
+import {reminderList} from '../apple-reminder-list';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { dateKey } from '../domain';
@@ -13,6 +14,7 @@ export function AppleRemindersScreen({ store, onClose }: { store: TodoStore; onC
   const active=useRef(true);useEffect(()=>{active.current=true;return()=>{active.current=false;};},[]);
   const [syncCursor,setSyncCursor]=useState(''),[confirmDevice,setConfirmDevice]=useState(false),[syncDirection,setSyncDirection]=useState<'device'|'duck'|null>(null);
   const [listId, setListId] = useState<string | undefined>(), [completed, setCompleted] = useState(false);
+  const nativeLists=useRef<import('expo-calendar').ExpoCalendar[]>([]);
   const current = () => active.current && store.isCurrentSession();
   async function load(targetListId?: string, showCompleted = false) {
     if (!current() || busy) return;
@@ -22,9 +24,13 @@ export function AppleRemindersScreen({ store, onClose }: { store: TodoStore; onC
       const permission = await Calendar.requestRemindersPermissions();
       if (!current()) return;
       if (!permission.granted) throw new Error('아이폰 설정에서 덕의 미리 알림 접근을 허용해주세요.');
-      if (!targetListId) { const calendars = await Calendar.getCalendars(Calendar.EntityTypes.REMINDER); if (!current()) return; setLists(calendars); setItems([]); setSelected([]); setListId(undefined); setCompleted(false); }
+      if (!targetListId) { const calendars = await Calendar.getCalendars(Calendar.EntityTypes.REMINDER); if (!current()) return; nativeLists.current=calendars;setLists(calendars); setItems([]); setSelected([]); setListId(undefined); setCompleted(false); }
       else {
-        const list = await Calendar.ExpoCalendar.get(targetListId);
+        // SDK58's get(id) requires EVENT write access even for a reminder list.
+        // The REMINDER-scoped query already returns usable shared list objects.
+        const resolved=await reminderList(nativeLists.current,targetListId,()=>Calendar.getCalendars(Calendar.EntityTypes.REMINDER));
+        const list=resolved.list;nativeLists.current=resolved.lists;
+        if(!current())return;
         const reminders = await list.listReminders(null, null, showCompleted ? Calendar.ReminderStatus.COMPLETED : Calendar.ReminderStatus.INCOMPLETE);
         if (!current()) return;
         setItems(reminders.filter(item => !!item.completed === showCompleted && item.id).map(item => ({ id: item.id!, title: (item.title || '제목 없는 할 일').slice(0, 120), completed: !!item.completed, dueDate: item.dueDate ? dateKey(new Date(item.dueDate)) : null })));

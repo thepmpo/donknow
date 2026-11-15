@@ -45,6 +45,8 @@ try{
  fail=true;await command('Google 일정 새로고침');await page.getByText('일정을 확인하지 못했어요. 빈 시간으로 판단하지 마세요.',{exact:true}).waitFor();await close();await event(title).waitFor();assert.equal(await page.getByRole('button',{name:'덕 로그인',exact:true}).count(),0);fail=false;
  // All sources do not wait for the slowest source.
  teamHold=true;await command('캘린더 보기 전환');await button('캘린더 보기 설정').click();await button('표시할 캘린더 선택').click();await page.getByRole('checkbox',{name:'팀 일정 표시',exact:true}).click();title='빠른 캘린더 먼저 반영';await button('선택한 캘린더 적용').click();await event(title).waitFor({timeout:1000});assert.ok(pending.some(p=>p.id==='team'));await shot('cache-fast-source-first');teamHold=false;release('team');await event('팀 일정 유지').waitFor();
+ // A full JS reload restores the last saved display and selected sources before held network reads.
+ await page.waitForTimeout(400);hold=true;await page.reload();await tab('캘린더').click();await event(title).waitFor({timeout:1500});await event('팀 일정 유지').waitFor({timeout:1500});await shot('cache-cold-reload');assert.ok(pending.length>0);hold=false;release();await page.waitForTimeout(100);
  // Partial pagination keeps known items, and final authoritative completion removes deleted items.
  deleted=true;paged=true;await command('Google 일정 새로고침');await page.getByText('일부 일정만 표시 중이에요. 더 불러오거나 다시 확인해주세요.',{exact:true}).waitFor();await close();await event('이후 삭제된 일정').waitFor();
  await command('일정 더 불러오기');await page.getByText('업데이트 09:00',{exact:true}).waitFor();await close();assert.equal(await event('이후 삭제된 일정').count(),0);await shot('cache-authoritative-delete');paged=false;

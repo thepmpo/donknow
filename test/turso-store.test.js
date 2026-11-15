@@ -23,6 +23,9 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
   assert.deepEqual(store.memorySettings(null),{enabled:false,revision:0,count:0,turnCount:0});assert.equal(createAssistant(store,createIntegrations(store,{}),{}).status(null).memory.enabled,false);
   const owner=await store.register('remote@example.test','fixture-password-123');
   const todo=store.create(owner.user.id,{title:'원격 DB의 할 일',category:'업무',dueDate:'2030-01-01'});
+  store.cacheResources(owner.user.id,'google',Array.from({length:120},(_,i)=>({id:'batch-'+i,title:'Batch '+i,dueDate:null})));
+  store.saveCalendarDetails(owner.user.id,'google:fixture','primary','batch-event',{reminderMinutes:10},0,{title:'before'});
+  const batched=store.refreshCalendarSnapshots(owner.user.id,'google:fixture','primary',Array.from({length:120},(_,i)=>({eventId:i===0?'batch-event':'no-details-'+i,snapshot:{title:'after-'+i}})));assert.equal(batched.get('batch-event').fields.reminderMinutes,10);assert.equal(store.calendarDetails(owner.user.id,'google:fixture','primary','batch-event').snapshot.title,'after-0');
   store.configureMemory(owner.user.id,true);store.saveMemory(owner.user.id,'원격 저장 기억');
   store.saveConnection(owner.user.id,'google',{accessToken:'encrypted-fixture-token',features:['tasks']},'Google');
   store.queueAccountMail(owner.user.id,'verify');const job=store.claimMail();const code=/인증번호: (\d{6})/.exec(job.message.text)[1];assert.equal(store.verifyEmail(owner.user.id,code),true);store.mailSucceeded(job.id);

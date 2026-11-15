@@ -1,5 +1,13 @@
 # 변경 기록
 
+## 2026-11-15 — 캘린더 저장본·AI 연결·미리 알림 안정화
+
+[원인·변경·13장과 검증](connection-stability-2026-11-15.md). 사용자3장의 실행 오류를 기준으로 일반 iPhone·Duo에 적용한다. SDK58의 event 권한을 요구하는 `ExpoCalendar.get` 대신 REMINDER-scoped shared list로 읽는다. 캘린더 선택 ID와 마지막 표시 snapshot을 복원하고, 범위가 달라도 겹치는 저장 내용을 먼저 보여준다. native SecureStore·웹 탭 sessionStorage이며 메모/ETag/수정 권한은 저장하지 않는다. 느린/실패한 refresh가 표시 내용을 지우지 않고 도착한 소스부터 반영한다. 계정/서버/시간대/연결 해제 경계를 유지한다.
+
+페이지 단위 calendar metadata/resource cache/명시 선택 import와 상태 호출별 최신 연결 snapshot으로 원격 DB 반복을 줄였다. 격리 계수는50일정8회·AI 상태2회·20미리알림 가져오기6회다. 실제 운영 지연 실측은 아니다. 쓰기 전 iOS health 대기는 GET만 재시도하며 POST/PATCH/확인·발송은 자동 재실행하지 않는다. 대기 전 토큰을 캡처하고 원본 쓰기/ETag·권한·중복/계정 격리를 유지한다. 빈 메일 큐/유휴 remote poll을 줄여도 인증 메일 요청은 즉시 tick한다.
+
+전체366중365통과/실패0/기존 선택1제외,96문법·타입·web/iOS JS·실제 libSQL HTTP·앱/채팅 오류·일정·캐시/입력 회귀를 확인했다. 운영5xx/지연 원인을 전부 확정하지 않으며 실기기 EventKit·실계정/모델 품질은 별도다. iPhone40(dc934af·43711587874)은 실제 서명/Apple 업로드 성공이고 이번 안정화는 그 이후다. 새 native 설치가 필요하며 무료/수동·기존 자료/암호화키/서명·복구 bundle을 유지한다.
+
 ## 2026-11-15 — 채팅 입력·Todo 전환 오류·일정 메모·ME 흐름 복구
 
 [현재 동작 계약](assistant-ux-repair-2026-11-15.md) · [직접 조작 감사·33장](assistant-ux-repair-audit-2026-11-15.md). 이번 사용자4장과 현재 ME를 기준으로 일반 iPhone·Duo 접힘/펼침에 적용한다. 로그인한 덕은 AI 상태 조회와 무관하게 같은 AssistantChat을 유지한다. 연결 확인/실패/미설정에서 일반 입력을 Todo 초안으로 바꾸지 않는다. 오늘 내용 보기·비서·기록 찾기·대화 붙여넣기 첫 화면 진입은 사용자 후속 기획 전까지 숨긴다. Todo는 명시적 체크/추가 동작으로만 저장한다.

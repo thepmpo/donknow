@@ -23,6 +23,7 @@ import {calendarFeatures} from '../calendar-features';
 import {CalendarEventEditor,eventDraft} from '../CalendarEventEditor';
 import type {CalendarDraft,CalendarActionState} from '../CalendarEventEditor';
 import {useCalendarData} from '../useCalendarData';
+import {useCalendarSelection} from '../useCalendarSelection';
 import {deviceZone,eventOccurs,eventTime,localTime,monthCellHeight,periodShift,safeCalendarLink,shiftDay,validZone,visibleDays,zonedDay} from '../calendar-model';
 import type {CalendarEvent,CalendarView} from '../calendar-model';
 import type {Todo} from '../domain';
@@ -40,12 +41,13 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  const [size,setSize]=useState({width:390,height:700}),[headHeight,setHeadHeight]=useState(67),[weekdaysHeight,setWeekdaysHeight]=useState(31.5),[overlay,setOverlay]=useState<Overlay>(null),[event,setEvent]=useState<CalendarEvent|undefined>(),[editorKey,setEditorKey]=useState('new'),[editorBusy,setEditorBusy]=useState(false),[localError,setLocalError]=useState(''),[showDone,setShowDone]=useState(false),[importing,setImporting]=useState(false),[query,setQuery]=useState(''),[pickedMonth,setPickedMonth]=useState(month);
  const drafts=useRef<Record<string,CalendarDraft>>({});
  function setDrafts(fn:(old:Record<string,CalendarDraft>)=>Record<string,CalendarDraft>){drafts.current=fn(drafts.current);}
- const [sourceIds,setSourceIds]=useState<string[]>(['primary']),[sourceDraft,setSourceDraft]=useState(sourceIds),[startDayDraft,setStartDayDraft]=useState(startDay),[densityDraft,setDensityDraft]=useState(density);
+ const selection=useCalendarSelection(store),sourceIds=selection.ids,setSourceIds=selection.setIds;
+ const [sourceDraft,setSourceDraft]=useState(sourceIds),[startDayDraft,setStartDayDraft]=useState(startDay),[densityDraft,setDensityDraft]=useState(density);
  const periodMotion=useRef<CalendarPeriodMotionHandle>(null),[periodSequence,setPeriodSequence]=useState(0),[periodDirection,setPeriodDirection]=useState(0);
  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),savedScroll=useRef(0),agendaY=useRef(0);
  const latest=useRef({month,selected,view,active,fortnightAnchor});latest.current={month,selected,view,active,fortnightAnchor};
  const days=useMemo(()=>visibleDays(month,view==='fortnight'?fortnightAnchor:selected,view,startDay),[month,selected,view,startDay,fortnightAnchor]);
- const data=useCalendarData(store,{start:days[0],end:shiftDay(days.at(-1)!,1),month,timeZone:zone,selected:sourceIds,active});
+ const data=useCalendarData(store,{start:days[0],end:shiftDay(days.at(-1)!,1),month,timeZone:zone,selected:sourceIds,active,selectionReady:selection.ready});
  // Load source colors once on activation; the request has its own owner/generation guard.
  useEffect(()=>{if(active&&data.version===2&&store.user)void data.loadSources();},[active,data.version,store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo']);
  useEffect(()=>{if(active&&data.readAt)store.reminders.retry();},[active,data.readAt]);

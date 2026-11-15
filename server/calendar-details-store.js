@@ -17,6 +17,17 @@ export function calendarDetailsStore(db,box){
    }catch(e){db.exec('ROLLBACK');throw e;}
   },
   refreshCalendarSnapshot(user,account,calendar,event,snapshot){const old=this.calendarDetails(user,account,calendar,event);if(old)db.prepare('UPDATE calendar_details SET data=? WHERE user_id=? AND account_key=? AND calendar_id=? AND event_id=?').run(box.seal({fields:old.fields,snapshot,checkedAt:Date.now()}),user,account,calendar,event);},
+  refreshCalendarSnapshots(user,account,calendar,entries){
+   const result=new Map();
+   for(let i=0;i<entries.length;i+=100){
+    const page=entries.slice(i,i+100),ids=page.map(e=>e.eventId),slots=ids.map(()=>'?').join(',');
+    const rows=db.prepare('SELECT * FROM calendar_details WHERE user_id=? AND account_key=? AND calendar_id=? AND event_id IN ('+slots+')').all(user,account,calendar,...ids);
+    const snapshots=new Map(page.map(e=>[e.eventId,e.snapshot])),checkedAt=Date.now();
+    const changes=rows.map(row=>{const old=read(row),data={fields:old.fields,snapshot:snapshots.get(row.event_id),checkedAt};result.set(row.event_id,{...old,...data});return [row.event_id,box.seal(data)];});
+    if(changes.length)db.prepare('UPDATE calendar_details SET data=CASE event_id '+changes.map(()=>'WHEN ? THEN ?').join(' ')+' ELSE data END WHERE user_id=? AND account_key=? AND calendar_id=? AND event_id IN ('+changes.map(()=>'?').join(',')+')').run(...changes.flat(),user,account,calendar,...changes.map(c=>c[0]));
+   }
+   return result;
+  },
   exportCalendarDetails(user){return db.prepare('SELECT * FROM calendar_details WHERE user_id=? ORDER BY rowid').all(user).map(row=>({calendarId:row.calendar_id,eventId:row.event_id,revision:row.revision,fields:read(row).fields}));},
   calendarDetailRows(user,account){return db.prepare('SELECT * FROM calendar_details WHERE user_id=? AND account_key=? ORDER BY rowid DESC').all(user,account).map(row=>({...read(row),calendarId:row.calendar_id,eventId:row.event_id}));},
  };

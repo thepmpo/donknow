@@ -34,6 +34,7 @@ export async function featureStore(db, directory, env = process.env) {
     CREATE TABLE IF NOT EXISTS integration_resources (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, provider TEXT NOT NULL, resource_key TEXT NOT NULL, payload TEXT NOT NULL, expires_at INTEGER NOT NULL, PRIMARY KEY(user_id,provider,resource_key));
     CREATE TABLE IF NOT EXISTS imported_resources (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, provider TEXT NOT NULL, resource_key TEXT NOT NULL, todo_id TEXT NOT NULL, PRIMARY KEY(user_id,provider,resource_key));`);
   const transaction = action => { db.exec('BEGIN IMMEDIATE'); try { const output = action(); db.exec('COMMIT'); return output; } catch (e) { db.exec('ROLLBACK'); throw e; } };
+  let mailMaintenanceAt=0;
   const account = id => { const row = db.prepare('SELECT id,email,email_verified_at FROM users WHERE id=?').get(id); return row ? { id: row.id, email: row.email, emailVerified: !!row.email_verified_at } : null; };
   const findId = email => db.prepare('SELECT id FROM users WHERE email=?').get(email)?.id;
   function codeValid(userId, purpose, code, count = true) {
@@ -98,8 +99,12 @@ export async function featureStore(db, directory, env = process.env) {
     mailStatus(userId) { return db.prepare('SELECT purpose,status,created_at AS createdAt FROM mail_outbox WHERE user_id=? ORDER BY created_at DESC LIMIT 1').get(userId) ?? null; },
     claimMail() {
       const now = Date.now();
-      db.prepare("UPDATE mail_outbox SET status='pending' WHERE status='processing' AND next_at<?").run(now - 60000);
-      db.prepare("UPDATE mail_outbox SET payload='',status='expired' WHERE created_at<? AND payload<>''").run(now - 15 * 60000);
+      if(!mailMaintenanceAt||now-mailMaintenanceAt>=60000){
+        db.prepare("UPDATE mail_outbox SET status='pending' WHERE status='processing' AND next_at<?").run(now - 60000);
+        db.prepare("UPDATE mail_outbox SET payload='',status='expired' WHERE created_at<? AND payload<>''").run(now - 15 * 60000);
+        mailMaintenanceAt=now;
+      }
+      if(!db.prepare("SELECT id FROM mail_outbox WHERE status='pending' AND next_at<=? AND attempts<5 ORDER BY created_at LIMIT 1").get(now))return null;
       return transaction(() => { const row = db.prepare("SELECT * FROM mail_outbox WHERE status='pending' AND next_at<=? AND attempts<5 ORDER BY created_at LIMIT 1").get(now); if (!row) return null; db.prepare("UPDATE mail_outbox SET status='processing',next_at=? WHERE id=?").run(now, row.id); return { ...row, message: box.open(row.payload) }; });
     },
     mailSucceeded(id) { db.prepare("UPDATE mail_outbox SET status='sent',payload='' WHERE id=? AND status='processing'").run(id); },
@@ -107,20 +112,32 @@ export async function featureStore(db, directory, env = process.env) {
     createOAuthState(userId, provider, payload) { const state = randomBytes(32).toString('base64url'); db.prepare('DELETE FROM oauth_states WHERE expires_at<?').run(Date.now()); db.prepare('INSERT INTO oauth_states VALUES (?,?,?,?,?)').run(box.hash(state), userId, provider, box.seal(payload), Date.now() + 10 * 60000); return state; },
     consumeOAuthState(provider, state) { return transaction(() => { if (typeof state !== 'string' || state.length > 200) return null; const row = db.prepare('SELECT * FROM oauth_states WHERE hash=? AND provider=?').get(box.hash(state), provider); if (!row) return null; db.prepare('DELETE FROM oauth_states WHERE hash=?').run(row.hash); return row.expires_at > Date.now() ? { userId: row.user_id, ...box.open(row.payload) } : null; }); },
     clearResourceCache(userId,provider,connectionId){const prefix=connectionId+':';db.prepare('DELETE FROM integration_resources WHERE user_id=? AND provider=?'+(connectionId?' AND substr(resource_key,1,?)=?':'')).run(...(connectionId?[userId,provider,prefix.length,prefix]:[userId,provider]));},
-    cacheResources(userId, provider, items) { transaction(() => { for (const item of items) db.prepare('INSERT INTO integration_resources VALUES (?,?,?,?,?) ON CONFLICT(user_id,provider,resource_key) DO UPDATE SET payload=excluded.payload,expires_at=excluded.expires_at').run(userId, provider, item.id, JSON.stringify(item), Date.now() + 10 * 60000); }); },
+    cacheResources(userId, provider, items) {
+      if (!items.length) return;
+      const expires = Date.now() + 10 * 60000;
+      // One remote statement per bounded page, rather than one synchronous trip per item.
+      transaction(() => { for (let i=0;i<items.length;i+=100) {
+        const page=items.slice(i,i+100);
+        db.prepare('INSERT INTO integration_resources VALUES '+page.map(()=>'(?,?,?,?,?)').join(',')+' ON CONFLICT(user_id,provider,resource_key) DO UPDATE SET payload=excluded.payload,expires_at=excluded.expires_at').run(...page.flatMap(item=>[userId,provider,item.id,JSON.stringify(item),expires]));
+      } });
+    },
     importResources(userId, provider, ids) {
+      if(!ids.length)return [];
       return transaction(() => {
-        const result = [];
-        for (const id of ids) {
-          const row = db.prepare('SELECT payload FROM integration_resources WHERE user_id=? AND provider=? AND resource_key=? AND expires_at>?').get(userId, provider, id, Date.now());
-          if (!row) throw fail(400, '자료를 새로고침한 뒤 다시 선택해주세요.');
-          const item = JSON.parse(row.payload);
-          if (item.completed === true) throw fail(400, '완료된 기록은 참고만 할 수 있어요. 미완료 할 일만 가져와주세요.');
-          const previous = db.prepare('SELECT todos.data FROM imported_resources JOIN todos ON todos.id=imported_resources.todo_id AND todos.user_id=imported_resources.user_id WHERE imported_resources.user_id=? AND provider=? AND resource_key=?').get(userId, provider, id);
-          if (previous) { result.push({ todo: JSON.parse(previous.data), created: false }); continue; }
-          const todo = { id: randomUUID(), title: item.title.slice(0, 120), category: '업무', done: false, dueDate: item.dueDate ?? null, reminderAt: null, createdAt: new Date().toISOString(), source: { provider, externalId: item.id } };
-          db.prepare('INSERT INTO todos VALUES (?,?,?)').run(todo.id, userId, JSON.stringify(todo));
-          db.prepare('INSERT INTO imported_resources VALUES (?,?,?,?) ON CONFLICT(user_id,provider,resource_key) DO UPDATE SET todo_id=excluded.todo_id').run(userId, provider, id, todo.id); result.push({ todo, created: true });
+        const keys=[...new Set(ids)],resources=new Map(),previous=new Map();
+        for(let i=0;i<keys.length;i+=100){const page=keys.slice(i,i+100),slots=page.map(()=>'?').join(',');
+          for(const row of db.prepare('SELECT resource_key,payload FROM integration_resources WHERE user_id=? AND provider=? AND resource_key IN ('+slots+') AND expires_at>?').all(userId,provider,...page,Date.now()))resources.set(row.resource_key,JSON.parse(row.payload));
+          for(const row of db.prepare('SELECT imported_resources.resource_key,todos.data FROM imported_resources JOIN todos ON todos.id=imported_resources.todo_id AND todos.user_id=imported_resources.user_id WHERE imported_resources.user_id=? AND provider=? AND resource_key IN ('+slots+')').all(userId,provider,...page))previous.set(row.resource_key,JSON.parse(row.data));
+        }
+        for(const id of keys){const item=resources.get(id);if(!item)throw fail(400,'자료를 새로고침한 뒤 다시 선택해주세요.');if(item.completed===true)throw fail(400,'완료된 기록은 참고만 할 수 있어요. 미완료 할 일만 가져와주세요.');}
+        const created=[],result=ids.map(id=>{
+          const old=previous.get(id);if(old)return {todo:old,created:false};
+          const item=resources.get(id),todo={id:randomUUID(),title:item.title.slice(0,120),category:'업무',done:false,dueDate:item.dueDate??null,reminderAt:null,createdAt:new Date().toISOString(),source:{provider,externalId:item.id}};
+          created.push({id,todo});previous.set(id,todo);return {todo,created:true};
+        });
+        for(let i=0;i<created.length;i+=100){const page=created.slice(i,i+100);
+          db.prepare('INSERT INTO todos VALUES '+page.map(()=>'(?,?,?)').join(',')).run(...page.flatMap(({todo})=>[todo.id,userId,JSON.stringify(todo)]));
+          db.prepare('INSERT INTO imported_resources VALUES '+page.map(()=>'(?,?,?,?)').join(',')+' ON CONFLICT(user_id,provider,resource_key) DO UPDATE SET todo_id=excluded.todo_id').run(...page.flatMap(({id,todo})=>[userId,provider,id,todo.id]));
         }
         return result;
       });
