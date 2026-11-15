@@ -68,7 +68,7 @@ Desktop 전체 화면은 기기 생성 시 별도 opt-in이다. macOS14+의 Scre
 
 Mac iMessage는 `node companion/imessage.mjs --directory 연결기폴더 --owner 본인전화번호또는이메일`의 user-run bridge다. Mac Messages DB 읽기/AppleScript 전송에 필요한 본인 OS 권한이 필요하다. **peer 하나만** 처리하며 앱에서 만든 코드로 동일 계정에 연결한다. 새 텍스트만 읽고 attributed/encrypted body가 지원되지 않으면 본문을 확인하지 못했다고 표시한다. Mac 실기기·SMS/RCS와의 전달 품질까지 검수한 것은 아니다.
 
-새 iPhone 소스에는 AppIntents/Siri/Shortcuts의 “덕에게 부탁하기”가 포함된다. 전달 자료는 잠긴 임시 파일+일회용 Keychain nonce로 전달한다. 일반 외부 `duckduck://assistant?message=…`는 초안만 열고 임의 자동 전송하지 않는다. 사용자 Shortcut의 일회용 검증이 성공한 요청만 자동 전송한다. 알림 응답은 기존 경로를 유지한다.
+새 iPhone 소스에는 iOS18 이상에서 제공하는 AppIntents/Siri/Shortcuts의 “덕에게 부탁하기”가 포함된다. 단축어의 OpenURLIntent 지원 조건이며 앱 전체의 최소 지원 버전을 높이지 않는다. 전달 자료는 잠긴 임시 파일+일회용 Keychain nonce로 전달한다. 일반 외부 `duckduck://assistant?message=…`는 초안만 열고 임의 자동 전송하지 않는다. 사용자 Shortcut의 일회용 검증이 성공한 요청만 자동 전송한다. 알림 응답은 기존 경로를 유지한다.
 
 Widget 소스와 config plugin은 준비했으나 기본 disabled다. `DUCK_ENABLE_WIDGET=1`은 **별도** `com.sjfieni.duckduck.widget` App ID/provisioning profile과 실제 extension 빌드 검수 뒤에만 선택한다. 주 앱의 기존 Bundle ID·서명·프로필을 바꾸지 않는다.
 

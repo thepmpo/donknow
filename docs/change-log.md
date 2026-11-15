@@ -1,5 +1,11 @@
 # 변경 기록
 
+## 2026-11-15 — iPhone38 두 번째 실패·AppIntents API 지원 버전 수정
+
+[실패·수정·검증 범위](native-build-38-fix-2026-11-15.md). 새 실행43699451034는 수정606e53d를 포함했고 validate132767151513은성공했다. native132767426954는 DuckShortcuts.swift23의 `OpenURLIntent is only available in iOS 18.0 or newer`로 실패했고 제출은skipped다. 이전 import 오류는 이번 오류가 아니다.38은번호만할당됐고 마지막Apple업로드성공은36이다.
+
+두 단축어 선언의 availability를iOS18로 맞췄다. 앱 전체 deployment target/서명/Bundle ID는 유지한다. 무료 Mac의 EAS 이전에 실제 Apple SDK로 실제 단축어와 실제 Keychain bridge를 검사한다. Expo adapter만 분리하며 fake bridge가 아니다. 임시 복사본의 availability를16.4로 되돌려 이번 오류를 실제 컴파일러가 거부하는지도 검사한다. Linux검사 성공을 이 Mac 검사/전체 archive/서명/Apple제출 성공으로 표시하지 않는다. 새 main workflow_dispatch가 필요하며 실패38 Re-run은 이전 소스다. 새 실행 권한을 우회하거나 자동 push 빌드/유료 fallback을 추가하지 않는다.
+
 ## 2026-11-15 — iPhone37 실패 수정·Swift import와 SDK58 호환 검사
 
 [수정·검증 계약](native-build-fix-2026-11-15.md). 사용자 실행43696660983·4461282는validate성공/native실패·Apple제출skipped다. 실제 오류는DuckShortcuts.swift4의 `ambiguous implicit access level for import of DuckduckDuo; internal elsewhere`다. 단축어 import를명시internal로맞췄고 같은 SDK58의 Doctor 버전 경고를 정리했다. 실제 Expo prebuild/로컬 provider/import 비교와 assistant bridge 자동 연결 검사를 validate에 추가했다.95문법·354중353통과/실패0/선택1제외·타입·web/iOS JS·일반앱/Duo회귀·Python99통과/선택1제외를 확인했다. 온라인 Doctor의 두 네트워크 실패는 전체 성공으로 표시하지 않는다. Linux검사는 실제Swift archive/서명/Apple성공이 아니다.

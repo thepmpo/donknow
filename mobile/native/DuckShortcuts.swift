@@ -3,7 +3,8 @@ import Foundation
 import UniformTypeIdentifiers
 internal import DuckduckDuo
 
-@available(iOS 16.4, *)
+// OpenURLIntent requires iOS 18. Keep this feature gated without raising the app's deployment target.
+@available(iOS 18.0, *)
 struct AskDuckIntent: AppIntent {
   static var title: LocalizedStringResource = "덕에게 부탁하기"
   static var description = IntentDescription("말하거나 작성한 내용을 덕에게 전달해요. 맡긴 일은 덕의 작업에서 확인할 수 있어요.")
@@ -23,7 +24,7 @@ struct AskDuckIntent: AppIntent {
     return .result(opensIntent: OpenURLIntent(url))
   }
 }
-@available(iOS 16.4, *)
+@available(iOS 18.0, *)
 struct DuckAppShortcuts: AppShortcutsProvider {
   static var appShortcuts: [AppShortcut] {
     AppShortcut(intent: AskDuckIntent(), phrases: ["\(.applicationName)에게 부탁하기", "\(.applicationName)와 이야기하기"], shortTitle: "덕에게 부탁하기", systemImageName: "sparkles")

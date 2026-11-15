@@ -1,5 +1,15 @@
 # duckduck 개발·인계 지침
 
+## 2026-11-15 — iPhone38 두 번째 실패·AppIntents API 지원 버전 수정
+
+[실패·수정·검증 범위](docs/native-build-38-fix-2026-11-15.md). 새 실행43699451034는 수정606e53d를 포함했고 validate132767151513은성공했다. native132767426954는 DuckShortcuts.swift23의 `OpenURLIntent is only available in iOS 18.0 or newer`로 실패했고 제출은skipped다. 이전 import 오류는 이번 오류가 아니다.38은번호만할당됐고 마지막Apple업로드성공은36이다.
+
+두 단축어 선언의 availability를iOS18로 맞췄다. 앱 전체 deployment target/서명/Bundle ID는 유지한다. 무료 Mac의 EAS 이전에 실제 Apple SDK로 실제 단축어와 실제 Keychain bridge를 검사한다. Expo adapter만 분리하며 fake bridge가 아니다. 임시 복사본의 availability를16.4로 되돌려 이번 오류를 실제 컴파일러가 거부하는지도 검사한다. Linux검사 성공을 이 Mac 검사/전체 archive/서명/Apple제출 성공으로 표시하지 않는다. 새 main workflow_dispatch가 필요하며 실패38 Re-run은 이전 소스다. 새 실행 권한을 우회하거나 자동 push 빌드/유료 fallback을 추가하지 않는다.
+
+## 2026-11-15 — ME의 간결한 설정 구조 요청·진행 대기
+
+사용자 첨부3장을 기준으로 앞으로 ME와 설정은 아이콘·이름·짧은 현재 상태·chevron의 묶음 목록→상세 구조를 우선한다. 실제로 연결/제공하는 기능만 표시하고 참고 화면의 비밀번호/건강/금융을 임의 구현했다고 하지 않는다. 일반 iPhone은 하단 탭, Duo는 카메라 열/반대 pane을 유지한다. 일반형 웹은 Safari에서 확인 가능하지만 native 키보드/알림/실기기와 동일한 검수는 아니다. Duo 앱 안 일반형 미리보기 추가 여부 질문은 답변 대기다. 새 native 실패 대응을 우선하느라 이 ME 재설계/미리보기는 아직 구현하지 않았다. 다음 턴은 이 요청을 잊지 말고 이어서 진행한다.
+
 ## 2026-11-15 — iPhone37 실패 수정·Swift import와 SDK58 호환 검사
 
 [수정·검증 계약](docs/native-build-fix-2026-11-15.md). 사용자 실행43696660983·4461282는validate성공/native실패·Apple제출skipped다. 실제 오류는DuckShortcuts.swift4의 `ambiguous implicit access level for import of DuckduckDuo; internal elsewhere`다. 단축어 import를명시internal로맞췄고 같은 SDK58의 Doctor 버전 경고를 정리했다. 실제 Expo prebuild/로컬 provider/import 비교와 assistant bridge 자동 연결 검사를 validate에 추가했다.95문법·354중353통과/실패0/선택1제외·타입·web/iOS JS·일반앱/Duo회귀·Python99통과/선택1제외를 확인했다. 온라인 Doctor의 두 네트워크 실패는 전체 성공으로 표시하지 않는다. Linux검사는 실제Swift archive/서명/Apple성공이 아니다.
