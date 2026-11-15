@@ -14,7 +14,7 @@ export function assistantMemoryStore(db,box){
  const turn=row=>({id:row.id,...box.open(row.payload),role:row.role,createdAt:row.created_at});
  function validateNote(value){if(!text(value,1000))throw fail(400,'기억할 내용은1,000자 이내로 적어주세요.');return value.trim();}
  return {
-  memorySettings(user){return {...settings(user),count:db.prepare('SELECT count(*) AS n FROM assistant_memories WHERE user_id=?').get(user).n,turnCount:db.prepare('SELECT count(*) AS n FROM assistant_conversations WHERE user_id=?').get(user).n};},
+  memorySettings(user){if(!user)return {enabled:false,revision:0,count:0,turnCount:0};const row=db.prepare('SELECT COALESCE(s.enabled,0) AS enabled,COALESCE(s.revision,0) AS revision,(SELECT count(*) FROM assistant_memories WHERE user_id=?) AS count,(SELECT count(*) FROM assistant_conversations WHERE user_id=?) AS turnCount FROM (SELECT ? AS user_id) u LEFT JOIN assistant_memory_settings s ON s.user_id=u.user_id').get(user,user,user);return {...row,enabled:!!row.enabled};},
   configureMemory(user,enabled){if(typeof enabled!=='boolean')throw fail(400,'기억 사용 여부를 확인해주세요.');db.prepare('INSERT INTO assistant_memory_settings VALUES (?,?,1) ON CONFLICT(user_id) DO UPDATE SET enabled=excluded.enabled,revision=assistant_memory_settings.revision+1').run(user,enabled?1:0);return this.memorySettings(user);},
   memories(user){return db.prepare('SELECT * FROM assistant_memories WHERE user_id=? ORDER BY updated_at DESC,id').all(user).map(row=>({id:row.id,...box.open(row.payload),updatedAt:row.updated_at}));},
   saveMemory(user,value,{id,quote,sourceTurnId,automatic=false}={}){

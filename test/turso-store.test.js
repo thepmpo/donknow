@@ -6,6 +6,8 @@ import { mkdtemp, rm, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import Database from 'libsql';
+import {createAssistant} from '../server/assistant.js';
+import {createIntegrations} from '../server/integrations.js';
 import { openStore } from '../server/store.js';
 import { backupScheduler } from '../server/backups.js';
 const settings = { STORE_DRIVER:'turso', TURSO_DATABASE_URL:'libsql://fixture.turso.io', TURSO_AUTH_TOKEN:'fixture-token', INTEGRATION_KEY_SEED:'fixture-seed-with-at-least-32-random-characters' };
@@ -18,8 +20,10 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
  try {
   const directory=join(root,'app-one');
   store=await openStore(directory,{env:settings,remoteFactory});
+  assert.deepEqual(store.memorySettings(null),{enabled:false,revision:0,count:0,turnCount:0});assert.equal(createAssistant(store,createIntegrations(store,{}),{}).status(null).memory.enabled,false);
   const owner=await store.register('remote@example.test','fixture-password-123');
   const todo=store.create(owner.user.id,{title:'원격 DB의 할 일',category:'업무',dueDate:'2030-01-01'});
+  store.configureMemory(owner.user.id,true);store.saveMemory(owner.user.id,'원격 저장 기억');
   store.saveConnection(owner.user.id,'google',{accessToken:'encrypted-fixture-token',features:['tasks']},'Google');
   store.queueAccountMail(owner.user.id,'verify');const job=store.claimMail();const code=/인증번호: (\d{6})/.exec(job.message.text)[1];assert.equal(store.verifyEmail(owner.user.id,code),true);store.mailSucceeded(job.id);
   assert.deepEqual(await readdir(directory),[]);
@@ -27,7 +31,7 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
   store=await openStore(join(root,'app-two'),{env:settings,remoteFactory});
   assert.equal(store.session(owner.token).user.id,owner.user.id);
   assert.equal((await store.login('remote@example.test','fixture-password-123')).user.emailVerified,true);
-  assert.equal(store.list(owner.user.id)[0].id,todo.id);
+  assert.equal(store.list(owner.user.id)[0].id,todo.id);assert.equal(store.memories(owner.user.id)[0].text,'원격 저장 기억');assert.equal(JSON.parse(JSON.stringify(createAssistant(store,createIntegrations(store,{}),{}).status(owner.user.id))).memory.enabled,true);
   assert.equal(store.connection(owner.user.id,'google').accessToken,'encrypted-fixture-token');
   store.cacheResources(owner.user.id,'google',[{id:'new-task',title:'트랜잭션 검증',dueDate:null}]);
   assert.throws(()=>store.importResources(owner.user.id,'google',['new-task','missing-task']));
