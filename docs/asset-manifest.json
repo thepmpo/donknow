@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "8829518bd28c14d3082c4b5ca27f70d2f113edf1",
-  "assetCommit": "8829518bd28c14d3082c4b5ca27f70d2f113edf1",
-  "imageCount": 993,
+  "codeCommit": "076b2bae4102d351ed1ef54e7beb4cde0cc49328",
+  "assetCommit": "076b2bae4102d351ed1ef54e7beb4cde0cc49328",
+  "imageCount": 1015,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -5967,6 +5967,160 @@
       "bytes": 40003,
       "sha256": "889a7a3b7644e499083de8f8f36c3bd70853fe4af84cbcbc1b88bd4aff58a434",
       "import_path": "images/artifacts__me-settings-2026-11-14__current__17-small-dark.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/00-before-overview.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 41777,
+      "sha256": "42ba232af3e4fdf6e732858df10fa360eb8c6c193f7535d95038a948dfd348d2",
+      "import_path": "images/artifacts__me-simple-2026-11-15__00-before-overview.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/01-me-overview.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 41933,
+      "sha256": "5fbc0bf045bcc6b45d8ac890bde9540764ac609bd546ee2e63903e36fc9ec95c",
+      "import_path": "images/artifacts__me-simple-2026-11-15__01-me-overview.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/01b-behavior-detail.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 41648,
+      "sha256": "5ada6726c1a6defaa5ebefbb22e85b613db49a19d4176765638b75d13021bc94",
+      "import_path": "images/artifacts__me-simple-2026-11-15__01b-behavior-detail.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/01c-services-list.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 42203,
+      "sha256": "24c2ccac26b4a5d438b0fe40680d38d87d6b026ff04985e9829554f6ec23722c",
+      "import_path": "images/artifacts__me-simple-2026-11-15__01c-services-list.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/01d-me-dark.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 42652,
+      "sha256": "b236fe5bf4c8dd889280af4ac2b79155fedaa86b64455524c021a39e3574d56f",
+      "import_path": "images/artifacts__me-simple-2026-11-15__01d-me-dark.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/01e-me-small-dark.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 34104,
+      "sha256": "2bcf4c91b1073626a0af816e1f9ef24c8fd62693825d3754627615a36b4b83d6",
+      "import_path": "images/artifacts__me-simple-2026-11-15__01e-me-small-dark.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/02-google-overview.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 35910,
+      "sha256": "f33581e78ac0b892ba6f0f2393feda2b72b5ceeb7f71bb4cebacda74f7363a23",
+      "import_path": "images/artifacts__me-simple-2026-11-15__02-google-overview.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/03-google-permissions.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 49723,
+      "sha256": "43a67b37b9c1faa87461fccb7422ae6f99e3d514fb749eade1433d3fb2f17a47",
+      "import_path": "images/artifacts__me-simple-2026-11-15__03-google-permissions.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/04-completed-reference.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 51931,
+      "sha256": "ca8764729496672ec3a102a9e890c595200abd41d76f1c0326130f0691c6c66c",
+      "import_path": "images/artifacts__me-simple-2026-11-15__04-completed-reference.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/05-stale-connection.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 44306,
+      "sha256": "155644466d71b1ff72070b6d9e2d3d5175f811abec34db40accc3d48669f57c7",
+      "import_path": "images/artifacts__me-simple-2026-11-15__05-stale-connection.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/06-account-delete.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 35135,
+      "sha256": "2c00cca4814929fc8249630914e71db65c710efc091effe697f355403977838f",
+      "import_path": "images/artifacts__me-simple-2026-11-15__06-account-delete.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/07-long-name-overview.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 43952,
+      "sha256": "b1f3a9903f228928e88698a965818b5d6342fcc4b5dd1156bf3718985f39fd4e",
+      "import_path": "images/artifacts__me-simple-2026-11-15__07-long-name-overview.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/08-notifications.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 30489,
+      "sha256": "a47f045ab64aa4e11ee28bdd0d47b013345f49133e289f954e7ac2f4e6023874",
+      "import_path": "images/artifacts__me-simple-2026-11-15__08-notifications.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/09-privacy.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 68272,
+      "sha256": "622669e4fa8c892f7d1cdfd679cfbf2cef952a21585dbbfe8ee1d32df076a84f",
+      "import_path": "images/artifacts__me-simple-2026-11-15__09-privacy.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/10-advanced.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 37872,
+      "sha256": "579bfe9c1640215cec44e7c82adbf27e24da5d1abc6b46226295b4fc0613ead5",
+      "import_path": "images/artifacts__me-simple-2026-11-15__10-advanced.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/11-export.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 35297,
+      "sha256": "51b5d10090aace000befaacdbd080c9566fb5661dc45971777dce9f01f656098",
+      "import_path": "images/artifacts__me-simple-2026-11-15__11-export.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/12-notion-connect.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 36821,
+      "sha256": "01c878c05f889d1f61920cb2ba24de90bdc72e32ef16fd6e9f84794897820785",
+      "import_path": "images/artifacts__me-simple-2026-11-15__12-notion-connect.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/13-folded-overview.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 37505,
+      "sha256": "ffc2ef81c05aa712ac89e1a92cb45291fbb25ef246df7f7a133532819a491035",
+      "import_path": "images/artifacts__me-simple-2026-11-15__13-folded-overview.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/14-open-overview.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 72531,
+      "sha256": "538b7860e41fa104128d79a46b8943276635b371ca276fc827d87129fb8b09f3",
+      "import_path": "images/artifacts__me-simple-2026-11-15__14-open-overview.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/15-folded-account.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 36857,
+      "sha256": "879c89a6d6ff0fc8a5023a82b49b88c8c57b5ae1e4954c1be24ed0afa22f2269",
+      "import_path": "images/artifacts__me-simple-2026-11-15__15-folded-account.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/16-open-account.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 72347,
+      "sha256": "2656e8b0a1e0673c20f84d86589500ea30546bfe54eb1f404184329b815027b1",
+      "import_path": "images/artifacts__me-simple-2026-11-15__16-open-account.png"
+    },
+    {
+      "path": "artifacts/me-simple-2026-11-15/17-small-dark.png",
+      "category": "간결한 ME·서비스 목록/상태·실제 Expo/합성 계정/Duo 기하·native 아님",
+      "bytes": 37729,
+      "sha256": "5817fff3a1c4aa18e59eec55ab0f7b7e04d527ac4411abf7b4d0a937a1bd2f3a",
+      "import_path": "images/artifacts__me-simple-2026-11-15__17-small-dark.png"
     },
     {
       "path": "artifacts/multi-google-clean-chat-2026-11-14/before/folded-chat-with-tools-and-metadata.png",
