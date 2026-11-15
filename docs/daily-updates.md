@@ -1,5 +1,77 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-16:start -->
+### 2026-11-16 — 당일 저장된 작업
+
+실제 정리: 01:54 KST. 새 저장 작업 33개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [2883998](https://github.com/sjfieni/donknow/commit/28839983fcfbdbb3c5ac47dc5ed2164e80349802) · 11-15 08:40 · Place keyboard dismissal by device and keep memo editing visible
+
+- [1a6dd56](https://github.com/sjfieni/donknow/commit/1a6dd569fac842bc0b0f1019d5e2ac38051d33bf) · 11-15 08:44 · Publish device-specific keyboard and memo visibility evidence
+
+- [1a4ad78](https://github.com/sjfieni/donknow/commit/1a4ad78a1428754bff1c6acb64d6e3ccbe7cc557) · 11-15 10:01 · Keep editor frames fixed and scroll inline controls into view
+
+- [3016af6](https://github.com/sjfieni/donknow/commit/3016af6363c339fa3f7a3026dfb7b28af77e01d1) · 11-15 10:05 · Publish fixed editor audit and inline scroll verification
+
+- [39205b0](https://github.com/sjfieni/donknow/commit/39205b0dbd0308daa746ca22c617b45e3bcaedac) · 11-15 10:47 · Add hourly assistant briefings, durable checklist and document lookup
+
+- [a089975](https://github.com/sjfieni/donknow/commit/a0899756a606d486b056876be5547f52205e1f50) · 11-15 10:51 · Bind searched documents to their selected account and filter stale alerts
+
+- [3db82c5](https://github.com/sjfieni/donknow/commit/3db82c58aea506023c0c1882f46df1377258d82e) · 11-15 10:56 · Publish assistant capability audit and briefing verification
+
+- [969f0eb](https://github.com/sjfieni/donknow/commit/969f0eb0380bc8d07174d20e384be0173cdfdaf4) · 11-15 13:08 · Dim and disable controls behind stacked modal surfaces
+
+- [ed7c401](https://github.com/sjfieni/donknow/commit/ed7c4016f0d3c1f8bb680358111f78609b526346) · 11-15 13:37 · Persist assistant conversations and verified memories with signed provider events
+
+- [15b0e67](https://github.com/sjfieni/donknow/commit/15b0e67efef88b2633b0b263cc58b7d4c2582ed6) · 11-15 13:42 · Publish assistant memory and provider setup handoff with UI verification
+
+- [24493e0](https://github.com/sjfieni/donknow/commit/24493e0d1f857122b1a78ee64f73db86dace7837) · 11-15 13:46 · Handle anonymous assistant status with the production libSQL driver
+
+- [5269fe0](https://github.com/sjfieni/donknow/commit/5269fe0dc0b51668c7bbe3c830f1c2f719864f32) · 11-15 13:50 · Refresh handoff after production libSQL compatibility verification
+
+- [8829518](https://github.com/sjfieni/donknow/commit/8829518bd28c14d3082c4b5ca27f70d2f113edf1) · 11-15 16:22 · Implement persistent assistant jobs, full source tools, computers and communication channels
+
+- [e8508ee](https://github.com/sjfieni/donknow/commit/e8508ee9ea9ab077aa16a5a6e15fb08f32e37329) · 11-15 16:28 · Publish full assistant capability guide, activation steps and verified UI evidence
+
+- [3536d56](https://github.com/sjfieni/donknow/commit/3536d56392afbf9202be297dbaac84227f214f53) · 11-15 16:35 · Correct public assistant guide links and current native build display
+
+- [4461282](https://github.com/sjfieni/donknow/commit/446128293939443d665cff2acb6d88e0b84d4bf0) · 11-15 17:49 · Record blocked native build request and verified build 36 upload
+
+- [606e53d](https://github.com/sjfieni/donknow/commit/606e53d712465af380216dbc053f70b7b54661a6) · 11-15 18:14 · Fix Swift shortcut import visibility and validate native module integration
+
+- [2a7c64d](https://github.com/sjfieni/donknow/commit/2a7c64d84fa3d4b1b8d44acab521e38c728b018e) · 11-15 18:43 · Gate shortcut APIs to iOS 18 and preflight Swift with Apple SDK
+
+- [076b2ba](https://github.com/sjfieni/donknow/commit/076b2bae4102d351ed1ef54e7beb4cde0cc49328) · 11-15 18:49 · Simplify ME into grouped settings rows and preserve detail flows
+
+- [ce1ba4b](https://github.com/sjfieni/donknow/commit/ce1ba4bf3b194088ca5d6413508eea4b228d0a63) · 11-15 20:03 · Repair chat keyboard visibility, AI loading behavior and ME settings flows
+
+- [9fb2019](https://github.com/sjfieni/donknow/commit/9fb20194ef089855dd3595037d0d19e57822e511) · 11-15 20:11 · Align demo chat guidance and preserve document output with one image rewrite pass
+
+- [b320c26](https://github.com/sjfieni/donknow/commit/b320c2607994cc6b8458c5a0b4bf66b79284f834) · 11-15 20:13 · Keep unread memory preferences unknown until their state is confirmed
+
+- [b732b8f](https://github.com/sjfieni/donknow/commit/b732b8f0f5c2c2b7adbdf59b697ffee5aaed24e6) · 11-15 21:31 · Restore saved calendars first and reduce connection database round trips
+
+- [59fe7e2](https://github.com/sjfieni/donknow/commit/59fe7e2b26e56ece16113dd3201334ba370f04af) · 11-15 21:35 · Refresh visible calendars and wake reads when Google connection changes
+
+- [d9410c0](https://github.com/sjfieni/donknow/commit/d9410c062ba159fb950196c638aa2bd8193db406) · 11-15 22:21 · Diagnose AI transport failures with a private-data-free model read probe
+
+- [43158ce](https://github.com/sjfieni/donknow/commit/43158ce83447e1613dbc9dec8048b4fb3ed3b3fc) · 11-15 22:24 · Distinguish model-list permission denial from inference transport failure
+
+- [72cd426](https://github.com/sjfieni/donknow/commit/72cd426563bf4100ca6fa3748223e2372126b44d) · 11-15 22:26 · Classify the observed AI quota response without logging provider details
+
+- [92c7e34](https://github.com/sjfieni/donknow/commit/92c7e341498ad674c00006c6e4b594f313b96409) · 11-15 23:03 · Add Things-style Todo agenda and source-aware edits with honest connection recovery
+
+- [8cf9d14](https://github.com/sjfieni/donknow/commit/8cf9d14e24bf5b49c662089d78c6fe71fa8c12d3) · 11-15 23:05 · Publish Things agenda verification and confirmed iPhone 41 status
+
+- [8d7545e](https://github.com/sjfieni/donknow/commit/8d7545e844751c45ef59a16732e4b539b9957372) · 11-16 00:44 · Apply Things and Pickle reference flows to inline Todo editing and ME navigation
+
+- [d47d246](https://github.com/sjfieni/donknow/commit/d47d24631cdd8fddac053a0ad39170bc67ff9c9c) · 11-16 00:47 · Dim unavailable selection actions and verify the zero-selection state
+
+- [df4edcb](https://github.com/sjfieni/donknow/commit/df4edcb9542dbacbc8511bf840249e90ac3b3a45) · 11-16 00:49 · Publish reference-flow screenshots and updated product design guide
+
+- [3ad93b5](https://github.com/sjfieni/donknow/commit/3ad93b577103bd23d8fe565213853900e1c3b36d) · 11-16 00:52 · Record verified reference-flow web deployment and successful source CI
+<!-- daily:2026-11-16:end -->
+
 ## 2026-11-15 — X 유지·위에 키보드 닫기·고정 편집창의 내부 스크롤
 
 [현재 계약](editor-viewport-2026-11-15.md) · [직접 조작 점검·10장](editor-viewport-qa-2026-11-15.md). 방금 첨부한 A2F8770D의4장을 기준으로 한다. **Duo 접힘/펼침은 X/뒤로가기 기능을 유지하고 그 위에 키보드 닫기를 별도 원으로 표시**한다. 같은 카메라 열 중심선, 최소44pt, 하드웨어를 피한 두 안전 슬롯을 사용한다. 부족하면64→44pt로 줄이며 탭/오늘/2주/스크롤바는 두 슬롯 아래 영역을 쓴다. 키보드 닫기와 X의 실제 콜백은 다르다. 일반 iPhone의 실제 키보드 위 완료는 유지한다. ‘X를 키보드로 대체’는 폐기한 해석이다.
