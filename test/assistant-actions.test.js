@@ -52,7 +52,7 @@ test('pasted sources require consent, stay ephemeral and produce drafts without 
   const integration=createIntegrations(h.store,env,()=>{throw Error('unexpected provider request');});
   const pasted='원문 전용 비공개 자료 '+ '내용'.repeat(4000);let calls=0;
   const assistant=createAssistant(h.store,integration,{AI_ENABLED:'true',OPENAI_API_KEY:'fixture',OPENAI_MODEL:'fixture'},async(url,options)=>{
-   calls++;const request=JSON.parse(options.body),input=JSON.parse(request.input);
+   calls++;const request=JSON.parse(options.body),input=JSON.parse(request.input[0].content);
    assert.equal(input.context.sources.find(s=>s.ref==='paste:input').text,pasted);
    return response({output_text:JSON.stringify({answer:'초안을 확인해주세요.',suggestions:[{operation:'todo.create',argsJson:JSON.stringify({title:'자료 검토',dueDate:null}),sourceRefs:['paste:input']}]})});
   });
@@ -66,5 +66,5 @@ test('pasted sources require consent, stay ephemeral and produce drafts without 
 });
 
 test('read-only Naver policy removes every Naver write from AI and manual catalogs without removing other providers',async()=>{
- const h=await setup();try{const integration=createIntegrations(h.store,env,()=>{throw Error('No provider call expected');});let readOnly=false;integration.naver={status:()=>({readOnly,sendAvailable:false})};const a=createAssistant(h.store,integration);assert.ok(a.status(null).actions.some(x=>x.operation==='naver.markRead'));readOnly=true;const actions=a.status(null).actions;assert.ok(!actions.some(x=>x.provider==='naver'));assert.ok(actions.some(x=>x.operation==='gmail.send'));assert.ok(actions.some(x=>x.operation==='notion.create'));}finally{await h.close();}
+ const h=await setup();try{const integration=createIntegrations(h.store,env,()=>{throw Error('No provider call expected');});let readOnly=false;integration.naver={status:()=>({readOnly,sendAvailable:false})};const a=createAssistant(h.store,integration);assert.ok(a.status(null).availableActions.some(x=>x.operation==='naver.markRead'));readOnly=true;const actions=a.status(null).availableActions;assert.ok(!actions.some(x=>x.provider==='naver'));assert.ok(actions.some(x=>x.operation==='gmail.send'));assert.ok(actions.some(x=>x.operation==='notion.create'));}finally{await h.close();}
 });

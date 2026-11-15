@@ -1,3 +1,4 @@
+import {readNotionDocument} from './notion-document.js';
 import {googleAccounts,googleConnection} from './google-accounts.js';
 import {createCalendarWorkspace} from './calendar-workspace.js';
 import {createNaverMail} from './naver-mail.js';
@@ -160,11 +161,27 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     naver,
     async inspect(user,operation,args){return operation.startsWith('naver.')?naver.inspect(user,operation,args):createProviderActions({store,token,request:providerRequest}).inspect(user,operation,args);},
     async execute(user,operation,args,preview,actionId){return operation.startsWith('naver.')?naver.execute(user,operation,args,preview,actionId):createProviderActions({store,token,request:providerRequest}).execute(user,operation,args,preview,actionId);},
+    async searchDocuments(userId,provider,query,connectionId){
+      if(!['google','notion'].includes(provider)||typeof query!=='string'||!query.trim()||query.length>120)throw fail(400,'문서 검색어를 확인해주세요.');
+      const record=await token(userId,provider,connectionId),headers={Authorization:'Bearer '+record.accessToken};let value,items;
+      if(provider==='notion'){
+        if(!record.features.includes('pages'))throw fail(403,'Notion 읽기 권한이 필요해요.');
+        value=await providerRequest('https://api.notion.com/v1/search',{method:'POST',headers:{...headers,'Notion-Version':'2025-09-03','Content-Type':'application/json'},body:JSON.stringify({query:query.trim(),page_size:10,filter:{value:'page',property:'object'}})});
+        items=(value.results??[]).map(page=>({id:(record.connectionId??'legacy')+':page:'+page.id,title:Object.values(page.properties??{}).filter(p=>p.type==='title').flatMap(p=>p.title??[]).map(t=>t.plain_text??t.text?.content??'').join('')||'Notion 문서',url:page.url}));
+      }else{
+        if(!record.features.includes('drive'))throw fail(403,'Drive 목록 읽기 권한이 필요해요.');
+        const escaped=query.trim().replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        value=await providerRequest('https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q:"trashed=false and (name contains '"+escaped+"')",pageSize:'10',fields:'nextPageToken,files(id,name,webViewLink)',orderBy:'modifiedTime desc'}),{headers});
+        items=(value.files??[]).map(file=>({id:(record.connectionId??'legacy')+':drive:'+file.id,title:file.name,url:file.webViewLink}));
+      }
+      if(store.connection(userId,provider,record.connectionId)?.connectionId!==record.connectionId)throw fail(409,'연결이 바뀌었어요.');
+      return {items,partial:!!(value.has_more||value.nextPageToken),canReadBody:provider==='notion'||record.features.includes('driveContent')};
+    },
     async readSource(userId,provider,id) {
       const selected=provider==='google'?googleAccounts(store,userId).find(r=>id.startsWith((r.connectionId??'legacy')+':')):null;const record=await token(userId,provider,selected?.connectionId);const prefix=(record.connectionId??'legacy')+':';if(!id.startsWith(prefix))throw fail(409,'연결한 계정이 바뀌었어요.');const source=id.slice(prefix.length);const headers={Authorization:'Bearer '+record.accessToken};let result;
-      if(provider==='google'&&source.startsWith('gmail:')&&record.features.includes('gmail')){const v=await providerRequest('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encodeURIComponent(source.slice(6))+'?format=full',{headers});result={text:mailText(v),title:v.payload?.headers?.find(h=>h.name.toLowerCase()==='subject')?.value??'메일',id:source.slice(6)};}
+      if(provider==='google'&&source.startsWith('gmail:')&&record.features.includes('gmail')){const v=await providerRequest('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encodeURIComponent(source.slice(6))+'?format=full',{headers});const recipients=(v.payload?.headers??[]).filter(h=>['to','cc'].includes(h.name.toLowerCase())).map(h=>h.value).join(', ').slice(0,1000);result={text:mailText(v),recipients,title:v.payload?.headers?.find(h=>h.name.toLowerCase()==='subject')?.value??'메일',id:source.slice(6)};}
       else if(provider==='google'&&source.startsWith('drive:')&&record.features.includes('driveContent')){const file=await providerRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(source.slice(6))+'?fields=id,name,description,mimeType',{headers});let text=file.description??'';if(['text/plain','application/vnd.google-apps.document'].includes(file.mimeType)){const path=file.mimeType==='text/plain'?'/'+encodeURIComponent(source.slice(6))+'?alt=media':'/'+encodeURIComponent(source.slice(6))+'/export?mimeType=text%2Fplain';const response=await fetcher('https://www.googleapis.com/drive/v3/files'+path,{headers,signal:AbortSignal.timeout(10000)});if(!response.ok)throw fail(502,'파일 본문을 읽지 못했어요.');const reader=response.body.getReader();const chunks=[];let size=0;try{while(size<32000){const part=await reader.read();if(part.done)break;chunks.push(Buffer.from(part.value).subarray(0,32000-size));size+=part.value.length;}}finally{await reader.cancel();}text=Buffer.concat(chunks).toString('utf8');}result={id:source.slice(6),title:file.name,text:text.slice(0,8000),partial:true,notice:'일반 텍스트·Google 문서는 본문 일부, 다른 파일은 설명만 조회해요.'};}
-      else if(provider==='notion'&&source.startsWith('page:')&&record.features.includes('pages')){const v=await providerRequest('https://api.notion.com/v1/blocks/'+encodeURIComponent(source.slice(5))+'/children?page_size=50',{headers:{...headers,'Notion-Version':'2025-09-03'}});result={id:source.slice(5),text:(v.results??[]).map(b=>(b[b.type]?.rich_text??[]).map(t=>t.plain_text??t.text?.content??'').join('')).join('\n').slice(0,8000),partial:!!v.has_more};}
+      else if(provider==='notion'&&source.startsWith('page:')&&record.features.includes('pages')){result=await readNotionDocument((block,cursor)=>providerRequest('https://api.notion.com/v1/blocks/'+encodeURIComponent(block)+'/children?'+new URLSearchParams({page_size:'50',...(cursor?{start_cursor:cursor}:{})}),{headers:{...headers,'Notion-Version':'2025-09-03'}}),source.slice(5));}
       else throw fail(400,'이 자료의 상세 읽기는 지원되지 않거나 추가 권한이 필요해요.');
       if(store.connection(userId,provider,record.connectionId)?.connectionId!==record.connectionId)throw fail(409,'연결한 계정이 바뀌었어요.');return result;
     },

@@ -83,7 +83,7 @@ test('Google Tasks opt-in and writes remain per account, including the same remo
 });
 test('scheduled personalized briefings bind consent and request preferences; a newly added account cannot silently broaden a schedule',async()=>{
  const h=await fixture();try{
-  await h.add('one');let models=0,lastInput;const assistant=createAssistant(h.store,h.integrations,env,async(_url,o)=>{models++;lastInput=JSON.parse(JSON.parse(o.body).input);return json({output_text:JSON.stringify({answer:'회의 준비부터 해보세요.',suggestions:[]})});});
+  await h.add('one');let models=0,lastInput;const assistant=createAssistant(h.store,h.integrations,env,async(_url,o)=>{models++;lastInput=JSON.parse(JSON.parse(o.body).input[0].content);return json({output_text:JSON.stringify({answer:'회의 준비부터 해보세요.',suggestions:[]})});});
   const now=Date.parse('2026-11-14T23:00:00Z'),config={enabled:true,time:'08:00',timezone:'Asia/Seoul',city:null,providers:['google'],aiConsent:true,instructions:'회의 준비 위주로 알려줘'};
   h.store.configureAutomation(h.user,'briefing',config,now-60000,assistant.status(h.user).consentScopes);await h.add('two');await createAutomations(h.store,assistant,async()=>null,{now:()=>now}).tick();assert.equal(models,0);assert.match(h.store.assistantMessages(h.user)[0].warnings.join(' '),/다시 동의/);
   const next=now+86400000;h.store.configureAutomation(h.user,'briefing',config,next-60000,assistant.status(h.user).consentScopes);await createAutomations(h.store,assistant,async()=>null,{now:()=>next}).tick();assert.equal(models,1);assert.match(lastInput.request,/회의 준비 위주/);assert.match(lastInput.request,/최대4~6개/);assert.equal(h.store.assistantMessages(h.user).length,2);

@@ -9,10 +9,11 @@ test('online backup restores account and todos; checksum, key and target safety 
  const root = await mkdtemp(join(tmpdir(), 'duckduck-backup-test-')); let source, restored;
  try {
   source = await openStore(join(root, 'data')); const account = await source.register('backup@example.test', 'fixture-password-123'); source.create(account.user.id, { title: '보존할 할 일', dueDate: null, category: '일상' });
+  source.configureAutomation(account.user.id,'briefing',{enabled:true,time:'09:00',timezone:'Asia/Seoul',providers:[],aiConsent:true,urgentAlerts:true});
   const result = await createBackup({ dataDirectory: join(root, 'data'), backupDirectory: join(root, 'backups') }); assert.equal(result.uploadFailed, false);
   source.create(account.user.id, { title: '백업 뒤에 추가한 일', dueDate: null, category: '일상' });
   const target = join(root, 'restored'); await restoreBackup({ file: result.path, targetDirectory: target, tokenKeyFile: join(root, 'data', '.token-key') });
-  restored = await openStore(target); const login = await restored.login('backup@example.test', 'fixture-password-123'); assert.equal(restored.list(login.user.id).length, 1); assert.equal(restored.list(login.user.id)[0].title, '보존할 할 일');
+  restored = await openStore(target); const login = await restored.login('backup@example.test', 'fixture-password-123'); assert.equal(restored.list(login.user.id).length, 1); assert.equal(restored.list(login.user.id)[0].title, '보존할 할 일');assert.equal(restored.automationSettings(login.user.id).find(v=>v.kind==='briefing').enabled,false,'restoring data must not restart recurring AI or urgent monitoring');
   await assert.rejects(restoreBackup({ file: result.path, targetDirectory: target, tokenKeyFile: join(root, 'data', '.token-key') }));
   await writeFile(join(root, 'wrong-key'), Buffer.alloc(32, 1)); await assert.rejects(restoreBackup({ file: result.path, targetDirectory: join(root, 'wrong-key-target'), tokenKeyFile: join(root, 'wrong-key') }));
   const original = await readFile(result.path); const tampered = Buffer.from(original); tampered[tampered.length - 1] ^= 1; await writeFile(result.path, tampered);

@@ -44,9 +44,11 @@ Google 자료의 동의 지문은 연결된 모든 Google 계정 ID/외부 계�
 
 예약 저장 시 서버가 현재 범위를 기록한다. 연결 변경 후 이전 범위의 예약은 외부 자료를 AI에 보내지 않고 Todo 기반 안내와 재동의 안내로 대체한다. 범위가 없던 구 예약도 Google 계정이 여러 개면 자동 확대하지 않는다. 예약 화면에서 다시 동의하고 저장해야 한다. 사용자 대신 예약을 켜거나 AI 과금을 실행하지 않았다.
 
-## ‘Dots’는 대화 맥락의 Pulse형 브리핑
+## 이전 Dots 해석 — 2026-11-15 정정됨
 
-사용자가 앞서 ‘ChatGPT처럼 먼저 보내달라’고 한 맥락으로, [ChatGPT Pulse 공식 소개](https://openai.com/index/introducing-chatgpt-pulse/)의 선제적 맞춤 브리핑을 뜻하는 것으로 이해했다. 현재의 [예약 작업 공식 안내](https://developers.openai.com/training/walkthroughs/scheduled-tasks)도 확인했다. 서비스 이름/현재 제공 여부를 추정해 덕에 ChatGPT 기능을 직접 연결했다고 말하지 않는다.
+**아래는 당시의 잘못된 해석이다. [정정과 현재 계약](assistant-briefing-2026-11-15.md)이 우선한다. Dots는 지속적 개인 에이전트이고 Pulse와 다르다.**
+
+당시 사용자가 앞서 ‘ChatGPT처럼 먼저 보내달라’고 한 맥락으로, [ChatGPT Pulse 공식 소개](https://openai.com/index/introducing-chatgpt-pulse/)의 선제적 맞춤 브리핑을 뜻하는 것으로 이해했다. 현재의 [예약 작업 공식 안내](https://developers.openai.com/training/walkthroughs/scheduled-tasks)도 확인했다. 서비스 이름/현재 제공 여부를 추정해 덕에 ChatGPT 기능을 직접 연결했다고 말하지 않는다.
 
 덕의 기존 매일 시간·시간대·도시·자료·반복 AI 동의·서버 메시지 보관/푸시 기반에 다음을 추가했다.
 
