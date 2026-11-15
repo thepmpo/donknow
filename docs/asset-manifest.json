@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-15",
-  "codeCommit": "28839983fcfbdbb3c5ac47dc5ed2164e80349802",
-  "assetCommit": "28839983fcfbdbb3c5ac47dc5ed2164e80349802",
-  "imageCount": 906,
+  "codeCommit": "1a4ad78a1428754bff1c6acb64d6e3ccbe7cc557",
+  "assetCommit": "1a4ad78a1428754bff1c6acb64d6e3ccbe7cc557",
+  "imageCount": 916,
   "images": [
     {
       "path": "artifacts/mobile-todos.png",
@@ -4518,6 +4518,76 @@
       "bytes": 33168,
       "sha256": "76d53c85a73e29482d4eb5ba2e72abc276e5f8b52e9333727908f35439a204ed",
       "import_path": "images/artifacts__duo-vertical-navigation-2026-11-13__8-duck-open-demo-fixture.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/01-folded-fixed-sheet-writing.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 16483,
+      "sha256": "08704515ee39f668f259ac142395ee16a6533ac9fd337b60de9fc1bb9316b090",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__01-folded-fixed-sheet-writing.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/01-folded-inline-date.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 18221,
+      "sha256": "e754d9f67b924027248708d2b7e8f474b78fe9afb8f4854b354ad0486e7fbc26",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__01-folded-inline-date.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/02-phone-fixed-sheet-writing.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 14670,
+      "sha256": "1b9296d0211eeec45d9402f84d5fbb0c681555ea5be0f3eb3b37df6717d2001c",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__02-phone-fixed-sheet-writing.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/02-phone-inline-date.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 29380,
+      "sha256": "f2746d0c16bcc7f89ca4d4f2e9672d333528f928cf0b6eb7008219622c1c7e0a",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__02-phone-inline-date.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/03-open-landscape-fixed-sheet-writing.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 18515,
+      "sha256": "9a7f4283a9e532dc49bfbcf554d5c7ec81b7e639d0486d632b2093d332e15bbc",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__03-open-landscape-fixed-sheet-writing.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/03-open-landscape-inline-date.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 24944,
+      "sha256": "baa838a7b6555e52318a7e226d30d3594f1c1ef5251d6f8c296fbb670b1b7a30",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__03-open-landscape-inline-date.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/04-open-portrait-fixed-sheet-writing.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 21296,
+      "sha256": "6b58dc43cf2c30f1c68b1bb4980407665e7e668cab7572186618a0d5696a83d2",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__04-open-portrait-fixed-sheet-writing.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/04-open-portrait-inline-date.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 41239,
+      "sha256": "d1fb55e0f6df5e945d7e90d375b527824a69a59448af6bcc614eafdcf671081a",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__04-open-portrait-inline-date.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/05-simple-reminder-options.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 35385,
+      "sha256": "cc6d5d990cf9ff92408f5465dab2a74f35f0e43cfd5ca387c093eaf09fe8e6e7",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__05-simple-reminder-options.png"
+    },
+    {
+      "path": "artifacts/editor-viewport-2026-11-15/current/06-camera-column-alignment.png",
+      "category": "고정 편집창/내부 scroll reveal·X 위 별도 키보드·간결한 알림 · Expo/합성 API·Duo 기하 · native 아님",
+      "bytes": 39611,
+      "sha256": "66bbb91975b9c4f751a572db7fa6be848dbcba2ca4ba0d6a943c86655eda2258",
+      "import_path": "images/artifacts__editor-viewport-2026-11-15__current__06-camera-column-alignment.png"
     },
     {
       "path": "artifacts/features-overview.png",
