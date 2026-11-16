@@ -20,3 +20,33 @@
 검사 스크립트: mobile/e2e/startup-session.mjs, mobile/e2e/session-isolation.mjs, mobile/e2e/reference-flows.mjs, test/plans.test.js, 기존 ai-budget 검증. 캡처는 artifacts/startup-session-2026-11-16/에 있다. 세션 보류/늦은401/이전 계정 응답이 새 계정을 바꾸지 않는 검사도 통과했다.
 
 게시 전 상태: 전체 테스트406통과·실패0/기존조건부1skip, 문법105개, 모바일 타입, 실제 Expo 웹 빌드와 위 브라우저 흐름을 확인했다. 최종 CI/배포는 완료 후 별도 기록한다. 이번 수정에서 새 TestFlight/서명/Apple 업로드를 실행하지 않으며 기존 설치본이 자동으로 바뀌었다고 보고하지 않는다.
+
+## 최종 CI·웹 게시
+
+[PR2](https://github.com/thepmpo/donknow/pull/2)를 병합했다. [CI43790355466](https://github.com/thepmpo/donknow/actions/runs/43790355466)은 총408개 중406통과·실패0·기존조건부2skip, 소개 빌드/packaging4개·타입·native 설정 검사·iOS JavaScript export가 모두 성공했다. Apple 서명/IPA/업로드를 뜻하지 않는다.
+
+기존 무료 Render·자동 배포off를 확인하고 수동 deploy dep-dbt6c56c6qcc73as1sig를 한 번 실행했다. 게시 소스774db980ac0a81030614b36b481dcf0568dc32e6, 2026-11-16 11:11:29 KST에 live다. Docker build와 port10000 listening/service live 로그를 확인했다. 프로 권한은 DB 입금 조작 없이 서버 정책으로 기존·신규 계정 전체에 적용된다. 별도 원본 쓰기/결제/모델 비용 집행은 실행하지 않았다. 공개 주소 직접 읽기는 이 환경에서403으로 완료하지 못했으므로 배포 뒤 본문/실계정 재접속까지 검수했다고 보고하지 않는다.
+
+아래는 이번 실행에서 확인한 화면이다. 합성 계정/API의 실제 Expo 웹이며 실제 iPhone/Duo 캡처가 아니다.
+
+### 1. 기존 지연 중 로그인 — 문제 재현
+
+![세션을 아직 확인하지 않았는데 보이던 로그인](../artifacts/startup-session-2026-11-16/01-before-session.png)
+
+### 2. 수정 후 세션 확인 — 정상, 화면·내비게이션 자리 유지
+
+![세션 확인 중 로그인 양식 없이 고정 탭 유지](../artifacts/startup-session-2026-11-16/03-restoring.png)
+
+### 3. 직접 작성 우선 — 정상, 원래 목록의 행 이동
+
+![직접 작성이 맨 위인 출처별 Todo](../artifacts/startup-session-2026-11-16/04-manual-first.png)
+
+### 4. 현재 프로 — 정상, 자동 결제 없음
+
+![현재 무료 제공 중인 프로 계정](../artifacts/startup-session-2026-11-16/06-account-pro.png)
+
+### 5. 접속 실패 — 정상 복구 경로, 로그인으로 오인하지 않음
+
+![기존 연결을 유지한 다시 확인 화면](../artifacts/startup-session-2026-11-16/07-connection-retry.png)
+
+페이지 확대 제거·키보드/터치·보조기술의 모든 실제 기기 조작이나 Things와 동일한 체감을 스크린샷만으로 보증하지 않는다. 웹에서는 DOM 역할/disabled 탭·실제 위치 보간·초안 유지·동작 줄이기 및 기존 분할 기하를 추가 확인했다. 전체 대비/VoiceOver/physical Duo 검수는 별도다.
