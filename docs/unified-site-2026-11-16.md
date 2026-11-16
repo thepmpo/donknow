@@ -11,3 +11,11 @@ Docker는 소개 빌드와 기존 Expo 웹을 같은 무료 서비스에서 제�
 이후 로컬 저장 공간 부족과 실행 환경 연결 중단으로 전체 Docker smoke와 전체 테스트를 마무리하지 못했다. 캡처와 일부 미커밋 파일은 /workspace의 원본에 있으며 현재 접근 불가라 원격에 업로드했다고 보고하지 않는다. 연결된 GitHub를 통해 같은 구현을 보존한 PR에서 CI로 다시 검증한 뒤 기존 Render에 반영한다. 실제 결과는 최종 기록으로 구분한다. 01:00Z 고정 fixture 시각과 실제 시각이 달라 웹훅 재시도 검사가 흔들리는 문제는 Date만 fixture 시각으로 고정하고, 실제 자식 HTTP 서버의 서명에는 실제 시각을 쓰도록 바로잡았다. 검증 assertion은 줄이지 않는다.
 
 소개 화면의 참고 영상/라이선스 표기와 합성 제품 시연 구분은 유지한다. 새 유료 자원·결제·native 빌드·원본 쓰기를 활성화하지 않는다.
+
+## 실제 원격 검증·게시 결과
+
+- PR https://github.com/thepmpo/donknow/pull/1 는 2026-11-16 10:39 KST에 병합했다. 게시 소스는 `233bdb4e62617a17ddc7b84b6147e3e04cceaaf1`이다.
+- CI https://github.com/thepmpo/donknow/actions/runs/43787352935 에서 root check, 테스트405통과/실패0/기존조건부2skip, 소개 build, Sites packaging4통과, mobile typecheck/check:native/iOS JavaScript export가 모두 통과했다. 이는 Apple 서명·업로드나 새 native 빌드 실행을 뜻하지 않는다. 기존 interaction script의 버튼/QR 링크 기대값도 새 진입 구조에 맞췄으나 환경 연결 중단 이후 그 전체 영상 시나리오를 다시 실행하지는 못했다.
+- 기존 무료 Render의 자동 배포 off 상태를 확인하고 수동 deploy `dep-dbt5tmec6qcc73aqtt70`를 한 번 실행했다. Docker build가 성공했고, 2026-11-16 10:41:03 KST에 위 source SHA로 `live`가 됐다. 실제 앱 로그의 port10000 listening과 service live도 확인했다. 새 유료 리소스·결제·native 배포는 실행하지 않았다.
+- 공개 대표 https://duckduck-test.onrender.com/ 는 소개+#pricing, 앱 진입은 같은 탭 /app, 과거 /pricing은 /#pricing redirect다. 브라우저 로컬 검증과 서버 경로 테스트의 결과를 배포 후 실계정 검증처럼 보고하지 않는다. 공개 사이트 직접 읽기는 웹 도구가 “not accessible via this tool”로 응답하여 이 환경에서 게시 후 본문/실기기 재접속 검사는 완료하지 못했다.
+- 실행 환경 연결이 복구되지 않아 build-handoff 생성기 재실행과 로컬 캡처5장 업로드, 전체 컨테이너 smoke는 여전히 미완료다. 기존 handoff 산출물의 생성 시각/빌드 SHA를 임의로 바꾸지 않는다. 최신 게시/검증 결과는 이 기록을 정본으로 남긴다.
