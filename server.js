@@ -57,7 +57,7 @@ const server = http.createServer(async (req, res) => {
     if (await features.webhook(req,path,(status,data)=>{if(path==='/api/webhooks/sms'&&status===200){res.writeHead(200,{'Content-Type':'text/xml','Cache-Control':'no-store'});res.end('<Response/>');}else send(status,data);})) return;
     if(['/agent-call','/agent-call.js'].includes(path)&&req.method==='GET'){const js=path.endsWith('.js'),content=await readFile(root+'server/agent-call'+(js?'.js':'.html'));res.writeHead(200,{'Content-Type':js?'application/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','Permissions-Policy':'microphone=(self), camera=()','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; media-src blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"});res.end(content);return;}
     if (await features.callback(req, res, path, url)) return;
-    const servicePages = { '/privacy': 'privacy.html', '/privacy/': 'privacy.html', '/support': 'support.html', '/support/': 'support.html' };
+    const servicePages = { '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html', '/support': 'support.html', '/support/': 'support.html' };
     if (Object.hasOwn(servicePages, path)) {
       if (!['GET', 'HEAD'].includes(req.method)) return send(405, { error: '이 안내는 조회만 할 수 있어요.' }, { Allow: 'GET, HEAD' });
       const content = await readFile(root + 'public/' + servicePages[path]);

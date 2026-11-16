@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "public GET/HEAD + read-only methods",
+    "price/launch state",
+    "semantic comparison table",
+    "keyboard FAQ",
+    "functional anchors and app/support/privacy links",
+    "responsive 320/390/768/1440 + internal horizontal scroll",
+    "no API/payment/model request"
+  ],
+  "errors": [],
+  "captures": 5,
+  "fixture": "actual server/static HTML, isolated SQLite; not real billing or native iPhone"
+}
