@@ -25,3 +25,9 @@ Pro27,900원·월 사용자별 AI원가 최대4,000원 정책과 사전 예약 �
 ## 후속 검수
 
 Google Calendar가 실제로 반환하는 www.google.com/calendar/event 링크만 추가 허용하고 같은 호스트의 일반 redirect URL은 거부하는 검사를 추가했다. 전체406개 중405통과/실패0/기존 선택1제외다. 공개 문서 생성은 이미지를 한 번에 치환하도록 줄였으며 기존 산출물5종의 SHA-256이 전부 같음을 확인했다. 후속 소스/문서는 같은 무료 서비스에 반영하며, 실행 상태는 [Render 배포 목록](https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0)을 따른다.
+
+## 최종 반영 확인 — 2026-11-16 00:06 UTC
+
+최종 앱/공개 문서 소스 c50845e25af3e3b44a92c7a65bcae17d51899332. [GitHub 검사43778265351](https://github.com/thepmpo/donknow/actions/runs/43778265351)는 success다. Render 최종 dep-dbt4hh9srm7s73a73hig는 해당 소스를00:05:25 UTC에 시작해00:06:16 UTC에 live로 반영했다. 새 인스턴스 fp6sb의 port10000 시작 및 live 로그를 확인했다. 직접 운영HTTP 본문 검증의 접근 제한은 앞 절과 같고 정상 AI/실계정 확인으로 대체하지 않는다.
+
+이 마지막 기록만 추가한 문서 commit은 앱 코드를 바꾸거나 새 native를 실행하지 않는다. 새 TestFlight는 여전히 시작되지 않았고, 사용자가 최신main의 Run workflow를 눌러야 한다. iPhone42에는 이번 수정이 없으며 빌드 번호를 임의로43 성공으로 표시하지 않는다.
