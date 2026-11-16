@@ -1,16 +1,12 @@
 import {Platform} from 'react-native';
 import type {Todo} from './domain';
-import {appleSourcePlan} from './apple-source-plan';
+import {applyAppleSource} from './apple-source-apply';
 export async function updateAppleSource(todo:Todo,request:(path:string,method?:string,body?:unknown)=>Promise<unknown>,current:()=>boolean):Promise<Todo>{
  if(todo.source?.provider!=='apple-reminders'||!todo.sourceSync?.patch)return todo;
- let state:'succeeded'|'failed'|'unknown'|'device-required'=Platform.OS==='ios'?'failed':'device-required',modifiedAt:string|undefined,attempted=false;
+ let result:{state:'succeeded'|'failed'|'unknown'|'device-required';modifiedAt?:string}={state:'device-required'};
  try{if(Platform.OS==='ios'){
-  const Calendar=await import('expo-calendar');let permission=await Calendar.getRemindersPermissions();if(!permission.granted)permission=await Calendar.requestRemindersPermissions();if(!current())return todo;if(!permission.granted)throw Error('permission');
-  const source=await Calendar.ExpoCalendarReminder.get(todo.source.externalId);if(!current())return todo;
-  const {fields,same}=appleSourcePlan(todo,source);
-  if(!same){if(!current())return todo;attempted=true;await source.update(fields as Parameters<typeof source.update>[0]);}
-  if(!current())return todo;const latest=await Calendar.ExpoCalendarReminder.get(todo.source.externalId);if(!current())return todo;modifiedAt=latest.lastModifiedDate?new Date(latest.lastModifiedDate).toISOString():undefined;state='succeeded';
- }}catch{state=attempted?'unknown':'failed';}
+  const Calendar=await import('expo-calendar');const value=await applyAppleSource(todo,{authorize:async()=>{let permission=await Calendar.getRemindersPermissions();if(!permission.granted)permission=await Calendar.requestRemindersPermissions();return permission.granted;},read:async id=>{const source=await Calendar.ExpoCalendarReminder.get(id);return {title:source.title,notes:source.notes,dueDate:source.dueDate,startDate:source.startDate,allDay:source.allDay,completed:source.completed,lastModifiedDate:source.lastModifiedDate,update:fields=>source.update(fields as Parameters<typeof source.update>[0])};}},current);if(!value)return todo;result=value;
+ }}catch{result={state:'failed'};}
  if(!current())return todo;
- try{return await request('/api/todos/'+todo.id+'/source-result','POST',{revision:todo.sourceSync.revision,state,modifiedAt}) as Todo;}catch{return {...todo,sourceSync:{...todo.sourceSync,state:attempted?'unknown':state}};}
+ try{return await request('/api/todos/'+todo.id+'/source-result','POST',{revision:todo.sourceSync.revision,...result}) as Todo;}catch{return {...todo,sourceSync:{...todo.sourceSync,state:result.state==='succeeded'?'unknown':result.state}};}
 }

@@ -2,6 +2,7 @@ import {Linking,Text,View} from 'react-native';
 import {colors} from './theme';
 import React,{useEffect,useRef,useState} from 'react';
 import {AssistantChecklist} from './AssistantChecklist';
+import {updateAppleSource} from './apple-source-edit';
 import {parseTodos} from './domain';
 import type {Todo} from './domain';
 import type {BriefingItem} from './useAutomations';
@@ -25,7 +26,8 @@ export function BriefingChecklist({store,messageId,item,number,onOpenTodos,onOpe
   if(working.current)return;working.current=true;const captured=identity;setState(old=>({...old,busy:true,error:''}));
   try{
    const result=await request(action,proposal?.args) as {todoId:string|null;excluded:boolean;todo:Todo|null};
-   const todo=result.todo?parseTodos([result.todo])[0]:undefined;
+   let todo=result.todo?parseTodos([result.todo])[0]:undefined;
+   if(todo?.source?.provider==='apple-reminders'&&todo.sourceSync?.state==='device-required')todo=await updateAppleSource(todo,store.featureRequest,()=>mounted.current&&owner.current===captured&&store.isCurrentSession());
    if(!mounted.current||owner.current!==captured)return;
    setState(old=>({...old,todoId:result.todoId??undefined,excluded:result.excluded,todo,busy:false,error:''}));assistantUpdated({owner:identity});
    if(action==='complete'||action==='todo')void store.refresh();

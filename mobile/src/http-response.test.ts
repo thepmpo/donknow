@@ -37,3 +37,5 @@ test('assistant settings reads can recover, while authorization and every write 
 
 
 test('a valid error response retains HTTP status for recovery without treating it as lost authentication',async()=>{await assert.rejects(readJsonResponse(new Response(JSON.stringify({error:'자료 연결이 바뀌었어요.'}),{status:409})),e=>e instanceof Error&&'status' in e&&e.status===409&&e.message==='자료 연결이 바뀌었어요.');});
+
+test('integration imports, authorization and diagnostics wait for readiness but never become retryable writes',async()=>{const {connectionWrite}=await import('./http-response.ts');for(const path of ['/api/todos/11111111-1111-4111-8111-111111111111','/api/integrations/apple-reminders/import','/api/integrations/google/authorize','/api/integrations/slack/diagnose','/api/integrations/google/task-sync/pull']){assert.equal(connectionWrite(path,'POST'),true);assert.equal(connectionRead(path,'POST'),false);}assert.equal(connectionWrite('/api/integrations/google/authorize-untrusted','POST'),false);});

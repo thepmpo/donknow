@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import {readJsonResponse,InvalidJsonResponseError,connectionRead,cancelledTransport} from './http-response';
+import {readJsonResponse,InvalidJsonResponseError,connectionRead,connectionWrite,cancelledTransport} from './http-response';
 import * as SecureStore from 'expo-secure-store';
 import {createServerReadiness} from './server-readiness';
 const readiness=createServerReadiness({probe:async base=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(base+'/api/health',{signal:controller.signal});const data=await readJsonResponse(response) as {ok?:boolean};if(data?.ok!==true)throw new InvalidJsonResponseError(response.status);}finally{clearTimeout(timer);}}});
@@ -10,11 +10,11 @@ export async function request(baseUrl: string, path: string, method = 'GET', bod
   // Capture this session before a potentially long health wait; never send an old draft with a new login.
   const token = Platform.OS === 'web' ? null : await SecureStore.getItemAsync(storageKey(baseUrl));
   // A cold-start 503 must be handled before the write is sent. Never replay its POST/PATCH.
-  if(Platform.OS==='ios'&&method!=='GET'&&/^\/api\/(?:assistant\/(?:chat|actions)|calendar\/event-details)(?:\/|$)/.test(path))await readiness.wait(baseUrl).catch(error=>{
+  if(Platform.OS==='ios'&&method!=='GET'&&(/^\/api\/(?:assistant\/(?:chat|actions)|calendar\/event-details)(?:\/|$)/.test(path)||connectionWrite(path,method)))await readiness.wait(baseUrl).catch(error=>{
     if(error instanceof Error&&(error.name==='AbortError'||error instanceof TypeError||/network request failed|failed to fetch|load failed/i.test(error.message)))throw new Error('서버 연결을 준비하지 못했어요. 작성한 내용은 유지했어요. 잠시 뒤 다시 시도해주세요.');
     throw error;
   });
-  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), connectionRead(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||/^\/api\/todos\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?$/.test(path)||/^\/api\/(?:assistant\/(?:chat|context|actions)|calendar\/event-details)(?:\/|$)/.test(path)?60000:15000);
+  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), connectionRead(path,method)||connectionWrite(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||/^\/api\/todos\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?$/.test(path)||/^\/api\/(?:assistant\/(?:chat|context|actions)|calendar\/event-details)(?:\/|$)/.test(path)?60000:15000);
   try {
     const fetchResponse = () => fetch(baseUrl + path, { method, credentials: 'include', signal: controller.signal,
       headers: { 'Content-Type': 'application/json', 'X-Duckduck-Client': Platform.OS === 'web' ? 'web' : 'native', ...(token ? { Authorization: 'Bearer ' + token } : {}) },

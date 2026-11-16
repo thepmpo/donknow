@@ -26,15 +26,17 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     let origin; try { const url = new URL(env.PUBLIC_ORIGIN); const local = env.NODE_ENV !== 'production' && ['localhost', '127.0.0.1'].includes(url.hostname); if ((url.protocol !== 'https:' && !(local && url.protocol === 'http:')) || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error(); origin = url.origin; } catch {}
     return { ...definition, clientId, clientSecret, origin, configured: !!(clientId && (clientSecret || (provider === 'notion' && env.NOTION_BASIC_AUTH)) && origin), basicAuth: provider === 'notion' ? env.NOTION_BASIC_AUTH : null, callback: origin ? `${origin}/api/integrations/${provider}/callback` : null };
   }
+  function reportFailure(url,status,kind,method){if(env.NODE_ENV!=='production')return;const host=new URL(url).hostname,provider=host==='slack.com'?'slack':host==='api.notion.com'?'notion':host.endsWith('googleapis.com')?'google':'external';console.warn(JSON.stringify({event:'integration-request-failure',provider,status,kind,method}));}
   async function providerRequest(url, options = {}, slack = false) {
     let response;const safeRead=(options.method??'GET')==='GET';
     for(let attempt=0;attempt<(safeRead?2:1);attempt++){
-      try{response=await fetcher(url,{...options,signal:AbortSignal.timeout(10000)});}catch{if(safeRead&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue;}throw fail(502,'외부 서비스 연결이 늦어요. 다시 시도해주세요.');}
+      try{response=await fetcher(url,{...options,signal:AbortSignal.timeout(10000)});}catch{if(safeRead&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue;}reportFailure(url,0,'network-or-timeout',options.method??'GET');throw fail(502,'외부 서비스 연결이 늦어요. 다시 시도해주세요.');}
       if(safeRead&&attempt===0&&response.status>=500){await response.body?.cancel();await new Promise(resolve=>setTimeout(resolve,150));continue;}break;
     }
     if(response.ok&&response.status===204)return {};
-    let value; try { value = await response.json(); } catch { throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
+    let value; try { value = await response.json(); } catch { reportFailure(url,response.status,'invalid-response',options.method??'GET');throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
     if (!response.ok || (slack && value.ok === false)) {
+      reportFailure(url,response.status,response.status===401||['invalid_auth','token_revoked','invalid_grant'].includes(value.error)?'reauthorization':response.status===403?'permission':response.status===429||value.error==='ratelimited'?'rate-limit':response.status>=500?'upstream-unavailable':'provider-rejected',options.method??'GET');
       if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw fail(409, '서비스 연결을 다시 승인해주세요.');
       if(response.status===412)throw fail(409,'원본이 동시에 바뀌었어요. 새 초안에서 다시 확인해주세요.');
       if(response.status===403)throw fail(403,'이 작업의 외부 서비스 권한을 확인해주세요.');
@@ -78,7 +80,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const source=todo.source;if(!source)return null;
       const external=source.externalId;
       if(source.provider==='slack'){
-        const m=/^message:([^:]+):(\d+\.\d+)$/.exec(external);if(!m)return null;
+        const m=/^(?:[^:]+:)?message:([^:]+):(\d+\.\d+)$/.exec(external);if(!m)return null;
         const record=await token(userId,'slack');if(!record.features.includes('messages'))throw fail(403,'Slack 메시지 읽기 권한을 확인해주세요.');
         const value=await providerRequest('https://slack.com/api/chat.getPermalink?'+new URLSearchParams({channel:m[1],message_ts:m[2]}),{headers:{Authorization:'Bearer '+record.accessToken}});return value.permalink??null;
       }
@@ -90,7 +92,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         if(m[2]==='gmail'&&record.features.includes('gmail'))return 'https://mail.google.com/mail/?'+new URLSearchParams({authuser:record.label??''})+'#all/'+encodeURIComponent(m[3]);
         if(m[2]==='drive'&&record.features.includes('drive')){const item=await providerRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(m[3])+'?fields=webViewLink',{headers});return item.webViewLink??null;}
       }
-      if(source.provider==='notion'&&external.startsWith('page:')){const record=await token(userId,'notion');if(!record.features.includes('pages'))return null;const page=await providerRequest('https://api.notion.com/v1/pages/'+encodeURIComponent(external.slice(5)),{headers:{Authorization:'Bearer '+record.accessToken,'Notion-Version':'2022-06-28'}});return page.url??null;}
+      if(source.provider==='notion'&&/^(?:[^:]+:)?page:/.test(external)){const record=await token(userId,'notion');if(!record.features.includes('pages'))return null;const page=await providerRequest('https://api.notion.com/v1/pages/'+encodeURIComponent(external.slice(external.indexOf('page:')+5)),{headers:{Authorization:'Bearer '+record.accessToken,'Notion-Version':'2022-06-28'}});return page.url??null;}
       return null;
     },
     status(userId,snapshot) { return Object.entries(definitions).map(([provider, definition]) => { const config = settings(provider), connection = snapshot?snapshot[provider]?.[0]??null:store.connection(userId, provider); return { provider, name: definition.name, configured: config.configured, connected: !!connection, label: connection?.label ?? null, features: connection?.features ?? [], availableFeatures: definition.features, taskSyncEnabled: !!connection?.taskSyncEnabled, updatedAt: connection?.updatedAt ?? null,...(provider==='google'?{accounts:(snapshot?.google??googleAccounts(store,userId)).map(r=>({connectionId:r.connectionId,label:r.label,features:r.features,taskSyncEnabled:!!r.taskSyncEnabled,updatedAt:r.updatedAt}))}:{}) }; }); },

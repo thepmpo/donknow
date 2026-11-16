@@ -48,7 +48,12 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       const url=safeTodoSourceLink(await integrations.originalLink(user.id,{source:{provider:source.provider,externalId:source.ref.slice(source.provider.length+1),...(source.locator?.connectionId?{connectionId:source.locator.connectionId}:{})}}),source.provider);
       if(!url)throw fail(404,'원본 앱에서 제목으로 찾아주세요.');return {url};
     }
-    if(body.action!=='calendar')return store.applyBriefingItem(user.id,id,key,body.action,body.args,collection,{allowCreate:assistant.status(user.id).access.createFromSources});
+    if(body.action!=='calendar'){
+      const {item}=store.briefingPayload(user.id,id,key,collection),linked=store.briefingItemState(user.id,key)?.todoId??item.todoId,previous=linked?store.get(user.id,linked):null;
+      const result=store.applyBriefingItem(user.id,id,key,body.action,body.args,collection,{allowCreate:assistant.status(user.id).access.createFromSources});
+      if(['complete','todo'].includes(body.action)&&result.todo?.source&&(previous?previous.done!==result.todo.done:body.action==='complete'))result.todo=await sourceEdits.save(user.id,result.todo.id,{done:result.todo.done},{forceDone:true});
+      return result;
+    }
     if(!assistant.status(user.id).access.createFromSources)throw fail(403,'프로 기능을 확인해주세요.');
     const claim=store.claimBriefingCalendar(user.id,id,key,collection);
     if(claim.blocked)throw fail(409,'이전 일정의 저장 기록을 확인할 수 없어요. Google 캘린더에서 제목으로 확인해주세요. Todo에 먼저 보관할 수도 있어요.');
