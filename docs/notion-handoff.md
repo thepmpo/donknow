@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-16 · 한국 시간 · 기능 코드 66ee58a · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-17 · 한국 시간 · 기능 코드 66ee58a · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -1456,6 +1456,66 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 매일 개발 정리
 
 
+##### 2026-11-17 — 당일 저장된 작업
+
+실제 정리: 05:13 KST. 새 저장 작업 27개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [ca3244d](https://github.com/sjfieni/donknow/commit/ca3244d583d7dbea18388566776512686e64b7fc) · 11-16 07:30 · Record latest iPhone build request blocked by GitHub dispatch access
+
+- [aab7649](https://github.com/sjfieni/donknow/commit/aab764955b5b9ab26849d9c584f44fd0fd7e3823) · 11-16 08:55 · Build date and source Todo views with guarded AI spending
+
+- [fb8d482](https://github.com/sjfieni/donknow/commit/fb8d482bf693e28d3fa1b3c2406c20ead813de7b) · 11-16 08:57 · Publish combined Todo captures and cost protection handoff
+
+- [96cb9c1](https://github.com/sjfieni/donknow/commit/96cb9c1d26ff56134e0dfab48eaedf3b0c14ff4b) · 11-16 09:01 · Record verified iPhone 42 and blocked request for the new Todo build
+
+- [4e0b86f](https://github.com/sjfieni/donknow/commit/4e0b86f743f5777c09f883bbbbd53e2d481466af) · 11-16 09:04 · Support canonical Calendar source links and speed up identical handoff output
+
+- [09c8e7d](https://github.com/sjfieni/donknow/commit/09c8e7da54955665d4d303ffc0bf5517d9510f29) · 11-16 09:06 · Record final checks and live Todo deployment without claiming a native build
+
+- [1568804](https://github.com/sjfieni/donknow/commit/1568804e5ef0d6bedca857a29fb1973a7e55efaf) · 11-16 09:47 · Publish Free Pro and upcoming Max feature comparison without Lite
+
+- [8f48ef4](https://github.com/sjfieni/donknow/commit/8f48ef4f1dfa8b02c1085a1f36443ed089d8c257) · 11-16 09:50 · Record live pricing table deployment and verification limits
+
+- [233bdb4](https://github.com/sjfieni/donknow/commit/233bdb4e62617a17ddc7b84b6147e3e04cceaaf1) · 11-16 10:39 · Unify Duck introduction, inline pricing and same-origin web app
+
+- [00c40e9](https://github.com/sjfieni/donknow/commit/00c40e94ec94b1b4db51953b70742dd7730dae43) · 11-16 10:42 · Record unified website CI, Render live source and verification limits
+
+- [b6898b6](https://github.com/sjfieni/donknow/commit/b6898b687dd9d919692e690f2c48bd016fca0e1f) · 11-16 11:06 · Restore sessions before login UI, prioritize manual Todos and grant complimentary Pro
+
+- [6cab112](https://github.com/sjfieni/donknow/commit/6cab112c6fc8d330f4b5b14378e6f6fc5b99f59f) · 11-16 11:07 · Publish current session, Todo and complimentary Pro handoff screens
+
+- [b875293](https://github.com/sjfieni/donknow/commit/b875293decd6ea3c6f3b66519360b8227dac843a) · 11-16 11:12 · Record session and Pro deployment with verified UX captures and limits
+
+- [ee60d06](https://github.com/sjfieni/donknow/commit/ee60d065bddd75f6b602263ca2f793f6229f823c) · 11-16 11:54 · Group AI briefings and persist checked Todo and calendar transfers
+
+- [23835c9](https://github.com/sjfieni/donknow/commit/23835c9544801ca173b9376eaee791f7afb696fc) · 11-16 11:55 · Publish briefing interaction captures and Todo project research
+
+- [60959e8](https://github.com/sjfieni/donknow/commit/60959e8c8ed17a804c3be491304be7f4225ed40c) · 11-16 12:02 · Preserve briefing calendar location, timezone and account selection
+
+- [b54e217](https://github.com/sjfieni/donknow/commit/b54e2178b9a4cff1e4c18055ac22ff16b3129d67) · 11-16 12:13 · Record final briefing deployment, passed CI and native dispatch denial
+
+- [2757f7a](https://github.com/sjfieni/donknow/commit/2757f7ad1686cc77761d339ed24b78ea33d49eea) · 11-16 12:46 · Import all incomplete reminders and synchronize explicit source completion
+
+- [016f1b6](https://github.com/sjfieni/donknow/commit/016f1b63881eeff6ee4ada82b15f46c0fedda67f) · 11-16 12:46 · Publish reminder import and connection stability verification
+
+- [8239e9b](https://github.com/sjfieni/donknow/commit/8239e9b311d8627ae3a1cdb427cd5a72bd2d2fde) · 11-16 12:48 · Keep newer source completions when a background read arrives late
+
+- [bf732e2](https://github.com/sjfieni/donknow/commit/bf732e250503368a470a8d1b9959bd47a40135da) · 11-16 12:53 · Require reminder completion readback before accepting old device receipts
+
+- [e84a4c0](https://github.com/sjfieni/donknow/commit/e84a4c038148cccdafb8092fccb41b84407c301f) · 11-16 12:55 · Keep unsupported field notices distinct from completion capability
+
+- [9c57df3](https://github.com/sjfieni/donknow/commit/9c57df38c99671188c68a6f3b53ae5f22bdaa7be) · 11-16 12:59 · Record verified reminder rollout, source limits and native update requirement
+
+- [3441a75](https://github.com/sjfieni/donknow/commit/3441a7578855b0606478ed6fe386672c90e33b4b) · 11-16 16:48 · Add full fortnight and daily views with responsive durable saves
+
+- [66ee58a](https://github.com/sjfieni/donknow/commit/66ee58a6f90c9a93ffad3a708c58dc3f612a9699) · 11-16 16:49 · Drain request workers before bounded shutdown
+
+- [b555baf](https://github.com/sjfieni/donknow/commit/b555bafb2560b666da5f02e6983e6799d6889535) · 11-16 16:55 · Record verified calendar rollout and native build access limit
+
+- [045f310](https://github.com/sjfieni/donknow/commit/045f3107a7f84bd5ab5eae02bf01dcbddb79798e) · 11-16 16:58 · Record final public guide deployment and observed memory
+
+
+
 ##### 2026-11-16 — 당일 저장된 작업
 
 실제 정리: 01:54 KST. 새 저장 작업 33개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -2805,6 +2865,8 @@ d7b921f Verify reminder completion readback before accepting source success
 66ee58a Drain request workers before bounded shutdown
 d5c2120 Publish approved calendar views and save verification in project guide
 a9c9de6 Merge approved fortnight/day views and durable responsive saves
+b555baf Record verified calendar rollout and native build access limit
+045f310 Record final public guide deployment and observed memory
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -10817,6 +10879,13 @@ Google Tasks의 완료/되돌리기와 지원되는 내용 편집을 다루고, 
 - 새로 확인한 이전 [iPhone43805463425](https://github.com/thepmpo/donknow/actions/runs/43805463425)는 source `9c57df38c99671188c68a6f3b53ae5f22bdaa7be`의 서명 IPA·Apple 제출 단계 success다. 이번 주간/일간·즉시 저장 변경 전 소스이고 사용자 설치는 미확인이다.
 - **이번 아이폰 화면은 최신 main의 새 빌드 설치가 필요하다.** [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → main → Run workflow이며 이전 실행 Re-run을 쓰지 않는다. EventKit/실기기 IME/실제 공급자 동기화 검수는 별도다.
 - 앱: https://duckduck-test.onrender.com/app · 공개 기능/검증 문서: https://duckduck-test.onrender.com/project . 본 기록을 포함한 문서 게시 커밋은 기능 코드의 성공 배포와 별개로 반영한다. 최신 실행 기록 원본은 [이 문서의 main 버전](https://github.com/thepmpo/donknow/blob/main/docs/calendar-week-day-stability-2026-11-16.md)이다.
+
+
+##### 공개 검증 문서 최종 게시
+
+- 문서 포함 commit `b555bafb2560b666da5f02e6983e6799d6889535`의 기존 무료 Render deploy **`dep-dbtbe9lg1s2s739bahe0`**는 **2026-11-16 07:57:22 UTC / 16:57:22 KST에 live**다. 시작 로그는07:57:18 UTC, 실제 배포 소스가 위 commit과 일치한다. 기능 코드는 앞서 검증한 a9c9de6과 같다.
+- 첫 기능 인스턴스의07:54/55/56 UTC 운영 메모리 표본은약138/158/155MiB였고 이는 이 짧은 관찰 구간의 값이다. 무료512MiB 안에서 관찰됐지만 장기 부하나 지연 보장이 아니다.
+- 새 native dispatch는 여전히 시작되지 않았다. 이 실행 종료 후 원본 기록만 추가한 문서 커밋은 앱의 추가 기능 배포나 새로운 iPhone 빌드를 뜻하지 않는다. 공개 HTML에는 앞서 확인한 기능/검증 기록이 게시됐으며, 최신 실행 원본은 이 문서의 main 링크를 따른다.
 
 ### 原文 / docs/reminders-import-stability-2026-11-16.md
 
