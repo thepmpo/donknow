@@ -6,6 +6,11 @@ import { randomUUID, randomBytes, scrypt as scryptCallback, timingSafeEqual, cre
 import { promisify } from 'node:util';
 import { mkdir } from 'node:fs/promises';
 const scrypt = promisify(scryptCallback);
+function writeId(user,key){
+ if(typeof key!=='string'||!/^[A-Za-z0-9_-]{20,120}$/.test(key))throw fail(400,'저장 요청 번호를 확인해주세요.');
+ const value=createHash('sha256').update('duck-todo-write-v1:'+user+':'+key).digest('hex');
+ return value.slice(0,8)+'-'+value.slice(8,12)+'-5'+value.slice(13,16)+'-a'+value.slice(17,20)+'-'+value.slice(20,32);
+}
 export async function openStore(directory, { env = process.env, remoteFactory } = {}) {
   await mkdir(directory, { recursive: true, mode: 0o700 });
   const { db } = await openDatabase(directory, env, remoteFactory);
@@ -65,7 +70,14 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
         db.exec('COMMIT');return list(userId);
       }catch(error){db.exec('ROLLBACK');throw error;}
     },
-    create(userId, draft, { done = false } = {}) { const now=new Date().toISOString(); const todo = { ...draft, id: randomUUID(), done: done===true, createdAt:now,...(done===true?{completedAt:now}:{}) }; db.prepare('INSERT INTO todos VALUES (?, ?, ?)').run(todo.id, userId, JSON.stringify(todo)); return todo; },
+    todoWriteReceipt(userId,key){return get(userId,writeId(userId,key));},
+    create(userId, draft, { done = false, requestKey } = {}) {
+      const id=requestKey!==undefined?writeId(userId,requestKey):randomUUID(),existing=requestKey!==undefined?get(userId,id):null;
+      if(existing)return existing;
+      const now=new Date().toISOString(),todo={...draft,id,done:done===true,createdAt:now,...(done===true?{completedAt:now}:{})};
+      db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo));
+      return requestKey!==undefined?get(userId,id):todo;
+    },
     update(userId, id, patch, { remote = false, skipTaskSync = false } = {}) {
       const todo = get(userId, id); if (!todo) return null;
       const previousDone=todo.done;

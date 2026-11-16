@@ -1,9 +1,23 @@
 {
   "generatedAt": "2026-11-16",
-  "codeCommit": "e84a4c038148cccdafb8092fccb41b84407c301f",
-  "assetCommit": "2757f7ad1686cc77761d339ed24b78ea33d49eea",
-  "imageCount": 1414,
+  "codeCommit": "66ee58a6f90c9a93ffad3a708c58dc3f612a9699",
+  "assetCommit": "3441a7578855b0606478ed6fe386672c90e33b4b",
+  "imageCount": 1433,
   "images": [
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/10-final-fortnight.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 35574,
+      "sha256": "5b3059f7bf03ac15ae307467d4c02689082ea5b31ce2c1bf24662d14d2951d44",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__10-final-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/11-final-daily.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 48323,
+      "sha256": "311300457778cf7915fe673479d34cf4a3321bddfb01f4d14e3f2c240dfa64a8",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__11-final-daily.png"
+    },
     {
       "path": "artifacts/reminders-import-2026-11-16/01-all-selected.png",
       "category": "미리알림 전체·부분 실패 재개·연결 상태/실제 Expo·합성 native 어댑터·API/실기기 아님",
@@ -4525,6 +4539,125 @@
       "bytes": 63281,
       "sha256": "16626e4627680834ab7590e26a844399911d486bbf48f77d205acfee49a39a38",
       "import_path": "images/artifacts__calendar-viewport-2026-11-13__workspace__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/01-duo-fortnight-top.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 39272,
+      "sha256": "9f7f1257316156812ea615d99e6fdb5966e4514314b8a72401322ef5524dd624",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__01-duo-fortnight-top.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/02-duo-fortnight-bottom.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 29025,
+      "sha256": "d5aa3808959b1d73158d26005759880b517d3313fe427a4966da28a6a45b3597",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__02-duo-fortnight-bottom.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/03-duo-daily.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 49763,
+      "sha256": "2f6c233b4d352cf6840c7b33960d6414573d2f47a0d2035a2519c5e9a413c02f",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__03-duo-daily.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/04-daily-date-change.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 33451,
+      "sha256": "9aac741ac7c192aa56e6b569682f4b95ae7729cf14ed378392c33437e8ed7a76",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__04-daily-date-change.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/05-todo-optimistic-create.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 45720,
+      "sha256": "0a47c2754bbeb190a87287f4c2ecf3d43a9a8e3c83f4ec8d81db964fc4c7b410",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__05-todo-optimistic-create.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/06-chat-send-explanation.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 62819,
+      "sha256": "a869c2f7808a5bcd32591628c1ec04ebc6bc884ff2cd1527c211f93a6a3d50c7",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__06-chat-send-explanation.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/07-phone-header-retained.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 54561,
+      "sha256": "6b48d75881c5434360ff50a2238afca3d28d694dc467c85265b8748abbbd199f",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__07-phone-header-retained.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/08-calendar-optimistic-edit.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 52150,
+      "sha256": "b39473a79ffccd294b4174938ef7ec6ec98ce205eafc761358aeab6d05904dba",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__08-calendar-optimistic-edit.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/09-calendar-reconciled.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 58779,
+      "sha256": "73fa0cb89ba7a614879d3bb58691b7f8b2fc213bcb89a851c9a62c2426f7e91a",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__09-calendar-reconciled.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/comparison-daily-detail.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 77894,
+      "sha256": "fafb2b19fdb5ebac53492b089254af49e68e37572c8bcceb5140030ccd737aec",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__comparison-daily-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/comparison-daily.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 144228,
+      "sha256": "f6afee80a7c326fc70063e22d46a598aacc111f4bee048897d3b745dc1174120",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__comparison-daily.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/comparison-fortnight-detail.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 124288,
+      "sha256": "41777c615fedc5b2e79306ead5a9fbfa7b0f1e67c6060045c5a86d428932c7b8",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__comparison-fortnight-detail.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/comparison-fortnight.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 237933,
+      "sha256": "d0cde4be0ff06d04f630efbd921bd3a58dbe85234cb58a67fe005019efcdb18f",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__comparison-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/qa-before-10-final-fortnight.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 37151,
+      "sha256": "242bdef6022056059176d6939fbd712e9debe1fe563e24505b6f0e6ff46406be",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__qa-before-10-final-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/qa-before-comparison-fortnight.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 239929,
+      "sha256": "41680e346908a59676d7b85cc1cb7bb4a8197c878429594edd7c505be422bb32",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__qa-before-comparison-fortnight.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/source-daily.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 831501,
+      "sha256": "5548ea2751866019ffaac26099ca75372517d3cb10aa814cc4d39a18891061de",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__source-daily.png"
+    },
+    {
+      "path": "artifacts/calendar-week-day-2026-11-16/source-fortnight.png",
+      "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 1320907,
+      "sha256": "5818d87bb519fb6e1f37fb89ec898e7506847d0095d7ecbf2e77d40a78360cd7",
+      "import_path": "images/artifacts__calendar-week-day-2026-11-16__source-fortnight.png"
     },
     {
       "path": "artifacts/calendar-workspace-2026-11-13/01-month-adaptive-and-toolbar.png",

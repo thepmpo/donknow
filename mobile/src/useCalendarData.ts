@@ -1,3 +1,4 @@
+import {overlayCalendarWrites,watchCalendarWrites} from './calendar-write-overlay';
 import {calendarSnapshotRevision,invalidateCalendarSnapshotReads,calendarSnapshots,restoreCalendarSnapshots,persistCalendarSnapshots,forgetCalendarSnapshots,watchCalendarSnapshots,broadcastCalendarSnapshots} from './calendar-snapshot-cache';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {AppState} from 'react-native';
@@ -11,6 +12,7 @@ import {readCalendarOnce} from './calendar-snapshot-cache';
 type Page={items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
 export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active,selectionReady=true}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean;selectionReady?:boolean}){
  const [detailsSupported,setDetailsSupported]=useState(false);
+ const [,writeChanged]=useState(0);
  const [events,setEvents]=useState<CalendarEvent[]>([]),[sources,setSources]=useState<CalendarSource[]>([{id:'primary',name:'기본 캘린더',primary:true,canWrite:false}]);
  const [phase,setPhase]=useState<'unconnected'|'loading'|'ready'|'partial'|'error'>(store.user?'loading':'unconnected'),[error,setError]=useState(''),[readAt,setReadAt]=useState<string|null>(null),[cursors,setCursors]=useState<Record<string,string>>({}),[version,setVersion]=useState<2|1|0>(0),[sourceError,setSourceError]=useState(''),[sourceCursor,setSourceCursor]=useState<string|null>(null);
  const readRevision=useRef(0);
@@ -88,5 +90,6 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  function applyEvent(id:string,patch:Partial<CalendarEvent>){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);const old=snapshot.current.find(e=>e.id===id)??[...periods.current.values()].flatMap(p=>p.items).find(e=>e.id===id);if(!old){broadcastCalendarSnapshots(owner);return;}const updated={...old,...patch};snapshot.current=[...snapshot.current.filter(e=>e.id!==id),...(inPeriod(updated)?[updated]:[])];for(const entry of periods.current.values()){entry.items=entry.items.filter(e=>e.id!==id);if(inPeriod(updated,entry.start,entry.end,periodZone(entry)))entry.items.push(updated);}setEvents(snapshot.current);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);}
  function upsertEvent(event:CalendarEvent){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);for(const entry of periods.current.values())if(inPeriod(event,entry.start,entry.end,periodZone(entry)))entry.items=[...entry.items.filter(e=>e.id!==event.id),event];if(inPeriod(event))snapshot.current=[...snapshot.current.filter(e=>e.id!==event.id),event];setEvents(snapshot.current);remember();}
  function cachedEvents(){return [...new Map([...periods.current.values()].filter(p=>p.family===family).flatMap(p=>p.items).concat(snapshot.current).map(e=>[eventKey(e),e])).values()];}
- return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,events,sources,phase,error,readAt,version,cursors,sourceError,sourceCursor,load,loadSources};
+ useEffect(()=>watchCalendarWrites(owner,()=>writeChanged(v=>v+1)),[owner]);
+ return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,events:overlayCalendarWrites(owner,events,start,end,timeZone,selected),sources,phase,error,readAt,version,cursors,sourceError,sourceCursor,load,loadSources};
 }

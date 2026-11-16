@@ -1,4 +1,5 @@
 import {accountAccess} from './plans.js';
+import {sourceOutbox} from './source-outbox.js';
 import {aiBudgetStore} from './ai-budget.js';
 import {agentSyncStore} from './agent-sync.js';
 import {agentChannelStore} from './agent-channels.js';
@@ -69,6 +70,7 @@ export async function featureStore(db, directory, env = process.env) {
     ...pushStore(db,box),
     ...taskSyncStore(db),
     ...actionStore(db,box),
+    ...sourceOutbox(db,box),
     ...commentsStore(db),
     account, findAccountId: findId,
     queueAccountMail(userId, purpose) {

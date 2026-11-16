@@ -21,7 +21,7 @@ export function CalendarDateField({label,value,onChange,disabled=false}:{label:s
 function TimeField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} mode="time" onChange={v=>v&&onChange(v)} stacked/>;}
 export type CalendarPending={args?:Record<string,unknown>;id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null}};
 export type CalendarActionState={pending:CalendarPending;locked:boolean;remoteDone?:boolean;savedEventId?:string};
-export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void}){
+export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission,onBackgroundSave}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void;onBackgroundSave?:(job:{optimistic:CalendarEvent;run:()=>Promise<Partial<CalendarEvent>>;check:()=>Promise<Partial<CalendarEvent>>})=>void}){
  const keyboard=useKeyboardUX();
  const scrollRef=useRef<React.ComponentRef<typeof ScrollView>|null>(null);
  const titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),locationRef=useRef<React.ComponentRef<typeof TextInput>>(null),notesRef=useRef<React.ComponentRef<typeof TextInput>>(null),localField=useFocusedField(scrollRef),parentReveal=useContext(ScrollRevealContext),inlineFocused=useRef<React.ComponentRef<typeof TextInput>|null>(null);
@@ -42,7 +42,8 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(args){if(!canWrite)throw Error('원본 수정 권한이 필요해요. ME → 연결된 서비스 → Google에서 캘린더 수정 권한을 확인해주세요.');if(event&&!event.etag)throw Error('원본 버전을 새로 확인해주세요.');onActionState({pending:prepareAction?await prepareAction({...args,...(connectionId?{connectionId}:{})}):await store.featureRequest('/api/assistant/actions','POST',{operation:event?'calendar.update':'calendar.create',args:{...args,...(connectionId?{connectionId}: {})}}) as CalendarPending,locked:false});}
   else onActionState({pending:{id:'duck-local',status:'pending'},locked:false});
  });}
- async function finish(savedEventId:string,remote:boolean){
+ async function finish(savedEventId:string,remote:boolean,deliver=true){
+  if(remote&&!savedEventId)throw Error('저장한 원본 일정 번호를 확인하지 못했어요. 같은 실행의 결과를 다시 확인해주세요.');
   let patch:Partial<CalendarEvent>=remote?confirmedCalendarPatch(draft,event):{};
   if(hasLocal){
    if(!connectionId||!savedEventId)throw Error('Google 저장은 완료됐지만 덕 정보를 연결할 일정 번호를 확인하지 못했어요. 원본을 새로 확인해주세요.');
@@ -51,9 +52,22 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    }
   if(remote&&!event)patch={...patch,id:'confirmed:'+connectionId+':'+draft.calendarId+':'+savedEventId,eventId:savedEventId,connectionId,calendarId:draft.calendarId,calendarName:source?.name,title:draft.title.trim(),dueDate:draft.startDay,canWrite:false};
   store.reminders.retry();
-  onSaved(patch);
+  if(deliver)onSaved(patch);return patch;
  }
- async function confirm(){await work(async()=>{
+ async function confirm(){
+  if(pending&&!locked&&pending.id!=='duck-local'&&onBackgroundSave){
+   const action=pending;onActionState({pending:action,locked:true});
+   const optimistic:CalendarEvent={...event,...confirmedCalendarPatch(draft,event),id:event?.id??'pending:'+action.id,title:draft.title.trim(),calendarId:draft.calendarId,calendarName:source?.name??event?.calendarName,connectionId,dueDate:draft.startDay,saveState:'saving',canWrite:false,etag:null};
+   const attempt=async(readOnly=false):Promise<Partial<CalendarEvent>>=>{
+    let result:CalendarPending;
+    try{result=await store.featureRequest('/api/assistant/actions/'+action.id+(readOnly?'':'/confirm'),readOnly?'GET':'POST',readOnly?undefined:{confirmation:true}) as CalendarPending;}
+    catch(error){if(!readOnly){try{result=await store.featureRequest('/api/assistant/actions/'+action.id) as CalendarPending;}catch{throw Object.assign(new Error('저장 결과를 아직 확인하지 못했어요.'),{writeState:'unknown'});}}else throw error;}
+    if(result.status!=='succeeded')throw Object.assign(new Error('원본 저장 결과를 확인해주세요.'),{writeState:['failed','cancelled','expired'].includes(result.status)?'failed':'unknown'});
+    try{return await finish(result.result?.id??event?.eventId??'',true,false);}catch{throw Object.assign(new Error('원본은 저장됐지만 덕 알림·추가 정보 저장을 확인해야 해요.'),{writeState:'unknown'});}
+   };
+   onBackgroundSave({optimistic,run:()=>attempt(),check:()=>attempt(true)});return;
+  }
+  await work(async()=>{
   if(!pending||locked)return;
   if(pending.id==='duck-local'){await finish(event?.eventId??'',false);return;}
   onActionState({pending,locked:true});
@@ -98,6 +112,6 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </>}
   </>;
- return <ScrollRevealContext.Provider value={field.show}><View style={{minHeight:0,flexShrink:inline?0:1,...(!inline&&keyboard.occluding?{flex:1}:{})}}>{inline?<View testID="calendar-event-editor" style={{gap:16,paddingBottom:24}}>{fields}</View>:<ScrollView ref={scrollRef} onLayout={field.reveal} onScroll={field.onScroll} onContentSizeChange={field.reveal} style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} testID="calendar-event-editor" keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:16,paddingBottom:24}}>{fields}</ScrollView>}{!pending&&!keyboard.occluding&&!picker&&!reminderOpen&&!calendarOpen&&<View style={{paddingTop:8,borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line}}><Button title="저장" accessibilityLabel="일정 저장 내용 미리보기" disabled={busy||!!picker||(!canWrite&&(!event||!metadataAvailable))} onPress={()=>void prepare()}/></View>}</View></ScrollRevealContext.Provider>;
+ return <ScrollRevealContext.Provider value={field.show}><View style={{minHeight:0,flexShrink:inline?0:1,...(!inline&&keyboard.occluding?{flex:1}:{})}}>{inline?<View testID="calendar-event-editor" style={{gap:16,paddingBottom:24}}>{fields}</View>:<ScrollView ref={scrollRef} onLayout={field.reveal} onScroll={field.onScroll} onContentSizeChange={field.reveal} style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} testID="calendar-event-editor" keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:16,paddingBottom:24}}>{fields}</ScrollView>}{!pending&&!keyboard.occluding&&!picker&&!reminderOpen&&!calendarOpen&&<View style={{paddingTop:8,borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line}}><Button title="저장" accessibilityLabel="일정 저장 내용 미리보기" loading={busy} disabled={busy||!!picker||(!canWrite&&(!event||!metadataAvailable))} onPress={()=>void prepare()}/></View>}</View></ScrollRevealContext.Provider>;
 }
 const s=StyleSheet.create({popup:{backgroundColor:colors.popup,borderRadius:20,borderWidth:StyleSheet.hairlineWidth,borderColor:colors.popupLine,overflow:'hidden'},field:{gap:4},input:{minHeight:44,backgroundColor:colors.grouped,borderRadius:12,padding:10,...typography.body,color:colors.text},group:{gap:8,padding:12,borderRadius:20,backgroundColor:colors.surface},row:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',minHeight:44},dates:{flexDirection:'row',gap:8},choice:{minHeight:44,paddingVertical:8,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:8},title:{...typography.body,color:colors.text,fontWeight:'600'},eventTitle:{fontSize:24,lineHeight:32,fontWeight:'700',color:colors.text},section:{...typography.section,color:colors.text},help:{...typography.detail,color:colors.muted},error:{...typography.detail,color:colors.danger},options:{flexDirection:'row',flexWrap:'wrap',gap:6},option:{minHeight:44,padding:10,borderRadius:14,backgroundColor:colors.grouped,justifyContent:'center'},selected:{borderWidth:1,borderColor:colors.action}});

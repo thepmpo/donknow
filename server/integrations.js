@@ -1,3 +1,4 @@
+import {measureExternal} from './request-metrics.js';
 import {createAgentSync} from './agent-sync.js';
 import {createIntegrationAgentTools} from './integration-agent-tools.js';
 import {createProviderWatches} from './provider-watches.js';
@@ -27,7 +28,8 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     return { ...definition, clientId, clientSecret, origin, configured: !!(clientId && (clientSecret || (provider === 'notion' && env.NOTION_BASIC_AUTH)) && origin), basicAuth: provider === 'notion' ? env.NOTION_BASIC_AUTH : null, callback: origin ? `${origin}/api/integrations/${provider}/callback` : null };
   }
   function reportFailure(url,status,kind,method){if(env.NODE_ENV!=='production')return;const host=new URL(url).hostname,provider=host==='slack.com'?'slack':host==='api.notion.com'?'notion':host.endsWith('googleapis.com')?'google':'external';console.warn(JSON.stringify({event:'integration-request-failure',provider,status,kind,method}));}
-  async function providerRequest(url, options = {}, slack = false) {
+  function providerRequest(url,options={},slack=false){return measureExternal(()=>providerRequestBody(url,options,slack));}
+  async function providerRequestBody(url, options = {}, slack = false) {
     let response;const safeRead=(options.method??'GET')==='GET';
     for(let attempt=0;attempt<(safeRead?2:1);attempt++){
       try{response=await fetcher(url,{...options,signal:AbortSignal.timeout(10000)});}catch{if(safeRead&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue;}reportFailure(url,0,'network-or-timeout',options.method??'GET');throw fail(502,'외부 서비스 연결이 늦어요. 다시 시도해주세요.');}

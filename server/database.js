@@ -1,3 +1,4 @@
+import {instrumentDatabase} from './request-metrics.js';
 import { configuredTokenKey } from './secrets.js';
 import { DatabaseSync } from 'node:sqlite';
 import LibsqlDatabase from 'libsql';
@@ -14,11 +15,11 @@ export async function openDatabase(directory, env = process.env, remoteFactory =
     if (!env.INTEGRATION_TOKEN_KEY && !env.INTEGRATION_KEY_SEED) throw new Error('Turso requires a persistent INTEGRATION_TOKEN_KEY or INTEGRATION_KEY_SEED');
     configuredTokenKey(env);
     const db = remoteFactory(env.TURSO_DATABASE_URL, { authToken: env.TURSO_AUTH_TOKEN, timeout: 10 });
-    return { db, driver };
+    return { db:instrumentDatabase(db), driver };
   }
   const path = join(directory, 'duckduck.sqlite');
   const db = new DatabaseSync(path);
   await chmod(path, 0o600);
   db.exec('PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL;');
-  return { db, driver };
+  return { db:instrumentDatabase(db), driver };
 }
