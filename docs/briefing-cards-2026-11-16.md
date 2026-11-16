@@ -45,4 +45,17 @@ Todo 프로젝트 기능은 [Things·Todoist·TickTick 비교와 제안](todo-pr
 
 사용자의 ‘빌드하고’는 이번 최신 소스의 새 수동 무료 TestFlight 실행을 승인한다. 기존 공개 GitHub 무료 Mac·workflow_dispatch·동일 서명 고정 정책을 유지한다. paid runner/EAS cloud·push 자동 빌드·옛 run 재실행으로 우회하지 않는다. 소스 병합, CI, Render 실제 deploy, 새 native run/IPA/Apple 제출은 확인된 값만 뒤에 기록한다.
 
-게시 상태: 검증·소스 준비 중. 새 native 실행/Apple 제출 완료를 아직 주장하지 않는다. 운영 AI의 기존 credit_balance_exhausted 문제를 이 UI 변경으로 해결한 것으로 표시하지 않는다.
+## 캘린더 초안 마지막 검토
+
+원본 calendar.create 제안의 장소·시간대를 초안으로 유지한다. 여러 계정의 같은 primary ID는 connectionId로 구분하고 실제 선택 ID로 매핑하며 모호하면 자동으로 다른 계정을 고르지 않는다. 미리보기를 취소하고 편집으로 돌아와도 장소·로컬 알림/자료 설정을 지우지 않는다. 새 실제 Expo 조작에서 raw primary 제안→계정별 선택 ID→장소 수정→미리보기 취소→다시 확인 뒤 외부 쓰기1회를 통과했다.
+
+## 확인된 게시·빌드 결과
+
+- 구현/이미지 스냅샷: `ee60d065bddd75f6b602263ca2f793f6229f823c`. 인계 생성 `23835c9544801ca173b9376eaee791f7afb696fc`.
+- [PR3](https://github.com/thepmpo/donknow/pull/3) 병합: `2ae84a13071fe609e5c0ee911fe1cecf848b48de`.
+- [CI43795060119](https://github.com/thepmpo/donknow/actions/runs/43795060119): success. CI411중409통과/실패0/조건부2제외, 사이트 패키징4통과, 타입/native 구성/iOS JS export 성공. 로컬은410통과/조건부1제외로 환경별 제외 수가 다르다.
+- 기존 무료 Render의 새 수동 deploy: `dep-dbt727k9v7es73ccsgtg`, 정확한 소스는 위 병합 SHA다. 실제 최종 상태는 아래 추가 기록을 참조한다. 자동 배포 OFF·같은 무료 서비스/설정/데이터 유지.
+- 2026-11-16 02:57 UTC의 새 native 요청: `gh workflow run ios-testflight.yml --ref main --repo thepmpo/donknow`가 **`Get https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml: Forbidden`**으로 거부됐다. POST dispatch 전 워크플로 조회가 거부되어 이번 요청의 새 run/IPA/Apple 제출은 시작되지 않았다. 이는 앱 컴파일 실패와 다르다. 연결 도구에도 dispatch 기능이 없어 자동 native 트리거나 다른 자격 증명으로 우회하지 않았다.
+- 빌드를 시작하려면 [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 **Run workflow → main → Run workflow**를 실행한다. 실패한 이전 run의 Re-run은 쓰지 않는다. 이 문서의 상태 기록만 추가된 이후 main도 같은 구현 코드를 포함한다.
+- 현재 일반형 확인은 [웹앱](https://duckduck-test.onrender.com/app), 소개·요금은 같은 사이트의 `/`다. Linux의 직접 공개 HTTP 검사는 CONNECT tunnel403으로 차단됐으며 이를 운영 앱의403 오류로 단정하지 않는다. Render 공식 최신 deploy/health Markdown·HTML 조회도 같은 이유로 불가했고, 기존 설정/연결 도구의 실제 상태와 startup 로그로 확인한다.
+- 운영 AI의 기존 `credit_balance_exhausted`를 이 UI 수정으로 해결하거나 실제 모델 품질/실계정 원본 쓰기를 검증한 것으로 표시하지 않는다. iOS 실제 키보드·제스처·IME·VoiceOver와 실기기 설치 검수는 별도다.
