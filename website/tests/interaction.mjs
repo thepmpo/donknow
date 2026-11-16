@@ -71,10 +71,9 @@ try {
     );
     await page.getByRole("button", { name: "영상 재생", exact: true }).click();
     await page.screenshot({ path: resolve(out, name + "-hero.png") });
-    await page
-      .getByRole("button", { name: "덕 열기", exact: true })
-      .first()
-      .click();
+    assert.equal(await page.locator(".web-entry").first().getAttribute("href"), new URL("/app", origin).href);
+    const phoneTrigger = name === "mobile" ? page.locator(".footer-phone-link") : page.locator(".phone-entry");
+    await phoneTrigger.click();
     const dialog = page.getByRole("dialog", { name: "덕 열기", exact: true });
     await dialog.waitFor();
     await page.waitForFunction(() => {
@@ -85,16 +84,13 @@ try {
       await dialog
         .getByRole("link", { name: "웹에서 열기", exact: true })
         .getAttribute("href"),
-      "https://duckduck-test.onrender.com/",
+      new URL("/app", origin).href,
     );
     await page.screenshot({ path: resolve(out, name + "-open.png") });
     await page.keyboard.press("Escape");
     await dialog.waitFor({ state: "detached" });
     assert.equal(
-      await page
-        .getByRole("button", { name: "덕 열기", exact: true })
-        .first()
-        .evaluate((e) => e === document.activeElement),
+      await phoneTrigger.evaluate((e) => e === document.activeElement),
       true,
       "Escape restores trigger focus",
     );
@@ -247,7 +243,8 @@ try {
     );
     await page.waitForTimeout(700);
     await page.screenshot({ path: resolve(out, name + "-footer.png") });
-    await page.locator(".footer-download").click();
+    assert.equal(await page.locator(".footer-download").getAttribute("href"), new URL("/app", origin).href);
+    await page.locator(".footer-phone-link").click();
     await page.getByRole("dialog", { name: "덕 열기", exact: true }).waitFor();
     await page.keyboard.press("Escape");
     for (const w of [320, 390, 700, 768, 1440]) {

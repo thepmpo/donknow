@@ -1,4 +1,5 @@
-import test from 'node:test';
+import test,{beforeEach,afterEach,mock} from 'node:test';
+const realNow=Date.now.bind(Date);
 import assert from 'node:assert/strict';
 import {createHmac,generateKeyPairSync,sign} from 'node:crypto';
 import {Readable} from 'node:stream';
@@ -11,6 +12,8 @@ import {createGooglePushAuth,verifySlackWebhook,verifyNotionWebhook} from '../se
 import {createIntegrations} from '../server/integrations.js';
 import {apiHarness} from '../test-support/api.js';
 const clock=Date.parse('2026-11-16T01:00:00Z'),secret='fixture-not-a-real-signing-secret';
+beforeEach(()=>mock.timers.enable({apis:['Date'],now:clock}));
+afterEach(()=>mock.timers.reset());
 const schedule={enabled:true,time:'09:00',timezone:'Asia/Seoul',providers:['slack'],aiConsent:true,urgentAlerts:true};
 const scopes={todo:'todo-v1',slack:'slack-fixture',notion:'notion-fixture',google:'google-fixture'};
 const json=v=>new Response(JSON.stringify(v),{headers:{'Content-Type':'application/json'}});
@@ -48,7 +51,7 @@ test('provider signature verification rejects changed/old/unicode headers; Gmail
  const {privateKey,publicKey}=generateKeyPairSync('rsa',{modulusLength:2048}),jwk={...publicKey.export({format:'jwk'}),kid:'fixture-key',use:'sig'};let fetches=0;const auth=createGooglePushAuth({audience:'https://fixture/webhook',email:'pubsub@fixture.iam.gserviceaccount.com',now:()=>clock,fetcher:async url=>{fetches++;assert.equal(url,'https://www.googleapis.com/oauth2/v3/certs');return json({keys:[jwk]});}});
  const jwt=(patch={})=>{const parts=[{alg:'RS256',kid:'fixture-key'},{iss:'https://accounts.google.com',aud:'https://fixture/webhook',email:'pubsub@fixture.iam.gserviceaccount.com',email_verified:true,iat:clock/1000,exp:clock/1000+3600,...patch}].map(v=>Buffer.from(JSON.stringify(v)).toString('base64url'));return 'Bearer '+parts.join('.')+'.'+sign('RSA-SHA256',Buffer.from(parts.join('.')),privateKey).toString('base64url');};assert.equal(await auth(jwt()),true);assert.equal(await auth(jwt()),true);assert.equal(fetches,1);for(const patch of [{aud:'other'},{email:'other@fixture.test'},{email_verified:false},{exp:clock/1000-1}])await assert.rejects(()=>auth(jwt(patch)),e=>e.status===403);
 });
-test('HTTP provider endpoints accept signed challenge without app headers and do not bypass CSRF for other routes',async()=>{const h=await apiHarness({SLACK_SIGNING_SECRET:secret});try{const data={type:'url_verification',challenge:'fixture-challenge'},raw=JSON.stringify(data),stamp=String(Math.floor(Date.now()/1000));const headers={'Content-Type':'application/json','x-slack-request-timestamp':stamp,'x-slack-signature':'v0='+createHmac('sha256',secret).update('v0:'+stamp+':'+raw).digest('hex')};const response=await fetch(h.baseUrl+'/api/webhooks/slack',{method:'POST',headers,body:raw});assert.equal(response.status,200);assert.equal((await response.json()).challenge,data.challenge);assert.equal((await fetch(h.baseUrl+'/api/assistant/chat',{method:'POST',headers,body:raw})).status,403);assert.equal((await fetch(h.baseUrl+'/api/webhooks/slack',{method:'POST',headers:{'Content-Type':'application/json'},body:raw})).status,403);}finally{await h.close();}});
+test('HTTP provider endpoints accept signed challenge without app headers and do not bypass CSRF for other routes',async()=>{const h=await apiHarness({SLACK_SIGNING_SECRET:secret});try{const data={type:'url_verification',challenge:'fixture-challenge'},raw=JSON.stringify(data),stamp=String(Math.floor(realNow()/1000));const headers={'Content-Type':'application/json','x-slack-request-timestamp':stamp,'x-slack-signature':'v0='+createHmac('sha256',secret).update('v0:'+stamp+':'+raw).digest('hex')};const response=await fetch(h.baseUrl+'/api/webhooks/slack',{method:'POST',headers,body:raw});assert.equal(response.status,200);assert.equal((await response.json()).challenge,data.challenge);assert.equal((await fetch(h.baseUrl+'/api/assistant/chat',{method:'POST',headers,body:raw})).status,403);assert.equal((await fetch(h.baseUrl+'/api/webhooks/slack',{method:'POST',headers:{'Content-Type':'application/json'},body:raw})).status,403);}finally{await h.close();}});
 test('Slack OAuth requests user read scopes, binds installer identity and grants no write on partial approval',async()=>{const h=await setup();try{
  const env={PUBLIC_ORIGIN:'https://fixture.example.test',SLACK_CLIENT_ID:'fixture-client',SLACK_CLIENT_SECRET:'fixture-secret'};
  const integrations=createIntegrations(h.store,env,async()=>json({ok:true,team:{id:'TNEWSPACE1',name:'새 워크스페이스'},authed_user:{id:'UNEWUSER01',access_token:'fixture-user-token',scope:'channels:read,channels:history,im:read,im:history'}}));const url=new URL(integrations.start(h.user,'slack',['channels','messages','messagesWrite']).url);assert.ok(url.searchParams.get('user_scope').includes('im:history'));assert.ok(url.searchParams.get('user_scope').includes('chat:write'));assert.equal(url.searchParams.get('team'),null);

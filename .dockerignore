@@ -29,3 +29,6 @@ deliverables
 
 # User-provided handoff bundle is never sent into an image build.
 duckduck-functional-completion.bundle
+
+# Build the introduction from its source in the landing stage.
+website/dist

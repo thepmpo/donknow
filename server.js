@@ -1,3 +1,4 @@
+import {createSiteRoutes} from './server/site.js';
 import {originalTodoLink} from './server/todo-source-link.js';
 import {sendJson} from './server/http-json.js';
 import {probeAiConnection} from './server/ai-transport.js';
@@ -48,6 +49,7 @@ async function json(req) {
   return body;
 }
 function validReminder(value) { return value === null || (typeof value === 'string' && value.length <= 30 && Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value); }
+const siteRoutes=createSiteRoutes(process.env.LANDING_DIR);
 const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Referrer-Policy', 'same-origin');
   const send = (status,data,headers={}) => sendJson(res,status,data,headers);
@@ -57,6 +59,7 @@ const server = http.createServer(async (req, res) => {
     if (await features.webhook(req,path,(status,data)=>{if(path==='/api/webhooks/sms'&&status===200){res.writeHead(200,{'Content-Type':'text/xml','Cache-Control':'no-store'});res.end('<Response/>');}else send(status,data);})) return;
     if(['/agent-call','/agent-call.js'].includes(path)&&req.method==='GET'){const js=path.endsWith('.js'),content=await readFile(root+'server/agent-call'+(js?'.js':'.html'));res.writeHead(200,{'Content-Type':js?'application/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','Permissions-Policy':'microphone=(self), camera=()','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; media-src blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"});res.end(content);return;}
     if (await features.callback(req, res, path, url)) return;
+    if(await siteRoutes(req,res,path))return;
     const servicePages = { '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html', '/support': 'support.html', '/support/': 'support.html' };
     if (Object.hasOwn(servicePages, path)) {
       if (!['GET', 'HEAD'].includes(req.method)) return send(405, { error: '이 안내는 조회만 할 수 있어요.' }, { Allow: 'GET, HEAD' });
@@ -156,7 +159,7 @@ const server = http.createServer(async (req, res) => {
       const type={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.ttf':'font/ttf','.woff2':'font/woff2','.png':'image/png','.ico':'image/x-icon','.json':'application/json'}[extname(candidate)]||'application/octet-stream';
       const content=await readFile(candidate);res.writeHead(200,{'Content-Type':type,'Cache-Control':extname(candidate)==='.html'?'no-cache':'public,max-age=3600'});res.end(content);return;
     }
-    const files = { '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };
+    const files = { '/app': ['index.html', 'text/html; charset=utf-8'], '/app/': ['index.html', 'text/html; charset=utf-8'], '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };
     if (!files[path] || req.method !== 'GET') return send(404, { error: '페이지를 찾을 수 없어요.' });
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
   } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.' }); else res.end(); }

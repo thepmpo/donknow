@@ -1,3 +1,7 @@
+## 사용자 확정 — 2026-11-16 통합 웹
+
+대표 / 는 이 소개 메인과 같은 문서의 #pricing 기능표를 제공한다. ‘덕 열기’는 같은 origin·같은 탭의 /app, 기존 /pricing은 /#pricing으로 이어진다. 웹앱 ME에서 소개·요금제로 돌아온다. 기존 영상/모션/기능 전환/QR/모바일 메뉴·KR-EN 소개를 유지한다. 요금표 본문은 public/pricing.html의 한국어 정본을 빌드 시 추출·스타일 격리하며 무료/프로27,900원/맥스준비중, 라이트 삭제·결제 준비중 안내를 유지한다. 계정/데이터/API/저장소 키를 바꾸지 않는다. Render의 같은 기존 무료 서비스에 소개와 앱을 함께 배포하며 Sites 별도 프로젝트로 나누지 않는다.
+
 # Prototype Instructions
 
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
