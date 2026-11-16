@@ -52,4 +52,17 @@ Google Tasks의 완료/되돌리기와 지원되는 내용 편집을 다루고, 
 - 실제 Expo/Chromium에서 11개 주간·일간·재선택·즉시 저장·거절 복원·응답 유실·채팅 조건/정상 합성 전송·일반형 유지 흐름을 확인했다. 기존 일반/접힘/펼침 입력창·마지막 대화 가시성 회귀도 통과했다.
 - [디자인 비교](../design-qa.md)는 선택 시안과 실제 화면을 함께 열어 확인한다. 작은 주간 칸의 밀도를 보완했고 현재 비교는 웹 범위에서 통과다.
 - 기존 사용자 미커밋 작업과 복구 bundle/개인 원본 영상은 건드리지 않는다. 실제 EventKit·실계정 원본 수정·AI 생성·native 설치는 이 합성 검사와 별도다.
-- 이 문서 작성 시점: 구현과 로컬 검증 완료, CI/병합/기존 무료 Render 배포 및 새 native 실행은 아래 게시 기록에서 실제 결과를 확인한다.
+- 기능 코드와 웹 게시 결과는 아래 실행 기록을 따른다. 아이폰 앱의 실제 새 빌드/설치와 구분한다.
+
+
+## 실제 게시 기록
+
+- [PR7](https://github.com/thepmpo/donknow/pull/7) 병합 소스: `a9c9de651048cde0f65a181c4f28b711b489dd61`. 구현 스냅샷은 `3441a75`, 종료 정리 보완은 `66ee58a`, 공개 인계 생성은 `d5c2120`이다.
+- [PR CI43826629872](https://github.com/thepmpo/donknow/actions/runs/43826629872)와 [main CI43826871204](https://github.com/thepmpo/donknow/actions/runs/43826871204)는 success. CI 전체440개 중438통과/실패0/환경 조건부2제외, 사이트 패키징4통과·타입·native 구성·iOS JS export를 확인했다. 서명 IPA 빌드가 아니다.
+- 기존 무료 Render deploy **`dep-dbtbcjuk1f9s73bdmeeg`**, 위 병합 소스와 일치, **2026-11-16 07:53:59 UTC / 16:53:59 KST에 live**. 실제 시작 로그 `Donknow listening on port 10000`은07:53:49 UTC이며 두 lane이 DB 초기화를 마친 뒤 공개 리스너를 열었다. 별도 유료 서비스와 자동 배포는 켜지 않았다.
+- 실제 libSQL HTTP fixture에서도 암호화 원본 outbox의 트랜잭션·선점·action 기록·완료 저장을 추가 확인했다. 외부 실계정에 쓴 결과가 아니다. 격리된 실제 두-lane 앱 시작 RSS는약174MiB였으며 운영 메모리 보장으로 해석하지 않는다.
+- 시작의 읽기 전용 AI model probe는07:53:50 UTC HTTP403/JSON, 허용된 상세 오류 code 없음이었다. 이 metadata 결과만으로 실제 생성 실패의 원인을 확정하지 않는다. 실제 생성 호출·API 충전·앱 사용 예산을 임의로 수행하지 않았다.
+- 이번 main의 수동 무료 iPhone 빌드는07:52 UTC에 요청했으나 `Get https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml: Forbidden`이 반환됐다. dispatch POST 전 조회 단계라 새 native run은 시작되지 않았다. 자동 승인 검토 거절이 아닌 GitHub 조회 접근 실패이며 다른 키/유료 빌드/옛 실행 재실행으로 우회하지 않았다.
+- 새로 확인한 이전 [iPhone43805463425](https://github.com/thepmpo/donknow/actions/runs/43805463425)는 source `9c57df38c99671188c68a6f3b53ae5f22bdaa7be`의 서명 IPA·Apple 제출 단계 success다. 이번 주간/일간·즉시 저장 변경 전 소스이고 사용자 설치는 미확인이다.
+- **이번 아이폰 화면은 최신 main의 새 빌드 설치가 필요하다.** [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → main → Run workflow이며 이전 실행 Re-run을 쓰지 않는다. EventKit/실기기 IME/실제 공급자 동기화 검수는 별도다.
+- 앱: https://duckduck-test.onrender.com/app · 공개 기능/검증 문서: https://duckduck-test.onrender.com/project . 본 기록을 포함한 문서 게시 커밋은 기능 코드의 성공 배포와 별개로 반영한다. 최신 실행 기록 원본은 [이 문서의 main 버전](https://github.com/thepmpo/donknow/blob/main/docs/calendar-week-day-stability-2026-11-16.md)이다.
