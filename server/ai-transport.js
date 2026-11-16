@@ -6,7 +6,7 @@ export function aiFetch(fetcher=fetch,log=console.warn){return async(url,options
 /** Read-only model availability probe: no prompts, documents, paid generation or key values. */
 export async function probeAiConnection(env=process.env,fetcher=fetch,log=console.warn){
  env=aiEnvironment(env);if(env.AI_ENABLED!=='true'||!env.OPENAI_API_KEY||!env.OPENAI_MODEL)return;
- try{const response=await fetcher('https://api.openai.com/v1/models/'+encodeURIComponent(env.OPENAI_MODEL),{headers:{Authorization:'Bearer '+env.OPENAI_API_KEY},redirect:'error',signal:AbortSignal.timeout(10000)});if(response.body)void response.body.cancel().catch(()=>{});log(JSON.stringify({event:'ai-connection-probe',status:response.status,ok:response.ok,format:response.headers?.get('content-type')?.includes('json')?'json':'other'}));
+ try{const response=await fetcher('https://api.openai.com/v1/models/'+encodeURIComponent(env.OPENAI_MODEL),{headers:{Authorization:'Bearer '+env.OPENAI_API_KEY},redirect:'error',signal:AbortSignal.timeout(10000)});const format=response.headers?.get('content-type')?.includes('json')?'json':'other',code=!response.ok&&format==='json'?await aiProviderCode(response):'';if(response.body&&!response.body.locked)void response.body.cancel().catch(()=>{});log(JSON.stringify({event:'ai-connection-probe',status:response.status,ok:response.ok,format,...(code?{code}:{})}));
 
  }
  catch(error){log(JSON.stringify({event:'ai-connection-probe',ok:false,kind:aiFailureKind(error)}));}

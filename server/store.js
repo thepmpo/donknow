@@ -66,7 +66,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
       }catch(error){db.exec('ROLLBACK');throw error;}
     },
     create(userId, draft, { done = false } = {}) { const now=new Date().toISOString(); const todo = { ...draft, id: randomUUID(), done: done===true, createdAt:now,...(done===true?{completedAt:now}:{}) }; db.prepare('INSERT INTO todos VALUES (?, ?, ?)').run(todo.id, userId, JSON.stringify(todo)); return todo; },
-    update(userId, id, patch, { remote = false } = {}) {
+    update(userId, id, patch, { remote = false, skipTaskSync = false } = {}) {
       const todo = get(userId, id); if (!todo) return null;
       const previousDone=todo.done;
       if ('done' in patch) todo.completedAt = patch.done ? (todo.done && todo.completedAt ? todo.completedAt : new Date().toISOString()) : null;
@@ -74,7 +74,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
       db.exec('BEGIN IMMEDIATE');
       try {
         db.prepare('UPDATE todos SET data = ? WHERE id = ? AND user_id = ?').run(JSON.stringify(todo), id, userId);
-        if (!remote && 'done' in patch && todo.source?.provider==='google' && todo.source.externalId.includes(':tasks:') && features.connections(userId,'google').some(r=>r.taskSyncEnabled&&todo.source.externalId.startsWith((r.connectionId??'legacy')+':tasks:'))) features.queueTaskSync(userId,id,todo.done,previousDone);
+        if (!remote && !skipTaskSync && 'done' in patch && todo.source?.provider==='google' && todo.source.externalId.includes(':tasks:') && features.connections(userId,'google').some(r=>r.taskSyncEnabled&&todo.source.externalId.startsWith((r.connectionId??'legacy')+':tasks:'))) features.queueTaskSync(userId,id,todo.done,previousDone);
         db.exec('COMMIT');return todo;
       } catch(error){db.exec('ROLLBACK');throw error;}
     },

@@ -1,6 +1,6 @@
 import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
 import {updateAppleSource} from './apple-source-edit';
-import {importedCalendarPatch} from './calendar-source-edit';
+import {originalContentConfirmed,importedCalendarPatch} from './calendar-source-edit';
 import {calendarSnapshots,invalidateCalendarSnapshotReads,persistCalendarSnapshots,broadcastCalendarSnapshots,refreshCalendarSnapshots} from './calendar-snapshot-cache';
 import { useReminders } from './useReminders';
 import * as auth from './auth';
@@ -163,10 +163,14 @@ export function useTodos() {
       try {
         while (version === generation.current && completions.current.get(id) === job) {
           const revision = job.revision, target = job.done, until = job.until;
-          const saved = await repository.update(id, { done: target });
+          let saved = await repository.update(id, { done: target });
           if (version !== generation.current || completions.current.get(id) !== job) return false;
           job.confirmed = saved; job.confirmedUntil = until;
-          if (revision !== job.revision) continue; // An undo is newer than this response.
+          if (revision !== job.revision) continue;
+          if(saved.source?.provider==='apple-reminders'&&saved.sourceSync?.state==='device-required')saved=await updateAppleSource(saved,featureRequest,()=>version===generation.current);
+          if(version!==generation.current||completions.current.get(id)!==job)return false;job.confirmed=saved;
+          if(revision!==job.revision)continue;
+          if(saved.sourceSync&&saved.sourceSync.state!=='succeeded')setNotice('덕의 완료 상태는 저장했지만 원본 반영은 확인이 필요해요. 항목에서 원본 저장을 다시 시도할 수 있어요.');
           setTodos(current => current.map(todo => todo.id === id ? saved : todo));
           setError(''); return true;
         }
@@ -216,7 +220,7 @@ export function useTodos() {
     return saved.sourceSync?.state==='succeeded';
   }
   function reflectOriginal(saved:Todo,fields:Record<string,unknown>){
-    const owner=calendarOwner.current;if(!owner||saved.source?.provider!=='google'||!saved.source.externalId.includes(':calendar')||saved.sourceSync?.state!=='succeeded')return;
+    const owner=calendarOwner.current;if(!owner||saved.source?.provider!=='google'||!saved.source.externalId.includes(':calendar')||!originalContentConfirmed(saved))return;
     invalidateCalendarSnapshotReads(owner);
     for(const entry of calendarSnapshots(owner).values())try{const zone=JSON.parse(entry.family)[1];entry.items=entry.items.map(event=>importedCalendarPatch(saved,event,zone,fields));}catch{}
     persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);refreshCalendarSnapshots(owner);

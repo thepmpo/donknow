@@ -1,8 +1,9 @@
 import type {Todo} from './domain.ts';import type {CalendarEvent} from './calendar-model.ts';
 import {wallTime,zonedDay,shiftDay} from './calendar-model.ts';
+export function originalContentConfirmed(todo:Todo){return todo.sourceSync?.state==='succeeded'||todo.sourceSync?.state==='failed'&&todo.sourceSync.reason==='completion-unsupported'&&Object.keys(todo.sourceSync.patch??{}).every(k=>k==='done');}
 /** Only a confirmed edit to this exact imported event may change its cached display. */
 export function importedCalendarPatch(todo:Todo,event:CalendarEvent,zone:string,fields:Record<string,unknown>):CalendarEvent{
- if(todo.source?.provider!=='google'||todo.sourceSync?.state!=='succeeded'||todo.source.externalId!==event.id||!todo.dueDate)return event;
+ if(todo.source?.provider!=='google'||!originalContentConfirmed(todo)||todo.source.externalId!==event.id||!todo.dueDate)return event;
  const content={...event,...('title' in fields?{title:todo.title}:{}),...('notes' in fields?{notes:todo.notes??''}:{})};
  if(!('dueDate' in fields)&&!('dueTime' in fields))return content;
  const allDay=todo.dueTime==null;

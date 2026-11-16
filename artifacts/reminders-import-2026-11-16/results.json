@@ -1,0 +1,10 @@
+{
+  "imported": 125,
+  "lists": 3,
+  "calls": 8,
+  "lostReplyResumed": true,
+  "completedExcluded": true,
+  "duplicateCount": 0,
+  "errors": [],
+  "scope": "actual Expo UI, synthetic native adapter and API; not physical EventKit"
+}

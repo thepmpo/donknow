@@ -90,4 +90,6 @@ tone_html='<section id="dots-full-current"><h2>Dots 공개 전체 기능 · 지�
 page=page.replace('<h1>🦆 덕 디자인 가이드</h1>','<h1>🦆 덕 디자인 가이드</h1><p>최신 Todo는 Things 참고의 큰 날짜·요일·선 아래 일정과 체크 목록을 표시합니다. 간결한48pt 행, 날짜별 추가, 기존3초 되돌리기를 유지합니다. <a href="https://github.com/thepmpo/donknow/blob/main/docs/things-source-repair-2026-11-15.md">현재 적용 기준</a></p>')
 briefing_current=(root/'docs/design-guide.md').read_text().split('## 2026-11-16 — 읽기 쉬운 브리핑·체크·Todo/캘린더·처리 중복 방지',1)[1].split('## ',1)[0]
 tone_html='<section id="briefing-cards-current"><h2>AI 브리핑 · 체크 · Todo/캘린더 · 같은 일 제외</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in briefing_current.splitlines() if line.strip())+'</section>'+tone_html
+reminders_current=(root/'docs/design-guide.md').read_text().split('## 2026-11-16 — 미리알림 전체 가져오기·완료 원본 반영·연결 대기',1)[1].split('## ',1)[0]
+tone_html='<section id="reminders-import-current"><h2>미리알림 전체 가져오기 · 원본 완료 · 연결 확인</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in reminders_current.splitlines() if line.strip())+'</section>'+tone_html
 (root/'public/design-guide.html').write_text(page.replace('OFFICIAL_TONE',tone_html).replace('CSS',css).replace('ROWS',rows).replace('SWATCHES',swatches))

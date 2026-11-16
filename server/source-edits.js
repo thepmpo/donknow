@@ -3,14 +3,15 @@ import {calendarWallClock} from './calendar-time.js';
 import {fail} from './secrets.js';
 export function createSourceEdits({store,assistant,integrations}){
  const busy=new Set();
- const fields=['title','notes','dueDate','dueTime'];
+ const fields=['title','notes','dueDate','dueTime','done'];
  function notify(user,todo,code){try{assistantNotice(store,user,{code,provider:todo.source.provider,title:todo.title,todoId:todo.id});}catch{}}
  async function apply(user,todo,patch,guard){
   const source=todo.source,external=source.externalId,task=/^([^:]+):tasks:([^:]+):(.+)$/.exec(external),event=/^([^:]+):(calendar|calendar2):(.+)$/.exec(external);
   if(source.provider!=='google'||!task&&!event)throw fail(422,'이 자료는 원본 앱에서 수정해주세요.');
   let operation,args;
-  if(task){operation='tasks.update';args={connectionId:task[1]==='legacy'?undefined:task[1],list:task[2],id:task[3],...Object.fromEntries(Object.entries(patch).filter(([k])=>['title','notes','dueDate'].includes(k)))};if('dueTime' in patch&&patch.dueTime!=null)throw fail(422,'Google Tasks는 예정 시간을 저장하지 않아요. 캘린더 일정이나 덕 알림 시간을 사용해주세요.');}
+  if(task){operation='tasks.update';args={connectionId:task[1]==='legacy'?undefined:task[1],list:task[2],id:task[3],...Object.fromEntries(Object.entries(patch).filter(([k])=>['title','notes','dueDate','done'].includes(k)))};if('dueTime' in patch&&patch.dueTime!=null)throw fail(422,'Google Tasks는 예정 시간을 저장하지 않아요. 캘린더 일정이나 덕 알림 시간을 사용해주세요.');}
   else{
+   if('done' in patch)throw fail(422,'캘린더 일정은 완료 상태를 제공하지 않아요.');
    const locator=store.importedSourceLocator(user,todo.id)??source,connectionId=event[1]==='legacy'?undefined:event[1];
    const calendarId=locator.calendarId??(event[2]==='calendar'?'primary':null),id=locator.eventId??(event[2]==='calendar'?event[3]:event[3].slice(event[3].indexOf(':')+1));
    if(!calendarId)throw fail(409,'이전 항목의 원본 캘린더를 다시 확인해주세요.');
@@ -29,20 +30,24 @@ export function createSourceEdits({store,assistant,integrations}){
   if(!guard())throw fail(409,'작업이 중지됐어요.');const draft=await assistant.prepare(user,operation,args),result=await assistant.confirm(user,draft.id,true,guard);
   if(result.status!=='succeeded')throw fail(result.status==='unknown'?502:409,'원본 저장 결과를 확인해주세요.');
  }
- async function save(user,id,patch,{retry=false,guard=()=>true}={}){
+ async function save(user,id,patch,{retry=false,forceDone=false,guard=()=>true}={}){
   const key=user+':'+id;if(busy.has(key))throw fail(409,'이 항목을 저장하고 있어요. 잠시 뒤 확인해주세요.');
   busy.add(key);try{if(!guard())throw fail(409,'작업이 중지됐어요.');const before=store.get(user,id);if(!before)throw fail(404,'내 할 일을 찾지 못했어요.');
    if(patch.dueDate===null)patch={...patch,dueTime:null};
    if(patch.dueTime!=null&&!(patch.dueDate??before.dueDate))throw fail(400,'예정 날짜를 먼저 선택해주세요.');
-   const changed=Object.fromEntries(Object.entries(patch).filter(([k,v])=>fields.includes(k)&&JSON.stringify(v??null)!==JSON.stringify(before[k]??null)));
+   const changed=Object.fromEntries(Object.entries(patch).filter(([k,v])=>fields.includes(k)&&(forceDone&&k==='done'||JSON.stringify(v??null)!==JSON.stringify(before[k]??null))));
    const pending=retry?before.sourceSync?.patch:Object.keys(changed).length?{...before.sourceSync?.patch,...changed}:changed;
-   let saved=retry?before:store.update(user,id,patch);
+   if(before.source&&'done' in changed)store.clearTaskSync(user,id);
+   let saved=retry?before:store.update(user,id,patch,{skipTaskSync:!!before.source});
    if(!before.source||!pending||!Object.keys(pending).length)return saved;
    const revision=(before.sourceSync?.revision??0)+1;
    if(before.source.provider==='apple-reminders')return store.update(user,id,{sourceSync:{state:'device-required',revision,at:Date.now(),patch:pending}});
+   const limitedDone='done' in pending&&!(before.source.provider==='google'&&/^([^:]+):tasks:([^:]+):(.+)$/.test(before.source.externalId));
+   const writable=limitedDone?Object.fromEntries(Object.entries(pending).filter(([key])=>key!=='done')):pending;
+   if(limitedDone&&!Object.keys(writable).length){saved=store.update(user,id,{sourceSync:{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}});notify(user,saved,'source-completion-limited');return saved;}
    saved=store.update(user,id,{sourceSync:{state:'unknown',revision,at:Date.now(),patch:pending}});
-   try{await apply(user,saved,pending,guard);saved=store.update(user,id,{sourceSync:{state:'succeeded',revision}});}
-   catch(error){const unknown=error.status===502||!error.status; saved=store.update(user,id,{sourceSync:{state:unknown?'unknown':'failed',revision,at:Date.now(),patch:pending}});notify(user,saved,unknown?'source-unknown':error.status===422?(before.source.provider==='google'?'source-limited':'source-unsupported'):'source-failed');}
+   try{await apply(user,saved,writable,guard);saved=store.update(user,id,{sourceSync:limitedDone?{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}:{state:'succeeded',revision}});if(limitedDone)notify(user,saved,'source-completion-limited');}
+   catch(error){const unknown=error.status===502||!error.status; saved=store.update(user,id,{sourceSync:{state:unknown?'unknown':'failed',revision,at:Date.now(),patch:pending}});notify(user,saved,unknown?'source-unknown':error.status===422&&'done' in pending?'source-completion-limited':error.status===422?(before.source.provider==='google'?'source-limited':'source-unsupported'):'source-failed');}
    return saved;
   }finally{busy.delete(key);}
  }
