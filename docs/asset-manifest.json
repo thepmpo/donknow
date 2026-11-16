@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-16",
-  "codeCommit": "1568804e5ef0d6bedca857a29fb1973a7e55efaf",
-  "assetCommit": "1568804e5ef0d6bedca857a29fb1973a7e55efaf",
-  "imageCount": 1339,
+  "codeCommit": "b6898b687dd9d919692e690f2c48bd016fca0e1f",
+  "assetCommit": "b6898b687dd9d919692e690f2c48bd016fca0e1f",
+  "imageCount": 1372,
   "images": [
+    {
+      "path": "artifacts/startup-session-2026-11-16/03-restoring.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 17447,
+      "sha256": "b0d5cb0e19f1eab94f6cbc87a8499129dec4a37925a9b00a443b8dd14ee7d740",
+      "import_path": "images/artifacts__startup-session-2026-11-16__03-restoring.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/04-manual-first.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 32194,
+      "sha256": "94ea9e99e5454b7361b6fef5c735750b5b849ac7c73ca5fa9c51670cda6e35c1",
+      "import_path": "images/artifacts__startup-session-2026-11-16__04-manual-first.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/06-account-pro.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 42873,
+      "sha256": "687a7b7394e26c248600d8f37a41de0e5c20d8c0ffdba108823cc5e2543c296a",
+      "import_path": "images/artifacts__startup-session-2026-11-16__06-account-pro.png"
+    },
     {
       "path": "artifacts/pricing-2026-11-16/01-desktop.png",
       "category": "사이트 요금제·라이트→프로 통합/실제 HTML·격리 계정/실결제·native 아님",
@@ -8263,6 +8284,216 @@
       "bytes": 31467,
       "sha256": "879d7c4742bb4043bcd358c6c4f16007f84cafb7082f7dc0ed9f58654f069c0d",
       "import_path": "images/artifacts__scheduled-messages-2026-11-13__03-small-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/01-before-session.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 31959,
+      "sha256": "310366e6749997cb5fffddf954ccd67cbbaf168a9283ce0305bb488996c28424",
+      "import_path": "images/artifacts__startup-session-2026-11-16__01-before-session.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/02-before-ready.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 23115,
+      "sha256": "313f493b7dd3c7827a76e872a1d520e504e44347eaeacfd814f1f323cf75ec07",
+      "import_path": "images/artifacts__startup-session-2026-11-16__02-before-ready.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/05-pro-chat.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 35137,
+      "sha256": "1dd67f8dd1bd326405efb2e0063d981471a08076bbcfe023b894d449d215b473",
+      "import_path": "images/artifacts__startup-session-2026-11-16__05-pro-chat.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/07-connection-retry.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 20790,
+      "sha256": "9e5864d2467de031e6ac927de25a82bba280d4ba5b35bdcb119e90b849207c2f",
+      "import_path": "images/artifacts__startup-session-2026-11-16__07-connection-retry.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/01-iphone-light.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 41672,
+      "sha256": "241d90db91714fcf23d6eb8630e1b97f7ce7f2667bd47c17f2cc339911b3ef1b",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__01-iphone-light.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/02-iphone-dark.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 41714,
+      "sha256": "08e5cdf523dabfbb651704df917064f8916fe7396968eb50e7f0c960de3b6419",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__02-iphone-dark.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/03-duo-folded-dark.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 32626,
+      "sha256": "e35a0da40d622e0c5ac350a01a12b82c0cea865f94d645ecc9b2dc1d8f8c7dfe",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__03-duo-folded-dark.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/04-duo-open-light.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 64134,
+      "sha256": "b13e94053874fd4a5220b79c550d3374b906c2f0bd913cfcfc8994170fa9051d",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__04-duo-open-light.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/05-small-phone.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 35610,
+      "sha256": "514ea0b6702a745f722670ea9ea0fb9496787d887e345b482e356c25f00fb2a2",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__05-small-phone.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/06-original-source-edit.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 47605,
+      "sha256": "5e919928f56b78638fecba2592ac7968d33eaa8f1ec84ecbe29371fb3055f38b",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__06-original-source-edit.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/07-chat-defaults-phone-hidden.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 28049,
+      "sha256": "dc56a73e37c8c5d349f88cd2809fadb6bed7ee3d51363b4de98dd9fa25895cd2",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__07-chat-defaults-phone-hidden.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/08-duo-upcoming-clean.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 31748,
+      "sha256": "6c2f75b9e841e3de8cdbc38ad219803308c7b43d244b052239a0ca123a2cd531",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__08-duo-upcoming-clean.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/09-month-line-starts-on-first.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 33348,
+      "sha256": "416e3fa9e5629af63f65ee035dd0c49204e0b764abd30e0b1d0a83f15664138d",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__09-month-line-starts-on-first.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/10-selection.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 42030,
+      "sha256": "72d42900a6fae8647a94897f68bd4905b02dd1cd4ea5a050c34198931e48f1cd",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__10-selection.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/10a-selection-empty.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 40955,
+      "sha256": "55ba4cfc801d5670135aaf652d75d0c8923f681101a35c63057735caeac41f64",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__10a-selection-empty.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/11-batch-date.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 45633,
+      "sha256": "7453959f743179036daf28a7fa71ce1c146532fbf2c5244f11c5cc40b6048dd6",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__11-batch-date.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/12-inline-note-keyboard.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 19906,
+      "sha256": "4d96b7f414c1f4cc443f3985ea271f2d06826dab9b2657cd77fae6498a6aaad8",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__12-inline-note-keyboard.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/12b-draft-after-failed-save.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 43250,
+      "sha256": "09ae5bfd7ca1a573eb385573c08f8a49cbc3251e77552045dabceeda27e060fb",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__12b-draft-after-failed-save.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/12c-partial-batch-recovery.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 45995,
+      "sha256": "fd44775d22f1104a6690209c1b5646a573c3e40ab2c5efcf585f70f54241a4c6",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__12c-partial-batch-recovery.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/13-me-overview.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 42652,
+      "sha256": "b236fe5bf4c8dd889280af4ac2b79155fedaa86b64455524c021a39e3574d56f",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__13-me-overview.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/14-service-catalog.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 38540,
+      "sha256": "e59ae88b9182043aa24952e08435a283116ace461a5d38a3bb47d0902cd96642",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__14-service-catalog.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/15-google-overview.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 42609,
+      "sha256": "c126e639cbcd18923636e4fab27e23dd47208a688ce2e8cc3f4d9f0cd4babb28",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__15-google-overview.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/16-google-permissions.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 45990,
+      "sha256": "7e59ce7b2a2343cfc7d7dd29a58d52015717bfb3f7e8c1a540f8a2612751f608",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__16-google-permissions.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/17-google-recovery.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 33324,
+      "sha256": "347c0e34c71480e7431b1b710c452b1f90c55f74d3011cb9c7e9849f49327271",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__17-google-recovery.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/18-notion-permission-intro.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 33701,
+      "sha256": "7b4f90738484df8ee63113e09a60e46697e96a7ab761f44a6a387f782559b6ff",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__18-notion-permission-intro.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/19-unavailable-service.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 55757,
+      "sha256": "003223025c5ec2ff8bd61d3620fcef0556ec016497d83431c90f7ff65ada37f9",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__19-unavailable-service.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/20-apple-intro.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 64885,
+      "sha256": "844e61490a8224e34b7d38ddd4cb908563cde968e063d3ca65a512068392353f",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__20-apple-intro.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/21-me-folded-dark.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 36619,
+      "sha256": "b5e2a64d8d61d0c74f6dc506ebaa5e6ef635fe4754adb738cadfdf3c16f8a2ea",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__21-me-folded-dark.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/22-me-open-light.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 71584,
+      "sha256": "a31525956ae3b3526c816753a7cba0481d3cb138898903d09268c1db92b4bff0",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__22-me-open-light.png"
+    },
+    {
+      "path": "artifacts/startup-session-2026-11-16/reference/23-me-small.png",
+      "category": "로그인 복원·직접 작성 우선·전체 프로/실제 Expo·합성 API·Duo 기하/native 아님",
+      "bytes": 36598,
+      "sha256": "96fe45ae9ae4f1e108c9d29c9804f5d7094196de9ffadcf5623153cc64cd0933",
+      "import_path": "images/artifacts__startup-session-2026-11-16__reference__23-me-small.png"
     },
     {
       "path": "artifacts/things-source-repair-2026-11-15/02-iphone-dark.png",
