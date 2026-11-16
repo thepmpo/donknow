@@ -28,3 +28,9 @@
 ## 게시
 
 기존 Render free duckduck-test/srv-dbgpc0ff3r2c73abc7e0, main, autoDeploy off를 유지한다. 구현/화면 commit 뒤 인계 문서를 재생성하고 최신main을 수동 배포한다. 실제 terminal live를 확인한 결과만 게시 완료로 보고한다. 이 페이지 요청으로 TestFlight/native 빌드는 실행하지 않는다.
+
+### 실제 게시 완료
+
+2026-11-16 오전9:49 KST, 소스 d36d5c05c1cf8a18e56dc2b0ddbd90d0e5f2d1ad의 Render 배포 dep-dbt55l6i0phs73enjnp0가 live로 완료됐다. 새 인스턴스 h7pdd의 port10000 시작·live 로그를 확인했다. [GitHub 검사43782510008](https://github.com/thepmpo/donknow/actions/runs/43782510008)도 success다. 공개 주소: https://duckduck-test.onrender.com/pricing#compare .
+
+직접 운영 HTTPS 본문 조회는 이 실행 환경에서403으로 차단돼 확인하지 못했다. Render의 실제 배포/ready 상태와 로컬 실제 서버·Chromium의200/HEAD/405·PC/모바일 검증을 구분한다. 이 마지막 운영 기록만 추가한 commit은 앱/요금표 본문을 바꾸거나 새 native를 실행하지 않는다.
