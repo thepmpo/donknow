@@ -1,28 +1,28 @@
 {
   "generatedAt": "2026-11-16",
-  "codeCommit": "ee60d065bddd75f6b602263ca2f793f6229f823c",
-  "assetCommit": "ee60d065bddd75f6b602263ca2f793f6229f823c",
+  "codeCommit": "60959e8c8ed17a804c3be491304be7f4225ed40c",
+  "assetCommit": "60959e8c8ed17a804c3be491304be7f4225ed40c",
   "imageCount": 1410,
   "images": [
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/02-phone-dark.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
-      "bytes": 57698,
-      "sha256": "677095041b952345d55a25360358d0eb51580746f61568f0fdb671b7583b75bc",
+      "bytes": 57778,
+      "sha256": "6eb2379422b5e84e048fa62a15bdacdb91fb12b90c0f5a5bd0f940d34f079f20",
       "import_path": "images/artifacts__briefing-cards-2026-11-16__after__02-phone-dark.png"
     },
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/07-next-briefing.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
-      "bytes": 50510,
-      "sha256": "1271b613db9e9c995eff247ce1429967889182eea07b5f21c6e639c125341e66",
+      "bytes": 50598,
+      "sha256": "32fb3b5d3eaa5f8d5e41d2b0ddfd877ef21e04547e813f045b2995ce37cb5772",
       "import_path": "images/artifacts__briefing-cards-2026-11-16__after__07-next-briefing.png"
     },
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/03-calendar-preview.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
-      "bytes": 43833,
-      "sha256": "525c98b37af62551f36106a271f9998329e3fadef3f35510a7fc8bba014b2567",
+      "bytes": 43794,
+      "sha256": "9ebfb61eaa92df259ee007919acbf912c4ecdce07cd58b4580f1a60b53d4cf82",
       "import_path": "images/artifacts__briefing-cards-2026-11-16__after__03-calendar-preview.png"
     },
     {
@@ -2219,15 +2219,15 @@
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/01-phone-light.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
-      "bytes": 58421,
-      "sha256": "7f2de5c2c6604f06767642ca1ad068d4a5ca10bda081c43c85edb701eba42e42",
+      "bytes": 58554,
+      "sha256": "ed5799ccf464a07753fadf452a05010b7de3c096207d77fadbe99a620fb6603b",
       "import_path": "images/artifacts__briefing-cards-2026-11-16__after__01-phone-light.png"
     },
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/04-folded.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
-      "bytes": 38822,
-      "sha256": "3558b94ea0f13beea974b9b27e34e43e2698f88f2f879a67981fd1877fbe9886",
+      "bytes": 38826,
+      "sha256": "e140f619cb9fbb232eb20d5a02429bd23c325ec36b1c4a2df97644a245fbf016",
       "import_path": "images/artifacts__briefing-cards-2026-11-16__after__04-folded.png"
     },
     {
@@ -2247,8 +2247,8 @@
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/08-chat-receipt.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
-      "bytes": 52297,
-      "sha256": "7d6922bd5c987c9f98c2c229283b5c5a2f16dead7b764fa2aaa20d8603ef460e",
+      "bytes": 52301,
+      "sha256": "1aaf7c276d04aeb73e909263e0464eb2559438d71380f484820bbf9d68491059",
       "import_path": "images/artifacts__briefing-cards-2026-11-16__after__08-chat-receipt.png"
     },
     {
