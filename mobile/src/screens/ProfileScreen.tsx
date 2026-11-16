@@ -85,6 +85,7 @@ export function ProfileScreen({store,onConnection,onOpenTodos=()=>{}}:{store:Tod
    <MeRow title="데이터·개인정보" label="데이터·개인정보" icon="shield-checkmark-outline" onPress={()=>go({kind:'data'})}/>
    <MeRow title="앱 정보·도움말" status={app.expo.version} icon="information-circle-outline" onPress={()=>go({kind:'about'})}/>
   </MeSection>
+ {Platform.OS==='web'&&/^\/app\/?$/.test(window.location.pathname)&&<MeSection compact><MeRow title="덕 소개·요금제" icon="globe-outline" onPress={()=>window.location.assign('/')}/></MeSection>}
  </Page></View>{route&&<MotionView testID="me-detail" variant="navigation" transitionKey={JSON.stringify(route)} style={{flex:1,minHeight:0}}>{renderDetail()}</MotionView>}</View>;
 }
 function AdvancedSettings({store,onClose,onConnection}:{store:TodoStore;onClose:()=>void;onConnection:()=>void}){
