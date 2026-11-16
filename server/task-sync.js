@@ -15,8 +15,9 @@ export function createTaskSync(store,integrations) {
     const record=googleConnection(store,userId,connectionId);if(!record?.taskSyncEnabled)throw fail(403,'완료 동기화를 먼저 켜주세요.');
     let updated=0,skipped=0;const items=store.list(userId).filter(todo=>todo.id>cursor&&todo.source?.provider==='google'&&todo.source.externalId.startsWith((record.connectionId??'legacy')+':tasks:')).sort((a,b)=>a.id.localeCompare(b.id));const page=items.slice(0,5);
     for(const todo of page){
-      const job=store.taskSyncJob(userId,todo.id);if(job&&job.status!=='conflict'){skipped++;continue;}
+      const job=store.taskSyncJob(userId,todo.id);if(job&&job.status!=='conflict'||todo.sourceSync?.patch&&todo.sourceSync.state!=='succeeded'){skipped++;continue;}
       const remote=await integrations.googleTask(userId,todo);if(store.taskSyncJob(userId,todo.id)?.revision!==job?.revision){skipped++;continue;}
+      const latest=store.get(userId,todo.id);if(!latest||latest.done!==todo.done||latest.completedAt!==todo.completedAt||latest.sourceSync?.revision!==todo.sourceSync?.revision||latest.source?.externalId!==todo.source?.externalId){skipped++;continue;}
       const done=remote.status==='completed';store.update(userId,todo.id,{done,completedAt:done?(remote.completed??new Date().toISOString()):null},{remote:true});store.clearTaskSync(userId,todo.id);updated++;
     }return {updated,skipped,nextCursor:items.length>page.length?page.at(-1).id:null};
   }
