@@ -14,7 +14,7 @@
 
 ## 완료·수정의 원본 반영
 
-완료 체크는 기존 내용 편집과 다른 경로여서 Apple 원본 저장을 건너뛰었다. 서버의 source edit에 done을 포함하고, 일반 Todo 체크·되돌리기·AI/브리핑의 연결 Todo 체크가 같은 경로를 사용한다. Apple은 원본 ID를 읽어 completed만 바꾸고 다시 읽어 확인한 뒤 현재 개정의 기기 결과를 서버에 기록한다. 기존 제목/알람/반복을 덮지 않는다. 원본 수정 시각은 문자열 표기 대신 실제 시각을 비교해 같은 시각의 Z/.000Z 표기 차이를 충돌로 오인하지 않는다. 응답 유실·계정 교체·이전 개정·검증 실패는 성공으로 가장하지 않는다.
+완료 체크는 기존 내용 편집과 다른 경로여서 Apple 원본 저장을 건너뛰었다. 서버의 source edit에 done을 포함하고, 일반 Todo 체크·되돌리기·AI/브리핑의 연결 Todo 체크가 같은 경로를 사용한다. Apple은 원본 ID를 읽어 completed만 바꾸고 다시 읽어 확인한 뒤 현재 개정의 기기 결과를 서버에 기록한다. 기존 제목/알람/반복을 덮지 않는다. 완료 변경의 성공 결과에는 실제 원본 completed 확인값이 필요하다. 이 값 없이 성공을 보고하는 구버전 앱은 업데이트 안내를 남기고 완료 반영 성공으로 인정하지 않는다. 원본 수정 시각은 문자열 표기 대신 실제 시각을 비교해 같은 시각의 Z/.000Z 표기 차이를 충돌로 오인하지 않는다. 응답 유실·계정 교체·이전 개정·검증 실패는 성공으로 가장하지 않는다.
 
 Google Tasks는 명시적인 덕 편집/체크에서 원본에 title/notes/due/status를 반영하며 별도 백그라운드 완료 전송 ON에 의존하지 않는다. 같은 변경을 기존 대기 큐가 다시 쓰지 않도록 조정했다. 원본 완료 상태를 수동으로 읽는 동안 새 편집이 생기거나 원본 저장 결과가 대기 중이면 늦은 조회로 덕의 새 상태를 덮지 않는다. 원본 쓰기 권한·사용자 소유권·ETag와 불확실 쓰기 보호는 유지한다.
 
@@ -44,4 +44,13 @@ Google Tasks는 명시적인 덕 편집/체크에서 원본에 title/notes/due/s
 
 브라우저의 native 어댑터는 합성이다. 실제 EventKit/iCloud/계정 동기화·물리 iPhone/Duo·실계정 원본 쓰기·실제 AI 모델 성공을 검증한 것으로 보고하지 않는다. iPhone에는 새 빌드/설치가 필요하다. 이전 native workflow 조회 Forbidden이 해결됐다고 주장하거나 유료 빌드로 우회하지 않는다.
 
-게시 상태: 최신 소스 검사와 무료 Render 반영을 준비 중. 실제 CI/배포 결과는 아래에 확인된 값으로 기록한다.
+## 실제 실행 기록
+
+- 구현 스냅샷 `2757f7ad1686cc77761d339ed24b78ea33d49eea`, 늦은 원본 조회 보호까지 포함한 최종 코드 `8239e9b311d8627ae3a1cdb427cd5a72bd2d2fde`, 인계 생성 `89cb91446bbe2ba0bc1b525938d145327a098c73`.
+- [PR5](https://github.com/thepmpo/donknow/pull/5) 병합 소스 `268f23a735fc28a041b97bbd764b5a0b4bbb8ede`.
+- [CI43800348615](https://github.com/thepmpo/donknow/actions/runs/43800348615): success. 최종430개 중428통과/실패0/환경 조건부2제외, 사이트 패키징4통과·타입/native 구성·iOS JS export 성공. 새 native archive/서명/Apple 제출을 뜻하지 않는다.
+- 기존 무료 Render의 수동 deploy `dep-dbt7r0e7bikc73da80r0`, 정확한 소스는 위 병합 SHA다. 실제 최종 상태는 아래 추가 기록으로 확인한다. 자동 배포 OFF·무료 플랜·동일 서비스 유지.
+- 2026-11-16 03:50 UTC에 최신 main의 iPhone 실행을 요청했으나 `Get https://api.github.com/repos/thepmpo/donknow/actions/workflows/ios-testflight.yml: Forbidden`으로 거부됐다. POST dispatch 이전 조회 실패라 이번 소스의 새 run/IPA/Apple 제출은 시작되지 않았다. 연결 도구에도 dispatch 기능이 없으므로 paid runner/EAS cloud/자동 push/다른 자격 증명으로 우회하지 않는다.
+- 새로 확인한 이전 iPhone [43796991834](https://github.com/thepmpo/donknow/actions/runs/43796991834)는 success지만 소스는 `b54e2178b9a4cff1e4c18055ac22ff16b3129d67`로 이번 수정 이전이다. 실제 사용자 설치 여부·app build number를 추정하지 않는다.
+- 최신 수정본은 [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 **Run workflow → main → Run workflow**로 새로 실행해야 한다. 이전 실행의 Re-run에는 최신 소스가 포함되지 않는다.
+- 공개 앱은 https://duckduck-test.onrender.com/app 이다. 웹의 Apple 화면은 안내만 가능하며 실제 전체 읽기/완료 원본 쓰기는 새 iPhone 앱과 OS 권한이 필요하다. 이 환경의 공개 URL 직접 조회는 앞선 CONNECT tunnel403 경계가 있어 이를 운영 API 오류로 단정하지 않는다. 실제 배포 ID/SHA/live와 시작 로그로 게시를 확인한다.
