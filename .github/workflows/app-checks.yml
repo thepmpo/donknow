@@ -6,6 +6,8 @@ on:
       - 'server.js'
       - 'server/**'
       - 'mobile/**'
+      - 'website/**'
+      - 'public/pricing.html'
       - 'test/**'
       - 'test-support/**'
       - 'Dockerfile'
@@ -46,6 +48,9 @@ jobs:
           GIT_CONFIG_NOSYSTEM: '1'
           GIT_CONFIG_GLOBAL: /dev/null
       - run: npm ci --prefix mobile --no-audit --no-fund
+      - run: npm ci --prefix website --no-audit --no-fund
+      - run: npm --prefix website run build
+      - run: npm --prefix website run test:sites
       - run: npm --prefix mobile run typecheck
       - run: npm --prefix mobile run check:native
       - run: npm --prefix mobile run export:ios -- --max-workers 2
