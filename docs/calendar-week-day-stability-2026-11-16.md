@@ -66,3 +66,10 @@ Google Tasks의 완료/되돌리기와 지원되는 내용 편집을 다루고, 
 - 새로 확인한 이전 [iPhone43805463425](https://github.com/thepmpo/donknow/actions/runs/43805463425)는 source `9c57df38c99671188c68a6f3b53ae5f22bdaa7be`의 서명 IPA·Apple 제출 단계 success다. 이번 주간/일간·즉시 저장 변경 전 소스이고 사용자 설치는 미확인이다.
 - **이번 아이폰 화면은 최신 main의 새 빌드 설치가 필요하다.** [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → main → Run workflow이며 이전 실행 Re-run을 쓰지 않는다. EventKit/실기기 IME/실제 공급자 동기화 검수는 별도다.
 - 앱: https://duckduck-test.onrender.com/app · 공개 기능/검증 문서: https://duckduck-test.onrender.com/project . 본 기록을 포함한 문서 게시 커밋은 기능 코드의 성공 배포와 별개로 반영한다. 최신 실행 기록 원본은 [이 문서의 main 버전](https://github.com/thepmpo/donknow/blob/main/docs/calendar-week-day-stability-2026-11-16.md)이다.
+
+
+### 공개 검증 문서 최종 게시
+
+- 문서 포함 commit `b555bafb2560b666da5f02e6983e6799d6889535`의 기존 무료 Render deploy **`dep-dbtbe9lg1s2s739bahe0`**는 **2026-11-16 07:57:22 UTC / 16:57:22 KST에 live**다. 시작 로그는07:57:18 UTC, 실제 배포 소스가 위 commit과 일치한다. 기능 코드는 앞서 검증한 a9c9de6과 같다.
+- 첫 기능 인스턴스의07:54/55/56 UTC 운영 메모리 표본은약138/158/155MiB였고 이는 이 짧은 관찰 구간의 값이다. 무료512MiB 안에서 관찰됐지만 장기 부하나 지연 보장이 아니다.
+- 새 native dispatch는 여전히 시작되지 않았다. 이 실행 종료 후 원본 기록만 추가한 문서 커밋은 앱의 추가 기능 배포나 새로운 iPhone 빌드를 뜻하지 않는다. 공개 HTML에는 앞서 확인한 기능/검증 기록이 게시됐으며, 최신 실행 원본은 이 문서의 main 링크를 따른다.
