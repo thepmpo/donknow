@@ -47,7 +47,7 @@ export function createSourceEdits({store,assistant,integrations}){
    if(limitedDone&&!Object.keys(writable).length){saved=store.update(user,id,{sourceSync:{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}});notify(user,saved,'source-completion-limited');return saved;}
    saved=store.update(user,id,{sourceSync:{state:'unknown',revision,at:Date.now(),patch:pending}});
    try{await apply(user,saved,writable,guard);saved=store.update(user,id,{sourceSync:limitedDone?{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}:{state:'succeeded',revision}});if(limitedDone)notify(user,saved,'source-completion-limited');}
-   catch(error){const unknown=error.status===502||!error.status; saved=store.update(user,id,{sourceSync:{state:unknown?'unknown':'failed',revision,at:Date.now(),patch:pending}});notify(user,saved,unknown?'source-unknown':error.status===422&&'done' in pending?'source-completion-limited':error.status===422?(before.source.provider==='google'?'source-limited':'source-unsupported'):'source-failed');}
+   catch(error){const unknown=error.status===502||!error.status; saved=store.update(user,id,{sourceSync:{state:unknown?'unknown':'failed',revision,at:Date.now(),patch:pending}});notify(user,saved,unknown?'source-unknown':error.status===422?(before.source.provider==='google'?'source-limited':'source-unsupported'):'source-failed');}
    return saved;
   }finally{busy.delete(key);}
  }
