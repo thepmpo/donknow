@@ -24,7 +24,14 @@ export async function startRequestLanes({workerUrl=new URL('../server-runtime.js
    worker.on('exit',code=>{if(closing)return;ready=false;reject(new Error('Request lane exited: '+role));logger(JSON.stringify({event:'request-lane-exit',lane:role,code}));void close().then(()=>{process.exitCode=1;});});
   });
  }
- async function close(){if(closing)return;closing=true;ready=false;server?.close();for(const lane of Object.values(workers)){lane.agent.destroy();await lane.worker.terminate();}}
+ async function close(){if(closing)return;closing=true;ready=false;server?.close();await Promise.all(Object.values(workers).map(async lane=>{
+  if(lane.worker.threadId!==-1)await new Promise(resolve=>{
+   const finish=()=>{clearTimeout(timer);resolve();};
+   const timer=setTimeout(()=>{void lane.worker.terminate().then(finish);},10000);
+   lane.worker.once('exit',finish);lane.worker.postMessage({type:'close'});
+  });
+  lane.agent.destroy();
+ }));}
  let server;
  try{await boot('core');await boot('integration');}catch(error){await close();throw error;}
  server=http.createServer((req,res)=>{

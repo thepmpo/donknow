@@ -13,3 +13,4 @@ const server=http.createServer((req,res)=>{
  res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({ok:true}));
 });
 server.listen(0,'127.0.0.1',()=>parentPort.postMessage({type:'ready',port:server.address().port}));
+parentPort.on('message',message=>{if(message.type==='close')server.close(()=>{db.close();process.exit(0);});});
