@@ -3,8 +3,8 @@ import {onAssistantUpdated} from './assistant-updates';
 import {AppState,Platform} from 'react-native';
 import type {TodoStore} from './useTodos';
 import type {Todo} from './domain';
-export type BriefingItem={key:string;title:string;notes:string;dueDate:string|null;todoId?:string|null;excluded?:boolean;todo?:Todo|null;group?:string;proposalIndex?:number;sourceRefs:string[]};
-export type ScheduledMessage={id:string;kind:string;title:string;text:string;warnings:string[];createdAt:number;readAt:number|null;items?:BriefingItem[];jobId?:string;files?:import('./agent').AgentFile[];changes?:{added:number;updated:number;first:boolean;partial:boolean}};
+export type BriefingItem={key:string;title:string;notes:string;dueDate:string|null;todoId?:string|null;excluded?:boolean;todo?:Todo|null;group?:string;proposalIndex?:number;sourceRefs:string[];suggestedCalendar?:Record<string,unknown>;sources?:{ref:string;title:string;provider:string}[];section?:string|null;token?:string;calendarAdded?:boolean;calendarAction?:import('./useAssistant').AssistantDraft|null};
+export type ScheduledMessage={id:string;kind:string;title:string;text:string;warnings:string[];createdAt:number;readAt:number|null;items?:BriefingItem[];jobId?:string;files?:import('./agent').AgentFile[];summary?:string;sources?:{ref:string;title:string;provider:string;url?:string}[];changes?:{added:number;updated:number;first:boolean;partial:boolean}};
 export function useAutomations(store:TodoStore,available:boolean,active:boolean){
  const [messages,setMessages]=useState<ScheduledMessage[]>([]),[error,setError]=useState('');
  const activeRef=useRef(active);activeRef.current=active;const generation=useRef(0),reading=useRef(false),marking=useRef(false),cursor=useRef('');

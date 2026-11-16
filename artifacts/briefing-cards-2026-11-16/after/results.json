@@ -1,0 +1,16 @@
+{
+  "captures": [
+    "01-phone-light",
+    "02-phone-dark",
+    "03-calendar-preview",
+    "04-folded",
+    "05-open",
+    "06-small",
+    "07-next-briefing",
+    "08-chat-receipt"
+  ],
+  "todoCount": 3,
+  "calendarCreates": 1,
+  "errors": [],
+  "scope": "real Expo / synthetic API and Duo geometry; backend ownership and repeat suppression covered separately"
+}

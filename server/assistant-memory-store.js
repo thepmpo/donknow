@@ -1,6 +1,6 @@
 import {randomUUID,createHash} from 'node:crypto';
 import {fail} from './secrets.js';
-import {briefingKey} from './briefing-store.js';
+import {briefingKey,checklistKey} from './briefing-store.js';
 const text=(v,max)=>typeof v==='string'&&!!v.trim()&&v.length<=max;
 export function assistantMemoryStore(db,box){
  db.exec(`CREATE TABLE IF NOT EXISTS assistant_memory_settings(user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,enabled INTEGER NOT NULL,revision INTEGER NOT NULL);
@@ -47,8 +47,8 @@ export function assistantMemoryStore(db,box){
   completeConversation(run,result,now=Date.now()){return tx(()=>{
    const row=db.prepare("SELECT * FROM assistant_conversation_runs WHERE user_id=? AND request_id=? AND lease=? AND status='running'").get(run.userId,run.requestId,run.lease),pref=settings(run.userId);if(!row||!pref.enabled||pref.revision!==run.revision)throw fail(409,'대화·기억 설정이 바뀌어 답변을 저장하지 않았어요.');
    const userRow=db.prepare('SELECT payload,created_at FROM assistant_conversations WHERE id=? AND user_id=?').get(run.userTurnId,run.userId);now=Math.max(now,userRow.created_at+1);
-   const id=randomUUID(),items=result.proposals.flatMap((p,i)=>p.operation==='todo.create'?[{key:briefingKey('chat:'+id+':'+i),proposalIndex:i,title:p.args.title,notes:p.args.notes??'',dueDate:p.args.dueDate??null,sourceRefs:p.sourceRefs}]:[]),assistantTurn={id,role:'assistant',text:result.answer,proposals:result.proposals,items,jobs:result.jobs??[],files:result.files??[],citations:result.citations??[],responsibilities:result.responsibilities??[],createdAt:now};
-   db.prepare("INSERT INTO assistant_conversations (id,user_id,request_id,role,payload,created_at,channel_key) VALUES (?,?,?,'assistant',?,?,?)").run(id,run.userId,run.requestId,box.seal({text:result.answer,proposals:result.proposals,items,jobs:result.jobs??[],files:result.files??[],citations:result.citations??[],responsibilities:result.responsibilities??[]}),now,run.channel??'app');
+   const id=randomUUID(),items=result.items??result.proposals.flatMap((p,i)=>p.operation==='todo.create'?[{key:checklistKey(p),proposalIndex:i,title:p.args.title,notes:p.args.notes??'',dueDate:p.args.dueDate??null,sourceRefs:p.sourceRefs,section:p.section??null}]:[]),assistantTurn={id,role:'assistant',text:result.answer,proposals:result.proposals,items,jobs:result.jobs??[],files:result.files??[],citations:result.citations??[],responsibilities:result.responsibilities??[],createdAt:now};
+   db.prepare("INSERT INTO assistant_conversations (id,user_id,request_id,role,payload,created_at,channel_key) VALUES (?,?,?,'assistant',?,?,?)").run(id,run.userId,run.requestId,box.seal({text:result.answer,sources:(result.sources??[]).map(({ref,title,provider,locator})=>({ref,title,provider,locator})),proposals:result.proposals,items,jobs:result.jobs??[],files:result.files??[],citations:result.citations??[],responsibilities:result.responsibilities??[]}),now,run.channel??'app');
    const userTurn={id:run.userTurnId,...box.open(userRow.payload),role:'user',state:'sent',createdAt:userRow.created_at};
    db.prepare('UPDATE assistant_conversations SET payload=? WHERE id=? AND user_id=?').run(box.seal({...box.open(userRow.payload),text:userTurn.text,state:'sent'}),run.userTurnId,run.userId);
    const response={...result,sources:(result.sources??[]).map(source=>({ref:source.ref,provider:source.provider,kind:source.kind,title:source.title,text:'',completed:source.completed,partial:source.partial,locator:source.locator})),conversation:{requestId:run.requestId,userTurn,assistantTurn}};db.prepare("UPDATE assistant_conversation_runs SET status='succeeded',payload=? WHERE user_id=? AND request_id=? AND lease=?").run(box.seal(response),run.userId,run.requestId,run.lease);return response;
