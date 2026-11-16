@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-16",
-  "codeCommit": "60959e8c8ed17a804c3be491304be7f4225ed40c",
-  "assetCommit": "60959e8c8ed17a804c3be491304be7f4225ed40c",
-  "imageCount": 1410,
+  "codeCommit": "2757f7ad1686cc77761d339ed24b78ea33d49eea",
+  "assetCommit": "2757f7ad1686cc77761d339ed24b78ea33d49eea",
+  "imageCount": 1414,
   "images": [
+    {
+      "path": "artifacts/reminders-import-2026-11-16/01-all-selected.png",
+      "category": "미리알림 전체·부분 실패 재개·연결 상태/실제 Expo·합성 native 어댑터·API/실기기 아님",
+      "bytes": 36658,
+      "sha256": "6f35f8d675b8f1f274a23283e391ec15dcf3f4fbb72afb3ddfb5e4dda12a2026",
+      "import_path": "images/artifacts__reminders-import-2026-11-16__01-all-selected.png"
+    },
+    {
+      "path": "artifacts/reminders-import-2026-11-16/02-resumable.png",
+      "category": "미리알림 전체·부분 실패 재개·연결 상태/실제 Expo·합성 native 어댑터·API/실기기 아님",
+      "bytes": 41588,
+      "sha256": "88a1f99855bd1a97dae3009ff016f405c15a37e1879e07df0bfa4682a9efa7f4",
+      "import_path": "images/artifacts__reminders-import-2026-11-16__02-resumable.png"
+    },
+    {
+      "path": "artifacts/reminders-import-2026-11-16/03-complete.png",
+      "category": "미리알림 전체·부분 실패 재개·연결 상태/실제 Expo·합성 native 어댑터·API/실기기 아님",
+      "bytes": 36311,
+      "sha256": "53f4822d183a36165f9621778ec111497c57dc88975a9300690123e88cbb499e",
+      "import_path": "images/artifacts__reminders-import-2026-11-16__03-complete.png"
+    },
     {
       "path": "artifacts/briefing-cards-2026-11-16/after/02-phone-dark.png",
       "category": "AI 브리핑·체크·Todo/캘린더·중복 방지/실제 Expo·합성 API·Duo 기하/native·실계정 아님",
@@ -8529,6 +8550,13 @@
       "bytes": 113675,
       "sha256": "151379fd7dd7b6c83afcfd57d6064232f5cd15a3165a730eeb51520a54d70f09",
       "import_path": "images/artifacts__reference-flows-2026-11-15__preview.png"
+    },
+    {
+      "path": "artifacts/reminders-import-2026-11-16/connection-regression/21-integration-status-retained.png",
+      "category": "미리알림 전체·부분 실패 재개·연결 상태/실제 Expo·합성 native 어댑터·API/실기기 아님",
+      "bytes": 76624,
+      "sha256": "46fbe5fe3ed3f0bc3d5ac37c1abcdf30b652930fc2cd58f73d72137f067631df",
+      "import_path": "images/artifacts__reminders-import-2026-11-16__connection-regression__21-integration-status-retained.png"
     },
     {
       "path": "artifacts/scheduled-messages-2026-11-13/01-chat-fixture.png",
