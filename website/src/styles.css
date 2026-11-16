@@ -439,3 +439,13 @@ html {
 .landing-introTitle strong {
   font-weight: 700;
 }
+
+/* One website: product introduction, inline plans and the same-origin app. */
+.web-entry{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.phone-entry{padding-inline:12px!important;display:flex;align-items:center;justify-content:center;min-width:44px}
+.duck-pricing{position:relative;z-index:2;background:#fff;scroll-margin-top:80px}
+.duck-pricing .pricing-main{padding-top:96px;padding-bottom:76px}
+.duck-pricing .intro h2{margin-top:14px}
+@media(max-width:700px){.phone-entry{display:none!important}.web-entry{padding-inline:14px!important}.header-actions{gap:8px!important}.duck-pricing .pricing-main{padding-top:72px}.duck-brand{gap:5px!important}.duck-brand span{font-size:17px!important}}
+@media(max-width:360px){.duck-brand span{display:none}.header-actions{gap:6px!important}}
+.footer-phone-link{display:block;margin:12px auto 0;min-height:44px;background:transparent;border:0;font:inherit;font-size:14px;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
