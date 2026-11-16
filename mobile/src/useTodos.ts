@@ -4,8 +4,9 @@ import {originalContentConfirmed,importedCalendarPatch} from './calendar-source-
 import {calendarSnapshots,invalidateCalendarSnapshotReads,persistCalendarSnapshots,broadcastCalendarSnapshots,refreshCalendarSnapshots} from './calendar-snapshot-cache';
 import { useReminders } from './useReminders';
 import * as auth from './auth';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
+import {HttpResponseError} from './http-response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos, completedTodos } from './domain';
 import type { Connection, Draft, Todo } from './domain';
@@ -28,6 +29,12 @@ export function useTodos() {
   const reminderOwner = connection?.mode === 'demo' ? 'demo' : user && connection?.mode === 'cloud' ? connection.baseUrl + ':' + user.id : null;
   const calendarOwner=useRef<string|null>(null);calendarOwner.current=reminderOwner==='demo'?null:reminderOwner;
   const [notice, setNotice] = useState('');
+  const [writeReports,setWriteReports]=useState<{id:string;text:string;canCheck?:boolean}[]>([]);
+  const writeChecks=useRef(new Map<string,()=>Promise<void>>()),reminderBaselines=useRef(new Map<string,Todo>());
+  useEffect(()=>{writeChecks.current.clear();reminderBaselines.current.clear();setWriteReports([]);},[reminderOwner]);
+  function reportWrite(id:string,text:string,check?:()=>Promise<void>){if(check)writeChecks.current.set(id,check);else writeChecks.current.delete(id);setWriteReports(old=>[...old.filter(r=>r.id!==id),{id,text,canCheck:!!check}].slice(-20));}
+  async function checkWrite(id:string){await writeChecks.current.get(id)?.();}
+  function writeResolved(id:string){writeChecks.current.delete(id);setWriteReports(old=>old.filter(r=>r.id!==id));}
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState('');
@@ -94,6 +101,7 @@ export function useTodos() {
     });
     return () => subscription.remove();
   }, []);
+  useEffect(()=>{if(!todos.some(t=>t.sourceSync?.state==='queued'))return;const timer=setInterval(()=>void refresh(),2500);return()=>clearInterval(timer);},[todos.some(t=>t.sourceSync?.state==='queued')]);
   async function connect(next: Connection) {
     if (busy.current.size || connectingRef.current) return false;
     connectingRef.current = true; refreshing.current=false;generation.current++; setConnecting(true); setError('');
@@ -115,7 +123,7 @@ export function useTodos() {
   async function refresh() {
     if (!repo.current || connectingRef.current || busy.current.size || refreshing.current) return;
     refreshing.current=true;const version = generation.current, readRevision = writes.current; setLoading(true);
-    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { snapshotReady.current=true;setTodos(data); setError(''); } }
+    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { snapshotReady.current=true;for(const todo of data){const previous=todosRef.current.find(t=>t.id===todo.id);if(previous?.sourceSync?.state==='queued'&&todo.sourceSync?.revision===previous.sourceSync.revision&&todo.sourceSync.state!=='queued')reflectOriginal(todo,previous.sourceSync.patch??{});}const pending=todosRef.current.filter(t=>t.saveState==='checking'&&writeChecks.current.has(t.id));setTodos([...data.filter(t=>!pending.some(p=>p.id===t.id)),...pending]);setError(''); } }
     catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) {expireSession();setError(message(e));}else if(readRevision===writes.current)setError(message(e)); } }
     finally { if (version === generation.current) {refreshing.current=false;setLoading(false);} }
   }
@@ -127,8 +135,29 @@ export function useTodos() {
     finally { if (version === generation.current) { busy.current.delete(key); setBusyIds([...busy.current]); } }
   }
   async function add(draft: Draft): Promise<Todo | null> {
-    const saved = await mutate('create', repository => repository.create(draft));
-    if (saved) setTodos(current => [...current, saved]); return saved;
+    const repository=repo.current,version=generation.current;
+    if(!repository||busy.current.has('create')||connectingRef.current||loading&&!snapshotReady.current)return null;
+    const key='todo-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2),id='pending:'+key;
+    const optimistic:Todo={...draft,id,done:false,createdAt:new Date().toISOString(),saveState:'saving'};
+    setTodos(old=>[...old,optimistic]);busy.current.add(id);
+    let failure:unknown;
+    let saved=await mutate('create',async()=>{try{return await repository.create(draft,key);}catch(e){failure=e;throw e;}});
+    if(version!==generation.current)return null;
+    const commit=(todo:Todo)=>{if(version!==generation.current)return;setTodos(old=>[...old.filter(t=>t.id!==id&&t.id!==todo.id),todo]);writeResolved(id);busy.current.delete(id);setBusyIds([...busy.current]);setError('');};
+    let recovered:Todo|null=null;const check=async()=>{if(version!==generation.current||!repository.receipt)return;try{const found=await repository.receipt(key);if(found){recovered=found;commit(found);}}catch{}};
+    if(saved){commit(saved);return saved;}
+    if(failure instanceof HttpResponseError&&failure.status>=400&&failure.status<500){setTodos(old=>old.filter(t=>t.id!==id));busy.current.delete(id);setBusyIds([...busy.current]);reportWrite(id,`‘${draft.title}’을 저장하지 못해 목록에서 되돌렸어요. ${message(failure)} 작성한 내용을 확인하고 다시 추가해주세요.`);}
+    else {busy.current.delete(id);setBusyIds([...busy.current]);setTodos(old=>old.map(t=>t.id===id?{...t,saveState:'checking'}:t));reportWrite(id,`‘${draft.title}’의 저장 결과를 확인하고 있어요. 같은 항목을 다시 추가하지 말고 저장 결과를 확인해주세요.`,check);await check();saved=recovered;}
+    return saved;
+  }
+  /** The editor closes after accepting the local change; the store, rather than
+   * the unmounted form, owns reconciliation and failure messages. */
+  function beginSave(draft:Draft,id?:string){
+    if(!repo.current||connectingRef.current||loading&&!snapshotReady.current||busy.current.has(id??'create')||id&&todosRef.current.find(t=>t.id===id)?.saveState==='checking')return false;
+    if(id&&!todosRef.current.some(t=>t.id===id))return false;
+    if(id)void update(id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})});
+    else void add(draft);
+    return true;
   }
   function completionDeadline(id: string, until: number | null,originDone=false) {
     const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id);
@@ -144,7 +173,7 @@ export function useTodos() {
     const repository = repo.current;
     const before = todosRef.current.find(todo => todo.id === id);
     let entry = completions.current.get(id);
-    if (!repository || !before || connectingRef.current || (busy.current.has(id) && !entry)) return false;
+    if (!repository || !before || before.saveState==='checking'||connectingRef.current || (busy.current.has(id) && !entry)) return false;
     const version = generation.current;
     writes.current++;
     if (!entry) {
@@ -170,7 +199,7 @@ export function useTodos() {
           if(saved.source?.provider==='apple-reminders'&&saved.sourceSync?.state==='device-required')saved=await updateAppleSource(saved,featureRequest,()=>version===generation.current);
           if(version!==generation.current||completions.current.get(id)!==job)return false;job.confirmed=saved;
           if(revision!==job.revision)continue;
-          if(saved.sourceSync&&saved.sourceSync.state!=='succeeded')setNotice('덕의 완료 상태는 저장했지만 원본 반영은 확인이 필요해요. 항목에서 원본 저장을 다시 시도할 수 있어요.');
+          if(saved.sourceSync&&saved.sourceSync.state!=='succeeded'&&saved.sourceSync.state!=='queued')setNotice('덕의 완료 상태는 저장했지만 원본 반영은 확인이 필요해요. 항목에서 원본 저장을 다시 시도할 수 있어요.');
           setTodos(current => current.map(todo => todo.id === id ? saved : todo));
           setError(''); return true;
         }
@@ -197,13 +226,23 @@ export function useTodos() {
   async function update(id: string, patch: Patch): Promise<boolean> {
     if (typeof patch.done === 'boolean' && Object.keys(patch).length === 1) return updateCompletion(id, patch.done);
     const version=generation.current,before=todosRef.current.find(t=>t.id===id),fields={...before?.sourceSync?.patch,...Object.fromEntries(Object.entries(patch).filter(([k,v])=>JSON.stringify(v??null)!==JSON.stringify(before?.[k as keyof Todo]??null)))};
+    if(!before||before.saveState==='checking'||!repo.current||busy.current.has(id)||connectingRef.current||loading&&!snapshotReady.current)return false;
+    const repository=repo.current;
+    reminderBaselines.current.set(id,before);setTodos(old=>old.map(t=>t.id===id?{...t,...patch,saveState:'saving'}:t));
+    let failure:unknown;
     const saved=await mutate(id,async repository=>{
-      const local=await repository.update(id,patch);
-      return local.source?.provider==='apple-reminders'&&local.sourceSync?.state==='device-required'?updateAppleSource(local,featureRequest,()=>generation.current===version):local;
+      try{const local=await repository.update(id,patch);
+      return local.source?.provider==='apple-reminders'&&local.sourceSync?.state==='device-required'?updateAppleSource(local,featureRequest,()=>generation.current===version):local;}catch(e){failure=e;throw e;}
     });
-    if(!saved||version!==generation.current)return false;
+    if(version!==generation.current)return false;
+    if(!saved){
+      if(failure instanceof HttpResponseError&&failure.status>=400&&failure.status<500){reminderBaselines.current.delete(id);setTodos(old=>old.map(t=>t.id===id?before:t));reportWrite(id,`‘${before.title}’ 변경을 저장하지 못해 이전 내용으로 되돌렸어요. ${message(failure)} 원본과 연결을 확인하고 다시 수정해주세요.`);}
+      else {setTodos(old=>old.map(t=>t.id===id?{...t,saveState:'checking'}:t));const check=async()=>{if(version!==generation.current||!repository.get)return;try{const found=await repository.get(id);if(version!==generation.current)return;if(Object.entries(patch).every(([key,value])=>JSON.stringify(found[key as keyof Todo]??null)===JSON.stringify(value??null))){reminderBaselines.current.delete(id);setTodos(old=>old.map(t=>t.id===id?found:t));busy.current.delete(id);setBusyIds([...busy.current]);writeResolved(id);setError('');}}catch{}};reportWrite(id,`‘${before.title}’의 저장 결과가 아직 확인되지 않았어요. 중복 저장을 막고 있으니 저장 결과 확인을 눌러주세요.`,check);await check();}
+      return false;
+    }
+    writeResolved(id);reminderBaselines.current.delete(id);
     reflectOriginal(saved,fields);
-    if(saved.sourceSync&&saved.sourceSync.state!=='succeeded')setNotice('덕에 저장했지만 원본 반영은 확인이 필요해요. 항목을 열어 다시 시도하거나 원본 앱에서 확인해주세요.');
+    if(saved.sourceSync&&saved.sourceSync.state!=='succeeded'&&saved.sourceSync.state!=='queued')setNotice('덕에 저장했지만 원본 반영은 확인이 필요해요. 항목을 열어 다시 시도하거나 원본 앱에서 확인해주세요.');
     setTodos(current=>current.map(todo=>todo.id===id?saved:todo));
     if(patch.done!==undefined)completionDeadline(id,null);
     return true;
@@ -217,7 +256,7 @@ export function useTodos() {
     if(!saved||version!==generation.current)return false;
     reflectOriginal(saved,fields);
     setTodos(old=>old.map(t=>t.id===id?saved:t));
-    return saved.sourceSync?.state==='succeeded';
+    return saved.sourceSync?.state==='succeeded'||saved.sourceSync?.state==='queued';
   }
   function reflectOriginal(saved:Todo,fields:Record<string,unknown>){
     const owner=calendarOwner.current;if(!owner||saved.source?.provider!=='google'||!saved.source.externalId.includes(':calendar')||!originalContentConfirmed(saved))return;
@@ -235,11 +274,13 @@ export function useTodos() {
     const saved=new Map(result.map(t=>[t.id,t.order]));setTodos(old=>old.map(t=>saved.has(t.id)?{...t,order:saved.get(t.id)}:t));return true;
   }
   async function remove(id: string): Promise<boolean> {
+    if(todosRef.current.find(t=>t.id===id)?.saveState)return false;
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
     if (removed) { delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current});setTodos(current => current.filter(todo => todo.id !== id)); const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id); setPending(current => { const next = { ...current }; delete next[id]; return next; }); }
     return !!removed;
   }
   function expireSession() {
+    writeChecks.current.clear();reminderBaselines.current.clear();setWriteReports([]);
     setSessionStatus('ready');
     if(calendarOwner.current)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=null;
     snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
@@ -280,7 +321,8 @@ export function useTodos() {
       throw e;
     }
   }, [connection, renderGeneration,user?.id]);
-  const reminders = useReminders(todos, reminderOwner,connection?.mode==='cloud'&&user?featureRequest:undefined);
+  const reminderTodos=useMemo(()=>todos.flatMap(todo=>todo.saveState?(reminderBaselines.current.has(todo.id)?[reminderBaselines.current.get(todo.id)!]:[]):[todo]),[todos]);
+  const reminders = useReminders(reminderTodos, reminderOwner,connection?.mode==='cloud'&&user?featureRequest:undefined);
   async function refreshAccount() {
     if (connection?.mode !== 'cloud') return;
     const version = renderGeneration;
@@ -305,6 +347,6 @@ export function useTodos() {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { sessionStatus,retrySession,reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

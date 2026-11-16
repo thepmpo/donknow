@@ -16,7 +16,8 @@ export async function request(baseUrl: string, path: string, method = 'GET', bod
   });
   const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), connectionRead(path,method)||connectionWrite(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||/^\/api\/todos\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?$/.test(path)||/^\/api\/(?:assistant\/(?:chat|context|actions)|calendar\/event-details)(?:\/|$)/.test(path)?60000:15000);
   try {
-    const fetchResponse = () => fetch(baseUrl + path, { method, credentials: 'include', signal: controller.signal,
+    const wirePath=path.startsWith('/api/todos')?path+(path.includes('?')?'&':'?')+'writeStatus=2':path;
+    const fetchResponse = () => fetch(baseUrl + wirePath, { method, credentials: 'include', signal: controller.signal,
       headers: { 'Content-Type': 'application/json', 'X-Duckduck-Client': Platform.OS === 'web' ? 'web' : 'native', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });

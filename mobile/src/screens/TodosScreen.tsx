@@ -1,5 +1,5 @@
 import {ScreenHeading} from '../ScreenHeading';
-import {MotionPressable as Pressable,ReorderItem} from '../motion';
+import {MotionPressable as Pressable,ReorderItem,useReducedMotion} from '../motion';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {Keyboard,Linking,PanResponder,RefreshControl,ScrollView,StyleSheet,Text,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
@@ -24,9 +24,10 @@ type Editor={id:number;todo?:Todo;date:string|null;group:string};
 type Target={key:string;before:string|null;day:string;group:string;y:number;height:number};
 type Drag={ids:string[];title:string;source:string;group:string;y:number};
 function EditorBack({onClose,busy}:{onClose:()=>void;busy:boolean}){useDuoBackAction(onClose,busy,'close');return null;}
-export function TodosScreen({store,active=true}:{store:TodoStore;active?:boolean}){
+export function TodosScreen({store,active=true,scrollToTopRequest=0}:{store:TodoStore;active?:boolean;scrollToTopRequest?:number}){
  const insets=useSafeAreaInsets(),duo=useDuoTrailingNavigation(),today=dateKey(new Date()),zone=deviceZone(),selection=useCalendarSelection(store);
  const [view,setView]=useState<TodoView>('date'),[pulling,setPulling]=useState(false);
+ const reduced=useReducedMotion();
  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
  const [editor,setEditor]=useState<Editor|null>(null),sequence=useRef(0),[editingBusy,setEditingBusy]=useState(false);
  const [selecting,setSelecting]=useState(false),[selected,setSelected]=useState<string[]>([]),[batchBusy,setBatchBusy]=useState(false),[batchMode,setBatchMode]=useState(false),[moveMenu,setMoveMenu]=useState(false),[batchDate,setBatchDate]=useState<string|null>(today),[batchPicker,setBatchPicker]=useState<string|null>(null),[batchMessage,setBatchMessage]=useState('');
@@ -38,6 +39,8 @@ export function TodosScreen({store,active=true}:{store:TodoStore;active?:boolean
  function cancelDrag(){dragRef.current=null;hoverRef.current=null;setDrag(null);setHover(null);}
  useEffect(()=>{setEditor(null);setSelected([]);setSelecting(false);setBatchMode(false);setMoveMenu(false);setBatchBusy(false);setEditingBusy(false);setBatchMessage('');setView('date');cancelDrag();},[owner]);
  useEffect(()=>{if(!active)cancelDrag();},[active]);
+ const handledTop=useRef(0);
+ useEffect(()=>{if(!scrollToTopRequest||handledTop.current===scrollToTopRequest)return;handledTop.current=scrollToTopRequest;if(active&&!editor&&!drag)scroll.current?.scrollTo({y:0,animated:!reduced});},[scrollToTopRequest,active]);
  useEffect(()=>{setSelected(old=>old.filter(id=>store.visible.some(t=>t.id===id&&!t.done)));},[store.visible.map(t=>t.id+':'+t.done).join('|')]);
  const calendar=useCalendarData(store,{start:today,end:shiftDay(today,14),month:today.slice(0,7),timeZone:zone,selected:selection.ids,active:active&&view==='date',selectionReady:selection.ready});
  async function pull(){setPulling(true);try{await Promise.allSettled([store.refresh(),...(view==='date'?[calendar.load()]:[])]);}finally{setPulling(false);}}
@@ -109,7 +112,7 @@ export function TodosScreen({store,active=true}:{store:TodoStore;active?:boolean
    {!!group.events.length&&<View style={styles.events}>{group.events.map(event=><View key={event.id} style={styles.event}><Text numberOfLines={1} style={styles.time}>{event.allDay?'종일':calendarStartLabel(event,group.day,zone)}</Text><Text numberOfLines={2} style={styles.eventTitle}>{event.title}</Text></View>)}</View>}
    {editor?.group===group.key&&!editor.todo&&inline(group.key)}
    {group.todos.map(todo=>editor?.todo?.id===todo.id?inline(group.key):<ReorderItem position={todo.order} moving={!!drag||!!editor} key={todo.id} testID={hover?.key===todo.id?"todo-drop-line":undefined} collapsable={false} ref={node=>register(todo.id,node,todo.id,group.day,group.key)} style={[hover?.key===todo.id&&styles.dropLine,drag?.ids.includes(todo.id)&&{opacity:.25}]}>
-    <TodoRow compact todo={todo} selected={selecting?selected.includes(todo.id):undefined} onSelect={()=>select(todo.id)} onLongPress={()=>beginDrag(todo.id,group.key)} onOpenSource={todo.source&&['google','slack','notion'].includes(todo.source.provider)&&store.connection?.mode==='cloud'?()=>void openSource(todo):undefined} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]} busy={busy||!!editor} canToggleWhileBusy={!batchBusy&&!editor&&store.completionIds.includes(todo.id)} onToggle={()=>void store.update(todo.id,{done:!todo.done})} onEdit={()=>edit(group.key,todo.dueDate,todo)}/>
+    <TodoRow compact todo={todo} selected={selecting?selected.includes(todo.id):undefined} onSelect={()=>select(todo.id)} onLongPress={()=>beginDrag(todo.id,group.key)} onOpenSource={todo.source&&['google','slack','notion'].includes(todo.source.provider)&&store.connection?.mode==='cloud'?()=>void openSource(todo):undefined} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]} busy={busy||!!editor||!!todo.saveState||store.busyIds.includes(todo.id)} canToggleWhileBusy={!batchBusy&&!editor&&store.completionIds.includes(todo.id)} onToggle={()=>void store.update(todo.id,{done:!todo.done})} onEdit={()=>edit(group.key,todo.dueDate,todo)}/>
    </ReorderItem>)}
    <View testID={hover?.key==='end:'+group.key?'todo-drop-line':undefined} collapsable={false} ref={node=>register('end:'+group.key,node,null,group.day,group.key)} style={[styles.dropEnd,hover?.key==='end:'+group.key&&styles.dropLine]}>{drag&&hover?.key==='end:'+group.key?<Text style={styles.hint}>{view==='date'?(group.day===today?'오늘로':group.day===shiftDay(today,1)?'내일로':group.day?'이 날짜로':'날짜 없이')+' 이동':'이 위치로 이동'}</Text>:group.day&&!selecting&&!(editor?.group===group.key&&!editor.todo)?<Pressable accessibilityRole="button" accessibilityLabel={group.day+' 새 할 일 추가'} disabled={!!editor} onPress={()=>edit(group.key,group.day)} style={styles.inlineAdd}><Ionicons name="add" size={18} color={colors.blueText}/><Text style={styles.addText}>할 일 추가</Text></Pressable>:null}</View>
   </View>)}

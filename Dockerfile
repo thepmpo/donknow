@@ -21,7 +21,7 @@ ENV NODE_ENV=production PORT=3000 DATA_DIR=/var/lib/duckduck BACKUP_DIR=/var/bac
 WORKDIR /app
 COPY --chown=node:node package.json package-lock.json ./
 RUN --mount=type=secret,id=extra_ca,required=false if [ -s /run/secrets/extra_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/extra_ca; fi; npm ci --omit=dev --no-audit --no-fund && npm cache clean --force && mkdir -p /var/lib/duckduck /var/backups/duckduck && chown node:node /var/lib/duckduck /var/backups/duckduck
-COPY --chown=node:node server.js ./
+COPY --chown=node:node server.js server-runtime.js ./
 COPY --chown=node:node server/ ./server/
 COPY --chown=node:node scripts/backup.js scripts/import-legacy.js scripts/remote-backup.js ./scripts/
 COPY --chown=node:node public/ ./public/

@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'server.js'
+      - 'server-runtime.js'
       - 'server/**'
       - 'mobile/**'
       - 'website/**'

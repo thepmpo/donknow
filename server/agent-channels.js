@@ -29,9 +29,9 @@ export function agentChannelStore(db,box){db.exec(`CREATE TABLE IF NOT EXISTS ag
  updateContactMessage(item,patch,status,delay=0){const row=db.prepare('SELECT payload FROM agent_contact_messages WHERE id=? AND user_id=?').get(item.id,item.userId);if(row)db.prepare('UPDATE agent_contact_messages SET payload=?,status=?,next_at=? WHERE id=? AND user_id=?').run(box.seal({...box.open(row.payload),...patch}),status,Date.now()+delay,item.id,item.userId);},
  };
 }
-export function createAgentChannels({store,assistant,engine,env=process.env,fetcher=fetch}){
+export function createAgentChannels({store,assistant,engine,env=process.env,fetcher=fetch,autoWake=true}){
  const teamsKeys=createRemoteJWKSet(new URL('https://login.botframework.com/v1/.well-known/keys'),{[customFetch]:fetcher});
- let ticking=false,teamsToken=null,wake=null,closed=false;const kick=()=>{if(closed||wake||env.NODE_ENV==='test')return;wake=setTimeout(()=>{wake=null;void runtime.tick().catch(()=>undefined);},1000);wake.unref?.();};
+ let ticking=false,teamsToken=null,wake=null,closed=false;const kick=()=>{if(!autoWake||closed||wake||env.NODE_ENV==='test')return;wake=setTimeout(()=>{wake=null;void runtime.tick().catch(()=>undefined);},1000);wake.unref?.();};
  function valid(c){const scopes=assistant.status(c.userId).consentScopes;if(!store.account(c.userId)?.emailVerified||!c.enabled||c.providers.some(p=>c.consentScopes?.[p]!==scopes[p]))throw fail(409,'연결 자료와 동의를 앱에서 다시 확인해주세요.');if(c.kind==='slack'&&store.connection(c.userId,'slack')?.connectionId!==c.connectionId)throw fail(409,'Slack 연결이 해제됐어요.');}
  async function response(url,options){const r=await fetcher(url,{...options,redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok){await r.body?.cancel();throw fail(502,'연락 채널의 응답을 확인하지 못했어요.');}return r.json();}
  async function raw(req){let value='';for await(const chunk of req){value+=chunk;if(value.length>262144)throw fail(413,'메시지가 너무 커요.');}return value;}

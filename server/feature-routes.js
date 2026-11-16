@@ -21,14 +21,16 @@ import {createAssistant} from './assistant.js';
 import { fail } from './secrets.js';
 const validEmail = value => typeof value === 'string' && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
-export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress) {
+export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress,{background=true,deferredSources=process.env.NODE_ENV!=='test'||process.env.SOURCE_QUEUE==='1'}={}) {
   let sourceEdits;
   const assistant=createAssistant(store,integrations,process.env,fetch,{updateTodo:(...args)=>sourceEdits.save(...args)});
-  sourceEdits=createSourceEdits({store,assistant,integrations});
+  let sourceTimer;const wakeSource=()=>{if(!background||!deferredSources||sourceTimer)return;sourceTimer=setTimeout(()=>{sourceTimer=null;void sourceEdits.tick().catch(()=>{});},20);sourceTimer.unref();};
+  sourceEdits=createSourceEdits({store,assistant,integrations,deferred:deferredSources,onEnqueue:wakeSource});
+  const sourceInterval=background&&deferredSources?setInterval(wakeSource,15000):null;sourceInterval?.unref();if(background&&deferredSources)wakeSource();
   const defaultedUsers=new Set();
   const memory=createAgentMemory(store),computer=createAgentComputer(store);
-  const agent=createAgentEngine({store,assistant,integrations,memory,computer});
-  const channels=createAgentChannels({store,assistant,engine:agent});agent.attachNotifications(()=>{setImmediate(()=>void channels.tick().then(()=>pushSender.tick()).catch(()=>undefined));});
+  const agent=createAgentEngine({store,assistant,integrations,memory,computer,autoWake:background&&process.env.NODE_ENV!=='test'});
+  const channels=createAgentChannels({store,assistant,engine:agent,autoWake:background});agent.attachNotifications(()=>{setImmediate(()=>void channels.tick().then(()=>pushSender.tick()).catch(()=>undefined));});
   const voice=createAgentVoice({store,assistant,engine:agent});
   const computerScopeValid=job=>{const current=assistant.status(job.userId).consentScopes;return store.account(job.userId)?.emailVerified&&job.memoryRevision===store.memorySettings(job.userId).revision&&job.providers.every(p=>job.consentScopes?.[p]===current[p]);};
   const agentRoutes=createAgentRoutes({store,engine:agent,assistant,computer,voice,channels,limited});
@@ -39,7 +41,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   const automations=createAutomations(store,assistant,weather),schedulerAuth=createSchedulerAuth(),pushSender=createPushSender(store);
   const events=createAssistantEvents(store,assistant,integrations,{onSlack:data=>channels.slack(data)}),agentEvents=createAgentEvents(store,assistant,integrations);
   const drain=async()=>{store.expireAgentCalls();await agentEvents.poll();await agentEvents.dispatch();await channels.tick();await agent.tick();const result=await events.tick();await automations.tick();await integrations.renewAssistantWatches();await pushSender.tick();return result;};
-  const scheduledWorker=process.env.NODE_ENV==='test'?null:setInterval(()=>{void drain().catch(()=>undefined);},60000);scheduledWorker?.unref();
+  const scheduledWorker=!background||process.env.NODE_ENV==='test'?null:setInterval(()=>{void drain().catch(()=>undefined);},60000);scheduledWorker?.unref();
   async function checklistAction(user,id,key,body,collection=false){
     if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
     if(body.action==='source'){
@@ -63,7 +65,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   }
   return {
     updateTodo:(user,id,patch)=>sourceEdits.save(user,id,patch),
-    close(){channels.close();agent.close();if(scheduledWorker)clearInterval(scheduledWorker);},
+    wakeSource,close(){channels.close();agent.close();clearTimeout(sourceTimer);if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
     async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
@@ -107,7 +109,6 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
     async private(req, path, url, user, json, send, sessionToken) {
       if(path==='/api/ai/usage'&&req.method==='GET'){send(200,store.aiBudget(user.id));return true;}
       if(!defaultedUsers.has(user.id)&&initializeAssistantDefaults(store,assistant,user)){defaultedUsers.add(user.id);if(defaultedUsers.size>1000)defaultedUsers.delete(defaultedUsers.values().next().value);}
-      if(path==='/api/todos'&&req.method==='GET')for(const t of store.list(user.id))if(t.source&&['device-required','unknown'].includes(t.sourceSync?.state)&&Date.now()-(t.sourceSync.at??0)>60000)try{assistantNotice(store,user.id,{code:t.sourceSync.state==='device-required'?'device-required':'source-unknown',provider:t.source.provider,title:t.title,todoId:t.id});}catch{}
       if(path==='/api/assistant/notices'&&req.method==='POST'){send(200,assistantNotice(store,user.id,await json(req)));return true;}
       const sourceResult=/^\/api\/todos\/([a-f0-9-]{36})\/source-result$/.exec(path),sourceRetry=/^\/api\/todos\/([a-f0-9-]{36})\/source-retry$/.exec(path);
       if(sourceResult&&req.method==='POST'){send(200,sourceEdits.deviceResult(user.id,sourceResult[1],await json(req)));return true;}

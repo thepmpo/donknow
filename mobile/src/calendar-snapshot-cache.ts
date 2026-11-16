@@ -1,3 +1,4 @@
+import {clearCalendarWrites} from './calendar-write-overlay';
 import {Platform} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import {createCalendarSnapshotStore} from './calendar-snapshot-store';
@@ -16,7 +17,7 @@ export function calendarSnapshots(owner:string){let value=owners.get(owner);if(!
 const restored=new Set<string>();
 export function restoreCalendarSnapshots(owner:string){if(restored.has(owner))return Promise.resolve([] as CalendarSnapshot[]);let task=restores.get(owner);if(!task){const target=calendarSnapshots(owner),revision=calendarSnapshotRevision(owner);task=disk.read(owner).then(rows=>{if(owners.get(owner)!==target||revision!==calendarSnapshotRevision(owner))return [];for(const row of rows)if(!target.has(row.key))target.set(row.key,row);restored.add(owner);return rows;});restores.set(owner,task);}return task;}
 export function persistCalendarSnapshots(owner:string){clearTimeout(timers.get(owner));timers.set(owner,setTimeout(()=>{timers.delete(owner);void disk.write(owner,[...calendarSnapshots(owner).values()]).catch(()=>{});},250));}
-export function forgetCalendarSnapshots(owner:string){capabilities.delete(owner);invalidateCalendarSnapshotReads(owner);clearTimeout(timers.get(owner));timers.delete(owner);owners.get(owner)?.clear();restores.delete(owner);restored.delete(owner);listeners.get(owner)?.forEach(fn=>fn('clear'));void AsyncStorage.removeItem('duck.calendar.selection.'+owner).catch(()=>{});void disk.clear(owner).catch(()=>{});}
+export function forgetCalendarSnapshots(owner:string){clearCalendarWrites(owner);capabilities.delete(owner);invalidateCalendarSnapshotReads(owner);clearTimeout(timers.get(owner));timers.delete(owner);owners.get(owner)?.clear();restores.delete(owner);restored.delete(owner);listeners.get(owner)?.forEach(fn=>fn('clear'));void AsyncStorage.removeItem('duck.calendar.selection.'+owner).catch(()=>{});void disk.clear(owner).catch(()=>{});}
 export function watchCalendarSnapshots(owner:string,fn:(signal:Signal)=>void){const set=listeners.get(owner)??new Set();listeners.set(owner,set);set.add(fn);return()=>{set.delete(fn);};}
 export function broadcastCalendarSnapshots(owner:string){listeners.get(owner)?.forEach(fn=>fn('update'));}
 

@@ -1,6 +1,6 @@
 import {googleAccounts,googleConnection} from './google-accounts.js';
 import { fail } from './secrets.js';
-export function createTaskSync(store,integrations) {
+export function createTaskSync(store,integrations,{background=true}={}) {
   let running=false;
   function status(userId,connectionId){const record=googleConnection(store,userId,connectionId);return {enabled:!!record?.taskSyncEnabled,canEnable:!!record?.features.includes('tasksWrite'),jobs:store.taskSyncJobs(userId).filter(j=>store.get(userId,j.todoId)?.source?.externalId.startsWith((record?.connectionId??'legacy')+':tasks:'))};}
   function configure(userId,enabled,connectionId){if(typeof enabled!=='boolean')throw fail(400,'동기화 설정을 확인해주세요.');const record=googleConnection(store,userId,connectionId);if(!record)throw fail(409,'Google을 먼저 연결해주세요.');if(enabled&&!record.features.includes('tasksWrite'))throw fail(403,'Google Tasks 수정 권한을 먼저 승인해주세요.');store.saveConnection(userId,'google',{...record,taskSyncEnabled:enabled},record.label);if(!enabled)for(const todo of store.list(userId).filter(t=>t.source?.externalId.startsWith((record.connectionId??'legacy')+':tasks:')))store.clearTaskSync(userId,todo.id);return status(userId,connectionId);}
@@ -21,8 +21,8 @@ export function createTaskSync(store,integrations) {
       const done=remote.status==='completed';store.update(userId,todo.id,{done,completedAt:done?(remote.completed??new Date().toISOString()):null},{remote:true});store.clearTaskSync(userId,todo.id);updated++;
     }return {updated,skipped,nextCursor:items.length>page.length?page.at(-1).id:null};
   }
-  let wakeTimer;function wake(){clearTimeout(wakeTimer);wakeTimer=setTimeout(()=>{void tick().catch(()=>undefined);},4100);wakeTimer.unref();}
+  let wakeTimer;function wake(){if(!background)return;clearTimeout(wakeTimer);wakeTimer=setTimeout(()=>{void tick().catch(()=>undefined);},4100);wakeTimer.unref();}
   wake();
-  const timer=setInterval(()=>{void tick().catch(()=>undefined);},60000);timer.unref();
+  const timer=background?setInterval(()=>{void tick().catch(()=>undefined);},60000):null;timer?.unref();
   return {status,configure,tick,pull,wake,retry(userId,connectionId){for(const job of status(userId,connectionId).jobs)store.retryTaskSync(userId,job.todoId);void tick().catch(()=>undefined);return status(userId,connectionId);},stop(){clearInterval(timer);clearTimeout(wakeTimer);}};
 }

@@ -1,0 +1,48 @@
+{
+  "syntheticOnly": true,
+  "actualEventKitNotVerified": true,
+  "checks": [
+    "Duo fortnight renders all12 events and24 todos with one outer scroll and no overflow count",
+    "second weekly press opens selected-day agenda with seven-day date selection; deferred single-week view is absent",
+    "reselecting Todo scrolls to top",
+    "create is visible and form closes while POST is held; one response replaces temporary item",
+    "lost create response resolves by owned receipt without another POST",
+    "definite failed edit restores previous item after optimistic display",
+    "send press explains budget gate without dropping text or calling model",
+    "a ready consented funded fixture sends once; no production funding or AI request is used",
+    "calendar confirmed edit displays before provider reply; explicit failed receipt rolls overlay back",
+    "calendar lost confirmation reply is reconciled by GET receipt without repeating external confirmation",
+    "ordinary phone retains brand band and bottom navigation"
+  ],
+  "errors": [],
+  "creates": 2,
+  "chatCalls": 1,
+  "measurements": [
+    {
+      "calendar-workspace": {
+        "y": 20,
+        "height": 800,
+        "scrollHeight": 800,
+        "minHeight": "0px"
+      },
+      "calendar-scroll": {
+        "y": 87,
+        "height": 733,
+        "scrollHeight": 733,
+        "minHeight": "0px"
+      },
+      "calendar-week-row-0": {
+        "y": 118.5,
+        "height": 350.5,
+        "scrollHeight": 350,
+        "minHeight": "350.5px"
+      },
+      "calendar-week-row-1": {
+        "y": 469,
+        "height": 350.5,
+        "scrollHeight": 350,
+        "minHeight": "350.5px"
+      }
+    }
+  ]
+}

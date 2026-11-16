@@ -17,6 +17,7 @@ function execute(db, stmt) {
 const server = http.createServer(async (req, res) => {
   try {
     if (req.headers.authorization !== 'Bearer fixture-token') { res.writeHead(401); res.end('{}'); return; }
+    if(Number(process.env.FIXTURE_HRANA_DELAY_MS)>0)await new Promise(resolve=>setTimeout(resolve,Number(process.env.FIXTURE_HRANA_DELAY_MS)));
     let text = ''; for await (const chunk of req) text += chunk;
     const body = JSON.parse(text); const baton = body.baton ?? randomUUID();
     if (!connections.has(baton)) { const db = new DatabaseSync(process.argv[2]); db.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000'); connections.set(baton, db); }

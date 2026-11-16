@@ -1,8 +1,8 @@
 import {MAX_NOTES_LENGTH} from './notes.ts';
 export type Category = '일상' | '업무' | '건강';
 export type Todo = {
-  id: string; title: string; category: Category; done: boolean; order?:number;
-  dueDate: string | null; dueTime?:string|null; reminderAt?: string | null; notes?: string; source?: { provider: string; externalId: string;url?:string;modifiedAt?:string;calendarId?:string;connectionId?:string;eventId?:string;timeZone?:string };sourceSync?:{state:'succeeded'|'failed'|'unknown'|'device-required';revision:number;at?:number;patch?:Record<string,unknown>;reason?:'completion-unsupported'}; createdAt?: string; completedAt?: string | null;
+  id: string; title: string; category: Category; done: boolean; order?:number;saveState?:'saving'|'checking';
+  dueDate: string | null; dueTime?:string|null; reminderAt?: string | null; notes?: string; source?: { provider: string; externalId: string;url?:string;modifiedAt?:string;calendarId?:string;connectionId?:string;eventId?:string;timeZone?:string };sourceSync?:{state:'succeeded'|'failed'|'unknown'|'device-required'|'queued';revision:number;at?:number;patch?:Record<string,unknown>;reason?:'completion-unsupported'}; createdAt?: string; completedAt?: string | null;
 };
 export type Draft = { title: string; dueDate: string | null;dueTime?:string|null; category: Category; reminderAt?: string | null; notes?: string };
 export type Connection = { mode: 'demo' } | { mode: 'cloud'; baseUrl: string };
@@ -56,7 +56,7 @@ export function sampleTodos(): Todo[] {
   ];
 }
 export function parseTodos(value: unknown): Todo[] {
-  if (!Array.isArray(value) || !value.every(todo => todo && typeof todo.id === 'string' && typeof todo.title === 'string' && typeof todo.done === 'boolean' && (todo.notes === undefined || (typeof todo.notes === 'string' && todo.notes.length <= MAX_NOTES_LENGTH)) && (todo.dueDate == null || (typeof todo.dueDate === 'string' && validDate(todo.dueDate))) && (todo.reminderAt == null || (typeof todo.reminderAt === 'string' && Number.isFinite(Date.parse(todo.reminderAt)))) && (todo.dueTime==null||(typeof todo.dueTime==='string'&&!!todo.dueDate&&/^([01]\d|2[0-3]):[0-5]\d$/.test(todo.dueTime))) && (todo.sourceSync==null||(typeof todo.sourceSync==='object'&&['succeeded','failed','unknown','device-required'].includes(todo.sourceSync.state)&&Number.isSafeInteger(todo.sourceSync.revision)&&todo.sourceSync.revision>0)) && (todo.completedAt == null || (typeof todo.completedAt === 'string' && Number.isFinite(Date.parse(todo.completedAt)))))) {
+  if (!Array.isArray(value) || !value.every(todo => todo && typeof todo.id === 'string' && typeof todo.title === 'string' && typeof todo.done === 'boolean' && (todo.notes === undefined || (typeof todo.notes === 'string' && todo.notes.length <= MAX_NOTES_LENGTH)) && (todo.dueDate == null || (typeof todo.dueDate === 'string' && validDate(todo.dueDate))) && (todo.reminderAt == null || (typeof todo.reminderAt === 'string' && Number.isFinite(Date.parse(todo.reminderAt)))) && (todo.dueTime==null||(typeof todo.dueTime==='string'&&!!todo.dueDate&&/^([01]\d|2[0-3]):[0-5]\d$/.test(todo.dueTime))) && (todo.sourceSync==null||(typeof todo.sourceSync==='object'&&['succeeded','failed','unknown','device-required','queued'].includes(todo.sourceSync.state)&&Number.isSafeInteger(todo.sourceSync.revision)&&todo.sourceSync.revision>0)) && (todo.completedAt == null || (typeof todo.completedAt === 'string' && Number.isFinite(Date.parse(todo.completedAt)))))) {
     throw new Error('서버의 할 일 데이터를 읽을 수 없어요.');
   }
   return value.map(todo => ({ ...todo, dueDate: todo.dueDate ?? null, category: ['일상', '업무', '건강'].includes(todo.category) ? todo.category : '일상' }));
