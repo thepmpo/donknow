@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-16 · 한국 시간 · 기능 코드 aab7649 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-16 · 한국 시간 · 기능 코드 4e0b86f · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -424,6 +424,10 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ### 변경 기록
 
 #### 2026-11-16 — 결합 시안 Todo·원가 제한
+
+후속 원본 링크 검수: Google Calendar의 실제 레거시 event URL을 지원하고 www.google.com의 다른 경로는 계속 거부한다.406중405통과/실패0/기존1제외.1334장 인계 생성의 이미지 치환을 한 번으로 줄여5개 산출물의 동일 SHA-256을 확인했다.
+
+실행 결과: main fb8d482·GitHub43777563448 success, Render dep-dbt4dtuc6qcc73amugj0 live. 새 TestFlight dispatch는 Forbidden으로 차단되어 설치용 빌드가 시작되지 않았다. [실제 실행 기록](todo-build-status-2026-11-16.md).
 
 [확정 계약·월 현금흐름](todo-organization-budget-2026-11-16.md) · [실행/빌드 상태](todo-build-status-2026-11-16.md). 날짜별/출처별, 날짜·실제 공급자·원본 링크, 선택 다중 이동/순서 영구 저장을 구현한다. 일반5탭과Duo 카메라 열/반대 pane, 기존 초안·완료·원본 재시도를 유지한다. Pro27,900원·Light제거가 최신 사용자 결정이다. 무료는 자료 수신/기본 브리핑, 직접 채팅은 유료 할당 안에서만 제공한다. 정산 확인 없는 예산은0원, 사용자 월 AI원가 상한4,000원, 자동 추가 결제는 없다. 미지원 유료 도구를 차단하며 무손실·정상 모델/실결제 완료를 주장하지 않는다. 현재 원가표의 고정 월급/미확정 법무·보안 비용 제외를 숨기지 않는다.
 
@@ -2691,10 +2695,13 @@ df4edcb Publish reference-flow screenshots and updated product design guide
 de2f9aa docs: daily project update [skip ci]
 ca3244d Record latest iPhone build request blocked by GitHub dispatch access
 aab7649 Build date and source Todo views with guarded AI spending
+fb8d482 Publish combined Todo captures and cost protection handoff
+96cb9c1 Record verified iPhone 42 and blocked request for the new Todo build
+4e0b86f Support canonical Calendar source links and speed up identical handoff output
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: aab7649에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 4e0b86f에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -9428,7 +9435,7 @@ aab7649 Build date and source Todo views with guarded AI spending
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/aab764955b5b9ab26849d9c584f44fd0fd7e3823
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/4e0b86f743f5777c09f883bbbbd53e2d481466af
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
