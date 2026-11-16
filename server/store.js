@@ -1,4 +1,5 @@
 import { featureStore } from './features-store.js';
+import {accountAccess} from './plans.js';
 import {fail} from './secrets.js';
 import { openDatabase } from './database.js';
 import { randomUUID, randomBytes, scrypt as scryptCallback, timingSafeEqual, createHash } from 'node:crypto';
@@ -18,7 +19,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     CREATE TABLE IF NOT EXISTS migrations (name TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id));`);
   const features = await featureStore(db, directory, env);
   const digest = token => createHash('sha256').update(token).digest('hex');
-  const publicUser = user => ({ id: user.id, email: user.email, emailVerified: !!user.email_verified_at });
+  const publicUser = user => ({ id: user.id, email: user.email, emailVerified: !!user.email_verified_at,plan:accountAccess().plan,planAccess:accountAccess().mode });
   const findUser = email => db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   function newSession(user) {
     const token = randomBytes(32).toString('base64url');

@@ -11,8 +11,9 @@ export const compareTodoOrder=(a:Todo,b:Todo)=> (a.order??Number.MAX_SAFE_INTEGE
 export function sourceAgenda(todos:Todo[]){
  const groups=new Map<string,{key:string;day:string;title:string;source:ReturnType<typeof todoSource>;todos:Todo[];events:never[]}>();
  for(const todo of todos){const source=todoSource(todo);if(!groups.has(source.key))groups.set(source.key,{key:'source:'+source.key,day:'',title:source.label,source,todos:[],events:[]});groups.get(source.key)!.todos.push(todo);}
- const priority=['slack','google-tasks','google-calendar','gmail','google','apple-reminders','notion','naver','local'];
- return [...groups.values()].sort((a,b)=>priority.indexOf(a.source.key)-priority.indexOf(b.source.key)||a.title.localeCompare(b.title)).map(g=>({...g,todos:g.todos.sort(compareTodoOrder)}));
+ const priority=['local','slack','google-tasks','google-calendar','gmail','google','apple-reminders','notion','naver'];
+ const rank=(key:string)=>{const i=priority.indexOf(key);return i<0?priority.length:i;};
+ return [...groups.values()].sort((a,b)=>rank(a.source.key)-rank(b.source.key)||a.title.localeCompare(b.title)).map(g=>({...g,todos:g.todos.sort(compareTodoOrder)}));
 }
 /** One shared item order, while retaining the relative order of a selected group. */
 export function moveTodoIds(items:Todo[],moving:string[],before:string|null){

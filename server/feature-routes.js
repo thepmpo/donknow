@@ -107,7 +107,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(briefingItem&&req.method==='POST'){
         if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
         if(limited('briefing-item:'+user.id))throw fail(429,'잠시 뒤 다시 선택해주세요.');
-        const body=await json(req);send(200,store.applyBriefingItem(user.id,briefingItem[1],briefingItem[2],body.action,body.args,false,{allowCreate:assistant.status(user.id).usage?.funded!==false}));return true;
+        const body=await json(req);send(200,store.applyBriefingItem(user.id,briefingItem[1],briefingItem[2],body.action,body.args,false,{allowCreate:assistant.status(user.id).access.createFromSources}));return true;
       }
       if(path.startsWith('/api/assistant/memory')&&['POST','PATCH','DELETE'].includes(req.method)&&limited('memory:'+user.id))throw fail(429,'잠시 후 다시 변경해주세요.');
       if(path==='/api/assistant/events/notion/setup'){
@@ -129,7 +129,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(memory&&['PATCH','DELETE'].includes(req.method)){send(200,req.method==='DELETE'?store.forgetMemory(user.id,memory[1]):store.saveMemory(user.id,(await json(req)).text,{id:memory[1]}));return true;}
       if(path==='/api/assistant/conversation'&&req.method==='GET'){send(200,store.conversation(user.id,{before:url.searchParams.get('before')}));return true;}
       const conversationItem=/^\/api\/assistant\/conversation\/([^/]+)\/items\/([a-f0-9]{64})$/.exec(path);
-      if(conversationItem&&req.method==='POST'){if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');if(limited('conversation-item:'+user.id))throw fail(429,'잠시 후 다시 선택해주세요.');const body=await json(req);send(200,store.applyConversationItem(user.id,conversationItem[1],conversationItem[2],body.action,body.args,{allowCreate:assistant.status(user.id).usage?.funded!==false}));return true;}
+      if(conversationItem&&req.method==='POST'){if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');if(limited('conversation-item:'+user.id))throw fail(429,'잠시 후 다시 선택해주세요.');const body=await json(req);send(200,store.applyConversationItem(user.id,conversationItem[1],conversationItem[2],body.action,body.args,{allowCreate:assistant.status(user.id).access.createFromSources}));return true;}
       if(path==='/api/assistant/messages'&&req.method==='GET'){
         const after=url.searchParams.get('after')||'';send(200,{messages:store.assistantMessages(user.id,after),incremental:!!after});
         if(process.env.NODE_ENV!=='test')void automations.tick(user.id).catch(()=>undefined);return true;

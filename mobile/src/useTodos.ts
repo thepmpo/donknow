@@ -14,6 +14,7 @@ import type { Patch, Repository } from './repository';
 const message = (error: unknown) => error instanceof Error ? error.message : '저장하지 못했어요. 다시 시도해주세요.';
 export function useTodos() {
   const [user, setUser] = useState<auth.User | null>(null);
+  const [sessionStatus,setSessionStatus]=useState<'restoring'|'ready'|'unavailable'>('restoring');
   const [connection, setConnection] = useState<Connection | null>(null);
   const [todos, commitTodos] = useState<Todo[]>([]);
   const todosRef = useRef<Todo[]>([]);
@@ -43,6 +44,30 @@ export function useTodos() {
   const sessionChanged = () => new Error('계정이나 서버 연결이 바뀌었어요. 현재 화면에서 다시 확인해주세요.');
   const connectingRef = useRef(false);
   const clearTimers = useCallback(() => { timers.current.forEach(clearTimeout); timers.current.clear();originsRef.current={};pendingOrder.current={};setCompletionOrigins({}); }, []);
+  const sessionRead=useRef<number|null>(null);
+  async function restoreSession(saved:Connection,current:()=>boolean){
+    const version=generation.current;if(sessionRead.current===version)return;
+    sessionRead.current=version;setSessionStatus('restoring');setLoading(true);setError('');
+    let authenticated=saved.mode==='demo';
+    try{
+      if(saved.mode==='cloud'){
+        const account=await auth.session(saved.baseUrl);if(!current())return;
+        setUser(account);authenticated=true;
+      }
+      if(!current())return;
+      const next=createRepository(saved);repo.current=next;
+      // Mount the authenticated shell immediately; list loading is separate.
+      setSessionStatus('ready');
+      const data=await next.list();if(current()){snapshotReady.current=true;setTodos(data);}
+    }catch(e){if(current()){
+      if(e instanceof auth.AuthRequiredError){expireSession();}
+      else {setSessionStatus(authenticated?'ready':'unavailable');setError(message(e));}
+    }}finally{if(sessionRead.current===version)sessionRead.current=null;if(current())setLoading(false);}
+  }
+  async function retrySession(){
+    if(!connection||sessionStatus!=='unavailable'||sessionRead.current===generation.current)return;
+    const version=generation.current;await restoreSession(connection,()=>version===generation.current);
+  }
   useEffect(() => {
     let active = true; const initialGeneration = generation.current;
     const current = () => active && initialGeneration === generation.current;
@@ -56,15 +81,9 @@ export function useTodos() {
         if (!current()) return;
         if (saved) {
           setConnection(saved);
-          if (saved.mode === 'cloud') {
-            try { const account = await auth.session(saved.baseUrl); if (!current()) return; setUser(account); }
-            catch (e) { if (e instanceof auth.AuthRequiredError) return; throw e; }
-          }
-          if (!current()) return;
-          const next = createRepository(saved); repo.current = next;
-          const data = await next.list(); if (current()) { snapshotReady.current=true;setTodos(data); }
-        }
-      } catch (e) { if (current()) setError(message(e)); }
+          await restoreSession(saved,current);
+        }else setSessionStatus('ready');
+      } catch (e) { if (current()){setSessionStatus('ready');setError(message(e));} }
       finally { if (current()) setLoading(false); }
     })();
     return () => { active = false; generation.current++; completions.current.clear(); clearTimers(); };
@@ -89,7 +108,7 @@ export function useTodos() {
       const data = checked.mode === 'cloud' && !account ? [] : await repository.list();
       await AsyncStorage.setItem(CONNECTION_KEY, JSON.stringify(checked));
       const nextOwner=checked.mode==='cloud'&&account?checked.baseUrl+':'+account.id:null;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
-      snapshotReady.current=checked.mode==='demo'||!!account;refreshing.current=false;generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setLoading(false); return true;
+      snapshotReady.current=checked.mode==='demo'||!!account;refreshing.current=false;generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setSessionStatus('ready');setLoading(false); return true;
     } catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
@@ -217,6 +236,7 @@ export function useTodos() {
     return !!removed;
   }
   function expireSession() {
+    setSessionStatus('ready');
     if(calendarOwner.current)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=null;
     snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
   }
@@ -227,7 +247,7 @@ export function useTodos() {
       const account = await auth.authenticate(connection.baseUrl, email, password, register);
       const nextOwner=connection.baseUrl+':'+account.id;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
       const repository = createRepository(connection);
-      snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);
+      snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);setSessionStatus('ready');
       try{const data = await repository.list();snapshotReady.current=true;setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
     } catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
@@ -281,6 +301,6 @@ export function useTodos() {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { sessionStatus,retrySession,reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

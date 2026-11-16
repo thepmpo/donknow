@@ -69,7 +69,7 @@ async function scenario(kind) {
       await page.getByRole('tab', { name: 'Todo 리스트', exact: true }).click();
       await page.getByRole('tab', { name: 'ME', exact: true }).click();
       await openMeAccount(page);await page.getByRole('button', { name: '로그아웃', exact: true }).click();
-    } else await held;
+    } else {await held;await page.getByTestId('session-restoration').waitFor();assert.equal(await page.getByRole('textbox',{name:'이메일',exact:true}).count(),0);release();await page.getByText('alice 전용 할 일',{exact:true}).waitFor();await openMeAccount(page);await page.getByRole('button',{name:'로그아웃',exact:true}).click();}
     await page.getByRole('textbox', { name: '이메일', exact: true }).fill(bob.email);
     await page.getByRole('textbox', { name: '비밀번호', exact: true }).fill('fixture-password-only');
     await page.getByRole('button', { name: '로그인', exact: true }).click();
@@ -78,14 +78,14 @@ async function scenario(kind) {
     // Allow the actual state transition/effect and rendering to finish.
     await page.waitForTimeout(150);
     await page.getByRole('tab', { name: 'ME', exact: true }).click();
-    await openMe(page);await page.getByText(bob.email, { exact: true }).waitFor();
+    await openMeAccount(page);await page.getByText(bob.email, { exact: true }).waitFor();
     assert.equal(await page.getByText(alice.email, { exact: true }).count(), 0);
     await page.getByRole('tab', { name: 'Todo 리스트', exact: true }).click();
     assert.equal(await page.getByText('bob 전용 할 일', { exact: true }).count(), 1);
     assert.equal(await page.getByText('alice 전용 할 일', { exact: true }).count(), 0);
     assert.deepEqual(errors, []);
     console.log(`PASS: ${kind} keeps the new account and its Todo data`);
-  } finally { if (release) release(); await context.close(); }
+  } catch(error){await page.screenshot({path:'/tmp/duck-session-isolation-error.png'});console.error(JSON.stringify({errors,body:(await page.locator('body').innerText()).slice(0,2000)}));throw error;} finally { if (release) release(); await context.close(); }
 }
 try { for (const kind of ['startup', 'late-401', 'late-profile']) await scenario(kind); }
 finally { await browser.close(); await new Promise(resolve => server.close(resolve)); }

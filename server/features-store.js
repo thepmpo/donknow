@@ -1,3 +1,4 @@
+import {accountAccess} from './plans.js';
 import {aiBudgetStore} from './ai-budget.js';
 import {agentSyncStore} from './agent-sync.js';
 import {agentChannelStore} from './agent-channels.js';
@@ -36,7 +37,7 @@ export async function featureStore(db, directory, env = process.env) {
     CREATE TABLE IF NOT EXISTS imported_resources (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, provider TEXT NOT NULL, resource_key TEXT NOT NULL, todo_id TEXT NOT NULL, PRIMARY KEY(user_id,provider,resource_key));`);
   const transaction = action => { db.exec('BEGIN IMMEDIATE'); try { const output = action(); db.exec('COMMIT'); return output; } catch (e) { db.exec('ROLLBACK'); throw e; } };
   let mailMaintenanceAt=0;
-  const account = id => { const row = db.prepare('SELECT id,email,email_verified_at FROM users WHERE id=?').get(id); return row ? { id: row.id, email: row.email, emailVerified: !!row.email_verified_at } : null; };
+  const account = id => { const row = db.prepare('SELECT id,email,email_verified_at FROM users WHERE id=?').get(id); return row ? { id: row.id, email: row.email, emailVerified: !!row.email_verified_at,plan:accountAccess().plan,planAccess:accountAccess().mode } : null; };
   const findId = email => db.prepare('SELECT id FROM users WHERE email=?').get(email)?.id;
   function codeValid(userId, purpose, code, count = true) {
     const row = db.prepare('SELECT * FROM account_actions WHERE user_id=? AND purpose=?').get(userId, purpose);
