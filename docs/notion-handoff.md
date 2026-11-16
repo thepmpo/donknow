@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-16 · 한국 시간 · 기능 코드 2757f7a · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-16 · 한국 시간 · 기능 코드 8239e9b · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -2775,10 +2775,12 @@ ee60d06 Group AI briefings and persist checked Todo and calendar transfers
 01bda44 Preserve account and details in briefing calendar drafts
 b54e217 Record final briefing deployment, passed CI and native dispatch denial
 2757f7a Import all incomplete reminders and synchronize explicit source completion
+016f1b6 Publish reminder import and connection stability verification
+8239e9b Keep newer source completions when a background read arrives late
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 2757f7a에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 8239e9b에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -9912,7 +9914,7 @@ b54e217 Record final briefing deployment, passed CI and native dispatch denial
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/2757f7ad1686cc77761d339ed24b78ea33d49eea
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/8239e9b311d8627ae3a1cdb427cd5a72bd2d2fde
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -10633,7 +10635,7 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 
 완료 체크는 기존 내용 편집과 다른 경로여서 Apple 원본 저장을 건너뛰었다. 서버의 source edit에 done을 포함하고, 일반 Todo 체크·되돌리기·AI/브리핑의 연결 Todo 체크가 같은 경로를 사용한다. Apple은 원본 ID를 읽어 completed만 바꾸고 다시 읽어 확인한 뒤 현재 개정의 기기 결과를 서버에 기록한다. 기존 제목/알람/반복을 덮지 않는다. 원본 수정 시각은 문자열 표기 대신 실제 시각을 비교해 같은 시각의 Z/.000Z 표기 차이를 충돌로 오인하지 않는다. 응답 유실·계정 교체·이전 개정·검증 실패는 성공으로 가장하지 않는다.
 
-Google Tasks는 명시적인 덕 편집/체크에서 원본에 title/notes/due/status를 반영하며 별도 백그라운드 완료 전송 ON에 의존하지 않는다. 같은 변경을 기존 대기 큐가 다시 쓰지 않도록 조정했다. 원본 쓰기 권한·사용자 소유권·ETag와 불확실 쓰기 보호는 유지한다.
+Google Tasks는 명시적인 덕 편집/체크에서 원본에 title/notes/due/status를 반영하며 별도 백그라운드 완료 전송 ON에 의존하지 않는다. 같은 변경을 기존 대기 큐가 다시 쓰지 않도록 조정했다. 원본 완료 상태를 수동으로 읽는 동안 새 편집이 생기거나 원본 저장 결과가 대기 중이면 늦은 조회로 덕의 새 상태를 덮지 않는다. 원본 쓰기 권한·사용자 소유권·ETag와 불확실 쓰기 보호는 유지한다.
 
 | 자료 | 원본 저장 범위 | 제한/대안 |
 |---|---|---|
