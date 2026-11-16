@@ -6,6 +6,18 @@
 
 실제 Expo/Chromium 신규19장·기존 reference26장·일반 앱 전체·Duo 회귀가 통과했다. 모두 합성 계정/API/Duo 기하이며 실기기/실계정 검수가 아니다. [디자인과 비용 계약](todo-organization-budget-2026-11-16.md).
 
-## 배포와 native 실행
+## 실제 소스와 서버 배포
 
-최신 소스 commit/push 후 기존 무료 Render의 수동 배포 및 최신main 무료 TestFlight dispatch를 실행해 이 절을 실제 결과로 갱신한다. 유료 자원/runner·push자동빌드·키/서명 재생성은 하지 않는다. 마지막 확인된 iPhone41은 소스1fbedb1의 Apple 업로드 성공이며 이번 수정은 포함하지 않는다.
+구현 소스 aab764955b5b9ab26849d9c584f44fd0fd7e3823, 화면/공개 인계 포함 main fb8d482bf693e28d3fa1b3c2406c20ead813de7b. [GitHub 검사43777563448](https://github.com/thepmpo/donknow/actions/runs/43777563448)는 success다. 서버/모바일 단위·타입·실제 iOS prebuild/provider/import·iOS JavaScript export가 이 소스에서 통과했다.
+
+기존 Render free duckduck-test/srv-dbgpc0ff3r2c73abc7e0, 워크스페이스 tea-dbgoqa0ae00c73d1q47g, main, autoDeploy off를 확인하고 수동 배포했다. dep-dbt4dtuc6qcc73amugj0는 fb8d482를23:57:43 UTC에 시작해23:58:44 UTC에 live가 됐다. 새 인스턴스 v8n9q의 port10000 시작과 Your service is live 로그를 확인했다. HTTP health path는/api/health이며 Render readiness를 통과했다. 이 실행 환경의 직접HTTP 요청은403, 웹 도구도 접근 불가여서 독립적인 운영 endpoint 응답 본문은 확인하지 못했다. 이를 앱 자체의403이나 정상 실계정 동작으로 단정하지 않는다. 무료 plan·키/인증/서명·데이터를 바꾸지 않았다.
+
+## TestFlight — 시작 요청이 권한으로 차단됨
+
+최신 main fb8d482 push 후 ios-testflight workflow407665801에 새 workflow_dispatch를 요청했으나 GitHub POST가 Forbidden으로 거부됐다. 신규 run/서명IPA/Apple 업로드는 만들어지지 않았다. 연결된 GitHub 도구도 새 workflow dispatch를 제공하지 않는다. 옛 소스 Re-run/자동 push trigger/유료 runner/서명·권한 우회로 대신하지 않았다.
+
+사용자가 [iPhone 무료 Mac 빌드](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 Run workflow → main → Run workflow를 누르면 최신 코드로 실행한다. 추가 조회로 이전1.0.0(42)/43769831520/소스ca3244d의 Apple 업로드 성공(22:42:03 UTC)을 확인했다. 실제 Mac job132983283238의 buildNumber41→42와 App Store Connect 업로드 로그를 읽었다.42에는 이번 Todo 시안/원가 제한 aab7649가 포함되지 않는다. JavaScript export를 새 iPhone 빌드 성공으로 보고하지 않는다.
+
+## 비용·결제 상태
+
+Pro27,900원·월 사용자별 AI원가 최대4,000원 정책과 사전 예약 차단을 구현했다. 실제 StoreKit/영수증·구독/정산 자동 연동은 미구현이며 신규 예산은0원이다. 정산 확인 없는 계정은 무료 수신만 제공한다. 이전 OpenAI credit_balance_exhausted는 해결/충전하지 않았다. 무조건 무손실/무제한 AI/무료 서버 상시 실시간을 보장하지 않는다. 자세한 조건별 현금흐름은 계약 문서에 있다.
