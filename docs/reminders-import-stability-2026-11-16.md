@@ -54,3 +54,14 @@ Google Tasks는 명시적인 덕 편집/체크에서 원본에 title/notes/due/s
 - 새로 확인한 이전 iPhone [43796991834](https://github.com/thepmpo/donknow/actions/runs/43796991834)는 success지만 소스는 `b54e2178b9a4cff1e4c18055ac22ff16b3129d67`로 이번 수정 이전이다. 실제 사용자 설치 여부·app build number를 추정하지 않는다.
 - 최신 수정본은 [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 **Run workflow → main → Run workflow**로 새로 실행해야 한다. 이전 실행의 Re-run에는 최신 소스가 포함되지 않는다.
 - 공개 앱은 https://duckduck-test.onrender.com/app 이다. 웹의 Apple 화면은 안내만 가능하며 실제 전체 읽기/완료 원본 쓰기는 새 iPhone 앱과 OS 권한이 필요하다. 이 환경의 공개 URL 직접 조회는 앞선 CONNECT tunnel403 경계가 있어 이를 운영 API 오류로 단정하지 않는다. 실제 배포 ID/SHA/live와 시작 로그로 게시를 확인한다.
+
+
+### 최종 호환 보완본 게시 확인
+
+- 구버전의 잘못된 완료 성공 응답을 거부하는 [PR6](https://github.com/thepmpo/donknow/pull/6)도 병합했다. 최종 구현 스냅샷 `e84a4c0`, 인계 생성 `d64342b1fb4939aee15af89d6dee7dcfea1b153f`, 병합/실제 배포 소스 **`d7b921f26c32bac0b46e3aff0d79fdcbd5eba4ec`**.
+- [CI43801010907](https://github.com/thepmpo/donknow/actions/runs/43801010907)와 [main CI43801181930](https://github.com/thepmpo/donknow/actions/runs/43801181930)는 success. 최종431개 중429통과/실패0/조건부2제외, 사이트 패키징4통과·타입/native 구성·iOS JS export 성공.
+- 최종 Render **`dep-dbt7uemk1f9s73b3na1g`**, 위 소스와 일치, **2026-11-16 03:58:46 UTC / 12:58:46 KST에 live**. `Donknow listening on port 10000`03:58:37 UTC를 확인했다. 기존 무료 서비스·자동 배포 OFF를 유지했다.
+- 앞선 본체 deploy `dep-dbt7r0e7bikc73da80r0`도03:51:27 UTC에 live였으며 최종 보완본으로 대체됐다. 보완이 필요한 실제 구버전 호환 문제를 확인해 소스/검사 뒤 배포했으며 무작정 같은 소스 배포를 재시도한 것이 아니다.
+- 최종 시작의 읽기 전용 AI model probe도03:58:38 UTC에 HTTP403/JSON이었다. 허용된 구체 오류 code는 없었다. 생성 응답 실패의 원인을 이 metadata403 하나로 확정하지 않는다. Google/Slack 실제 인증 만료도 확인된 것으로 주장하지 않는다. 연결 진단 이벤트에는 새 실패 기록이 아직 없으며, 로그가 없는 것이 실계정 성공 검증을 뜻하지 않는다.
+- **아이폰의 전체 가져오기와 네이티브 원본 완료/되돌리기는 새 앱 설치가 필요하다.** 실제 EventKit/OS 권한 검수는 남는다. 최신 main의 새 native run은03:50 UTC 조회 Forbidden 이후 만들어지지 않았고 추가 우회/유료 실행을 하지 않았다. 위 수동 workflow에서 최신 main으로 실행해야 한다.
+- 이 최종 실행 결과는 배포 종료 뒤 저장소 문서에 추가했다. 공개 인계의 앱 구현 스냅샷과 동작은 같고, 최신 실행 결과의 원본은 이 파일이다.
