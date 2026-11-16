@@ -3,7 +3,7 @@ import {readJsonResponse,InvalidJsonResponseError,connectionRead,cancelledTransp
 import * as SecureStore from 'expo-secure-store';
 import {createServerReadiness} from './server-readiness';
 const readiness=createServerReadiness({probe:async base=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(base+'/api/health',{signal:controller.signal});const data=await readJsonResponse(response) as {ok?:boolean};if(data?.ok!==true)throw new InvalidJsonResponseError(response.status);}finally{clearTimeout(timer);}}});
-export type User = { id: string; email: string; emailVerified: boolean };
+export type User = { id: string; email: string; emailVerified: boolean;plan?:'pro';planAccess?:'complimentary' };
 export class AuthRequiredError extends Error { constructor() { super('다시 로그인해주세요.'); } }
 const storageKey = (origin: string) => 'duckduck.session.' + Array.from(origin).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 export async function request(baseUrl: string, path: string, method = 'GET', body?: unknown): Promise<unknown> {

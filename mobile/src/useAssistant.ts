@@ -15,7 +15,7 @@ export type AssistantSource={ref:string;provider:string;kind:string;title:string
 export type AssistantDefinition={operation:string;provider:string;label:string;fields:string[];required:string[]};
 export type AssistantDraft={id:string;operation:string;label:string;args:Record<string,unknown>;targetTitle?:string;accountLabel?:string;recipient?:string;status:string;result?:{message?:string;todo?:Todo};expiresAt:number};
 export type AssistantProposal={operation:string;label:string;args:Record<string,unknown>;sourceRefs:string[]};
-export type AssistantStatus={usage?:{funded:boolean;remainingKrw:number;proPriceKrw:number};connections?:{provider:string;connected:boolean}[];googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;agent?:{backgroundChat?:boolean;persistentJobs?:boolean;voice?:boolean;persona?:{name:string;appearance:{color:string;eyes:string;glasses:boolean;accessory:string}}};memory?:{enabled:boolean;revision:number;count:number;turnCount:number};actions:AssistantDefinition[];consentScopes?:Record<string,string>};
+export type AssistantStatus={access?:{plan:'pro';mode:'complimentary';chat:boolean;createFromSources:boolean};usage?:{funded:boolean;remainingKrw:number;proPriceKrw:number};connections?:{provider:string;connected:boolean}[];googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;agent?:{backgroundChat?:boolean;persistentJobs?:boolean;voice?:boolean;persona?:{name:string;appearance:{color:string;eyes:string;glasses:boolean;accessory:string}}};memory?:{enabled:boolean;revision:number;count:number;turnCount:number};actions:AssistantDefinition[];consentScopes?:Record<string,string>};
 export type AssistantTurn={id?:string;createdAt?:number;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[];items?:BriefingItem[];jobs?:AgentJob[];files?:AgentFile[];citations?:{url:string;title:string}[];responsibilities?:{id:string;title:string}[]};
 export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'덕 Todo'};
 export const assistantLabels:Record<string,string>={title:'제목',notes:'메모',dueDate:'예정일',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
@@ -57,7 +57,7 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
   // from enabling chat. Each rejection is still surfaced and can be retried.
   const results=await Promise.allSettled([
    store.featureRequest('/api/assistant/status').catch(error=>{if(latest())setStatus(null);throw error;}).then(async value=>{if(!latest())return;const next=value as AssistantStatus;setStatus(next);if(next.memory?.enabled){const history=await store.featureRequest('/api/assistant/conversation') as {turns:AssistantTurn[]};if(latest()&&!working.current)setTurns(history.turns.slice(-40));}}),
-   store.featureRequest('/api/assistant/actions').then(value=>{if(latest()&&revision===draftRevision.current)setDrafts((value as {actions:AssistantDraft[]}).actions);}),
+   store.featureRequest('/api/assistant/actions').then(value=>{const actions=(value as {actions?:AssistantDraft[]}|null)?.actions;if(!Array.isArray(actions))throw new Error('비서 작업 응답을 확인하지 못했어요. 이전 내용은 유지했어요.');if(latest()&&revision===draftRevision.current)setDrafts(actions);}),
   ]);
   if(!latest()||revision!==draftRevision.current||errorVersion!==errorRevision.current)return;
   const failed=results.find(result=>result.status==='rejected');

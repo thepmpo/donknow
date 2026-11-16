@@ -35,6 +35,8 @@ tone_html='<section id="website-motion-contract"><h2>별도 소개 사이트 · 
 calendar_audit=(root/'docs/design-guide.md').read_text().split('## 캘린더 개선 전체 구현 — 2026-11-13',1)[1]
 audit_html='<section id="calendar-audit"><h2>캘린더 개선 전체 구현 · CA-01~20</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in calendar_audit.splitlines() if line.strip())+'</section>'
 tone_html=audit_html+tone_html
+startup_contract=(root/'docs/design-guide.md').read_text().split('## 2026-11-16 — 직접 작성 우선·세션 복원·일관된 모션·전체 프로',1)[1].split('## ',1)[0]
+tone_html='<section id="startup-session-pro"><h2>로그인 복원·짧은 모션·직접 작성 우선·전체 프로</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in startup_contract.splitlines() if line.strip())+'</section>'+tone_html
 todo_contract=(root/'docs/design-guide.md').read_text().split('## 2026-11-16 — 날짜별·출처별 결합 시안',1)[1].split('## ',1)[0]
 tone_html='<section id="todo-organization"><h2>날짜별·출처별 결합 시안</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in todo_contract.splitlines() if line.strip())+'</section>'+tone_html
 reference_flows=(root/'docs/design-guide.md').read_text().split('## 2026-11-15 — Things·피클 영상 UX/UI',1)[1].split('## ',1)[0]

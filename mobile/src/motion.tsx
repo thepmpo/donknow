@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, u
 import { AccessibilityInfo, Animated, Easing, Modal, Platform, Pressable, StyleSheet, View, PanResponder, Keyboard } from 'react-native';
 import type { ModalProps, PressableProps, ViewProps } from 'react-native';
 
-export const motion = { pressIn: 90, pressOut: 140, navigation: 220, page: 640, feedback: 180, sheet: 240 } as const;
+export const motion = { pressIn: 90, pressOut: 140, navigation: 180, page: 200, feedback: 180, sheet: 200 } as const;
 const ReducedMotion = createContext(true);
 const MotionAncestor = createContext(false);
 export function MotionProvider({ children }: { children: React.ReactNode }) {
@@ -27,21 +27,34 @@ export function useReducedMotion() { return useContext(ReducedMotion); }
 const native = Platform.OS !== 'web';
 
 // Transition identity changes trigger motion without remounting retained content.
-export function MotionView({ children, transitionKey, style, distance = 6,disabled=false,initial=true,variant='page', ...props }: ViewProps & { transitionKey?: string | number | boolean; distance?: number;disabled?:boolean;initial?:boolean;variant?:'page'|'navigation' }) {
+export function MotionView({ children, transitionKey, style, distance = 0,disabled=false,initial=true,variant='page', ...props }: ViewProps & { transitionKey?: string | number | boolean; distance?: number;disabled?:boolean;initial?:boolean;variant?:'page'|'navigation' }) {
   const ancestor=useContext(MotionAncestor),reduced = useReducedMotion()||disabled||(ancestor&&transitionKey===undefined);
   const progress = useRef(new Animated.Value(1)).current;
-  const seen=useRef(false);
+  const seen=useRef<{key:typeof transitionKey;variant:typeof variant}|null>(null);
   useLayoutEffect(() => {
     progress.stopAnimation();
-    if(!seen.current){seen.current=true;if(!initial){progress.setValue(1);return;}}
+    const first=!seen.current,changed=first||seen.current?.key!==transitionKey||seen.current?.variant!==variant;
+    seen.current={key:transitionKey,variant};
+    // Resolving the OS preference must not replay an already visible page.
+    if(!changed||first&&!initial){progress.setValue(1);return;}
     if (reduced) { progress.setValue(1); return; }
     progress.setValue(0);
     const animation = Animated.timing(progress, { toValue: 1, duration: variant==='navigation'?motion.navigation:motion.page, easing: Easing.bezier(.32,0,.2,1), useNativeDriver: native });
     animation.start();
     return () => animation.stop();
   }, [transitionKey, reduced, progress,variant]);
-  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity:progress.interpolate({inputRange:[0,1],outputRange:[variant==='navigation'?.98:.92,1]}), transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [variant==='navigation'?0:distance, 0] }) },{scale:progress.interpolate({inputRange:[0,1],outputRange:[variant==='navigation'?1:.975,1]})}] }]}>{children}</Animated.View></MotionAncestor.Provider>;
+  return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity:progress.interpolate({inputRange:[0,1],outputRange:[variant==='navigation'?.98:.96,1]}), transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [variant==='navigation'?0:distance, 0] }) }] }]}>{children}</Animated.View></MotionAncestor.Provider>;
 }
+/** Reordered siblings settle from their previous location; the page never zooms. */
+export const ReorderItem=React.forwardRef<React.ComponentRef<typeof View>,ViewProps&{moving?:boolean;position?:number}>(({moving=false,position,onLayout,children,...props},ref)=>{
+  const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current,previousY=useRef<number|null>(null),value=useRef(0),node=useRef<React.ComponentRef<typeof View>|null>(null),read=useRef(0);
+  useEffect(()=>{const id=offset.addListener(v=>{value.current=v.value;});return()=>{offset.removeListener(id);offset.stopAnimation();};},[offset]);
+  useEffect(()=>{if(reduced||moving){offset.stopAnimation();offset.setValue(0);}},[reduced,moving,offset]);
+  const measure=()=>{const version=++read.current;node.current?.measureInWindow((_x,pageY)=>{if(version!==read.current)return;const y=pageY-value.current,prior=previousY.current;previousY.current=y;if(prior!==null&&Math.abs(prior-y)>1&&!reduced&&!moving){const start=prior-y+value.current;offset.stopAnimation();offset.setValue(start);Animated.timing(offset,{toValue:0,duration:motion.page,easing:Easing.out(Easing.cubic),useNativeDriver:native}).start();}});};
+  // Web's ResizeObserver does not report movement between same-size siblings.
+  useLayoutEffect(()=>{measure();return()=>{read.current++;};},[position,reduced,moving]);
+  return <Animated.View {...props} ref={el=>{node.current=el;if(typeof ref==='function')ref(el);else if(ref)ref.current=el;}} onLayout={e=>{measure();onLayout?.(e);}} style={[props.style,{transform:[{translateY:offset}]}]}>{children}</Animated.View>;
+});
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...props }: PressableProps) {
   const reduced = useReducedMotion();
@@ -105,5 +118,5 @@ export function DraggableSheet({children,style,onDismiss,disabled=false,visible=
     onPanResponderTerminate:reset,
   })).current;
   useEffect(()=>{if(disabled){offset.stopAnimation();offset.setValue(0);}return()=>offset.stopAnimation();},[disabled,offset]);
-  return <Animated.View testID={testID} style={[style,{transform:[{translateY:offset},{scale:zoom.interpolate({inputRange:[0,1],outputRange:[.975,1]})}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
+  return <Animated.View testID={testID} style={[style,{opacity:zoom.interpolate({inputRange:[0,1],outputRange:[.96,1]}),transform:[{translateY:offset}]}]}><View {...responder.panHandlers}><MotionPressable accessibilityRole="button" accessibilityLabel="아래로 내려 닫기" disabled={disabled} onPress={onDismiss} style={{minHeight:44,alignItems:'center',justifyContent:'center',marginTop:-16}}><View style={{width:36,height:4,borderRadius:2,backgroundColor:'#d1d6db'}}/></MotionPressable></View>{children}</Animated.View>;
 }

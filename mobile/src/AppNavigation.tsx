@@ -16,10 +16,10 @@ export const appTabs=[
  {id:'profile',name:'ME',label:'ME',icon:'person-outline'},
 ] as const;
 export type AppTab=typeof appTabs[number]['id'];
-type Props={tab:AppTab;onSelect:(tab:AppTab)=>void;onCalendarLongPress?:()=>void;duo:boolean;bottomInset?:number;small?:boolean;unread?:number};
+type Props={tab:AppTab;onSelect:(tab:AppTab)=>void;onCalendarLongPress?:()=>void;duo:boolean;bottomInset?:number;small?:boolean;unread?:number;disabled?:boolean};
 const native=Platform.OS!=='web';
-function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unread=0}:Props){
- const blocked=useSurfaceBlocked(),reduced=useReducedMotion(),[frames,setFrames]=useState<Partial<Record<AppTab,LayoutRectangle>>>({});
+function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unread=0,disabled=false}:Props){
+ const surfaceBlocked=useSurfaceBlocked(),blocked=surfaceBlocked||disabled,reduced=useReducedMotion(),[frames,setFrames]=useState<Partial<Record<AppTab,LayoutRectangle>>>({});
  const [preview,setPreview]=useState<AppTab|null>(null),[dragging,setDragging]=useState(false),[viewport,setViewport]=useState({width:0,height:0});
  const items=useRef<ComponentRef<typeof View>>(null),origin=useRef<{x:number;y:number}|null>(null),drag=useRef(false),suppress=useRef(false),generation=useRef(0);
  const x=useRef(new Animated.Value(0)).current,y=useRef(new Animated.Value(0)).current,scale=useRef(new Animated.Value(1)).current;
@@ -69,7 +69,7 @@ function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unrea
   onPanResponderTerminationRequest:()=>true,
   onPanResponderReject:()=>current.current.settle(),
  })).current;
- return <NavigationGlass pointerEvents={blocked?'none':'auto'} aria-hidden={blocked} accessibilityElementsHidden={blocked} importantForAccessibility={blocked?'no-hide-descendants':'auto'} style={[styles.bar,duo?styles.duo:[styles.bottom,{bottom:Math.max(bottomInset,layout.navigationBottomGap)}]]} testID={duo?'DuoTrailingNavigation':'BottomNavigation'} accessibilityRole="tablist">
+ return <NavigationGlass pointerEvents={blocked?'none':'auto'} aria-hidden={surfaceBlocked} accessibilityElementsHidden={surfaceBlocked} importantForAccessibility={surfaceBlocked?'no-hide-descendants':'auto'} style={[styles.bar,disabled&&{opacity:.55},duo?styles.duo:[styles.bottom,{bottom:Math.max(bottomInset,layout.navigationBottomGap)}]]} testID={duo?'DuoTrailingNavigation':'BottomNavigation'} accessibilityRole="tablist">
   <ScrollView horizontal={!duo} scrollEnabled={!dragging&&!blocked} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow:1}} style={{minWidth:0,minHeight:0}} onLayout={event=>{const {width,height}=event.nativeEvent.layout;setViewport({width,height});if(drag.current||preview!==null)settle();}}>
    <View ref={items} {...responder.panHandlers} testID="navigation-items" style={[styles.items,duo&&styles.verticalItems]}>
     {indicator&&<Animated.View pointerEvents="none" testID="navigation-selection" style={[styles.selection,indicator,{transform:[{translateX:x},{translateY:y},{scale}]}]}><NavigationGlass variant="selection" active={preview!==null} pointerEvents="none" style={[StyleSheet.absoluteFill,styles.selectionMaterial]}/></Animated.View>}
@@ -85,8 +85,8 @@ function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unrea
 /** Full-scene portal preserves the physical camera column through folding/rotation. */
 export function AppNavigation(props:Props){
  const {ready}=useDuoScene();
- const {tab,onSelect,onCalendarLongPress,duo,bottomInset,small,unread}=props;
- const bar=useMemo(()=><NavigationBar tab={tab} onSelect={onSelect} onCalendarLongPress={onCalendarLongPress} duo={duo} bottomInset={bottomInset} small={small} unread={unread}/>,[tab,onSelect,onCalendarLongPress,duo,bottomInset,small,unread]);
+ const {tab,onSelect,onCalendarLongPress,duo,bottomInset,small,unread,disabled}=props;
+ const bar=useMemo(()=><NavigationBar tab={tab} onSelect={onSelect} onCalendarLongPress={onCalendarLongPress} duo={duo} bottomInset={bottomInset} small={small} unread={unread} disabled={disabled}/>,[tab,onSelect,onCalendarLongPress,duo,bottomInset,small,unread,disabled]);
  useDuoNavigationPortal(bar,duo&&ready);
  return !ready||duo?null:bar;
 }

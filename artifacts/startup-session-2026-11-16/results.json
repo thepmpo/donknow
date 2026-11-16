@@ -1,0 +1,9 @@
+{
+  "results": [
+    "slow session: no login flash/private read; fixed navigation before Todo load; manual group first; animated optimistic reorder; stable page scale; preserved chat draft; complimentary Pro and unfunded budget are distinct; reduced motion",
+    "401 alone opens login",
+    "503 preserves the pending session and explicit retry restores it"
+  ],
+  "errors": [],
+  "scope": "production Expo web, synthetic API; physical iOS/Duo not verified"
+}
