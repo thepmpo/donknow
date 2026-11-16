@@ -725,17 +725,19 @@ number_map={old:i for i,(old,_) in enumerate(order,1)}
 body=re.sub(r'(?<!\d)(\d+)절',lambda m:str(number_map.get(int(m[1]),int(m[1])))+'절',body)
 body=body.replace('14번', '3번').replace('6–11절', '9–15절')
 (ROOT/'docs/notion-handoff.md').write_text(body)
-import_md=body
-for item in manifest:import_md=import_md.replace(RAW+item['path'],item['import_path'])
+image_urls={RAW+item['path']:item for item in manifest}
+image_pattern=re.compile('|'.join(re.escape(url) for url in sorted(image_urls,key=len,reverse=True)))
+import_md=image_pattern.sub(lambda match:image_urls[match[0]]['import_path'],body)
 with zipfile.ZipFile(OUT/'duckduck-notion-import.zip','w',zipfile.ZIP_DEFLATED) as archive:
     archive.writestr('duckduck-handoff.md',import_md)
     for item in manifest:archive.write(ROOT/item['path'],item['import_path'])
 
 # Standalone HTML preview with embedded images; Markdown ZIP is preferred for Notion import.
-inline_md=body
+inline_images={}
 for item in manifest:
     suffix=Path(item['path']).suffix.lower();mime={'.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.svg':'image/svg+xml','.webp':'image/webp','.gif':'image/gif','.ico':'image/x-icon'}[suffix]
-    inline_md=inline_md.replace(RAW+item['path'],'data:'+mime+';base64,'+base64.b64encode((ROOT/item['path']).read_bytes()).decode())
+    inline_images[RAW+item['path']]='data:'+mime+';base64,'+base64.b64encode((ROOT/item['path']).read_bytes()).decode()
+inline_md=image_pattern.sub(lambda match:inline_images[match[0]],body)
 def inline(text):
     text=html.escape(text)
     text=re.sub(r'!\[([^\]]*)\]\(([^)]+)\)',lambda m:f'<figure><img alt="{m[1]}" src="{m[2]}"><figcaption>{m[1]}</figcaption></figure>',text)

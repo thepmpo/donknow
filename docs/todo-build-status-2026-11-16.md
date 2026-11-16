@@ -2,13 +2,13 @@
 
 ## 검사 완료
 
-405개 중404통과/실패0/기존 선택1제외,103문법·타입 검사,web/iOS JavaScript export,실제 로컬 모듈을 쓰는 iOS prebuild/provider/Swift import 사전 검사가 통과했다. JavaScript/prebuild 성공은 Mac archive/서명/Apple 업로드가 아니다.
+406개 중405통과/실패0/기존 선택1제외,103문법·타입 검사,web/iOS JavaScript export,실제 로컬 모듈을 쓰는 iOS prebuild/provider/Swift import 사전 검사가 통과했다. JavaScript/prebuild 성공은 Mac archive/서명/Apple 업로드가 아니다.
 
 실제 Expo/Chromium 신규19장·기존 reference26장·일반 앱 전체·Duo 회귀가 통과했다. 모두 합성 계정/API/Duo 기하이며 실기기/실계정 검수가 아니다. [디자인과 비용 계약](todo-organization-budget-2026-11-16.md).
 
-## 실제 소스와 서버 배포
+## 첫 소스와 서버 배포 — 후속 수정 이력 포함
 
-구현 소스 aab764955b5b9ab26849d9c584f44fd0fd7e3823, 화면/공개 인계 포함 main fb8d482bf693e28d3fa1b3c2406c20ead813de7b. [GitHub 검사43777563448](https://github.com/thepmpo/donknow/actions/runs/43777563448)는 success다. 서버/모바일 단위·타입·실제 iOS prebuild/provider/import·iOS JavaScript export가 이 소스에서 통과했다.
+최초 구현 소스 aab764955b5b9ab26849d9c584f44fd0fd7e3823, 화면/공개 인계 포함 main fb8d482bf693e28d3fa1b3c2406c20ead813de7b. [GitHub 검사43777563448](https://github.com/thepmpo/donknow/actions/runs/43777563448)는 success다. 서버/모바일 단위·타입·실제 iOS prebuild/provider/import·iOS JavaScript export가 이 소스에서 통과했다.
 
 기존 Render free duckduck-test/srv-dbgpc0ff3r2c73abc7e0, 워크스페이스 tea-dbgoqa0ae00c73d1q47g, main, autoDeploy off를 확인하고 수동 배포했다. dep-dbt4dtuc6qcc73amugj0는 fb8d482를23:57:43 UTC에 시작해23:58:44 UTC에 live가 됐다. 새 인스턴스 v8n9q의 port10000 시작과 Your service is live 로그를 확인했다. HTTP health path는/api/health이며 Render readiness를 통과했다. 이 실행 환경의 직접HTTP 요청은403, 웹 도구도 접근 불가여서 독립적인 운영 endpoint 응답 본문은 확인하지 못했다. 이를 앱 자체의403이나 정상 실계정 동작으로 단정하지 않는다. 무료 plan·키/인증/서명·데이터를 바꾸지 않았다.
 
@@ -21,3 +21,7 @@
 ## 비용·결제 상태
 
 Pro27,900원·월 사용자별 AI원가 최대4,000원 정책과 사전 예약 차단을 구현했다. 실제 StoreKit/영수증·구독/정산 자동 연동은 미구현이며 신규 예산은0원이다. 정산 확인 없는 계정은 무료 수신만 제공한다. 이전 OpenAI credit_balance_exhausted는 해결/충전하지 않았다. 무조건 무손실/무제한 AI/무료 서버 상시 실시간을 보장하지 않는다. 자세한 조건별 현금흐름은 계약 문서에 있다.
+
+## 후속 검수
+
+Google Calendar가 실제로 반환하는 www.google.com/calendar/event 링크만 추가 허용하고 같은 호스트의 일반 redirect URL은 거부하는 검사를 추가했다. 전체406개 중405통과/실패0/기존 선택1제외다. 공개 문서 생성은 이미지를 한 번에 치환하도록 줄였으며 기존 산출물5종의 SHA-256이 전부 같음을 확인했다. 후속 소스/문서는 같은 무료 서비스에 반영하며, 실행 상태는 [Render 배포 목록](https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0)을 따른다.
