@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-16",
-  "codeCommit": "4e0b86f743f5777c09f883bbbbd53e2d481466af",
-  "assetCommit": "aab764955b5b9ab26849d9c584f44fd0fd7e3823",
-  "imageCount": 1334,
+  "codeCommit": "1568804e5ef0d6bedca857a29fb1973a7e55efaf",
+  "assetCommit": "1568804e5ef0d6bedca857a29fb1973a7e55efaf",
+  "imageCount": 1339,
   "images": [
+    {
+      "path": "artifacts/pricing-2026-11-16/01-desktop.png",
+      "category": "사이트 요금제·라이트→프로 통합/실제 HTML·격리 계정/실결제·native 아님",
+      "bytes": 272996,
+      "sha256": "5d99aa9f474689f7044426f15edd2b1c6593ef3207fa9dc39c48254341074c83",
+      "import_path": "images/artifacts__pricing-2026-11-16__01-desktop.png"
+    },
+    {
+      "path": "artifacts/pricing-2026-11-16/02-feature-table.png",
+      "category": "사이트 요금제·라이트→프로 통합/실제 HTML·격리 계정/실결제·native 아님",
+      "bytes": 74120,
+      "sha256": "f4d6c3a1632bbddd1b546f370c8d163f2a4122b895016ea5ea61709b4261c969",
+      "import_path": "images/artifacts__pricing-2026-11-16__02-feature-table.png"
+    },
+    {
+      "path": "artifacts/pricing-2026-11-16/03-phone.png",
+      "category": "사이트 요금제·라이트→프로 통합/실제 HTML·격리 계정/실결제·native 아님",
+      "bytes": 232034,
+      "sha256": "96f2b4343f8639c4e0fd97213a2b4c4114a897e27560d73a7847b383ff3ca3bd",
+      "import_path": "images/artifacts__pricing-2026-11-16__03-phone.png"
+    },
     {
       "path": "artifacts/todo-organize-2026-11-16/10-design-date.png",
       "category": "Todo 결합 시안·원가 제한/실제 Expo·합성 자료·기하/native·실결제 아님",
@@ -7556,6 +7577,20 @@
       "bytes": 92820,
       "sha256": "32526ebc62dbdd7cc29df1ef44fda820df843d2f17a52cce19f15b702785edef",
       "import_path": "images/artifacts__polish-overview.png"
+    },
+    {
+      "path": "artifacts/pricing-2026-11-16/04-phone-max-column.png",
+      "category": "사이트 요금제·라이트→프로 통합/실제 HTML·격리 계정/실결제·native 아님",
+      "bytes": 38832,
+      "sha256": "319cbf2bb7113327388b29be3848a7411eadafd22f8d8ee335f847a17d631fb4",
+      "import_path": "images/artifacts__pricing-2026-11-16__04-phone-max-column.png"
+    },
+    {
+      "path": "artifacts/pricing-2026-11-16/05-phone-pro-column.png",
+      "category": "사이트 요금제·라이트→프로 통합/실제 HTML·격리 계정/실결제·native 아님",
+      "bytes": 34950,
+      "sha256": "dae79423023b6d2cb4e1b7194a50fee5c8741b0b80ef13855ab397dc4bd9c74e",
+      "import_path": "images/artifacts__pricing-2026-11-16__05-phone-pro-column.png"
     },
     {
       "path": "artifacts/product-design-audit/01-request-consent-fixture-after.png",
