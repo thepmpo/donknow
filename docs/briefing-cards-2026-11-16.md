@@ -59,3 +59,13 @@ Todo 프로젝트 기능은 [Things·Todoist·TickTick 비교와 제안](todo-pr
 - 빌드를 시작하려면 [수동 빌드 화면](https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml)에서 **Run workflow → main → Run workflow**를 실행한다. 실패한 이전 run의 Re-run은 쓰지 않는다. 이 문서의 상태 기록만 추가된 이후 main도 같은 구현 코드를 포함한다.
 - 현재 일반형 확인은 [웹앱](https://duckduck-test.onrender.com/app), 소개·요금은 같은 사이트의 `/`다. Linux의 직접 공개 HTTP 검사는 CONNECT tunnel403으로 차단됐으며 이를 운영 앱의403 오류로 단정하지 않는다. Render 공식 최신 deploy/health Markdown·HTML 조회도 같은 이유로 불가했고, 기존 설정/연결 도구의 실제 상태와 startup 로그로 확인한다.
 - 운영 AI의 기존 `credit_balance_exhausted`를 이 UI 수정으로 해결하거나 실제 모델 품질/실계정 원본 쓰기를 검증한 것으로 표시하지 않는다. iOS 실제 키보드·제스처·IME·VoiceOver와 실기기 설치 검수는 별도다.
+
+
+### 최종 보완본·실제 live 확인
+
+- 계정/장소 보완 구현 스냅샷 `60959e8`, 인계 생성 `984ead8d6a3d229c1d89e4dac46e592058cd3a75`.
+- [PR4](https://github.com/thepmpo/donknow/pull/4) 병합 소스 **`01bda44b07ab178c28ba01180bca99162cacf807`**. [보완 CI43795817587](https://github.com/thepmpo/donknow/actions/runs/43795817587)와 [최종 main CI43796008462](https://github.com/thepmpo/donknow/actions/runs/43796008462)는 모두 success다.
+- 최종 deploy **`dep-dbt760nj5k9c73fauiag`**, 위 병합 소스와 일치, **2026-11-16 03:12:52 UTC / 12:12:52 KST에 live**. 실제 `Donknow listening on port 10000` 로그03:12:44 UTC와 `Your service is live` 로그03:12:53 UTC를 확인했다. 무료 서비스와 수동 배포 정책을 유지한다.
+- 최초 deploy는 시작 단계가 길어 포트 탐색 경고가 있었지만03:11:53 UTC에 실제 live가 됐다. 최종 보완본은 그 뒤 순서대로 배포돼 최초 버전을 deactivated로 대체했다. 원인을 확정하지 않고 컴파일 실패로 잘못 보고하지 않는다. 반복 트리거/유료 전환은 하지 않았다.
+- native 실행은 위 Forbidden 이후 새로 시작됐다고 주장하지 않는다. 앱 빌드와 운영 web 배포는 다르다. 최신 main의 수동 TestFlight 실행과 실기기 설치가 필요하다.
+- 이 마지막 절은 실제 실행 종료 뒤 추가한 저장소 기록이다. 배포된 공개 인계의 구현 스냅샷과 앱 코드는 같고, 상세 결과의 최신 원본은 이 문서다.
