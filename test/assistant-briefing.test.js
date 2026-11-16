@@ -43,7 +43,7 @@ test('hourly windows honor weekdays, inclusive end hour, DST identity and invali
  for(const patch of [{startHour:20,endHour:9},{repeat:'minute'},{weekdaysOnly:'yes'},{urgentAlerts:'yes'}])assert.throws(()=>validateSchedule('briefing',{...hourly,...patch}));
  assert.throws(()=>validateSchedule('weather',{...hourly,providers:[],city:'seoul'}));
 });
-test('hourly messages carry unfinished items, skip completed/excluded, and persist one Todo identity across hours/restarts',async()=>{
+test('hourly messages carry only unhandled work, omit every transferred Todo and persist identity across restarts',async()=>{
  const h=await setup();try{
   let clock=monday,calls=0;const source={ref:'notion:connection:page:source',title:'資料',text:'검토 요청',provider:'notion'};
   const assistant={async chat(){calls++;return {answer:'문서를 확인해보세요.',warnings:[],sources:[source],proposals:[{operation:'todo.create',args:{title:'문서 확인',dueDate:null},sourceRefs:[source.ref]}]};}};
@@ -51,7 +51,7 @@ test('hourly messages carry unfinished items, skip completed/excluded, and persi
   const due=h.store.create(h.user,{title:'기존 할 일',notes:'메모',dueDate:'2026-11-16',category:'일상'});
   const engine=()=>createAutomations(h.store,assistant,()=>{throw Error('not used');},{now:()=>clock});
   await Promise.all([engine().tick(),engine().tick()]);assert.equal(calls,1);
-  let first=h.store.assistantMessages(h.user)[0];assert.equal(first.items.length,2);assert.equal(first.items[0].todoId,due.id);assert.equal(h.store.list(h.user).length,1);
+  let first=h.store.assistantMessages(h.user)[0];assert.equal(first.items.length,1);assert.equal(first.items.some(i=>i.todoId===due.id),false);assert.equal(h.store.list(h.user).length,1);
   const item=first.items.find(i=>!i.todoId);
   assert.throws(()=>h.store.applyBriefingItem('other',first.id,item.key,'complete'),e=>e.status===404);
   assert.throws(()=>h.store.applyBriefingItem(h.user,first.id,briefingKey('missing'),'complete'),e=>e.status===404);
@@ -59,9 +59,9 @@ test('hourly messages carry unfinished items, skip completed/excluded, and persi
   h.store.applyBriefingItem(h.user,first.id,item.key,'restore');
   const completed=h.store.applyBriefingItem(h.user,first.id,item.key,'complete');assert.equal(completed.todo.done,true);assert.ok(completed.todo.completedAt);assert.equal(h.store.list(h.user).filter(t=>!t.done).length,1);
   assert.equal(h.store.applyBriefingItem(h.user,first.id,item.key,'complete').todo.id,completed.todo.id);assert.equal(h.store.list(h.user).length,2);
-  await h.restart();clock+=3600000;await engine().tick();let next=h.store.assistantMessages(h.user).at(-1);assert.equal(next.items.length,1,JSON.stringify({items:next.items,states:h.store.briefingItemState(h.user,item.key),todos:h.store.list(h.user)}));assert.equal(next.items[0].todoId,due.id);
+  await h.restart();clock+=3600000;await engine().tick();let next=h.store.assistantMessages(h.user).at(-1);assert.equal(next.items.length,0,'completed and already-existing Todo work does not recur');
   const restored=h.store.applyBriefingItem(h.user,first.id,item.key,'todo');assert.equal(restored.todo.id,completed.todo.id);assert.equal(restored.todo.done,false);
-  clock+=3600000;await engine().tick();next=h.store.assistantMessages(h.user).at(-1);assert.equal(next.items.filter(i=>i.todoId===restored.todo.id).length,1);
+  clock+=3600000;await engine().tick();next=h.store.assistantMessages(h.user).at(-1);assert.equal(next.items.filter(i=>i.todoId===restored.todo.id).length,0,'unfinished transferred work stays in Todo instead of reappearing');
   h.store.remove(h.user,restored.todo.id);assert.throws(()=>h.store.applyBriefingItem(h.user,first.id,item.key,'todo'),e=>e.status===409);assert.equal(h.store.list(h.user).length,1);
   assert.ok(h.store.exportAssistantMessages(h.user).length>=3);
  }finally{await h.close();}

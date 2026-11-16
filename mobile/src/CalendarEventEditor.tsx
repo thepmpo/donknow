@@ -2,7 +2,7 @@ import {useKeyboardUX} from './KeyboardUX';
 import {ScrollRevealContext,ScrollRevealRegion,useFocusedField} from './useFocusedField';
 import {Ionicons} from '@expo/vector-icons';
 import {ScrollArea as ScrollView} from './ScrollArea';
-import React,{useRef,useState} from 'react';
+import React,{useContext,useRef,useState} from 'react';
 import {Platform,StyleSheet,Switch,Text,TextInput,View} from 'react-native';
 import {CalendarDateTimeRow,DateTimeField} from './DateTimeField';
 import {calendarReminderInstant,reminderDateLabel,reminderChoices,reminderOffsetLabel} from './calendar-display';
@@ -19,12 +19,13 @@ import {calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './cale
 import type {CalendarDraft} from './calendar-edit-model';
 export function CalendarDateField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} onChange={v=>v&&onChange(v)} stacked/>;}
 function TimeField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} mode="time" onChange={v=>v&&onChange(v)} stacked/>;}
-export type CalendarPending={id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null}};
+export type CalendarPending={args?:Record<string,unknown>;id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null}};
 export type CalendarActionState={pending:CalendarPending;locked:boolean;remoteDone?:boolean;savedEventId?:string};
-export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,sourceCursor,onMoreSources,sourceError,onRefreshPermission}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;metadataAvailable?:boolean;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void}){
+export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void}){
  const keyboard=useKeyboardUX();
  const scrollRef=useRef<React.ComponentRef<typeof ScrollView>|null>(null);
- const titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),locationRef=useRef<React.ComponentRef<typeof TextInput>>(null),notesRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scrollRef);
+ const titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),locationRef=useRef<React.ComponentRef<typeof TextInput>>(null),notesRef=useRef<React.ComponentRef<typeof TextInput>>(null),localField=useFocusedField(scrollRef),parentReveal=useContext(ScrollRevealContext),inlineFocused=useRef<React.ComponentRef<typeof TextInput>|null>(null);
+ const field=inline?{...localField,show:parentReveal,focus:(input:React.ComponentRef<typeof TextInput>|null)=>{inlineFocused.current=input;parentReveal(input);},reveal:()=>parentReveal(inlineFocused.current)}:localField;
  const pending=actionState?.pending??null,locked=actionState?.locked??false;
  const [picker,setPicker]=useState<{row:'시작'|'종료';mode:'date'|'time'}|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[calendarOpen,setCalendarOpen]=useState(false),[reminderOpen,setReminderOpen]=useState(false),[moreOpen,setMoreOpen]=useState(false);
@@ -38,7 +39,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   const args=calendarWriteArgs(draft,event,!metadataAvailable);
   if(!args&&!hasLocal)throw Error('변경한 내용이 없어요.');
   if(hasLocal&&!connectionId)throw Error('연결을 새로 확인한 뒤 덕 정보를 저장해주세요.');
-  if(args){if(!canWrite)throw Error('원본 수정 권한이 필요해요. ME → 연결된 서비스 → Google에서 캘린더 수정 권한을 확인해주세요.');if(event&&!event.etag)throw Error('원본 버전을 새로 확인해주세요.');onActionState({pending:await store.featureRequest('/api/assistant/actions','POST',{operation:event?'calendar.update':'calendar.create',args:{...args,...(connectionId?{connectionId}: {})}}) as CalendarPending,locked:false});}
+  if(args){if(!canWrite)throw Error('원본 수정 권한이 필요해요. ME → 연결된 서비스 → Google에서 캘린더 수정 권한을 확인해주세요.');if(event&&!event.etag)throw Error('원본 버전을 새로 확인해주세요.');onActionState({pending:prepareAction?await prepareAction({...args,...(connectionId?{connectionId}:{})}):await store.featureRequest('/api/assistant/actions','POST',{operation:event?'calendar.update':'calendar.create',args:{...args,...(connectionId?{connectionId}: {})}}) as CalendarPending,locked:false});}
   else onActionState({pending:{id:'duck-local',status:'pending'},locked:false});
  });}
  async function finish(savedEventId:string,remote:boolean){
@@ -71,7 +72,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
  async function cancelPreview(){await work(async()=>{if(pending&&pending.id!=='duck-local')await store.featureRequest('/api/assistant/actions/'+pending.id,'DELETE');onActionState(null);});}
  // A local new draft stays editable while its calendar permission is being read.
  const readonly=!!event&&!canWrite;
- return <ScrollRevealContext.Provider value={field.show}><View style={{minHeight:0,flexShrink:1,...(keyboard.occluding?{flex:1}:{})}}><ScrollView ref={scrollRef} onLayout={field.reveal} onScroll={field.onScroll} onContentSizeChange={field.reveal} style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} testID="calendar-event-editor" keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:16,paddingBottom:24}}>
+ const fields=<>
   {pending?<>
    <Text style={s.title}>{actionState?.remoteDone?'일정 저장 완료 · 알림 확인':locked?'저장 결과 확인이 필요해요':'저장 전 확인'}</Text><Text style={s.eventTitle}>{draft.title}</Text>
    <Text style={s.help}>{draft.startDay} {draft.allDay?'종일':draft.startTime} → {draft.endDay} {draft.allDay?'종일':draft.endTime}</Text>
@@ -96,6 +97,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    {readonly&&<View style={{gap:8}}><Text style={s.help}>{!event?.etag?'원본 수정 권한을 확인하고 있어요.':'현재 원본 수정 권한이 없어요. ME → 연결된 서비스 → Google에서 캘린더 수정 권한을 확인해주세요.'} 입력한 내용은 초안으로 유지돼요.</Text>{onRefreshPermission&&<Button title="수정 권한 다시 확인" quiet disabled={busy} onPress={onRefreshPermission}/>}</View>}
    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </>}
- </ScrollView>{!pending&&!keyboard.occluding&&!picker&&!reminderOpen&&!calendarOpen&&<View style={{paddingTop:8,borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line}}><Button title="저장" accessibilityLabel="일정 저장 내용 미리보기" disabled={busy||!!picker||(!canWrite&&(!event||!metadataAvailable))} onPress={()=>void prepare()}/></View>}</View></ScrollRevealContext.Provider>;
+  </>;
+ return <ScrollRevealContext.Provider value={field.show}><View style={{minHeight:0,flexShrink:inline?0:1,...(!inline&&keyboard.occluding?{flex:1}:{})}}>{inline?<View testID="calendar-event-editor" style={{gap:16,paddingBottom:24}}>{fields}</View>:<ScrollView ref={scrollRef} onLayout={field.reveal} onScroll={field.onScroll} onContentSizeChange={field.reveal} style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} testID="calendar-event-editor" keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:16,paddingBottom:24}}>{fields}</ScrollView>}{!pending&&!keyboard.occluding&&!picker&&!reminderOpen&&!calendarOpen&&<View style={{paddingTop:8,borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line}}><Button title="저장" accessibilityLabel="일정 저장 내용 미리보기" disabled={busy||!!picker||(!canWrite&&(!event||!metadataAvailable))} onPress={()=>void prepare()}/></View>}</View></ScrollRevealContext.Provider>;
 }
 const s=StyleSheet.create({popup:{backgroundColor:colors.popup,borderRadius:20,borderWidth:StyleSheet.hairlineWidth,borderColor:colors.popupLine,overflow:'hidden'},field:{gap:4},input:{minHeight:44,backgroundColor:colors.grouped,borderRadius:12,padding:10,...typography.body,color:colors.text},group:{gap:8,padding:12,borderRadius:20,backgroundColor:colors.surface},row:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',minHeight:44},dates:{flexDirection:'row',gap:8},choice:{minHeight:44,paddingVertical:8,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:8},title:{...typography.body,color:colors.text,fontWeight:'600'},eventTitle:{fontSize:24,lineHeight:32,fontWeight:'700',color:colors.text},section:{...typography.section,color:colors.text},help:{...typography.detail,color:colors.muted},error:{...typography.detail,color:colors.danger},options:{flexDirection:'row',flexWrap:'wrap',gap:6},option:{minHeight:44,padding:10,borderRadius:14,backgroundColor:colors.grouped,justifyContent:'center'},selected:{borderWidth:1,borderColor:colors.action}});

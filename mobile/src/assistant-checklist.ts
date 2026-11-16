@@ -2,7 +2,7 @@ import {parseTodos,validateDraft} from './domain.ts';
 import type {Todo} from './domain.ts';
 import type {AssistantDraft,AssistantProposal} from './useAssistant';
 
-export type ChecklistEntry={excluded?:boolean;todoId?:string;action?:AssistantDraft;busy?:boolean;error?:string};
+export type ChecklistEntry={calendarAdded?:boolean;excluded?:boolean;todoId?:string;action?:AssistantDraft;busy?:boolean;error?:string};
 type Context={request:(path:string,method?:string,body?:unknown)=>Promise<unknown>;current:()=>boolean;refresh:()=>Promise<void>;todo:(id:string)=>Todo|undefined;update:(id:string,patch:{done:boolean})=>Promise<boolean>;changed:()=>void};
 const resultTodo=(action:AssistantDraft)=>{
  const value=action.result?.todo;

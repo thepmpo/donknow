@@ -1,0 +1,15 @@
+{
+  "syntheticOnly": true,
+  "captures": [
+    "01-ordinary-briefing.png",
+    "02-folded-gestures.png",
+    "03-open-panes.png",
+    "04-open-me-depth.png"
+  ],
+  "todos": 2,
+  "checkboxLog": true,
+  "leftExcludedOnly": true,
+  "rightSameTodoIdentity": true,
+  "fixedPanePreserved": true,
+  "errors": []
+}

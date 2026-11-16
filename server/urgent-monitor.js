@@ -1,4 +1,4 @@
-import {briefingKey} from './briefing-store.js';
+import {briefingKey,checklistKey} from './briefing-store.js';
 import {localClock} from './automations-store.js';
 import {fail} from './secrets.js';
 export const sourceDigest=source=>briefingKey(JSON.stringify([source.title,source.text,source.dueDate,source.completed,source.startAt,source.endAt]));
@@ -16,10 +16,10 @@ export function createUrgentMonitor(store,assistant,{now=Date.now}={}){
     const merged=new Map(prior),changed=[];
     for(const source of context.sources){const digest=sourceDigest(source);if(prior.get(source.ref)?.digest!==digest)changed.push(source);merged.set(source.ref,{ref:source.ref,digest,seenAt:now()});}
     const add=(source,reason,trigger)=>{
-     const key=source.provider==='todo'?briefingKey(source.ref):briefingKey(source.ref+':'+source.title.normalize('NFKC').trim());
+     const key=source.provider==='todo'?briefingKey(source.ref):checklistKey({title:source.title,sourceRefs:[source.ref]});
      const state=store.briefingItemState(item.userId,key);if(source.completed||state?.state==='excluded'||state?.todoId&&store.get(item.userId,state.todoId)?.done)return;
      const eventKey=briefingKey(source.ref+':'+trigger);if(store.hasAssistantAlert(item.userId,eventKey)||messages.some(m=>m.eventKey===eventKey))return;
-     messages.push({kind:'urgent',eventKey,title:'지금 확인할 내용',text:reason,items:[{key,title:source.title.slice(0,120),notes:source.text.slice(0,4000),dueDate:source.dueDate??null,todoId:source.provider==='todo'?source.locator.id:null,sourceRefs:[source.ref],group:'urgent'}],warnings:context.warnings.slice(0,6),sources:[{ref:source.ref,title:source.title,provider:source.provider}],checkedAt:now(),timezone:item.timezone,localDate:clock.date});
+     messages.push({kind:'urgent',eventKey,title:'지금 확인할 내용',text:reason,items:(source.provider==='todo'||store.isBriefingHandled?.(item.userId,{key,title:source.title,sourceRefs:[source.ref]}))?[]:[{key,title:source.title.slice(0,120),notes:source.text.slice(0,4000),dueDate:source.dueDate??null,todoId:source.provider==='todo'?source.locator.id:null,sourceRefs:[source.ref],group:'urgent'}],warnings:context.warnings.slice(0,6),sources:[{ref:source.ref,title:source.title,provider:source.provider}],checkedAt:now(),timezone:item.timezone,localDate:clock.date});
     };
     for(const source of context.sources){
      const todo=source.provider==='todo'?store.get(item.userId,source.locator.id):null;
