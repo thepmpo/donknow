@@ -14,10 +14,12 @@ import {
   Check,
 } from "lucide-react";
 import QRCode from "qrcode";
+import {Pricing} from "./Pricing.jsx";
 import decorations from "./decorations.json";
 import "./reference.css";
 
-const WEB = "https://duckduck-test.onrender.com";
+const WEB = location.protocol==='file:'?"https://duckduck-test.onrender.com":location.origin;
+const APP=WEB+"/app";
 const copy = {
   kr: {
     nav: ["기능", "개인정보 보호", "도움말"],
@@ -186,6 +188,7 @@ export function App() {
     [phoneVisible, setPhoneVisible] = useState(false),
     [headerTheme, setHeaderTheme] = useState("clear"),
     [headerHidden, setHeaderHidden] = useState(false);
+  useEffect(()=>{if(['#pricing','#compare'].includes(location.hash))requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior:'instant'}));},[]);
   const allowMotion = !paused && (!reduced || motionOptIn);
   const t = copy[lang],
     active = ((cursor % 4) + 4) % 4,
@@ -202,7 +205,7 @@ export function App() {
     [trackX, setTrackX] = useState(0);
   useEffect(() => {
     let alive = true;
-    QRCode.toDataURL(WEB + "/", {
+    QRCode.toDataURL(APP, {
       width: 446,
       margin: 0,
       errorCorrectionLevel: "M",
@@ -432,20 +435,23 @@ export function App() {
             aria-label={lang === "kr" ? "주 메뉴" : "Main navigation"}
           >
             <a href="#features">{t.nav[0]}</a>
+            <a href="#pricing">{lang==='kr'?'요금제':'Pricing'}</a>
             <a href="#privacy">{t.nav[1]}</a>
           </nav>
           <div className="header-actions">
+            <a href={APP} className="download-pill web-entry">{t.open}</a>
             <div
               className={join("download-root", download && "download-open")}
               data-popover
             >
               <button
-                className="download-pill"
+                className="download-pill phone-entry"
+                aria-label={lang==='kr'?'휴대폰에서 열기':'Open on phone'}
                 onClick={openDownload}
                 aria-expanded={download}
                 aria-controls="download-dialog"
               >
-                {t.open}
+                <Smartphone size={18}/>
               </button>
               {download && (
                 <div className="download-dropdown">
@@ -476,9 +482,7 @@ export function App() {
                     <div className="qr-links">
                       <a
                         className="qr-open"
-                        href={WEB + "/"}
-                        target="_blank"
-                        rel="noreferrer"
+                        href={APP}
                       >
                         {t.web}
                       </a>
@@ -571,6 +575,7 @@ export function App() {
         >
           {[
             [t.nav[0], "#features"],
+            [lang==='kr'?'요금제':'Pricing', "#pricing"],
             [t.nav[1], "#privacy"],
             [t.nav[2], "#faq"],
           ].map(([label, href]) => (
@@ -601,8 +606,9 @@ export function App() {
                     </span>
                   ))}
                 </h2>
+                <a className="footer-download web-entry" href={APP}>{t.open}</a>
                 <button
-                  className="footer-download"
+                  className="footer-phone-link"
                   onClick={() => {
                     scrollTo({
                       top: 0,
@@ -612,7 +618,7 @@ export function App() {
                     setDownload(true);
                   }}
                 >
-                  {t.open}
+                  {lang==='kr'?'휴대폰에서 열기':'Open on phone'}
                 </button>
                 <div className="footer-bottomRow">
                   <div className="footer-brand">
@@ -742,9 +748,7 @@ export function App() {
                 <div className="landing-storeRow">
                   <a
                     className="landing-storeButton"
-                    href={WEB + "/"}
-                    target="_blank"
-                    rel="noreferrer"
+                    href={APP}
                   >
                     <Globe size={22} />
                     {t.web}
@@ -930,6 +934,7 @@ export function App() {
                   </p>
                 </div>
               </section>
+              <Pricing/>
               <section className="landing-security" ref={security} id="privacy">
                 <div className="landing-securityHead">
                   <div className="landing-securityShield">
@@ -1097,9 +1102,7 @@ export function App() {
             <p>{t.testBody}</p>
             <a
               className="modal-primary"
-              href={WEB + "/"}
-              target="_blank"
-              rel="noreferrer"
+              href={APP}
             >
               {t.web}
               <ArrowUpRight size={18} />
