@@ -1,5 +1,23 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-20:start -->
+### 2026-11-20 — 당일 저장된 작업
+
+실제 정리: 03:56 KST. 새 저장 작업 6개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [22d546a](https://github.com/sjfieni/donknow/commit/22d546ae099e592bf979d863c9d2c8cbed8e7377) · 11-19 10:32 · Build video-free Duck introduction and external-AI pricing proposal
+
+- [c01ac2e](https://github.com/sjfieni/donknow/commit/c01ac2efed7362463224bdbb6acec2a7aa36de68) · 11-19 11:01 · Translate all pricing and model Lite 16900 Pro 49900 with capped document usage
+
+- [a86b876](https://github.com/sjfieni/donknow/commit/a86b87613d10ec92c92ac0e00283feae8dcd6a19) · 11-19 11:05 · Confirm Lite summaries and documents with Pro-only direct AI chat
+
+- [c8107ac](https://github.com/sjfieni/donknow/commit/c8107acdd012197fdc52e56c1c1d2e8a6b1ebbe7) · 11-19 11:13 · Document separate service connections and explain heavy-use scenarios
+
+- [4dfedee](https://github.com/sjfieni/donknow/commit/4dfedee3b8f6e3c4b28d84191e586b226bae4d0e) · 11-19 11:38 · Define regular monthly, annual, and beta pricing terms
+
+- [0e42846](https://github.com/sjfieni/donknow/commit/0e42846ee7c8e15e0ad11de40e6ac6dd6612063c) · 11-19 12:19 · Record live public site and beta pricing verification
+<!-- daily:2026-11-20:end -->
+
 <!-- daily:2026-11-19:start -->
 ### 2026-11-19 — 당일 저장된 작업
 
