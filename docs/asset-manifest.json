@@ -1,9 +1,23 @@
 {
   "generatedAt": "2026-11-19",
-  "codeCommit": "c01ac2efed7362463224bdbb6acec2a7aa36de68",
-  "assetCommit": "a86b87613d10ec92c92ac0e00283feae8dcd6a19",
-  "imageCount": 1459,
+  "codeCommit": "4dfedee3b8f6e3c4b28d84191e586b226bae4d0e",
+  "assetCommit": "4dfedee3b8f6e3c4b28d84191e586b226bae4d0e",
+  "imageCount": 1474,
   "images": [
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-pricing-en.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 126912,
+      "sha256": "758cec74aeecab0a8257702d12352ce01d013609529f7f26d339d1e7faa75076",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-pricing-en.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-pricing.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 36721,
+      "sha256": "bc278a0b11167d4a45903e48177875c2f401bc65f0be34625d8ca14670961272",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-pricing.png"
+    },
     {
       "path": "artifacts/duck-pricing-bilingual-2026-11-19/desktop-pricing-en.png",
       "category": "덕 소개 사이트·영문 전체/최신16,900·49,900/합성 예시·실제 계정·native 아님",
@@ -5911,6 +5925,97 @@
       "bytes": 43277,
       "sha256": "243e5e8f6ee169a772b25cb3faae67d56509a5fbf66685b33cdfc3965ce2a2dd",
       "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-todo.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-calendar.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 80039,
+      "sha256": "401518fbe7383477d4733e647003d9546dc49ac3651932b8915cd65dd190248b",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-calendar.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-full-en.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 751772,
+      "sha256": "24126375f6472142ae8deaf9a469612d4a57b0db22df69ab486750d489110594",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-full-en.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-full.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 681293,
+      "sha256": "623f321faf22ca4a3b9366fc08c264f6a4adbdd1a628369236d49e27be4b300b",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-full.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-hero.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 89284,
+      "sha256": "687d1a742283b94e98cbdfbd37215ac6aaf8948d33b0fe34af248ffb2b8caa2a",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-hero.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-pricing.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 115576,
+      "sha256": "871d60a62b929f3e0d0b7edd581cb401f8c24deb71e1e5825710502b3f6fbdb5",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-pricing.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/desktop-todo.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 79351,
+      "sha256": "14c62cd67e6e31eab0cebdea0cea3035c6b9b22c8aedd272e39e783cbe3a3422",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__desktop-todo.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-calendar.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 43891,
+      "sha256": "4f89974c68db42de49c7d560d7bf2b68bc2e3d02c372546174c4c3df88b3dac8",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-calendar.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-comparison.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 36721,
+      "sha256": "bc278a0b11167d4a45903e48177875c2f401bc65f0be34625d8ca14670961272",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-comparison.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-full-en.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 588512,
+      "sha256": "9692e0ba1eccb295a59bd1a0554fc434c8beebff06f776b3b5413b3b9661e48d",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-full-en.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-full.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 545168,
+      "sha256": "5e56e4dd7785127bd8f7f74b9bd94e9932b894a528571af578bb58c677c3d8f7",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-full.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-hero.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 51824,
+      "sha256": "8cedbe2d3e183b2dc64bf0fcf735042befc73c6a5d2023423e40cea7101adb54",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-hero.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-pricing-en.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 41595,
+      "sha256": "fe68b0815151d882e951a6448cf33648b8439803b5be2f97ddcfaa38a70fd86c",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-pricing-en.png"
+    },
+    {
+      "path": "artifacts/duck-beta-annual-2026-11-19/phone-todo.png",
+      "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
+      "bytes": 43277,
+      "sha256": "243e5e8f6ee169a772b25cb3faae67d56509a5fbf66685b33cdfc3965ce2a2dd",
+      "import_path": "images/artifacts__duck-beta-annual-2026-11-19__phone-todo.png"
     },
     {
       "path": "artifacts/duck-pricing-bilingual-2026-11-19/desktop-calendar.png",
