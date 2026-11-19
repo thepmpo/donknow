@@ -1,0 +1,53 @@
+{
+  "verifiedAt": "2026-11-19T03:19:31.770Z",
+  "deployment": {
+    "id": "dep-dbv6kidg1s2s73ebtan0",
+    "status": "live",
+    "finishedAt": "2026-11-19T03:18:32.444411Z",
+    "service": "duckduck-test",
+    "release": "9d1204325dcf20ed79c0f7f97bbdc83a75f540c2",
+    "url": "https://duckduck-test.onrender.com/",
+    "plan": "free"
+  },
+  "publicReadOnlyVerification": {
+    "tool": "TinyFish fetch_content, no account or cookies supplied",
+    "title": "덕 — 흩어진 일은 모으고, 나의 하루는 가볍게.",
+    "prices": [
+      {
+        "price": "19,900",
+        "present": true
+      },
+      {
+        "price": "55,900",
+        "present": true
+      },
+      {
+        "price": "16,900",
+        "present": true
+      },
+      {
+        "price": "49,900",
+        "present": true
+      },
+      {
+        "price": "202,800",
+        "present": true
+      },
+      {
+        "price": "598,800",
+        "present": true
+      }
+    ],
+    "betaDiscount": true,
+    "health": {
+      "ok": true,
+      "authentication": "session",
+      "version": 1,
+      "calendarWorkspace": 2,
+      "requestLanes": 2,
+      "release": "9d1204325dcf20ed79c0f7f97bbdc83a75f540c2"
+    },
+    "errors": []
+  },
+  "scope": "Public marketing site and pricing deployed; no checkout activation, native build, new service, or paid resource. English public URL query does not select language; public English button interaction not re-tested in this fetch. KR/EN browser interaction was verified locally."
+}
