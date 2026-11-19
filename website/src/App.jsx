@@ -1,1121 +1,1179 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  ArrowUpRight,
   ArrowRight,
-  ChevronDown,
-  ChevronRight,
-  Globe,
-  Smartphone,
-  ShieldCheck,
-  Menu,
-  X,
-  Pause,
-  Play,
+  ArrowUpRight,
+  CalendarDays,
   Check,
+  CheckCheck,
+  ChevronDown,
+  ChevronLeft,
+  CircleCheck,
+  ClipboardList,
+  Clock3,
+  Link2,
+  ListTodo,
+  Menu,
+  MessageCircle,
+  Plus,
+  RotateCcw,
+  ShieldCheck,
+  Smartphone,
+  Sparkles,
+  X,
+  Mail,
+  NotebookPen,
+  Globe,
+  QrCode,
 } from "lucide-react";
 import QRCode from "qrcode";
-import {Pricing} from "./Pricing.jsx";
-import decorations from "./decorations.json";
-import "./reference.css";
+import { Pricing } from "./Pricing.jsx";
 
-const WEB = location.protocol==='file:'?"https://duckduck-test.onrender.com":location.origin;
-const APP=WEB+"/app";
-const copy = {
-  kr: {
-    nav: ["기능", "개인정보 보호", "도움말"],
-    open: "덕 열기",
-    hero: ["AI와 함께하는 하루,", "조금 더 가볍게"],
-    sub: "덕과 함께 만들어갑니다",
-    intro: "나만의 AI 비서",
-    introTitle: ["흩어진 일정을 한눈에 모으는", "나만의 AI 비서, 덕"],
-    web: "웹에서 열기",
-    iphone: "iPhone 테스트",
-    features: [
-      "일정 한눈에",
-      "작은 할 일 끝내기",
-      "메시지를 할 일로",
-      "완료한 일 기록으로",
+const WEB =
+  location.protocol === "file:"
+    ? "https://duckduck-test.onrender.com"
+    : location.origin;
+const APP = WEB + "/app";
+const initialTasks = [
+  {
+    id: "review",
+    title: ["다음 주 제안서 검토하기", "Review next week’s proposal"],
+    note: [
+      "공유받은 제안서에서 확인할 내용 세 가지를 정리했어요.",
+      "Three points to review from the shared proposal.",
     ],
-    research: "덕이 일하는 방식",
-    researchTitle: ["대신 결정하기보다,", "함께 정리하고 확인합니다."],
-    more: "덕을 만드는 과정",
-    securityTitle: ["나의 하루를 맡기는 만큼,", "선택은 언제나 내 손안에"],
-    securityLead:
-      "연결한 계정과 AI에게 보낼 자료를 직접 고르고, 외부에 반영할 내용은 실행 전에 확인해요.",
-    privacy: "개인정보 처리방침",
-    actions: "AI 실행 방식",
-    tiles: [
-      ["인증 정보 보호", "연결 정보는 암호화해서"],
-      ["계정별 데이터", "내 자료는 내 계정에서"],
-      ["실행 전 확인", "변경은 내가 확인한 뒤에"],
-    ],
-    faq: "자주 묻는 질문",
-    all: "도움말 보기",
-    questions: [
-      "덕은 어떤 일을 도와주나요?",
-      "AI에게 어떤 자료가 전달되나요?",
-      "덕이 마음대로 수정하거나 보내나요?",
-      "아이폰과 웹에서 사용할 수 있나요?",
-    ],
-    answers: [
-      "캘린더와 Todo를 함께 보고, 덕 채팅에서 할 일을 정리할 수 있어요. 붙여넣은 글에서 할 일 후보를 제안받고, 직접 확인해서 추가할 수 있습니다.",
-      "동의한 뒤 선택한 자료와 요청 내용이 AI 분석에 사용됩니다. 계정 연결과 AI 자료 선택은 별개이며, 연결했다고 모든 자료가 자동으로 AI에 전달되지는 않아요.",
-      "외부 서비스의 변경은 실행 초안을 확인하고 실행을 눌러야 반영됩니다. 서비스별 쓰기 권한과 연결 상태가 필요해요.",
-      "웹에서 덕을 열 수 있습니다. iPhone 앱은 TestFlight로 검증 중이며, 공개 App Store 출시나 누구나 사용하는 테스트 초대 링크는 아직 제공하지 않습니다.",
-    ],
-    footer: ["하루의 흩어진 조각들,", "덕과 함께 가볍게"],
-    qr: "QR코드를 스캔하면 휴대폰에서 덕을 열 수 있어요.",
-    testTitle: "iPhone에서 덕을 만나보세요",
-    testBody:
-      "현재 TestFlight로 실제 기기에서 검증하고 있어요. 공개 초대 링크는 아직 준비 중입니다. 지금은 웹에서 사용하거나 문의해주세요.",
-    support: "문의하기",
-    close: "닫기",
-    lang: "언어 선택",
-    demo: "실제 덕 화면 · 예시 데이터",
-    pause: "영상 일시정지",
-    play: "영상 재생",
+    source: "Gmail",
+    date: ["오늘까지", "Due today"],
+    status: "inbox",
   },
-  en: {
-    nav: ["Features", "Privacy", "Help"],
-    open: "Open Duck",
-    hero: ["A little less to carry.", "A little more room for you."],
-    sub: "Make space for your day with Duck",
-    intro: "Your personal AI assistant",
-    introTitle: [
-      "Your scattered plans, together.",
-      "Your personal assistant, Duck.",
+  {
+    id: "meeting",
+    title: ["디자인 피드백 미팅 잡기", "Schedule a design feedback meeting"],
+    note: [
+      "내일 오후에 가능한 시간을 확인해보세요.",
+      "Find a suitable time tomorrow afternoon.",
     ],
-    web: "Open web app",
-    iphone: "iPhone testing",
-    features: [
-      "See your schedule",
-      "Finish the little things",
-      "Messages into to-dos",
-      "Keep a record of progress",
-    ],
-    research: "How Duck works",
-    researchTitle: ["Organize together.", "You make the final call."],
-    more: "How we build Duck",
-    securityTitle: ["Your day is personal.", "Your choices stay yours."],
-    securityLead:
-      "Choose the accounts and information to share with AI. Review changes before they reach an external service.",
-    privacy: "Privacy policy",
-    actions: "How AI actions work",
-    tiles: [
-      ["Credential protection", "Encrypted connection details"],
-      ["Account separation", "Your data, in your account"],
-      ["Review before action", "Confirm changes yourself"],
-    ],
-    faq: "Frequently asked questions",
-    all: "Get help",
-    questions: [
-      "What can Duck help me with?",
-      "What information is shared with AI?",
-      "Can Duck change things without asking?",
-      "Can I use Duck on iPhone and the web?",
-    ],
-    answers: [
-      "See your calendar and to-dos together, and organize tasks in Duck chat. Paste a message to get proposed to-dos, then review and add them yourself.",
-      "AI uses the request and the information you choose after giving consent. Connecting an account does not automatically send all its information to AI.",
-      "Changes to external services require a preview and your confirmation. Each service also needs the right connection and write permission.",
-      "You can open Duck on the web. The iPhone app is being tested through TestFlight. A public App Store listing and open TestFlight invitation are not available yet.",
-    ],
-    footer: ["Bring the pieces of your day", "together with Duck."],
-    qr: "Scan to open Duck on your phone.",
-    testTitle: "Meet Duck on iPhone",
-    testBody:
-      "The iPhone app is currently being tested through TestFlight. An open invitation is not available yet. Try the web app or contact us.",
-    support: "Contact us",
-    close: "Close",
-    lang: "Choose language",
-    demo: "Actual Duck app · sample data",
-    pause: "Pause videos",
-    play: "Play videos",
+    source: "Slack",
+    date: ["내일", "Tomorrow"],
+    status: "inbox",
   },
-};
-const join = (...a) => a.filter(Boolean).join(" ");
-function Video({ name, src, poster, className = "", loop = true, ...props }) {
+  {
+    id: "personal",
+    title: ["도서관에 책 반납하기", "Return the library books"],
+    note: [
+      "미리알림에 남아 있는 이번 주 할 일이에요.",
+      "An unfinished reminder for this week.",
+    ],
+    source: ["미리알림", "Reminders"],
+    date: ["이번 주", "This week"],
+    status: "inbox",
+  },
+];
+const views = [
+  { id: "inbox", icon: Sparkles, name: ["브리핑", "Briefing"] },
+  { id: "todo", icon: ListTodo, name: ["Todo", "To-dos"] },
+  { id: "calendar", icon: CalendarDays, name: ["캘린더", "Calendar"] },
+  { id: "done", icon: CheckCheck, name: ["기록", "Log"] },
+];
+function Duck({ className = "" }) {
   return (
-    <video
-      className={className}
-      src={src || `/assets/reference/${name}.webm`}
-      poster={poster || `/assets/reference/${name}.webp`}
-      muted
-      playsInline
-      loop={loop}
-      preload="metadata"
-      data-office-video="true"
-      {...props}
+    <img
+      className={"duck-mark " + className}
+      src={import.meta.env.BASE_URL + "assets/duck.png"}
+      alt=""
+      width="32"
+      height="32"
     />
   );
 }
-function Decoration({ item, footer = false }) {
+function Demo({ en }) {
+  const tr = (a) => (Array.isArray(a) ? a[en ? 1 : 0] : a);
+  const [tasks, setTasks] = useState(initialTasks),
+    [view, setView] = useState("inbox"),
+    [notice, setNotice] = useState(""),
+    [schedule, setSchedule] = useState(null),
+    [date, setDate] = useState(""),
+    [time, setTime] = useState("");
+  const dateRef = useRef(null);
+  const move = (id, status) => {
+    setTasks((all) =>
+      all.map((t) =>
+        t.id === id
+          ? {
+              ...t,
+              status,
+              ...(status === "calendar"
+                ? { scheduled: date + " " + time }
+                : {}),
+            }
+          : t,
+      ),
+    );
+    setNotice(
+      tr(
+        status === "todo"
+          ? [
+              "Todo에 담았어요. 왼쪽 Todo에서 확인해보세요.",
+              "Added to To-dos. Open To-dos to see it.",
+            ]
+          : status === "calendar"
+            ? [
+                "캘린더에 담았어요. 왼쪽 캘린더에서 확인해보세요.",
+                "Added to Calendar. Open Calendar to see it.",
+              ]
+            : [
+                "대화에서 마쳤어요. 기록에 남겨두었어요.",
+                "Finished here. You can find it in Log.",
+              ],
+      ),
+    );
+    setSchedule(null);
+  };
+  useEffect(() => {
+    if (schedule) dateRef.current?.focus();
+  }, [schedule]);
+  const visible = tasks.filter((x) => x.status === view);
   return (
-    <span
-      aria-hidden="true"
-      className={
-        footer
-          ? "characters-slot"
-          : join("showcase-pickle", item.front && "showcase-pickleFront")
-      }
-      style={item.style}
-    >
-      <span
-        className={footer ? "characters-frame" : "showcase-pickleArt"}
-        style={item.artStyle}
-      >
-        <div className={footer ? "characters-video" : "showcase-pickleVideo"}>
-          <Video src={item.src} poster={item.poster} />
+    <div className="demo-frame" id="product-demo">
+      <div className="demo-topline">
+        <span>
+          <Duck /> {tr(["나의 하루", "My day"])}
+        </span>
+        <span className="example-label">
+          {tr(["직접 눌러보는 기능 예시", "Interactive product example"])}
+        </span>
+        <button
+          className="icon-btn"
+          title={tr(["예시 초기화", "Reset example"])}
+          aria-label={tr(["예시 초기화", "Reset example"])}
+          onClick={() => {
+            setTasks(initialTasks);
+            setView("inbox");
+            setNotice("");
+            setSchedule(null);
+          }}
+        >
+          <RotateCcw size={17} />
+        </button>
+      </div>
+      <div className="demo-body">
+        <nav
+          className="demo-sidebar"
+          aria-label={tr(["제품 예시 메뉴", "Product example navigation"])}
+        >
+          <span className="sidebar-label">WORKSPACE</span>
+          {views.map(({ id, icon: Icon, name }) => (
+            <button
+              key={id}
+              aria-pressed={view === id}
+              className={view === id ? "active" : ""}
+              onClick={() => {
+                setView(id);
+                setSchedule(null);
+                setNotice("");
+              }}
+            >
+              <Icon size={19} />
+              <span>{tr(name)}</span>
+              <span className="count">
+                {tasks.filter((x) => x.status === id).length}
+              </span>
+            </button>
+          ))}
+          <div className="sidebar-bottom">
+            <ShieldCheck size={16} />
+            {tr(["내가 결정하는 하루", "Your day, your decisions"])}
+          </div>
+        </nav>
+        <div className="demo-content">
+          <div className="demo-heading">
+            <div>
+              <p className="eyebrow">
+                {tr(["11월 19일 목요일", "Thursday, November 19"])}
+              </p>
+              <h2>{tr(views.find((x) => x.id === view).name)}</h2>
+            </div>
+            <span className="demo-avatar">
+              <Duck />
+            </span>
+          </div>
+          <p className="demo-intro">
+            {tr(
+              view === "inbox"
+                ? [
+                    "오늘 챙길 일을 한곳에 모았어요. 어떻게 할지 골라보세요.",
+                    "Your next steps, together. Choose what happens next.",
+                  ]
+                : view === "todo"
+                  ? [
+                      "내가 하기로 한 일만, 차분하게.",
+                      "A clear list of the things you’ve chosen to do.",
+                    ]
+                  : view === "calendar"
+                    ? [
+                        "시간을 정한 일은 일정으로 이어져요.",
+                        "Make time for what matters.",
+                      ]
+                    : [
+                        "끝낸 일은 기록하고, 다음 일에 집중해요.",
+                        "Keep a record. Make room for what’s next.",
+                      ],
+            )}
+          </p>
+          <div className="demo-list">
+            {visible.map((task) => (
+              <article className="demo-task" key={task.id}>
+                <button
+                  className="task-check"
+                  aria-label={
+                    tr(
+                      task.status === "done"
+                        ? ["미완료로 되돌리기: ", "Restore: "]
+                        : ["완료: ", "Complete: "],
+                    ) + tr(task.title)
+                  }
+                  aria-pressed={task.status === "done"}
+                  onClick={() =>
+                    move(task.id, task.status === "done" ? "inbox" : "done")
+                  }
+                >
+                  {task.status === "done" && <Check size={17} />}
+                </button>
+                <div className="task-content">
+                  <h3>{tr(task.title)}</h3>
+                  <div className="task-meta">
+                    <span
+                      className={
+                        "source-dot " +
+                        (task.source === "Slack"
+                          ? "violet"
+                          : task.source === "Gmail"
+                            ? "coral"
+                            : "amber")
+                      }
+                    />
+                    {tr(task.source)}
+                    <span>·</span>
+                    <span>{task.scheduled || tr(task.date)}</span>
+                  </div>
+                  {view === "inbox" && (
+                    <>
+                      <p>{tr(task.note)}</p>
+                      <div className="task-actions">
+                        <button onClick={() => move(task.id, "todo")}>
+                          <Plus size={14} />
+                          {tr(["할 일로", "To-do"])}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSchedule(schedule === task.id ? null : task.id);
+                            setDate("");
+                            setTime("");
+                          }}
+                        >
+                          <CalendarDays size={14} />
+                          {tr(["일정으로", "Schedule"])}
+                        </button>
+                        <button onClick={() => move(task.id, "done")}>
+                          {tr(["대화에서 마치기", "Finish here"])}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  {schedule === task.id && (
+                    <form
+                      className="schedule-form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        move(task.id, "calendar");
+                      }}
+                    >
+                      <label>
+                        {tr(["날짜", "Date"])}
+                        <input
+                          ref={dateRef}
+                          aria-label={tr(["일정 날짜", "Event date"])}
+                          type="date"
+                          required
+                          value={date}
+                          onChange={(e) => setDate(e.target.value)}
+                        />
+                      </label>
+                      <label>
+                        {tr(["시간", "Time"])}
+                        <input
+                          aria-label={tr(["일정 시간", "Event time"])}
+                          type="time"
+                          required
+                          value={time}
+                          onChange={(e) => setTime(e.target.value)}
+                        />
+                      </label>
+                      <button type="submit" className="small-primary">
+                        {tr(["일정에 담기", "Add event"])}
+                      </button>
+                      <button
+                        type="button"
+                        className="plain-btn"
+                        onClick={() => setSchedule(null)}
+                      >
+                        {tr(["취소", "Cancel"])}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+          {!visible.length && (
+            <div className="demo-empty">
+              <CircleCheck size={30} />
+              <h3>
+                {tr(
+                  view === "inbox"
+                    ? [
+                        "지금 확인할 일은 모두 정리했어요",
+                        "You’re all caught up",
+                      ]
+                    : ["아직 담긴 일이 없어요", "Nothing here yet"],
+                )}
+              </h3>
+              <p>
+                {tr([
+                  "브리핑에서 할 일을 골라 담아보세요.",
+                  "Choose an item from your briefing.",
+                ])}
+              </p>
+              <button onClick={() => setView("inbox")}>
+                {tr(["브리핑 보기", "See briefing"])}
+                <ArrowRight size={15} />
+              </button>
+            </div>
+          )}
+          <div className="demo-status" aria-live="polite" role="status">
+            {notice ||
+              tr([
+                "예시 데이터입니다. 실제 계정에는 저장되지 않아요.",
+                "Example data. Changes are not saved to an account.",
+              ])}
+          </div>
         </div>
-      </span>
-    </span>
+        <aside className="demo-today">
+          <span className="eyebrow">
+            {tr(["오늘의 여유", "A little room today"])}
+          </span>
+          <h3>{tr(["하나씩, 가볍게.", "One thing at a time."])}</h3>
+          <p>
+            {tr([
+              "지금 할 일과 나중에 할 일을 나누면 하루가 조금 더 선명해져요.",
+              "A little clarity about what’s next makes space for the rest.",
+            ])}
+          </p>
+          <div className="agenda-date">
+            <strong>19</strong>
+            <span>NOV / THU</span>
+          </div>
+          <div className="agenda-line">
+            <span>10:00</span>
+            <div>
+              <strong>{tr(["오늘 할 일 살펴보기", "Review the day"])}</strong>
+              <small>
+                {tr(["내 시간을 먼저 챙겨요", "Make time for yourself"])}
+              </small>
+            </div>
+          </div>
+          <div className="agenda-line">
+            <span>14:00</span>
+            <div>
+              <strong>{tr(["집중하는 시간", "Focus time"])}</strong>
+              <small>
+                {tr(["방해 없이, 하나씩", "One thing, without distractions"])}
+              </small>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
   );
 }
-
+const faqs = [
+  [
+    "덕은 어떤 서비스인가요?",
+    "What is Duck?",
+    "연결한 자료에서 챙길 일을 살펴보고, 브리핑·Todo·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 할 일로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
+    "Duck brings your next steps into a briefing, to-do list and calendar. Keep only the things you need, or finish them in the conversation.",
+  ],
+  [
+    "ChatGPT를 연결하면 Dots가 그대로 들어오나요?",
+    "Does connecting ChatGPT import my dot?",
+    "그대로 자동 복제되는 방식은 아니에요. 외부 AI에서 선택한 일을 덕에 보내는 연결을 준비하고 있어요. ChatGPT 로그인이나 사용량 공유만으로 기존 대화·기억·Dots 결과를 읽을 수는 없어요.",
+    "No. We are preparing a connection that lets an external AI send selected tasks to Duck. Signing in or sharing plan usage does not import ChatGPT conversations, memories or dot results.",
+  ],
+  [
+    "라이트와 프로는 무엇이 다른가요?",
+    "What is the difference between Lite and Pro?",
+    "라이트는 이미 사용하는 외부 AI와 함께 쓰는 방향, 프로는 덕 안에서 AI와 대화하고 브리핑을 받는 방향이에요. 라이트는 월 9,900원 제안 단계이며 외부 AI 연결과 결제는 준비 중이에요. 프로는 월 27,900원을 기준으로 안내해요.",
+    "Lite is designed for people bringing an external AI; Pro brings AI conversation and briefings into Duck. Lite’s proposed price is ₩9,900/month and its connection is in preparation. Pro is ₩27,900/month. Paid checkout is not open.",
+  ],
+  [
+    "할 일과 일정을 바꾸면 원본도 바뀌나요?",
+    "Will changes update the original service?",
+    "지원되는 연결의 항목은 권한과 수정 내용을 확인한 뒤 원본에 반영해요. 읽기 전용이나 미지원 항목은 제한을 알려드려요. 덕에서만 만든 항목은 덕 안에서만 바뀌어요.",
+    "Supported connections can update the source with the necessary permissions and confirmation. Read-only and unsupported items have limits. Duck-only items stay in Duck.",
+  ],
+  [
+    "모든 자료를 실시간으로 확인하나요?",
+    "Is every source monitored in real time?",
+    "연결한 서비스의 권한·조회 방식·사용량에 따라 달라요. 정기 브리핑과 중요한 변화 알림을 구분하며, 모든 자료의 즉시 감지와 무제한 AI 처리를 약속하지 않아요.",
+    "This depends on source permissions, sync methods and usage limits. Scheduled briefings and important updates are separate; instant monitoring of every source and unlimited AI are not promised.",
+  ],
+  [
+    "지금 어디에서 사용할 수 있나요?",
+    "Where can I use Duck?",
+    "웹에서 덕을 열 수 있어요. iPhone 앱은 TestFlight로 검증 중이며 공개 초대는 준비 중이에요. 새 요금표는 개편안으로, 현재 결제가 시작되지는 않아요.",
+    "You can open the web app now. The iPhone app is being tested with TestFlight; a public invitation is not yet available. The new pricing is a proposal and checkout is not active.",
+  ],
+];
 export function App() {
-  const [lang, setLang] = useState("kr"),
+  const [en, setEn] = useState(false),
     [menu, setMenu] = useState(false),
-    [languageMenu, setLanguageMenu] = useState(false),
-    [download, setDownload] = useState(false),
-    [testInfo, setTestInfo] = useState(false),
-    [qr, setQr] = useState(""),
-    [faq, setFaq] = useState(-1),
-    [cursor, setCursor] = useState(4),
-    [progress, setProgress] = useState(0),
-    [paused, setPaused] = useState(false),
-    [reduced, setReduced] = useState(false),
-    [motionOptIn, setMotionOptIn] = useState(false),
-    [phoneVisible, setPhoneVisible] = useState(false),
-    [headerTheme, setHeaderTheme] = useState("clear"),
-    [headerHidden, setHeaderHidden] = useState(false);
-  useEffect(()=>{if(['#pricing','#compare'].includes(location.hash))requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior:'instant'}));},[]);
-  const allowMotion = !paused && (!reduced || motionOptIn);
-  const t = copy[lang],
-    active = ((cursor % 4) + 4) % 4,
-    root = useRef(),
-    zone = useRef(),
-    research = useRef(),
-    security = useRef(),
-    track = useRef(),
-    viewport = useRef(),
-    phoneVideos = useRef([]),
-    dialog = useRef(),
-    opener = useRef(),
-    touch = useRef(null),
-    [trackX, setTrackX] = useState(0);
+    [modal, setModal] = useState(null),
+    [qr, setQr] = useState("");
+  const modalRef = useRef(null),
+    opener = useRef(null);
+  const t = (ko, eng) => (en ? eng : ko);
+  useEffect(() => {
+    document.documentElement.lang = en ? "en" : "ko";
+  }, [en]);
   useEffect(() => {
     let alive = true;
-    QRCode.toDataURL(APP, {
-      width: 446,
-      margin: 0,
-      errorCorrectionLevel: "M",
-    }).then((v) => alive && setQr(v));
+    QRCode.toDataURL(APP, { width: 220, margin: 2 }).then((data) => {
+      if (alive) setQr(data);
+    });
     return () => {
       alive = false;
     };
   }, []);
   useEffect(() => {
-    document.documentElement.lang = lang === "kr" ? "ko" : "en";
-    document.title =
-      lang === "kr"
-        ? "덕 — 하루가 조금 더 가벼워지는 순간"
-        : "Duck — Make space for your day";
-  }, [lang]);
-  useEffect(() => {
-    const mq = matchMedia("(prefers-reduced-motion: reduce)"),
-      update = () => {
-        setReduced(mq.matches);
-        setMotionOptIn(false);
-      };
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  useEffect(() => {
-    const videos = [
-      ...root.current.querySelectorAll("video[data-office-video]"),
-    ];
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const { target, isIntersecting } of entries) {
-          target.dataset.inView = String(isIntersecting);
-          if (isIntersecting && allowMotion && !document.hidden) {
-            target.play().catch(() => {});
-          } else target.pause();
-        }
-      },
-      { threshold: 0.05 },
-    );
-    videos.forEach((v) => io.observe(v));
-    const visibility = () =>
-      videos.forEach((v) => {
-        if (document.hidden) v.pause();
-        else if (v.dataset.inView === "true" && allowMotion)
-          v.play().catch(() => {});
-      });
-    document.addEventListener("visibilitychange", visibility);
-    return () => {
-      io.disconnect();
-      document.removeEventListener("visibilitychange", visibility);
-      videos.forEach((v) => v.pause());
-    };
-  }, [allowMotion]);
-  useEffect(() => {
-    phoneVideos.current.forEach((video, index) => {
-      if (video && index === active) video.currentTime = 0;
-    });
-    setProgress(0);
-  }, [active]);
-  useEffect(() => {
-    const update = () =>
-      phoneVideos.current.forEach((video, index) => {
-        if (!video) return;
-        if (index === active && allowMotion && phoneVisible && !document.hidden)
-          video.play().catch(() => {});
-        else video.pause();
-      });
-    update();
-    document.addEventListener("visibilitychange", update);
-    return () => document.removeEventListener("visibilitychange", update);
-  }, [active, allowMotion, phoneVisible]);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setPhoneVisible(entry.isIntersecting),
-      { threshold: 0.15 },
-    );
-    const phone = root.current.querySelector(".showcase-phone");
-    observer.observe(phone);
-    return () => observer.disconnect();
-  }, []);
-  useLayoutEffect(() => {
-    const update = () => {
-      const b = track.current?.children[cursor];
-      if (b && viewport.current)
-        setTrackX(
-          viewport.current.clientWidth / 2 - b.offsetLeft - b.offsetWidth / 2,
-        );
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    if (viewport.current) ro.observe(viewport.current);
-    return () => ro.disconnect();
-  }, [cursor, lang]);
-  useEffect(() => {
-    let last = scrollY,
-      frame;
-    const update = () => {
-      const y = scrollY,
-        h = innerHeight,
-        rr = research.current.getBoundingClientRect(),
-        sr = security.current.getBoundingClientRect();
-      const fade = Math.max(0, Math.min(1, (h * 0.82 - rr.top) / (h * 0.6)));
-      const black = Math.max(0, Math.min(1, (h * 0.7 - sr.top) / (h * 0.55)));
-      zone.current.style.setProperty("--research-fade", fade);
-      zone.current.style.setProperty("--security-fade", black);
-      setHeaderTheme(
-        sr.top < 80
-          ? "dark"
-          : rr.top < 80 && rr.bottom > 80
-            ? "dark"
-            : y < 60
-              ? "clear"
-              : "light",
-      );
-      if (Math.abs(y - last) > 6) {
-        setHeaderHidden(
-          y > last && y > h * 0.6 && !menu && !download && !languageMenu,
-        );
-        last = y;
-      }
-      frame = null;
-    };
-    const scroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    addEventListener("scroll", scroll, { passive: true });
-    addEventListener("resize", scroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      removeEventListener("scroll", scroll);
-      removeEventListener("resize", scroll);
-    };
-  }, [menu, download, languageMenu]);
-  useEffect(() => {
-    if (!download && !testInfo) return;
-    const restore = document.activeElement;
-    opener.current = restore;
-    const p = dialog.current;
-    p?.querySelector("a,button")?.focus();
+    if (!modal) return;
+    opener.current = document.activeElement;
+    const old = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    modalRef.current?.querySelector("button")?.focus();
     const key = (e) => {
-      if (e.key === "Escape") {
-        setDownload(false);
-        setTestInfo(false);
-      }
-      if (e.key === "Tab" && p) {
-        const list = [...p.querySelectorAll("a[href],button")].filter(
-          (x) => x.getClientRects().length,
-        );
-        const first = list[0],
-          last = list.at(-1);
+      if (e.key === "Escape") setModal(null);
+      if (e.key === "Tab") {
+        const all = [
+          ...modalRef.current.querySelectorAll('a,button,[tabindex="0"]'),
+        ];
+        const first = all[0],
+          last = all.at(-1);
         if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
-          last?.focus();
+          last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
           e.preventDefault();
-          first?.focus();
+          first.focus();
         }
       }
     };
     document.addEventListener("keydown", key);
     return () => {
+      document.body.style.overflow = old;
       document.removeEventListener("keydown", key);
-      restore?.focus();
+      opener.current?.focus();
     };
-  }, [download, testInfo]);
-  useEffect(() => {
-    const key = (e) => {
-      if (e.key === "Escape") {
-        setMenu(false);
-        setLanguageMenu(false);
-      }
-    };
-    const click = (e) => {
-      if (!e.target.closest("[data-popover]")) {
-        setDownload(false);
-        setLanguageMenu(false);
-      }
-    };
-    document.addEventListener("keydown", key);
-    document.addEventListener("pointerdown", click);
-    return () => {
-      document.removeEventListener("keydown", key);
-      document.removeEventListener("pointerdown", click);
-    };
-  }, []);
-  function advance() {
-    setCursor((c) => (c >= 7 ? 4 : c + 1));
-  }
-  const go = () => {
-    setMenu(false);
-    setHeaderHidden(false);
-  };
-  const iconStyle = { width: 20, height: 20 };
-  const openDownload = () => {
-    setDownload((v) => !v);
-    setLanguageMenu(false);
-    setMenu(false);
-  };
+  }, [modal]);
+  const links = [
+    ["#how", t("작동 방식", "How it works")],
+    ["#features", t("기능", "Features")],
+    ["#connections", t("연결", "Connections")],
+    ["#pricing", t("요금", "Pricing")],
+  ];
   return (
-    <main
-      ref={root}
-      className="shell-page shell-entered"
-      data-language={lang}
-      data-topbar-hidden={headerHidden}
-    >
-      <a className="skip-link" href="#features">
-        {lang === "kr" ? "본문 바로가기" : "Skip to content"}
+    <>
+      <a className="skip-link" href="#main">
+        {t("본문으로 건너뛰기", "Skip to content")}
       </a>
-      <header
-        className={join("duck-header", menu && "is-menu-open")}
-        data-theme={headerTheme}
-      >
-        <div className="header-inner">
-          <a
-            className="duck-brand"
-            href="#top"
-            onClick={go}
-            aria-label={lang === "kr" ? "덕 홈" : "Duck home"}
-          >
-            <img src="/assets/duck.png" alt="" width="35" height="35" />
-            <span>duckduck</span>
+      <header className="site-header">
+        <div className="nav-wrap">
+          <a className="brand" href="#" aria-label={t("덕 홈", "Duck home")}>
+            <Duck />
+            <span>
+              duck<span className="brand-period">.</span>
+            </span>
           </a>
           <nav
-            className="desktop-links"
-            aria-label={lang === "kr" ? "주 메뉴" : "Main navigation"}
+            className={menu ? "main-nav open" : "main-nav"}
+            aria-label={t("메인 메뉴", "Main navigation")}
           >
-            <a href="#features">{t.nav[0]}</a>
-            <a href="#pricing">{lang==='kr'?'요금제':'Pricing'}</a>
-            <a href="#privacy">{t.nav[1]}</a>
+            {links.map(([href, label]) => (
+              <a key={href} href={href} onClick={() => setMenu(false)}>
+                {label}
+              </a>
+            ))}
           </nav>
-          <div className="header-actions">
-            <a href={APP} className="download-pill web-entry">{t.open}</a>
-            <div
-              className={join("download-root", download && "download-open")}
-              data-popover
-            >
-              <button
-                className="download-pill phone-entry"
-                aria-label={lang==='kr'?'휴대폰에서 열기':'Open on phone'}
-                onClick={openDownload}
-                aria-expanded={download}
-                aria-controls="download-dialog"
-              >
-                <Smartphone size={18}/>
-              </button>
-              {download && (
-                <div className="download-dropdown">
-                  <div
-                    ref={dialog}
-                    id="download-dialog"
-                    role="dialog"
-                    aria-label={t.open}
-                    className="qr-panel download-panel"
-                  >
-                    <button
-                      className="dialog-close"
-                      onClick={() => setDownload(false)}
-                      aria-label={t.close}
-                    >
-                      <X size={20} />
-                    </button>
-                    {qr && (
-                      <img
-                        src={qr}
-                        width="223"
-                        height="223"
-                        className="qr-qr"
-                        alt={t.qr}
-                      />
-                    )}
-                    <p className="qr-caption">{t.qr}</p>
-                    <div className="qr-links">
-                      <a
-                        className="qr-open"
-                        href={APP}
-                      >
-                        {t.web}
-                      </a>
-                      <button
-                        className="qr-open text-button"
-                        onClick={() => {
-                          setDownload(false);
-                          setTestInfo(true);
-                        }}
-                      >
-                        {t.iphone}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div
-              className={join("language-root", languageMenu && "language-open")}
-              data-popover
-            >
-              <button
-                className="language-chip"
-                aria-label={t.lang}
-                aria-expanded={languageMenu}
-                onClick={() => {
-                  setLanguageMenu((v) => !v);
-                  setDownload(false);
-                }}
-              >
-                {lang === "kr" ? "KR" : "EN"}
-                <ChevronDown className="language-chevron" size={18} />
-              </button>
-              {languageMenu && (
-                <div className="language-dropdown">
-                  <div
-                    className="language-menu"
-                    role="group"
-                    aria-label={t.lang}
-                  >
-                    {[
-                      ["kr", "한국어"],
-                      ["en", "English"],
-                    ].map(([code, label]) => (
-                      <button
-                        key={code}
-                        className={join(
-                          "language-item",
-                          lang === code && "language-itemCurrent",
-                        )}
-                        onClick={() => {
-                          setLang(code);
-                          setLanguageMenu(false);
-                        }}
-                        lang={code === "kr" ? "ko" : "en"}
-                      >
-                        <span className="language-itemCode">
-                          {code.toUpperCase()}
-                        </span>
-                        <span className="language-itemName">{label}</span>
-                        {lang === code && <Check size={14} />}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="nav-end">
             <button
-              className="mobile-menu-button"
-              onClick={() => {
-                setMenu((v) => !v);
-                setDownload(false);
-                setLanguageMenu(false);
-              }}
-              aria-label={
-                menu ? t.close : lang === "kr" ? "메뉴 열기" : "Open menu"
-              }
+              className="language-btn"
+              aria-label={t("Switch to English", "한국어로 전환")}
+              onClick={() => setEn(!en)}
+            >
+              <Globe size={15} />
+              {en ? "KR" : "EN"}
+            </button>
+            <a className="login-link" href={APP}>
+              {t("로그인", "Log in")}
+            </a>
+            <a className="btn nav-cta" href={APP}>
+              {t("덕 시작하기", "Get started")}
+              <ArrowUpRight size={15} />
+            </a>
+            <button
+              className="icon-btn mobile-toggle"
               aria-expanded={menu}
               aria-controls="mobile-menu"
+              aria-label={t(
+                menu ? "메뉴 닫기" : "메뉴 열기",
+                menu ? "Close menu" : "Open menu",
+              )}
+              onClick={() => setMenu(!menu)}
             >
-              {menu ? <X size={22} /> : <Menu size={22} />}
+              {menu ? <X /> : <Menu />}
             </button>
           </div>
         </div>
-        <nav
-          id="mobile-menu"
-          className={join("mobile-menuPanel", menu && "mobile-menuPanelOpen")}
-          aria-label={lang === "kr" ? "모바일 메뉴" : "Mobile navigation"}
-          inert={!menu}
-        >
-          {[
-            [t.nav[0], "#features"],
-            [lang==='kr'?'요금제':'Pricing', "#pricing"],
-            [t.nav[1], "#privacy"],
-            [t.nav[2], "#faq"],
-          ].map(([label, href]) => (
-            <a className="mobile-menuLink" key={href} href={href} onClick={go}>
-              {label}
+        {menu && (
+          <nav
+            className="mobile-menu"
+            id="mobile-menu"
+            aria-label={t("모바일 메뉴", "Mobile navigation")}
+          >
+            {links.map(([href, label]) => (
+              <a href={href} key={href} onClick={() => setMenu(false)}>
+                {label}
+                <ArrowRight size={17} />
+              </a>
+            ))}
+            <a href={APP}>
+              {t("로그인 / 덕 열기", "Log in / Open Duck")}
+              <ArrowUpRight size={17} />
             </a>
-          ))}
-        </nav>
+          </nav>
+        )}
       </header>
-      <div className="shell-stage">
-        <div className="shell-bottomPin">
-          <div className="shell-bottom">
-            <footer className="footer-footer">
-              <div className="footer-characters">
-                <div className="footer-characterScale">
-                  <div className="characters-strip">
-                    {decorations.footer.map((item, i) => (
-                      <Decoration key={i} item={item} footer />
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="footer-column">
-                <h2 className="footer-title">
-                  {t.footer.map((line) => (
-                    <span key={line} className="footer-titleLine">
-                      {line}
-                    </span>
-                  ))}
-                </h2>
-                <a className="footer-download web-entry" href={APP}>{t.open}</a>
-                <button
-                  className="footer-phone-link"
-                  onClick={() => {
-                    scrollTo({
-                      top: 0,
-                      behavior: reduced ? "instant" : "smooth",
-                    });
-                    setHeaderHidden(false);
-                    setDownload(true);
-                  }}
-                >
-                  {lang==='kr'?'휴대폰에서 열기':'Open on phone'}
-                </button>
-                <div className="footer-bottomRow">
-                  <div className="footer-brand">
-                    <img
-                      src="/assets/duck.png"
-                      alt="duckduck"
-                      className="footer-logo"
-                    />
-                    <p className="footer-copyright">
-                      © 2026 duckduck
-                      <br />
-                      Kim Sanghyun
-                    </p>
-                  </div>
-                  <div className="footer-links">
-                    <div className="footer-linkStack">
-                      <a
-                        className="footer-link"
-                        href={WEB + "/privacy"}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {t.privacy}
-                      </a>
-                      <a
-                        className="footer-link"
-                        href={WEB + "/support"}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {t.nav[2]}
-                      </a>
-                    </div>
-                    <div className="footer-linkStack">
-                      <a
-                        className="footer-link"
-                        href={WEB + "/project"}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {lang === "kr" ? "프로젝트 문서" : "Project docs"}
-                      </a>
-                      <a
-                        className="footer-link"
-                        href="mailto:thepmpo.official@gmail.com"
-                      >
-                        {t.support}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </footer>
+      <main id="main">
+        <section className="hero section-wrap">
+          <p className="hero-kicker">
+            <span className="tiny-blue-dot" />
+            {t(
+              "할 일과 일정을 잇는 나의 AI 비서",
+              "Your personal assistant, from thought to done",
+            )}
+          </p>
+          <h1>
+            {t("흩어진 일은 모으고,", "Bring it all together.")}
+            <br />
+            <span>{t("나의 하루는 가볍게.", "Make room for your day.")}</span>
+          </h1>
+          <p className="hero-copy">
+            {t(
+              "메시지 속 약속부터 머릿속 할 일까지.",
+              "From a promise in a message to a thought on your mind.",
+            )}
+            <br />
+            {t(
+              "덕에서 살펴보고, 필요한 일만 이어가세요.",
+              "See what matters. Choose what happens next.",
+            )}
+          </p>
+          <div className="hero-actions">
+            <a className="btn btn-large" href={APP}>
+              {t("덕 시작하기", "Get started with Duck")}
+              <ArrowRight size={18} />
+            </a>
+            <a className="text-link" href="#product-demo">
+              {t("어떻게 쓰나요?", "See how it works")}
+              <ChevronDown size={17} />
+            </a>
           </div>
-        </div>
-        <div className="shell-whiteSection">
-          <div className="landing-content landing-entered">
-            <section className="landing-hero" id="top" aria-label="duckduck">
-              <div className="landing-heroFrame">
-                <div className="landing-heroVideo">
-                  <Video className="hero-desktop" name="hero_background-1440" />
-                  <Video
-                    className="hero-mobile"
-                    name="hero_background_mobile-540"
-                  />
-                </div>
-                <div className="landing-heroText">
-                  <h1 className="landing-heroTitle">
-                    {lang === "kr" ? (
-                      <>
-                        <strong>AI</strong>
-                        {t.hero[0].slice(2)}
-                      </>
-                    ) : (
-                      t.hero[0]
-                    )}
-                    <br />
-                    {t.hero[1]}
-                  </h1>
-                  <p className="landing-heroSubtitle">{t.sub}</p>
-                </div>
-                <a
-                  href="#features"
-                  className="landing-heroChevron"
-                  aria-label={t.nav[0]}
-                >
-                  <ChevronDown size={21} />
-                </a>
-                <button
-                  className="video-toggle"
-                  onClick={() => {
-                    if (!allowMotion) {
-                      setMotionOptIn(true);
-                      setPaused(false);
-                    } else setPaused(true);
-                  }}
-                  aria-label={allowMotion ? t.pause : t.play}
-                  aria-pressed={!allowMotion}
-                >
-                  {!allowMotion ? <Play size={14} /> : <Pause size={14} />}
-                </button>
-              </div>
-            </section>
-            <div ref={zone} className="landing-zone">
-              <div className="landing-backdrop" aria-hidden="true">
-                <div className="landing-backdropResearch">
-                  <div className="landing-backdropVideo">
-                    <Video name="research_app_loop-480" />
-                  </div>
-                  <div className="landing-backdropDim" />
-                </div>
-                <div className="landing-backdropSecurity" />
-              </div>
-              <section className="landing-intro" id="features">
-                <p className="landing-introEyebrow">{t.intro}</p>
-                <h2 className="landing-introTitle">
-                  {t.introTitle[0]}
-                  <br />
-                  {lang === "kr" ? (
-                    <>
-                      나만의 <strong>AI</strong> 비서, 덕
-                    </>
-                  ) : (
-                    t.introTitle[1]
+          <p className="hero-footnote">
+            {t(
+              "웹에서 먼저 만나보세요 · 유료 결제 준비 중",
+              "Try the web app · Paid checkout is in preparation",
+            )}
+          </p>
+          <Demo en={en} />
+          <div className="demo-caption">
+            <span>
+              {t(
+                "받은 내용을 그대로 쌓아두지 않도록.",
+                "A place for next steps, not another pile of messages.",
+              )}
+            </span>
+            <button onClick={() => setModal("qr")}>
+              <QrCode size={16} />
+              {t("휴대폰에서 열기", "Open on your phone")}
+            </button>
+          </div>
+        </section>
+        <section className="workflow section-wrap" id="how">
+          <div className="section-heading">
+            <p className="eyebrow blue">FROM INBOX TO ACTION</p>
+            <h2>
+              {t("읽고 끝나는 정리에서,", "From something you read,")}
+              <br />
+              {t("실제로 끝내는 하루로.", "to something you do.")}
+            </h2>
+            <p>
+              {t(
+                "모든 메시지가 할 일이 될 필요는 없어요. 다음 행동은 내가 정해요.",
+                "Not every message needs a task. You choose the next step.",
+              )}
+            </p>
+          </div>
+          <div className="steps-grid">
+            {[
+              [
+                MessageCircle,
+                t("한곳에서 살펴보고", "See it together"),
+                t(
+                  "연결한 자료와 대화에서 챙길 일을 확인해요.",
+                  "Review the things that need you, from connected sources and conversations.",
+                ),
+              ],
+              [
+                ListTodo,
+                t("필요한 일만 담고", "Keep what matters"),
+                t(
+                  "할 일로 옮기거나, 날짜를 정해 캘린더에 담아요.",
+                  "Keep it as a to-do, or give it a date and make it an event.",
+                ),
+              ],
+              [
+                CircleCheck,
+                t("끝낸 일은 가볍게", "Finish and move on"),
+                t(
+                  "대화에서 바로 마쳐도 좋아요. 끝낸 일은 기록으로 남아요.",
+                  "Finish it in the conversation if that’s all it needs. Keep a record, not a loose end.",
+                ),
+              ],
+            ].map(([Icon, title, body], i) => (
+              <article key={title}>
+                <span className="step-number">0{i + 1}</span>
+                <Icon size={25} />
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <section className="features section-wrap" id="features">
+          <div className="feature-row">
+            <div className="feature-copy">
+              <span className="eyebrow blue">A LITTLE MORE CLARITY</span>
+              <h2>
+                {t("오늘 할 일은,", "Today’s tasks.")}
+                <br />
+                {t("오늘 보이게.", "A clearer day.")}
+              </h2>
+              <p>
+                {t(
+                  "날짜별로 하루를 계획하고, 출처별로 흐름을 살펴보세요. 언제까지인지, 어디에서 온 일인지 함께 보여요.",
+                  "Plan by date. Find context by source. See when it’s due and where it came from, together.",
+                )}
+              </p>
+              <ul>
+                <li>
+                  <Check />
+                  {t(
+                    "날짜와 출처가 보이는 간결한 목록",
+                    "Simple lists with dates and sources",
                   )}
-                </h2>
-                <div className="landing-storeRow">
-                  <a
-                    className="landing-storeButton"
-                    href={APP}
-                  >
-                    <Globe size={22} />
-                    {t.web}
-                  </a>
-                  <button
-                    className="landing-storeButton"
-                    onClick={() => setTestInfo(true)}
-                  >
-                    <Smartphone size={22} />
-                    {t.iphone}
-                  </button>
+                </li>
+                <li>
+                  <Check />
+                  {t(
+                    "연결할 수 있는 원본으로 바로 이동",
+                    "A link back to supported sources",
+                  )}
+                </li>
+                <li>
+                  <Check />
+                  {t(
+                    "체크하면 완료, 필요하면 되돌리기",
+                    "Check it off, undo when you need to",
+                  )}
+                </li>
+              </ul>
+            </div>
+            <div className="todo-illustration product-surface">
+              <div className="mini-toolbar">
+                <span>
+                  <ListTodo size={18} /> Todo
+                </span>
+                <span className="segmented-label">
+                  {t("날짜별", "By date")}
+                  <span>{t("출처별", "By source")}</span>
+                </span>
+              </div>
+              <div className="date-heading">
+                <strong>19</strong>
+                <span>{t("오늘 · 목요일", "Today · Thursday")}</span>
+                <span className="rule" />
+              </div>
+              <div className="small-task">
+                <CircleCheck size={20} />
+                <div>
+                  <strong>
+                    {t("제안서 피드백 전달하기", "Send proposal feedback")}
+                  </strong>
+                  <small>
+                    11.19 · Gmail <ArrowUpRight size={11} />
+                  </small>
                 </div>
-                <div
-                  className="showcase-showcase"
-                  role="region"
-                  aria-label={
-                    lang === "kr" ? "덕 기능 데모" : "Duck feature demos"
-                  }
-                >
-                  <div className="showcase-stageFrame">
-                    <div className="showcase-stage">
-                      {decorations.intro.map((item, i) => (
-                        <Decoration key={i} item={item} />
-                      ))}
-                      <div
-                        className="showcase-phone"
-                        role="tabpanel"
-                        id="feature-preview"
-                        aria-label={t.features[active]}
-                      >
-                        {t.features.map((_, i) => (
-                          <video
-                            ref={(v) => (phoneVideos.current[i] = v)}
-                            key={i}
-                            className={join(
-                              "showcase-phoneVideo",
-                              i === active && "showcase-phoneVideoCurrent",
-                            )}
-                            src={`/assets/demos/duck-${i}.webm`}
-                            poster={`/assets/demos/duck-${i}.png`}
-                            aria-hidden={i !== active}
-                            aria-label={t.features[i]}
-                            playsInline
-                            muted
-                            preload="metadata"
-                            onEnded={() =>
-                              i === active &&
-                              allowMotion &&
-                              phoneVisible &&
-                              advance()
-                            }
-                            onTimeUpdate={(e) =>
-                              i === active &&
-                              setProgress(
-                                e.currentTarget.currentTime /
-                                  (e.currentTarget.duration || 1),
-                              )
-                            }
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="showcase-pillViewport"
-                    ref={viewport}
-                    onTouchStart={(e) => (touch.current = e.touches[0].clientX)}
-                    onTouchEnd={(e) => {
-                      if (touch.current !== null) {
-                        const delta =
-                          e.changedTouches[0].clientX - touch.current;
-                        if (Math.abs(delta) > 35)
-                          setCursor((c) =>
-                            c + (delta < 0 ? 1 : -1) < 4
-                              ? 7
-                              : c + (delta < 0 ? 1 : -1) > 7
-                                ? 4
-                                : c + (delta < 0 ? 1 : -1),
-                          );
-                        touch.current = null;
-                      }
-                    }}
-                  >
-                    <div
-                      className="showcase-pillTrack"
-                      ref={track}
-                      style={{ transform: `translateX(${trackX}px)` }}
-                      role="tablist"
-                      aria-label={t.nav[0]}
-                    >
-                      {Array.from({ length: 12 }, (_, i) => (
-                        <button
-                          id={i === cursor ? "current-feature" : undefined}
-                          key={i}
-                          className={join(
-                            "showcase-pill",
-                            i === cursor && "showcase-pillCurrent",
-                          )}
-                          role="tab"
-                          aria-controls="feature-preview"
-                          aria-selected={i === cursor}
-                          tabIndex={i === cursor ? 0 : -1}
-                          aria-hidden={i < 4 || i >= 8 ? true : undefined}
-                          style={{ "--progress": i === cursor ? progress : 0 }}
-                          onClick={() => setCursor(4 + (i % 4))}
-                          onKeyDown={(e) => {
-                            if (
-                              e.key === "ArrowRight" ||
-                              e.key === "ArrowLeft"
-                            ) {
-                              e.preventDefault();
-                              const n =
-                                4 +
-                                ((active + (e.key === "ArrowRight" ? 1 : 3)) %
-                                  4);
-                              setCursor(n);
-                              requestAnimationFrame(() =>
-                                track.current.children[n]?.focus(),
-                              );
-                            }
-                          }}
-                        >
-                          <span className="showcase-pillFill" />
-                          <span className="showcase-pillLabel">
-                            {t.features[i % 4]}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="demo-caption">{t.demo}</p>
+              </div>
+              <div className="small-task">
+                <CircleCheck size={20} />
+                <div>
+                  <strong>
+                    {t("다음 주 회의 준비", "Prepare next week’s meeting")}
+                  </strong>
+                  <small>
+                    11.19 · Slack <ArrowUpRight size={11} />
+                  </small>
                 </div>
-              </section>
-              <section
-                className="landing-research"
-                ref={research}
-                id="approach"
-              >
-                <div className="landing-researchColumn">
-                  <div className="landing-researchVideoBox">
-                    <div className="landing-researchVideo">
-                      <Video name="research_app_loop-480" />
-                    </div>
-                  </div>
-                  <div className="landing-researchText">
-                    <p className="landing-researchEyebrow">{t.research}</p>
-                    <h2 className="landing-researchTitle">
-                      {t.researchTitle[0]}
-                      <br />
-                      {t.researchTitle[1]}
-                    </h2>
-                    <a
-                      className="landing-researchMore"
-                      href={WEB + "/project"}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t.more}
-                      <ChevronRight size={18} />
-                    </a>
-                  </div>
-                  <p className="landing-researchLicense">
-                    Critter ©{" "}
-                    <a
-                      href="https://studio.blender.org/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Blender Studio
-                    </a>
-                    <br />
-                    <a
-                      href="https://creativecommons.org/licenses/by/4.0/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      CC BY 4.0
-                    </a>
-                    <br />
-                    {lang === "kr"
-                      ? "프로토타입 참고 영상"
-                      : "Prototype reference footage"}
-                  </p>
+              </div>
+              <div className="date-heading smaller">
+                <strong>20</strong>
+                <span>{t("내일 · 금요일", "Tomorrow · Friday")}</span>
+                <span className="rule" />
+              </div>
+              <div className="small-task">
+                <CircleCheck size={20} />
+                <div>
+                  <strong>{t("책 반납하기", "Return library books")}</strong>
+                  <small>
+                    {t("11.20 · 미리알림", "11.20 · Reminders")}{" "}
+                    <ArrowUpRight size={11} />
+                  </small>
                 </div>
-              </section>
-              <Pricing/>
-              <section className="landing-security" ref={security} id="privacy">
-                <div className="landing-securityHead">
-                  <div className="landing-securityShield">
-                    <ShieldCheck size={52} />
-                  </div>
-                  <h2 className="landing-securityTitle">
-                    {t.securityTitle[0]}
-                    <br />
-                    {t.securityTitle[1]}
-                  </h2>
-                  <p className="landing-securityLead">{t.securityLead}</p>
-                  <div className="landing-securityLinks">
-                    <a
-                      className="landing-securityPill landing-securityPillFilled"
-                      href={WEB + "/privacy"}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t.privacy}
-                      <ChevronRight size={18} />
-                    </a>
-                    <a
-                      className="landing-securityPill"
-                      href="https://github.com/thepmpo/donknow/blob/main/docs/assistant-actions.md"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t.actions}
-                      <ArrowUpRight size={18} />
-                    </a>
-                  </div>
-                </div>
-                <div className="landing-tiles">
-                  {["key", "box", "toggles"].map((name, i) => (
-                    <a
-                      key={name}
-                      className="landing-tile"
-                      href={
-                        i === 2
-                          ? "https://github.com/thepmpo/donknow/blob/main/docs/assistant-actions.md"
-                          : WEB + "/privacy"
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <span
-                        className={join(
-                          "landing-tileVisual",
-                          "landing-tileVisual_" +
-                            ["encryption", "isolation", "control"][i],
-                        )}
-                      >
-                        <img
-                          src={`/assets/reference/security-tile-${name}.webp`}
-                          alt=""
-                          loading="lazy"
-                        />
-                      </span>
-                      <span className="landing-tileFoot">
-                        <span className="landing-tileText">
-                          <span className="landing-tileLabel">
-                            {t.tiles[i][0]}
-                          </span>
-                          <span className="landing-tileTitle">
-                            {t.tiles[i][1]}
-                          </span>
-                        </span>
-                        <span className="landing-tileArrow">
-                          <ArrowUpRight size={24} />
-                        </span>
-                      </span>
-                    </a>
-                  ))}
-                </div>
-                <div className="landing-securityFaq faq-faq" id="faq">
-                  <div className="faq-header">
-                    <h2 className="faq-title">{t.faq}</h2>
-                    <a
-                      className="faq-all"
-                      href={WEB + "/support"}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t.all}
-                      <ChevronRight size={18} />
-                    </a>
-                  </div>
-                  <ul className="faq-list">
-                    {t.questions.map((q, i) => (
-                      <li
-                        key={i}
-                        className={join(
-                          "faq-item",
-                          faq === i && "faq-itemOpen",
-                        )}
-                      >
-                        <button
-                          id={"question-" + i}
-                          className="faq-question"
-                          aria-expanded={faq === i}
-                          aria-controls={"answer-" + i}
-                          onClick={() => setFaq((v) => (v === i ? -1 : i))}
-                        >
-                          <span className="faq-questionText">{q}</span>
-                          <ChevronRight
-                            className="faq-questionChevron"
-                            size={24}
-                          />
-                        </button>
-                        <div
-                          id={"answer-" + i}
-                          role="region"
-                          aria-labelledby={"question-" + i}
-                          className="faq-panel"
-                          inert={faq !== i}
-                        >
-                          <div className="faq-panelInner">
-                            <p className="faq-answer">{t.answers[i]}</p>
-                            <div className="faq-links">
-                              <a
-                                className="faq-link"
-                                href={WEB + "/support"}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {t.nav[2]}
-                                <ChevronRight size={16} />
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </section>
+              </div>
+              <p className="surface-caption">
+                {t("제품 화면 구성 예시", "Illustrative product layout")}
+              </p>
             </div>
           </div>
+          <div className="feature-row reverse">
+            <div className="feature-copy">
+              <span className="eyebrow blue">YOUR TIME, IN ONE PLACE</span>
+              <h2>
+                {t("할 일에 시간을 주면,", "Give your to-dos time.")}
+                <br />
+                {t("계획이 되니까.", "Make a plan that fits.")}
+              </h2>
+              <p>
+                {t(
+                  "할 일과 일정을 오가며 내 하루를 계획하세요. 오늘 해야 하는 일과 이미 잡힌 약속을 한눈에 확인해요.",
+                  "Bring to-dos and events into the same day. See what needs doing alongside the plans you already have.",
+                )}
+              </p>
+              <a className="text-link" href={APP}>
+                {t("내 하루 정리하러 가기", "Plan your day")}
+                <ArrowRight size={17} />
+              </a>
+            </div>
+            <div className="calendar-illustration product-surface">
+              <div className="mini-toolbar">
+                <span>
+                  <CalendarDays size={18} />
+                  {t("나의 캘린더", "My calendar")}
+                </span>
+                <span>2026.11</span>
+              </div>
+              <div className="week-strip">
+                {[16, 17, 18, 19, 20, 21, 22].map((day, i) => (
+                  <div key={day} className={day === 19 ? "today" : ""}>
+                    <small>
+                      {
+                        (en
+                          ? ["M", "T", "W", "T", "F", "S", "S"]
+                          : ["월", "화", "수", "목", "금", "토", "일"])[i]
+                      }
+                    </small>
+                    <strong>{day}</strong>
+                  </div>
+                ))}
+              </div>
+              <div className="calendar-event">
+                <span>10:00</span>
+                <div>
+                  <strong>{t("팀 미팅", "Team meeting")}</strong>
+                  <small>Google Calendar</small>
+                </div>
+              </div>
+              <div className="calendar-event violet">
+                <span>14:00</span>
+                <div>
+                  <strong>{t("제안서 검토하기", "Review the proposal")}</strong>
+                  <small>
+                    {t(
+                      "Todo에서 일정으로",
+                      "From a to-do to time on your calendar",
+                    )}
+                  </small>
+                </div>
+              </div>
+              <div className="calendar-event muted">
+                <span>16:00</span>
+                <div>
+                  <strong>
+                    {t("잠깐, 나를 위한 시간", "A little time for yourself")}
+                  </strong>
+                  <small>
+                    {t("내가 직접 만든 일정", "An event you created")}
+                  </small>
+                </div>
+              </div>
+              <p className="surface-caption">
+                {t("제품 화면 구성 예시", "Illustrative product layout")}
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="ai-section" id="ai">
+          <div className="section-wrap">
+            <div className="section-heading">
+              <span className="eyebrow blue">YOUR AI, YOUR WAY</span>
+              <h2>
+                {t("익숙한 AI와 함께.", "Bring the AI you know.")}
+                <br />
+                {t("혹은, 덕 하나로.", "Or let Duck help you.")}
+              </h2>
+              <p>
+                {t(
+                  "어떤 방식을 골라도, 내가 할 일은 한곳에.",
+                  "Whichever way you work, keep your next steps together.",
+                )}
+              </p>
+            </div>
+            <div className="ai-options">
+              <article>
+                <div className="option-top">
+                  <Link2 size={25} />
+                  <span>
+                    {t(
+                      "라이트 · 연결 준비 중",
+                      "LITE · CONNECTION IN PREPARATION",
+                    )}
+                  </span>
+                </div>
+                <h3>{t("이미 쓰는 AI가 있다면", "Already have an AI?")}</h3>
+                <p>
+                  {t(
+                    "외부 AI에서 정리한 일을 덕으로 보내는 방향이에요. 덕에서는 Todo와 캘린더로 이어가세요.",
+                    "We’re preparing a way to send selected work from an external AI into Duck, then organize it as to-dos and events.",
+                  )}
+                </p>
+                <div className="ai-route">
+                  <span>ChatGPT</span>
+                  <ArrowRight size={18} />
+                  <span>
+                    <Duck /> Todo · Calendar
+                  </span>
+                </div>
+                <small>
+                  {t(
+                    "공식 연결 개발·등록 후 제공 예정 · Dots 자동 가져오기 미제공",
+                    "Planned after development and registration · No automatic dot import",
+                  )}
+                </small>
+              </article>
+              <article>
+                <div className="option-top">
+                  <Sparkles size={25} />
+                  <span>PRO</span>
+                </div>
+                <h3>
+                  {t("덕 안에서 모두 하고 싶다면", "Want it all inside Duck?")}
+                </h3>
+                <p>
+                  {t(
+                    "덕에게 직접 이야기하고, 연결한 자료를 질문하고, 브리핑에서 다음 할 일을 골라보세요.",
+                    "Talk to Duck, ask about connected sources, and choose your next steps from a briefing.",
+                  )}
+                </p>
+                <div className="ai-route">
+                  <span>
+                    <Duck />
+                    {t("덕 AI", "Duck AI")}
+                  </span>
+                  <ArrowRight size={18} />
+                  <span>Chat · Todo · Calendar</span>
+                </div>
+                <small>
+                  {t(
+                    "AI 사용량 한도 적용 · 자료 사용 동의와 연결 권한 필요",
+                    "AI usage limits apply · Source consent and permissions required",
+                  )}
+                </small>
+              </article>
+            </div>
+          </div>
+        </section>
+        <section className="connections section-wrap" id="connections">
+          <div className="connection-heading">
+            <div>
+              <p className="eyebrow blue">LESS SCATTERED, MORE TOGETHER</p>
+              <h2>
+                {t("쓰던 곳에서 시작해,", "Start where you already are.")}
+                <br />
+                {t("덕에서 이어가세요.", "Bring the next step to Duck.")}
+              </h2>
+            </div>
+            <p>
+              {t(
+                "연결은 필요한 만큼만. 계정과 자료 범위를 직접 고르고, 원본을 확인하며 정리해요.",
+                "Connect what you need. Choose your accounts and sources, and keep the original context within reach.",
+              )}
+            </p>
+          </div>
+          <div className="connection-grid">
+            {[
+              [
+                CalendarDays,
+                "Google Calendar",
+                t("일정 조회 · 권한 내 수정", "View events · permitted edits"),
+              ],
+              [
+                Mail,
+                "Gmail",
+                t("선택한 메일에서 업무 확인", "Review selected email sources"),
+              ],
+              [
+                ClipboardList,
+                "Google Tasks",
+                t("할 일 가져오기 · 상태 반영", "Import tasks · update status"),
+              ],
+              [
+                Smartphone,
+                t("iPhone 미리알림", "iPhone Reminders"),
+                t(
+                  "기기 권한으로 미완료 가져오기",
+                  "Import unfinished items with device access",
+                ),
+              ],
+              [
+                MessageCircle,
+                "Slack",
+                t(
+                  "전용 앱 설정 · 권한 필요",
+                  "Dedicated app setup and permissions",
+                ),
+              ],
+              [
+                NotebookPen,
+                "Notion",
+                t(
+                  "선택한 페이지 · 권한 필요",
+                  "Selected pages and permissions",
+                ),
+              ],
+            ].map(([Icon, name, desc]) => (
+              <div className="connection-item" key={name}>
+                <span className="service-icon">
+                  <Icon size={25} />
+                </span>
+                <div>
+                  <h3>{name}</h3>
+                  <p>{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="connection-note">
+            {t(
+              "서비스별 설정과 권한이 필요하며, 사용 가능한 기능은 연결 상태에 따라 달라요. iPhone 미리알림은 웹에서 직접 가져올 수 없어요.",
+              "Setup and permissions vary by service. Features depend on connection status. iPhone Reminders cannot be imported directly from the web.",
+            )}
+          </p>
+        </section>
+        <Pricing />
+        <section className="trust-section section-wrap">
+          <div className="trust-intro">
+            <ShieldCheck size={31} />
+            <h2>
+              {t("나의 자료니까,", "Your information.")}
+              <br />
+              {t("선택도 내 손안에.", "Your choice.")}
+            </h2>
+          </div>
+          <div className="trust-points">
+            <article>
+              <h3>{t("필요한 자료만", "Only the context you choose")}</h3>
+              <p>
+                {t(
+                  "계정 연결과 AI 자료 사용은 별개예요. AI에게 맡길 범위를 직접 선택해요.",
+                  "Connecting an account and sharing context with AI are separate choices.",
+                )}
+              </p>
+            </article>
+            <article>
+              <h3>{t("바꾸기 전에 확인", "Review before changes")}</h3>
+              <p>
+                {t(
+                  "원본 변경에는 실제 권한과 확인이 필요해요. 할 수 없는 일은 이유와 함께 알려드려요.",
+                  "Source changes require permissions and confirmation. Limits are explained.",
+                )}
+              </p>
+            </article>
+            <article>
+              <h3>
+                {t("내 기록은 내 계정에서", "Your records, in your account")}
+              </h3>
+              <p>
+                {t(
+                  "연결을 해제하고 자료 사용을 조정할 수 있어요.",
+                  "Disconnect services and adjust which information is used.",
+                )}
+              </p>
+            </article>
+            <a className="text-link" href={WEB + "/privacy"}>
+              {t("개인정보 처리방침", "Privacy policy")}
+              <ArrowUpRight size={16} />
+            </a>
+          </div>
+        </section>
+        <section className="faq-section section-wrap" id="faq">
+          <h2>{t("궁금한 점이 있나요?", "A few things you might wonder.")}</h2>
+          <div>
+            {faqs.map(([q, qe, a, ae]) => (
+              <details key={q}>
+                <summary>
+                  {t(q, qe)}
+                  <Plus size={20} />
+                </summary>
+                <p>{t(a, ae)}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+        <section className="closing section-wrap">
+          <Duck />
+          <h2>
+            {t("오늘은 조금 더 가볍게.", "A little less to carry today.")}
+          </h2>
+          <p>
+            {t(
+              "머릿속에 쌓아둔 일, 덕에서 하나씩 풀어보세요.",
+              "Give the things on your mind a place to go.",
+            )}
+          </p>
+          <div className="hero-actions">
+            <a href={APP} className="btn btn-large">
+              {t("덕 시작하기", "Get started with Duck")}
+              <ArrowRight size={18} />
+            </a>
+            <button className="text-link" onClick={() => setModal("iphone")}>
+              <Smartphone size={17} />
+              {t("iPhone 앱 안내", "About the iPhone app")}
+            </button>
+          </div>
+        </section>
+      </main>
+      <footer className="site-footer section-wrap">
+        <div>
+          <a className="brand" href="#">
+            <Duck />
+            <span>
+              duck<span className="brand-period">.</span>
+            </span>
+          </a>
+          <p>
+            {t(
+              "흩어진 일은 모으고, 나의 하루는 가볍게.",
+              "Bring it together. Make room for your day.",
+            )}
+          </p>
+          <small>© {new Date().getFullYear()} Duck.</small>
         </div>
-        <div className="shell-revealSpace" />
-      </div>
-      {testInfo && (
+        <nav aria-label={t("하단 메뉴", "Footer navigation")}>
+          <a href="#pricing">{t("요금제", "Pricing")}</a>
+          <a href={WEB + "/support"}>{t("문의하기", "Support")}</a>
+          <a href={WEB + "/privacy"}>{t("개인정보 처리방침", "Privacy")}</a>
+          <a href={WEB + "/project"}>{t("제품 기록", "Product updates")}</a>
+          <a href={APP}>
+            {t("웹에서 열기", "Open web app")}
+            <ArrowUpRight size={14} />
+          </a>
+        </nav>
+      </footer>
+      {modal && (
         <div
           className="modal-scrim"
-          onPointerDown={(e) => {
-            if (e.target === e.currentTarget) setTestInfo(false);
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setModal(null);
           }}
         >
           <section
-            className="modal-card test-dialog"
+            className="site-modal"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="test-title"
-            ref={dialog}
+            aria-labelledby="modal-title"
+            tabIndex={-1}
+            ref={modalRef}
           >
             <button
-              className="dialog-close"
-              onClick={() => setTestInfo(false)}
-              aria-label={t.close}
+              className="icon-btn modal-close"
+              aria-label={t("닫기", "Close")}
+              onClick={() => setModal(null)}
             >
-              <X size={20} />
+              <X />
             </button>
-            <Smartphone size={32} />
-            <h2 id="test-title">{t.testTitle}</h2>
-            <p>{t.testBody}</p>
-            <a
-              className="modal-primary"
-              href={APP}
-            >
-              {t.web}
-              <ArrowUpRight size={18} />
-            </a>
-            <a
-              className="modal-contact"
-              href="mailto:thepmpo.official@gmail.com"
-            >
-              {t.support}
+            <Duck />
+            <h2 id="modal-title">
+              {t(
+                modal === "qr" ? "휴대폰에서도 가볍게" : "iPhone에서 만나요",
+                modal === "qr"
+                  ? "Open Duck on your phone"
+                  : "Meet Duck on iPhone",
+              )}
+            </h2>
+            {modal === "qr" ? (
+              <>
+                <p>
+                  {t(
+                    "QR코드를 스캔해 덕 웹을 열어보세요.",
+                    "Scan the QR code to open the Duck web app.",
+                  )}
+                </p>
+                {qr && (
+                  <img
+                    className="qr-image"
+                    src={qr}
+                    width="220"
+                    height="220"
+                    alt={t(
+                      "덕 웹 앱을 여는 QR 코드",
+                      "QR code for the Duck web app",
+                    )}
+                  />
+                )}
+              </>
+            ) : (
+              <p>
+                {t(
+                  "현재 TestFlight로 검증 중이에요. 공개 초대 링크는 준비 중이며, 지금은 웹에서 덕을 사용할 수 있어요.",
+                  "The iPhone app is being tested with TestFlight. A public invitation is in preparation. You can use the web app now.",
+                )}
+              </p>
+            )}
+            <a className="btn" href={APP}>
+              {t("웹에서 덕 열기", "Open Duck on the web")}
+              <ArrowUpRight size={16} />
             </a>
           </section>
         </div>
       )}
-    </main>
+    </>
   );
 }

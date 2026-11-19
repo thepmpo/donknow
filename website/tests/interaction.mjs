@@ -2,330 +2,220 @@ import { chromium } from "../../mobile/node_modules/playwright-core/index.mjs";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173",
-  out = resolve(
-    new URL("../../artifacts/duck-website-2026-11-13", import.meta.url)
-      .pathname,
-  );
+const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
+const out = resolve(
+  new URL("../../artifacts/duck-anydo-site-2026-11-19", import.meta.url)
+    .pathname,
+);
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch({
   executablePath:
     process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/usr/bin/chromium",
   headless: true,
-  args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
 const results = [];
 try {
   for (const [name, width, height] of [
     ["desktop", 1440, 1000],
-    ["mobile", 390, 844],
+    ["phone", 390, 844],
   ]) {
     const context = await browser.newContext({
       viewport: { width, height },
-      recordVideo: {
-        dir: "/tmp/duck-site-test-videos",
-        size: { width, height },
-      },
-      isMobile: name === "mobile",
-      hasTouch: name === "mobile",
+      isMobile: name === "phone",
+      hasTouch: name === "phone",
     });
-    const page = await context.newPage(),
-      errors = [],
-      badResponses = [],
-      remoteRequests = [];
-    page.setDefaultTimeout(12000);
+    const page = await context.newPage();
+    const errors = [],
+      network = [],
+      media = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    page.on("response", (r) => {
-      if (r.status() >= 400)
-        badResponses.push({ url: r.url(), status: r.status() });
-    });
     page.on("request", (r) => {
       if (!r.url().startsWith(origin) && !r.url().startsWith("data:"))
-        remoteRequests.push(r.url());
+        network.push(r.url());
+      if (/\.(mp4|webm|mov)(\?|$)/.test(r.url())) media.push(r.url());
+      if (!["GET", "HEAD"].includes(r.method()))
+        errors.push("Unexpected write: " + r.method());
     });
-    await page.goto(origin, { waitUntil: "domcontentloaded" });
-    await page.locator(".hero-" + name).waitFor();
-    await page.waitForTimeout(1300);
-    await page.waitForFunction(() =>
-      [
-        ...document.querySelectorAll(
-          ".hero-" + (innerWidth <= 700 ? "mobile" : "desktop"),
-        ),
-      ].some((v) => v.currentTime > 0.05),
+    page.setDefaultTimeout(10000);
+    await page.goto(origin, { waitUntil: "networkidle" });
+    assert.equal(await page.locator("h1").count(), 1);
+    assert.equal(await page.locator("video,iframe").count(), 0);
+    assert.equal(await page.locator(".demo-task").count(), 3);
+    await page.screenshot({ path: out + "/" + name + "-hero.png" });
+    await page.screenshot({
+      path: out + "/" + name + "-full.png",
+      fullPage: true,
+    });
+    await page.locator("#product-demo").scrollIntoViewIfNeeded();
+    const demo = page.locator("#product-demo");
+    await demo
+      .getByRole("button", { name: "할 일로", exact: true })
+      .first()
+      .click();
+    assert.equal(await demo.locator(".demo-task").count(), 2);
+    await demo.getByRole("button", { name: /Todo/ }).click();
+    assert.match(
+      await demo.locator(".demo-task").innerText(),
+      /다음 주 제안서/,
     );
+    await page.screenshot({ path: out + "/" + name + "-todo.png" });
+    await demo
+      .locator(".demo-sidebar")
+      .getByRole("button", { name: /브리핑/ })
+      .click();
+    await demo
+      .getByRole("button", { name: "일정으로", exact: true })
+      .first()
+      .click();
+    await demo.getByLabel("일정 날짜").fill("2026-11-20");
+    await demo.getByLabel("일정 시간").fill("14:00");
+    await demo
+      .getByRole("button", { name: "일정에 담기", exact: true })
+      .click();
+    await demo.getByRole("button", { name: /캘린더/ }).click();
+    assert.match(
+      await demo.locator(".demo-task").innerText(),
+      /2026-11-20 14:00/,
+    );
+    await page.screenshot({ path: out + "/" + name + "-calendar.png" });
+    await demo
+      .locator(".demo-sidebar")
+      .getByRole("button", { name: /브리핑/ })
+      .click();
+    await demo
+      .getByRole("button", { name: "대화에서 마치기", exact: true })
+      .click();
+    assert.equal(await demo.locator(".demo-task").count(), 0);
+    await demo.getByRole("button", { name: /기록/ }).click();
+    assert.match(await demo.locator(".demo-task").innerText(), /도서관/);
+    await demo.getByRole("button", { name: /미완료로 되돌리기/ }).click();
+    await demo
+      .locator(".demo-sidebar")
+      .getByRole("button", { name: /브리핑/ })
+      .click();
+    await demo.getByRole("button", { name: /완료: 도서관/ }).click();
+    await demo.getByRole("button", { name: /기록/ }).click();
+    assert.equal(await demo.locator(".demo-task").count(), 1);
+    await demo.getByRole("button", { name: "예시 초기화" }).click();
+    assert.equal(await demo.locator(".demo-task").count(), 3);
+    await page.locator("#pricing").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: out + "/" + name + "-pricing.png" });
+    assert.match(await page.locator("#pricing").innerText(), /9,900원/);
+    assert.match(await page.locator("#pricing").innerText(), /제안 가격/);
+    assert.match(await page.locator("#pricing").innerText(), /27,900원/);
+    assert.match(await page.locator("#pricing").innerText(), /Dots.*자동/);
     assert.equal(
-      await page
-        .locator(".showcase-phoneVideoCurrent")
-        .evaluate((v) => v.paused),
+      await page.locator('a[href*="checkout"],a[href*="stripe"]').count(),
+      0,
+    );
+    const table = page.locator(".table-scroll");
+    if (width < 600) {
+      assert.ok(await table.evaluate((el) => el.scrollWidth > el.clientWidth));
+      await table.evaluate((el) => (el.scrollLeft = 500));
+      await page.screenshot({ path: out + "/" + name + "-comparison.png" });
+    }
+    await page.locator("#faq details").nth(1).locator("summary").click();
+    assert.equal(
+      await page.locator("#faq details").nth(1).getAttribute("open"),
+      "",
+    );
+    await page.locator(".demo-caption button").click();
+    await page.getByRole("dialog").waitFor();
+    assert.ok(await page.locator(".qr-image").getAttribute("src"));
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(
+      await page.evaluate(
+        () => document.activeElement?.closest("[role=dialog]") !== null,
+      ),
       true,
-      "offscreen product recording stays paused",
     );
-    const pause = page.getByRole("button", {
-      name: "영상 일시정지",
-      exact: true,
-    });
-    await pause.click();
-    assert.equal(
-      await page.locator(".hero-" + name).evaluate((v) => v.paused),
-      true,
-    );
-    await page.getByRole("button", { name: "영상 재생", exact: true }).click();
-    await page.screenshot({ path: resolve(out, name + "-hero.png") });
-    assert.equal(await page.locator(".web-entry").first().getAttribute("href"), new URL("/app", origin).href);
-    const phoneTrigger = name === "mobile" ? page.locator(".footer-phone-link") : page.locator(".phone-entry");
-    await phoneTrigger.click();
-    const dialog = page.getByRole("dialog", { name: "덕 열기", exact: true });
-    await dialog.waitFor();
-    await page.waitForFunction(() => {
-      const i = document.querySelector(".qr-qr");
-      return i?.complete && i.naturalWidth > 0;
-    });
-    assert.equal(
-      await dialog
-        .getByRole("link", { name: "웹에서 열기", exact: true })
-        .getAttribute("href"),
-      new URL("/app", origin).href,
-    );
-    await page.screenshot({ path: resolve(out, name + "-open.png") });
     await page.keyboard.press("Escape");
-    await dialog.waitFor({ state: "detached" });
-    assert.equal(
-      await phoneTrigger.evaluate((e) => e === document.activeElement),
-      true,
-      "Escape restores trigger focus",
-    );
-    await page.getByRole("button", { name: "언어 선택", exact: true }).click();
-    await page
-      .getByRole("button", { name: "EN English", exact: false })
-      .click();
-    assert.equal(await page.locator("html").getAttribute("lang"), "en");
-    await page
-      .getByRole("heading", {
-        name: "A little less to carry. A little more room for you.",
-        exact: false,
-      })
-      .waitFor();
-    await page
-      .getByRole("button", { name: "Choose language", exact: true })
-      .click();
-    await page.getByRole("button", { name: "KR 한국어", exact: false }).click();
-    if (name === "mobile") {
+    assert.equal(await page.getByRole("dialog").count(), 0);
+    await page.locator(".closing button").click();
+    assert.match(await page.getByRole("dialog").innerText(), /TestFlight/);
+    await page.getByRole("button", { name: "닫기", exact: true }).click();
+    if (width < 600) {
       await page
         .getByRole("button", { name: "메뉴 열기", exact: true })
         .click();
-      await page.screenshot({ path: resolve(out, "mobile-menu.png") });
       await page
-        .locator("#mobile-menu")
-        .getByRole("link", { name: "기능", exact: true })
+        .locator(".mobile-menu")
+        .getByRole("link", { name: /요금/ })
         .click();
-      await page.waitForFunction(
-        () =>
-          document.querySelector("#features").getBoundingClientRect().top < 120,
-      );
-      assert.equal(
-        await page
-          .getByRole("button", { name: "메뉴 열기", exact: true })
-          .getAttribute("aria-expanded"),
-        "false",
-      );
+      assert.equal(await page.locator(".mobile-menu").count(), 0);
     }
-    await page
-      .locator("#features")
-      .evaluate((e) => scrollTo({ top: e.offsetTop, behavior: "instant" }));
-    await page.waitForTimeout(800);
-    await page
-      .getByRole("button", { name: "iPhone 테스트", exact: true })
-      .click();
-    await page
-      .getByRole("dialog", { name: "iPhone에서 덕을 만나보세요", exact: true })
-      .waitFor();
-    assert.ok(
-      (await page.getByRole("dialog").innerText()).includes(
-        "공개 초대 링크는 아직 준비 중",
-      ),
-    );
-    await page.keyboard.press("Escape");
-    await page.locator(".showcase-phone").scrollIntoViewIfNeeded();
-    await page.waitForFunction(
-      () => !document.querySelector(".showcase-phoneVideoCurrent").paused,
-    );
-    await page.screenshot({ path: resolve(out, name + "-demo.png") });
-    const seen = [];
-    for (let n = 0; n < 4; n++) {
-      const current = page.getByRole("tab", { selected: true });
-      const label = await current.innerText();
-      seen.push(label);
-      const src = await page
-        .locator(".showcase-phoneVideoCurrent")
-        .getAttribute("src");
-      assert.match(src, new RegExp("duck-" + n + "\\.webm$"));
-      await current.focus();
-      await page.keyboard.press("ArrowRight");
-      await page.waitForTimeout(120);
-    }
-    assert.equal(
-      new Set(seen).size,
-      4,
-      "keyboard selects all four real Duck recordings",
-    );
-    await page.waitForFunction(
-      () =>
-        document.querySelector(".showcase-phoneVideoCurrent").readyState >= 2,
-    );
-    await page.locator(".showcase-phone").scrollIntoViewIfNeeded();
-    await page.waitForFunction(
-      () => !document.querySelector(".showcase-phoneVideoCurrent").paused,
-    );
-    await page.waitForTimeout(250);
-    const selectedBefore = await page
-      .getByRole("tab", { selected: true })
-      .innerText();
-    await page.locator(".showcase-phoneVideoCurrent").evaluate((v) => {
-      v.currentTime = v.duration - 0.15;
-    });
-    await page.waitForFunction(
-      (previous) =>
-        document.querySelector('[role="tab"][aria-selected="true"]')
-          .innerText !== previous,
-      selectedBefore,
-    );
-    assert.notEqual(
-      await page.getByRole("tab", { selected: true }).innerText(),
-      selectedBefore,
-      "video ending advances feature",
-    );
-    if (name === "mobile") {
-      const pills = page.locator(".showcase-pillViewport");
-      await pills.scrollIntoViewIfNeeded();
-      const box = await pills.boundingBox();
-      const previous = await page.getByRole("tab", {selected: true}).innerText();
-      const cdp = await context.newCDPSession(page);
-      const point = {x: box.x + box.width * .7, y: box.y + 20};
-      await cdp.send("Input.dispatchTouchEvent", {type: "touchStart", touchPoints: [point]});
-      await cdp.send("Input.dispatchTouchEvent", {type: "touchMove", touchPoints: [{...point, x: point.x - 90}]});
-      await cdp.send("Input.dispatchTouchEvent", {type: "touchEnd", touchPoints: []});
-      await page.waitForFunction(previous => document.querySelector('[role="tab"][aria-selected="true"]').innerText !== previous, previous);
-      await cdp.detach();
-    }
-    await page.locator("#approach").scrollIntoViewIfNeeded();
-    await page.waitForTimeout(500);
-    assert.ok(
-      (await page
-        .locator(".landing-zone")
-        .evaluate((e) =>
-          Number(getComputedStyle(e).getPropertyValue("--research-fade")),
-        )) > 0.7,
-      "scroll darkens background",
-    );
-    await page.screenshot({ path: resolve(out, name + "-research.png") });
-    await page.locator("#privacy").scrollIntoViewIfNeeded();
-    await page.waitForTimeout(600);
-    await page.screenshot({ path: resolve(out, name + "-security.png") });
-    await page.locator("#faq").scrollIntoViewIfNeeded();
-    const q = page.getByRole("button", {
-      name: "덕은 어떤 일을 도와주나요?",
-      exact: true,
-    });
-    await q.click();
-    await page
-      .getByRole("region", { name: "덕은 어떤 일을 도와주나요?", exact: true })
-      .waitFor();
-    assert.equal(await q.getAttribute("aria-expanded"), "true");
-    await page.waitForTimeout(350);
-    await page.screenshot({ path: resolve(out, name + "-faq.png") });
-    await q.click();
-    assert.equal(await q.getAttribute("aria-expanded"), "false");
-    await page.evaluate(() =>
-      scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "instant",
-      }),
-    );
-    await page.waitForTimeout(700);
-    await page.screenshot({ path: resolve(out, name + "-footer.png") });
-    assert.equal(await page.locator(".footer-download").getAttribute("href"), new URL("/app", origin).href);
-    await page.locator(".footer-phone-link").click();
-    await page.getByRole("dialog", { name: "덕 열기", exact: true }).waitFor();
-    await page.keyboard.press("Escape");
-    for (const w of [320, 390, 700, 768, 1440]) {
-      await page.setViewportSize({ width: w, height });
-      await page.waitForTimeout(80);
-      assert.equal(
+    await page.getByRole("button", { name: "Switch to English" }).click();
+    assert.equal(await page.locator("html").getAttribute("lang"), "en");
+    assert.match(await page.locator("h1").innerText(), /Bring it all together/);
+    await page.getByRole("button", { name: "한국어로 전환" }).click();
+    for (const size of [320, 390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width: size, height });
+      assert.ok(
         await page.evaluate(
-          () => document.documentElement.scrollWidth > innerWidth,
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
-        false,
-        "no horizontal overflow at " + w,
+        "horizontal page overflow at " + size,
       );
     }
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
-    await page.waitForTimeout(200);
-    assert.equal(
-      await page.locator(".hero-desktop").evaluate((v) => v.paused),
-      true,
-      "reduced motion pauses decorative videos",
-    );
-    assert.equal(
-      await page
-        .locator(".landing-heroTitle")
-        .evaluate((e) => getComputedStyle(e).animationName),
-      "none",
-    );
-    await page.getByRole("button", { name: "영상 재생", exact: true }).click();
-    await page.waitForFunction(
-      () => !document.querySelector(".hero-desktop").paused,
-    );
-    await page
-      .getByRole("button", { name: "영상 일시정지", exact: true })
-      .click();
+    const appLinks = await page
+      .locator('a[href$="/app"]')
+      .evaluateAll((all) =>
+        all.map((a) => ({ href: a.href, target: a.target })),
+      );
+    assert.ok(appLinks.length >= 4);
+    assert.ok(appLinks.every((a) => a.href === origin + "/app" && !a.target));
     assert.deepEqual(errors, []);
-    assert.deepEqual(badResponses, []);
-    assert.deepEqual(
-      remoteRequests,
-      [],
-      "no external requests or real account/model calls",
-    );
+    assert.deepEqual(network, []);
+    assert.deepEqual(media, []);
     results.push({
       name,
       width,
       height,
-      errors,
-      badResponses,
-      remoteRequests,
-      checks: [
-        "hero playback/pause",
-        "offscreen pause",
-        "QR and real web target",
-        "Escape/focus",
-        "KR/EN",
-        "mobile menu/anchor",
-        "honest TestFlight dialog",
-        "four real product videos",
-        "keyboard feature tabs",
-        "automatic feature advancement",
-        "scroll background transition",
-        "FAQ expand/collapse",
-        "sticky footer reveal/CTA",
-        "320–1440 overflow",
-        "reduced motion and opt-in playback",
+      passed: true,
+      flows: [
+        "todo",
+        "schedule date and time",
+        "finish in chat",
+        "restore and complete",
+        "reset",
+        "pricing and overflow",
+        "FAQ",
+        "QR and dialog focus",
+        "iPhone status",
+        "language and mobile navigation",
       ],
+      pageErrors: errors,
+      externalRequests: network,
+      mediaRequests: media,
     });
-    const video = page.video();
     await context.close();
-    await video.saveAs(resolve(out, name + "-interaction.webm"));
   }
+  const page = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    reducedMotion: "reduce",
+  });
+  await page.goto(origin);
+  assert.equal(
+    await page.evaluate(
+      () => getComputedStyle(document.documentElement).scrollBehavior,
+    ),
+    "auto",
+  );
+  await page.close();
   await writeFile(
-    resolve(out, "verification.json"),
+    out + "/results.json",
     JSON.stringify(
-      { date: "2026-11-13", sourceCaptureRun: "43423800908", results },
+      {
+        time: new Date().toISOString(),
+        source:
+          "Duck website in local Chromium; example data; no provider or production account calls",
+        results,
+      },
       null,
       2,
     ),
   );
-  console.log(
-    "PASS: interactive website, desktop and mobile; all core controls, motion, accessible alternatives, no external network calls.",
-  );
+  console.log(JSON.stringify(results, null, 2));
 } finally {
   await browser.close();
 }
