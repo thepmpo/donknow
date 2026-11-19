@@ -10,14 +10,39 @@ function pricingContent() {
     },
     async load(id) {
       if (id !== "\0duck-pricing") return;
-      const file = new URL("../public/pricing.html", import.meta.url);
-      this.addWatchFile(file.pathname);
-      const html = await readFile(file, "utf8"),
-        styles = /<style>([\s\S]*?)<\/style>/.exec(html),
-        main = /<main id="main">([\s\S]*?)<\/main>/.exec(html);
-      if (!styles || !main || /<script/i.test(main[1]))
-        throw Error("Pricing content must remain static and bounded");
-      const css = postcss.parse(styles[1]);
+      const files = ["pricing.html", "pricing.en.html"].map(
+        (name) => new URL("../public/" + name, import.meta.url),
+      );
+      files.forEach((file) => this.addWatchFile(file.pathname));
+      const pages = await Promise.all(
+        files.map((file) => readFile(file, "utf8")),
+      );
+      const extract = (html) => {
+        const styles = /<style>([\s\S]*?)<\/style>/.exec(html),
+          main = /<main id="main">([\s\S]*?)<\/main>/.exec(html);
+        if (!styles || !main || /<script/i.test(main[1]))
+          throw Error("Pricing content must remain static and bounded");
+        return {
+          styles: styles[1],
+          markup:
+            '<div class="pricing-main">' +
+            main[1]
+              .replace(/<h2(\s|>)/g, "<h3$1")
+              .replace(/<\/h2>/g, "</h3>")
+              .replace(/id="title"/g, 'id="pricing-title"')
+              .replace(
+                /aria-labelledby="title"/g,
+                'aria-labelledby="pricing-title"',
+              )
+              .replace('<h1 id="pricing-title">', '<h2 id="pricing-title">')
+              .replace("</h1>", "</h2>") +
+            "</div>",
+        };
+      };
+      const [ko, en] = pages.map(extract),
+        css = postcss.parse(ko.styles);
+      if (ko.styles !== en.styles)
+        throw Error("Pricing languages must share the same layout CSS");
       css.walkRules((rule) => {
         if (rule.selector === "html") {
           rule.remove();
@@ -31,22 +56,13 @@ function pricingContent() {
               : ".duck-pricing " + selector.replace(/\.intro h1/g, ".intro h2"),
         );
       });
-      const markup =
-        '<div class="pricing-main">' +
-        main[1]
-          .replace(/id="title"/g, 'id="pricing-title"')
-          .replace(
-            /aria-labelledby="title"/g,
-            'aria-labelledby="pricing-title"',
-          )
-          .replace('<h1 id="pricing-title">', '<h2 id="pricing-title">')
-          .replace("</h1>", "</h2>") +
-        "</div>";
       return (
         "export const css=" +
         JSON.stringify(css.toString()) +
         ";export const markup=" +
-        JSON.stringify(markup) +
+        JSON.stringify(ko.markup) +
+        ";export const markupEn=" +
+        JSON.stringify(en.markup) +
         ";"
       );
     },

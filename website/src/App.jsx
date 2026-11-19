@@ -68,6 +68,21 @@ const initialTasks = [
     status: "inbox",
   },
 ];
+const demoNotices = {
+  todo: [
+    "Todo에 담았어요. 왼쪽 Todo에서 확인해보세요.",
+    "Added to To-dos. Open To-dos to see it.",
+  ],
+  calendar: [
+    "캘린더에 담았어요. 왼쪽 캘린더에서 확인해보세요.",
+    "Added to Calendar. Open Calendar to see it.",
+  ],
+  done: [
+    "대화에서 마쳤어요. 기록에 남겨두었어요.",
+    "Finished here. You can find it in Log.",
+  ],
+  inbox: ["브리핑으로 되돌렸어요.", "Restored to your briefing."],
+};
 const views = [
   { id: "inbox", icon: Sparkles, name: ["브리핑", "Briefing"] },
   { id: "todo", icon: ListTodo, name: ["Todo", "To-dos"] },
@@ -108,24 +123,7 @@ function Demo({ en }) {
           : t,
       ),
     );
-    setNotice(
-      tr(
-        status === "todo"
-          ? [
-              "Todo에 담았어요. 왼쪽 Todo에서 확인해보세요.",
-              "Added to To-dos. Open To-dos to see it.",
-            ]
-          : status === "calendar"
-            ? [
-                "캘린더에 담았어요. 왼쪽 캘린더에서 확인해보세요.",
-                "Added to Calendar. Open Calendar to see it.",
-              ]
-            : [
-                "대화에서 마쳤어요. 기록에 남겨두었어요.",
-                "Finished here. You can find it in Log.",
-              ],
-      ),
-    );
+    setNotice(status);
     setSchedule(null);
   };
   useEffect(() => {
@@ -350,11 +348,12 @@ function Demo({ en }) {
             </div>
           )}
           <div className="demo-status" aria-live="polite" role="status">
-            {notice ||
-              tr([
-                "예시 데이터입니다. 실제 계정에는 저장되지 않아요.",
-                "Example data. Changes are not saved to an account.",
-              ])}
+            {notice
+              ? tr(demoNotices[notice])
+              : tr([
+                  "예시 데이터입니다. 실제 계정에는 저장되지 않아요.",
+                  "Example data. Changes are not saved to an account.",
+                ])}
           </div>
         </div>
         <aside className="demo-today">
@@ -411,8 +410,8 @@ const faqs = [
   [
     "라이트와 프로는 무엇이 다른가요?",
     "What is the difference between Lite and Pro?",
-    "라이트는 이미 사용하는 외부 AI와 함께 쓰는 방향, 프로는 덕 안에서 AI와 대화하고 브리핑을 받는 방향이에요. 라이트는 월 9,900원 제안 단계이며 외부 AI 연결과 결제는 준비 중이에요. 프로는 월 27,900원을 기준으로 안내해요.",
-    "Lite is designed for people bringing an external AI; Pro brings AI conversation and briefings into Duck. Lite’s proposed price is ₩9,900/month and its connection is in preparation. Pro is ₩27,900/month. Paid checkout is not open.",
+    "라이트는 월 16,900원으로 브리핑·자료 정리·지원 문서 초안과 Todo/일정 전환을 기본 사용량 안에서 제공하는 개편안이에요. 프로는 월 49,900원으로 같은 정리 기능에 직접 AI 채팅과 더 넉넉한 사용량을 더해요. 두 요금제 모두 무제한은 아니며 결제는 준비 중이에요.",
+    "Lite is ₩16,900/month with briefings, source summaries, supported document drafts and task/event handoff within a base allowance. Pro is ₩49,900/month with the same organization tools, direct AI chat and a larger allowance. Both plans have limits. Paid checkout is in preparation.",
   ],
   [
     "할 일과 일정을 바꾸면 원본도 바뀌나요?",
@@ -443,6 +442,17 @@ export function App() {
   const t = (ko, eng) => (en ? eng : ko);
   useEffect(() => {
     document.documentElement.lang = en ? "en" : "ko";
+    document.title = en
+      ? "Duck — Bring it together. Make room for your day."
+      : "덕 — 흩어진 일은 모으고, 나의 하루는 가볍게.";
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute(
+        "content",
+        en
+          ? "Your briefings, to-dos, calendar and document drafts, together in Duck. Lite ₩16,900/month, Pro ₩49,900/month and Business by consultation."
+          : "흩어진 일은 모으고, 나의 하루는 가볍게. 라이트 월16,900원·프로 월49,900원·비즈니스 상담형으로 브리핑부터 문서 초안까지 이어가세요.",
+      );
   }, [en]);
   useEffect(() => {
     let alive = true;
@@ -845,14 +855,14 @@ export function App() {
             <div className="section-heading">
               <span className="eyebrow blue">YOUR AI, YOUR WAY</span>
               <h2>
-                {t("익숙한 AI와 함께.", "Bring the AI you know.")}
+                {t("같은 정리 방식으로,", "The same clear workflow.")}
                 <br />
-                {t("혹은, 덕 하나로.", "Or let Duck help you.")}
+                {t("나에게 맞는 만큼.", "The right amount of help.")}
               </h2>
               <p>
                 {t(
-                  "어떤 방식을 골라도, 내가 할 일은 한곳에.",
-                  "Whichever way you work, keep your next steps together.",
+                  "브리핑부터 문서 초안까지. 더 깊은 대화는 프로에서.",
+                  "From briefings to document drafts. Go Pro for direct conversation.",
                 )}
               </p>
             </div>
@@ -861,21 +871,20 @@ export function App() {
                 <div className="option-top">
                   <Link2 size={25} />
                   <span>
-                    {t(
-                      "라이트 · 연결 준비 중",
-                      "LITE · CONNECTION IN PREPARATION",
-                    )}
+                    {t("라이트 · 월 16,900원", "LITE · ₩16,900 / MONTH")}
                   </span>
                 </div>
-                <h3>{t("이미 쓰는 AI가 있다면", "Already have an AI?")}</h3>
+                <h3>
+                  {t("필요한 정리부터 가볍게", "A little everyday assistance")}
+                </h3>
                 <p>
                   {t(
-                    "외부 AI에서 정리한 일을 덕으로 보내는 방향이에요. 덕에서는 Todo와 캘린더로 이어가세요.",
-                    "We’re preparing a way to send selected work from an external AI into Duck, then organize it as to-dos and events.",
+                    "자료를 정리하고, 브리핑을 받고, 문서 초안을 만들어요. 필요한 내용은 Todo와 캘린더로 이어가세요.",
+                    "Organize sources, receive briefings and draft supported documents. Keep the next step as a to-do or calendar event.",
                   )}
                 </p>
                 <div className="ai-route">
-                  <span>ChatGPT</span>
+                  <span>{t("자료 · 브리핑", "Sources · Briefings")}</span>
                   <ArrowRight size={18} />
                   <span>
                     <Duck /> Todo · Calendar
@@ -883,23 +892,28 @@ export function App() {
                 </div>
                 <small>
                   {t(
-                    "공식 연결 개발·등록 후 제공 예정 · Dots 자동 가져오기 미제공",
-                    "Planned after development and registration · No automatic dot import",
+                    "기본 월 사용량 · 직접 AI 채팅은 프로에서",
+                    "Base monthly allowance · Direct AI chat in Pro",
                   )}
                 </small>
               </article>
               <article>
                 <div className="option-top">
                   <Sparkles size={25} />
-                  <span>PRO</span>
+                  <span>
+                    {t("프로 · 월 49,900원", "PRO · ₩49,900 / MONTH")}
+                  </span>
                 </div>
                 <h3>
-                  {t("덕 안에서 모두 하고 싶다면", "Want it all inside Duck?")}
+                  {t(
+                    "더 이야기하고, 더 맡기려면",
+                    "More room to talk and get things done",
+                  )}
                 </h3>
                 <p>
                   {t(
-                    "덕에게 직접 이야기하고, 연결한 자료를 질문하고, 브리핑에서 다음 할 일을 골라보세요.",
-                    "Talk to Duck, ask about connected sources, and choose your next steps from a briefing.",
+                    "라이트의 정리 기능에 직접 AI 채팅을 더해요. 더 넉넉한 사용량으로 자료를 질문하고 문서 작업을 이어가세요.",
+                    "Everything in Lite, plus direct AI chat. Ask about your sources and work on documents with a larger monthly allowance.",
                   )}
                 </p>
                 <div className="ai-route">
@@ -912,8 +926,8 @@ export function App() {
                 </div>
                 <small>
                   {t(
-                    "AI 사용량 한도 적용 · 자료 사용 동의와 연결 권한 필요",
-                    "AI usage limits apply · Source consent and permissions required",
+                    "확대 월 사용량 · 자료 사용 동의와 연결 권한 필요",
+                    "Larger monthly allowance · Source consent and permissions required",
                   )}
                 </small>
               </article>
@@ -997,7 +1011,7 @@ export function App() {
             )}
           </p>
         </section>
-        <Pricing />
+        <Pricing lang={en ? "en" : "ko"} />
         <section className="trust-section section-wrap">
           <div className="trust-intro">
             <ShieldCheck size={31} />

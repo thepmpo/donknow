@@ -1,0 +1,519 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Compare Duck Free, Lite at ₩16,900/month, Pro at ₩49,900/month, and Business with custom pricing. Briefings, document drafts and AI chat, with clear usage limits. Paid checkout is in preparation."><meta name="theme-color" content="#ffffff"><title>Plans and features · Duck</title><style>:root {
+  --ink: #17212b;
+  --muted: #7b8899;
+  --line: #e0e7f0;
+  --blue: #2468eb;
+  --pale: #eef4ff;
+  --soft: #f8faff;
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 95px;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  font:
+    14px/1.7 -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Apple SD Gothic Neo",
+    sans-serif;
+  background: #fff;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:focus-visible,
+summary:focus-visible,
+.table-scroll:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+header {
+  border-bottom: 1px solid var(--line);
+}
+.nav {
+  max-width: 1200px;
+  margin: auto;
+  padding: 17px 36px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+  margin-right: auto;
+}
+.nav a:not(.brand) {
+  font-size: 12px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+main {
+  max-width: 1200px;
+  padding: 84px 36px 75px;
+  margin: auto;
+}
+.intro {
+  text-align: center;
+}
+.eyebrow {
+  color: var(--blue);
+  letter-spacing: 1.5px;
+  font-size: 11px;
+  font-weight: 650;
+}
+.intro h1,
+.intro h2 {
+  font-size: 39px;
+  line-height: 1.35;
+  letter-spacing: -1.7px;
+  margin: 15px 0 19px;
+  font-weight: 750;
+}
+.intro p {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0;
+}
+.billing {
+  display: block;
+  font-size: 10px;
+  color: #8a97a7;
+  margin-top: 17px;
+}
+.plans {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 19px;
+  margin-top: 46px;
+}
+.plan {
+  position: relative;
+  background: #fff;
+  padding: 28px 25px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  display: flex;
+  flex-direction: column;
+}
+.plan.pro {
+  border-color: var(--blue);
+  box-shadow: 0 5px 25px -20px #2468eb55;
+}
+.tag {
+  font-size: 10px;
+  color: #8492a4;
+}
+.pro .tag {
+  color: var(--blue);
+}
+.plan h2,
+.plan h3 {
+  margin: 10px 0 9px;
+  font-size: 24px;
+  letter-spacing: -0.7px;
+  font-weight: 700;
+}
+.description {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin: 0;
+  min-height: 48px;
+}
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 26px 0 0;
+}
+.price strong {
+  font-size: 31px;
+  letter-spacing: -1.4px;
+  font-weight: 750;
+}
+.price > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.price-note {
+  font-size: 10px;
+  color: #8b98aa;
+  margin: 3px 0 0;
+  min-height: 33px;
+}
+.plan ul {
+  list-style: none;
+  padding: 21px 0 0;
+  margin: 8px 0 24px;
+  border-top: 1px solid #edf0f5;
+  display: grid;
+  gap: 11px;
+  font-size: 11px;
+  color: #54667e;
+}
+.plan li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.included {
+  color: var(--blue);
+  font-weight: 700;
+}
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+  border-radius: 8px;
+  background: #f2f6fc;
+  color: #42638d;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: auto;
+}
+.button:hover {
+  background: #e6efff;
+}
+.pro .button {
+  background: var(--blue);
+  color: #fff;
+}
+.notice {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #7e8c9f;
+  margin: 20px 0 0;
+  padding: 0;
+}
+.notice strong {
+  font-weight: 650;
+  color: #5b708c;
+}
+.comparison {
+  margin-top: 67px;
+}
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+.section-heading h2,
+.section-heading h3 {
+  font-size: 22px;
+  letter-spacing: -0.8px;
+  margin: 0;
+  font-weight: 650;
+}
+.section-heading p {
+  font-size: 10px;
+  color: #8a98ab;
+  margin: 0;
+}
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border-top: 1px solid var(--line);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 790px;
+  font-size: 11px;
+}
+caption {
+  text-align: left;
+  padding: 12px 0;
+  font-size: 10px;
+  color: #8392a6;
+  caption-side: bottom;
+}
+th,
+td {
+  padding: 17px 14px;
+  border-bottom: 1px solid #e6ecf4;
+  text-align: center;
+  vertical-align: middle;
+}
+thead th {
+  font-size: 12px;
+  font-weight: 600;
+  background: #fff;
+}
+thead th:first-child {
+  text-align: left;
+  width: 42%;
+  padding-left: 0;
+}
+th small {
+  display: block;
+  margin-top: 4px;
+  color: #929fb0;
+  font-size: 9px;
+  font-weight: 400;
+}
+tbody th {
+  text-align: left;
+  font-weight: 400;
+  padding-left: 0;
+  width: 42%;
+  background: #fff;
+  color: #5c6c80;
+}
+td {
+  color: #72839b;
+}
+td .included {
+  font-size: 14px;
+}
+td .pending {
+  font-size: 10px;
+  color: #8b99ad;
+}
+.pro-head {
+  color: var(--blue);
+}
+.scroll-hint {
+  display: none;
+  font-size: 10px;
+  color: #8896a9;
+  margin: 0 0 12px;
+}
+.usage {
+  margin-top: 23px;
+  border-left: 2px solid #8aafea;
+  padding-left: 15px;
+  color: #78899e;
+  font-size: 11px;
+  line-height: 1.9;
+}
+.usage strong {
+  color: #536d90;
+  font-size: 12px;
+}
+.usage p {
+  margin: 5px 0;
+}
+.source-link {
+  font-size: 10px;
+  color: #7188a8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pricing-faq {
+  margin-top: 50px;
+}
+.pricing-faq h2 {
+  font-size: 23px;
+  letter-spacing: -0.8px;
+}
+.pricing-faq details {
+  border-bottom: 1px solid var(--line);
+  padding: 17px 0;
+}
+.pricing-faq summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+.pricing-faq p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.footer-inner {
+  max-width: 1200px;
+  padding: 30px 36px;
+  margin: auto;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+@media (max-width: 800px) {
+  main {
+    padding-top: 65px;
+  }
+  .plans {
+    gap: 12px;
+  }
+  .plan {
+    padding: 24px 18px;
+  }
+  .price strong {
+    font-size: 27px;
+  }
+  .description {
+    font-size: 11px;
+  }
+  .plan ul {
+    font-size: 10px;
+  }
+  .intro h1,
+  .intro h2 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 600px) {
+  main {
+    padding: 58px 22px;
+  }
+  .nav {
+    padding-inline: 22px;
+    gap: 15px;
+  }
+  .nav a:not(.brand) {
+    font-size: 10px;
+  }
+  .intro h1,
+  .intro h2 {
+    font-size: 29px;
+    letter-spacing: -1.2px;
+    margin-top: 13px;
+  }
+  .intro p {
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .eyebrow {
+    font-size: 9px;
+  }
+  .billing {
+    font-size: 9px;
+  }
+  .plans {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 30px;
+  }
+  .plan {
+    padding: 25px;
+  }
+  .plan h2,
+  .plan h3 {
+    font-size: 23px;
+  }
+  .description {
+    font-size: 12px;
+    min-height: 0;
+  }
+  .description br {
+    display: none;
+  }
+  .price {
+    margin-top: 16px;
+  }
+  .price strong {
+    font-size: 31px;
+  }
+  .price-note {
+    min-height: 0;
+  }
+  .plan ul {
+    font-size: 12px;
+    padding-top: 17px;
+    margin-bottom: 22px;
+  }
+  .tag {
+    font-size: 10px;
+  }
+  .button {
+    min-height: 46px;
+    font-size: 12px;
+  }
+  .notice {
+    font-size: 10px;
+    margin-top: 18px;
+  }
+  .comparison {
+    margin-top: 40px;
+  }
+  .section-heading {
+    display: block;
+    margin-bottom: 18px;
+  }
+  .section-heading h2,
+  .section-heading h3 {
+    font-size: 21px;
+  }
+  .section-heading p {
+    margin-top: 9px;
+    font-size: 9px;
+  }
+  .scroll-hint {
+    display: block;
+  }
+  th,
+  td {
+    padding: 15px 12px;
+  }
+  tbody th,
+  thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #fff;
+    padding-left: 0;
+    width: 200px;
+    min-width: 180px;
+    border-right: 1px solid #e9eff7;
+  }
+  .usage {
+    font-size: 10px;
+  }
+  .usage strong {
+    font-size: 11px;
+  }
+  .footer-inner {
+    padding: 25px 22px;
+    display: block;
+    font-size: 10px;
+  }
+  .footer-links {
+    margin-top: 15px;
+  }
+  .pricing-faq summary {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1000px) {
+  .plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1001px) {
+  .plan {
+    padding: 25px 21px;
+  }
+  .price strong {
+    font-size: 29px;
+  }
+}
+</style></head><body><header><nav class="nav" aria-label="Main navigation"><a class="brand" href="/">duck.</a><a href="/#how">How it works</a><a href="/#pricing">Pricing</a><a href="/app">Open Duck</a></nav></header><main id="main"><section class="intro" aria-labelledby="title"><span class="eyebrow">A PLAN FOR YOUR DAY</span><h1 id="title">Duck, your way.</h1><p>The same clear workflow. The right amount of help.<br>Go Pro when you want a deeper conversation.</p><span class="billing">Monthly pricing · VAT included · Proposed plans · Checkout in preparation</span></section>
+<section class="plans" aria-label="Proposed plans"><article class="plan "><span class="tag">A day you organize yourself</span><h2>Free</h2><p class="description">Start with a simple place <br>for your to-dos and events.</p><p class="price"><strong>₩0</strong><span>/ month</span></p><p class="price-note">Core organization tools</p><ul><li><span class="included" aria-hidden="true">✓</span>Create to-dos and events</li><li><span class="included" aria-hidden="true">✓</span>Lists by date and source</li><li><span class="included" aria-hidden="true">✓</span>Import from supported connections</li><li><span class="included" aria-hidden="true">✓</span>Completion history and source links</li></ul><a class="button" href="/app">Explore Duck</a></article><article class="plan "><span class="tag">A little everyday assistance</span><h2>Lite</h2><p class="description">From briefings to document drafts, <br>with a smaller monthly allowance.</p><p class="price"><strong>₩16,900</strong><span>/ month</span></p><p class="price-note">Base monthly allowance · No direct AI chat</p><ul><li><span class="included" aria-hidden="true">✓</span>All core Free features</li><li><span class="included" aria-hidden="true">✓</span>Briefings and supported source summaries</li><li><span class="included" aria-hidden="true">✓</span>Draft supported documents</li><li><span class="included" aria-hidden="true">✓</span>Turn received items into tasks or events</li></ul><a class="button" href="#compare">Explore Lite features</a></article><article class="plan pro"><span class="tag">Talk it through. Do a little more.</span><h2>Pro</h2><p class="description">All the organization tools in Lite, <br>plus AI chat and a larger allowance.</p><p class="price"><strong>₩49,900</strong><span>/ month</span></p><p class="price-note">Direct AI chat · Larger monthly allowance</p><ul><li><span class="included" aria-hidden="true">✓</span>All Lite organization features</li><li><span class="included" aria-hidden="true">✓</span>Chat directly with Duck AI</li><li><span class="included" aria-hidden="true">✓</span>Process more documents and sources</li><li><span class="included" aria-hidden="true">✓</span>A larger shared AI allowance</li></ul><a class="button" href="#compare">Explore Pro features</a></article><article class="plan business"><span class="tag">Designed around your team</span><h2>Business</h2><p class="description">Bringing Duck to a team? <br>Let’s discuss the scope you need.</p><p class="price"><strong>Let’s talk</strong></p><p class="price-note">A quote based on seats, volume and scope</p><ul><li><span class="included" aria-hidden="true">✓</span>Team size and workflow consultation</li><li><span class="included" aria-hidden="true">✓</span>Discuss source and access requirements</li><li><span class="included" aria-hidden="true">✓</span>Agree on AI and document allowances</li><li><span class="included" aria-hidden="true">✓</span>Define onboarding and support scope</li></ul><a class="button" href="/support?topic=business">Contact us</a></article></section>
+<p class="notice">Lite and Pro share briefings, source organization, supported document drafts, and task/event handoff in this proposed lineup. Direct AI chat is included in Pro. Both plans have usage limits. Business features and allowances are agreed after consultation. Current account access and billing remain unchanged.</p><section class="comparison" id="compare" aria-labelledby="compare-title"><div class="section-heading"><h2 id="compare-title">Features and allowances, clearly.</h2><p>✓ Included · — Not included · Business scope by agreement</p></div><p class="scroll-hint">Swipe the table to compare every plan.</p><div class="table-scroll" role="region" tabindex="0" aria-label="Plan comparison; scroll horizontally on smaller screens"><table><caption>Proposed Free, Lite, Pro and Business plans. Planned connections and supported features are identified separately.</caption><thead><tr><th scope="col">Feature</th><th scope="col" class="">Free<small>₩0 / month</small></th><th scope="col" class="">Lite<small>₩16,900 / month</small></th><th scope="col" class="pro-head">Pro<small>₩49,900 / month</small></th><th scope="col" class="">Business<small>Let’s talk</small></th></tr></thead><tbody><tr><th scope="row">Create to-dos and calendar events</th><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Import sources; organize by date and source</th><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Completion history and supported source links</th><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Briefings and important updates</th><td><span aria-label="Not included">—</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Summarize sources and draft supported documents</th><td><span aria-label="Not included">—</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Turn received items into tasks and events</th><td><span aria-label="Not included">—</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Use approved memory and source context</th><td><span aria-label="Not included">—</span></td><td><span class="included" aria-label="Included">✓</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Chat directly with Duck AI</th><td><span aria-label="Not included">—</span></td><td><span aria-label="Not included">—</span></td><td><span class="included" aria-label="Included">✓</span></td><td>By agreement</td></tr><tr><th scope="row">Monthly AI allowance</th><td>None</td><td>Base allowance</td><td>Larger allowance</td><td>Custom agreement</td></tr><tr><th scope="row">Document and source processing</th><td>Manual organization</td><td>Within base allowance</td><td>Within larger allowance</td><td>Custom agreement</td></tr><tr><th scope="row">Connect external AI such as ChatGPT</th><td><span aria-label="Not included">—</span></td><td>In preparation</td><td>In preparation</td><td>Discuss separately</td></tr></tbody></table></div><aside class="usage" aria-label="Usage and availability"><strong>More room to work. Clear limits.</strong><p>Briefings, source summaries, document drafting and AI chat share a monthly allowance. Long documents and work with multiple steps can use more than a short summary. Exact allowances and usage rules will be published before paid checkout opens.</p><p>When you reach your limit, AI processing pauses and we let you know. There are no automatic overage charges. You can still organize to-dos and events manually. Contact us about Business if you need a larger allowance.</p><p>Features depend on supported formats and source permissions. Document drafts use information actually retrieved and should be reviewed before submission. External AI connections are in preparation; existing dot conversations, memories and results are not imported automatically.</p></aside></section></main><footer><div class="footer-inner"><span>Duck · Proposed plans, November 19, 2026</span><div class="footer-links"><a href="/privacy">Privacy policy</a><a href="/support">Contact us</a><a href="/project">Product updates</a></div></div></footer></body></html>

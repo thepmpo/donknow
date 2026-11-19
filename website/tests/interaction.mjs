@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
 const out = resolve(
-  new URL("../../artifacts/duck-anydo-site-2026-11-19", import.meta.url)
+  new URL("../../artifacts/duck-pricing-bilingual-2026-11-19", import.meta.url)
     .pathname,
 );
 await mkdir(out, { recursive: true });
@@ -98,11 +98,15 @@ try {
     assert.equal(await demo.locator(".demo-task").count(), 1);
     await demo.getByRole("button", { name: "예시 초기화" }).click();
     assert.equal(await demo.locator(".demo-task").count(), 3);
-    await page.locator("#pricing").scrollIntoViewIfNeeded();
+    await page
+      .locator("#pricing")
+      .evaluate((el) =>
+        el.scrollIntoView({ block: "start", behavior: "instant" }),
+      );
     await page.screenshot({ path: out + "/" + name + "-pricing.png" });
-    assert.match(await page.locator("#pricing").innerText(), /9,900원/);
-    assert.match(await page.locator("#pricing").innerText(), /제안 가격/);
-    assert.match(await page.locator("#pricing").innerText(), /27,900원/);
+    assert.match(await page.locator("#pricing").innerText(), /16,900원/);
+    assert.match(await page.locator("#pricing").innerText(), /비즈니스/);
+    assert.match(await page.locator("#pricing").innerText(), /49,900원/);
     assert.match(await page.locator("#pricing").innerText(), /Dots.*자동/);
     assert.equal(
       await page.locator('a[href*="checkout"],a[href*="stripe"]').count(),
@@ -144,10 +148,49 @@ try {
         .click();
       assert.equal(await page.locator(".mobile-menu").count(), 0);
     }
+    await demo
+      .getByRole("button", { name: "할 일로", exact: true })
+      .first()
+      .click();
     await page.getByRole("button", { name: "Switch to English" }).click();
     assert.equal(await page.locator("html").getAttribute("lang"), "en");
     assert.match(await page.locator("h1").innerText(), /Bring it all together/);
+    assert.equal(await page.locator("#pricing").getAttribute("lang"), "en");
+    assert.match(
+      await demo.locator(".demo-status").innerText(),
+      /Added to To-dos/,
+    );
+    const englishText = await page.locator("body").innerText();
+    assert.equal(
+      /[가-힣]/.test(englishText),
+      false,
+      "English page has untranslated Korean text",
+    );
+    assert.match(await page.locator("#pricing").innerText(), /₩16,900/);
+    assert.match(await page.locator("#pricing").innerText(), /₩49,900/);
+    assert.equal(await page.locator("#pricing .plan").count(), 4);
+    assert.equal(await page.locator("#pricing thead th").count(), 5);
+    assert.match(
+      await page.locator("#pricing .usage").innerText(),
+      /document drafting/,
+    );
+    assert.ok(
+      await page.locator('#pricing a[href="/support?topic=business"]').count(),
+    );
+    assert.equal(/[가-힣]/.test(await page.title()), false);
+    await page
+      .locator("#pricing")
+      .evaluate((el) =>
+        el.scrollIntoView({ block: "start", behavior: "instant" }),
+      );
+    await page.screenshot({ path: out + "/" + name + "-pricing-en.png" });
+    await page.screenshot({
+      path: out + "/" + name + "-full-en.png",
+      fullPage: true,
+    });
     await page.getByRole("button", { name: "한국어로 전환" }).click();
+    assert.equal(await page.locator("#pricing").getAttribute("lang"), "ko");
+    assert.match(await page.locator("#pricing").innerText(), /16,900원/);
     for (const size of [320, 390, 768, 1024, 1440]) {
       await page.setViewportSize({ width: size, height });
       assert.ok(

@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "build": "node scripts/build-pricing.mjs && vite build && node scripts/prepare-sites-build.mjs",
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
     "test:interaction": "node tests/interaction.mjs",
     "download": "node scripts/prepare-download.mjs",
-    "test:download": "node --test tests/download.test.mjs"
+    "test:download": "node --test tests/download.test.mjs",
+    "predev": "node scripts/build-pricing.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",

@@ -1,0 +1,48 @@
+{
+  "time": "2026-11-19T01:59:13.898Z",
+  "source": "Duck website in local Chromium; example data; no provider or production account calls",
+  "results": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "passed": true,
+      "flows": [
+        "todo",
+        "schedule date and time",
+        "finish in chat",
+        "restore and complete",
+        "reset",
+        "pricing and overflow",
+        "FAQ",
+        "QR and dialog focus",
+        "iPhone status",
+        "language and mobile navigation"
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "mediaRequests": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "flows": [
+        "todo",
+        "schedule date and time",
+        "finish in chat",
+        "restore and complete",
+        "reset",
+        "pricing and overflow",
+        "FAQ",
+        "QR and dialog focus",
+        "iPhone status",
+        "language and mobile navigation"
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "mediaRequests": []
+    }
+  ]
+}
