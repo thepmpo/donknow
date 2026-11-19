@@ -17,6 +17,10 @@
     "lite_share": 0.6,
     "lite_price": 16900,
     "pro_price": 49900,
+    "lite_regular_monthly": 19900,
+    "pro_regular_monthly": 55900,
+    "lite_annual_gross": 202800,
+    "pro_annual_gross": 598800,
     "lite_ai_cap_proposal": 4000,
     "pro_ai_cap_proposal": 18000,
     "mini_input_usd_per_million": 0.75,
@@ -1203,6 +1207,7 @@
     }
   ],
   "notes": [
+    "Displayed monthly prices16900/49900 are the beta monthly rates and annual monthly equivalents. Regular monthly prices19900/55900; annual upfront totals202800/598800. Annual upfront cash receipts are not twelve months of immediately earned profit.",
     "Amounts are monthly KRW. No measured usage, payment settlement or real external generation.",
     "FX1600 and 20% AI buffer are budgeting assumptions, not spot FX or a guarantee. No cache/batch savings assumed.",
     "Prices VAT-inclusive; fee rate3.85% of gross is a conservative web-payment assumption, not an agreed PSP quote. Alternate platform percentages here are stress tests on the same gross-fee basis, not official Apple settlement calculations.",

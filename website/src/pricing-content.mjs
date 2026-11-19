@@ -278,6 +278,68 @@ export const pricingCopy = {
     footerLinks: ["Privacy policy", "Contact us", "Product updates"],
   },
 };
+// Approved billing labels. These are display terms; checkout and account entitlements stay separate.
+export const billingPolicy = {
+  lite: { monthly: 19900, annualMonthly: 16900, betaMonthly: 16900 },
+  pro: { monthly: 55900, annualMonthly: 49900, betaMonthly: 49900 },
+};
+for (const [lang, c] of Object.entries(pricingCopy)) {
+  const en = lang === "en",
+    money = (n) =>
+      en ? "₩" + n.toLocaleString("en-US") : n.toLocaleString("en-US") + "원";
+  c.billing = en
+    ? "VAT included · Proposed billing terms · Checkout in preparation"
+    : "부가세 포함 · 요금 개편안 · 결제 준비 중";
+  c.betaLead = en
+    ? "During beta, monthly billing gets the same discounted rate as an annual plan."
+    : "베타 기간에는 월 결제에도 연간 할인가를 적용해요.";
+  c.betaPrice = en ? "Beta monthly rate" : "베타 월요금";
+  c.regularMonthly = en ? "Regular monthly" : "정상 월요금";
+  c.billingTerms = en
+    ? "Beta end dates and later billing terms will be announced before checkout opens."
+    : "베타 종료일과 이후 요금 적용 조건은 결제 시작 전에 안내해요.";
+  for (const [i, name] of [
+    [1, "lite"],
+    [2, "pro"],
+  ]) {
+    const b = billingPolicy[name],
+      plan = c.plans[i];
+    plan.price = money(b.betaMonthly);
+    plan.regularPrice = money(b.monthly);
+    plan.beta = true;
+    plan.annualTotal = money(b.annualMonthly * 12);
+    plan.annualMonthly = money(b.annualMonthly);
+    plan.annualNote = en
+      ? plan.annualTotal +
+        " billed annually<br>Equivalent to " +
+        plan.annualMonthly +
+        "/month"
+      : "연간 결제 " +
+        plan.annualTotal +
+        "/년<br>월 환산 " +
+        plan.annualMonthly +
+        " · 연 1회 결제";
+  }
+  c.notice += " " + c.billingTerms;
+  c.meta = en
+    ? "Duck Lite: regular ₩19,900/month, annual equivalent ₩16,900/month. Pro: regular ₩55,900/month, annual equivalent ₩49,900/month. During beta, monthly billing gets the annual discounted rate. Checkout in preparation."
+    : "덕 정상 월요금 라이트19,900원·프로55,900원. 연간 결제 월환산16,900원·49,900원이며 베타 기간에는 월 결제에도 같은 할인가를 적용해요. 결제 준비 중.";
+  c.rows.unshift(
+    en
+      ? ["Regular monthly price", "₩0", "₩19,900", "₩55,900", "consult"]
+      : ["정상 월요금", "0원", "19,900원", "55,900원", "consult"],
+    en
+      ? [
+          "Annual payment total",
+          "₩0",
+          "₩202,800/year",
+          "₩598,800/year",
+          "consult",
+        ]
+      : ["연간 총 결제액", "0원", "202,800원/년", "598,800원/년", "consult"],
+  );
+}
+
 const escapeHtml = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
@@ -295,7 +357,7 @@ export function pricingMarkup(lang = "ko") {
           (lang === "en" ? "Not included" : "미포함") +
           '">—</span>'
         : esc(v === "consult" ? c.consult : v);
-  return `<section class="intro" aria-labelledby="title"><span class="eyebrow">${c.eyebrow}</span><h1 id="title">${c.heading}</h1><p>${c.lead}</p><span class="billing">${c.billing}</span></section>
-<section class="plans" aria-label="${lang === "en" ? "Proposed plans" : "요금 개편안"}">${c.plans.map((p) => `<article class="plan ${p.className || ""}"><span class="tag">${p.tag}</span><h2>${p.name}</h2><p class="description">${p.description.replaceAll("<br>", " <br>")}</p><p class="price"><strong>${p.price}</strong>${p.custom ? "" : `<span>${c.month}</span>`}</p><p class="price-note">${p.note}</p><ul>${p.features.map((f) => `<li><span class="included" aria-hidden="true">✓</span>${f}</li>`).join("")}</ul><a class="button" href="${p.href}">${p.cta}</a></article>`).join("")}</section>
-<p class="notice">${c.notice}</p><section class="comparison" id="compare" aria-labelledby="compare-title"><div class="section-heading"><h2 id="compare-title">${c.compareHeading}</h2><p>${c.legend}</p></div><p class="scroll-hint">${c.scroll}</p><div class="table-scroll" role="region" tabindex="0" aria-label="${c.region}"><table><caption>${c.caption}</caption><thead><tr><th scope="col">${c.feature}</th>${c.plans.map((p) => `<th scope="col" class="${p.className === "pro" ? "pro-head" : ""}">${p.name}<small>${p.price}${p.custom ? "" : ` ${c.month}`}</small></th>`).join("")}</tr></thead><tbody>${c.rows.map(([name, ...values]) => `<tr><th scope="row">${name}</th>${values.map((v) => `<td>${cell(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div><aside class="usage" aria-label="${lang === "en" ? "Usage and availability" : "사용량과 제공 범위"}"><strong>${c.usageHeading}</strong>${c.usage.map((p) => `<p>${p}</p>`).join("")}</aside></section>`;
+  return `<section class="intro" aria-labelledby="title"><span class="eyebrow">${c.eyebrow}</span><h1 id="title">${c.heading}</h1><p>${c.lead}</p><span class="billing">${c.billing}</span><p class="beta-billing">${c.betaLead}</p></section>
+<section class="plans" aria-label="${lang === "en" ? "Proposed plans" : "요금 개편안"}">${c.plans.map((p) => `<article class="plan ${p.className || ""}"><span class="tag">${p.tag}</span><h2>${p.name}</h2><p class="description">${p.description.replaceAll("<br>", " <br>")}</p><p class="price">${p.beta ? `<span class="regular-price">${c.regularMonthly} <s>${p.regularPrice}</s></span>` : ""}<strong>${p.price}</strong>${p.custom ? "" : `<span>${c.month}</span>`}</p><p class="price-note">${p.beta ? c.betaPrice + " · " : ""}${p.note}</p>${p.beta ? `<p class="annual-note">${p.annualNote}</p>` : ""}<ul>${p.features.map((f) => `<li><span class="included" aria-hidden="true">✓</span>${f}</li>`).join("")}</ul><a class="button" href="${p.href}">${p.cta}</a></article>`).join("")}</section>
+<p class="notice">${c.notice}</p><section class="comparison" id="compare" aria-labelledby="compare-title"><div class="section-heading"><h2 id="compare-title">${c.compareHeading}</h2><p>${c.legend}</p></div><p class="scroll-hint">${c.scroll}</p><div class="table-scroll" role="region" tabindex="0" aria-label="${c.region}"><table><caption>${c.caption}</caption><thead><tr><th scope="col">${c.feature}</th>${c.plans.map((p) => `<th scope="col" class="${p.className === "pro" ? "pro-head" : ""}">${p.name}<small>${p.price}${p.custom ? "" : ` ${c.month}`}${p.beta ? `<br>${c.betaPrice}` : ""}</small></th>`).join("")}</tr></thead><tbody>${c.rows.map(([name, ...values]) => `<tr><th scope="row">${name}</th>${values.map((v) => `<td>${cell(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div><aside class="usage" aria-label="${lang === "en" ? "Usage and availability" : "사용량과 제공 범위"}"><strong>${c.usageHeading}</strong>${c.usage.map((p) => `<p>${p}</p>`).join("")}</aside></section>`;
 }

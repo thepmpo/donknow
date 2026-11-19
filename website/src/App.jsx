@@ -410,8 +410,8 @@ const faqs = [
   [
     "라이트와 프로는 무엇이 다른가요?",
     "What is the difference between Lite and Pro?",
-    "라이트는 월 16,900원으로 브리핑·자료 정리·지원 문서 초안과 Todo/일정 전환을 기본 사용량 안에서 제공하는 개편안이에요. 프로는 월 49,900원으로 같은 정리 기능에 직접 AI 채팅과 더 넉넉한 사용량을 더해요. 두 요금제 모두 무제한은 아니며 결제는 준비 중이에요.",
-    "Lite is ₩16,900/month with briefings, source summaries, supported document drafts and task/event handoff within a base allowance. Pro is ₩49,900/month with the same organization tools, direct AI chat and a larger allowance. Both plans have limits. Paid checkout is in preparation.",
+    "정상 월요금은 라이트19,900원·프로55,900원이에요. 연간 결제는 각각202,800원·598,800원으로, 월환산16,900원·49,900원이에요. 베타 기간에는 월 결제에도 같은 연간 할인가를 적용해요. 라이트의 정리 기능에 프로는 직접 AI채팅과 확대 사용량을 더하며, 두 플랜 모두 사용량 제한이 있어요. 결제는 준비 중이에요.",
+    "Regular monthly prices are ₩19,900 for Lite and ₩55,900 for Pro. Annual plans cost ₩202,800 and ₩598,800, equivalent to ₩16,900 and ₩49,900 per month. During beta, monthly billing gets the same annual discounted rate. Pro adds direct AI chat and a larger allowance to Lite’s organization tools. Both have usage limits. Checkout is in preparation.",
   ],
   [
     "할 일과 일정을 바꾸면 원본도 바뀌나요?",
@@ -450,8 +450,8 @@ export function App() {
       ?.setAttribute(
         "content",
         en
-          ? "Your briefings, to-dos, calendar and document drafts, together in Duck. Lite ₩16,900/month, Pro ₩49,900/month and Business by consultation."
-          : "흩어진 일은 모으고, 나의 하루는 가볍게. 라이트 월16,900원·프로 월49,900원·비즈니스 상담형으로 브리핑부터 문서 초안까지 이어가세요.",
+          ? "Your briefings, to-dos, calendar and document drafts, together in Duck. Beta monthly rates: Lite ₩16,900 and Pro ₩49,900, matching annual equivalents. Regular monthly rates: ₩19,900 and ₩55,900. Business by consultation."
+          : "흩어진 일은 모으고, 나의 하루는 가볍게. 정상 월요금 라이트19,900원·프로55,900원, 베타 월요금16,900원·49,900원으로 브리핑부터 문서 초안까지 이어가세요.",
       );
   }, [en]);
   useEffect(() => {
@@ -871,7 +871,10 @@ export function App() {
                 <div className="option-top">
                   <Link2 size={25} />
                   <span>
-                    {t("라이트 · 월 16,900원", "LITE · ₩16,900 / MONTH")}
+                    {t(
+                      "라이트 · 베타 월 16,900원",
+                      "LITE · BETA ₩16,900 / MONTH",
+                    )}
                   </span>
                 </div>
                 <h3>
@@ -901,7 +904,7 @@ export function App() {
                 <div className="option-top">
                   <Sparkles size={25} />
                   <span>
-                    {t("프로 · 월 49,900원", "PRO · ₩49,900 / MONTH")}
+                    {t("프로 · 베타 월 49,900원", "PRO · BETA ₩49,900 / MONTH")}
                   </span>
                 </div>
                 <h3>

@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
 const out = resolve(
-  new URL("../../artifacts/duck-pricing-bilingual-2026-11-19", import.meta.url)
+  new URL("../../artifacts/duck-beta-annual-2026-11-19", import.meta.url)
     .pathname,
 );
 await mkdir(out, { recursive: true });
@@ -107,6 +107,15 @@ try {
     assert.match(await page.locator("#pricing").innerText(), /16,900원/);
     assert.match(await page.locator("#pricing").innerText(), /비즈니스/);
     assert.match(await page.locator("#pricing").innerText(), /49,900원/);
+    for (const text of [
+      "19,900원",
+      "55,900원",
+      "202,800원",
+      "598,800원",
+      "베타 월요금",
+    ])
+      assert.ok((await page.locator("#pricing").innerText()).includes(text));
+    assert.equal(await page.locator("#pricing .regular-price").count(), 2);
     assert.match(await page.locator("#pricing").innerText(), /Dots.*자동/);
     assert.equal(
       await page.locator('a[href*="checkout"],a[href*="stripe"]').count(),
@@ -168,6 +177,15 @@ try {
     );
     assert.match(await page.locator("#pricing").innerText(), /₩16,900/);
     assert.match(await page.locator("#pricing").innerText(), /₩49,900/);
+    for (const text of [
+      "₩19,900",
+      "₩55,900",
+      "₩202,800",
+      "₩598,800",
+      "Beta monthly rate",
+      "billed annually",
+    ])
+      assert.ok((await page.locator("#pricing").innerText()).includes(text));
     assert.equal(await page.locator("#pricing .plan").count(), 4);
     assert.equal(await page.locator("#pricing thead th").count(), 5);
     assert.match(
