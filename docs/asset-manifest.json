@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-19",
-  "codeCommit": "66ee58a6f90c9a93ffad3a708c58dc3f612a9699",
-  "assetCommit": "3441a7578855b0606478ed6fe386672c90e33b4b",
-  "imageCount": 1433,
+  "codeCommit": "22d546ae099e592bf979d863c9d2c8cbed8e7377",
+  "assetCommit": "22d546ae099e592bf979d863c9d2c8cbed8e7377",
+  "imageCount": 1444,
   "images": [
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/desktop-hero.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 89284,
+      "sha256": "687d1a742283b94e98cbdfbd37215ac6aaf8948d33b0fe34af248ffb2b8caa2a",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__desktop-hero.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/phone-hero.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 51824,
+      "sha256": "8cedbe2d3e183b2dc64bf0fcf735042befc73c6a5d2023423e40cea7101adb54",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-hero.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/desktop-pricing.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 97396,
+      "sha256": "ce04110247bd41d927e16faba758f857dfea9c81f45ad719a54ed38f25c828e8",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__desktop-pricing.png"
+    },
     {
       "path": "artifacts/calendar-week-day-2026-11-16/10-final-fortnight.png",
       "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
@@ -5820,6 +5841,62 @@
       "bytes": 66422,
       "sha256": "179e87bcdf01ec9b3e6934da1885278a822a0e6440808de2427ee16c4d2cb244",
       "import_path": "images/artifacts__dots-full-2026-11-15__current__11-duo-unfolded-workspace.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/desktop-calendar.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 80039,
+      "sha256": "401518fbe7383477d4733e647003d9546dc49ac3651932b8915cd65dd190248b",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__desktop-calendar.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/desktop-full.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 619278,
+      "sha256": "e37539d14df770187e654a466e0ec5efae72c31136cdbe2c8be413a900d75d3e",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__desktop-full.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/desktop-todo.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 79351,
+      "sha256": "14c62cd67e6e31eab0cebdea0cea3035c6b9b22c8aedd272e39e783cbe3a3422",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__desktop-todo.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/phone-calendar.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 43891,
+      "sha256": "4f89974c68db42de49c7d560d7bf2b68bc2e3d02c372546174c4c3df88b3dac8",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-calendar.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/phone-comparison.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 50655,
+      "sha256": "849d357290dc296fdeb7673e114fc25f8ebccf75aa54ac8f4e17284850fd1d3d",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-comparison.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/phone-full.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 495169,
+      "sha256": "d39e5f0ac186293a5f36a336829613e2cb2a80169f503d0c12f534cefed3c9b1",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-full.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/phone-pricing.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 50655,
+      "sha256": "849d357290dc296fdeb7673e114fc25f8ebccf75aa54ac8f4e17284850fd1d3d",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-pricing.png"
+    },
+    {
+      "path": "artifacts/duck-anydo-site-2026-11-19/phone-todo.png",
+      "category": "덕 소개 사이트·합성 제품 예시/실제 계정·native·GPT 연결 아님",
+      "bytes": 43277,
+      "sha256": "243e5e8f6ee169a772b25cb3faae67d56509a5fbf66685b33cdfc3965ce2a2dd",
+      "import_path": "images/artifacts__duck-anydo-site-2026-11-19__phone-todo.png"
     },
     {
       "path": "artifacts/duck-website-2026-11-13/desktop-demo.png",
