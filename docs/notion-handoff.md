@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-20 · 한국 시간 · 기능 코드 4dfedee · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-21 · 한국 시간 · 기능 코드 4dfedee · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 1. 덕은 어떤 서비스인가요
@@ -1515,6 +1515,14 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 매일 개발 정리
 
 
+##### 2026-11-21 — 당일 저장된 작업
+
+실제 정리: 03:28 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+이 실행 구간에 새로 저장된 작업이 없습니다. 이전 작업과 최신 수동 변경 기록은 유지합니다.
+
+
+
 ##### 2026-11-20 — 당일 저장된 작업
 
 실제 정리: 03:56 KST. 새 저장 작업 6개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -2963,6 +2971,7 @@ c8107ac Document separate service connections and explain heavy-use scenarios
 4dfedee Define regular monthly, annual, and beta pricing terms
 9d12043 Refresh handoff with beta and annual pricing evidence
 0e42846 Record live public site and beta pricing verification
+b8748c7 docs: daily project update [skip ci]
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
