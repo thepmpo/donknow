@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "bc1ba1e53099a15fc1dc19fe4abcd10109c1be30",
-  "assetCommit": "bc1ba1e53099a15fc1dc19fe4abcd10109c1be30",
-  "imageCount": 1571,
+  "codeCommit": "68b2e3c5d5b7d67c2af9446ab0072bff96ef1366",
+  "assetCommit": "68b2e3c5d5b7d67c2af9446ab0072bff96ef1366",
+  "imageCount": 1576,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -1935,6 +1935,41 @@
       "bytes": 36667,
       "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
       "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/admin-preview-2026-11-22/member-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 63533,
+      "sha256": "753ba0f24cd206b585b12e03d6aabdc578a4834253a9cb6cae6e82976aa8744d",
+      "import_path": "images/artifacts__admin-preview-2026-11-22__member-detail.png"
+    },
+    {
+      "path": "artifacts/admin-preview-2026-11-22/member-passes.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 48952,
+      "sha256": "54e5e13eea82840b214147cad8bd0d4985a28dc7558425c522538ecc3c0b5db5",
+      "import_path": "images/artifacts__admin-preview-2026-11-22__member-passes.png"
+    },
+    {
+      "path": "artifacts/admin-preview-2026-11-22/member-payments.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 49576,
+      "sha256": "118ffb294fa1d34ee72f19555123f6b979e46c89f8f278434bf246f6bba117a9",
+      "import_path": "images/artifacts__admin-preview-2026-11-22__member-payments.png"
+    },
+    {
+      "path": "artifacts/admin-preview-2026-11-22/members.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 81312,
+      "sha256": "749dad0ff9c36abfef1dd6dad8e87e3ac23a4f071faffee471b4c8c064184546",
+      "import_path": "images/artifacts__admin-preview-2026-11-22__members.png"
+    },
+    {
+      "path": "artifacts/admin-preview-2026-11-22/narrow.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40416,
+      "sha256": "e83054ddb31e6ba607a7bfe718e3924c52642f27b22231b9798855dd0838aeab",
+      "import_path": "images/artifacts__admin-preview-2026-11-22__narrow.png"
     },
     {
       "path": "artifacts/assistant-agent-2026-11-15/current/01-ordinary-memory-opt-in.png",
