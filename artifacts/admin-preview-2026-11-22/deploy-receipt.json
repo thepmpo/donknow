@@ -1,0 +1,12 @@
+{
+  "service": "duckduck-test",
+  "plan": "free",
+  "deployId": "dep-dc1a77mtlv9c73bhn850",
+  "status": "live",
+  "finishedAt": "2026-11-22T08:12:03.349301Z",
+  "release": "1738993a6cd55f791b4e68cd1fcc0277be6c9106",
+  "url": "https://duckduck-test.onrender.com/admin-preview",
+  "publicPreviewRendered": true,
+  "publicHealthReleaseVerified": true,
+  "scope": "Synthetic public layout preview only. No live member/billing API, authentication/authorization grants, or real account changes."
+}
