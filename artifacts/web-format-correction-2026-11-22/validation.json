@@ -1,0 +1,15 @@
+{
+  "unit": {
+    "tests": 440,
+    "passed": 439,
+    "failed": 0,
+    "skipped": 1
+  },
+  "syntaxFiles": 110,
+  "typecheck": true,
+  "webExport": true,
+  "browserWorkspace": true,
+  "realIsolatedServer": true,
+  "visualReferenceComparison": true,
+  "scope": "Production web build, headless Chromium with synthetic visual fixtures, and real local isolated Node/SQLite. Not real provider grants or model calls."
+}

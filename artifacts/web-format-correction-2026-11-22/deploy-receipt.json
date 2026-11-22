@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-11-22T07:42:24.556143+00:00",
+  "service": "duckduck-test",
+  "plan": "free",
+  "deployId": "dep-dc19os6q1p3s73fjveeg",
+  "status": "live",
+  "finishedAt": "2026-11-22T07:41:36.993Z",
+  "release": "0f120e99f4054b09fabe4389373023d310c950fb",
+  "publicApp": "https://duckduck-test.onrender.com/app",
+  "anonymousHealth": {
+    "ok": true,
+    "release": "0f120e99f4054b09fabe4389373023d310c950fb"
+  },
+  "anonymousLoginEntryVerified": true,
+  "verificationMethod": "TinyFish fresh anonymous fetch after deploy; local headless Chromium rendered workspace and isolated actual server tests. No production account sign-in.",
+  "knownLimitation": "Existing ai-connection-probe returns403 in runtime logs. This layout release does not fix or claim model connectivity. No keys, budgets, permissions, or provider accounts changed."
+}
