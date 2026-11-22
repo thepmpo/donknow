@@ -1,0 +1,10 @@
+
+> duckduck-mobile@0.1.0 test:e2e
+> node e2e/app.mjs
+
+PASS: actual Expo web bundle; five tabs, native PanResponder swipe + three-second countdown and removal, log restore, month-bounded calendar, hidden chat utilities and no automatic Todo fallback, service disclosure, assistant preview/explicit confirmation/history plus consent/source-backed AI proposals (fixture), signup, cloud API create and cookie reload, logout, tenant isolation, session expiry clears modal, demo/cloud separation, optimistic completion and queued undo before acknowledgement, stale acknowledgement ignored, failed writes rollback, retry recovery, email verification, password reset/relogin, memo bullets/continuation, calendar memo reopen, hidden-but-working scroll, legacy-server memo guard, reminder persistence, missing OAuth setup, Google opt-in completion sync and connection diagnosis (fixture), personal JSON download, Google Tasks list selection/reference-only results (fixture), Apple Reminders web guidance, explicit Todo share message, account deletion, responsive widths
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice

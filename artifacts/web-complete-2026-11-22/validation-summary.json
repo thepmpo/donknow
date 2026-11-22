@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "scope": "PC web implementation and real local backend; controlled provider/model fixtures; no live grants/model generation",
+  "tests": {
+    "unitPassed": 439,
+    "unitSkippedExisting": 1,
+    "unitFailed": 0,
+    "webTypecheck": "passed",
+    "webExport": "passed",
+    "realApiDesktop": "passed",
+    "oauthPopupWiring": "passed",
+    "desktopBriefingTodoCalendarChat": "passed",
+    "webSignupStorageConsentSharingExport": "passed",
+    "scheduledBriefings": "passed",
+    "calendarWorkspace": "passed",
+    "sharedCompactDuoGeometry": "passed",
+    "iosJavaScriptExport": "passed (compatibility only, no IPA)"
+  },
+  "pricing": "published prices unchanged",
+  "paidResourcesCreated": false,
+  "liveProviderAuthPerformed": false,
+  "realModelCallsPerformed": false
+}

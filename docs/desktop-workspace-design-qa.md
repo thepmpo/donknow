@@ -1,3 +1,5 @@
+> 후속 검수: [전체 웹 연결](web-complete-2026-11-22.md). 실제 로컬 서버 저장·설정·파일·내보내기와 웹 OAuth 팝업 경로, 기존 예약/Calendar/공유 기하 회귀가 통과했다. 실계정 OAuth·실제 모델 응답/실기기 확인은 별개다.
+
 # PC 웹 시각·동작 QA
 
 final result: passed (targeted desktop implementation, local headless Chromium)

@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "scope": "Browser authorization wiring with fully intercepted provider pages/API. No real OAuth grants, service accounts, tokens or provider network calls.",
+  "requests": [
+    {
+      "provider": "google",
+      "features": [
+        "calendar",
+        "calendarWrite",
+        "gmail",
+        "drive",
+        "driveContent",
+        "tasks",
+        "tasksWrite"
+      ],
+      "mode": "add"
+    },
+    {
+      "provider": "slack",
+      "features": [
+        "channels",
+        "messages"
+      ]
+    },
+    {
+      "provider": "notion",
+      "features": [
+        "pages"
+      ]
+    },
+    {
+      "provider": "google",
+      "features": [
+        "calendar",
+        "tasks"
+      ],
+      "mode": "reauthorize"
+    },
+    {
+      "provider": "google",
+      "features": [
+        "calendar",
+        "tasks"
+      ],
+      "mode": "reauthorize"
+    }
+  ],
+  "errors": []
+}

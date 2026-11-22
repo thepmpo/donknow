@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {todoSource} from './todo-organization';
 import {Image,ScrollView,StyleSheet,Text,View} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -8,14 +8,17 @@ import {colors} from './theme';
 import {dateKey,type Todo} from './domain';
 import type {ScheduledMessage} from './useAutomations';
 import type {TodoStore} from './useTodos';
-export function DesktopBriefing({store,messages,error,onChat,onOpenTodos,onOpenLog,onEdit}:{store:TodoStore;messages:ScheduledMessage[];error?:string;onChat:()=>void;onOpenTodos:()=>void;onOpenLog:()=>void;onEdit:(todo:Todo)=>void}){
- const latest=messages.at(-1),today=dateKey(new Date()),due=store.visible.filter(t=>t.dueDate&&t.dueDate<=today);
+export function DesktopBriefing({store,messages,error,loading=false,onRefresh,onChat,onOpenTodos,onOpenLog,onEdit}:{store:TodoStore;messages:ScheduledMessage[];error?:string;loading?:boolean;onRefresh?:()=>Promise<void>;onChat:()=>void;onOpenTodos:()=>void;onOpenLog:()=>void;onEdit:(todo:Todo)=>void}){
+ const [limit,setLimit]=useState(5),[refreshing,setRefreshing]=useState(false);
+ useEffect(()=>setLimit(5),[store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo']);
+ const received=messages.slice(-limit).reverse(),today=dateKey(new Date()),due=store.visible.filter(t=>t.dueDate&&t.dueDate<=today);
  return <ScrollView testID="desktop-briefing" contentContainerStyle={s.content}>
-  <View style={s.heading}><View style={{gap:10}}><Text style={s.date}>{new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'})}</Text><Text accessibilityRole="header" style={s.title}>브리핑</Text></View><Image source={require('../assets/duck-mark.png')} style={s.mark}/></View>
+  <View style={s.heading}><View style={{gap:10}}><Text style={s.date}>{new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'})}</Text><Text accessibilityRole="header" style={s.title}>브리핑</Text></View><Pressable accessibilityRole="button" accessibilityLabel="브리핑 새로고침" disabled={refreshing||!onRefresh} onPress={()=>{setRefreshing(true);void onRefresh?.().finally(()=>setRefreshing(false));}} style={{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center'}}><Ionicons name="refresh-outline" size={20} color={colors.blueText}/></Pressable></View>
   <Text style={s.intro}>오늘 챙길 일을 한곳에 모았어요. 어떻게 할지 골라보세요.</Text>
   {!!error&&<Text accessibilityRole="alert" style={s.note}>{error}</Text>}
-  {store.writeReports.map(report=><Text key={report.id} accessibilityRole="alert" style={s.note}>{report.text}</Text>)}
-  {latest?<BriefingContent store={store} message={latest} onOpenTodos={onOpenTodos} onOpenLog={onOpenLog}/>:<View style={s.empty}><Text style={s.section}>아직 받은 브리핑이 없어요.</Text><Text style={s.note}>브리핑이 도착하면 여기에서 확인하고 할 일이나 일정으로 이어갈 수 있어요.</Text></View>}
+  {store.writeReports.map(report=><View key={report.id} testID="desktop-write-report" style={{gap:8}}><Text accessibilityRole="alert" style={s.note}>{report.text}</Text>{report.canCheck&&<Pressable accessibilityRole="button" accessibilityLabel="저장 결과 확인" onPress={()=>void store.checkWrite(report.id)} style={s.action}><Text style={s.actionText}>저장 결과 확인</Text></Pressable>}</View>)}
+  {received.length?received.map(message=><View key={message.id} style={s.received}><BriefingContent store={store} message={message} onOpenTodos={onOpenTodos} onOpenLog={onOpenLog}/></View>):<View style={s.empty}><Text style={s.section}>{loading?'브리핑을 확인하고 있어요.':error?'브리핑 연결을 다시 확인해주세요.':'아직 받은 브리핑이 없어요.'}</Text><Text style={s.note}>브리핑이 도착하면 여기에서 확인하고 할 일이나 일정으로 이어갈 수 있어요.</Text></View>}
+  {messages.length>limit&&<Pressable accessibilityRole="button" onPress={()=>setLimit(v=>v+5)} style={s.action}><Text style={s.actionText}>이전 브리핑 더 보기</Text></Pressable>}
   {!!due.length&&<View style={s.taskList}><Text style={s.section}>오늘 챙길 할 일</Text>{due.map(todo=><View key={todo.id} style={s.row}><Pressable accessibilityRole="checkbox" accessibilityLabel={'완료: '+todo.title} accessibilityState={{checked:!!store.pending[todo.id]}} disabled={!!todo.saveState} onPress={()=>void store.update(todo.id,{done:!todo.done})} style={s.checkTarget}><Ionicons name={store.pending[todo.id]?'checkbox':'square-outline'} size={22} color={store.pending[todo.id]?colors.blueText:colors.subtle}/></Pressable><View style={{flex:1,gap:8}}><Pressable accessibilityRole="button" accessibilityLabel={'브리핑 할 일 열기: '+todo.title} onPress={()=>onEdit(todo)}><Text style={s.taskTitle}>{todo.title}</Text></Pressable><Text style={s.meta}>{todoSource(todo).label} · {todo.dueDate===today?'오늘':todo.dueDate}{todo.dueTime?' · '+todo.dueTime:''}</Text>{!!todo.notes&&<Text numberOfLines={3} style={s.note}>{todo.notes}</Text>}<View style={s.actions}><Pressable accessibilityRole="button" onPress={()=>onEdit(todo)} style={s.action}><Ionicons name="create-outline" size={14} color={colors.blueText}/><Text style={s.actionText}>내용 보기</Text></Pressable><Pressable accessibilityRole="button" onPress={onOpenTodos} style={s.action}><Ionicons name="list-outline" size={14} color={colors.blueText}/><Text style={s.actionText}>Todo에서 보기</Text></Pressable></View></View></View>)}</View>}
   <Pressable accessibilityRole="button" accessibilityLabel="덕과 대화하기" onPress={onChat} style={s.chat}><Ionicons name="chatbubble-outline" size={18} color={colors.blueText}/><Text style={s.chatText}>덕과 대화하기</Text><Ionicons name="arrow-forward" size={16} color={colors.blueText}/></Pressable>
  </ScrollView>;

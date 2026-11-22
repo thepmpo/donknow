@@ -137,6 +137,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
       let reminderAt: string | null = null;
       if (alarm) { if (!alarmDay || !/^([01]\d|2[0-3]):[0-5]\d$/.test(alarmTime)) throw new Error('예정일과 알림 시간을 확인해주세요.'); reminderAt = todoReminderInstant(alarmDay,alarmTime,deviceZone(),todo?.reminderAt); if (Date.parse(reminderAt) <= Date.now() && reminderAt !== todo?.reminderAt) throw new Error('알림은 미래 시간으로 정해주세요.'); }
       const draft: Draft = validateDraft({ title, notes, dueDate: date,...(sourceTimeEditable?{dueTime:date?dueTime:null}:{}), reminderAt, category: todo?.category ?? '일상' });
+      if(draft.notes)await store.prepareSave(draft);
       const ok = store.beginSave(draft,todo?.id);
       if (ok) onClose(); else setError('저장하지 못했어요. 연결을 확인하고 다시 시도해주세요.');
     } catch (e) { setError(e instanceof Error ? e.message : '입력 내용을 확인해주세요.'); }

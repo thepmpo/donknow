@@ -152,6 +152,7 @@ export function useTodos() {
   }
   /** The editor closes after accepting the local change; the store, rather than
    * the unmounted form, owns reconciliation and failure messages. */
+  async function prepareSave(draft:Draft){const repository=repo.current,version=generation.current;if(!repository)throw Error('연결을 먼저 확인해주세요.');await repository.prepare?.(draft);if(version!==generation.current)throw Error('계정이나 연결이 바뀌었어요. 다시 확인해주세요.');}
   function beginSave(draft:Draft,id?:string){
     if(!repo.current||connectingRef.current||loading&&!snapshotReady.current||busy.current.has(id??'create')||id&&todosRef.current.find(t=>t.id===id)?.saveState==='checking')return false;
     if(id&&!todosRef.current.some(t=>t.id===id))return false;
@@ -347,6 +348,6 @@ export function useTodos() {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

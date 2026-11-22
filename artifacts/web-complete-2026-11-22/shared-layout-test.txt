@@ -1,0 +1,10 @@
+
+> duckduck-mobile@0.1.0 test:duo
+> node e2e/duo-layout.mjs
+
+PASS: press-only lens/expansion, vertical and horizontal drag preview/release/outside cancel, keyboard activation, floating capsule 320/390/430 and safe bottom34/160% labels; selection material replaces blue fill, explicit neutral fallback/opaque states, unclipped glass host; inset hairline centered in actual pane gutter, decorative/noninteractive, fixed through scroll/tab changes, absent in portrait/folded/ordinary layouts and occupied hinge; 28pt icons/52pt targets/64pt bar, actual selection movement/rapid changes/reduced motion, explicit glass fallback/forced-colors, physical camera centerline outside body; fixed Calendar + active Todo, right-only tab changes, portrait current screen, real back, draft/month/scroll node preservation, safe gaps, short-height access and no startup fallback flash; native geometry/demo fixture only
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice

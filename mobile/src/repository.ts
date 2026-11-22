@@ -6,6 +6,7 @@ export const CONNECTION_KEY = 'duckduck.mobile.connection.v1';
 const DEMO_KEY = 'duckduck.mobile.demo.todos.v1';
 export type Patch = Partial<Pick<Todo, 'title' | 'done' | 'dueDate' | 'dueTime' | 'reminderAt' | 'notes'>>;
 export interface Repository {
+  prepare?(draft: Draft): Promise<void>;
   list(): Promise<Todo[]>;
   create(draft: Draft,requestKey?:string): Promise<Todo>;
   receipt?(key:string):Promise<Todo|null>;
@@ -26,6 +27,7 @@ export function createRepository(connection: Connection): Repository {
       notesSupported = true;
     }
     return {
+      prepare: async draft => { validateDraft(draft); if(draft.notes) await requireNotes(); },
       list: async () => parseTodos(await call()),
       receipt:async key=>{const r=await request(baseUrl,'/api/todo-writes/'+encodeURIComponent(key)) as {todo:unknown};return r.todo?parseTodos([r.todo])[0]:null;},
       get:async id=>parseTodos([await call('/'+encodeURIComponent(id))])[0],

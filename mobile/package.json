@@ -54,7 +54,9 @@
     "test:calendar-sheet": "node e2e/calendar-sheet-motion.mjs",
     "test:integration-stability": "node e2e/integration-stability.mjs",
     "check:native": "node ../scripts/check-native-prebuild.mjs",
-    "test:desktop": "node e2e/desktop-workspace.mjs"
+    "test:desktop": "node e2e/desktop-workspace.mjs",
+    "test:web-connected": "node e2e/web-connected.mjs",
+    "test:web-oauth": "node e2e/web-oauth.mjs"
   },
   "private": true
 }
