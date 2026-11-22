@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "26dfd2f069ec7011ae552c503084ef25041fbf73",
-  "assetCommit": "b06f6fff63f821beaa8b7dd74507ed6688db62c3",
-  "imageCount": 1602,
+  "codeCommit": "20f0a3befef1c3079717fc3cdaa0dc02e4fee8ab",
+  "assetCommit": "20f0a3befef1c3079717fc3cdaa0dc02e4fee8ab",
+  "imageCount": 1606,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -9411,6 +9411,34 @@
       "bytes": 31467,
       "sha256": "879d7c4742bb4043bcd358c6c4f16007f84cafb7082f7dc0ed9f58654f069c0d",
       "import_path": "images/artifacts__scheduled-messages-2026-11-13__03-small-weather-fixture.png"
+    },
+    {
+      "path": "artifacts/signup-legal-2026-11-22/saved-agreements.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 86381,
+      "sha256": "dd15f42fe59585789138f19a311de4b7ed36f843f50094e3709b4cf7636aab5a",
+      "import_path": "images/artifacts__signup-legal-2026-11-22__saved-agreements.png"
+    },
+    {
+      "path": "artifacts/signup-legal-2026-11-22/signup-mobile.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43527,
+      "sha256": "2701b1b92806ba61a8efbe079b7bec464051c594bcdd48c24df99e13fbf77c07",
+      "import_path": "images/artifacts__signup-legal-2026-11-22__signup-mobile.png"
+    },
+    {
+      "path": "artifacts/signup-legal-2026-11-22/signup-ready.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 58927,
+      "sha256": "27688e40514468e3ba4a64f88fbf5c8b0334076bd5d024a35f4ceaf81735ab5e",
+      "import_path": "images/artifacts__signup-legal-2026-11-22__signup-ready.png"
+    },
+    {
+      "path": "artifacts/signup-legal-2026-11-22/signup-unchecked.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 61230,
+      "sha256": "141503b2ef627c881235f7c3905780f70b30df0bcf6a88c7e88b30076850ec0b",
+      "import_path": "images/artifacts__signup-legal-2026-11-22__signup-unchecked.png"
     },
     {
       "path": "artifacts/startup-session-2026-11-16/01-before-session.png",
