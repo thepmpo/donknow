@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "source": "Exported Expo app, headless Chromium, synthetic account and API responses; no production/model calls",
+  "flows": [
+    "briefing to Calendar preview and one confirm",
+    "chat send and response",
+    "briefing display",
+    "existing todo update",
+    "chat draft survives overview switching",
+    "Todo/Calendar/ME navigation",
+    "1100-1920 overflow",
+    "narrow web top5tabs",
+    "dark theme"
+  ],
+  "writes": [
+    {
+      "path": "/api/assistant/messages/briefing-1/items/1111111111111111111111111111111111111111111111111111111111111111",
+      "body": {
+        "action": "todo",
+        "args": {
+          "title": "디자인 피드백 미팅 잡기",
+          "notes": "내일 오후 가능한 시간을 확인해보세요.",
+          "dueDate": null
+        }
+      }
+    },
+    {
+      "path": "/api/assistant/messages/briefing-1/items/1111111111111111111111111111111111111111111111111111111111111111",
+      "body": {
+        "action": "calendar",
+        "args": {
+          "title": "디자인 피드백 미팅 잡기",
+          "location": "",
+          "notes": "내일 오후 가능한 시간을 확인해보세요.",
+          "allDay": false,
+          "start": "2026-11-22T00:00:00.000Z",
+          "end": "2026-11-22T01:00:00.000Z",
+          "timeZone": "Asia/Seoul",
+          "calendarId": "primary"
+        }
+      }
+    },
+    {
+      "path": "/api/assistant/actions/00000000-0000-4000-8000-000000000001/confirm",
+      "body": {
+        "confirmation": true
+      }
+    },
+    {
+      "path": "/api/todos/t1",
+      "body": {
+        "done": true
+      }
+    },
+    {
+      "path": "/api/assistant/chat",
+      "body": {
+        "message": "작성 중인 대화를 유지해요",
+        "providers": [],
+        "consent": true,
+        "requestId": "msg-mwrizyoj-ixojuf4czlf-gsi09o0bj8p",
+        "background": false,
+        "retry": false,
+        "attachments": [],
+        "history": [
+          {
+            "role": "assistant",
+            "text": "오늘의 브리핑\n합성 자료로 화면을 검증합니다."
+          }
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

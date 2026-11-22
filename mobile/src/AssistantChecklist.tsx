@@ -8,7 +8,7 @@ import {NotesField} from './NotesField';
 import {colors,typography} from './theme';
 import type {AssistantProposal} from './useAssistant';
 import type {ChecklistEntry} from './assistant-checklist';
-import type {Todo} from './domain';
+import {dateKey,type Todo} from './domain';
 export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onExclude,onOpenTodos,onOpenLog,onCalendar,compact=false,sourceLabels=[],sourceLinks}:{sourceLinks?:React.ReactNode;onCalendar?:()=>void;compact?:boolean;sourceLabels?:string[];proposal:AssistantProposal;number:number;busy:boolean;entry:ChecklistEntry;todo?:Todo;onAction:(value:AssistantProposal,done:boolean)=>Promise<void>;onExclude:(excluded:boolean)=>void;onOpenTodos:()=>void;onOpenLog:()=>void}){
  const desktop=useDesktopPresentation();
  const [menu,setMenu]=useState(false),[expanded,setExpanded]=useState(false);
@@ -33,6 +33,29 @@ export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onE
  }),[offset]);
  useEffect(()=>()=>offset.stopAnimation(),[offset]);
  const label='할 일 후보 '+number;
+ if(desktop&&compact)return <View testID={'assistant-checklist-'+number} style={web.card}>
+  <View style={web.row}>
+   <Pressable accessibilityRole="checkbox" accessibilityLabel={label+(excluded?' 제외 취소':done?' 완료 취소':' 완료 표시')} accessibilityState={{checked:done&&!excluded,disabled}} disabled={disabled} onPress={()=>press(()=>excluded?onExclude(false):act(!done))} style={web.check}>
+    {entry.busy?<ActivityIndicator size="small" color={colors.blueText}/>:<Ionicons name={excluded?'close-circle-outline':done?'checkbox-outline':'square-outline'} size={22} color={done?colors.blueText:colors.subtle}/>}
+   </Pressable>
+   <View style={web.body}>
+    <View style={web.titleRow}><Text style={[web.title,(done||excluded)&&s.mutedTitle]}>{String(linked?.title??entry.action?.args.title??value.args.title??'')}</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 더보기'} accessibilityState={{expanded:menu}} disabled={disabled} onPress={()=>setMenu(v=>!v)} style={web.more}><Ionicons name="ellipsis-horizontal" size={16} color={colors.subtle}/></Pressable></View>
+    <View style={web.metadata}>{sourceLinks??<Text style={web.meta}>{sourceLabels.join(' · ')||'덕에서 정리한 일'}</Text>}{!!value.args.dueDate&&<Text style={web.meta}> · {value.args.dueDate===dateKey(new Date())?'오늘까지':String(value.args.dueDate)}</Text>}</View>
+    {!!value.args.notes&&!excluded&&<Text selectable style={web.note}>{expanded?String(value.args.notes):String(value.args.notes).slice(0,160)}{!expanded&&String(value.args.notes).length>160?'…':''}</Text>}
+    {String(value.args.notes??'').length>160&&<Pressable accessibilityRole="button" accessibilityLabel={label+' 내용 '+(expanded?'접기':'더 보기')} onPress={()=>setExpanded(v=>!v)} style={s.control}><Text style={web.meta}>{expanded?'내용 접기':'내용 더 보기'}</Text></Pressable>}
+    {editing&&!linked&&!excluded&&!locked&&<View style={{gap:8}}><TextInput accessibilityLabel={label+' 제목'} value={String(value.args.title??'')} onChangeText={v=>set('title',v)} editable={!disabled} maxLength={120} multiline style={s.input}/><DateField value={typeof value.args.dueDate==='string'?value.args.dueDate:null} onChange={v=>set('dueDate',v)}/><NotesField label={label+' 메모'} value={String(value.args.notes??'')} onChange={v=>set('notes',v)}/></View>}
+    <View style={web.actions}>
+     {excluded?<><Text style={web.meta}>채팅에서 제외됨</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 다시 포함'} disabled={disabled} onPress={()=>onExclude(false)} style={web.action}><Text style={web.actionText}>되돌리기</Text></Pressable></>:<>
+      {linked?<Pressable accessibilityRole="button" accessibilityLabel={label+(done?' log 보기':' Todo 보기')} disabled={disabled} onPress={done?onOpenLog:onOpenTodos} style={web.action}><Text style={web.actionText}>{done?'완료됨 · log 보기':'Todo에 추가됨 · 보기'}</Text></Pressable>:<Pressable accessibilityRole="button" accessibilityLabel={label+' Todo에 추가'} disabled={disabled||!String(value.args.title??'').trim()} onPress={()=>press(()=>act(false))} style={web.action}><Ionicons name="add" size={14} color={colors.blueText}/><Text style={web.actionText}>할 일로</Text></Pressable>}
+      {onCalendar&&!done&&(entry.calendarAdded?<Text style={web.meta}>캘린더에 추가됨</Text>:<Pressable accessibilityRole="button" accessibilityLabel={label+' 캘린더로 이동'} disabled={disabled} onPress={()=>press(onCalendar)} style={web.action}><Ionicons name="calendar-outline" size={14} color={colors.blueText}/><Text style={web.actionText}>일정으로</Text></Pressable>)}
+      {!done&&!linked&&<Pressable accessibilityRole="button" accessibilityLabel={label+' 대화에서 마치기'} disabled={disabled} onPress={()=>press(()=>act(true))} style={web.finish}><Text style={web.meta}>대화에서 마치기</Text></Pressable>}
+     </>}
+    </View>
+    {menu&&!linked&&!excluded&&!locked&&<View style={web.actions}><Pressable accessibilityRole="button" accessibilityLabel={label+' 수정'} disabled={disabled} onPress={()=>setEditing(v=>!v)} style={web.action}><Text style={web.actionText}>수정</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel={label+' 할 일 아님'} disabled={disabled} onPress={()=>press(exclude)} style={web.action}><Text style={web.meta}>제외</Text></Pressable></View>}
+    {!!entry.error&&<View><Text accessibilityRole="alert" style={s.error}>{entry.error}</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 저장 상태 다시 확인'} disabled={disabled} onPress={()=>press(()=>act(lastIntent.current))} style={web.action}><Text style={web.actionText}>다시 확인</Text></Pressable></View>}
+   </View>
+  </View>
+ </View>;
  return <View testID={'assistant-checklist-'+number} style={[s.wrap,compact&&{borderRadius:0,backgroundColor:'transparent'}]}>
   <View style={s.behind} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Text style={s.swipeLabel}>Todo에 추가</Text><Text style={s.swipeLabel}>{onCalendar?'캘린더':'제외 ×'}</Text></View>
   <Animated.View testID={'assistant-checklist-row-'+number} {...responder.panHandlers} style={[s.card,desktop&&{backgroundColor:colors.bg},compact&&{borderRadius:0,padding:0,paddingBottom:8},{transform:[{translateX:offset}]}]}>
@@ -58,3 +81,5 @@ export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onE
  </View>;
 }
 const s=StyleSheet.create({wrap:{borderRadius:20,overflow:'hidden',backgroundColor:colors.grouped},behind:{position:'absolute',top:0,bottom:0,left:0,right:0,flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingHorizontal:12},swipeLabel:{...typography.caption,color:colors.muted},card:{backgroundColor:colors.surface,borderRadius:20,padding:8,gap:2},row:{flexDirection:'row',alignItems:'center',gap:4},title:{...typography.body,color:colors.text,flex:1},mutedTitle:{textDecorationLine:'line-through',color:colors.muted},cancelBox:{width:20,height:20,borderRadius:3,borderWidth:1.5,borderColor:colors.muted,alignItems:'center',justifyContent:'center'},control:{minWidth:44,minHeight:44,paddingHorizontal:8,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:4},actions:{flexDirection:'row',alignItems:'center',justifyContent:'flex-end',gap:4,flexWrap:'wrap'},meta:{...typography.caption,color:colors.muted},link:{...typography.detail,color:colors.blueText,fontWeight:'500'},input:{minHeight:44,...typography.body,color:colors.text,padding:8,borderBottomWidth:1,borderColor:colors.line},error:{...typography.caption,color:colors.danger}});
+
+const web=StyleSheet.create({card:{paddingTop:13,paddingBottom:14,borderBottomWidth:1,borderColor:colors.line},row:{flexDirection:'row',gap:0,alignItems:'flex-start'},check:{width:32,minHeight:44,marginTop:-10,marginLeft:-7,marginRight:7,alignItems:'center',justifyContent:'center'},body:{flex:1,minWidth:0,gap:4},titleRow:{flexDirection:'row',gap:8,alignItems:'flex-start'},title:{flex:1,fontSize:13,lineHeight:21,fontWeight:'600',color:colors.text},more:{minHeight:44,minWidth:44,marginTop:-11,marginBottom:-11,alignItems:'center',justifyContent:'center'},metadata:{minHeight:18,flexDirection:'row',alignItems:'center',flexWrap:'wrap',gap:0},meta:{fontSize:10,lineHeight:17,color:colors.subtle},note:{fontSize:11,lineHeight:20,color:colors.muted,marginTop:2},actions:{flexDirection:'row',alignItems:'center',flexWrap:'wrap',gap:6,marginTop:5},action:{minHeight:44,paddingHorizontal:9,flexDirection:'row',alignItems:'center',gap:4,borderRadius:5,backgroundColor:colors.surface},actionText:{fontSize:11,color:colors.blueText},finish:{minHeight:44,paddingHorizontal:8,justifyContent:'center'}});

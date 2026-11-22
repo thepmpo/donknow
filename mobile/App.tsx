@@ -39,7 +39,7 @@ function ShellContent() {
   const {scene,ready}=useDuoScene();
   useEffect(()=>{if(ready)return configureKeyboardAccessory(duo);},[duo,ready]);
   const split=!!scene?.panes;
-  const desktop=Platform.OS==='web'&&width>=1100&&!duo;
+  const desktop=Platform.OS==='web'&&!duo;
   const [entry,setEntry]=useState<AssistantChatRequest|null>(null);
   const [tab, setTab] = useState<AppTab>(desktop?'duck':'todos'),[unread,setUnread]=useState(0),[todoTopRequest,setTodoTopRequest]=useState(0);
   const [settings, setSettings] = useState(false);

@@ -1,3 +1,46 @@
+# 2026-11-22 — 웹사이트 상단 포맷 정정 QA
+
+source visual truth: `artifacts/web-format-correction-2026-11-22/landing-source.png`
+implementation screenshot: `artifacts/web-format-correction-2026-11-22/format-matched-content.png`
+viewport:1440×1000 CSSpx for app; source1440×1400 to expose full example. deviceScaleFactor1.
+source pixels:1128×699;implementation1128×952. Both frames1128 CSSpx. No density scaling. Top699px crops compared; source landing marketing copy is outside frame and intentionally excluded.
+state:light,브리핑,three equivalent synthetic items, same frontend source branch. No production account/model calls.
+full-view evidence:`comparison.png`;focused typography/row/spacing evidence:`focused-comparison.png` in same directory. Both combined inputs were opened and visually compared.
+
+## Findings and iteration history
+
+- P1 earlier:3-column shell surrounded the existing mobile message body. Large duplicated title/group/hint and oversized item actions changed the reading hierarchy. Replaced with web-specific compact checklist rows and kept original action handlers/confirmation boundaries.
+- P2 earlier:frame expanded1392px at1440 instead of source1128. Capped to1128 and retained171/245 tracks and30px content padding.
+- P2 comparison iteration1:source links appeared again below metadata, increasing row height and pushing the third item below source fold. Merged source/date into one metadata line, eliminated duplicate labels, reduced card gaps/padding, captured again. Final focused comparison aligns the first3 titles/row divisions closely; all3 rows are visible within the same upper region.
+- P2 earlier:small browser fell back to mobile app bottom tabs. Web now keeps its own workspace at320–1920px, with top horizontal navigation below760 and hidden aside below1100. Tested no horizontal overflow after responsive layout settles.
+
+## Required fidelity surfaces
+
+- Fonts/typography:system sans stack consistent with site's fallback;25px heading,13px task title,10px metadata,11px description. Native typography unchanged. Actual dynamic dates/strings differ from fixed landing copy.
+- Spacing/layout rhythm:54px header,171px menu,245px aside,1128px frame,30px content,16px outer corner;compact row hierarchy matches source. Actual app uses available height and has extra service/ME controls, so screenshot height differs intentionally.
+- Colors/tokens:scoped website light palette/#eaf1ff selection/#e9edf2 divider, corresponding readable dark palette. No global native color replacement.
+- Image/asset fidelity:same existing duck PNG reused at source size. Standard Ionicons provide semantic icons;no new placeholder logo/custom illustration. Icon-family/checkbox-corner differences are P3 polish, not a new design direction.
+- Copy/content:source-aligned synthetic titles/notes compare row layout. Real account mode uses actual messages and provenance, with clickable sources, separate Todo states, actual day/tasks and unread count;no fake scheduled agenda. Original briefing text remains expandable. Todo/Calendar/chat/service/settings actions retain existing API/permission behavior.
+
+## Primary interactions and console
+
+Actual exported web in headless Chromium:briefing refresh failure retains messages;Todo transfer;Calendar preview without write thenone explicit confirmation;completion PATCH;new editor;chat draft preservation andsend/reply fixture;5 menus;320/390/760/900/1024/1100/1280/1440/1920 overflow;dark/empty/401. Browser pageerrors=[]. Actual isolated Node/SQLite server validates signup/session/Todo CRUD/reload/log/restore/behavior/upload/export/logout/account isolation. No shared cloud desktop tool was exposed;these are project browser-runner captures and interactions, not a claimed visible shared desktop session.
+
+## Implementation checklist
+
+- [x] Source and rendered target opened in combined full/focused images.
+- [x] P1/P2 fixes recaptured and compared.
+- [x] Core working behavior preserved/tested.
+- [x] Pricing/native/Duo/backend budgets unchanged.
+
+Follow-up P3:source-style icon family and subtle checkbox corner refinement. Actual additional product controls/data/height are intentional.
+
+final result: passed
+
+---
+
+## Earlier QA retained for history
+
 # Current QA — approved fortnight and daily calendar
 
 final result: passed
