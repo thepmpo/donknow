@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "20f0a3befef1c3079717fc3cdaa0dc02e4fee8ab",
-  "assetCommit": "20f0a3befef1c3079717fc3cdaa0dc02e4fee8ab",
-  "imageCount": 1606,
+  "codeCommit": "4b207856fe1a1fa770933b2cf32a33025fe471bd",
+  "assetCommit": "4b207856fe1a1fa770933b2cf32a33025fe471bd",
+  "imageCount": 1610,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -8711,6 +8711,34 @@
       "bytes": 137266,
       "sha256": "108db53c7dee5028aa39c2e147e46df6e1f75e523b535aecdcdf4a89daaee73d",
       "import_path": "images/artifacts__overview.png"
+    },
+    {
+      "path": "artifacts/password-fields-2026-11-22/mismatch-desktop.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 63637,
+      "sha256": "7d4b615e3f8acedd5936c0098042741bfb40bfd22c558ed1fb231157186d8227",
+      "import_path": "images/artifacts__password-fields-2026-11-22__mismatch-desktop.png"
+    },
+    {
+      "path": "artifacts/password-fields-2026-11-22/mismatch-mobile.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 39997,
+      "sha256": "237b1c93798cd3f75660e4ddc2a0663e7b03d91064bc1616b0b7ec024ed9caa3",
+      "import_path": "images/artifacts__password-fields-2026-11-22__mismatch-mobile.png"
+    },
+    {
+      "path": "artifacts/password-fields-2026-11-22/reset-mismatch.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 48205,
+      "sha256": "a049c82395266d7ea963ae7eb2eca2ebb501b291947ab2590295db28663a3080",
+      "import_path": "images/artifacts__password-fields-2026-11-22__reset-mismatch.png"
+    },
+    {
+      "path": "artifacts/password-fields-2026-11-22/weak-password.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 64294,
+      "sha256": "eba2dbd598006f8521a2afc40e42614b3ad6a4c6ed6de8064156223d440ff314",
+      "import_path": "images/artifacts__password-fields-2026-11-22__weak-password.png"
     },
     {
       "path": "artifacts/polish-overview.png",
