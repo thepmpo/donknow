@@ -10,7 +10,7 @@
     "meaning": "Domains read is not permitted; sending-only key may be valid. Does not establish delivery rejection cause."
   },
   "mailDeliveryResolved": false,
-  "pending": "User reproduction after refreshed diagnostic release; no delivery attempt initiated by agent.",
+  "pending": "User-owned sender domain/DNS details or appropriate alternate mail account setup; current sending-only key cannot list or register domains.",
   "validation": {
     "targetedPassed": 11,
     "tests": 447,
@@ -18,5 +18,11 @@
     "failed": 0,
     "existingSkipped": 1,
     "syntaxFiles": 115
+  },
+  "confirmedDeliveryRejection": {
+    "timestamp": "2026-11-22T08:57:33.622685055Z",
+    "status": 403,
+    "kind": "testing-recipient-restricted",
+    "source": "Production mail-delivery-failure log and user reported matching sanitized error"
   }
 }
