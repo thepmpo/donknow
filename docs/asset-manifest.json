@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "a636f59a66432ac86eb37d95f9704bbec69fa23c",
-  "assetCommit": "a636f59a66432ac86eb37d95f9704bbec69fa23c",
-  "imageCount": 1542,
+  "codeCommit": "7ff63aceb373c1db1c78139b9b20239d3c14d534",
+  "assetCommit": "7ff63aceb373c1db1c78139b9b20239d3c14d534",
+  "imageCount": 1559,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -10748,6 +10748,125 @@
       "bytes": 15755,
       "sha256": "8382e17892fc2ea6ac8f1f0044697a1a39e3438863dec8b98b93d75c1b344ce0",
       "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__25-compact-duo-chat.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/comparison.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 142936,
+      "sha256": "50e5642f1ca2983dd41fa61d3f9fc5dd1b1eb31e3e8e1833671dfd175752f353",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__comparison.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-briefing.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 82744,
+      "sha256": "5e545dc758913d7c1e524b01fbae3db60a9939b3eed14031bb9203f0658ff832",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-briefing.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 66662,
+      "sha256": "030159423b34f05beda1652986d1b9d93dfbd6df6a0dfe4b65de24776cf7175d",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-calendar.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-chat.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 74394,
+      "sha256": "6f17951dd5275ae26c6aae5f743833c58f8312667ab1b85ace94898ee01fd7a5",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-chat.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-dark.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 84587,
+      "sha256": "48f5ac41f83a66308e99d4d6e1d96b73892b0c2be1bc6e03f73010ef83e68dc5",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-dark.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-empty.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 66095,
+      "sha256": "c2b9d0d5aed00b4dd9a2d585dc79541bb2ed25d6fea1f3f592f4367a75559e50",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-empty.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-me.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 69262,
+      "sha256": "0f0cfc69c0192a14432c2a7f66a763fc39d74cbc38ac32447cf6799f1f828281",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-me.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/desktop-todos.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 66720,
+      "sha256": "701aa506a8c66121fe0dd5312b814804b81846ace52a6a337d58afc0fcacd75f",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__desktop-todos.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/focused-comparison.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 63600,
+      "sha256": "9455802ce872a880c93f6b73595932c4bc257c94014b5d20afc17b3faedef42c",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__focused-comparison.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/format-matched-content.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 79812,
+      "sha256": "b742969b9e97f82f88dc7e6d8a6afe1d15b2ccea4dd93ecf5f6d5ff21ca2008b",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__format-matched-content.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/landing-source.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 67416,
+      "sha256": "37b67f57e5e6595fabd0a0610f4240da90ee2d6d63a243ead5731793aa621e09",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__landing-source.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/narrow-web.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 44719,
+      "sha256": "a7c49b8fa6669899c8ceb6bd7d8e871075b7998949f1e5dd6ee64d4db70ebf34",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__narrow-web.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/real-api/real-api-chat-unavailable.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 75593,
+      "sha256": "bf19ef6e69ff56391a6a5db86c3ef74478e965b0b3ab18c6e117ed0f84de22cb",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__real-api__real-api-chat-unavailable.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/real-api/real-api-google-setup.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 85841,
+      "sha256": "8fc54728cbfa2cd00cfb7d23f9f2d89c4b53bd532f95b8085263a091b8ec575f",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__real-api__real-api-google-setup.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/real-api/real-api-log.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 54555,
+      "sha256": "35c9b1fc36931b848fe12da0ae8ae25f29b12a6fc7fe4df2fdfa22d06f507940",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__real-api__real-api-log.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/real-api/real-api-schedules.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 94141,
+      "sha256": "bfb2e13d5fad8ea1a0754beb591f2635d2bc9ab41b16fab571b0328573a5a17d",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__real-api__real-api-schedules.png"
+    },
+    {
+      "path": "artifacts/web-format-correction-2026-11-22/source-focus.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 29752,
+      "sha256": "078bba5ba6dfe6e4bfc50c3f09e3d58aac37d7b17126253ae34770cfcc42b9b7",
+      "import_path": "images/artifacts__web-format-correction-2026-11-22__source-focus.png"
     },
     {
       "path": "mobile/assets/android-icon-background.png",

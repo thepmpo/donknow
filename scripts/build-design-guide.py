@@ -92,6 +92,6 @@ briefing_current=(root/'docs/design-guide.md').read_text().split('## 2026-11-16 
 tone_html='<section id="briefing-cards-current"><h2>AI 브리핑 · 체크 · Todo/캘린더 · 같은 일 제외</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in briefing_current.splitlines() if line.strip())+'</section>'+tone_html
 reminders_current=(root/'docs/design-guide.md').read_text().split('## 2026-11-16 — 미리알림 전체 가져오기·완료 원본 반영·연결 대기',1)[1].split('## ',1)[0]
 tone_html='<section id="reminders-import-current"><h2>미리알림 전체 가져오기 · 원본 완료 · 연결 확인</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in reminders_current.splitlines() if line.strip())+'</section>'+tone_html
-desktop_current=(root/'docs/design-guide.md').read_text().split('## 2026-11-22 — PC 웹 나의 하루',1)[1].split('## ',1)[0]
+desktop_current=(root/'docs/design-guide.md').read_text().split('## 2026-11-22 — 웹 작업공간은 소개 상단 예시 기준',1)[1].split('## ',1)[0]
 tone_html='<section id="desktop-workspace"><h2>PC 웹 · 나의 하루</h2>'+''.join('<p>'+tone_line(line)+'</p>' for line in desktop_current.splitlines() if line.strip())+'</section>'+tone_html
 (root/'public/design-guide.html').write_text(page.replace('OFFICIAL_TONE',tone_html).replace('CSS',css).replace('ROWS',rows).replace('SWATCHES',swatches))
