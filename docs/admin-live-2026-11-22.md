@@ -30,3 +30,7 @@ GET /api/admin/session,overview,members,members/:id,audit만있다. 기존쿠키
 mobile/e2e/admin-live.mjs는실제격리Node/SQLite서버·테스트아웃박스인증·HttpOnly브라우저로그인·실제DB사용자/연결fixture를쓴다. 회원검색/상세/현재접근정책/비어있는결제/사용량/감사/메뉴/390px과늦은상세응답중로그아웃·일반verified사용자거부를확인했다. 런타임JS오류없다. 공개사용자계정/자료·공급자·실제모델을호출한검사가아니다.
 
 캡처와results는artifacts/admin-live-2026-11-22에있다. 운영자허용이메일값과기존비밀환경변수는공개문서/소스에기록하지않는다. 배포/환경변수merge와공개익명거부/health확인은deploy-receipt에별도로기록한다.
+
+## 실제 배포 확인
+
+사용자가 지정한 단일 운영자 이메일을 서버전용 DUCK_ADMIN_EMAILS에merge했고 기존환경변수를유지했다. 값은공개소스/문서에남기지않는다. 이변경이생성한Render배포 dep-dc1act2jnfac7387b2pg는2026-11-22T08:24:16.049894Z에live가됐다. 소스5edec657c4922d389e0ccb812372b3eabfa775ab. 공개/admin에서로그인화면,비로그인/api/admin/members의401,health의ok:true/동일release를확인했다. 실제운영자로그인은사용자가직접해야하며운영회원정보를대신조회하지않았다.

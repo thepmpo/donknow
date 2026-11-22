@@ -1,0 +1,32 @@
+{
+  "service": "duckduck-test",
+  "plan": "free",
+  "deployId": "dep-dc1act2jnfac7387b2pg",
+  "status": "live",
+  "release": "5edec657c4922d389e0ccb812372b3eabfa775ab",
+  "finishedAt": "2026-11-22T08:24:16.049894Z",
+  "app": "https://duckduck-test.onrender.com/admin",
+  "adminAllowlist": {
+    "key": "DUCK_ADMIN_EMAILS",
+    "configuredByAuthorizedSingleKeyMerge": true,
+    "otherEnvironmentVariablesPreserved": true,
+    "verifiedEmailRequired": true,
+    "valueNotIncludedInPublicReceipt": true
+  },
+  "publicVerification": {
+    "adminShowsLogin": true,
+    "anonymousMemberApiStatus": 401,
+    "healthOk": true,
+    "healthRelease": "5edec657c4922d389e0ccb812372b3eabfa775ab"
+  },
+  "validation": {
+    "unitTests": 443,
+    "passed": 442,
+    "failed": 0,
+    "existingSkipped": 1,
+    "syntaxFiles": 112,
+    "targetedAdminTestsPassed": true,
+    "actualLocalServerBrowserPassed": true
+  },
+  "boundaries": "Read-only operator metadata access. No authenticated production member read was performed by the agent. No payment integration, account entitlements/AI budget mutation, provider/model call or native build added."
+}
