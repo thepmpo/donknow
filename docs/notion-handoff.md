@@ -2000,6 +2000,88 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 매일 개발 정리
 
 
+##### 2026-11-23 — 당일 저장된 작업
+
+실제 정리: 02:43 KST. 새 저장 작업 38개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [5c13cf8](https://github.com/sjfieni/donknow/commit/5c13cf89ee1e1549266427a925d98c99e987bd37) · 11-22 15:53 · Bring the landing page day workspace into the desktop web app
+
+- [a636f59](https://github.com/sjfieni/donknow/commit/a636f59a66432ac86eb37d95f9704bbec69fa23c) · 11-22 16:18 · Complete web workspace actions, service return flow and real-server verification
+
+- [e0b166c](https://github.com/sjfieni/donknow/commit/e0b166ca927b830de066eab861b300b56ccd2685) · 11-22 16:22 · Record live web deployment and public access verification
+
+- [7ff63ac](https://github.com/sjfieni/donknow/commit/7ff63aceb373c1db1c78139b9b20239d3c14d534) · 11-22 16:39 · Match web workspace body and responsive navigation to landing format
+
+- [0f120e9](https://github.com/sjfieni/donknow/commit/0f120e99f4054b09fabe4389373023d310c950fb) · 11-22 16:40 · Publish landing-format comparison and updated web design handoff
+
+- [4a16537](https://github.com/sjfieni/donknow/commit/4a165373fc823a3a36e916fd4f83f38d9c18c800) · 11-22 16:42 · Record live landing-format web release and remaining AI connectivity limitation
+
+- [bc1ba1e](https://github.com/sjfieni/donknow/commit/bc1ba1e53099a15fc1dc19fe4abcd10109c1be30) · 11-22 16:47 · Hide weather from web briefings and keep ME children inside settings
+
+- [cfad8ef](https://github.com/sjfieni/donknow/commit/cfad8eff0249653dc0f6b9fc1d70ada65d6e5e71) · 11-22 16:47 · Refresh public handoff for simplified web navigation
+
+- [dfda894](https://github.com/sjfieni/donknow/commit/dfda89404c34c27aa7b9b6876fcbc5c950e9b9d6) · 11-22 16:49 · Record live simplified web navigation release
+
+- [68b2e3c](https://github.com/sjfieni/donknow/commit/68b2e3c5d5b7d67c2af9446ab0072bff96ef1366) · 11-22 17:10 · Add public synthetic admin layout preview with sidebar and member detail
+
+- [1d13945](https://github.com/sjfieni/donknow/commit/1d13945fc5e959c1f624bac54f8a72e60bc58ff6) · 11-22 17:12 · Record public admin preview deployment verification
+
+- [fc69ded](https://github.com/sjfieni/donknow/commit/fc69ded6b9cf91cb69a0355529125f4f74527e1b) · 11-22 17:22 · Connect read-only admin to verified operator sessions and real member metadata
+
+- [a6bbdcf](https://github.com/sjfieni/donknow/commit/a6bbdcf1bce36ad8b5b7b14be00c3223d8079b8f) · 11-22 17:25 · Record protected admin live deployment and anonymous access rejection
+
+- [69f855f](https://github.com/sjfieni/donknow/commit/69f855fc664efffa0506282dcfb0843b85caeb19) · 11-22 17:34 · Separate admin accounts and credentials from Duck with login-only gate
+
+- [8c12c87](https://github.com/sjfieni/donknow/commit/8c12c87bdfe58b691308365447ffe950721b5e26) · 11-22 17:38 · Show admin login inputs immediately while session verification is pending
+
+- [b61f771](https://github.com/sjfieni/donknow/commit/b61f7719d9cef5c102ed287884775f7784faf1c5) · 11-22 17:38 · Keep admin credential form fallbacks out of URL query strings
+
+- [118e7f8](https://github.com/sjfieni/donknow/commit/118e7f85a01fc8449cb3391e01295f922e6ee728) · 11-22 17:41 · Record separate admin login deployment and immediate gate verification
+
+- [578beec](https://github.com/sjfieni/donknow/commit/578beeca035d8d71d3c96bc0310e9fed5703fb04) · 11-22 17:47 · Diagnose mail rejection safely and normalize sender configuration
+
+- [5200900](https://github.com/sjfieni/donknow/commit/5200900752cb036c2d58096bda5db0cddb43cbb8) · 11-22 17:50 · Record mail diagnostic release and pending delivery reproduction
+
+- [0a412ba](https://github.com/sjfieni/donknow/commit/0a412ba7721040c2d5b6247c3aab7e901519c1ee) · 11-22 17:59 · Confirm Resend testing-recipient rejection from production reproduction
+
+- [3c40bde](https://github.com/sjfieni/donknow/commit/3c40bde40e053dbd365e2bebcb2802dd428145a7) · 11-22 18:13 · Provision standalone owner admin with mandatory password change
+
+- [50863a0](https://github.com/sjfieni/donknow/commit/50863a0c6c38b495a696cfd27d142a40d9416a65) · 11-22 18:16 · Record live owner admin provisioning and secret cleanup
+
+- [b06f6ff](https://github.com/sjfieni/donknow/commit/b06f6fff63f821beaa8b7dd74507ed6688db62c3) · 11-22 19:51 · Implement non-payment admin operations with roles and audited changes
+
+- [26dfd2f](https://github.com/sjfieni/donknow/commit/26dfd2f069ec7011ae552c503084ef25041fbf73) · 11-22 19:52 · Wake original source worker after admin retry
+
+- [55e632e](https://github.com/sjfieni/donknow/commit/55e632e90e4f3a95ecac30b42edb552c8b12aa45) · 11-22 19:54 · Record verified live admin management deployment
+
+- [20f0a3b](https://github.com/sjfieni/donknow/commit/20f0a3befef1c3079717fc3cdaa0dc02e4fee8ab) · 11-22 20:22 · Verify signup and add versioned legal documents with explicit consent
+
+- [882e2df](https://github.com/sjfieni/donknow/commit/882e2dfd7f89b415d3865001637a777afaae541d) · 11-22 20:25 · Record live signup and legal-document deployment verification
+
+- [4b20785](https://github.com/sjfieni/donknow/commit/4b207856fe1a1fa770933b2cf32a33025fe471bd) · 11-22 20:37 · Add password confirmation and eight-character numeric-symbol validation
+
+- [8cd0942](https://github.com/sjfieni/donknow/commit/8cd094241e340d18f6075f6de48994c510b3636c) · 11-22 20:40 · Record verified password-confirmation web deployment
+
+- [2385c85](https://github.com/sjfieni/donknow/commit/2385c85bbfeb07ed907833c63521ec6f99903388) · 11-22 21:01 · Require mailbox verification before member access and send signup codes
+
+- [827a89a](https://github.com/sjfieni/donknow/commit/827a89a2fa453767aff511e9c84076f2ee61ebe3) · 11-22 21:04 · Record live mandatory-verification deployment and mail delivery limitation
+
+- [460a5ef](https://github.com/sjfieni/donknow/commit/460a5ef2137ecc15ce97c1f1a34897cbbb330f7d) · 11-22 22:00 · Rename current product surfaces to docen while preserving member identity and legal history
+
+- [15a34d2](https://github.com/sjfieni/donknow/commit/15a34d247694af4122bd9b87978f0c85515a373c) · 11-22 22:03 · Record verified docen web release and pending domain/mail setup
+
+- [96e3b48](https://github.com/sjfieni/donknow/commit/96e3b487364f74c8e0d9bae2a201370a25df3f8c) · 11-22 23:17 · Keep docen public domain introduction-only until web service launch
+
+- [89489e6](https://github.com/sjfieni/donknow/commit/89489e6118a16947cbf64c33358b9a87d920f06c) · 11-22 23:20 · Record live introduction-only release and pending domain registration
+
+- [2e3f23d](https://github.com/sjfieni/donknow/commit/2e3f23dbee94e260805cd6a5d870914a022e21f5) · 11-22 23:53 · Document complete docen decisions and reusable product build workflow
+
+- [42a2349](https://github.com/sjfieni/donknow/commit/42a23498f37b9a84ee4cc965ac2ed003cae35fd9) · 11-22 23:59 · Keep detailed AI handoff as the default documentation format
+
+- [926d862](https://github.com/sjfieni/donknow/commit/926d86212d51bdd335e654c151079d9c2abc61a5) · 11-23 00:11 · Document reusable app foundations and package full source handoff
+
+
+
 ##### 2026-11-22 — 당일 저장된 작업
 
 실제 정리: 02:17 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -3519,6 +3601,7 @@ b5631cd Publish introduction-only release evidence and email verification status
 89489e6 Record live introduction-only release and pending domain registration
 2e3f23d Document complete docen decisions and reusable product build workflow
 42a2349 Keep detailed AI handoff as the default documentation format
+926d862 Document reusable app foundations and package full source handoff
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
