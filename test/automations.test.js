@@ -23,7 +23,7 @@ test('daily wall-clock scheduling handles DST gaps and repeated hours',()=>{
 });
 test('real DB/HTTP inbox: verified opt-in, once-only parallel delivery, privacy, reading and persistence',async()=>{
  const h=await apiHarness();let store;try{
-  const a=await h.register('scheduled-owner@example.test'),b=await h.register('scheduled-other@example.test');
+  const a=await h.register('scheduled-owner@example.test'),b=await h.verified('scheduled-other@example.test');
   assert.equal((await h.request('/api/automations/briefing','POST',config,a.token)).status,403);
   await h.request('/api/account/verification/send','POST',{},a.token);const mail=await h.mail(a.user.email,'이메일 인증');await h.request('/api/account/verification/confirm','POST',{code:/인증번호: (\d{6})/.exec(mail.text)[1]},a.token);
   assert.equal((await h.request('/api/automations/briefing','POST',{...config,aiConsent:false},a.token)).status,400);

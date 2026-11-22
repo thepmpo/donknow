@@ -4,7 +4,7 @@ import {apiHarness} from '../test-support/api.js';
 test('Todo notes persist with completion, are exported only to owner, validate length/type and can be cleared',async()=>{
  const h=await apiHarness();try{
   assert.equal((await h.request('/api/capabilities')).data.todoNotes,true);
-  const a=await h.register('notes-owner@example.test'),b=await h.register('notes-other@example.test');
+  const a=await h.verified('notes-owner@example.test'),b=await h.verified('notes-other@example.test');
   const created=await h.request('/api/todos','POST',{title:'메모 있는 일정',dueDate:'2030-01-01',notes:'• 준비물\n• 자료'},a.token);assert.equal(created.status,201);const path='/api/todos/'+created.data.id;
   assert.equal((await h.request(path,'PATCH',{done:true},a.token)).data.notes,'• 준비물\n• 자료');
   assert.equal((await h.request(path,'PATCH',{notes:'남의 수정'},b.token)).status,404);

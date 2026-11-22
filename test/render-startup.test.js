@@ -1,3 +1,5 @@
+import {DatabaseSync} from 'node:sqlite';
+import {join} from 'node:path';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -8,7 +10,7 @@ test('plain Node startup accepts the Render HTTPS origin and configures OAuth wi
   assert.equal((await h.request('/api/health')).status,200);
   const capabilities=(await h.request('/api/capabilities')).data;
   assert.equal(capabilities.integrations.find(item=>item.provider==='google').configured,true);
-  const owner=await h.register();assert.ok(owner.token);
+  const owner=await h.register();assert.ok(owner.token);assert.equal((await h.request('/api/todos','GET',undefined,owner.token)).status,403);const db=new DatabaseSync(join(h.dir,'duckduck.sqlite'));try{db.prepare('UPDATE users SET email_verified_at=? WHERE id=?').run(new Date().toISOString(),owner.user.id);}finally{db.close();}
   assert.equal((await h.request('/api/todos','GET',undefined,owner.token)).status,200);
  }finally{await h.close();}
 });

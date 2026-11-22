@@ -109,6 +109,15 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },
     async private(req, path, url, user, json, send, sessionToken) {
+      // Mailbox verification must not initialize AI preferences or data jobs.
+      if (path === '/api/account' && req.method === 'GET') { send(200, { user: store.account(user.id), mailConfigured: mailer.configured, mailStatus: store.mailStatus(user.id) }); return true; }
+      if (path === '/api/account/verification/send' && req.method === 'POST') {
+        if (store.account(user.id)?.emailVerified) { send(200, { alreadyVerified: true }); return true; }
+        if (!mailer.configured) throw fail(503, '이메일 발송 서비스가 아직 설정되지 않았어요.');
+        if(limited('mail:'+clientAddress(req)))throw fail(429,'잠시 후 다시 시도해주세요.');
+        const result=store.queueAccountMail(user.id,'verify');void worker.tick().catch(()=>undefined);send(202,{queued:true,...result});return true;
+      }
+      if (path === '/api/account/verification/confirm' && req.method === 'POST') { const body=await json(req);if(!validCode(body.code)||!store.verifyEmail(user.id,body.code))throw fail(400,'인증번호가 올바르지 않거나 만료됐어요.');send(200,{user:store.account(user.id)});return true; }
       if(path==='/api/ai/usage'&&req.method==='GET'){send(200,store.aiBudget(user.id));return true;}
       if(!defaultedUsers.has(user.id)&&initializeAssistantDefaults(store,assistant,user)){defaultedUsers.add(user.id);if(defaultedUsers.size>1000)defaultedUsers.delete(defaultedUsers.values().next().value);}
       if(path==='/api/assistant/notices'&&req.method==='POST'){send(200,assistantNotice(store,user.id,await json(req)));return true;}
@@ -188,14 +197,6 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         send(200, { results: store.importResources(user.id, 'apple-reminders', [...new Set(items.map(item => item.id))]) }); return true;
       }
       if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),signupAgreements:store.signupAgreements(user.id),todos:store.list(user.id),calendarDetails:store.exportCalendarDetails(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id),agent:store.exportAgentData(user.id),assistantMemory:store.exportAssistantMemory(user.id),assistantMessages:store.exportAssistantMessages(user.id),checklistStates:store.exportChecklistStates(user.id),automationSchedules:store.automationSettings(user.id)});return true;}
-      if (path === '/api/account' && req.method === 'GET') { send(200, { user: store.account(user.id), mailConfigured: mailer.configured, mailStatus: store.mailStatus(user.id) }); return true; }
-      if (path === '/api/account/verification/send' && req.method === 'POST') {
-        if (store.account(user.id)?.emailVerified) { send(200, { alreadyVerified: true }); return true; }
-        if (!mailer.configured) throw fail(503, '이메일 발송 서비스가 아직 설정되지 않았어요.');
-        if(limited('mail:'+clientAddress(req)))throw fail(429,'잠시 후 다시 시도해주세요.');
-        const result = store.queueAccountMail(user.id, 'verify'); void worker.tick().catch(() => undefined); send(202, { queued: true, ...result }); return true;
-      }
-      if (path === '/api/account/verification/confirm' && req.method === 'POST') { const body = await json(req); if (!validCode(body.code) || !store.verifyEmail(user.id, body.code)) throw fail(400, '인증번호가 올바르지 않거나 만료됐어요.'); send(200, { user: store.account(user.id) }); return true; }
       if (path === '/api/account' && req.method === 'DELETE') {
         if (limited('delete:' + user.id)) throw fail(429, '잠시 후 다시 시도해주세요.');
         const body = await json(req); if (body.confirmation !== 'DELETE' || !(await store.passwordMatches(user.id, body.password))) throw fail(400, '삭제 확인과 현재 비밀번호를 확인해주세요.');

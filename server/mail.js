@@ -21,7 +21,7 @@ export function startMailWorker(store, mailer, interval = 2000) {
   async function tick() {
     if (running || stopped || !mailer.configured) return;
     running = true;
-    try { for (let count = 0; count < 10 && !stopped; count++) { const job = store.claimMail(); if (!job) break; try { if (store.account(job.user_id)) await mailer.deliver(job.id, job.message); store.mailSucceeded(job.id); } catch { store.mailFailed(job.id, job.attempts + 1); } } }
+    try { for (let count = 0; count < 10 && !stopped; count++) { const job = store.claimMail(); if (!job) break; try { if (store.account(job.user_id)) await mailer.deliver(job.id, job.message); store.mailSucceeded(job.id); } catch(error) { store.mailFailed(job.id, job.attempts + 1,error.mailKind??mailFailure(error)); } } }
     finally { running = false; }
   }
   const timer = interval===null?null:setInterval(() => { void tick().catch(() => undefined); }, interval); timer?.unref();

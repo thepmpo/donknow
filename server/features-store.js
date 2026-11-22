@@ -1,4 +1,5 @@
 import {adminAuthStore} from './admin-auth-store.js';
+import {mailPublicError} from './mail-diagnostics.js';
 import {memberAccess} from './account-policy.js';
 import {sourceOutbox} from './source-outbox.js';
 import {aiBudgetStore} from './ai-budget.js';
@@ -33,6 +34,7 @@ export async function featureStore(db, directory, env = process.env) {
   if (!db.prepare('PRAGMA table_info(users)').all().some(column => column.name === 'email_verified_at')) db.exec('ALTER TABLE users ADD COLUMN email_verified_at TEXT');
   db.exec(`CREATE TABLE IF NOT EXISTS account_actions (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, purpose TEXT NOT NULL, code_hash TEXT NOT NULL, expires_at INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, PRIMARY KEY(user_id,purpose));
     CREATE TABLE IF NOT EXISTS mail_outbox (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, purpose TEXT NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, next_at INTEGER NOT NULL, created_at INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS mail_delivery_failures (mail_id TEXT PRIMARY KEY REFERENCES mail_outbox(id) ON DELETE CASCADE, kind TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS oauth_states (hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, provider TEXT NOT NULL, payload TEXT NOT NULL, expires_at INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS integrations (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, provider TEXT NOT NULL, payload TEXT NOT NULL, label TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(user_id,provider));
     CREATE TABLE IF NOT EXISTS integration_resources (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, provider TEXT NOT NULL, resource_key TEXT NOT NULL, payload TEXT NOT NULL, expires_at INTEGER NOT NULL, PRIMARY KEY(user_id,provider,resource_key));
@@ -78,7 +80,7 @@ export async function featureStore(db, directory, env = process.env) {
     queueAccountMail(userId, purpose) {
       const user = account(userId); if (!user) return null;
       if (!['verify', 'reset'].includes(purpose)) throw fail(400, '잘못된 인증 요청이에요.');
-      const now = Date.now(), previous = db.prepare('SELECT created_at FROM account_actions WHERE user_id=? AND purpose=?').get(userId, purpose);
+      const now = Date.now(), previous = db.prepare('SELECT created_at FROM mail_outbox WHERE user_id=? AND purpose=? ORDER BY created_at DESC LIMIT 1').get(userId, purpose);
       if (previous && previous.created_at > now - 60000) throw fail(429, '인증번호는 1분 후 다시 요청해주세요.');
       if (db.prepare('SELECT COUNT(*) AS total FROM mail_outbox WHERE user_id=? AND created_at>?').get(userId, now - 3600000).total >= 5) throw fail(429, '인증 요청이 많아요. 잠시 후 다시 시도해주세요.');
       const code = String(randomInt(100000, 1000000)), id = randomUUID(), expiresAt = now + 15 * 60000;
@@ -103,7 +105,7 @@ export async function featureStore(db, directory, env = process.env) {
       if (!(await passwordMatches(userId, password))) return false;
       transaction(() => { db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId); db.prepare('DELETE FROM todos WHERE user_id=?').run(userId); db.prepare('DELETE FROM migrations WHERE user_id=?').run(userId); db.prepare('DELETE FROM users WHERE id=?').run(userId); }); return true;
     },
-    mailStatus(userId) { return db.prepare('SELECT purpose,status,created_at AS createdAt FROM mail_outbox WHERE user_id=? ORDER BY created_at DESC LIMIT 1').get(userId) ?? null; },
+    mailStatus(userId) { const row=db.prepare('SELECT m.purpose,m.status,m.created_at AS createdAt,f.kind FROM mail_outbox m LEFT JOIN mail_delivery_failures f ON f.mail_id=m.id WHERE m.user_id=? ORDER BY m.created_at DESC LIMIT 1').get(userId);if(!row)return null;const {kind,...status}=row;return {...status,...(kind&&status.status!=='sent'?{error:mailPublicError({mailKind:kind})}:{})}; },
     claimMail() {
       const now = Date.now();
       if(!mailMaintenanceAt||now-mailMaintenanceAt>=60000){
@@ -115,7 +117,7 @@ export async function featureStore(db, directory, env = process.env) {
       return transaction(() => { const row = db.prepare("SELECT * FROM mail_outbox WHERE status='pending' AND next_at<=? AND attempts<5 ORDER BY created_at LIMIT 1").get(now); if (!row) return null; db.prepare("UPDATE mail_outbox SET status='processing',next_at=? WHERE id=?").run(now, row.id); return { ...row, message: box.open(row.payload) }; });
     },
     mailSucceeded(id) { db.prepare("UPDATE mail_outbox SET status='sent',payload='' WHERE id=? AND status='processing'").run(id); },
-    mailFailed(id, attempt) { db.prepare("UPDATE mail_outbox SET status=?,attempts=?,next_at=? WHERE id=? AND status='processing'").run(attempt >= 5 ? 'failed' : 'pending', attempt, Date.now() + Math.min(60000, 2000 * 2 ** attempt), id); },
+    mailFailed(id, attempt, kind='network') { transaction(()=>{const permanent=['testing-recipient-restricted','sender-domain-unverified','invalid-api-key','restricted-api-key','permission-denied','invalid-mail-configuration'].includes(kind);const row=db.prepare("SELECT user_id,purpose FROM mail_outbox WHERE id=? AND status='processing'").get(id);if(!row)return;db.prepare("UPDATE mail_outbox SET status=?,attempts=?,next_at=?,payload=CASE WHEN ? THEN '' ELSE payload END WHERE id=? AND status='processing'").run(permanent||attempt>=5?'failed':'pending',attempt,Date.now()+Math.min(60000,2000*2**attempt),permanent?1:0,id);db.prepare('INSERT INTO mail_delivery_failures VALUES (?,?) ON CONFLICT(mail_id) DO UPDATE SET kind=excluded.kind').run(id,kind);if(permanent)db.prepare('DELETE FROM account_actions WHERE user_id=? AND purpose=? AND created_at=(SELECT created_at FROM mail_outbox WHERE id=?)').run(row.user_id,row.purpose,id);}); },
     createOAuthState(userId, provider, payload) { const state = randomBytes(32).toString('base64url'); db.prepare('DELETE FROM oauth_states WHERE expires_at<?').run(Date.now()); db.prepare('INSERT INTO oauth_states VALUES (?,?,?,?,?)').run(box.hash(state), userId, provider, box.seal(payload), Date.now() + 10 * 60000); return state; },
     consumeOAuthState(provider, state) { return transaction(() => { if (typeof state !== 'string' || state.length > 200) return null; const row = db.prepare('SELECT * FROM oauth_states WHERE hash=? AND provider=?').get(box.hash(state), provider); if (!row) return null; db.prepare('DELETE FROM oauth_states WHERE hash=?').run(row.hash); return row.expires_at > Date.now() ? { userId: row.user_id, ...box.open(row.payload) } : null; }); },
     clearResourceCache(userId,provider,connectionId){const prefix=connectionId+':';db.prepare('DELETE FROM integration_resources WHERE user_id=? AND provider=?'+(connectionId?' AND substr(resource_key,1,?)=?':'')).run(...(connectionId?[userId,provider,prefix.length,prefix]:[userId,provider]));},

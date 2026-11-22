@@ -60,6 +60,7 @@ export function useTodos() {
       if(saved.mode==='cloud'){
         const account=await auth.session(saved.baseUrl);if(!current())return;
         setUser(account);authenticated=true;
+        if(!account.emailVerified){repo.current=null;setTodos([]);setSessionStatus('ready');return;}
       }
       if(!current())return;
       const next=createRepository(saved);repo.current=next;
@@ -113,10 +114,10 @@ export function useTodos() {
         try { account = await auth.session(checked.baseUrl); } catch (e) { if (!(e instanceof auth.AuthRequiredError)) throw e; }
       }
       const repository = createRepository(checked);
-      const data = checked.mode === 'cloud' && !account ? [] : await repository.list();
+      const data = checked.mode === 'cloud' && !account?.emailVerified ? [] : await repository.list();
       await AsyncStorage.setItem(CONNECTION_KEY, JSON.stringify(checked));
       const nextOwner=checked.mode==='cloud'&&account?checked.baseUrl+':'+account.id:null;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
-      snapshotReady.current=checked.mode==='demo'||!!account;refreshing.current=false;generation.current++; repo.current = checked.mode === 'cloud' && !account ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setSessionStatus('ready');setLoading(false); return true;
+      snapshotReady.current=checked.mode==='demo'||!!account;refreshing.current=false;generation.current++; repo.current = checked.mode === 'cloud' && !account?.emailVerified ? null : repository; clearTimers(); setPending({}); setTodos(data); setUser(account); setConnection(checked); setSessionStatus('ready');setLoading(false); return true;
     } catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
@@ -293,7 +294,8 @@ export function useTodos() {
       const account = await auth.authenticate(connection.baseUrl, email, password, register,agreements,passwordConfirmation);
       const nextOwner=connection.baseUrl+':'+account.id;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
       const repository = createRepository(connection);
-      snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);setSessionStatus('ready');
+      snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = account.emailVerified?repository:null; clearTimers(); setPending({}); setTodos([]); setUser(account);setSessionStatus('ready');
+      if(!account.emailVerified){setLoading(false);return true;}
       try{const data = await repository.list();snapshotReady.current=true;setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
     } catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
@@ -323,7 +325,7 @@ export function useTodos() {
     }
   }, [connection, renderGeneration,user?.id]);
   const reminderTodos=useMemo(()=>todos.flatMap(todo=>todo.saveState?(reminderBaselines.current.has(todo.id)?[reminderBaselines.current.get(todo.id)!]:[]):[todo]),[todos]);
-  const reminders = useReminders(reminderTodos, reminderOwner,connection?.mode==='cloud'&&user?featureRequest:undefined);
+  const reminders = useReminders(reminderTodos, reminderOwner,connection?.mode==='cloud'&&user?.emailVerified?featureRequest:undefined);
   async function refreshAccount() {
     if (connection?.mode !== 'cloud') return;
     const version = renderGeneration;
@@ -333,6 +335,7 @@ export function useTodos() {
       if (version !== generation.current) throw sessionChanged();
       if (user && account.id !== user.id) { expireSession(); throw new auth.AuthRequiredError(); }
       setUser(account);
+      if(account.emailVerified&&!repo.current){const repository=createRepository(connection);repo.current=repository;void repository.list().then(data=>{if(version===generation.current){snapshotReady.current=true;setTodos(data);}}).catch(()=>{if(version===generation.current)setError('할 일을 불러오지 못했어요. 다시 시도해주세요.');});}
     } catch (e) {
       if (version !== generation.current) throw sessionChanged();
       if (e instanceof auth.AuthRequiredError) expireSession();

@@ -114,11 +114,23 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         const result = path.endsWith('register') ? await store.register(email, body.password,validateSignupAgreements(body.agreements),req.headers['x-duckduck-client']) : await store.login(email, body.password);
         if (!result) return send(path.endsWith('register') ? 409 : 401, { error: path.endsWith('register') ? '이 이메일로 계정을 만들 수 없어요. 로그인해 주세요.' : '이메일 또는 비밀번호를 확인해주세요.' });
         const previous = tokenFrom(req); if (previous) store.logout(previous);
-        return send(path.endsWith('register') ? 201 : 200, { user: result.user, expiresAt: result.expiresAt, ...(req.headers['x-duckduck-client'] === 'native' ? { token: result.token } : {}) }, { 'Set-Cookie': cookie(result.token, 30 * 24 * 60 * 60) });
+        let verification;
+        if (!result.user.emailVerified) {
+          verification={required:true,queued:false};
+          if (mailer.configured) {
+            try { verification={...verification,...store.queueAccountMail(result.user.id,'verify'),queued:true};void worker.tick().catch(()=>undefined); }
+            catch(error){if(error.status!==429)throw error;verification.queued=true;}
+          }
+        }
+        return send(path.endsWith('register') ? 201 : 200, { user: result.user, expiresAt: result.expiresAt, ...(verification?{verification}:{}), ...(req.headers['x-duckduck-client'] === 'native' ? { token: result.token } : {}) }, { 'Set-Cookie': cookie(result.token, 30 * 24 * 60 * 60) });
       }
       if (path === '/api/health' && req.method === 'GET') return send(200, { ok: true, authentication: 'session', version: 1, calendarWorkspace:2, release:/^[a-f0-9]{40}$/.test(process.env.RENDER_GIT_COMMIT??'')?process.env.RENDER_GIT_COMMIT:null });
       const token = tokenFrom(req), session = store.session(token);
       if (!session) return send(401, { error: '로그인이 필요해요.', code: 'AUTH_REQUIRED' });
+      // Unverified sessions identify only the mailbox being verified. They are
+      // never authorization to read or change member data, including old clients.
+      const verificationRoute=(path==='/api/auth/session'&&req.method==='GET')||(path==='/api/auth/logout'&&req.method==='POST')||(path==='/api/account'&&req.method==='GET')||(/^\/api\/account\/verification\/(send|confirm)$/.test(path)&&req.method==='POST');
+      if(!session.user.emailVerified&&!verificationRoute)return send(403,{error:'이메일 인증을 완료한 뒤 이용해주세요.',code:'EMAIL_VERIFICATION_REQUIRED'});
       if(path==='/api/project/comments'&&req.method==='POST'){
         if(!session.user.emailVerified)return send(403,{error:'이메일 인증된 계정으로 댓글을 작성해주세요.'});
         if(limited('comments:'+session.user.id))return send(429,{error:'댓글 작성이 많아요. 잠시 후 다시 시도해주세요.'});

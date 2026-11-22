@@ -9,7 +9,7 @@ test('verification code is single-use; reset revokes all sessions; account delet
  const h = await apiHarness(); try {
   const owner = await h.register(), token = owner.token;
   assert.equal(owner.user.emailVerified, false);
-  assert.equal((await h.request('/api/account/verification/send', 'POST', {}, token)).status, 202);
+  assert.equal(owner.verification.queued,true);
   const verification = codeOf(await h.mail(owner.user.email, '이메일 인증'));
   assert.equal((await h.request('/api/account/verification/send', 'POST', {}, token)).status, 429);
   assert.equal((await h.request('/api/account/verification/confirm', 'POST', { code: verification }, token)).data.user.emailVerified, true);

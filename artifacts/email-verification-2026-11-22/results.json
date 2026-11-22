@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "source": "Production Expo web bundle + actual isolated Node/SQLite + synthetic test-outbox, no production email or member mutations",
+  "flows": [
+    "automatic verification mail",
+    "no internal menus before verification",
+    "API access denied",
+    "HttpOnly cookie",
+    "desktop/390px",
+    "reload and unverified login remain gated",
+    "wrong code stays gated",
+    "correct code grants access",
+    "verified session restores"
+  ],
+  "errors": []
+}

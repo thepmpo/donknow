@@ -12,6 +12,7 @@ import {AppNavigation} from './src/AppNavigation';
 import type {AppTab} from './src/AppNavigation';
 import { MotionProvider, MotionView } from './src/motion';
 import { MotionPressable as Pressable } from './src/motion';
+import {VerificationScreen} from './src/screens/VerificationScreen';
 import { AuthScreen } from './src/screens/AuthScreen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
@@ -32,7 +33,7 @@ function ShellContent() {
   const keyboard=useKeyboardUX();
   const store = useTodos();
   const pushAttempt=useRef<string|null>(null);
-  useEffect(()=>{if(Platform.OS!=='ios'||!store.user||store.reminders.permission!=='allowed')return;const owner=pushPreferenceKey(store);if(pushAttempt.current===owner)return;pushAttempt.current=owner;let active=true;void AsyncStorage.getItem(owner).then(value=>{if(value===null&&active&&store.isCurrentSession())return connectPush(store);}).catch(()=>{if(active&&store.isCurrentSession())store.setNotice('도착 알림을 연결하지 못했어요. ME → 브리핑·날씨 예약에서 다시 연결할 수 있어요.');});return()=>{active=false;};},[store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo',store.reminders.permission]);
+  useEffect(()=>{if(Platform.OS!=='ios'||!store.user?.emailVerified||store.reminders.permission!=='allowed')return;const owner=pushPreferenceKey(store);if(pushAttempt.current===owner)return;pushAttempt.current=owner;let active=true;void AsyncStorage.getItem(owner).then(value=>{if(value===null&&active&&store.isCurrentSession())return connectPush(store);}).catch(()=>{if(active&&store.isCurrentSession())store.setNotice('도착 알림을 연결하지 못했어요. ME → 브리핑·날씨 예약에서 다시 연결할 수 있어요.');});return()=>{active=false;};},[store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo',store.reminders.permission]);
   const insets=useSafeAreaInsets();
   const {width}=useWindowDimensions();
   const duo=useDuoTrailingNavigation();
@@ -68,6 +69,7 @@ function ShellContent() {
   const navigationVisible=!!store.connection&&!settings&&!needsAuth;
   const rightPane=scene?.panes?{marginLeft:scene.panes.trailing.x-scene.body.x,width:scene.panes.trailing.width}:null;
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
+  if(store.connection?.mode==='cloud'&&store.user&&!store.user.emailVerified&&!sessionPending)return <KeyboardAvoidingView style={styles.root} behavior={Platform.OS==='ios'?'padding':undefined}><VerificationScreen store={store}/></KeyboardAvoidingView>;
   return <DesktopWorkspace active={desktop&&navigationVisible} tab={tab} onSelect={selectTab} store={store} disabled={sessionPending} unread={unread} onAdd={()=>onAdd(dateKey(new Date()))} onEdit={onEdit} onChat={openDesktopChat}><KeyboardAvoidingView style={[styles.root,(duo||desktop&&navigationVisible)&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     {!duo&&!desktop&&<View testID="app-brand-header" style={styles.header}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text>{(!navigationVisible||tab!=='duck'&&tab!=='calendar')&&!editor&&<KeyboardDismiss fallback/>}</View>}
     {duo&&(!navigationVisible||tab!=='duck'&&tab!=='calendar')&&!editor&&<KeyboardDismiss fallback/>}

@@ -5,7 +5,7 @@ test('all accounts have complimentary Pro in registration, login, restored sessi
  const h=await apiHarness({AI_COST_PROTECTION:'true'});
  try{
   for(const email of ['existing-plan@example.test','new-plan@example.test']){
-   const a=await h.register(email);assert.equal(a.user.plan,'pro');assert.equal(a.user.planAccess,'complimentary');
+   const a=await h.verified(email);assert.equal(a.user.plan,'pro');assert.equal(a.user.planAccess,'complimentary');
    const restored=await h.request('/api/auth/session','GET',undefined,a.token);assert.equal(restored.data.user.plan,'pro');
    const account=await h.request('/api/account','GET',undefined,a.token);assert.equal(account.data.user.plan,'pro');
    const status=await h.request('/api/assistant/status','GET',undefined,a.token);assert.equal(status.status,200);assert.equal(status.data.access.chat,true);assert.equal(status.data.access.createFromSources,true);assert.equal(status.data.access.automaticBilling,false);assert.equal(status.data.usage.funded,false);assert.equal(status.data.usage.remainingKrw,0);

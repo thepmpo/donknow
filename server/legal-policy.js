@@ -1,6 +1,6 @@
 import {fail} from './secrets.js';
 export const legalIdentity={serviceName:'덕',englishName:'Duck',operatorName:'Kim Sanghyun',contactEmail:'thepmpo.official@gmail.com'};
-export const legalVersion='2026-11-22';
+export const legalVersion='2026-11-22.1';
 export const legalDocuments={terms:{version:legalVersion,title:'서비스 이용약관',url:'/terms'},privacy:{version:legalVersion,title:'개인정보 처리방침·수집 및 이용 안내',url:'/privacy'},ai:{version:legalVersion,title:'AI·외부 서비스 이용 안내',url:'/ai-policy'},cookies:{version:legalVersion,title:'쿠키·기기 저장 안내',url:'/cookies'}};
 for(const [key,doc] of Object.entries(legalDocuments))doc.archiveUrl='/legal/'+legalVersion+'/'+(key==='ai'?'ai-policy':key);
 export const publicLegal=()=>({serviceName:legalIdentity.serviceName,minimumAge:14,documents:legalDocuments,marketingRequired:false});

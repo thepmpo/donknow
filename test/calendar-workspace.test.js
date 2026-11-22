@@ -17,7 +17,7 @@ test('calendar workspace HTTP capabilities are public but sources/events require
  try{
   assert.equal((await h.request('/api/capabilities')).data.calendarWorkspace,2);
   for(const path of ['/api/calendar/calendars','/api/calendar/events?v=2&month=2026-11'])assert.equal((await h.request(path)).status,401);
-  const owner=await h.register('calendar-http@example.test');const events=await h.request('/api/calendar/events?v=2&month=2026-11&timeZone=UTC','GET',undefined,owner.token);
+  const owner=await h.verified('calendar-http@example.test');const events=await h.request('/api/calendar/events?v=2&month=2026-11&timeZone=UTC','GET',undefined,owner.token);
   assert.equal(events.status,200);assert.equal(events.data.connectionState,'unconnected');assert.deepEqual(events.data.items,[]);
   assert.equal((await h.request('/api/calendar/events?v=2&timeZone=Invalid%2FZone','GET',undefined,owner.token)).status,400);
  }finally{await h.close();}

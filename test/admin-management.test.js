@@ -13,7 +13,7 @@ function client(h){let cookie='';return {get cookie(){return cookie;},async call
 const input=(version,extra={})=>({version,reason:'운영 테스트 사유',requestId:randomUUID(),...extra});
 async function loginOwner(h){const c=client(h);assert.equal((await c.call('/api/admin/auth/login','POST',{email:ownerEmail,password:initial})).status,200);assert.equal((await c.call('/api/admin/auth/password/change','POST',{password:permanent})).status,200);return c;}
 test('owner grants, edits, revokes and expires real entitlements; suspensions and logout affect real sessions with atomic audited idempotency',async()=>{
- const h=await apiHarness({...env,AI_COST_PROTECTION:'true'});try{const c=await loginOwner(h),app=await h.register('managed-member@example.test'),root='/api/admin/members/'+app.user.id;
+ const h=await apiHarness({...env,AI_COST_PROTECTION:'true'});try{const c=await loginOwner(h),app=await h.verified('managed-member@example.test'),root='/api/admin/members/'+app.user.id;
  assert.equal((await c.call('/api/admin/session')).data.role,'owner');
  const grant=input(0,{plan:'lite',endsAt:null});const a=await c.call(root+'/passes','POST',grant);assert.equal(a.status,200);assert.equal(a.data.version,1);assert.equal((await c.call(root+'/passes','POST',grant)).data.passId,a.data.passId,'retries cannot duplicate grants');
  assert.equal((await h.request('/api/auth/session','GET',undefined,app.token)).data.user.plan,'lite');assert.equal((await h.request('/api/assistant/status','GET',undefined,app.token)).data.usage.remainingKrw,0,'a pass is not fabricated AI funds');
@@ -29,7 +29,7 @@ test('owner grants, edits, revokes and expires real entitlements; suspensions an
  }finally{await h.close();}
 });
 test('owner-managed staff accounts have forced change, server RBAC, protected owner, revocation and secret-free audit',async()=>{
- const h=await apiHarness(env);try{const owner=await loginOwner(h),member=await h.register(),root='/api/admin/members/'+member.user.id;
+ const h=await apiHarness(env);try{const owner=await loginOwner(h),member=await h.verified(),root='/api/admin/members/'+member.user.id;
  const created=await owner.call('/api/admin/operators','POST',input(0,{email:'reader-management@example.test',role:'reader',disabled:false,temporaryPassword:'ReaderInitial123!'}));assert.equal(created.status,200);const reader=client(h);
  assert.equal((await reader.call('/api/admin/auth/login','POST',{email:'reader-management@example.test',password:'ReaderInitial123!'})).status,200);assert.equal((await reader.call('/api/admin/members')).status,403);assert.equal((await reader.call('/api/admin/auth/password/change','POST',{password:'ReaderPermanent123!'})).status,200);assert.equal((await reader.call('/api/admin/members')).status,200);assert.equal((await reader.call(root+'/status','POST',input(0,{status:'suspended'}))).status,403);assert.equal((await reader.call('/api/admin/operators','POST',input(0,{email:'evil@example.test',role:'operator',disabled:false,temporaryPassword:'BadInitial123!'}))).status,403);
  let staff=(await owner.call('/api/admin/operators')).data.items.find(a=>a.id===created.data.operatorId);assert.ok(staff);const ownerRow=(await owner.call('/api/admin/operators')).data.items.find(a=>a.role==='owner');assert.equal((await owner.call('/api/admin/operators/'+ownerRow.id,'POST',input(ownerRow.version,{role:'reader',disabled:true}))).status,409);
