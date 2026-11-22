@@ -4,7 +4,7 @@ const view=job=>{const {id,parentId,responsibilityId,title,goal,status,revision,
 async function fileBody(req){if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']??''))throw fail(415,'JSON 파일 요청이 필요해요.');const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>17*1024*1024)throw fail(413,'파일은12MB 이내로 넣어주세요.');chunks.push(chunk);}try{const value=JSON.parse(Buffer.concat(chunks));if(!value||typeof value!=='object'||Array.isArray(value))throw Error();return value;}catch{throw fail(400,'파일 요청을 확인해주세요.');}}
 export function createAgentRoutes({store,engine,assistant,computer,voice,channels,limited}){
  return async(req,path,url,user,json,send)=>{
-  if(!path.startsWith('/api/agent/'))return false;if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
+  if(!path.startsWith('/api/agent/'))return false;if(req.method==='POST'&&store.memberAccess&&!store.memberAccess(user.id).chat)throw fail(403,'AI 비서 이용권을 확인해주세요.');if(!user.emailVerified)throw fail(403,'이메일 인증을 먼저 완료해주세요.');
   if(await channels.routes(req,path,user,json,send))return true;
   if(await computerRoutes({store,computer,engine,req,path,url,user,json,send}))return true;
   if(req.method!=='GET'&&limited('agent:'+user.id))throw fail(429,'작업 요청이 많아요. 잠시 뒤 다시 해주세요.');

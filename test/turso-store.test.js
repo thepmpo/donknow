@@ -10,7 +10,7 @@ import {createAssistant} from '../server/assistant.js';
 import {createIntegrations} from '../server/integrations.js';
 import { openStore } from '../server/store.js';
 import { backupScheduler } from '../server/backups.js';
-const settings = { STORE_DRIVER:'turso', TURSO_DATABASE_URL:'libsql://fixture.turso.io', TURSO_AUTH_TOKEN:'fixture-token', INTEGRATION_KEY_SEED:'fixture-seed-with-at-least-32-random-characters' };
+const settings = { DUCK_ADMIN_EMAILS:'remote-admin@example.test',DUCK_ADMIN_INITIAL_PASSWORD:'RemoteInitial123!', STORE_DRIVER:'turso', TURSO_DATABASE_URL:'libsql://fixture.turso.io', TURSO_AUTH_TOKEN:'fixture-token', INTEGRATION_KEY_SEED:'fixture-seed-with-at-least-32-random-characters' };
 test('remote libSQL HTTP store keeps accounts, todos and encrypted connections when all app files are recycled; transactions roll back', async () => {
  const root=await mkdtemp(join(tmpdir(),'duckduck-turso-'));
  const child=spawn(process.execPath,['test-support/hrana-server.js',join(root,'primary.sqlite')],{cwd:new URL('../',import.meta.url),stdio:['ignore','pipe','pipe']});
@@ -41,10 +41,13 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
   assert.equal(store.list(owner.user.id).length,1);
   const other=await store.register('remote-other@example.test','fixture-password-123');assert.equal(store.get(other.user.id,todo.id),null);
   assert.equal(store.update(owner.user.id,todo.id,{done:true}).done,true);
+  const initialAdmin=await store.adminLogin('remote-admin@example.test','RemoteInitial123!'),admin=await store.changeRequiredAdminPassword(initialAdmin.token,'RemotePermanent123!');
+  const grant=store.adminGrantPass(admin.user,other.user.id,{version:0,requestId:'93c9f830-e141-4135-b647-017608476620',reason:'remote grant',plan:'lite',endsAt:null});assert.equal(grant.version,1);assert.equal(store.adminMembers({query:other.user.email}).items[0].access.plan,'lite');
+  store.adminSetStatus(admin.user,other.user.id,{version:1,requestId:'93c9f830-e141-4135-b647-017608476621',reason:'remote suspension',status:'suspended'});assert.equal(store.session(other.token),null);
   store.close();store=null;
   await assert.rejects(openStore(join(root,'wrong-key'),{env:{...settings,INTEGRATION_KEY_SEED:'a-different-fixture-seed-with-at-least-32-characters'},remoteFactory}),/Original token encryption key/);
   store=await openStore(join(root,'app-three'),{env:settings,remoteFactory});
-  assert.equal(store.list(owner.user.id)[0].done,true);
+  assert.equal(store.list(owner.user.id)[0].done,true);assert.equal(store.memberAccess(other.user.id).plan,'lite');assert.equal(store.adminControl(other.user.id).status,'suspended');assert.equal(store.adminSession(admin.token).user.role,'owner');assert.ok(store.adminOperationHistory().some(a=>a.operation==='member.status'));
   assert.equal(await store.deleteAccount(owner.user.id,'fixture-password-123'),true);assert.equal(store.session(owner.token),null);assert.equal(store.list(owner.user.id).length,0);
  }finally{store?.close();const exited=once(child,'exit');child.kill();await exited;await rm(root,{recursive:true,force:true});}
 });

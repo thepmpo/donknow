@@ -1,6 +1,6 @@
 import {adminStore} from './admin-store.js';
 import { featureStore } from './features-store.js';
-import {accountAccess} from './plans.js';
+import {accountPolicySchema,accountActive,memberAccess} from './account-policy.js';
 import {fail} from './secrets.js';
 import { openDatabase } from './database.js';
 import { randomUUID, randomBytes, scrypt as scryptCallback, timingSafeEqual, createHash } from 'node:crypto';
@@ -23,11 +23,13 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     CREATE TABLE IF NOT EXISTS todos (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), data TEXT NOT NULL);
     CREATE INDEX IF NOT EXISTS todos_user ON todos(user_id);
     CREATE TABLE IF NOT EXISTS migrations (name TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id));`);
+  accountPolicySchema(db);
   const features = await featureStore(db, directory, env);
   const digest = token => createHash('sha256').update(token).digest('hex');
-  const publicUser = user => ({ id: user.id, email: user.email, emailVerified: !!user.email_verified_at,plan:accountAccess().plan,planAccess:accountAccess().mode });
+  const publicUser = user => {const access=memberAccess(db,user.id);return {id:user.id,email:user.email,emailVerified:!!user.email_verified_at,plan:access.plan,planAccess:access.mode};};
   const findUser = email => db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   function newSession(user) {
+    if(!accountActive(db,user.id))throw fail(403,'이 계정은 이용이 정지되어 있어요. 고객 지원에 문의해주세요.');
     const token = randomBytes(32).toString('base64url');
     const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
     db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(Date.now());
@@ -39,6 +41,8 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
   return {
     ...features,
     ...adminStore(db),
+    memberAccess:user=>memberAccess(db,user),
+    accountActive:user=>accountActive(db,user),
     close: () => db.close(),
     async register(email, password) {
       const salt = randomBytes(16).toString('hex');
@@ -56,7 +60,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     },
     session(token) {
       if (!token || token.length > 256) return null;
-      const row = db.prepare('SELECT users.id, users.email, users.email_verified_at, sessions.expires_at FROM sessions JOIN users ON users.id = sessions.user_id WHERE token_hash = ? AND expires_at > ?').get(digest(token), Date.now());
+      const row = db.prepare('SELECT users.id, users.email, users.email_verified_at, sessions.expires_at FROM sessions JOIN active_users users ON users.id = sessions.user_id WHERE token_hash = ? AND expires_at > ?').get(digest(token), Date.now());
       return row ? { user: publicUser(row), expiresAt: row.expires_at } : null;
     },
     logout(token) { if (token) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(digest(token)); },

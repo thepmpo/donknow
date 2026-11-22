@@ -22,6 +22,8 @@ export function aiBudgetStore(db){
   },
   aiBudget(user,now=Date.now()){const v=usage(user,now);return {period:v.period,limitKrw:v.fundedMilli/1000,usedKrw:v.usedMilli/1000,remainingKrw:v.remainingMilli/1000,funded:v.fundedMilli>0,proPriceKrw:27900,automaticBilling:false};},
   reserveAiCost(user,amountKrw,now=Date.now()){
+   if(this.accountActive&&!this.accountActive(user))throw fail(403,'이 계정은 이용이 정지되어 있어요.');
+   if(this.memberAccess&&!this.memberAccess(user).chat)throw fail(403,'AI 이용권을 확인해주세요.');
    const amount=Math.ceil(amountKrw*1000);if(!positive(amount,100000000))throw exhausted();
    return tx(()=>{const u=usage(user,now);if(amount>u.remainingMilli)throw exhausted();const id=randomUUID();db.prepare("INSERT INTO ai_costs VALUES (?,?,?,?, 'reserved',?)").run(id,user,u.period,amount,now);return {id,user,amountMilli:amount};});
   },

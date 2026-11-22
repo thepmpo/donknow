@@ -27,7 +27,7 @@ export function sourceOutbox(db,box){
    return next;
   });},
   claimSourceEdit(now=Date.now()){if(now-maintenanceAt>3600000){db.prepare("DELETE FROM source_edit_outbox WHERE status IN('succeeded','failed','superseded','cancelled') AND created_at<?").run(now-7*86400000);maintenanceAt=now;}return transaction(()=>{
-   const found=db.prepare(`SELECT * FROM source_edit_outbox job WHERE (job.status='queued' OR (job.status='running' AND job.lease_until<?))
+   const found=db.prepare(`SELECT * FROM source_edit_outbox job WHERE EXISTS(SELECT 1 FROM active_users u WHERE u.id=job.user_id) AND (job.status='queued' OR (job.status='running' AND job.lease_until<?))
     AND NOT EXISTS(SELECT 1 FROM source_edit_outbox prior WHERE prior.todo_id=job.todo_id AND prior.revision<job.revision AND prior.status IN('running','unknown'))
     ORDER BY job.created_at,job.revision LIMIT 1`).get(now);
    if(!found)return null;const lease=randomUUID(),until=now+300000;

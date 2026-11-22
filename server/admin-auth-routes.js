@@ -8,7 +8,7 @@ export async function adminAuthRoute(req,path,store,mailer,json,send,limited,add
  if(req.method!=='POST')throw fail(405,'지원하지 않는 관리자 인증 요청이에요.');
  if(limited('admin-auth:'+address))throw fail(429,'요청이 많아요. 잠시 뒤 다시 시도해주세요.');
  if(path==='/api/admin/auth/logout'){store.adminLogout(adminToken(req));send(200,{ok:true},{'Set-Cookie':cookie('',secure,0)});return true;}
- const body=await json(req);if(path==='/api/admin/auth/password/change'){const result=await store.changeRequiredAdminPassword(adminToken(req),body.password);send(200,{user:result.user,expiresAt:result.expiresAt},{'Set-Cookie':cookie(result.token,secure,result.user.mustChangePassword?10*60:8*60*60)});return true;}
+ const body=await json(req);if(path==='/api/admin/auth/password/change'){const result=await store.changeRequiredAdminPassword(adminToken(req),body.password,body.currentPassword);send(200,{user:result.user,expiresAt:result.expiresAt},{'Set-Cookie':cookie(result.token,secure,result.user.mustChangePassword?10*60:8*60*60)});return true;}
  const email=emailOf(body);if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw fail(400,'관리자 이메일을 확인해주세요.');
  if(path==='/api/admin/auth/setup/send'){
   if(!mailer.configured)throw fail(503,'관리자 인증 메일 발송이 아직 설정되지 않았어요.');const job=store.adminSetupMail(email);

@@ -7,7 +7,7 @@ export function urgentStore(db,box){
  return {
   hasAssistantAlert(user,key){return !!db.prepare('SELECT 1 FROM assistant_alert_keys WHERE user_id=? AND event_key=?').get(user,key);},
   dueAssistantMonitors(now,user=null){
-   return db.prepare("SELECT s.* FROM automation_schedules s JOIN users u ON u.id=s.user_id LEFT JOIN assistant_monitors m ON m.user_id=s.user_id WHERE s.kind='briefing' AND s.enabled=1 AND u.email_verified_at IS NOT NULL AND (m.next_at IS NULL OR m.next_at<=? OR m.revision<>s.revision)"+(user?' AND s.user_id=?':'')+' ORDER BY COALESCE(m.next_at,0)').all(...(user?[now,user]:[now])).map(row=>({...box.open(row.payload),userId:row.user_id,revision:row.revision})).filter(s=>s.urgentAlerts===true).slice(0,10);
+   return db.prepare("SELECT s.* FROM automation_schedules s JOIN active_users u ON u.id=s.user_id LEFT JOIN assistant_monitors m ON m.user_id=s.user_id WHERE s.kind='briefing' AND s.enabled=1 AND u.email_verified_at IS NOT NULL AND (m.next_at IS NULL OR m.next_at<=? OR m.revision<>s.revision)"+(user?' AND s.user_id=?':'')+' ORDER BY COALESCE(m.next_at,0)').all(...(user?[now,user]:[now])).map(row=>({...box.open(row.payload),userId:row.user_id,revision:row.revision})).filter(s=>s.urgentAlerts===true).slice(0,10);
   },
   claimAssistantMonitor(item,now){return tx(()=>{
    const schedule=db.prepare("SELECT * FROM automation_schedules WHERE user_id=? AND kind='briefing' AND enabled=1 AND revision=?").get(item.userId,item.revision);

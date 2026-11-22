@@ -1,3 +1,4 @@
+import {accessFromRecord} from './account-policy.js';
 import {fail} from './secrets.js';
 import {calendarIdentifier} from './calendar-time.js';
 
@@ -8,9 +9,14 @@ export function connectionStore(db,box,transaction){
  const rows=(user,provider)=>db.prepare("SELECT * FROM integrations WHERE user_id=? AND (provider=? OR (?='google' AND substr(provider,1,7)='google:')) ORDER BY CASE WHEN provider=? THEN 0 ELSE 1 END,updated_at,provider").all(user,provider,provider,provider);
  const write=(user,key,payload,label)=>db.prepare('INSERT INTO integrations VALUES (?,?,?,?,?) ON CONFLICT(user_id,provider) DO UPDATE SET payload=excluded.payload,label=excluded.label,updated_at=excluded.updated_at').run(user,key,box.seal(payload),label.slice(0,200),new Date().toISOString());
  return {
+  connectionByKey(user,key){return open(db.prepare('SELECT * FROM integrations WHERE user_id=? AND provider=?').get(user,key));},
   connections(user,provider){return user?rows(user,provider).map(open):[];},
   connection(user,provider,id){return !user?null:id==null?open(db.prepare('SELECT * FROM integrations WHERE user_id=? AND provider=?').get(user,provider)):rows(user,provider).map(open).find(r=>r.connectionId===id)??null;},
-  connectionSnapshot(user){const value={google:[],slack:[],notion:[],naver:[]};if(user)for(const row of db.prepare('SELECT * FROM integrations WHERE user_id=? ORDER BY CASE WHEN provider=\'google\' THEN 0 ELSE 1 END,updated_at,provider').all(user)){const provider=row.provider.startsWith('google:')?'google':row.provider;if(value[provider])value[provider].push(open(row));}return value;},
+  connectionSnapshot(user){
+   const value={google:[],slack:[],notion:[],naver:[],access:accessFromRecord({pass_history:0})};if(!user)return value;const now=new Date().toISOString();
+   const rows=db.prepare("SELECT * FROM (SELECT user_id,provider,payload,label,updated_at,NULL AS active_pass,NULL AS pass_history FROM integrations WHERE user_id=? UNION ALL SELECT ?,'__access__',NULL,NULL,NULL,(SELECT json_object('plan',plan,'endsAt',ends_at) FROM account_entitlements WHERE user_id=? AND revoked_at IS NULL AND starts_at<=? AND (ends_at IS NULL OR ends_at>?) ORDER BY created_at DESC,id DESC LIMIT 1),EXISTS(SELECT 1 FROM account_entitlements WHERE user_id=?)) ORDER BY CASE WHEN provider='google' THEN 0 ELSE 1 END,updated_at,provider").all(user,user,user,now,now,user);
+   for(const row of rows){if(row.provider==='__access__'){value.access=accessFromRecord(row);continue;}const provider=row.provider.startsWith('google:')?'google':row.provider;if(value[provider])value[provider].push(open(row));}return value;
+  },
   saveConnection(user,provider,payload,label){const matching=provider==='google'&&rows(user,provider).find(row=>open(row).connectionId===payload.connectionId);write(user,matching?.provider??provider,payload,label);},
   saveGoogleAccount(user,payload,label){return transaction(()=>{const all=rows(user,'google'),match=all.find(row=>open(row).accountId===payload.accountId);if(!match&&all.length>=10)throw fail(400,'Google 계정은 최대10개까지 연결할 수 있어요.');write(user,match?.provider??(all.length?'google:'+payload.connectionId:'google'),payload,label);});},
   invalidateOAuthStates(user,provider,id){const isDefault=this.connection(user,provider)?.connectionId===id;for(const row of db.prepare('SELECT hash,payload FROM oauth_states WHERE user_id=? AND provider=?').all(user,provider)){const state=box.open(row.payload);if(id==null||state.expectedConnectionId===id||isDefault&&!state.mode)db.prepare('DELETE FROM oauth_states WHERE hash=? AND user_id=?').run(row.hash,user);}},
