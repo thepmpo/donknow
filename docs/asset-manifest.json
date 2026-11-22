@@ -1,21 +1,21 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "5c13cf89ee1e1549266427a925d98c99e987bd37",
-  "assetCommit": "5c13cf89ee1e1549266427a925d98c99e987bd37",
-  "imageCount": 1483,
+  "codeCommit": "a636f59a66432ac86eb37d95f9704bbec69fa23c",
+  "assetCommit": "a636f59a66432ac86eb37d95f9704bbec69fa23c",
+  "imageCount": 1542,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 94294,
-      "sha256": "f481514d4071a65aaedc81827b5729c9ee7db59398bfc71fa3d07cec8e1ba0ee",
+      "bytes": 97281,
+      "sha256": "c5943004a6ee13378ca8411e3ee6edc5eaf641346fbcbced32c155068389eb03",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-briefing.png"
     },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-todos.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 63016,
-      "sha256": "dadf8aafd11da5f69511b5ca18ed29d42e3de5eb2384e8366e6c0ec1a43e5b8b",
+      "bytes": 69802,
+      "sha256": "19d8ba98fadf3d2a045e61338344c7beaea70cefdfd38d366b64690808e8e1aa",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-todos.png"
     },
     {
@@ -1795,6 +1795,146 @@
       "bytes": 36667,
       "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
       "import_path": "images/artifacts__todo-organize-2026-11-16__app-regression__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-account-settings.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 43350,
+      "sha256": "f24aa3c976607343c3485f72d7fb596724c95bd2efa26d4123a82668fe3ce794",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-account-settings.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-apple-reminders.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 66481,
+      "sha256": "1a90ca7fefd824fd107df1c42807b8c87177cb313e5718c16deee8a8345c30e8",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-apple-reminders.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-assistant-action-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 39247,
+      "sha256": "8b86606e756f06d4a5405e9a05455698200061ad1a0f2c0a6d3cd7ea5a2f1269",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-assistant-action-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-assistant-ai-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 35129,
+      "sha256": "3ef17e1793a76106f650575761f1678c7605fe004374143a61f21d891fc123b5",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-assistant-ai-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-auth.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 35193,
+      "sha256": "89b6a0e2b6d06862805fd31537e1d2fb0c3aca69d602ef5c8891fedf8daf5f26",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-auth.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-calendar-events-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 32402,
+      "sha256": "7e41acc20d9977275081ac362a9fe183221369b88d5bd0d4a3c102205002f864",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-calendar-events-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-calendar.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 33102,
+      "sha256": "ffede39b1a127582f156e1c1c706f81044fd556c548d59a140bde6a3d05dc58d",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-calendar.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-completed-reference-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 48579,
+      "sha256": "d46dc8fcc41303ac64da0f0266905a60816534225f45ef4da8af143ecaed318a",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-completed-reference-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-duckduck.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 29535,
+      "sha256": "a9d25f8c20769479b94792c15a5b4c7afcb39f434a894d514dee99ebe593353a",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-duckduck.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-google-tasks-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 47433,
+      "sha256": "a60a8c1b3844ff523dec548971b3967d6dc327157d516be11b6b1900ff883250",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-google-tasks-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-kakao-share.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 43532,
+      "sha256": "9be78070df39b44f633e85254c98773b8750114df988e6969fd3a08b60a2d98f",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-kakao-share.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-log.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 32847,
+      "sha256": "f948d530709e6f73c2e8dfcf9f313efb47e2f040b9d04bd9d6b5488b1b25cb1d",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-log.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-notes-fixture.png",
+      "category": "체험 데이터 메모/시트 검증",
+      "bytes": 38166,
+      "sha256": "73267831d61af818237245dcab7e63773e6878fe209221e51587c5d30ba571c1",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-notes-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-personal-export.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 38846,
+      "sha256": "f4cf89b29148370e601115d355856fc2172018e44124bf1806399d380fc442a3",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-personal-export.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-profile.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 42860,
+      "sha256": "e03966703eb70775b629b36ca4bd66eeb7efb2715aa31e533a477015c63ebbca",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-profile.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-reminder.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 47172,
+      "sha256": "ff2757704cea6d26fa77705ca3974daf7b7d291db63b695447179ed5a367241e",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-reminder.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-services.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 40097,
+      "sha256": "81ada64fee7420498683207a73ffcaff85d3530a16d72878a6796636d02c1778",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-services.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-task-sync-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 65689,
+      "sha256": "d19ab732e70657a7dd8a487facadfe70bbff16fc4c3bcc4652a6944f96a6bf61",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-task-sync-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-todos.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 28904,
+      "sha256": "4b555fd1015f90d22967a969891500df6f1bab680736f05ef0ef7027c388c81b",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-todos.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/regression/mobile-verification.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 36667,
+      "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
+      "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-verification.png"
     },
     {
       "path": "artifacts/assistant-agent-2026-11-15/current/01-ordinary-memory-opt-in.png",
@@ -5796,43 +5936,43 @@
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-calendar.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 63325,
-      "sha256": "099055be0369890788e9e9c5bc1b2c401a7a8e84a0d284058781591051acdc66",
+      "bytes": 67493,
+      "sha256": "9df06f7011c75bc39010128156c434ab516283f34a271a3b79b3c9f086bf05a1",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-calendar.png"
     },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-chat.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 82963,
-      "sha256": "38509f2b011bd6f9bb6fff48bac420b6bd11dc5c85d458c378e1aeb2531ab73c",
+      "bytes": 93391,
+      "sha256": "8107ea7f8d3c39a0ac84bb5b18d5ccd670ebb485860e2d65e2b3bdf1a37ada66",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-chat.png"
     },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-dark.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 93967,
-      "sha256": "0ef54a4b591fa59d7a47d8f049ca4752ae26f008c1e432369261e3293c0ce4f2",
+      "bytes": 97118,
+      "sha256": "b7e67436d2209d2f9f4e1c5da5e9ee756407bc64d415e69d6bf8d50d4ecc2e9d",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-dark.png"
     },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-empty.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 64804,
-      "sha256": "1449139e7c3cfaa57eac2ce430b64ff8b80857daf1d07560482b071262ebc9ce",
+      "bytes": 68227,
+      "sha256": "46f0d3ef8f32b6d43e30a48352480f9585cc4cb3f378b710fcf3a1725dd2e7f9",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-empty.png"
     },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-me.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 72459,
-      "sha256": "d50fca4f22d26305d432b5258519483d1eb36417e3ee68f9ecd6113cb3fdebac",
+      "bytes": 76359,
+      "sha256": "524d9934996d96674badedf5a78cf1b7e9354315dd61b52b8bafe44735c1bc25",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-me.png"
     },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/phone-unchanged.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
-      "bytes": 49226,
-      "sha256": "373075805ee8360edefbc6502cfcb6ce67784d06d83c693bcf339b276c7db65e",
+      "bytes": 51642,
+      "sha256": "2b36df4a376c095bb0ea4f05521871b91ad9a164b69383ad8cc3be94646401b4",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__phone-unchanged.png"
     },
     {
@@ -10335,6 +10475,279 @@
       "bytes": 17449,
       "sha256": "d06909105ea8a75dcd41b307592882187d30fa54e2070e370d7cac234ebfcee6",
       "import_path": "images/artifacts__ux-fixes-2026-11-12__19-small-editor-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/01-clean-adaptive-month.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 155138,
+      "sha256": "ea4c1ddbf30fbac20075c4d85f7434424f0bb9e92d6d445f5076c51490e4d6af",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__01-clean-adaptive-month.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/02-day-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 160008,
+      "sha256": "c573de05de6df6c03e820da7449c12ca4445613a00f9b65c07614913b1b740c6",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__02-day-detail.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/03-event-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 144823,
+      "sha256": "fbddd71cd226975d897e01b88d7fdededa6269adac8dbfc1ad3ae94f5588a0ca",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__03-event-detail.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/04-write-preview.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 139875,
+      "sha256": "cf9f32e2e36e499ebc76b82060eb79c45c9eaeeb2924f7ba2ca374be0c47ecd9",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__04-write-preview.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/05-all-day-editor.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 132299,
+      "sha256": "13df66233d79b3be6f807d551226b3109dee00b2a943d727d47555c8c0b2b91f",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__05-all-day-editor.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/06-day-agenda.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 170279,
+      "sha256": "198f9d5b01119cc52632386d67f49bbcdc304817739a8b8b9a016f68526d77ab",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__06-day-agenda.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/07-search-scope.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 162969,
+      "sha256": "b33ccf6a45faa75fd11f5978249d8688732af77a0b333ec0fbea94e2a5537452",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__07-search-scope.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/08-calendar-sources.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 161604,
+      "sha256": "5baaf07289d8bc4c372f6ac20e86d55c55ce2319b8c64d5c1ef797d24542f58f",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__08-calendar-sources.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/09-read-only-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 155321,
+      "sha256": "9cf7cde6e3cff7f0534fd51ccc3ef551010f8a4b782d92a9a09d55c6d1c24847",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__09-read-only-event.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/10-partial-state.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 163874,
+      "sha256": "74e140773ee6aa7fe564bb89da57bf3032ec224070879c5a72f8e8e8f0adc862",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__10-partial-state.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/11-error-visible-with-cache.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 163874,
+      "sha256": "74e140773ee6aa7fe564bb89da57bf3032ec224070879c5a72f8e8e8f0adc862",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__11-error-visible-with-cache.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/12-phone-320.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 91890,
+      "sha256": "a34e299b4e49c599b89d920f05b1c8fca818e2bb919859e0f335137b349f39d8",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__12-phone-320.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/12-phone-430.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 107438,
+      "sha256": "f81ed87bae77356c49db17e5fd5c5f99dbac0b4e00c2aaa106673bc5613fc613",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__12-phone-430.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/13-large-text.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 118745,
+      "sha256": "dac41d4f66e0bf0531ddc207da34ee8f2b3d2dd6769f0af95015bd4e939c7165",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__13-large-text.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/14-loading-with-cache.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 163874,
+      "sha256": "74e140773ee6aa7fe564bb89da57bf3032ec224070879c5a72f8e8e8f0adc862",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__14-loading-with-cache.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/15-unknown-write-no-resend.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 188577,
+      "sha256": "c5478b2e1751aad5ffc24467fdd6959db4e4034fff0f9cd5e0ca9d5872869a6a",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__15-unknown-write-no-resend.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/16-dark-month-reference.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 91836,
+      "sha256": "934d747b809c8848999f6832c1bf575ab81fc005b72916bf1b4bf306685dd220",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__16-dark-month-reference.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/17-dark-event-reference.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 81760,
+      "sha256": "e673553db4673512fe1c8462b6d597266e99d72638a16233defd717c21c7038f",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__17-dark-event-reference.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/18-light-month-reference.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 93146,
+      "sha256": "e03e5981a11ebd0bf0c8c9a00a445ae44c17a795d1340fa7e0f571f0ec5a6613",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__18-light-month-reference.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/19-non-json-error-keeps-events.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 163874,
+      "sha256": "74e140773ee6aa7fe564bb89da57bf3032ec224070879c5a72f8e8e8f0adc862",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__19-non-json-error-keeps-events.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/calendar/20-fortnight-expanded.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 141647,
+      "sha256": "2d966abfd7416ceaf49f32b5880674391772ae973d3d5f6aa828b43f823e0134",
+      "import_path": "images/artifacts__web-complete-2026-11-22__calendar__20-fortnight-expanded.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/oauth-google-connected-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 85136,
+      "sha256": "8a50046ab61471119e080492f30ac2bfb9b47f9c324271ef354dabe05156b6d9",
+      "import_path": "images/artifacts__web-complete-2026-11-22__oauth-google-connected-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/oauth-notion-connected-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 77317,
+      "sha256": "1ba79d92390b53b5b09d6cf8be71996dac1641860ee944615389ae34b9802aab",
+      "import_path": "images/artifacts__web-complete-2026-11-22__oauth-notion-connected-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/oauth-slack-connected-fixture.png",
+      "category": "모의 응답 테스트 화면",
+      "bytes": 79130,
+      "sha256": "7f4319d4da78f3bf98d4c341334841488c2601ec89cd26ad002fcf38578bdb68",
+      "import_path": "images/artifacts__web-complete-2026-11-22__oauth-slack-connected-fixture.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/real-api-chat-unavailable.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 76717,
+      "sha256": "9ea6ba1504c8930a5659ac41d72e4e1844899ccddb27f6db55d260d064706161",
+      "import_path": "images/artifacts__web-complete-2026-11-22__real-api-chat-unavailable.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/real-api-google-setup.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 89009,
+      "sha256": "535cd7874112d4169417041c333e2c595259de96a6c273b8faa93ebe6ad3b34e",
+      "import_path": "images/artifacts__web-complete-2026-11-22__real-api-google-setup.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/real-api-log.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 57495,
+      "sha256": "b4758f331996e3bc644df701fd6dc82b1e4c75aa1f2c00799a628eb4fddede51",
+      "import_path": "images/artifacts__web-complete-2026-11-22__real-api-log.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/real-api-schedules.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 96130,
+      "sha256": "7521c3533009297a344241b74ca1b9a74b061d6f47a24309c54c99a04b248acb",
+      "import_path": "images/artifacts__web-complete-2026-11-22__real-api-schedules.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/15-long-press-left-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43965,
+      "sha256": "e0ff59800ad193c45122344b4e0f5cc284ef0a44acd368fe0e1436cbce0dc5c9",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__15-long-press-left-calendar.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/16-long-press-right-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 37251,
+      "sha256": "9599ba72ba20a2ff877a3f861a9d1e54157afd35f26496895087520da3d864de",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__16-long-press-right-calendar.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/17-folded-long-press-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25282,
+      "sha256": "791d8f5677fc1e89c493cdeae25c95bc42693142d295facc5c53a97ec68d48ae",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__17-folded-long-press-calendar.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/18-year-left-calendar-right-todos.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 94573,
+      "sha256": "8104694b0aa8a793fe5f1c3957fc6a9165756735a31cf3578a42af302a59d5dd",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__18-year-left-calendar-right-todos.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/19-year-right-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 93502,
+      "sha256": "cb67f9738e0bb5cd73f0807c272095ddf599f7d0bbc634ac811cd61960f1f723",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__19-year-right-calendar.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/20-year-portrait.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 83422,
+      "sha256": "787a1dc926b456fd8a737f46e658603547cf75572e84786ec680ccf33206df48",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__20-year-portrait.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/21-year-folded.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 68568,
+      "sha256": "89afee07651899fe6bec41a2b1f65d21d7f104bee026a865212023f3b5ca254c",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__21-year-folded.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/22-year-duo-motion.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 90760,
+      "sha256": "c2a6978799788c5ccd7280f6349a92733f59ef7b7efc25762ae68aec36838183",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__22-year-duo-motion.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/23-year-design-comparison-state.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 98063,
+      "sha256": "d1095e1ac3dec7cc99524568a044e6b2869442b499275ca892d7adf5d54c3a8e",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__23-year-design-comparison-state.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/24-pane-edge-scrollbar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 97427,
+      "sha256": "59dd8af8570c8fa4e3bd44b98651a06c0d8df3c5d9cbea078ea963f5ced64479",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__24-pane-edge-scrollbar.png"
+    },
+    {
+      "path": "artifacts/web-complete-2026-11-22/shared-geometry/25-compact-duo-chat.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15755,
+      "sha256": "8382e17892fc2ea6ac8f1f0044697a1a39e3438863dec8b98b93d75c1b344ce0",
+      "import_path": "images/artifacts__web-complete-2026-11-22__shared-geometry__25-compact-duo-chat.png"
     },
     {
       "path": "mobile/assets/android-icon-background.png",
