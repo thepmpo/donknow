@@ -1,3 +1,4 @@
+import {adminAuthStore} from './admin-auth-store.js';
 import {accountAccess} from './plans.js';
 import {sourceOutbox} from './source-outbox.js';
 import {aiBudgetStore} from './ai-budget.js';
@@ -52,6 +53,7 @@ export async function featureStore(db, directory, env = process.env) {
     const result = await scrypt(password, row.salt, 64); return timingSafeEqual(result, Buffer.from(row.password_hash, 'hex'));
   }
   return {
+    ...adminAuthStore(db,box,env),
     ...aiBudgetStore(db),
     ...calendarDetailsStore(db,box),
     ...connectionStore(db,box,transaction),

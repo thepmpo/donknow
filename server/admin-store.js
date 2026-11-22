@@ -5,7 +5,9 @@ import {fail} from './secrets.js';
 // Metadata only: never select password/session material, encrypted payloads or user content.
 export function adminStore(db){
  db.exec(`CREATE TABLE IF NOT EXISTS admin_access_log(id TEXT PRIMARY KEY,actor_id TEXT REFERENCES users(id) ON DELETE SET NULL,operation TEXT NOT NULL,subject_id TEXT REFERENCES users(id) ON DELETE SET NULL,created_at INTEGER NOT NULL);
- CREATE INDEX IF NOT EXISTS admin_access_created ON admin_access_log(created_at);`);
+ CREATE INDEX IF NOT EXISTS admin_access_created ON admin_access_log(created_at);
+ CREATE TABLE IF NOT EXISTS admin_operator_access_log(id TEXT PRIMARY KEY,actor_id TEXT REFERENCES admin_accounts(id) ON DELETE SET NULL,operation TEXT NOT NULL,subject_id TEXT REFERENCES users(id) ON DELETE SET NULL,created_at INTEGER NOT NULL);
+ CREATE INDEX IF NOT EXISTS admin_operator_access_created ON admin_operator_access_log(created_at);`);
  const toMember=row=>({id:row.id,email:row.email,joinedAt:row.created_at,emailVerified:!!row.email_verified_at,status:row.email_verified_at?'verified':'unverified',access:accountAccess()});
  const member=id=>{if(typeof id!=='string'||!/^[a-f0-9-]{36}$/.test(id))throw fail(404,'회원을 찾을 수 없어요.');const row=db.prepare('SELECT id,email,created_at,email_verified_at FROM users WHERE id=?').get(id);if(!row)throw fail(404,'회원을 찾을 수 없어요.');return toMember(row);};
  return {
@@ -25,7 +27,7 @@ export function adminStore(db){
    const budget=db.prepare('SELECT (SELECT COALESCE(SUM(credit_milli),0) FROM ai_funding WHERE user_id=? AND period=?) AS funded,(SELECT COALESCE(SUM(amount_milli),0) FROM ai_costs WHERE user_id=? AND period=?) AS used,(SELECT COALESCE(SUM(turns),0) FROM agent_usage WHERE user_id=? AND substr(day,1,7)=?) AS turns').get(id,month,id,month,id,month);
    return {...current,todos:counts,entitlements:[{id:'current-access-policy',plan:current.access.plan,mode:current.access.mode,status:'active',source:'current-policy',startsAt:null,endsAt:null}],billing:{available:false,items:[],reason:'payment-integration-not-configured'},connections,sync:{source:source.map(r=>({status:r.status,count:r.count})),tasks:tasks.map(r=>({status:r.status,count:r.count}))},usage:{period:month,agentTurns:budget.turns,limitKrw:budget.funded/1000,usedAndReservedKrw:budget.used/1000,remainingKrw:Math.max(0,budget.funded-budget.used)/1000}};
   },
-  adminAudit(){return {items:db.prepare('SELECT a.id,a.operation,a.subject_id AS subjectId,a.created_at AS createdAt,u.email AS actorEmail FROM admin_access_log a LEFT JOIN users u ON u.id=a.actor_id ORDER BY a.created_at DESC,a.id LIMIT 50').all()};},
-  recordAdminAccess(actor,operation,subjectId=null){if(!['session','overview','members','member','audit'].includes(operation))throw fail(400,'잘못된 운영 조회예요.');db.prepare('INSERT INTO admin_access_log VALUES (?,?,?,?,?)').run(randomUUID(),actor,operation,subjectId,Date.now());}
+  adminAudit(){return {items:db.prepare("SELECT a.id,a.operation,a.subject_id AS subjectId,a.created_at AS createdAt,u.email AS actorEmail,'admin' AS identity FROM admin_operator_access_log a LEFT JOIN admin_accounts u ON u.id=a.actor_id UNION ALL SELECT a.id,a.operation,a.subject_id AS subjectId,a.created_at AS createdAt,u.email AS actorEmail,'legacy-duck' AS identity FROM admin_access_log a LEFT JOIN users u ON u.id=a.actor_id ORDER BY 4 DESC,1 LIMIT 50").all()};},
+  recordAdminAccess(actor,operation,subjectId=null){if(!['session','overview','members','member','audit'].includes(operation))throw fail(400,'잘못된 운영 조회예요.');db.prepare('INSERT INTO admin_operator_access_log VALUES (?,?,?,?,?)').run(randomUUID(),actor,operation,subjectId,Date.now());}
  };
 }

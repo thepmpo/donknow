@@ -1,9 +1,10 @@
 import {fail} from './secrets.js';
-export function isAdmin(user,env=process.env){
- if(!user?.emailVerified||typeof env.DUCK_ADMIN_EMAILS!=='string'||env.DUCK_ADMIN_EMAILS.length>6000)return false;
+export function configuredAdminEmails(env=process.env){
+ if(typeof env.DUCK_ADMIN_EMAILS!=='string'||env.DUCK_ADMIN_EMAILS.length>6000)return [];
  const emails=env.DUCK_ADMIN_EMAILS.split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
- return emails.length>0&&emails.length<=20&&emails.every(v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))&&emails.includes(user.email.toLowerCase());
+ return emails.length>0&&emails.length<=20&&emails.every(v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))?[...new Set(emails)]:[];
 }
+export function isAdmin(user,env=process.env){return user?.identity==='admin'&&user.emailVerified===true&&configuredAdminEmails(env).includes(user.email.toLowerCase());}
 export function adminRoute(req,path,url,user,store,send,env=process.env){
  if(!path.startsWith('/api/admin/'))return false;
  if(!isAdmin(user,env))throw fail(403,'운영자 권한이 있는 이메일 인증 계정으로 로그인해주세요.');
