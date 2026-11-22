@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "fc69ded6b9cf91cb69a0355529125f4f74527e1b",
-  "assetCommit": "fc69ded6b9cf91cb69a0355529125f4f74527e1b",
-  "imageCount": 1586,
+  "codeCommit": "69f855fc664efffa0506282dcfb0843b85caeb19",
+  "assetCommit": "69f855fc664efffa0506282dcfb0843b85caeb19",
+  "imageCount": 1598,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -2040,6 +2040,90 @@
       "bytes": 40416,
       "sha256": "e83054ddb31e6ba607a7bfe718e3924c52642f27b22231b9798855dd0838aeab",
       "import_path": "images/artifacts__admin-preview-2026-11-22__narrow.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/audit.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 92358,
+      "sha256": "09a6496c7aa4ae2602cbec531fd1e6e61e9f9bdf4c4a0070018a413a63aba0ec",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__audit.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/connections.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 71547,
+      "sha256": "17fc63a1dc422757d466e8ffe6cd59f9419ecb527e51f9d85338acc4f25ad3b4",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__connections.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/login-only.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 23773,
+      "sha256": "0a745384fecbb39cbc0fff07e50e891960fceb7cc96eb665eb50d6b3b781ec21",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__login-only.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/member-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 75259,
+      "sha256": "84aa01d174439db51c90902bcc2c4fd03a5262c993335679aaeb552d76ebcf92",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__member-detail.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/members.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 56195,
+      "sha256": "978d374938252a267169fe17be870d4f8b0431134cd2508c7610c4a62de051d6",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__members.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/narrow.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40500,
+      "sha256": "7c4e87edc3e4a7e36449fd516959edef772ac8dab34acfff1e58bc7172d916b1",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__narrow.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/ordinary-account-denied.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 30339,
+      "sha256": "5fc14f987015b632f4d10fda3df19ff15fef5530d200d2fedef6965253fe2c51",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__ordinary-account-denied.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/overview.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 57056,
+      "sha256": "fbaa0c41a2deefb9224da4ffa7c5dc962698c5f68fa58bcd3f850d3b6a272462",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__overview.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/passes.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 61096,
+      "sha256": "62190a140ca85e98eee5efa7dde76551361576d8578fe7d404ce064be3540b5c",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__passes.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/payments-unavailable.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 55137,
+      "sha256": "3d78224f23bb71a065d4c8ad450ce99b1d2abef05e286b215b0afda1200a0e4c",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__payments-unavailable.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/setup.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 38151,
+      "sha256": "78e35bec3321543f2fbfa4d843af3328e4a94bc71a69f0cc010bf6586fca09ab",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__setup.png"
+    },
+    {
+      "path": "artifacts/admin-separate-login-2026-11-22/usage.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 70671,
+      "sha256": "3d2b0210503e84a473c9cd07578674d1255498d6df072c8ce99c6d28b56f78d4",
+      "import_path": "images/artifacts__admin-separate-login-2026-11-22__usage.png"
     },
     {
       "path": "artifacts/assistant-agent-2026-11-15/current/01-ordinary-memory-opt-in.png",
