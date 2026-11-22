@@ -674,9 +674,9 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 새 채팅에서 바로 사용할 지침
 
-이 문서를 duckduck 프로젝트의 인계 자료로 읽고 이어서 작업하세요. continuation-guide.md → liquid-glass-navigation.md → 공통 원칙v1.1을 먼저 읽고3절 현재 상태·14절 변경·실제 GitHub main을 대조하세요. 최초 이름 dot이 아닌 duckduck/덕을 쓰고, 사용자의 기존 AI 설정은 복사하지 않습니다. AI·Slack 구현은 최신 사용자 요청으로 보류를 해제했고 서버 키·권한·실계정 확인은 남아 있습니다. 붙여넣기 목록 초안·동의 기반 AI 분석은 구현되었고 채팅 중심 통합은 최신 사용자 방향입니다. 예약 브리핑·날씨는 2026-11-13 사용자 정정으로 문서 대기를 해제했고 docs/scheduled-messages-2026-11-13.md를 따릅니다. Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오른쪽 열**에 내비게이션을 둔다. 접힘·펼침 모두 그 열 아래에 세로5개 탭, 카메라/상태 표시 아래에는 실제 복귀·닫기 경로에서만 원형 ‹를 표시한다. 상·하 안전 여백8pt,64×272pt 묶음·52pt 조작·28pt 아이콘을 유지한다. 펼친 가로 화면은 왼쪽 캘린더 고정·오른쪽 최초 Todo이며 탭 선택은 오른쪽만 바꾼다. 펼친 세로 화면과 접힌 화면은 선택 중인 화면 하나를 본문 전체에 표시한다. 회전·접힘 시 현재 탭·입력·편집·캘린더 월·스크롤을 보존한다. 일반 iPhone은 기존 하단 탭이다. 기존 5개 탭·단순한 Todo·42칸 달력·스와이프/3초 되돌리기·완료 기록 참고 규칙을 보존하세요. 최신 TDS 스타일과 동작 줄이기 지원을 유지하세요.
+docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-START-HERE.md → docs/docen-decisions-register.md → docs/docen-product-build-playbook.md → docs/docen-document-map.md 및 적용 AGENTS.md를 읽으세요. 현재 표시 이름은 소문자 docen이며 새 도메인은 소개만 공개하고 웹서비스는 미오픈입니다. 기존 테스트 주소·회원·DB·암호화 키·서명·OAuth·기기 공간을 보존하세요. Resend 도메인/실제 인증메일은 사용자 완료 확인이 있고 DNS A/CNAME은 저장됐으나 마지막 root A·Render TLS는 미확인입니다. 오래된 이름·수동 인증·원본 수정 금지·요금/빌드 번호를 최신 기준으로 재적용하지 마세요.
 
-다음 실행 순서는 최신 공개 댓글 확인 → 소스/실제 Render·iOS 빌드 버전 대조 → 요청된 수정 또는 새 iOS 빌드·TestFlight 실기기 검증입니다. Expo 프로젝트는 thepmpo/duckduck-donknow이고 앱 폴더는 mobile입니다. 사용자는 이후 디자인·메모·카운트다운 빌드의 Apple 업로드도 확인했으며 실제21번43378603322·1f7dc5d의 무료Mac/Apple업로드와 사용자Glass외형확인을 확인했습니다. 이번 수정은21이후이며Render 최신배포는각기록의실제ID/SHA로확인합니다. 이전 빌드·배포 설명과 구분하고 실계정 AI 가동은 별도로 확인합니다. App Store 공개 완료로 오해하지 마세요. Google OAuth 테스트 계정 제한과 일반 사용자 공개 승인도 별도 확인 대상입니다.
+요청된 작업을 진행하기 전에 Git 상태·분야별 계약·실제 코드·필요한 운영 증거를 확인하세요. 무료 Pro·PG 결제·AI 원가 예산은 별개입니다. 기존 무료 인프라/수동 native 빌드를 유지하고 문서화 때문에 새 앱 빌드·모델 과금·PG·서비스 출시를 실행하지 마세요. 합성 웹/기하 검증과 실제 EventKit·OAuth·모델 품질·Apple 처리/설치를 분리하세요. 이미 끝난 설정을 재시작하거나 TinyFish 원격 재로그인을 반복 요구하지 마세요.
 
 실제 작업에는 연결된 GitHub 저장소 소스와 필요한 도구/계정 접근이 추가로 필요합니다. 문서를 읽는 것만으로 코드·계정 권한이 자동 제공되지 않습니다. 읽기/브라우저 도구가 없어 문서를 열지 못하면 HTML 파일 또는 본문을 요청하세요. 로그인 비밀번호·토큰은 채팅으로 요청하지 말고, 계정 인증은 사용자가 해당 서비스의 보안 화면에서 수행하게 하세요. 접근 실패를 서비스 장애로 단정하지 마세요.
 
@@ -765,9 +765,21 @@ def appendix(path):
                 return f'{image_prefix}[{label}]({destination})'
             line=re.sub(r'(!?)\[([^\]]+)\]\(([^)]+)\)',link,line)
         lines.append(line)
-    return f'### 原文 / {path}\n\n'+'\n'.join(lines)
+    return f'### 원문 / {path}\n\n'+'\n'.join(lines)
 
 documents=['docs/admin-mail-diagnosis-2026-11-22.md','docs/admin-separate-login-2026-11-22.md','docs/admin-live-2026-11-22.md','docs/web-format-correction-2026-11-22.md','docs/web-complete-2026-11-22.md','docs/desktop-workspace-2026-11-22.md','docs/desktop-workspace-design-qa.md','docs/calendar-week-day-stability-2026-11-16.md','docs/reminders-import-stability-2026-11-16.md','docs/briefing-cards-2026-11-16.md','docs/todo-project-research-2026-11-16.md','docs/ai-connection-investigation-2026-11-15.md','docs/things-source-repair-2026-11-15.md','docs/things-source-repair-qa-2026-11-15.md','docs/connection-stability-2026-11-15.md','docs/assistant-ux-repair-2026-11-15.md','docs/assistant-ux-repair-audit-2026-11-15.md','docs/me-simple-2026-11-15.md','docs/me-simple-qa-2026-11-15.md','docs/native-build-38-fix-2026-11-15.md','docs/native-build-fix-2026-11-15.md','docs/dots-parity-2026-11-15.md','docs/dots-full-qa-2026-11-15.md','docs/dots-full-setup-2026-11-15.md','docs/assistant-agent-2026-11-15.md','docs/assistant-agent-qa-2026-11-15.md','docs/assistant-provider-setup.md','docs/background-controls-2026-11-15.md','docs/assistant-briefing-2026-11-15.md','docs/assistant-briefing-qa-2026-11-15.md','docs/editor-viewport-2026-11-15.md','docs/editor-viewport-qa-2026-11-15.md','docs/keyboard-device-2026-11-14.md','docs/keyboard-device-qa-2026-11-14.md','docs/interaction-repair-2026-11-14.md','docs/interaction-repair-qa-2026-11-14.md','docs/calendar-comfort-2026-11-14.md','docs/calendar-comfort-qa-2026-11-14.md','docs/chat-checklist-2026-11-14.md','docs/chat-checklist-qa-2026-11-14.md','docs/keyboard-done-2026-11-14.md','docs/keyboard-done-qa-2026-11-14.md','docs/multi-google-clean-chat-2026-11-14.md','docs/multi-google-clean-chat-qa-2026-11-14.md','docs/chat-calendar-simplicity-2026-11-14.md','docs/chat-calendar-simplicity-qa-2026-11-14.md','docs/me-settings-2026-11-14.md','docs/me-settings-qa-2026-11-14.md','docs/me-product-review-2026-11-14.md','docs/navigation-refinement-2026-11-14.md','docs/navigation-refinement-qa-2026-11-14.md','docs/profile-flow-audit-2026-11-14.md','docs/interaction-polish-2026-11-14.md','docs/interaction-polish-qa-2026-11-14.md','docs/calendar-events-motion-2026-11-14.md','docs/calendar-events-motion-qa-2026-11-14.md','docs/calendar-year-overview-2026-11-14.md','docs/calendar-year-qa-2026-11-14.md','docs/calendar-navigation-2026-11-14.md','docs/calendar-navigation-qa-2026-11-14.md','docs/calendar-navigation-review-2026-11-14.md','docs/calendar-viewport-2026-11-13.md','docs/calendar-viewport-qa-2026-11-13.md','docs/calendar-refinement-2026-11-13.md','docs/calendar-refinement-qa-2026-11-13.md','docs/duck-website-brief-2026-11-13.md','docs/calendar-apple-reference-2026-11-13.md','docs/calendar-workspace-2026-11-13.md','docs/calendar-ux-audit-2026-11-13.md','docs/continuation-guide.md','docs/liquid-glass-navigation.md','docs/navigation-glass-correction-2026-11-13.md','docs/functional-completion-2026-11-13.md','docs/scheduled-messages-2026-11-13.md','docs/ux-ui-fixes-2026-11-12.md','docs/ux-ui-audit-2026-11-12.md','docs/functional-workstream-2026-11-12.md','docs/assistant-chat-feedback-2026-11-12.md','docs/product-design-chat-audit-2026-11-12.md','docs/release-readiness-2026-11-12.md','docs/iphone-duo-support.md','docs/tooling-and-documentation.md','docs/figma-baseline-review-2026-11-12.md','docs/duckduck-privacy-policy-draft.md','docs/duckduck-support-draft.md','docs/ai-office-capabilities.md','docs/ai-office-role-guides.md','docs/ai-office-shared-work.md','docs/ai-office-development.md','docs/ai-office-phone.md','docs/ai-office-control.md','docs/ai-office-macos.md','docs/ai-office-usage.md','docs/ai-office-login-repair.md','docs/ai-office-jjk-theme.md','docs/ai-office-local-install.md','docs/ai-office-handoff.md','docs/ai-office-knowledge.md','docs/ai-office-ready.md','docs/ai-office-approval-gate.md','docs/ai-office-setup.md','docs/ai-office-tone-summary.md','docs/ai-office-ux-analysis.md','docs/reusable-product-design-principles.md','docs/current-ui-comparison.md','docs/workspace-studio-evaluation.md','docs/assistant-actions.md','docs/testflight-automation.md','docs/product-direction.md','docs/test-deployment.md','docs/connect-google.md','docs/remaining-activation.md','docs/remote-recovery.md','docs/operations.md','docs/public-project.md','docs/daily-document-automation.md','docs/ios-release.md','docs/design-guide.md','docs/tds-analysis.md','mobile/README.md']
+# Current handoff entry and recently added contracts must travel with legacy history.
+current_documents = [
+    'docs/DOCEN-START-HERE.md', 'docs/docen-decisions-register.md',
+    'docs/docen-product-build-playbook.md', 'docs/docen-document-map.md',
+    'docs/docen-documentation-verification-2026-11-22.md',
+    'docs/docen-introduction-2026-11-22.md', 'docs/docen-introduction-deployment-2026-11-22.md',
+    'docs/docen-brand-2026-11-22.md', 'docs/docen-brand-deployment-2026-11-22.md',
+    'docs/email-verification-2026-11-22.md', 'docs/email-verification-deployment-2026-11-22.md',
+    'docs/password-fields-2026-11-22.md', 'docs/signup-legal-2026-11-22.md',
+    'docs/admin-management-2026-11-22.md', 'docs/admin-owner-bootstrap-2026-11-22.md',
+]
+documents = list(dict.fromkeys(current_documents + documents))
 body=body.replace('{{DATE}}',DATE).replace('{{SHORT}}',CODE[:7]).replace('{{COMMIT_LINK}}',REPO+'/tree/'+CODE).replace('{{COUNT}}',str(len(manifest))).replace('{{GALLERY}}','\n'.join(gallery)).replace('{{HISTORY}}','```text\n'+history+'\n```').replace('{{CHANGELOG}}',re.sub(r'^(#{1,4}) ',r'##\1 ',(ROOT/'docs/change-log.md').read_text(),flags=re.M)).replace('{{AGENTS}}',appendix(Path('AGENTS.md'))).replace('{{DOCUMENTS}}','\n\n'.join(appendix(Path(path)) for path in documents))
 # Put the reader's decisions ahead of engineering reference material.
 daily=(ROOT/'docs/daily-updates.md').read_text()
@@ -781,6 +793,9 @@ body=pieces[0]+''.join(re.sub(r'^## \d+\. [^\n]+',f'## {i}. {title}',sections[ol
 number_map={old:i for i,(old,_) in enumerate(order,1)}
 body=re.sub(r'(?<!\d)(\d+)절',lambda m:str(number_map.get(int(m[1]),int(m[1])))+'절',body)
 body=body.replace('14번', '3번').replace('6–11절', '9–15절')
+# Put the consolidated current contract before the older generated narrative.
+first_line, legacy_body = body.split('\n', 1)
+body = first_line + '\n\n> 2026-11-22 통합 기준이 아래 과거 서술보다 우선합니다. 현재 docen.today는 소개만 공개하며 웹서비스는 미오픈입니다.\n\n' + appendix(Path('docs/DOCEN-START-HERE.md')) + '\n\n---\n\n## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선\n' + legacy_body
 (ROOT/'docs/notion-handoff.md').write_text(body)
 image_urls={RAW+item['path']:item for item in manifest}
 image_pattern=re.compile('|'.join(re.escape(url) for url in sorted(image_urls,key=len,reverse=True)))
@@ -945,3 +960,12 @@ with zipfile.ZipFile(OUT/'duckduck-notion-import.zip') as archive:
     assert len([name for name in archive.namelist() if name.startswith('images/')])==len(manifest)
     for item in manifest:assert hashlib.sha256(archive.read(item['import_path'])).hexdigest()==item['sha256']
 print(json.dumps({'codeCommit':CODE,'images':len(manifest),'notionZipBytes':(OUT/'duckduck-notion-import.zip').stat().st_size,'htmlBytes':(OUT/'duckduck-handoff.html').stat().st_size,'documentBytes':len(body.encode())},ensure_ascii=False))
+
+# Portable repository documentation bundle. No environment files, DBs, or credentials.
+with zipfile.ZipFile(OUT/'docen-ai-handoff.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+    archive.writestr('START-HERE.txt', '먼저 docs/DOCEN-START-HERE.md를 읽으세요.\n결정 원장 → 제작 매뉴얼 → 전체 문서 지도를 이어 읽으세요.\n이 ZIP은 기술 문서이며 개인 Notion 저장이나 운영 배포 완료가 아닙니다.\n소스는 https://github.com/thepmpo/donknow 입니다.\n이미지 전체의 오프라인 보관은 별도 duckduck-notion-import.zip/duckduck-handoff.html에 있습니다.\n비밀값/DB/원본 사용자 자료는 포함하지 않습니다.\n')
+    for path in sorted((ROOT/'docs').glob('*.md')):
+        archive.write(path, path.relative_to(ROOT))
+    for relative in ['AGENTS.md', 'README.md', 'website/AGENTS.md', 'docs/asset-manifest.json']:
+        archive.write(ROOT/relative, relative)
+print('Portable AI documentation: deliverables/docen-ai-handoff.zip')

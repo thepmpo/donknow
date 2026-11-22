@@ -1,3 +1,7 @@
+# 현재 통합 입구 — 2026-11-22 정정
+
+이 파일 아래는 분야별 과거 계약도 포함한다. 현재 이름/요금/가입 인증/원본 수정/메일/공개 단계는 [DOCEN-START-HERE](DOCEN-START-HERE.md)와 [결정·정정 원장](docen-decisions-register.md)을 먼저 따른다. 홈페이지 구성·CSS 배경·반응형·웹앱·어드민 인증/API·다른 앱 재사용 절차는 [제작 매뉴얼](docen-product-build-playbook.md), 기존 문서 전체는 [지도](docen-document-map.md)에 있다. 과거 덕/Duck 이름·수동 인증·메일 미해결·옛 가격을 최신 지시로 다시 적용하지 않는다.
+
 ## 2026-11-15 — Things·피클 영상 UX/UI
 
 [구현 계약](reference-flows-2026-11-15.md) · [브라우저 검수](reference-flows-qa-2026-11-15.md). 사용자 제공4개 고유 영상을 기준으로 기존 덕에 적용한다. Todo는44pt 기본 행/원래 목록 안 편집·다중 선택 후 날짜/완료를 사용하며 저장·원본 재시도는 기존 TodoEditorForm/store 경로를 공유한다. 키보드 중 저장은 숨기고 기존 내부 스크롤로 작성 영역을 드러낸다. compact 메모만72~160pt 내부 스크롤이며 다른 메모220pt는 유지한다. 투두 탭은 숨겨서 초안을 보존하고 inactive 조회/뒤로가기 등록은 멈춘다. 계정·서버 변경은 초기화한다.
