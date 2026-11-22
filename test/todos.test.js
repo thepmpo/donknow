@@ -14,7 +14,7 @@ async function harness() {
  const request=async(path,method='GET',body,token,extra={})=>{const response=await fetch(base+path,{method,headers:{'Content-Type':'application/json','X-Duckduck-Client':'native',...(token?{Authorization:'Bearer '+token}:{}),...extra},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:response.status,data:await response.json(),cookie:response.headers.get('set-cookie')};};
  await start();return {dir,start,stop,request,cleanup:async()=>{await stop();await rm(dir,{recursive:true,force:true});}};
 }
-const credentials=email=>({email,password:'test-password-12345',agreements:{termsVersion:legalVersion,privacyVersion:legalVersion,age14:true}});
+const credentials=email=>({email,password:'test-password-12345',passwordConfirmation:'test-password-12345',agreements:{termsVersion:legalVersion,privacyVersion:legalVersion,age14:true}});
 test('authentication, tenant isolation, persistent sessions, and immutable ownership',async()=>{
  const h=await harness();try{
   assert.equal((await h.request('/api/todos')).status,401);

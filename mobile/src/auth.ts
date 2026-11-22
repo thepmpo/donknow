@@ -45,8 +45,8 @@ export async function session(baseUrl: string): Promise<User> {
   if (!result.user || typeof result.user.id !== 'string' || typeof result.user.email !== 'string') throw new Error('로그인 정보를 확인할 수 없어요.');
   return result.user;
 }
-export async function authenticate(baseUrl: string, email: string, password: string, register: boolean,agreements?:SignupAgreements): Promise<User> {
-  const result = await request(baseUrl, register ? '/api/auth/register' : '/api/auth/login', 'POST', { email, password,...(register?{agreements}:{}) }) as { user?: User; token?: string };
+export async function authenticate(baseUrl: string, email: string, password: string, register: boolean,agreements?:SignupAgreements,passwordConfirmation?:string): Promise<User> {
+  const result = await request(baseUrl, register ? '/api/auth/register' : '/api/auth/login', 'POST', { email, password,...(register?{agreements,passwordConfirmation}:{}) }) as { user?: User; token?: string };
   if (!result.user || typeof result.user.id !== 'string' || typeof result.user.email !== 'string') throw new Error('로그인 정보를 확인할 수 없어요.');
   if (Platform.OS !== 'web') {
     if (typeof result.token !== 'string') throw new Error('로그인 정보를 저장할 수 없어요.');

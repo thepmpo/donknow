@@ -1,3 +1,4 @@
+import {requireNewPassword} from './password-policy.js';
 import {safeTodoSourceLink} from './todo-source-link.js';
 import {readComputerBody} from './agent-computer-routes.js';
 import {assistantNotice} from './assistant-notices.js';
@@ -102,7 +103,8 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         void worker.tick().catch(() => undefined);
         send(202, { message: '계정이 있다면 인증번호 전송을 요청했어요. 메일을 확인해주세요.' }); return true;
       }
-      if (!validCode(body.code) || typeof body.password !== 'string' || body.password.length < 10 || body.password.length > 128) throw fail(400, '6자리 인증번호와 10~128자의 새 비밀번호를 입력해주세요.');
+      if(!validCode(body.code))throw fail(400,'6자리 인증번호를 확인해주세요.');
+      requireNewPassword(body.password,body.passwordConfirmation);
       if (!(await store.resetPassword(email, body.code, body.password))) throw fail(400, '인증번호가 올바르지 않거나 만료됐어요. 다시 요청해주세요.');
       send(200, { ok: true, message: '비밀번호를 변경했어요. 다시 로그인해주세요.' }); return true;
     },

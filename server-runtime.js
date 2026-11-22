@@ -1,3 +1,4 @@
+import {requireNewPassword} from './server/password-policy.js';
 import {publicLegal,validateSignupAgreements} from './server/legal-policy.js';
 import {probeMailConfiguration} from './server/mail-diagnostics.js';
 import {adminAuthRoute,adminToken} from './server/admin-auth-routes.js';
@@ -108,7 +109,8 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         if (limited(clientAddress(req))) return send(429, { error: '잠시 후 다시 시도해주세요.' });
         const body = await json(req);
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-        if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || typeof body.password !== 'string' || body.password.length < 10 || body.password.length > 128) return send(400, { error: '이메일과 10~128자의 비밀번호를 입력해주세요.' });
+        if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || (!path.endsWith('register')&&(typeof body.password !== 'string' || body.password.length < 1 || body.password.length > 128))) return send(400, { error: '이메일과 비밀번호를 입력해주세요.' });
+        if(path.endsWith('register'))requireNewPassword(body.password,body.passwordConfirmation);
         const result = path.endsWith('register') ? await store.register(email, body.password,validateSignupAgreements(body.agreements),req.headers['x-duckduck-client']) : await store.login(email, body.password);
         if (!result) return send(path.endsWith('register') ? 409 : 401, { error: path.endsWith('register') ? '이 이메일로 계정을 만들 수 없어요. 로그인해 주세요.' : '이메일 또는 비밀번호를 확인해주세요.' });
         const previous = tokenFrom(req); if (previous) store.logout(previous);

@@ -19,17 +19,17 @@ test('verification code is single-use; reset revokes all sessions; account delet
   const known = await h.request('/api/auth/password/request', 'POST', { email: owner.user.email }); assert.deepEqual(known, unknown);
   const reset = codeOf(await h.mail(owner.user.email, '비밀번호'));
   const wrong = reset === '111111' ? '222222' : '111111';
-  assert.equal((await h.request('/api/auth/password/confirm', 'POST', { email: owner.user.email, code: wrong, password: 'new-fixture-password' })).status, 400);
-  assert.equal((await h.request('/api/auth/password/confirm', 'POST', { email: owner.user.email, code: reset, password: 'new-fixture-password' })).status, 200);
+  assert.equal((await h.request('/api/auth/password/confirm', 'POST', { email: owner.user.email, code: wrong, password: 'new-fixture-password-1',passwordConfirmation:'new-fixture-password-1' })).status, 400);
+  assert.equal((await h.request('/api/auth/password/confirm', 'POST', { email: owner.user.email, code: reset, password: 'new-fixture-password-1',passwordConfirmation:'new-fixture-password-1' })).status, 200);
   assert.equal((await h.request('/api/todos', 'GET', undefined, token)).status, 401);
-  assert.equal((await h.request('/api/auth/password/confirm', 'POST', { email: owner.user.email, code: reset, password: 'other-fixture-password' })).status, 400);
+  assert.equal((await h.request('/api/auth/password/confirm', 'POST', { email: owner.user.email, code: reset, password: 'other-fixture-password-2',passwordConfirmation:'other-fixture-password-2' })).status, 400);
   assert.equal((await h.request('/api/auth/login', 'POST', { email: owner.user.email, password: 'fixture-password-123' })).status, 401);
-  const fresh = (await h.request('/api/auth/login', 'POST', { email: owner.user.email, password: 'new-fixture-password' })).data.token;
+  const fresh = (await h.request('/api/auth/login', 'POST', { email: owner.user.email, password: 'new-fixture-password-1' })).data.token;
   const reminder = new Date(Date.now() + 3600000).toISOString();
   assert.equal((await h.request('/api/todos', 'POST', { title: '알림 테스트', reminderAt: reminder }, fresh)).data.reminderAt, reminder);
   assert.equal((await h.request('/api/todos', 'POST', { title: '잘못된 알림', reminderAt: 'not-a-time' }, fresh)).status, 400);
   assert.equal((await h.request('/api/account', 'DELETE', { password: 'wrong-password', confirmation: 'DELETE' }, fresh)).status, 400);
-  assert.equal((await h.request('/api/account', 'DELETE', { password: 'new-fixture-password', confirmation: 'DELETE' }, fresh)).status, 200);
+  assert.equal((await h.request('/api/account', 'DELETE', { password: 'new-fixture-password-1', confirmation: 'DELETE' }, fresh)).status, 200);
   assert.equal((await h.request('/api/auth/session', 'GET', undefined, fresh)).status, 401);
   const db = new DatabaseSync(join(h.dir, 'duckduck.sqlite')); db.exec('PRAGMA busy_timeout=5000'); try { for (const table of ['users', 'todos', 'sessions', 'mail_outbox', 'account_actions']) assert.equal(db.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n, 0); } finally { db.close(); }
  } finally { await h.close(); }

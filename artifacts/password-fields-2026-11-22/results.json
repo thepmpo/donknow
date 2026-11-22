@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "source": "Actual production Expo web bundle and isolated local Node/SQLite; test outbox only, no real email/provider/model calls",
+  "flows": [
+    "weak length/digit/punctuation checks",
+    "first red border and rule",
+    "confirmation red border and mismatch message",
+    "correcting removes error",
+    "changing first invalidates confirmation",
+    "390px layout",
+    "eight-character signup",
+    "reset confirmation validation",
+    "manual test-mail reset code",
+    "eight-character reset and login"
+  ],
+  "errors": []
+}

@@ -12,14 +12,14 @@ const password='signup-fixture-password-123';
 test('signup rejects missing, partial, outdated or false required agreement attestations without creating accounts',async()=>{
  const h=await apiHarness();try{
   const variants=[undefined,{},false,{...acceptance,age14:false},{...acceptance,age14:'true'},{...acceptance,privacyVersion:'old'},{...acceptance,termsVersion:'old'}];
-  for(let i=0;i<variants.length;i++){const result=await h.request('/api/auth/register','POST',{email:`missing${i}@example.test`,password,agreements:variants[i]});assert.equal(result.status,400);assert.match(result.data.error,/동의/);}
+  for(let i=0;i<variants.length;i++){const result=await h.request('/api/auth/register','POST',{email:`missing${i}@example.test`,password,passwordConfirmation:password,agreements:variants[i]});assert.equal(result.status,400);assert.match(result.data.error,/동의/);}
   const db=new DatabaseSync(join(h.dir,'duckduck.sqlite'));try{assert.equal(db.prepare('SELECT count(*) AS n FROM users').get().n,0);assert.equal(db.prepare('SELECT count(*) AS n FROM signup_agreements').get().n,0);}finally{db.close();}
  }finally{await h.close();}
 });
 test('real signup records exact document versions and time atomically; duplicate/concurrent signup and account isolation preserve consent',async()=>{
  const h=await apiHarness();try{
   const metadata=await h.request('/api/legal');assert.equal(metadata.status,200);assert.equal(metadata.data.minimumAge,14);assert.equal(metadata.data.marketingRequired,false);
-  const body={email:'consented@example.test',password,agreements:acceptance};const both=await Promise.all([h.request('/api/auth/register','POST',body),h.request('/api/auth/register','POST',body)]);assert.deepEqual(both.map(r=>r.status).sort(),[201,409]);const owner=both.find(r=>r.status===201).data;
+  const body={email:'consented@example.test',password,passwordConfirmation:password,agreements:acceptance};const both=await Promise.all([h.request('/api/auth/register','POST',body),h.request('/api/auth/register','POST',body)]);assert.deepEqual(both.map(r=>r.status).sort(),[201,409]);const owner=both.find(r=>r.status===201).data;
   const info=await h.request('/api/account/agreements','GET',undefined,owner.token);assert.equal(info.status,200);assert.equal(info.data.accepted.termsVersion,legalVersion);assert.equal(info.data.accepted.privacyVersion,legalVersion);assert.equal(info.data.accepted.age14,true);assert.equal(info.data.accepted.client,'native');assert.ok(Number.isFinite(Date.parse(info.data.accepted.acceptedAt)));
   assert.equal((await h.request('/api/account/agreements')).status,401);const other=await h.register('other-consented@example.test');const lookup=await h.request('/api/account/agreements?user='+other.user.id,'GET',undefined,owner.token);assert.equal(lookup.data.accepted.acceptedAt,info.data.accepted.acceptedAt);
   const exported=await h.request('/api/account/export','GET',undefined,owner.token);assert.deepEqual(exported.data.signupAgreements,info.data.accepted);assert.equal(JSON.stringify(exported.data.signupAgreements).includes(password),false);
