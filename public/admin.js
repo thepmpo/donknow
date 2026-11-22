@@ -56,14 +56,14 @@ async function load(view=state.view){
   if(captured!==version)return;content.innerHTML=html;content.setAttribute('aria-busy','false');
  }catch(error){if(error.name==='AbortError'||captured!==version)return;if(error.status===401||error.status===403){loginForm(error.message);return;}content.setAttribute('aria-busy','false');content.innerHTML=title('조회하지 못했어요.',error.message)+'<button class="pill-button" data-retry>다시 확인</button>';}
 }
-async function bootstrap(){controller?.abort();const captured=++version;state.authorized=false;state.member=null;if(logout)logout.hidden=true;content.innerHTML='<p class="subtitle" role="status">운영자 권한을 확인하고 있어요.</p>';
- try{const d=await request('/api/admin/session');if(captured!==version)return;state.authorized=true;mountWorkspace(d.user.email);await load();}catch(error){if(captured===version)loginForm(error.message);}
+async function bootstrap(){controller?.abort();if(!content.querySelector('#admin-login'))loginForm();const captured=++version;state.authorized=false;state.member=null;if(logout)logout.hidden=true;
+ try{const d=await request('/api/admin/session');if(captured!==version)return;state.authorized=true;mountWorkspace(d.user.email);await load();}catch(error){if(captured!==version)return;const message=content.querySelector('#login-message'),submit=content.querySelector('button[type=submit]');if(message)message.textContent=error.status===401?'관리자 아이디와 비밀번호를 입력해주세요.':error.message;if(submit)submit.disabled=false;}
 }
 function showMembers(){state.selected=null;state.member=null;state.offset=0;void load('members');}
 document.addEventListener('submit',async event=>{event.preventDefault();const form=event.target;
  if(form.id==='admin-login'||form.id==='admin-setup'){
-  const submit=form.querySelector('button[type=submit]'),message=form.querySelector('#login-message'),data=new FormData(form),setup=form.id==='admin-setup';if(setup&&data.get('password')!==data.get('confirmPassword')){message.textContent='비밀번호 확인이 일치하지 않아요.';return;}submit.disabled=true;message.textContent=setup?'관리자 계정을 설정하고 있어요.':'로그인 중…';
-  try{await request(setup?'/api/admin/auth/setup/confirm':'/api/admin/auth/login',{method:'POST',body:{email:data.get('email'),password:data.get('password'),...(setup?{code:data.get('code')}:{})}});form.reset();state.selected=null;state.query='';state.offset=0;state.view='members';await bootstrap();}catch(error){message.textContent=error.message;submit.disabled=false;}
+  const submitted=++version,submit=form.querySelector('button[type=submit]'),message=form.querySelector('#login-message'),data=new FormData(form),setup=form.id==='admin-setup';if(setup&&data.get('password')!==data.get('confirmPassword')){message.textContent='비밀번호 확인이 일치하지 않아요.';return;}submit.disabled=true;message.textContent=setup?'관리자 계정을 설정하고 있어요.':'로그인 중…';
+  try{await request(setup?'/api/admin/auth/setup/confirm':'/api/admin/auth/login',{method:'POST',body:{email:data.get('email'),password:data.get('password'),...(setup?{code:data.get('code')}:{})}});if(submitted!==version||!form.isConnected)return;form.reset();state.selected=null;state.query='';state.offset=0;state.view='members';await bootstrap();}catch(error){if(submitted!==version||!form.isConnected)return;message.textContent=error.message;submit.disabled=false;}
  }else if(form.id==='member-search'){state.query=String(new FormData(form).get('query')??'');state.offset=0;void load('members');}
 });
 async function signOut(){controller?.abort();version++;clearData();loginForm('로그아웃 중…');try{await request('/api/admin/auth/logout',{method:'POST',body:{}});loginForm('로그아웃했어요.');}catch(error){loginForm('로그아웃 응답을 확인하지 못했어요. '+error.message);}}
