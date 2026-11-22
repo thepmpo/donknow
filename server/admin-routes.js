@@ -4,13 +4,14 @@ export function configuredAdminEmails(env=process.env){
  const emails=env.DUCK_ADMIN_EMAILS.split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
  return emails.length>0&&emails.length<=20&&emails.every(v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))?[...new Set(emails)]:[];
 }
-export function isAdmin(user,env=process.env){return user?.identity==='admin'&&user.emailVerified===true&&configuredAdminEmails(env).includes(user.email.toLowerCase());}
+export function isAdmin(user,env=process.env){return user?.identity==='admin'&&(user.emailVerified===true||user.activated===true)&&configuredAdminEmails(env).includes(user.email.toLowerCase());}
 export function adminRoute(req,path,url,user,store,send,env=process.env){
  if(!path.startsWith('/api/admin/'))return false;
  if(!isAdmin(user,env))throw fail(403,'운영자 권한이 있는 이메일 인증 계정으로 로그인해주세요.');
+ if(user.mustChangePassword&&path!=='/api/admin/session'){send(403,{error:'임시 비밀번호를 먼저 변경해주세요.',code:'ADMIN_PASSWORD_CHANGE_REQUIRED'});return true;}
  if(req.method!=='GET'){send(405,{error:'현재 어드민은 조회만 할 수 있어요.'},{Allow:'GET'});return true;}
  let operation,result,subject=null;
- if(path==='/api/admin/session'){operation='session';result={user:{id:user.id,email:user.email},role:'admin-reader',readOnly:true};}
+ if(path==='/api/admin/session'){operation='session';result={user:{id:user.id,email:user.email,mustChangePassword:!!user.mustChangePassword},role:user.mustChangePassword?'admin-password-change':'admin-reader',readOnly:true};}
  else if(path==='/api/admin/overview'){operation='overview';result=store.adminOverview();}
  else if(path==='/api/admin/members'){operation='members';const raw=url.searchParams.get('offset')??'0';if(!/^\d{1,7}$/.test(raw))throw fail(400,'페이지를 확인해주세요.');result=store.adminMembers({query:url.searchParams.get('q')??'',offset:Number(raw)});}
  else if(path.startsWith('/api/admin/members/')){operation='member';subject=path.slice('/api/admin/members/'.length);result=store.adminMember(subject);}

@@ -42,3 +42,16 @@ test('admin HTTP accepts only its own cookie, verifies email setup, blocks Duck/
   await call('/api/admin/auth/logout','POST',{});assert.equal((await call('/api/admin/members')).status,401);assert.equal((await call('/api/admin/auth/login','POST',{email,password})).status,200);assert.equal((await call('/api/admin/members')).status,200);
  }finally{await h.close();}
 });
+test('owner temporary password grants only change-password access, rotates sessions and never resets on restart',async()=>{
+ const temporary='Temp123!',replacement='owner-new-password-123',bootstrapEnv={...env,DUCK_ADMIN_INITIAL_PASSWORD:temporary};
+ const h=await apiHarness(bootstrapEnv);let cookie='';
+ async function call(path,method='GET',body){const res=await fetch(h.baseUrl+path,{method,headers:{'Content-Type':'application/json','X-Duckduck-Client':'web',...(cookie?{Cookie:cookie}:{})},...(body?{body:JSON.stringify(body)}:{})});const set=res.headers.get('set-cookie');if(set)cookie=set.split(';')[0];return {status:res.status,data:await res.json(),headers:res.headers};}
+ try{
+  const app=await h.register(email);const login=await call('/api/admin/auth/login','POST',{email,password:temporary});assert.equal(login.status,200);assert.equal(login.data.user.emailVerified,false);assert.equal(login.data.user.mustChangePassword,true);assert.match(login.headers.get('set-cookie'),/Max-Age=600(?:;|$)/);const limited=cookie;
+  assert.equal((await call('/api/admin/session')).data.role,'admin-password-change');for(const path of ['/api/admin/members','/api/admin/overview','/api/admin/audit','/api/admin/members/'+app.user.id]){const r=await call(path);assert.equal(r.status,403);assert.equal(r.data.code,'ADMIN_PASSWORD_CHANGE_REQUIRED');}
+  assert.equal((await call('/api/admin/auth/password/change','POST',{password:'short'})).status,400);
+  const changed=await call('/api/admin/auth/password/change','POST',{password:replacement});assert.equal(changed.status,200);assert.equal(changed.data.user.mustChangePassword,false);assert.match(changed.headers.get('set-cookie'),/Max-Age=28800/);const full=cookie;
+  cookie=limited;assert.equal((await call('/api/admin/session')).status,401);cookie=full;assert.equal((await call('/api/admin/overview')).data.members.total,1);assert.equal((await call('/api/admin/auth/login','POST',{email,password:temporary})).status,401);assert.equal((await h.request('/api/auth/session','GET',undefined,app.token)).status,200);
+ }finally{await h.close();}
+ const dir=await mkdtemp(join(tmpdir(),'duck-admin-bootstrap-'));let store=await openStore(dir,{env:bootstrapEnv});try{assert.equal(store.adminOverview().members.total,0);const admin=await store.adminLogin(email,temporary);await store.changeRequiredAdminPassword(admin.token,replacement);store.close();store=await openStore(dir,{env:bootstrapEnv});assert.equal(await store.adminLogin(email,temporary),null);assert.equal((await store.adminLogin(email,replacement)).user.mustChangePassword,false);}finally{store.close();await rm(dir,{recursive:true,force:true});}
+});
