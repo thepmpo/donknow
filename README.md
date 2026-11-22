@@ -1,5 +1,7 @@
 # docen
 
+**다른 앱 제작에 재사용:** [새 앱 시작 안내](docs/REUSABLE-APP-START-HERE.md) → [앱 공통 기반 상세 설계](docs/reusable-app-foundation.md) → [36개 모듈 파일 지도](docs/app-foundation-module-map.md) → [검수표](docs/app-foundation-release-checklist.md). 새 앱 계약·다음 AI 인계 양식과 전체 소스 ZIP 생성 절차도 포함합니다.
+
 **다른 AI가 처음 읽을 문서:** [통합 현재 기준](docs/DOCEN-START-HERE.md) · [결정·정정 원장](docs/docen-decisions-register.md) · [홈페이지/배경/웹/어드민 제작 매뉴얼](docs/docen-product-build-playbook.md) · [전체 문서 지도](docs/docen-document-map.md). 현재 docen.today는 소개만 공개하고 웹서비스는 미오픈입니다. 아래 과거 날짜별 기록은 통합 입구의 최신 정정을 먼저 확인하세요.
 
 ## 2026-11-15 — Things·피클 영상 UX/UI

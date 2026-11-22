@@ -22,10 +22,13 @@
 | 원본 문서 | 첫 제목 |
 |---|---|
 |[DOCEN-START-HERE.md](DOCEN-START-HERE.md)|docen 전체 인수인계 — 다른 AI가 가장 먼저 읽을 문서|
+|[REUSABLE-APP-START-HERE.md](REUSABLE-APP-START-HERE.md)|다른 앱을 만들 AI가 먼저 읽을 문서|
+|[reusable-app-foundation.md](reusable-app-foundation.md)|재사용 앱 공통 기반 — 핵심 기능 개발에 집중하기 위한 상세 설계서|
+|[app-foundation-module-map.md](app-foundation-module-map.md)|앱 공통 모듈 — 실제 소스·검증 파일 지도|
+|[reusable-app-integration-contracts.md](reusable-app-integration-contracts.md)|새 앱 공통 기반 연결 계약 — 핵심 기능이 붙는 정확한 경계|
+|[app-foundation-release-checklist.md](app-foundation-release-checklist.md)|새 앱 공통 기반 연결·출시 검수표|
 |[docen-decisions-register.md](docen-decisions-register.md)|docen 결정·정정 원장|
 |[docen-product-build-playbook.md](docen-product-build-playbook.md)|docen 제작 매뉴얼 — 홈페이지·배경·웹앱·어드민을 다른 제품에 재사용하기|
-|[docen-introduction-2026-11-22.md](docen-introduction-2026-11-22.md)|docen 소개 사이트만 공개|
-|[docen-introduction-deployment-2026-11-22.md](docen-introduction-deployment-2026-11-22.md)|소개만 공개하는 웹 배포|
 |[admin-live-2026-11-22.md](admin-live-2026-11-22.md)|최신 인증 정정|
 |[admin-mail-diagnosis-2026-11-22.md](admin-mail-diagnosis-2026-11-22.md)|관리자 인증메일 발송 실패 진단|
 |[admin-management-2026-11-22.md](admin-management-2026-11-22.md)|PG를 제외한 관리자 운영 기능|
@@ -52,6 +55,7 @@
 |[ai-office-tone-summary.md](ai-office-tone-summary.md)|덕의 느낌을 함께 정하기 — 쉬운 설명|
 |[ai-office-usage.md](ai-office-usage.md)|AI 사무실 — 글자 크기·휴대폰·평소 지시 방법|
 |[ai-office-ux-analysis.md](ai-office-ux-analysis.md)|AI 사무실 대화 분석과 duckduck UX 명세 초안|
+|[app-foundation-verification-2026-11-22.md](app-foundation-verification-2026-11-22.md)|앱 공통 기반 상세 문서·전체 패키지 검증 기록|
 |[assistant-actions.md](assistant-actions.md)|덕 비서 — 읽고 제안하고 Todo로 보여주고 실행하기|
 |[assistant-agent-2026-11-15.md](assistant-agent-2026-11-15.md)|덕 — 대화·장기 기억·변경 수신|
 |[assistant-agent-qa-2026-11-15.md](assistant-agent-qa-2026-11-15.md)|대화·기억·수신과 배경 컨트롤 — 검수|
@@ -90,7 +94,7 @@
 |[connect-google.md](connect-google.md)|현재 테스트 서버에서 이메일 인증과 Google Tasks 연결하기|
 |[connection-stability-2026-11-15.md](connection-stability-2026-11-15.md)|캘린더 저장본·AI 연결·미리 알림 안정화 — 2026-11-15|
 |[connections-heavy-usage-2026-11-19.md](connections-heavy-usage-2026-11-19.md)|연결 개수와 헤비 사용량 기준 — 2026-11-19|
-|[continuation-guide.md](continuation-guide.md)|2026-11-15 — Things·피클 영상 UX/UI|
+|[continuation-guide.md](continuation-guide.md)|현재 통합 입구 — 2026-11-22 정정|
 |[current-ui-comparison.md](current-ui-comparison.md)|현재 UI·기능 통합 대조 — 2026-11-10|
 |[daily-document-automation.md](daily-document-automation.md)|매일 저녁 7시 문서 자동 정리|
 |[daily-updates.md](daily-updates.md)|매일 개발 정리|
@@ -100,6 +104,9 @@
 |[desktop-workspace-design-qa.md](desktop-workspace-design-qa.md)|PC 웹 시각·동작 QA|
 |[docen-brand-2026-11-22.md](docen-brand-2026-11-22.md)|서비스명 docen 통일|
 |[docen-brand-deployment-2026-11-22.md](docen-brand-deployment-2026-11-22.md)|docen 이름 변경 웹 배포|
+|[docen-documentation-verification-2026-11-22.md](docen-documentation-verification-2026-11-22.md)|전체 인수인계 문서화 검증 — 2026-11-22|
+|[docen-introduction-2026-11-22.md](docen-introduction-2026-11-22.md)|docen 소개 사이트만 공개|
+|[docen-introduction-deployment-2026-11-22.md](docen-introduction-deployment-2026-11-22.md)|소개만 공개하는 웹 배포|
 |[dots-full-qa-2026-11-15.md](dots-full-qa-2026-11-15.md)|Dots 전체 대응 — 실제 검사와 화면|
 |[dots-full-setup-2026-11-15.md](dots-full-setup-2026-11-15.md)|덕 비서 전체 기능 — 실제 연결과 운영 설정|
 |[dots-parity-2026-11-15.md](dots-parity-2026-11-15.md)|Dots 공개 기능 전체 대응 — 덕 구현 계약|
@@ -150,6 +157,7 @@
 |[public-project.md](public-project.md)|공개 프로젝트 문서와 댓글|
 |[reference-flows-2026-11-15.md](reference-flows-2026-11-15.md)|Things·피클 영상 기준 UX/UI 구현|
 |[reference-flows-qa-2026-11-15.md](reference-flows-qa-2026-11-15.md)|Things·피클 영상 적용 검수|
+|[references/pickle-motion-report-2026-11-13.md](references/pickle-motion-report-2026-11-13.md)|External browser report — unverified values remain unverified|
 |[release-readiness-2026-11-12.md](release-readiness-2026-11-12.md)|덕 운영·백업·iPhone 출시 확인 — 2026-11-12|
 |[remaining-activation.md](remaining-activation.md)|남은 연결 활성화와 운영 확인|
 |[reminders-import-stability-2026-11-16.md](reminders-import-stability-2026-11-16.md)|미리알림 전체 가져오기·원본 완료 반영·연결 안정성 — 2026-11-16|
@@ -161,6 +169,8 @@
 |[site-deployment-2026-11-19.md](site-deployment-2026-11-19.md)|소개 사이트와 베타 요금 공개 배포 — 2026-11-19|
 |[startup-session-pro-2026-11-16.md](startup-session-pro-2026-11-16.md)|Todo 우선순위·로그인 복원·모션·전체 프로 — 2026-11-16|
 |[tds-analysis.md](tds-analysis.md)|TDS 문서 확인 결과와 덕 적용 명세|
+|[templates/new-app-ai-handoff.md](templates/new-app-ai-handoff.md)|새 앱 AI 인수인계 — 실제 작업 후 작성|
+|[templates/new-app-project-contract.md](templates/new-app-project-contract.md)|새 앱 프로젝트 계약 — 복사하여 작성|
 |[test-deployment.md](test-deployment.md)|무료 테스트 서버 열기|
 |[testflight-automation.md](testflight-automation.md)|iPhone 테스트 수동 빌드·자동 제출|
 |[things-source-repair-2026-11-15.md](things-source-repair-2026-11-15.md)|Things형 할 일·원본 저장·연결 오류 수정|
@@ -176,7 +186,7 @@
 |[web-format-correction-2026-11-22.md](web-format-correction-2026-11-22.md)|웹사이트 상단 포맷으로 실제 웹앱 수정|
 |[workspace-studio-evaluation.md](workspace-studio-evaluation.md)|Google Workspace Studio — 덕 도입 검토|
 
-|[docen-documentation-verification-2026-11-22.md](docen-documentation-verification-2026-11-22.md)|전체 인수인계 문서화 검증|
+구조화 모듈 목록: [app-foundation-modules.json](app-foundation-modules.json). 중첩 templates 폴더의 양식도 위 목록과 문서ZIP에 포함한다.
 
 ## 생성물과 문서 밖의 증거
 

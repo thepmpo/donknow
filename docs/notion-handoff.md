@@ -25,6 +25,8 @@
 
 #### 1. 읽는 순서와 증거 해석
 
+별개 앱을 만들기 위한 공통 기반은 [새 앱 입구](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md)·[상세 설계](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md)·[36개 모듈 지도](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md)·[검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)에 있다. 홈페이지/웹/어드민과 앱 전체를 함께 재사용하되 새 제품 identity/DB/키/외부 권한은 분리한다. 독립형 SDK나 PG/새 앱 실기기 검증이 완료됐다는 뜻은 아니다.
+
 1. 이 문서 → [결정·정정 목록](https://github.com/thepmpo/donknow/blob/main/docs/docen-decisions-register.md).
 2. [재사용 제작 매뉴얼](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md): 홈페이지/웹/앱/어드민의 실제 구조·스타일·제작 순서.
 3. [전체 문서 지도](https://github.com/thepmpo/donknow/blob/main/docs/docen-document-map.md)에서 해당 분야 계약과 QA를 찾는다.
@@ -365,7 +367,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-22 · 한국 시간 · 기능 코드 96e3b48 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-23 · 한국 시간 · 기능 코드 96e3b48 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -844,6 +846,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 #### 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
+
+#### 2026-11-22 — 앱 공통 기반·새 앱 양식·전체 소스 인계 패키지
+
+사용자가 앱 공통 사항까지 아주 상세히 정리해 다음 앱은 핵심 기능에 집중하도록 하고 전체 ZIP/GitHub 재제공을 요청했다.31개 주제 공통 설계,36모듈/176개 실제소스·검증경로/의존목록,추출할상태·repository·provider연결계약예시,58항목새앱검수표,프로젝트계약/AI인계양식을작성했다. 현재docen의도메인결합을독립SDK로가장하지않고기존업데이트와별개앱의identity/DB/키분리를명시한다.
+
+작은전체문서ZIP에중첩templates/모듈JSON을포함하고,Git커밋전체소스·문서·테스트·lock·합성/참고자산을sourceCommit/각파일SHA-256manifest와함께만드는재현스크립트를추가했다. 비밀/실DB/인증서/node_modules/Git내부를제외한다. GitHub에는원본문서/소스를저장한다. [실제검증범위·명령](app-foundation-verification-2026-11-22.md). 제품동작·가격·회원권한·운영배포/native빌드는변경하지않는다.
 
 #### 2026-11-22 — 상세 정리 방식을 앞으로의 기본 규칙으로 확정
 
@@ -3510,6 +3518,7 @@ a5b091a Publish signup consent evidence and legal handoff
 b5631cd Publish introduction-only release evidence and email verification status
 89489e6 Record live introduction-only release and pending domain registration
 2e3f23d Document complete docen decisions and reusable product build workflow
+42a2349 Keep detailed AI handoff as the default documentation format
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -11981,6 +11990,10 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 원문 / AGENTS.md
 
+#### 2026-11-22 — 다른 앱에 재사용할 전체 앱 공통 기반 (사용자 확정)
+
+사용자가 앱 공통 사항까지 모두 상세히 기록해 다음 앱은 핵심 기능 구현에 집중할 수 있도록 하고 전체 ZIP과 GitHub를 다시 제공하라고 요청했다. [새 앱 입구](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md) → [공통 설계서](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md) → [36개 모듈 파일 지도](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md)/JSON → [검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)를 읽고 새 제품 계약/AI 인계 양식을 사용한다. 기존 docen 수정은 기존 identity/DB/키 보존, 별개 새 앱은 새 identity/DB/키/외부앱으로 분리한다. 현재 코드를 독립형 범용 SDK/PG 완성/모든 OS 검증으로 가장하지 않는다. UI·auth·transport·repository의 도메인 의존과 필요한 추출 절차를 구분한다. 문서 전용 ZIP과 Git 추적 소스/문서/테스트/자산 전체 ZIP을 별도로 제공하며 비밀·실DB·node_modules·Git 내부는 제외한다.
+
 #### 2026-11-22 — 앞으로 ‘정리해줘’의 기본 의미 (사용자 확정)
 
 사용자는 앞으로 정리를 요청하면 이번 전체 인수인계와 같은 방식으로 **아주 상세히** 정리하라고 확정했다. 짧은 대화 요약으로 끝내지 않는다. 요청/배경/규칙/최종 결정과 이유/변경 이력/실제 구현 방식/파일·수치·명령/검증 근거/배포·운영 상태/미확인·남은 일/다음 행동을 기록한다. 홈페이지의 구성·배경·스타일·반응형·모션, 앱·웹·어드민의 흐름·인증·권한·자료 연결도 관련 범위에 포함한다. 다른 AI가 즉시 이어받고 다른 앱에 재사용할 수 있도록 통합 기준·결정 원장·제작 절차·문서 지도를 보충하고, 기존 생성기와 전달 ZIP을 갱신한다. 최신 확정/과거 제안/구현/테스트/실사용을 구분하며 비밀값·사용자 원문을 포함하지 않는다. 정리 대상은 당시 요청한 작업 범위와 관련된 누적 기록이며 매번 무관한 전체 프로젝트를 재작성하지는 않는다. Notion 실제 저장·공개 배포·새 앱 빌드는 별도 실행 사실로만 보고한다. 이 기본 방식을 이미 승인된 문서 정리마다 다시 질문하지 않는다.
@@ -12666,6 +12679,804 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 원문 / docs/REUSABLE-APP-START-HERE.md
+
+### 다른 앱을 만들 AI가 먼저 읽을 문서
+
+사용자 확정: 다음 앱에서 핵심 기능에 집중할 수 있도록 docen의 공통 기반을 상세 문서/실제 소스/검수 절차로 재사용한다. 2026-11-22 작성.
+
+#### 1. 가장 먼저 구분
+
+- **docen을 이어서 수정**: [docen 통합 기준](https://github.com/thepmpo/donknow/blob/main/docs/DOCEN-START-HERE.md)과 적용 AGENTS.md를 읽고 기존 제품/계정/키/식별자를 보존한다.
+- **별개 새 앱 제작**: 이 문서의 읽는 순서로 진행한다. docen의 운영 권한·계정·DB·키·Duo·가격·탭·브랜드를 새 앱의 기본값으로 복사하지 않는다. 새 저장소의 AGENTS.md에 새로운 제품 계약을 적는다.
+
+현재 코드는 docen 구현이다. 범용 앱 생성기/독립 SDK가 이미 완성됐다고 해석하지 않는다. 새 앱에서 재사용할 공통 정책/부품과 도메인 의존성을 목록으로 구분했다. 실제 결제·소셜로그인·완전offline·모든OS검수가 이미 제공되는 것은 아니다.
+
+#### 2. 읽는 순서
+
+1. [공통 앱 설계서](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md): 인증/세션/UI/키보드/저장/동기화/알림/설정/운영/배포31개 주제.
+2. [모듈 목록](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md): 실제 파일·검증 근거·필수 의존·새 앱 교체 사항.
+3. [홈페이지/웹/어드민 매뉴얼](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md): 시각 구성·배경·반응형·실제 API/권한/운영 흐름.
+4. [새 앱 계약 양식](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-project-contract.md): 제품별 핵심 기능/자료/정책/식별자 정의.
+5. [출시 검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md): 공통 기반 연결 후 상태별 검수.
+6. [다음 AI 인계 양식](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-ai-handoff.md): 변경/검증/가동/미완료를 전달.
+7. [전체 문서 지도](https://github.com/thepmpo/donknow/blob/main/docs/docen-document-map.md): 관련 분야 원본/역사/QA 추가 읽기.
+
+추출할 인터페이스/상태/핵심 기능 연결 경계는 [연결 계약 예시](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-integration-contracts.md)를 함께 읽는다. 이는 새 설계 예시이며 현재 범용 SDK의 API라고 오해하지 않는다.
+
+#### 3. 구현 순서
+
+새 제품 계약/identity → 공통auth/transport/shell분리 → 토큰/폼/키보드/상태 → 합성 핵심 흐름 → 실제domain/repository/API → 안전한 저장/원본 → 설정/알림/개인정보/운영자 → 테스트 → 새 서버/native 설정 → 실제 배포/기기 검수 → 문서 전달.
+
+처음부터 모든 docen 기능을 복제하지 않는다. 예: 단순 독서 앱에는 외부 원본 동기화/AI/Duo가 필수가 아니다. 메일/예약/AI를 쓰지 않으면 provider·budget 모듈은 제외하되 계정/자료/권한/오류/보안 검수는 유지한다.
+
+#### 4. 포함된 ZIP과 실제 빠진 것
+
+문서용 docen-ai-handoff.zip에는 전체 기술문서·지침·모듈JSON·양식이 있다. 전체용 docen-complete-handoff.zip에는 Git에 저장된 소스/문서/테스트/lock/합성 이미지 자산과 PACKAGE-START-HERE/manifest가 있다. ZIP의 commitSHA와 manifest의 파일 hash를 확인한다.
+
+둘 다 실제 운영DB·키·세션·토큰·개인첨부·node_modules·Git이력·서명인증서·실제 연결 권한은 전달하지 않는다. 받은 AI/개발자는 자기 개발환경 의존성을 설치하고 새 제품용 안전한 설정을 준비해야 한다. 문서에 없는 권한이 ZIP으로 생기지는 않는다.
+
+#### 5. 완료라고 말하기 전
+
+모듈의 코드경로/정책추출·통제테스트·production웹·native빌드·스토어처리·실계정/실기기를 각각 기록한다. 핵심 화면 하나가 보이는 것과 운영 가능한 제품은 다르다. [검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)의 필요한 항목에 실제 증거를 남기고 미실행은 그대로 표시한다.
+
+### 원문 / docs/reusable-app-foundation.md
+
+### 재사용 앱 공통 기반 — 핵심 기능 개발에 집중하기 위한 상세 설계서
+
+기준2026-11-22. 사용자가 다른 앱을 만들 때 핵심 기능만 구현하면 대부분의 제품 구성이 갖춰지도록 앱 공통 사항을 모두 문서화하라고 요청했다. 이 문서는 실제 docen 코드에서 재사용할 구조·계약·화면·서버·검증과 새 제품에 맞춰야 할 부분을 설명한다.
+
+**현재 저장소가 이미 독립형 범용 SDK/한 번 클릭 앱 생성기로 분리됐다는 뜻은 아니다.** docen의 useTodos·App Shell·서버 라우트에는 도메인 의존성이 있다. 아래 순서와 모듈 목록으로 공통 코드를 추출하고 새 앱의 데이터/정책을 연결한다. 구현하지 않은 PG·소셜 로그인·완전 오프라인·Android 실기기 지원을 공통 완성 기능으로 세지 않는다.
+
+읽는 순서: [새 앱 시작 안내](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md) → 이 문서 → [모듈 목록](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md) → [출시 체크리스트](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md). 기존 docen 상태는 [통합 기준](https://github.com/thepmpo/donknow/blob/main/docs/DOCEN-START-HERE.md)이 우선한다.
+
+#### 1. 목표: 제품마다 다시 만들지 않을 부분
+
+공통 기반은 외형만이 아니다. 가입/인증/세션, 자료 소유권, 입력과 키보드, 내비게이션/복귀, 빠른 저장/오류 복구, 캐시/새로고침, 권한/알림, 설정/개인정보, 이용권/운영자, 테스트/배포/문서가 하나의 계약으로 맞아야 한다.
+
+새 앱에서 집중할 부분은 ‘누구의 어떤 문제를 어떤 자료와 행동으로 해결하는가’다. 이 공통 설계와 이미 검증된 코드를 재사용하면 기본 운영 기능의 재설계를 줄일 수 있다. 실제 외부 인증·새 상품 결제·스토어 심사는 제품별 작업으로 남는다.
+
+| 층 | 공통화할 책임 | 제품 고유 책임 |
+|---|---|---|
+|Foundation UI|토큰·문자·터치·상태·폼·시트·키보드|브랜드·주요 작업 화면·밀도|
+|Application Shell|시작/세션 gate·화면 전환·설정·복귀|메뉴 이름·순서·대표 진입|
+|Identity|계정·인증·세션·소유권·삭제|가입 정책·국가/연령·조직 모델|
+|Data Runtime|repository·요청 취소·revision·캐시·멱등|핵심 entity/검증/편집 권한|
+|Provider Ports|권한·읽기/쓰기·outbox·receipt|공급자별 필드·scope·원본 의미|
+|Operations|역할·감사·상태·이용권·지원|운영 업무·요금·실제 PG|
+|Delivery|환경 분리·검사·빌드·배포·기록|새 앱 ID/도메인·서명·공개 단계|
+
+#### 2. 새 앱과 기존 docen에서 이름 변경은 다르다
+
+##### 2.1 기존 docen 수정
+
+기존 bundle·URL scheme·쿠키/SecureStore key·DB·암호화 seed·OAuth callback을 보존한다. 표시 이름 변경 때문에 계정/연결을 끊거나 DB를 초기화하지 않는다. 기존 문서의 이 규칙은 docen 업데이트용이다.
+
+##### 2.2 별개의 새 앱
+
+새 저장소/제품 식별자와 새 서버/DB/암호화 키를 준비한다. docen 운영 DB·토큰·서명 계정·OAuth 앱·Resend 키를 무단 복사하지 않는다. 별개 앱에 docen 세션 key를 그대로 쓰면 같은 기기/host에서 세션을 섞을 수 있다.
+
+새 제품별 교체 목록:
+
+- 표시 이름·slug·package name·iOS bundle identifier·Android package(지원 시)·URL scheme·Universal Link/Associated Domains.
+- Expo project ownership·push project ID·store listing·앱 아이콘/launch asset·permission 문구·privacy manifest/entitlements.
+- API origin·도메인·CORS/CSRF origin·OAuth redirect/state owner·메일 발신 주소·지원 주소.
+- 쿠키 이름/path·SecureStore namespace·AsyncStorage namespace·cache key·notification category/deep-link routing.
+- DB/암호화 key·백업 prefix/서명키·외부 provider application·관리자 allowlist·법적 운영자·약관 버전.
+
+이는 체크리스트이며 기존 코드의 모든 문자열을 일괄 치환하라는 뜻은 아니다. 프로토콜/이력의 예전 이름은 호환성을 검토하고 변경한다.
+
+#### 3. 실제 현재 아키텍처와 추출 순서
+
+mobile/App.tsx는 SafeArea·Motion·Keyboard·Duo/웹 presentation·인증/인증대기·주요 화면을 조합한다. 현재 useTodos는 회원 세션·서버 연결·목록·알림·원본 수정까지 함께 다루므로 다른 앱에서 Todo 이름만 바꿔 전체 공통 store라고 부르지 않는다.
+
+추출 시 권장 책임(새 설계이며 현재 파일명이 아님):
+
+1. AppConfig: 제품 식별·지원 기기·공개 단계·API 주소.
+2. SessionController: 복원/인증/인증대기/정지/해제·계정 경계.
+3. Transport: 보안 헤더·JSON 파싱·오류 분류·timeout·취소.
+4. EntityRepository<T>: 자료 읽기/저장/receipt/revision의 경계.
+5. AppShell: 위 상태에 맞는 화면과 navigation.
+6. SettingsFeature: 계정/알림/자료·개인정보/지원/법적 문서.
+7. DomainFeature: 새 앱의 고유 자료·규칙·화면.
+8. OperatorConsole: 별도 운영자 인증/검색/관리/감사.
+
+공통 추출은 원래 기능을 통과시키면서 작은 단위로 한다. ui.tsx에는 범용 Button/Page와 docen TodoRow/TodoEditor가 함께 있으므로 파일 전체를 곧바로 범용 UI 라이브러리로 배포하지 않는다.
+
+#### 4. 화면 기본 부품과 디자인 토큰
+
+정본: mobile/src/theme.ts·ui.tsx·MeSettings.tsx·SurfaceInteraction.tsx·motion.tsx.
+
+- 의미별 색: background/surface/grouped/text/secondary/muted/line/primary/danger. 색 이름만 바꾸는 대신 오류·선택·진행·읽기전용의 의미를 유지한다.
+- 글꼴: OS 기본 글꼴·한글/영문 fallback·font scaling. 고정 높이 텍스트 박스로 큰 글자가 잘리지 않게 한다.
+- 간격:4/8/12/16/24/32를 시작점으로, 페이지 inset·절 간격·행 gap을 토큰화한다.
+- radius: 작은 입력/큰 그룹/시트/내비게이션을 구분한다. 모든 부품을 같은 pill로 만들지 않는다.
+- 버튼: 기본/보조/파괴적·disabled·busy·pressed·focus·성공/실패. 로딩 표시 때문에 버튼 폭이 튀지 않도록 한다.
+- 목록 행: leading icon/제목/보조/오른쪽 상태/chevron. 제목에 공간 우선권, 상태는 짧게, 길면 줄바꿈한다.
+- 공통 상태: 최초 loading·empty·error·partial·refreshing·stale·pending·conflict·unknown. 문구와 재시도 경로를 각 화면에서 일관되게 쓴다.
+- 의미 전달: 실패를 빨간색만으로, 선택을 색 변화만으로 표시하지 않는다. 라벨·아이콘·텍스트/접근성 상태를 함께 제공한다.
+
+docen의 파랑/오리/5탭/3초 완료는 제품 선택이다. 새 앱은 자신의 작업 성격에 맞게 바꾸되 공통 상태를 삭제하지 않는다.
+
+#### 5. App Shell과 내비게이션
+
+##### 5.1 앱 시작 상태기계
+
+| 상태 | 화면 | 금지 |
+|---|---|---|
+|boot/restoring|안정된 준비 화면/기본 공간|로그인 만료로 단정·개인자료 잠깐 노출|
+|anonymous|로그인/가입|내부 메뉴/데이터 render|
+|unverified|이메일 인증 화면|Todo/핵심 API 호출·내부 이동|
+|authenticated|정상 shell|이전 계정 응답 적용|
+|unavailable|연결 확인/재시도|토큰 삭제·로그인 폼 깜박임|
+|suspended|정지 안내/지원·허용된 탈출|새 작업·외부 실행|
+|signing-out|자료/요청 정리·gate 복귀|늦은 응답으로 shell 재노출|
+
+##### 5.2 화면 유지
+
+탭 변경은 화면 상태를 버리는 재마운트와 구분한다. 작성 초안·선택 날짜·목록 위치는 가능한 범위에서 보존한다. 숨겨둔 화면의 불필요한 polling/뒤로가기 handler는 중지한다. 계정/서버 교체는 다른 경계이므로 개인 자료와 초안을 정리한다.
+
+복귀는 modal→상세→목록→상위의 현재 층만 닫는다. 닫기 콜백에 identity/version을 연결해 오래된 콜백이 새 시트를 닫지 못하게 한다. 닫기 불가능한 busy 상태는 명확한 이유/상태를 보여준다.
+
+##### 5.3 기기별 배치
+
+일반폰 하단 탭·데스크톱 좌메뉴/우보조·Duo 카메라 열은 각각 presentation adapter다. 비즈니스 자료 처리와 섞지 않는다. 새 앱이 Duo를 지원하지 않으면 그 분기를 제외하고 지원 기기 표를 다시 만든다. 넓은 화면이라는 이유로 Duo라고 판정하지 않는다.
+
+#### 6. 회원가입·비밀번호·동의
+
+원본: AuthScreen.tsx·PasswordFields.tsx·SignupAgreements.tsx·password-policy.ts, 서버password-policy.js·store.js·legal-policy/content.
+
+현재 docen 정책은 숫자/ASCII 특수문자를 포함한8~128자·두 번 입력이다. 첫 필드 아래 기준을 항상 안내하고 위반하면 테두리+outline+문구를 빨갛게, 확인 불일치는 두 번째 아래에도 표시한다. 복사/붙여넣기/비밀번호 관리자 사용을 막지 않는다. 입력값을 임의 trim/변환하지 않는다.
+
+서버도 동일 정책/확인값/필수 동의를 검사한다. 버튼 비활성화만으로 검증을 끝내지 않는다. 가입 중 중복 클릭/네트워크 끊김/이메일 중복을 처리하고 비밀번호를 URL/로그/분석 이벤트에 넣지 않는다. 기존 비밀번호 로그인은 새 조합 규칙으로 막지 않는다.
+
+약관/개인정보 버전·연령 확인은 서버에서 실제 저장한다. 선택 동의/마케팅·AI·외부 연결을 필수 가입 동의에 몰아넣지 않는다. 과거 동의를 허위 생성하지 않는다. 새 앱의 최소 연령·지역·법무 정책은 실제 조건에 맞춰 검토한다.
+
+#### 7. 이메일 인증·재설정
+
+가입→제한 세션→자동 발송 요청→인증 화면→번호 확인→정상 API 허용. 인증 전에는 핵심 데이터 store를 초기화하거나 메뉴를 보여주지 않는다. UI뿐 아니라 모든 관련 서버 API에서 검증한다.
+
+현재 회원6자리/15분/5회·재전송60초/시간당5건. 재발송 시 이전 코드 무효화. 재설정 성공은 세션 폐기. 관리자10분 초기 설정과 혼동하지 않는다. 고정 숫자는 보안/운영 정책값이지 모든 앱의 법적 의무는 아니다.
+
+메일의 네 단계: queued→provider accepted→delivered/실제 수신→사용자 인증 성공.202응답은 큐 접수이지 수신이 아니다. 발신 도메인/DKIM/sending DNS/API key scope를 확인하고 영구 거절은 안전한 오류 분류만 남긴다. 비밀 key·인증코드·전체 수신 주소·provider 원문 로그를 남기지 않는다.
+
+가입 주소 존재 여부의 불필요한 노출을 줄인다. 재설정 응답은 계정 존재를 직접 구분하지 않는 기존 경로를 따른다. 인증 우회를 ‘테스트 편의’로 제품에 넣지 않는다.
+
+#### 8. 로그인·세션·기기 저장
+
+원본auth.ts·useTodos.ts·store.js. 웹 HttpOnly/Secure/SameSite Strict쿠키, native SecureStore의 origin별 token이다. 서버는 세션 token의 해시를 저장한다. 실제 token을 AsyncStorage/URL/localStorage/로그로 옮기지 않는다.
+
+세션 복원 시401과네트워크실패를구분한다. 401확정은재로그인,503/timeout/비JSON은연결상태보존/재확인이다. 오래안켰다가켰을때로그인화면을잠깐보였다없애지않는다. 토큰복원과자료읽기완료를각각관리한다.
+
+로그아웃/서버변경/회원전환에는 요청 세대 증가·AbortController 취소·owner별cache 삭제/분리·기기 알림 해제/재연결·화면초안 경계를 처리한다. 대기 전에 캡처한 이전 token과새계정의draft를섞지않는다. 만료/로그아웃중늦은응답은무시한다.
+
+#### 9. HTTP 통신·오류·서버 준비
+
+원본auth.ts·http-response.ts·server-readiness.ts·server/http-json.js.
+
+- JSON Content-Type·실제 파싱·상태/에러코드를 검사한다. HTML 에러페이지를 정상 데이터로 전달하지 않는다.
+- 요청별 timeout과AbortController를쓴다. 현재 auth.ts는 일부연결/로그인/쓰기60초, 일반15초이며서버준비probe10초/전체45초등의경로가있다. 새서비스는측정해조정하고 무조건 길게 늘리지 않는다.
+- 알려진읽기전용GET의한정된끊김/비JSON응답만1회복구할수있다. 로그인·OAuthconfirm·메일발송·POST/PATCH외부쓰기를자동반복하지않는다.
+- Free cold start워밍업은health GET만반복한뒤사용자쓰기를한번보낸다. health200도모든provider가정상이라는뜻은아니다.
+- API 결과는 실행/화면세대와owner를확인한뒤적용한다. 화면을떠난요청이새화면의오류를덮지않는다.
+
+오류표준 권장: 사용자 메시지, 안정 code, 재시도 가능 여부, action/request ID, 처리 결과 확실성. 현재 모든endpoint가이형식의단일라이브러리를쓴다고가정하지않고추출때서버응답adapter로정규화한다. raw stack/token/provider본문은고객메시지에싣지않는다.
+
+#### 10. 입력·키보드·시트
+
+원본KeyboardUX.tsx·keyboard-done.ts·useFocusedField.ts·scroll-reveal.ts·MeSettings.tsx·NotesField.tsx·SheetBackdrop.tsx·motion.tsx.
+
+키보드표시/실제가림을한곳에서읽고실제screenY와편집frame겹침만예약한다. 단순히화면전체에keyboard높이를더해서내용을두번밀지않는다. 편집frame을유지하고기존내부스크롤로focused필드를드러낸다. 입력중한글조합/커서/여러줄높이변화를보존한다.
+
+키보드내리기와저장/닫기는별개다. 내리기버튼이초안을저장/전송하지않는다. 현재KeyboardDismiss 컴포넌트는중복헤더버튼을추가하지않고native accessory/Duo surface가해당조작을담당한다. null반환을미구현으로오해해버튼을중복추가하지않는다.
+
+시트는 X와충분한터치영역, 제목, 본문스크롤, 하단행동을분리한다. 배경은dim/disabled/접근성숨김. 닫히면한겹만복구한다. 활성입력에서저장버튼을가리거나키보드가실제작성영역을덮는경우기기별계약을따른다. iOS accessory·웹focus·Android입력은동일하다고가정하지않는다.
+
+#### 11. 목록·상세·편집의 공통 계약
+
+목록: 제목→보조자료→상태→진입. 행전체편집/체크/스와이프/링크가경쟁하지않게한다. 세로스크롤과가로제스처를구분하고다중선택때다른제스처를중지한다. 길게누르기이후tap오작동을막는다. 키보드/스크린리더용대체버튼도제공한다.
+
+상세는실제자료와초안을분리한다. 새로고침이입력중폼을덮지않는다. 취소는초안을버리되서버에보낸불확실한외부작업을미전송으로단정하지않는다. 저장버튼은변경/유효성/권한/busy를따르고부분실패를보존한다.
+
+빈목록은다음행동을제시한다. 권한없음/자료없음/조회실패를같은‘없어요’로합치지않는다. 당김새로고침표시는사용자제스처때, 배경갱신은내용을막지않는작은상태로구분한다.
+
+#### 12. 자료 모델·repository·계정 소유권
+
+원본domain.ts·repository.ts·store.js·database.js. Todo도메인과공통저장을분리한다. generic repository의자료타입/검증/endpoint는새앱이정의한다.
+
+기본자료: id, ownerId, revision, createdAt/updatedAt, 지원되는필드. 외부자료는connectionId/provider/nativeId/ETag/원본수정시각. 임시UI상태와원본저장레코드는분리한다.
+
+서버는인증된session에서owner를정하고본문의userId를신뢰하지않는다. 조회/수정/삭제/첨부/검색/내보내기/receipt/원본작업까지같은검사를한다. 다른계정ID로접근했을때자료가없는것처럼안전하게거부하고원문을노출하지않는다.
+
+현재cloudrepository는list/create/get/update/remove/reorder/receipt와capability확인을쓴다. demo는AsyncStorage의합성목록으로별도다. 서버capability가없으면메모/순서필드를조용히버리지않고업데이트안내를준다.
+
+#### 13. 빠른 저장·멱등·응답 유실
+
+화면은즉시업데이트하되서버확정전pending표시를한다. 한자료에여러변경이있으면순서/개정을보존한다. 오래된실패응답으로더최신성공을되돌리지않는다.
+
+| 결과 | UI | 다음 동작 |
+|---|---|---|
+|확정성공|확정값/서버ID로교체|새로고침/알림등후속처리|
+|확정4xx거절|마지막확정값으로복원·입력보존|이유/권한/입력수정|
+|queued|앱저장됨·원본반영중|작업ID상태조회|
+|conflict|새자료/충돌안내|다시읽고선택,자동덮어쓰기금지|
+|timeout/응답유실|결과확인중|receipt/해당자료읽기|
+|unknown|불확실표시·중복실행차단|원본확인·안전한지원경로|
+
+새자료의clientRequestKey는owner에묶고같은key는같은결과를돌려준다. update는기존revision/필드비교,외부작업은prepare/confirm/actionID/receipt. 확정전새로컬알림을예약하지않거나기존확정예약을유지한다. 이구조가‘완전오프라인앱’또는프로세스종료전미전송변경의영구보관을자동보장하지는않는다.
+
+#### 14. 캐시·새로고침·오프라인 경계
+
+마지막확인자료를먼저보이고배경갱신한다. age/마지막성공시간을표시할수있어야한다. 실패가빈목록으로덮지않게한다. 부분소스는성공한것부터반영하고전체성공으로표시하지않는다.
+
+cache key에는제품/owner/origin/범위/시간대/연결버전을포함한다. sensitive본문/ETag/쓰기권한까지무작정영구저장하지않는다. snapshot과쓰기권한정본을분리한다. native SecureStore와웹tab sessionStorage등현재구현의보관위치를추출때재검토한다.
+
+오프라인에서읽을수있는자료와수정가능범위를명시한다. 현재in-memory낙관적층은앱종료후보존을보장하지않는다. durableoutbox는서버접수후의재시작을견딘다. 진짜offlinequeue가필요한새앱은암호화·충돌·용량·재시도/취소·OS백그라운드까지별도설계한다.
+
+#### 15. 원본 동기화·작업 대기열
+
+원본변경은owner/연결/권한/동의/최신revision/ETag를실행직전에확인한다. 로컬저장+원본outbox는같은transaction. 대기중변경은합칠수있으나running/unknown기록을지우지않는다.
+
+worker는lease/actionID를먼저기록하고실행한다. 재시작때새로운외부쓰기를재전송하지말고기존receipt를조회한다. 충돌/unknown은후속쓰기를막고사용자에게이유와대안을알린다. 복원시대기작업을자동재생하지않는다.
+
+공급자adapter의capability는canRead/canCreate/canUpdate/지원필드/완료/삭제/첨부/재시도가능성이다. GoogleCalendar의‘완료’를삭제로대체하지않는등의미를보존한다. iPhone원본은기기EventKit이필요하며웹/서버가대신행사하지않는다.
+
+#### 16. OS 권한·외부 OAuth
+
+권한상태는unknown/requesting/allowed/limited/denied/unavailable과운영설정대기를구분한다. 설명→OS/OAuth요청→실제결과읽기→관련자료조회. 제품의기본ON은OS허용이아니다. 거부후무한popup을열지않고설정으로가는방법과대안을준다.
+
+OAuth는state/PKCE/redirect정확일치·소유계정·scope최소화·token암호화·해제/만료/재연결을연결한다. 같은Google계정의여러서비스권한과제품로그인OAuth는별개다. 새앱은자신의provider등록을해야한다. callback문자열만복사해docen의연결을공유하지않는다.
+
+권한수준이바뀌면진행중미리보기와확인된실행규칙을재검사한다. 해제후오래된작업/캐시가원본을수정하지못하게한다. 테스트용provider와실계정증거를분리한다.
+
+#### 17. 날짜·시간·지역화
+
+날짜전용값 YYYY-MM-DD와실제시점 ISO/UTC, 사용자가고른local시간·IANA timezone을구별한다. 자정변환으로기한이하루밀리지않게한다. DST/월말/윤년/주첫날/기한없음/지난기한/반복의의미를테스트한다.
+
+Intl표시와저장값을분리하고기기locale에따라표시한다. 날짜문자열lexical비교가가능한범위와시각파싱이필요한범위를구별한다. 공급자의due가시간을지원하지않으면기한시각을지원한것처럼표시하지않는다.
+
+공통UI문구·오류·빈값·aria-label·알림·메일·약관·가격까지언어범위를정한다. KR/EN배열은현재소개구현이고새앱의i18n라이브러리를강제하는규칙은아니다. 긴번역/복수형/금액·세금·연간월환산을따로검사한다.
+
+#### 18. 로컬 알림·푸시·예약
+
+원본useReminders.ts·reminder-plan.ts·push.ts(모바일/서버). 로컬예약과서버push를구분한다. OS허용/기기등록/회원소유/구독설정/시간대/안내문구가일치해야한다.
+
+저장변경/완료/삭제/로그아웃/계정전환/권한철회때예약을취소/재계획한다. 확정전임시데이터로새예약을만들지않는다. 오래된기기등록이새회원자료를받지않게한다. push token은공개프로필/로그에노출하지않는다.
+
+알림탭→허용된대상ID/화면만연다. 알림payload로임의URL·작업명령·사용자ID를신뢰하지않는다. 앱꺼짐/실행중/foreground·권한거절·이미삭제된대상·다른계정일때를다룬다. 기기잠금화면/실제APNs수신은웹테스트로완료할수없다.
+
+예약은중복키/실행기록/서명된trigger·시계/시간대·지연·부분실패를다룬다. Free서버sleep·GitHubcron지연이있으므로정확한분의전달을보장하지않는다. 사용자가요청하지않은반복발송은만들지않는다.
+
+#### 19. 파일·첨부·공유·내보내기
+
+현재ExpoDocument/ImagePicker·FileSystem·Sharing과agent-files/media/queue등경로가있다. 파일화면/저장엔진은docen agent에연결돼있으므로범용업로드서버로분리할때의존성을확인한다.
+
+확인항목:허용유형/용량/확장자와실제MIME/파일명정규화/경로탈출방지/owner/암호화·보관/작업취소·진행/실패후정리·중복업로드방지. remoteURL읽기는공식호스트/SSRF·사설IP차단·redirect제한을따른다. 문서내지시는시스템명령으로승격하지않는다.
+
+내보내기는요청자의자료만, 실제보관내용/동의·처리이력포함범위를고지한다. 로그·관리자조회·사용자export의허용정보는각각다르다. 문서ZIP에개인첨부/DB/키/로그를자동넣지않는다.
+
+#### 20. ME/설정의 공통 정보구조
+
+프로필/계정, 연결된서비스, 알림/예약, 동작방식, 자료/개인정보/기억, 지원/법적문서, 앱정보를제품에맞게묶는다. 한행은아이콘·이름·짧은상태·진입만, 상세안에서설명/권한/자료범위/저장/문제해결을제공한다.
+
+단순설정은페이지push/뒤로가기로일관되게, 일시편집/확인은목적에맞는시트로한다. 하위설정전체를상위메뉴에펼쳐두지않는다. disabled/준비중서비스의설명은열수있어도실제연결버튼은사용가능성에맞춘다.
+
+조회실패를OFF로표시하지않는다. 설정초안/저장중/완료/실패를제공하고다른느린API에단순설정읽기를묶지않는다. 오래된profile응답이최근저장을덮지않게한다.
+
+#### 21. 개인정보·삭제·백업·복구
+
+법적문서정본/버전/고정아카이브/실제가입동의기록을분리한다. 서비스이름변경은표시/고지/새버전, 법적운영자변경·목적확대는별도검토다. 타서비스약관을그대로복제하지않는다.
+
+계정삭제는재인증/명시확인·관련owner자료·세션·연결·기기/예약·첨부/작업의정리와법정예외범위를고지한다. 외부원본을같이삭제할지별도정책을정하고계정삭제가임의원본삭제로확장되지않게한다.
+
+백업은암호화/서명·체크섬·보관기간·owner/키분리·권한최소화. 복원은빈새DB, 기존키검사, 손상/잘못된키거부. 복원한메일/세션/예약/작업을외부에재생하지않는다. 운영DB를지우는방식으로복원검사를하지않는다.
+
+#### 22. 운영 어드민 공통 기반
+
+별도admin계정/쿠키/세션, login전gate, RBAC, 회원검색/상세, 이용권/상태/연결점검/감사를재사용한다. 정확한CSS·파일/API순서는[제작매뉴얼](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md)13절이다.
+
+역할은서버매요청검사. 조회전용쓰기거부, 총관리자보호, 모든변경에사유/requestID/version/전후감사. 수동이용권과실제거래를분리한다. 관리자에게원본대화/토큰/비밀번호를보여주지않는다. 지원점검은범위가정해진읽기만, 임의URL/코드실행을운영버튼으로열지않는다.
+
+새제품에서운영역할/회원자료/허용관리작업을다시정의한다. docenallowlist/임시비밀번호/가입자를새제품에복사하지않는다.
+
+#### 23. 요금·권한·PG·원가
+
+권한(account policy), 상품/노출가격, 결제거래, AI원가예산은분리한다. 수동Pro발급은매출도모델예산도아니다. 프런트요금표와서버한도는단일정책에맞춰야하지만현재docen은공개표/운영정책의출시전정리사항이있다.
+
+PG는현재미연결이다. 재사용가능한것은권한/수동이용권/감사/예산상한이며결제완성모듈이아니다. 새PG는서명된웹훅검증·고유거래ID·멱등적용·환불/취소·구독갱신/실패·권한회수·정산대조·청구고지/영수증을별도구현/시험한다.
+
+원가가발생하는AI/검색/이미지/컴퓨터는요청전보수적예약·동시성중복차감방지·확정usage정산·불명보류. 모르는모델/도구가격을무제한허용하지않는다. 자료변경없으면유료분석을재실행하지않는다. 무료인프라와고객별상한이사업전체무손실을보장하지는않는다.
+
+#### 24. 모션·접근성·체감 품질
+
+현재motion.tsx기본pressIn90/pressOut140/navigation180/page200/feedback180/sheet200ms. 앱은초기OS동작줄이기설정을확인하기전모션을줄이는안전한상태로시작한다. 설정확정때이미보인화면의모션을재생하지않는다.
+
+리스트순서이동은이전위치에서새위치로보간하고페이지전체확대/튀는전환을쓰지않는다. 탭/회전이저장소를다시만들어초안을없애면안된다. docen완료3초후350ms는도메인동작이므로다른앱의삭제/결제를같은방식으로자동실행하지않는다.
+
+공통검수:44pt이상주요터치영역·보이는포커스·label/hint/state·스크린리더순서·배경modal접근차단·큰글자·색외의의미·모션감소·키보드전용조작·긴번역. nativeGlass질감·VoiceOver·실기기한글IME는브라우저화면비교와별도다.
+
+#### 25. 관측·성능·실패 복구
+
+사용자에게보일오류와운영로그를분리한다. 로그는request/actionID·경로분류·duration·고정에러code·성공/실패상태위주로, 토큰/비밀번호/본문/메일코드/전체원본을제외한다. 권한오류를성능문제로, 개발환경접근차단을서비스장애로오해하지않는다.
+
+마지막자료유지·readcache·불필요한metadata조회축소·동의된이벤트·모델중복호출억제·공개gateway/core/providerlane분리를참고한다. 다른앱에서동기DB때문에loop가막히는지측정하고사용량에맞는구조를선택한다. 기존workerthread를복사했다고모든API가병렬/무지연이되는것은아니다.
+
+과부하/한도에는새수집을멈추고이유/다시시도/마지막확인자료를보여준다. 무한재시도·강제재로그인·확인되지않은성공으로덮지않는다.
+
+#### 26. 테스트의 공통 층
+
+1. 순수정책/파서/시간/알림계획/unit: 빠르게경계값을검사.
+2. 실제HTTP+격리SQLite/API:가입·권한·owner·동의·원본receipt·관리자.
+3. libSQLHTTP호환:로컬만통과하는SQL/매개변수차이를검사.
+4. provider통제fixture:권한부족·만료·충돌·부분실패·응답유실·usage없음.
+5. 실제production웹번들:로그인/인증/초안/모바일/PC/키보드가림/빠른저장.
+6. nativeexport/prebuild/SDK검사:설정/타입/번들호환. IPA서명과별개.
+7. 무료MacIPA/Apple제출/기기설치:실행별SHA/번호/성공단계기록.
+8. 실제기기/실계정:OS권한·원본readback·푸시·IME·VoiceOver·연결해제/만료.
+
+합성계정의성공을실계정성공으로쓰지않는다. 운영원본을테스트데이터로변경하지않는다. 기존조건부skip은이유를기록하고실패를숨기려고테스트삭제/skip하지않는다. 문서수정만했으면무관한모델/IPA비용을발생시키지않는다.
+
+#### 27. 빌드·환경·출시 공통 절차
+
+의존성lock·Node24/Expo현재버전·native모듈호환을보존하고한번에업그레이드하지않는다. 루트·mobile·website각각npm ci. 개발API/실계정운영API를구분하며예시환경파일만Git에넣는다.
+
+환경변수는서버secret/앱공개config를분리한다. OPENAI/DB/Resend/OAuthsecret을EXPO_PUBLIC변수에넣지않는다. nativebundle의URL은공개될수있는값이라는전제로한다.
+
+빌드체계:check/test/typecheck→web/iOSexport→native설정/실제Swift지원버전검사→사용자가승인한새수동main무료Mac빌드→동일IPA제출. Apple계약/서명문제는소유자화면에서해결한다. 옛run재실행/유료EAS/runner를자동우회로쓰지않는다.
+
+웹:productionbuild→정확SHA배포→live/health→실제DNS/TLS→로그인/guard/언어/주요행동확인. 소개만공개단계는CTA와서버Host/Origin둘다막는다. 웹배포가설치native업데이트는아니다.
+
+스토어준비:실제권한문구·privacy/data수집표·계정삭제/지원/약관·기기/접근성·스크린샷·연령·상품/외부결제정책·검토계정. 현재docen의최종스토어검토미완료/PG미연결을다른앱의완료로복사하지않는다.
+
+#### 28. 새 앱에서 핵심 기능을 붙이는 순서
+
+1. [프로젝트 계약 양식](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-project-contract.md)을 채운다. 누가·어떤자료·무슨행동·원본변경·지원기기·공개단계부터 정한다.
+2. 새제품의이름/ID/도메인/DB/키/외부앱/서명을분리한다. 기존docen운영값은복사하지않는다.
+3. 모듈목록에서필수foundation을고르고Todo/Calendar/Duo/AI는필요한경우만선택한다.
+4. SessionController/Transport/공통Shell/UI/Settings를기존도메인에서분리한다. 기존회귀를통과시킨뒤복사한다.
+5. 합성대표자료3개로목록→상세→편집과로딩/빈값/오류/저장중을확인받는다.
+6. 새Domain모델/검증/repository/API·DB테이블/owner/revision/receipt를붙인다.
+7. 핵심자료하나의완전한왕복을먼저완성한다. 새기능수보다실패/취소/복구까지가완료기준이다.
+8. 공통계정/설정/알림/법적문서/어드민이새자료에맞게동작하는지연결한다.
+9. 관련테스트·productionUI·실제기기를분리검증하고[출시체크리스트](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)에증거를기록한다.
+10. [다음AI인계양식](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-ai-handoff.md)을작성하고소스/문서/검증을같은commit에연결한다.
+
+이것은핵심기능만새로기획하도록반복되는제품기반을고정하는방법이다. 각각의정책과검증을생략하고완료시간을보장하는방법은아니다.
+
+#### 29. 빠른 완료를 위한 승인/완료 기준
+
+디자인승인:실제길이합성내용·PC/폰·주요상태·시안선택이명확함. 기능완료:읽기/쓰기/권한/취소/실패/재조회가서버와왕복함. 운영완료:실제설정/키/도메인/백업·권한이연결됨. 출시완료:스토어/웹공개단계·실제접속/설치/주요기능이확인됨.
+
+다음AI에게‘다완성’만전달하지않고모듈별위수준을구분한다. 미지원/준비중/보류된기능은설명과대안을남기고버튼을가짜성공으로채우지않는다.
+
+#### 30. 관련 원본과 전달물
+
+- [연결 계약 예시](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-integration-contracts.md): 설정/세션/repository/원본/권한의 정확한 추출 경계와 설계용 TypeScript.
+
+
+- [모듈 파일 지도](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md) · [모듈 JSON](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-modules.json): 실제source/test경로·의존·교체항목·재사용범위.
+- [필수 검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md): 상태/증거/담당/남은 일 기록.
+- [제작 매뉴얼](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md): 소개CSS/웹/어드민상세.
+- [공통 디자인 원칙](https://github.com/thepmpo/donknow/blob/main/docs/reusable-product-design-principles.md): 이전정리의공통언어/원칙.
+- [문서 지도](https://github.com/thepmpo/donknow/blob/main/docs/docen-document-map.md): 기존계약/QA전체.
+- deliverables/docen-ai-handoff.zip: 작은전체문서묶음.
+- deliverables/docen-complete-handoff.zip: 별도생성된Git추적소스/문서/테스트/자산전체+읽는순서/manifest. 환경파일·실DB·개인키·node_modules·Git내부·실제토큰은제외한다.
+
+#### 31. 재사용 자산·라이선스
+
+소스/문서/합성 QA자산의 전달과 외부 브랜드·참고 영상·글꼴·이미지의 새 제품 상용 사용 권한은 다르다. LICENSE/패키지 라이선스/글꼴 OFL·각 출처를 확인하고 새 앱의 로고/아이콘/마케팅 이미지는 자체 자산으로 교체한다. 참고 서비스의 스크린샷/영상이 ZIP에 있다고 새 앱에 그대로 배포 가능한 것으로 간주하지 않는다.
+
+### 원문 / docs/app-foundation-module-map.md
+
+### 앱 공통 모듈 — 실제 소스·검증 파일 지도
+
+[새 앱 입구](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md) · [설계서](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md) · [구조화 JSON](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-modules.json)
+
+36개 모듈은 기존 구현 참고 경로다. 파일 전체가 독립 SDK라는 뜻이 아니며 각 모듈의 도메인 의존을 추출하고 새 앱에서 다시 검증해야 한다. 검증 참조 파일 존재는 새 앱에서 이번에 테스트를 실행했다는 뜻이 아니다. 필수/선택은 개인 계정형 앱의 기본 제안이며 실제 제품 계약에 맞춘다.
+
+| ID / 모듈 | 선택 / 의존 | 소스 | 검증 참조 | 보존 / 새 앱 변경 |
+|---|---|---|---|---|
+|identity-session / 계정·세션|required<br>의존: 없음|[mobile/src/auth.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/auth.ts)<br>[mobile/src/useTodos.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/useTodos.ts)<br>[server/store.js](https://github.com/thepmpo/donknow/blob/main/server/store.js)|[mobile/e2e/startup-session.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/startup-session.mjs)<br>[mobile/e2e/session-isolation.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/session-isolation.mjs)|보존: origin별토큰/owner경계 / 세션컨트롤러를Todo상태에서분리<br>변경: 새cookie/SecureStore namespace / 새인증정책|
+|signup-password / 가입·비밀번호·확인|required<br>의존: identity-session|[mobile/src/PasswordFields.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/PasswordFields.tsx)<br>[mobile/src/password-policy.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/password-policy.ts)<br>[server/password-policy.js](https://github.com/thepmpo/donknow/blob/main/server/password-policy.js)<br>[mobile/src/screens/AuthScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/AuthScreen.tsx)|[test/password-policy.test.js](https://github.com/thepmpo/donknow/blob/main/test/password-policy.test.js)<br>[mobile/e2e/password-policy.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/password-policy.mjs)|보존: 프런트/서버정책동일 / 기존로그인호환<br>변경: 문구/브랜드 / 가입필드/연령|
+|signup-consent / 가입동의·법적버전|required<br>의존: signup-password|[mobile/src/SignupAgreements.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/SignupAgreements.tsx)<br>[server/legal-policy.js](https://github.com/thepmpo/donknow/blob/main/server/legal-policy.js)<br>[server/legal-content.js](https://github.com/thepmpo/donknow/blob/main/server/legal-content.js)|[test/signup-agreements.test.js](https://github.com/thepmpo/donknow/blob/main/test/signup-agreements.test.js)<br>[mobile/e2e/signup-legal.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/signup-legal.mjs)|보존: 실제동의버전저장 / 고정아카이브보존<br>변경: 운영자/국외이전/법무정책 / 새약관버전|
+|email-gate / 이메일인증gate|required<br>의존: identity-session, signup-consent|[mobile/src/screens/VerificationScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/VerificationScreen.tsx)<br>[server/mail.js](https://github.com/thepmpo/donknow/blob/main/server/mail.js)<br>[server/mail-diagnostics.js](https://github.com/thepmpo/donknow/blob/main/server/mail-diagnostics.js)|[test/email-verification-gate.test.js](https://github.com/thepmpo/donknow/blob/main/test/email-verification-gate.test.js)<br>[mobile/e2e/email-verification.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/email-verification.mjs)|보존: 인증전UI/API차단 / 접수와수신구분<br>변경: 발신도메인/새키 / 유효기간/재전송정책|
+|transport / HTTP·오류·취소|required<br>의존: identity-session|[mobile/src/auth.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/auth.ts)<br>[mobile/src/http-response.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/http-response.ts)<br>[server/http-json.js](https://github.com/thepmpo/donknow/blob/main/server/http-json.js)|[mobile/src/http-response.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/http-response.test.ts)<br>[test/http-json.test.js](https://github.com/thepmpo/donknow/blob/main/test/http-json.test.js)|보존: 401과통신실패분리 / 쓰기자동재전송금지<br>변경: endpoint분류/timeout / clientheader/오류문구|
+|server-readiness / 서버준비·안전한probe|optional<br>의존: transport|[mobile/src/server-readiness.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/server-readiness.ts)<br>[mobile/src/auth.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/auth.ts)|[mobile/src/server-readiness.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/server-readiness.test.ts)|보존: healthGET만재시도 / 대기전token캡처<br>변경: 호스트/준비예산 / 항상켜진서버에서는축소|
+|app-shell / 시작·인증·기기별Shell|required<br>의존: identity-session, email-gate, transport|[mobile/App.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/App.tsx)<br>[mobile/src/AppNavigation.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/AppNavigation.tsx)<br>[mobile/src/DesktopWorkspace.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/DesktopWorkspace.tsx)|[mobile/e2e/startup-session.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/startup-session.mjs)<br>[mobile/e2e/web-format-reference.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/web-format-reference.mjs)|보존: 화면보존/owner초기화구분 / useTodos결합분리<br>변경: 새메뉴/진입 / 지원기기/presentation|
+|design-tokens / 의미색·글자·간격|required<br>의존: 없음|[mobile/src/theme.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/theme.ts)<br>[mobile/src/ui.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/ui.tsx)|[mobile/e2e/ux-audit.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/ux-audit.mjs)|보존: token/상태일관성 / ui.tsx의Todo부분분리<br>변경: 브랜드/밀도 / 새제품기본위계|
+|motion-a11y / 모션·동작줄이기|required<br>의존: design-tokens|[mobile/src/motion.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/motion.tsx)<br>[mobile/src/SurfaceInteraction.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/SurfaceInteraction.tsx)|[mobile/e2e/motion.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/motion.mjs)<br>[mobile/e2e/reference-flows.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/reference-flows.mjs)|보존: 초기reduced-motion / 상태보존/중복모션방지<br>변경: 제품별duration/gesture / 스크린리더실기기검수|
+|keyboard-sheet / 키보드·입력·시트|required<br>의존: design-tokens, motion-a11y|[mobile/src/KeyboardUX.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/KeyboardUX.tsx)<br>[mobile/src/keyboard-done.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/keyboard-done.ts)<br>[mobile/src/useFocusedField.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/useFocusedField.ts)<br>[mobile/src/scroll-reveal.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/scroll-reveal.ts)<br>[mobile/src/SheetBackdrop.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/SheetBackdrop.tsx)|[mobile/src/scroll-reveal.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/scroll-reveal.test.ts)<br>[mobile/e2e/editor-viewport.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/editor-viewport.mjs)<br>[mobile/e2e/keyboard-device.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/keyboard-device.mjs)|보존: 실제가림/내부reveal / IME초안/배경층보호<br>변경: 플랫폼별accessory / 새폼필드/저장흐름|
+|settings / ME·계정·지원설정|required<br>의존: app-shell, keyboard-sheet|[mobile/src/MeSettings.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/MeSettings.tsx)<br>[mobile/src/screens/ProfileScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/ProfileScreen.tsx)<br>[mobile/src/screens/AccountScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/AccountScreen.tsx)|[mobile/e2e/me-settings.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/me-settings.mjs)<br>[mobile/e2e/me-review.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/me-review.mjs)|보존: 목록→세부 / 실패를OFF로오인금지<br>변경: 제품별정보구조 / 지원/법적/계정문구|
+|domain-repository / 도메인·repository|required<br>의존: transport|[mobile/src/domain.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/domain.ts)<br>[mobile/src/repository.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/repository.ts)<br>[server/store.js](https://github.com/thepmpo/donknow/blob/main/server/store.js)<br>[server/database.js](https://github.com/thepmpo/donknow/blob/main/server/database.js)|[mobile/src/domain.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/domain.test.ts)<br>[test/todos.test.js](https://github.com/thepmpo/donknow/blob/main/test/todos.test.js)<br>[test/turso-store.test.js](https://github.com/thepmpo/donknow/blob/main/test/turso-store.test.js)|보존: owner/revision / demo/cloud분리<br>변경: Todo대신새entity / 서버API/테이블/검증|
+|write-receipts / 빠른저장·멱등영수증|required<br>의존: domain-repository|[mobile/src/useTodos.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/useTodos.ts)<br>[server/store.js](https://github.com/thepmpo/donknow/blob/main/server/store.js)<br>[server/action-store.js](https://github.com/thepmpo/donknow/blob/main/server/action-store.js)|[test/todo-write-receipt.test.js](https://github.com/thepmpo/donknow/blob/main/test/todo-write-receipt.test.js)<br>[test/source-edits-api.test.js](https://github.com/thepmpo/donknow/blob/main/test/source-edits-api.test.js)|보존: 확정실패와unknown분리 / 최신응답/요청ID<br>변경: entity별receipt/rollback / 새작업승인규칙|
+|snapshot-cache / 마지막저장본·배경갱신|optional<br>의존: domain-repository|[mobile/src/calendar-snapshot-cache.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/calendar-snapshot-cache.ts)<br>[mobile/src/calendar-snapshot-store.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/calendar-snapshot-store.ts)|[mobile/src/calendar-snapshot-store.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/calendar-snapshot-store.test.ts)<br>[mobile/e2e/calendar-cache.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/calendar-cache.mjs)|보존: owner/origin/timezone격리 / snapshot은쓰기권한정본아님<br>변경: calendar대신자료범위 / 보관민감도/만료|
+|source-outbox / 외부원본전파·lease|optional<br>의존: write-receipts|[server/source-outbox.js](https://github.com/thepmpo/donknow/blob/main/server/source-outbox.js)<br>[server/source-edits.js](https://github.com/thepmpo/donknow/blob/main/server/source-edits.js)<br>[server/action-store.js](https://github.com/thepmpo/donknow/blob/main/server/action-store.js)|[test/source-outbox.test.js](https://github.com/thepmpo/donknow/blob/main/test/source-outbox.test.js)<br>[test/source-edits.test.js](https://github.com/thepmpo/donknow/blob/main/test/source-edits.test.js)|보존: transaction/lease / running/unknown재전송금지<br>변경: provideradapter/ETag / 지원필드/대안|
+|provider-oauth / 외부연결·계정·권한|optional<br>의존: identity-session, transport|[server/integrations.js](https://github.com/thepmpo/donknow/blob/main/server/integrations.js)<br>[server/google-accounts.js](https://github.com/thepmpo/donknow/blob/main/server/google-accounts.js)<br>[server/secrets.js](https://github.com/thepmpo/donknow/blob/main/server/secrets.js)<br>[mobile/src/screens/IntegrationsScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/IntegrationsScreen.tsx)|[test/google-multiple-accounts.test.js](https://github.com/thepmpo/donknow/blob/main/test/google-multiple-accounts.test.js)<br>[mobile/e2e/web-oauth.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/web-oauth.mjs)|보존: state/PKCE/owner / secret암호화/해제<br>변경: 새provider등록/redirect / scope/연결수정책|
+|permission-settings / OS/자료선택설정|optional<br>의존: settings, provider-oauth|[mobile/src/integration-settings.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/integration-settings.ts)<br>[mobile/src/screens/ConnectionScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/ConnectionScreen.tsx)|[mobile/src/integration-settings.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/integration-settings.test.ts)<br>[mobile/e2e/integration-stability.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/integration-stability.mjs)|보존: 설정/OS권한/동의분리 / 부분상태/대안<br>변경: 지원권한/실제capability / 설명/설정링크|
+|apple-reminders / 기기원본미리알림|domain-optional<br>의존: source-outbox, permission-settings|[mobile/src/apple-reminder-read.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/apple-reminder-read.ts)<br>[mobile/src/apple-reminder-import.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/apple-reminder-import.ts)<br>[mobile/src/apple-source-apply.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/apple-source-apply.ts)|[mobile/src/apple-reminder-import.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/apple-reminder-import.test.ts)<br>[mobile/src/apple-reminder-read.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/apple-reminder-read.test.ts)<br>[mobile/e2e/reminder-import.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/reminder-import.mjs)|보존: 전체미완료청크 / 기기readback/개정보호<br>변경: 지원기기/OS권한문구 / 새앱원본IDnamespace|
+|date-time / 날짜·시간대모델|optional<br>의존: domain-repository|[mobile/src/calendar-model.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/calendar-model.ts)<br>[server/calendar-time.js](https://github.com/thepmpo/donknow/blob/main/server/calendar-time.js)<br>[mobile/src/reminder-plan.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/reminder-plan.ts)|[mobile/src/reminder-plan.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/reminder-plan.test.ts)<br>[test/calendar-workspace.test.js](https://github.com/thepmpo/donknow/blob/main/test/calendar-workspace.test.js)|보존: 날짜전용과시점분리 / IANA/DST<br>변경: 새도메인날짜의미 / locale/반복정책|
+|local-notifications / 로컬알림|optional<br>의존: date-time, identity-session|[mobile/src/useReminders.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/useReminders.ts)<br>[mobile/src/reminder-plan.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/reminder-plan.ts)|[mobile/src/reminder-plan.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/reminder-plan.test.ts)<br>[mobile/e2e/automations.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/automations.mjs)|보존: 확정자료기준예약 / 완료/로그아웃취소<br>변경: 알림category/content / OS실기기|
+|push / 기기push·도착진입|optional<br>의존: identity-session, local-notifications|[mobile/src/push.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/push.ts)<br>[server/push.js](https://github.com/thepmpo/donknow/blob/main/server/push.js)|[test/push.test.js](https://github.com/thepmpo/donknow/blob/main/test/push.test.js)|보존: tokenowner/해제 / 허용deep-link대상<br>변경: Expo/APNs프로젝트 / 기기등록/실수신|
+|scheduled-jobs / 예약·서명trigger|optional<br>의존: identity-session, date-time|[server/automations.js](https://github.com/thepmpo/donknow/blob/main/server/automations.js)<br>[server/automations-store.js](https://github.com/thepmpo/donknow/blob/main/server/automations-store.js)<br>[server/scheduler-auth.js](https://github.com/thepmpo/donknow/blob/main/server/scheduler-auth.js)|[test/scheduler-auth.test.js](https://github.com/thepmpo/donknow/blob/main/test/scheduler-auth.test.js)<br>[mobile/e2e/automations.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/automations.mjs)|보존: 중복방지/동의재검사 / 지연정확고지<br>변경: 새작업종류/반복 / 실제스케줄러설정|
+|file-sharing / 파일·첨부·공유|optional<br>의존: domain-repository, transport|[server/agent-files.js](https://github.com/thepmpo/donknow/blob/main/server/agent-files.js)<br>[server/agent-media.js](https://github.com/thepmpo/donknow/blob/main/server/agent-media.js)<br>[server/agent-file-queue.js](https://github.com/thepmpo/donknow/blob/main/server/agent-file-queue.js)|[test/agent-http.test.js](https://github.com/thepmpo/donknow/blob/main/test/agent-http.test.js)<br>[test/agent-sources.test.js](https://github.com/thepmpo/donknow/blob/main/test/agent-sources.test.js)|보존: owner/용량/경로/SSRF / agent의존추출필요<br>변경: 새파일정책/보관 / nativepicker/공유|
+|account-export-delete / 내보내기·삭제|required<br>의존: identity-session, signup-consent|[mobile/src/screens/DataExportPanel.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/DataExportPanel.tsx)<br>[mobile/src/screens/AccountScreen.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/AccountScreen.tsx)<br>[server/feature-routes.js](https://github.com/thepmpo/donknow/blob/main/server/feature-routes.js)<br>[server/features-store.js](https://github.com/thepmpo/donknow/blob/main/server/features-store.js)|[test/account-export.test.js](https://github.com/thepmpo/donknow/blob/main/test/account-export.test.js)<br>[test/account-features.test.js](https://github.com/thepmpo/donknow/blob/main/test/account-features.test.js)|보존: 본인자료만 / 실제보관/동의일치<br>변경: 새도메인cascade / 보관예외/외부원본정책|
+|backup-restore / 백업·무결성·빈DB복구|required<br>의존: domain-repository|[server/backups.js](https://github.com/thepmpo/donknow/blob/main/server/backups.js)<br>[server/remote-backups.js](https://github.com/thepmpo/donknow/blob/main/server/remote-backups.js)<br>[server/backup-verification.js](https://github.com/thepmpo/donknow/blob/main/server/backup-verification.js)|[test/backups.test.js](https://github.com/thepmpo/donknow/blob/main/test/backups.test.js)<br>[test/remote-backups.test.js](https://github.com/thepmpo/donknow/blob/main/test/remote-backups.test.js)|보존: 원래키/손상거부 / 복구후외부작업중지<br>변경: 새DB/prefix/키 / 실제보관소설정|
+|admin-auth / 별도운영자인증|required<br>의존: identity-session|[server/admin-auth-store.js](https://github.com/thepmpo/donknow/blob/main/server/admin-auth-store.js)<br>[server/admin-auth-routes.js](https://github.com/thepmpo/donknow/blob/main/server/admin-auth-routes.js)<br>[public/admin.js](https://github.com/thepmpo/donknow/blob/main/public/admin.js)|[test/admin.test.js](https://github.com/thepmpo/donknow/blob/main/test/admin.test.js)<br>[mobile/e2e/admin-bootstrap.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/admin-bootstrap.mjs)|보존: 제품계정과분리 / gate/강제변경/서버역할<br>변경: 새allowlist/cookie / 초기설정/역할정책|
+|admin-operations / 회원관리·감사·점검|required<br>의존: admin-auth, domain-repository|[server/admin-management-routes.js](https://github.com/thepmpo/donknow/blob/main/server/admin-management-routes.js)<br>[server/admin-operations.js](https://github.com/thepmpo/donknow/blob/main/server/admin-operations.js)<br>[public/admin-controls.js](https://github.com/thepmpo/donknow/blob/main/public/admin-controls.js)<br>[public/admin.css](https://github.com/thepmpo/donknow/blob/main/public/admin.css)|[test/admin-management.test.js](https://github.com/thepmpo/donknow/blob/main/test/admin-management.test.js)<br>[mobile/e2e/admin-management.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/admin-management.mjs)|보존: 사유/version/requestID/감사 / 최신실패만재시도<br>변경: 새회원/운영업무 / 개인자료노출범위|
+|entitlements / 이용권·접근권한|optional<br>의존: identity-session, admin-operations|[server/plans.js](https://github.com/thepmpo/donknow/blob/main/server/plans.js)<br>[server/account-policy.js](https://github.com/thepmpo/donknow/blob/main/server/account-policy.js)|[test/plans.test.js](https://github.com/thepmpo/donknow/blob/main/test/plans.test.js)<br>[test/admin-management.test.js](https://github.com/thepmpo/donknow/blob/main/test/admin-management.test.js)|보존: 수동권한과거래분리 / 정지/만료즉시반영<br>변경: 새plan/기간/가격 / PG는별도미구현|
+|ai-budget / 유료API예산·원가|optional<br>의존: identity-session, entitlements|[server/ai-budget.js](https://github.com/thepmpo/donknow/blob/main/server/ai-budget.js)<br>[server/ai-transport.js](https://github.com/thepmpo/donknow/blob/main/server/ai-transport.js)|[test/ai-budget.test.js](https://github.com/thepmpo/donknow/blob/main/test/ai-budget.test.js)<br>[test/ai-transport.test.js](https://github.com/thepmpo/donknow/blob/main/test/ai-transport.test.js)|보존: 선예약/실usage정산 / 동시성/불명보류<br>변경: 모델/도구가격/한도 / 실제정산연결|
+|ai-consent-memory / AI동의·기억·삭제|domain-optional<br>의존: ai-budget, signup-consent|[mobile/src/assistant-consent.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/assistant-consent.ts)<br>[server/assistant-memory-store.js](https://github.com/thepmpo/donknow/blob/main/server/assistant-memory-store.js)<br>[server/agent-memory.js](https://github.com/thepmpo/donknow/blob/main/server/agent-memory.js)|[mobile/src/assistant-consent.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/assistant-consent.test.ts)<br>[test/assistant-memory.test.js](https://github.com/thepmpo/donknow/blob/main/test/assistant-memory.test.js)|보존: opt-in/원문명령격리 / owner/개정/삭제<br>변경: 새AI목적/자료/보관 / 실모델품질검증|
+|runtime-lanes / 서버관측·요청분리|optional<br>의존: transport, domain-repository|[server/request-lanes.js](https://github.com/thepmpo/donknow/blob/main/server/request-lanes.js)<br>[server/request-metrics.js](https://github.com/thepmpo/donknow/blob/main/server/request-metrics.js)<br>[server-runtime.js](https://github.com/thepmpo/donknow/blob/main/server-runtime.js)|[test/request-lanes.test.js](https://github.com/thepmpo/donknow/blob/main/test/request-lanes.test.js)<br>[test/render-startup.test.js](https://github.com/thepmpo/donknow/blob/main/test/render-startup.test.js)|보존: loop/동기DB병목구분 / 내부header/인증보호<br>변경: 새경로분류/부하 / 측정/배포환경|
+|launch-guard / 소개공개·서비스미오픈|optional<br>의존: app-shell, transport|[server/public-launch.js](https://github.com/thepmpo/donknow/blob/main/server/public-launch.js)<br>[public/coming-soon.html](https://github.com/thepmpo/donknow/blob/main/public/coming-soon.html)|[test/public-launch.test.js](https://github.com/thepmpo/donknow/blob/main/test/public-launch.test.js)<br>[website/tests/public-launch.mjs](https://github.com/thepmpo/donknow/blob/main/website/tests/public-launch.mjs)|보존: Host와Origin둘다 / CTA와API일치<br>변경: 새도메인/공개단계 / 실제출시전환|
+|native-build / native설정·무료수동빌드|required<br>의존: app-shell|[mobile/app.json](https://github.com/thepmpo/donknow/blob/main/mobile/app.json)<br>[mobile/eas.json](https://github.com/thepmpo/donknow/blob/main/mobile/eas.json)<br>[.github/workflows/ios-testflight.yml](https://github.com/thepmpo/donknow/blob/main/.github/workflows/ios-testflight.yml)<br>[scripts/check-native-prebuild.mjs](https://github.com/thepmpo/donknow/blob/main/scripts/check-native-prebuild.mjs)|[test/release-readiness.test.js](https://github.com/thepmpo/donknow/blob/main/test/release-readiness.test.js)<br>[scripts/check-shortcuts-swift.mjs](https://github.com/thepmpo/donknow/blob/main/scripts/check-shortcuts-swift.mjs)|보존: export/IPA/설치구분 / 서명/SDK지원버전<br>변경: 새bundle/project/entitlement / 스토어/실기기|
+|duo-presentation / 특수기기Duo|domain-optional<br>의존: app-shell, keyboard-sheet|[mobile/src/DuoLayout.tsx](https://github.com/thepmpo/donknow/blob/main/mobile/src/DuoLayout.tsx)<br>[mobile/src/duo-layout.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/duo-layout.ts)<br>[mobile/src/navigation-geometry.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/navigation-geometry.ts)|[mobile/src/duo-layout.test.ts](https://github.com/thepmpo/donknow/blob/main/mobile/src/duo-layout.test.ts)<br>[mobile/e2e/duo-layout.mjs](https://github.com/thepmpo/donknow/blob/main/mobile/e2e/duo-layout.mjs)|보존: 실제OSAPI/상태보존 / fixture와하드웨어구분<br>변경: 새제품지원여부 / docen전용기하복사금지|
+|landing-web / 소개·웹·가격UI|optional<br>의존: launch-guard, design-tokens|[website/src/App.jsx](https://github.com/thepmpo/donknow/blob/main/website/src/App.jsx)<br>[website/src/styles.css](https://github.com/thepmpo/donknow/blob/main/website/src/styles.css)<br>[website/src/pricing-content.mjs](https://github.com/thepmpo/donknow/blob/main/website/src/pricing-content.mjs)|[website/tests/interaction.mjs](https://github.com/thepmpo/donknow/blob/main/website/tests/interaction.mjs)<br>[website/tests/sites-worker.test.mjs](https://github.com/thepmpo/donknow/blob/main/website/tests/sites-worker.test.mjs)|보존: 합성demo/실제앱분리 / 단일가격정본<br>변경: 내용/브랜드/언어 / 가격/배경/기능|
+|documentation-packaging / 규칙·검수·ZIP·인계|required<br>의존: 없음|[scripts/build-handoff.py](https://github.com/thepmpo/donknow/blob/main/scripts/build-handoff.py)<br>[docs/DOCEN-START-HERE.md](https://github.com/thepmpo/donknow/blob/main/docs/DOCEN-START-HERE.md)<br>[docs/docen-product-build-playbook.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md)|패키지·링크·manifest 검사|보존: 현재/이력/증거구분 / 비밀제외/manifest<br>변경: 새제품계약/지도 / 다음AI시작문서|
+
+#### 사용 방법
+
+모듈JSON의 dependsOn을 먼저 준비한다. 선택 모듈은 필요할 때만 포함한다. 새 앱 교체 항목을 제품 계약 양식에 옮기고 해당 원본/테스트를 읽는다. useTodos·App.tsx·ui.tsx·agent계열 파일의 도메인 결합은 설계서의 책임 분리 순서를 따른다.
+
+### 원문 / docs/app-foundation-release-checklist.md
+
+### 새 앱 공통 기반 연결·출시 검수표
+
+이 표는 **새 제품에서 실행할 검수 양식**이다. docen의 과거 검증 결과나 새 앱의 현재 통과 상태가 아니다. 필요한 각 항목에 미실행/통과/실패/해당없음·이유를 적고 실제 command/run/이미지/기기/commit을 남긴다.
+
+| ID | 시나리오 | 기대 결과 | 상태/증거 |
+|---|---|---|---|
+|ID01|새앱이름/도메인/bundle/scheme/project|기존제품과새제품identity분리|미실행|
+|ID02|cookie/SecureStore/cache/알림namespace|앱/host/owner교차누출없음|미실행|
+|ID03|새DB/암호화key/provider등록|기존운영자료/권한복제없음|미실행|
+|SH01|첫실행·세션복원지연|로그인깜박임/개인자료노출없음|미실행|
+|SH02|401/timeout/503/비JSON|확정만료와연결실패를구분|미실행|
+|SH03|탭/복귀/회전/분할|해당기기초안/스크롤/선택보존|미실행|
+|SH04|로그아웃중늦은응답|이전자료/내부shell재노출없음|미실행|
+|AU01|비밀번호기준/확인불일치/수정|UI·서버일치·필드아래오류|미실행|
+|AU02|필수동의해제/옛버전/오프라인|가입차단·허위동의없음|미실행|
+|AU03|가입직후/새로고침/미인증로그인|인증전gate와서버API차단|미실행|
+|AU04|코드오류/만료/재발송/초과시도|제한·이전코드무효화·정확안내|미실행|
+|AU05|메일영구실패·수신자제한|실제발송실패표시·비밀원문미노출|미실행|
+|AU06|인증성공→정상진입|인증후에만자료/핵심API조회|미실행|
+|AU07|재설정/정지/다중세션|기존세션폐기·서버정책반영|미실행|
+|OW01|다른owner의자료/receipt/첨부/검색|조회/쓰기/내보내기모두거부|미실행|
+|OW02|계정교체중refresh/저장응답|이전owner결과반영없음|미실행|
+|UI01|큰글자/긴한글/긴영문|잘림/가로넘침/터치상실없음|미실행|
+|UI02|스크린리더/키보드focus/동작줄이기|label/state/순서/감소모션정상|미실행|
+|UI03|시트중첩/닫기/배경행동|현재층만닫힘·배경비활성|미실행|
+|UI04|한글IME/다중줄/키보드회전|조합/커서/초안유지·필드보임|미실행|
+|UI05|키보드내리기와저장/전송|서로별개·중복버튼없음|미실행|
+|UI06|스와이프/스크롤/긴누르기/선택|오작동없음·대체조작있음|미실행|
+|DT01|최초목록/빈값/권한없음/부분실패|서로다른상태와대안|미실행|
+|DT02|snapshot먼저·늦은refresh실패|이전확정내용보존·stale명시|미실행|
+|DT03|동시편집/오래된버전|충돌409또는동등처리·무단덮어쓰기없음|미실행|
+|DT04|저장연속클릭/동일requestID|단한번변경·동일receipt|미실행|
+|DT05|서버확정거절|올바른개정으로rollback·초안보존|미실행|
+|DT06|실제성공후응답유실|조회확인·중복쓰기없음|미실행|
+|DT07|running/unknown/worker재시작|lease/receipt보호·자동중복전송없음|미실행|
+|DT08|프로세스종료/재실행/offline|보장범위정확·가짜영구저장없음|미실행|
+|TM01|자정/시간대/DST/월말/윤년|날짜전용/시점의미보존|미실행|
+|TM02|기한없음/지난기한/반복|누락/잘못된오늘대입없음|미실행|
+|PR01|OS거절/limited/설정변경|정확상태·설정/대안·무한요청없음|미실행|
+|PR02|OAuth만료/철회/잘못된state|owner/scope/PKCE·재연결보호|미실행|
+|PR03|원본권한없음/미지원필드/ETag변경|불가/충돌표시·원본보존|미실행|
+|PR04|원본성공readback/실패/응답불명|성공검증·중복작업차단|미실행|
+|NT01|권한허용/거절/기기재등록|실제OS·owner상태일치|미실행|
+|NT02|내용/시간/완료/삭제/로그아웃|알림갱신/취소·다른계정수신없음|미실행|
+|NT03|foreground/잠금/종료후알림탭|올바른허용화면·기기실증|미실행|
+|FI01|큰파일/위장유형/경로탈출/권한없는파일|한도·검증·owner거부|미실행|
+|FI02|업로드중취소/응답유실/재실행|임시파일정리·중복방지|미실행|
+|PV01|내보내기/계정삭제|본인자료만·고지와실제정리일치|미실행|
+|PV02|백업손상/틀린키/빈DB복원|거부/무결성·운영DB보존|미실행|
+|PV03|복구후예약/메일/원본작업|자동재생없음|미실행|
+|AD01|로그인전/제품계정으로/admin|내부DOM/자료노출없음·별도인증|미실행|
+|AD02|조회전용쓰기/역할변경/총관리자보호|서버RBAC/세션반영|미실행|
+|AD03|이용권/정지/사유/중복/옛버전|실제정책·원자감사·멱등/충돌|미실행|
+|AD04|원본실패재시도/unknown/더최신수정|허용된최신실패만실행|미실행|
+|BL01|무료/수동권한/유료거래/예산|서로독립·가상매출/예산없음|미실행|
+|BL02|AI동시요청/usage없음/한도소진|예약원장/불명보류·초과차단|미실행|
+|BL03|새PG검증/중복웹훅/환불/구독실패|실거래서명/멱등/권한회수|미실행·docenPG미구현|
+|LG01|토큰/비밀번호/코드/본문로그검사|운영로그·문서·ZIP비노출|미실행|
+|RL01|lock설치/check/typecheck/관련tests|정확버전·실패없음·skip이유|미실행|
+|RL02|production웹PC/390px·언어·예시|실제클릭·합성/운영경계|미실행|
+|RL03|nativeexport/Swift/IPA/서명/스토어|각단계증거·다른완료로확대안함|미실행|
+|RL04|DNS/RenderVerified/TLS/HTTPS|레코드저장과실접속구분|미실행|
+|RL05|소개만공개단계직접/app/API|서버Host/Originguard와CTA일치|미실행|
+|RL06|소스/문서/검수/ZIP/manifest|동일commit·비밀제외·다음AI재현가능|미실행|
+
+#### 실행 기록
+
+프로젝트/commit/OS/기기/테스트계정종류/도구/날짜를남긴다. 테스트수신함·통제provider·기하fixture는실제메일수신·실계정·물리기기와구분한다. 해당없는항목은무작정통과처리하지말고왜제품범위밖인지적는다.
+
+### 원문 / docs/reusable-app-integration-contracts.md
+
+### 새 앱 공통 기반 연결 계약 — 핵심 기능이 붙는 정확한 경계
+
+이 문서의 TypeScript는 **추출할 때 사용할 설계 예시**다. 현재 docen에 이 이름의 범용 패키지가 이미 설치돼 있다는 뜻은 아니다. 원본과의 매핑/검증을 함께 제공해 다음 AI가 이름만 바꾸는 잘못된 복제를 피하도록 한다.
+
+#### 1. 앱별 설정
+
+```ts
+type AppBrandConfig = {
+  productId: string;
+  displayName: string;
+  apiOrigin: string;
+  webOrigin: string;
+  storageNamespace: string;
+  sessionCookieName: string;
+  urlScheme: string;
+  supportUrl: string;
+  launchPhase: 'introduction' | 'restricted-test' | 'public';
+  supportedPlatforms: Array<'ios' | 'web' | 'android'>;
+};
+```
+
+이 필드는 공개 가능한 앱 설정이다. API key/DB token/OAuth client secret/암호화 seed는 넣지 않는다. 플랫폼이 배열에 있다고 구현/실기기 검증이 생기지는 않는다. docen의 app.json/eas.json/auth storage key/server Origin/site guard를 각기 매핑한다. 기존 앱 업데이트에서는 식별자를 보존하고 별개 새 앱에서만 분리한다.
+
+#### 2. SessionController
+
+```ts
+type SessionSnapshot =
+  | { kind: 'restoring'; epoch: number }
+  | { kind: 'anonymous'; epoch: number }
+  | { kind: 'unverified'; epoch: number; userId: string }
+  | { kind: 'ready'; epoch: number; userId: string }
+  | { kind: 'unavailable'; epoch: number; retry: () => void }
+  | { kind: 'suspended'; epoch: number };
+```
+
+현재auth.ts·useTodos.ts·App.tsx의세션부분을이책임으로추출한다. epoch는계정/origin/로그아웃경계마다바뀐다. restore에서401만anonymous로전환하고timeout/503은unavailable로유지한다. unverified는인증API외자료를불러오지않는다. userId는표시/경계값이며서버owner검사는항상실제세션에서한다.
+
+#### 3. 핵심 자료 repository
+
+```ts
+type VersionedEntity = {
+  id: string;
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+};
+type WriteResult<T> =
+  | { status: 'confirmed'; item: T }
+  | { status: 'queued'; item: T; operationId: string }
+  | { status: 'rejected'; reason: string; code: string }
+  | { status: 'conflict'; current: T }
+  | { status: 'unknown'; operationId: string };
+interface DomainRepository<T extends VersionedEntity, Draft, Patch> {
+  list(input: { cursor?: string; signal?: AbortSignal }): Promise<{
+    items: T[]; nextCursor?: string; partial?: boolean;
+  }>;
+  read(id: string, signal?: AbortSignal): Promise<T>;
+  create(draft: Draft, requestId: string): Promise<WriteResult<T>>;
+  update(id: string, patch: Patch, revision: number, requestId: string): Promise<WriteResult<T>>;
+  remove(id: string, revision: number, requestId: string): Promise<WriteResult<T>>;
+  receipt(operationId: string): Promise<WriteResult<T>>;
+}
+```
+
+현재repository.ts의Todo API는이인터페이스와동일하지않다. 실제응답을adapter로매핑하고없는revision/receipt기능은서버에추가해야한다. 상태문자열을프런트에서만붙여서멱등성/원자성을가장하지않는다. 삭제의결과자료/취소정책도제품에맞춰조정한다.
+
+핵심기능이제공해야할것은Draft/Patch유효성검사·자료변환·목록정렬·핵심화면·owner/API/DB연결이다. 공통컨트롤러는pending표시·요청세대·응답유실조회·확정실패rollback·충돌안내를담당한다. 늦은receipt가새revision을덮지않는다.
+
+#### 4. 원본 adapter
+
+```ts
+type ProviderCapabilities = {
+  read: boolean;
+  create: boolean;
+  updateFields: string[];
+  complete: boolean;
+  remove: boolean;
+  deviceOnly: boolean;
+};
+interface ProviderPort {
+  capabilities(): ProviderCapabilities;
+  prepare(change: unknown): Promise<{ previewId: string; expiresAt: string }>;
+  confirm(previewId: string, requestId: string): Promise<{ operationId: string }>;
+  inspect(operationId: string): Promise<unknown>;
+}
+```
+
+server/source-edits·source-outbox·action-store와기기Apple경로를참고한다. prepare는owner/권한/ETag/동의범위에묶인미리보기다. confirm은같은승인을한번선점한다. inspect는읽기이며원본쓰기를다시실행하지않는다. 지원하지않는필드는대안으로안내한다. 원본을사용하지않는새제품은이모듈을제외한다.
+
+#### 5. 알림계획·화면 진입
+
+원칙은‘확정된자료에서계획을만들고이전계획과차이를적용’이다. 새제품이제공할값은owner/entity ID·확정revision·시각/시간대·표시문구·허용화면이다. 로컬예약ID/원격기기token은공통알림관리층이관리하고제품자료본문과섞지않는다.
+
+서버/기기에서전달된대상도현재session owner와자료존재를다시확인한다. 잘못된대상/삭제된자료/다른계정은안전한안내또는기본화면으로가고임의URL을열지않는다. 푸시token이나비밀값을deep link에싣지않는다.
+
+#### 6. 기능권한과 원가판정
+
+서버는memberAccess/계정정지/현재이용권·허용작업을확인한다. 외부비용이있는작업은그다음별도AI원가예산을예약한다. 둘중하나의성공으로다른하나를대신하지않는다. 프런트는‘사용가능/한도도달/업그레이드필요/운영중지/준비중’을서버결과로표시한다.
+
+새PG가추가되면검증된서명웹훅→고유거래기록→멱등적이용권변경→감사의경계를만든다. 현재수동이용권테이블에가짜payment ID를넣어실거래로만들지않는다.
+
+#### 7. 공통 화면에 등록할 핵심 기능
+
+권장기능등록은id/title/icon/list/detail/editor/permission/loadState/errorState/actions형태다. 실제Reactcomponent등록표이름은새앱이정한다. AppShell은상태/기기/뒤로가기를, DomainFeature는내용과작업의미를담당한다.
+
+예:독서앱이면Book/Draft/Progress와서재/책상세/진도편집을구현하고,공통가입·설정·오류·내보내기·관리자·배포흐름에연결한다. docen의Todo완료/Google원본/3초카운트다운을독서기록에무조건적용하지않는다.
+
+#### 8. 모듈 연결의 계약 테스트
+
+| 입력 | 공통층이 지킬 결과 | 핵심 기능이 제공할 부분 |
+|---|---|---|
+|A계정조회중B로그인|A결과적용안함|owner별자료경계|
+|저장성공후응답유실|같은IDreceipt조회·중복생성없음|서버멱등저장|
+|구revision수정|conflict/정확거절|원자적version비교|
+|provider쓰기미지원|이유/대안·허위성공없음|capability/대안문구|
+|전체refresh일부실패|성공분유지·partial표시|source별성공/실패|
+|모달닫힌뒤옛응답|새모달상태변경안함|작업/화면identity|
+|알림탭대상삭제됨|안전한안내|자료존재/owner조회|
+|한도동시요청|예산중복소비없음|원가추정/usage정산|
+
+테스트가불가능한범용인터페이스만늘리지않고실제첫핵심기능하나로계약을검증한다. 성공경로뿐아니라거절/지연/응답유실을먼저고정하면다음기능의구현량이줄어든다.
+
+### 원문 / docs/templates/new-app-project-contract.md
+
+### 새 앱 프로젝트 계약 — 복사하여 작성
+
+이 양식은 새 제품용이다. 빈칸을 docen의 실제 계정/키/가격으로 채우지 않는다. 확정/제안/미정과 근거를 나눈다. 원본 양식 자체는 사용자 승인이나 새 앱 구현 완료 증거가 아니다.
+
+#### 제품과 고객
+
+- 제품명/한글·영문 표기:
+- 대표 고객/문제/기존 대안:
+- 고객의 첫 성공(한 가지):
+- 대표 흐름(입력/수신→처리→사용자 결정→결과):
+- 이번 범위/다음 단계/명시적 제외:
+- 참고 UI와 참고 부분(정보밀도/구성/색/모션)/사용권:
+
+#### 새 제품 identity/운영 분리
+
+- 새 저장소/branch/Node·Expo 버전:
+- iOS bundle/Android package/Expo project/URL scheme/링크 도메인:
+- API origin/웹 공개 도메인/CSRF·CORS:
+- DB/키 namespace/백업prefix(값은 기록하지 않음):
+- cookie/SecureStore/AsyncStorage/cache namespace:
+- provider OAuth앱/redirect/메일 발신 도메인/지원 주소:
+- 운영자 계정 지정 방식(개인 주소는 안전한 설정에만):
+- 기존 제품에서 절대 가져오지 않을 자료/권한:
+
+#### 공통 기반 선택
+
+모듈 목록 JSON의ID/필수여부/추출범위/제품교체/검사/현재상태를 표로 작성한다.
+
+| 모듈ID | 필수/선택/제외 | 실제 사용할 원본/adapter | 새 제품 변경 | 검증/상태 |
+|---|---|---|---|---|
+|identity-session|필수|작성|작성|미검증|
+|transport|필수|작성|작성|미검증|
+|app-shell|필수|작성|작성|미검증|
+|domain-repository|필수|작성|작성|미검증|
+
+#### 핵심 도메인
+
+- entity/필드/owner/revision/시간 의미:
+- 입력 검증/정렬/검색/목록·상세·편집:
+- 허용 작업/확인 필요한 작업/취소:
+- 수동 작성과외부원본 구분:
+- 원본지원필드/불가대안/충돌·unknown 처리:
+- 멱등key/receipt/실패rollback/오프라인범위:
+
+#### UI·기기·접근성
+
+- 지원OS/최소버전/일반폰·태블릿·PC·특수기기:
+- navigation/뒤로가기/회전·분할 상태 보존:
+- design tokens/행높이·밀도/키보드·시트/동작 줄이기:
+- 큰글자·스크린리더·터치·focus/긴번역:
+- 필수상태:restoring/empty/error/partial/stale/pending/conflict/unknown:
+
+#### 계정·권한·개인정보
+
+- 가입/비밀번호/확인/동의/연령·이메일인증:
+- 복원/만료/다중기기/정지·삭제/권한철회:
+- OS권한·OAuth scope/자료선택/기억opt-in:
+- 수집/처리/보관/수탁사·국외이전/내보내기/삭제/백업:
+- 실제 약관 정본/버전/동의기록/변경고지:
+
+#### 요금·운영
+
+- 가격정본/월·연/할인/무료량/사용량단위:
+- 기능권한/결제거래/원가예산 분리:
+- PG준비상태/웹훅검증/환불·정산·회수:
+- 관리자역할/읽기·쓰기목록/사유·버전·감사:
+- 서버/메일/AI/저장·트래픽한도와초과처리:
+
+#### 검증·공개
+
+- local/test/staging/production분리:
+- 단위/HTTP/DB/providerfixture/productionUI/native/실기기검사:
+- 공개단계(소개만/제한테스트/일반오픈)와서버guard:
+- 배포대상/무료·유료범위/자동·수동정책:
+- 완료기준/실제증거/미검수·남은작업:
+- 시안승인/제품확정근거/문서·ZIP저장경로:
+
+### 원문 / docs/templates/new-app-ai-handoff.md
+
+### 새 앱 AI 인수인계 — 실제 작업 후 작성
+
+작성일/작성자/프로젝트/commit/branch:
+
+#### 먼저 알아야 할 현재 상태
+
+무엇을 만드는가 / 공개 단계 / 현재 작동하는 핵심 흐름 / 당장 막힌 일 / 다음 첫 행동을 적는다. ‘모두 완료’ 대신 실제 확인 범위를 적는다.
+
+#### 사용자 규칙·결정·정정
+
+| 항목 | 최종 확정과 이유 | 바뀐 이전 결정 | 근거/적용 범위 |
+|---|---|---|---|
+|작성|작성|작성|작성|
+
+#### 구조와 재사용 기반
+
+- 선택한공통모듈/추출경로/도메인adapter:
+- 실제파일지도/의존/환경변수이름(비밀값제외):
+- 브랜드·기기·홈페이지·웹/앱·어드민UI:
+- 데이터/owner/세션/원본/알림/권한/원가계약:
+
+#### 실제 구현과 근거
+
+| 기능 | 코드/설정 | 자동검사 | 실제웹 | native/실기기/실계정 | 남은일 |
+|---|---|---|---|---|---|
+|작성|작성|미실행/결과|미실행/결과|미실행/결과|작성|
+
+#### 재현 절차
+
+작업전git상태/필수버전/의존성설치/개발실행/관련검사/대표시나리오/실패시나리오/생성문서/패키징명령을 실제값으로 적는다. 운영DB/키/토큰/메일코드/비밀번호는 적지 않는다.
+
+#### 배포·외부 상태
+
+정확commit/CI run/Render또는호스트배포ID·시각/DNS·TLS/native빌드번호·Apple처리/사용자설치를 분리한다. 저장된코드와운영반영·사용자기기성공을 섞지 않는다.
+
+#### 미확인·금지·다음 순서
+
+- 실제권한/유료요소/법무/스토어/공급자미지원:
+- 보존할계정·DB·키·원본·이력:
+- 중복실행금지/unknown결과/복원중지:
+- 다음작업1/2/3과검증:
+
+#### 전달물
+
+소스/문서/모듈목록/검수표/QA이미지/ZIP·manifest와실제저장링크를 적는다. 파일생성과GitHub/Notion/배포의실제성공을 각각기록한다. 첨부원본이없으면 포함됐다고 말하지 않는다.
+
+### 원문 / docs/app-foundation-verification-2026-11-22.md
+
+### 앱 공통 기반 상세 문서·전체 패키지 검증 기록
+
+#### 사용자 요청과 실제 범위
+
+2026-11-22 사용자가 앱 공통 사항도 전부 상세히 기록해 다음 앱은 핵심 기능 구현에 집중할 수 있도록 하고, 전체 ZIP과 GitHub를 다시 제공하라고 요청했다.
+
+31개 주제의 공통 설계서,36개 모듈과176개 실제 소스/검증 경로,추출할 연결 계약 예시,58개 출시/경계 검수 항목,새 앱 계약서/AI 인계 양식을 추가했다. 통합 기준/결정원장/README/AGENTS와 전체 문서 지도/생성기에 연결했다. 현재 앱/웹/어드민의 동작·DB·키·가격·공개 단계·약관 고정 버전은 바꾸지 않는다. 완성된 범용 SDK·PG·새 앱 실계정 검증으로 가장하지 않는다.
+
+#### 이번에 실행한 검사
+
+- Python 생성기/전체 ZIP 제작 스크립트 문법 검사를 통과했다.
+-36개 모듈의176개 소스/검증 파일 경로가 실제 존재하는지 확인했다.
+- 모듈 의존ID 존재와 DAG 순환 없음 검사를 통과했다.
+- 출시 검수표58항목은 다음 앱용 미실행 양식이다. 이 숫자를 이번 통과한 앱 테스트 수로 보고하지 않는다.
+- 전체 패키징의 Git 추적 경로를 검사했다. .env/DB/인증서/개인키/node_modules/Git내부 제외 검사를 수행한다. 공개 website/.npmrc는 fund/audit boolean설정만 있는지 검사하며 인증설정은 허용하지 않는다.
+- 전체 ZIP은 커밋된 tree만 읽고 sourceCommit/각파일크기·SHA-256 manifest를 담는다. Git archive와 추적tree 일치·ZIP CRC·모든파일 hash를 생성 과정에서 검사하고 통과한 패키지만 최종 경로에 쓴다.
+- 문서전용ZIP에는 전체Markdown(templates포함)·지침·모듈JSON·이미지manifest를 넣는다. 큰 이미지 전체는 별도 기존Notion ZIP/HTML 및 전체소스 ZIP에 있다.
+
+관련 앱 기능/실기기/유료모델/PG/외부원본/메일수신 검사는 이번 문서 작업의 실행 범위가 아니다. 문서화 과정의 관련 문법·링크·모듈/패키지 검사 결과를 앱 전체 재검증으로 바꾸지 않는다.
+
+#### 재현 명령
+
+```sh
+python3 -m py_compile scripts/build-handoff.py scripts/build-docen-complete-handoff.py
+npm run check
+python3 scripts/build-handoff.py
+# 문서/소스 변경을 커밋하고 tracked tree가 깨끗한 상태에서:
+python3 scripts/build-docen-complete-handoff.py
+```
+
+전체 ZIP 제작은 네트워크·운영DB·유료API를 사용하지 않는다. 작업공간 변경이 남아 있으면 커밋부터 하도록 거부하며 아직 커밋되지 않은 파일/로컬 .env를 넣지 않는다. 완성 ZIP의 sourceCommit과파일수·크기·hash는 PACKAGE-MANIFEST.json 및 제작 도구의 실제 출력에 있다. GitHub에는 원본 소스/문서를 저장하고 대형 생성 ZIP을 Git blob으로 중복 올리지 않는다.
+
+#### 이어받을 때의 경계
+
+기존docen업데이트와별개새앱의identity/DB/키분리를구별한다. 새앱자료정책/법적문서/결제/외부등록/스토어/실기기는제품별로확정한다. README와두START-HERE가각각작업목적별입구다. 운영배포·native빌드·새서비스공개·개인Notion쓰기는이번작업에서실행하지않는다.
+
 ### 원문 / docs/DOCEN-START-HERE.md
 
 ### docen 전체 인수인계 — 다른 AI가 가장 먼저 읽을 문서
@@ -12688,6 +13499,8 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 10. 우선 앱과 웹에 집중한다. Windows EXE/Mac App Store는 검토 이력이며 지금 자동 개발/출시하지 않는다. AI 사무실도 재개 요청 전 보류다.
 
 #### 1. 읽는 순서와 증거 해석
+
+별개 앱을 만들기 위한 공통 기반은 [새 앱 입구](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md)·[상세 설계](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md)·[36개 모듈 지도](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md)·[검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)에 있다. 홈페이지/웹/어드민과 앱 전체를 함께 재사용하되 새 제품 identity/DB/키/외부 권한은 분리한다. 독립형 SDK나 PG/새 앱 실기기 검증이 완료됐다는 뜻은 아니다.
 
 1. 이 문서 → [결정·정정 목록](https://github.com/thepmpo/donknow/blob/main/docs/docen-decisions-register.md).
 2. [재사용 제작 매뉴얼](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md): 홈페이지/웹/앱/어드민의 실제 구조·스타일·제작 순서.
@@ -13121,6 +13934,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 |A16|모든규칙/내용상세문서화·다른AI바로이해|통합기준/결정원장/제작매뉴얼/전문지도/전달물|이번 문서 묶음|
 |A17|홈페이지구성/배경·어드민도다른앱재사용가능하게|실제CSS/파일/API/인증/제작순서까지기록|docen-product-build-playbook.md|
 |A18|앞으로 정리 요청은 이번 방식으로 아주 상세히|기본 문서화 규칙으로 지속 적용. 결정/이유/방법/증거/미완료·재사용 절차와 전달물 보충|DOCEN-START-HERE.md 18절|
+|A19|앱 공통 기반 전부 상세 기록·새 앱은 핵심 기능에 집중·전체 ZIP/GitHub 재제공|30개 주제/36개 모듈/새 앱 양식/출시 검수·전체 추적소스 패키지 추가. 도메인 추출/실계정 검증은 구분|REUSABLE-APP-START-HERE.md|
 
 #### 5. 과거 금지/대기 문장을 읽을 때
 
@@ -13147,6 +13961,8 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 ### docen 제작 매뉴얼 — 홈페이지·배경·웹앱·어드민을 다른 제품에 재사용하기
 
 기준2026-11-22. [현재 제품 계약](https://github.com/thepmpo/donknow/blob/main/docs/DOCEN-START-HERE.md)이 선행한다. 이 문서는 실제 파일을 찾아 같은 방식으로 제작하기 위한 안내다. ‘금방 만들기’는 검증된 구조·공통 요소를 재사용해 중복 작업을 줄이는 뜻이며, 외부 OAuth/스토어 심사/법무/실제 결제까지 일정이 보장된다는 뜻은 아니다.
+
+앱 전체 공통 기반은 [새 앱 입구](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md)와 [공통 설계서](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md), [모듈 파일 지도](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md), [검수표](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)에서 이어 읽는다. 홈페이지뿐 아니라 계정/세션/키보드/자료/원본/알림/설정/운영/배포와 새 앱 양식을 포함한다.
 
 #### 1. 먼저 복사할 것과 다시 결정할 것
 
@@ -13482,10 +14298,13 @@ python3 scripts/build-handoff.py
 | 원본 문서 | 첫 제목 |
 |---|---|
 |[DOCEN-START-HERE.md](https://github.com/thepmpo/donknow/blob/main/docs/DOCEN-START-HERE.md)|docen 전체 인수인계 — 다른 AI가 가장 먼저 읽을 문서|
+|[REUSABLE-APP-START-HERE.md](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md)|다른 앱을 만들 AI가 먼저 읽을 문서|
+|[reusable-app-foundation.md](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-foundation.md)|재사용 앱 공통 기반 — 핵심 기능 개발에 집중하기 위한 상세 설계서|
+|[app-foundation-module-map.md](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md)|앱 공통 모듈 — 실제 소스·검증 파일 지도|
+|[reusable-app-integration-contracts.md](https://github.com/thepmpo/donknow/blob/main/docs/reusable-app-integration-contracts.md)|새 앱 공통 기반 연결 계약 — 핵심 기능이 붙는 정확한 경계|
+|[app-foundation-release-checklist.md](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)|새 앱 공통 기반 연결·출시 검수표|
 |[docen-decisions-register.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-decisions-register.md)|docen 결정·정정 원장|
 |[docen-product-build-playbook.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-product-build-playbook.md)|docen 제작 매뉴얼 — 홈페이지·배경·웹앱·어드민을 다른 제품에 재사용하기|
-|[docen-introduction-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-introduction-2026-11-22.md)|docen 소개 사이트만 공개|
-|[docen-introduction-deployment-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-introduction-deployment-2026-11-22.md)|소개만 공개하는 웹 배포|
 |[admin-live-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/admin-live-2026-11-22.md)|최신 인증 정정|
 |[admin-mail-diagnosis-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/admin-mail-diagnosis-2026-11-22.md)|관리자 인증메일 발송 실패 진단|
 |[admin-management-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/admin-management-2026-11-22.md)|PG를 제외한 관리자 운영 기능|
@@ -13512,6 +14331,7 @@ python3 scripts/build-handoff.py
 |[ai-office-tone-summary.md](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-tone-summary.md)|덕의 느낌을 함께 정하기 — 쉬운 설명|
 |[ai-office-usage.md](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-usage.md)|AI 사무실 — 글자 크기·휴대폰·평소 지시 방법|
 |[ai-office-ux-analysis.md](https://github.com/thepmpo/donknow/blob/main/docs/ai-office-ux-analysis.md)|AI 사무실 대화 분석과 duckduck UX 명세 초안|
+|[app-foundation-verification-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-verification-2026-11-22.md)|앱 공통 기반 상세 문서·전체 패키지 검증 기록|
 |[assistant-actions.md](https://github.com/thepmpo/donknow/blob/main/docs/assistant-actions.md)|덕 비서 — 읽고 제안하고 Todo로 보여주고 실행하기|
 |[assistant-agent-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/assistant-agent-2026-11-15.md)|덕 — 대화·장기 기억·변경 수신|
 |[assistant-agent-qa-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/assistant-agent-qa-2026-11-15.md)|대화·기억·수신과 배경 컨트롤 — 검수|
@@ -13550,7 +14370,7 @@ python3 scripts/build-handoff.py
 |[connect-google.md](https://github.com/thepmpo/donknow/blob/main/docs/connect-google.md)|현재 테스트 서버에서 이메일 인증과 Google Tasks 연결하기|
 |[connection-stability-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/connection-stability-2026-11-15.md)|캘린더 저장본·AI 연결·미리 알림 안정화 — 2026-11-15|
 |[connections-heavy-usage-2026-11-19.md](https://github.com/thepmpo/donknow/blob/main/docs/connections-heavy-usage-2026-11-19.md)|연결 개수와 헤비 사용량 기준 — 2026-11-19|
-|[continuation-guide.md](https://github.com/thepmpo/donknow/blob/main/docs/continuation-guide.md)|2026-11-15 — Things·피클 영상 UX/UI|
+|[continuation-guide.md](https://github.com/thepmpo/donknow/blob/main/docs/continuation-guide.md)|현재 통합 입구 — 2026-11-22 정정|
 |[current-ui-comparison.md](https://github.com/thepmpo/donknow/blob/main/docs/current-ui-comparison.md)|현재 UI·기능 통합 대조 — 2026-11-10|
 |[daily-document-automation.md](https://github.com/thepmpo/donknow/blob/main/docs/daily-document-automation.md)|매일 저녁 7시 문서 자동 정리|
 |[daily-updates.md](https://github.com/thepmpo/donknow/blob/main/docs/daily-updates.md)|매일 개발 정리|
@@ -13560,6 +14380,9 @@ python3 scripts/build-handoff.py
 |[desktop-workspace-design-qa.md](https://github.com/thepmpo/donknow/blob/main/docs/desktop-workspace-design-qa.md)|PC 웹 시각·동작 QA|
 |[docen-brand-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-brand-2026-11-22.md)|서비스명 docen 통일|
 |[docen-brand-deployment-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-brand-deployment-2026-11-22.md)|docen 이름 변경 웹 배포|
+|[docen-documentation-verification-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-documentation-verification-2026-11-22.md)|전체 인수인계 문서화 검증 — 2026-11-22|
+|[docen-introduction-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-introduction-2026-11-22.md)|docen 소개 사이트만 공개|
+|[docen-introduction-deployment-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-introduction-deployment-2026-11-22.md)|소개만 공개하는 웹 배포|
 |[dots-full-qa-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/dots-full-qa-2026-11-15.md)|Dots 전체 대응 — 실제 검사와 화면|
 |[dots-full-setup-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/dots-full-setup-2026-11-15.md)|덕 비서 전체 기능 — 실제 연결과 운영 설정|
 |[dots-parity-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/dots-parity-2026-11-15.md)|Dots 공개 기능 전체 대응 — 덕 구현 계약|
@@ -13610,6 +14433,7 @@ python3 scripts/build-handoff.py
 |[public-project.md](https://github.com/thepmpo/donknow/blob/main/docs/public-project.md)|공개 프로젝트 문서와 댓글|
 |[reference-flows-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/reference-flows-2026-11-15.md)|Things·피클 영상 기준 UX/UI 구현|
 |[reference-flows-qa-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/reference-flows-qa-2026-11-15.md)|Things·피클 영상 적용 검수|
+|[references/pickle-motion-report-2026-11-13.md](https://github.com/thepmpo/donknow/blob/main/docs/references/pickle-motion-report-2026-11-13.md)|External browser report — unverified values remain unverified|
 |[release-readiness-2026-11-12.md](https://github.com/thepmpo/donknow/blob/main/docs/release-readiness-2026-11-12.md)|덕 운영·백업·iPhone 출시 확인 — 2026-11-12|
 |[remaining-activation.md](https://github.com/thepmpo/donknow/blob/main/docs/remaining-activation.md)|남은 연결 활성화와 운영 확인|
 |[reminders-import-stability-2026-11-16.md](https://github.com/thepmpo/donknow/blob/main/docs/reminders-import-stability-2026-11-16.md)|미리알림 전체 가져오기·원본 완료 반영·연결 안정성 — 2026-11-16|
@@ -13621,6 +14445,8 @@ python3 scripts/build-handoff.py
 |[site-deployment-2026-11-19.md](https://github.com/thepmpo/donknow/blob/main/docs/site-deployment-2026-11-19.md)|소개 사이트와 베타 요금 공개 배포 — 2026-11-19|
 |[startup-session-pro-2026-11-16.md](https://github.com/thepmpo/donknow/blob/main/docs/startup-session-pro-2026-11-16.md)|Todo 우선순위·로그인 복원·모션·전체 프로 — 2026-11-16|
 |[tds-analysis.md](https://github.com/thepmpo/donknow/blob/main/docs/tds-analysis.md)|TDS 문서 확인 결과와 덕 적용 명세|
+|[templates/new-app-ai-handoff.md](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-ai-handoff.md)|새 앱 AI 인수인계 — 실제 작업 후 작성|
+|[templates/new-app-project-contract.md](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-project-contract.md)|새 앱 프로젝트 계약 — 복사하여 작성|
 |[test-deployment.md](https://github.com/thepmpo/donknow/blob/main/docs/test-deployment.md)|무료 테스트 서버 열기|
 |[testflight-automation.md](https://github.com/thepmpo/donknow/blob/main/docs/testflight-automation.md)|iPhone 테스트 수동 빌드·자동 제출|
 |[things-source-repair-2026-11-15.md](https://github.com/thepmpo/donknow/blob/main/docs/things-source-repair-2026-11-15.md)|Things형 할 일·원본 저장·연결 오류 수정|
@@ -13636,7 +14462,7 @@ python3 scripts/build-handoff.py
 |[web-format-correction-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/web-format-correction-2026-11-22.md)|웹사이트 상단 포맷으로 실제 웹앱 수정|
 |[workspace-studio-evaluation.md](https://github.com/thepmpo/donknow/blob/main/docs/workspace-studio-evaluation.md)|Google Workspace Studio — 덕 도입 검토|
 
-|[docen-documentation-verification-2026-11-22.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-documentation-verification-2026-11-22.md)|전체 인수인계 문서화 검증|
+구조화 모듈 목록: [app-foundation-modules.json](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-modules.json). 중첩 templates 폴더의 양식도 위 목록과 문서ZIP에 포함한다.
 
 #### 생성물과 문서 밖의 증거
 

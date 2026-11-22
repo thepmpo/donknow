@@ -1,0 +1,955 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-11-22",
+  "purpose": "새 앱 공통 기반 재사용",
+  "scope": "docen source references, not a standalone SDK or certification of a new app",
+  "pg": "not implemented; add payment provider verification separately",
+  "modules": [
+    {
+      "id": "identity-session",
+      "title": "계정·세션",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/auth.ts",
+        "mobile/src/useTodos.ts",
+        "server/store.js"
+      ],
+      "verificationReferences": [
+        "mobile/e2e/startup-session.mjs",
+        "mobile/e2e/session-isolation.mjs"
+      ],
+      "dependsOn": [],
+      "contracts": [
+        "origin별토큰/owner경계",
+        "세션컨트롤러를Todo상태에서분리"
+      ],
+      "newAppMustReplace": [
+        "새cookie/SecureStore namespace",
+        "새인증정책"
+      ]
+    },
+    {
+      "id": "signup-password",
+      "title": "가입·비밀번호·확인",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/PasswordFields.tsx",
+        "mobile/src/password-policy.ts",
+        "server/password-policy.js",
+        "mobile/src/screens/AuthScreen.tsx"
+      ],
+      "verificationReferences": [
+        "test/password-policy.test.js",
+        "mobile/e2e/password-policy.mjs"
+      ],
+      "dependsOn": [
+        "identity-session"
+      ],
+      "contracts": [
+        "프런트/서버정책동일",
+        "기존로그인호환"
+      ],
+      "newAppMustReplace": [
+        "문구/브랜드",
+        "가입필드/연령"
+      ]
+    },
+    {
+      "id": "signup-consent",
+      "title": "가입동의·법적버전",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/SignupAgreements.tsx",
+        "server/legal-policy.js",
+        "server/legal-content.js"
+      ],
+      "verificationReferences": [
+        "test/signup-agreements.test.js",
+        "mobile/e2e/signup-legal.mjs"
+      ],
+      "dependsOn": [
+        "signup-password"
+      ],
+      "contracts": [
+        "실제동의버전저장",
+        "고정아카이브보존"
+      ],
+      "newAppMustReplace": [
+        "운영자/국외이전/법무정책",
+        "새약관버전"
+      ]
+    },
+    {
+      "id": "email-gate",
+      "title": "이메일인증gate",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/screens/VerificationScreen.tsx",
+        "server/mail.js",
+        "server/mail-diagnostics.js"
+      ],
+      "verificationReferences": [
+        "test/email-verification-gate.test.js",
+        "mobile/e2e/email-verification.mjs"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "signup-consent"
+      ],
+      "contracts": [
+        "인증전UI/API차단",
+        "접수와수신구분"
+      ],
+      "newAppMustReplace": [
+        "발신도메인/새키",
+        "유효기간/재전송정책"
+      ]
+    },
+    {
+      "id": "transport",
+      "title": "HTTP·오류·취소",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/auth.ts",
+        "mobile/src/http-response.ts",
+        "server/http-json.js"
+      ],
+      "verificationReferences": [
+        "mobile/src/http-response.test.ts",
+        "test/http-json.test.js"
+      ],
+      "dependsOn": [
+        "identity-session"
+      ],
+      "contracts": [
+        "401과통신실패분리",
+        "쓰기자동재전송금지"
+      ],
+      "newAppMustReplace": [
+        "endpoint분류/timeout",
+        "clientheader/오류문구"
+      ]
+    },
+    {
+      "id": "server-readiness",
+      "title": "서버준비·안전한probe",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/server-readiness.ts",
+        "mobile/src/auth.ts"
+      ],
+      "verificationReferences": [
+        "mobile/src/server-readiness.test.ts"
+      ],
+      "dependsOn": [
+        "transport"
+      ],
+      "contracts": [
+        "healthGET만재시도",
+        "대기전token캡처"
+      ],
+      "newAppMustReplace": [
+        "호스트/준비예산",
+        "항상켜진서버에서는축소"
+      ]
+    },
+    {
+      "id": "app-shell",
+      "title": "시작·인증·기기별Shell",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/App.tsx",
+        "mobile/src/AppNavigation.tsx",
+        "mobile/src/DesktopWorkspace.tsx"
+      ],
+      "verificationReferences": [
+        "mobile/e2e/startup-session.mjs",
+        "mobile/e2e/web-format-reference.mjs"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "email-gate",
+        "transport"
+      ],
+      "contracts": [
+        "화면보존/owner초기화구분",
+        "useTodos결합분리"
+      ],
+      "newAppMustReplace": [
+        "새메뉴/진입",
+        "지원기기/presentation"
+      ]
+    },
+    {
+      "id": "design-tokens",
+      "title": "의미색·글자·간격",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/theme.ts",
+        "mobile/src/ui.tsx"
+      ],
+      "verificationReferences": [
+        "mobile/e2e/ux-audit.mjs"
+      ],
+      "dependsOn": [],
+      "contracts": [
+        "token/상태일관성",
+        "ui.tsx의Todo부분분리"
+      ],
+      "newAppMustReplace": [
+        "브랜드/밀도",
+        "새제품기본위계"
+      ]
+    },
+    {
+      "id": "motion-a11y",
+      "title": "모션·동작줄이기",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/motion.tsx",
+        "mobile/src/SurfaceInteraction.tsx"
+      ],
+      "verificationReferences": [
+        "mobile/e2e/motion.mjs",
+        "mobile/e2e/reference-flows.mjs"
+      ],
+      "dependsOn": [
+        "design-tokens"
+      ],
+      "contracts": [
+        "초기reduced-motion",
+        "상태보존/중복모션방지"
+      ],
+      "newAppMustReplace": [
+        "제품별duration/gesture",
+        "스크린리더실기기검수"
+      ]
+    },
+    {
+      "id": "keyboard-sheet",
+      "title": "키보드·입력·시트",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/KeyboardUX.tsx",
+        "mobile/src/keyboard-done.ts",
+        "mobile/src/useFocusedField.ts",
+        "mobile/src/scroll-reveal.ts",
+        "mobile/src/SheetBackdrop.tsx"
+      ],
+      "verificationReferences": [
+        "mobile/src/scroll-reveal.test.ts",
+        "mobile/e2e/editor-viewport.mjs",
+        "mobile/e2e/keyboard-device.mjs"
+      ],
+      "dependsOn": [
+        "design-tokens",
+        "motion-a11y"
+      ],
+      "contracts": [
+        "실제가림/내부reveal",
+        "IME초안/배경층보호"
+      ],
+      "newAppMustReplace": [
+        "플랫폼별accessory",
+        "새폼필드/저장흐름"
+      ]
+    },
+    {
+      "id": "settings",
+      "title": "ME·계정·지원설정",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/MeSettings.tsx",
+        "mobile/src/screens/ProfileScreen.tsx",
+        "mobile/src/screens/AccountScreen.tsx"
+      ],
+      "verificationReferences": [
+        "mobile/e2e/me-settings.mjs",
+        "mobile/e2e/me-review.mjs"
+      ],
+      "dependsOn": [
+        "app-shell",
+        "keyboard-sheet"
+      ],
+      "contracts": [
+        "목록→세부",
+        "실패를OFF로오인금지"
+      ],
+      "newAppMustReplace": [
+        "제품별정보구조",
+        "지원/법적/계정문구"
+      ]
+    },
+    {
+      "id": "domain-repository",
+      "title": "도메인·repository",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/domain.ts",
+        "mobile/src/repository.ts",
+        "server/store.js",
+        "server/database.js"
+      ],
+      "verificationReferences": [
+        "mobile/src/domain.test.ts",
+        "test/todos.test.js",
+        "test/turso-store.test.js"
+      ],
+      "dependsOn": [
+        "transport"
+      ],
+      "contracts": [
+        "owner/revision",
+        "demo/cloud분리"
+      ],
+      "newAppMustReplace": [
+        "Todo대신새entity",
+        "서버API/테이블/검증"
+      ]
+    },
+    {
+      "id": "write-receipts",
+      "title": "빠른저장·멱등영수증",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/useTodos.ts",
+        "server/store.js",
+        "server/action-store.js"
+      ],
+      "verificationReferences": [
+        "test/todo-write-receipt.test.js",
+        "test/source-edits-api.test.js"
+      ],
+      "dependsOn": [
+        "domain-repository"
+      ],
+      "contracts": [
+        "확정실패와unknown분리",
+        "최신응답/요청ID"
+      ],
+      "newAppMustReplace": [
+        "entity별receipt/rollback",
+        "새작업승인규칙"
+      ]
+    },
+    {
+      "id": "snapshot-cache",
+      "title": "마지막저장본·배경갱신",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/calendar-snapshot-cache.ts",
+        "mobile/src/calendar-snapshot-store.ts"
+      ],
+      "verificationReferences": [
+        "mobile/src/calendar-snapshot-store.test.ts",
+        "mobile/e2e/calendar-cache.mjs"
+      ],
+      "dependsOn": [
+        "domain-repository"
+      ],
+      "contracts": [
+        "owner/origin/timezone격리",
+        "snapshot은쓰기권한정본아님"
+      ],
+      "newAppMustReplace": [
+        "calendar대신자료범위",
+        "보관민감도/만료"
+      ]
+    },
+    {
+      "id": "source-outbox",
+      "title": "외부원본전파·lease",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/source-outbox.js",
+        "server/source-edits.js",
+        "server/action-store.js"
+      ],
+      "verificationReferences": [
+        "test/source-outbox.test.js",
+        "test/source-edits.test.js"
+      ],
+      "dependsOn": [
+        "write-receipts"
+      ],
+      "contracts": [
+        "transaction/lease",
+        "running/unknown재전송금지"
+      ],
+      "newAppMustReplace": [
+        "provideradapter/ETag",
+        "지원필드/대안"
+      ]
+    },
+    {
+      "id": "provider-oauth",
+      "title": "외부연결·계정·권한",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/integrations.js",
+        "server/google-accounts.js",
+        "server/secrets.js",
+        "mobile/src/screens/IntegrationsScreen.tsx"
+      ],
+      "verificationReferences": [
+        "test/google-multiple-accounts.test.js",
+        "mobile/e2e/web-oauth.mjs"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "transport"
+      ],
+      "contracts": [
+        "state/PKCE/owner",
+        "secret암호화/해제"
+      ],
+      "newAppMustReplace": [
+        "새provider등록/redirect",
+        "scope/연결수정책"
+      ]
+    },
+    {
+      "id": "permission-settings",
+      "title": "OS/자료선택설정",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/integration-settings.ts",
+        "mobile/src/screens/ConnectionScreen.tsx"
+      ],
+      "verificationReferences": [
+        "mobile/src/integration-settings.test.ts",
+        "mobile/e2e/integration-stability.mjs"
+      ],
+      "dependsOn": [
+        "settings",
+        "provider-oauth"
+      ],
+      "contracts": [
+        "설정/OS권한/동의분리",
+        "부분상태/대안"
+      ],
+      "newAppMustReplace": [
+        "지원권한/실제capability",
+        "설명/설정링크"
+      ]
+    },
+    {
+      "id": "apple-reminders",
+      "title": "기기원본미리알림",
+      "selection": "domain-optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/apple-reminder-read.ts",
+        "mobile/src/apple-reminder-import.ts",
+        "mobile/src/apple-source-apply.ts"
+      ],
+      "verificationReferences": [
+        "mobile/src/apple-reminder-import.test.ts",
+        "mobile/src/apple-reminder-read.test.ts",
+        "mobile/e2e/reminder-import.mjs"
+      ],
+      "dependsOn": [
+        "source-outbox",
+        "permission-settings"
+      ],
+      "contracts": [
+        "전체미완료청크",
+        "기기readback/개정보호"
+      ],
+      "newAppMustReplace": [
+        "지원기기/OS권한문구",
+        "새앱원본IDnamespace"
+      ]
+    },
+    {
+      "id": "date-time",
+      "title": "날짜·시간대모델",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/calendar-model.ts",
+        "server/calendar-time.js",
+        "mobile/src/reminder-plan.ts"
+      ],
+      "verificationReferences": [
+        "mobile/src/reminder-plan.test.ts",
+        "test/calendar-workspace.test.js"
+      ],
+      "dependsOn": [
+        "domain-repository"
+      ],
+      "contracts": [
+        "날짜전용과시점분리",
+        "IANA/DST"
+      ],
+      "newAppMustReplace": [
+        "새도메인날짜의미",
+        "locale/반복정책"
+      ]
+    },
+    {
+      "id": "local-notifications",
+      "title": "로컬알림",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/useReminders.ts",
+        "mobile/src/reminder-plan.ts"
+      ],
+      "verificationReferences": [
+        "mobile/src/reminder-plan.test.ts",
+        "mobile/e2e/automations.mjs"
+      ],
+      "dependsOn": [
+        "date-time",
+        "identity-session"
+      ],
+      "contracts": [
+        "확정자료기준예약",
+        "완료/로그아웃취소"
+      ],
+      "newAppMustReplace": [
+        "알림category/content",
+        "OS실기기"
+      ]
+    },
+    {
+      "id": "push",
+      "title": "기기push·도착진입",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/push.ts",
+        "server/push.js"
+      ],
+      "verificationReferences": [
+        "test/push.test.js"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "local-notifications"
+      ],
+      "contracts": [
+        "tokenowner/해제",
+        "허용deep-link대상"
+      ],
+      "newAppMustReplace": [
+        "Expo/APNs프로젝트",
+        "기기등록/실수신"
+      ]
+    },
+    {
+      "id": "scheduled-jobs",
+      "title": "예약·서명trigger",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/automations.js",
+        "server/automations-store.js",
+        "server/scheduler-auth.js"
+      ],
+      "verificationReferences": [
+        "test/scheduler-auth.test.js",
+        "mobile/e2e/automations.mjs"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "date-time"
+      ],
+      "contracts": [
+        "중복방지/동의재검사",
+        "지연정확고지"
+      ],
+      "newAppMustReplace": [
+        "새작업종류/반복",
+        "실제스케줄러설정"
+      ]
+    },
+    {
+      "id": "file-sharing",
+      "title": "파일·첨부·공유",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/agent-files.js",
+        "server/agent-media.js",
+        "server/agent-file-queue.js"
+      ],
+      "verificationReferences": [
+        "test/agent-http.test.js",
+        "test/agent-sources.test.js"
+      ],
+      "dependsOn": [
+        "domain-repository",
+        "transport"
+      ],
+      "contracts": [
+        "owner/용량/경로/SSRF",
+        "agent의존추출필요"
+      ],
+      "newAppMustReplace": [
+        "새파일정책/보관",
+        "nativepicker/공유"
+      ]
+    },
+    {
+      "id": "account-export-delete",
+      "title": "내보내기·삭제",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/screens/DataExportPanel.tsx",
+        "mobile/src/screens/AccountScreen.tsx",
+        "server/feature-routes.js",
+        "server/features-store.js"
+      ],
+      "verificationReferences": [
+        "test/account-export.test.js",
+        "test/account-features.test.js"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "signup-consent"
+      ],
+      "contracts": [
+        "본인자료만",
+        "실제보관/동의일치"
+      ],
+      "newAppMustReplace": [
+        "새도메인cascade",
+        "보관예외/외부원본정책"
+      ]
+    },
+    {
+      "id": "backup-restore",
+      "title": "백업·무결성·빈DB복구",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/backups.js",
+        "server/remote-backups.js",
+        "server/backup-verification.js"
+      ],
+      "verificationReferences": [
+        "test/backups.test.js",
+        "test/remote-backups.test.js"
+      ],
+      "dependsOn": [
+        "domain-repository"
+      ],
+      "contracts": [
+        "원래키/손상거부",
+        "복구후외부작업중지"
+      ],
+      "newAppMustReplace": [
+        "새DB/prefix/키",
+        "실제보관소설정"
+      ]
+    },
+    {
+      "id": "admin-auth",
+      "title": "별도운영자인증",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/admin-auth-store.js",
+        "server/admin-auth-routes.js",
+        "public/admin.js"
+      ],
+      "verificationReferences": [
+        "test/admin.test.js",
+        "mobile/e2e/admin-bootstrap.mjs"
+      ],
+      "dependsOn": [
+        "identity-session"
+      ],
+      "contracts": [
+        "제품계정과분리",
+        "gate/강제변경/서버역할"
+      ],
+      "newAppMustReplace": [
+        "새allowlist/cookie",
+        "초기설정/역할정책"
+      ]
+    },
+    {
+      "id": "admin-operations",
+      "title": "회원관리·감사·점검",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/admin-management-routes.js",
+        "server/admin-operations.js",
+        "public/admin-controls.js",
+        "public/admin.css"
+      ],
+      "verificationReferences": [
+        "test/admin-management.test.js",
+        "mobile/e2e/admin-management.mjs"
+      ],
+      "dependsOn": [
+        "admin-auth",
+        "domain-repository"
+      ],
+      "contracts": [
+        "사유/version/requestID/감사",
+        "최신실패만재시도"
+      ],
+      "newAppMustReplace": [
+        "새회원/운영업무",
+        "개인자료노출범위"
+      ]
+    },
+    {
+      "id": "entitlements",
+      "title": "이용권·접근권한",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/plans.js",
+        "server/account-policy.js"
+      ],
+      "verificationReferences": [
+        "test/plans.test.js",
+        "test/admin-management.test.js"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "admin-operations"
+      ],
+      "contracts": [
+        "수동권한과거래분리",
+        "정지/만료즉시반영"
+      ],
+      "newAppMustReplace": [
+        "새plan/기간/가격",
+        "PG는별도미구현"
+      ]
+    },
+    {
+      "id": "ai-budget",
+      "title": "유료API예산·원가",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/ai-budget.js",
+        "server/ai-transport.js"
+      ],
+      "verificationReferences": [
+        "test/ai-budget.test.js",
+        "test/ai-transport.test.js"
+      ],
+      "dependsOn": [
+        "identity-session",
+        "entitlements"
+      ],
+      "contracts": [
+        "선예약/실usage정산",
+        "동시성/불명보류"
+      ],
+      "newAppMustReplace": [
+        "모델/도구가격/한도",
+        "실제정산연결"
+      ]
+    },
+    {
+      "id": "ai-consent-memory",
+      "title": "AI동의·기억·삭제",
+      "selection": "domain-optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/assistant-consent.ts",
+        "server/assistant-memory-store.js",
+        "server/agent-memory.js"
+      ],
+      "verificationReferences": [
+        "mobile/src/assistant-consent.test.ts",
+        "test/assistant-memory.test.js"
+      ],
+      "dependsOn": [
+        "ai-budget",
+        "signup-consent"
+      ],
+      "contracts": [
+        "opt-in/원문명령격리",
+        "owner/개정/삭제"
+      ],
+      "newAppMustReplace": [
+        "새AI목적/자료/보관",
+        "실모델품질검증"
+      ]
+    },
+    {
+      "id": "runtime-lanes",
+      "title": "서버관측·요청분리",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/request-lanes.js",
+        "server/request-metrics.js",
+        "server-runtime.js"
+      ],
+      "verificationReferences": [
+        "test/request-lanes.test.js",
+        "test/render-startup.test.js"
+      ],
+      "dependsOn": [
+        "transport",
+        "domain-repository"
+      ],
+      "contracts": [
+        "loop/동기DB병목구분",
+        "내부header/인증보호"
+      ],
+      "newAppMustReplace": [
+        "새경로분류/부하",
+        "측정/배포환경"
+      ]
+    },
+    {
+      "id": "launch-guard",
+      "title": "소개공개·서비스미오픈",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "server/public-launch.js",
+        "public/coming-soon.html"
+      ],
+      "verificationReferences": [
+        "test/public-launch.test.js",
+        "website/tests/public-launch.mjs"
+      ],
+      "dependsOn": [
+        "app-shell",
+        "transport"
+      ],
+      "contracts": [
+        "Host와Origin둘다",
+        "CTA와API일치"
+      ],
+      "newAppMustReplace": [
+        "새도메인/공개단계",
+        "실제출시전환"
+      ]
+    },
+    {
+      "id": "native-build",
+      "title": "native설정·무료수동빌드",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/app.json",
+        "mobile/eas.json",
+        ".github/workflows/ios-testflight.yml",
+        "scripts/check-native-prebuild.mjs"
+      ],
+      "verificationReferences": [
+        "test/release-readiness.test.js",
+        "scripts/check-shortcuts-swift.mjs"
+      ],
+      "dependsOn": [
+        "app-shell"
+      ],
+      "contracts": [
+        "export/IPA/설치구분",
+        "서명/SDK지원버전"
+      ],
+      "newAppMustReplace": [
+        "새bundle/project/entitlement",
+        "스토어/실기기"
+      ]
+    },
+    {
+      "id": "duo-presentation",
+      "title": "특수기기Duo",
+      "selection": "domain-optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "mobile/src/DuoLayout.tsx",
+        "mobile/src/duo-layout.ts",
+        "mobile/src/navigation-geometry.ts"
+      ],
+      "verificationReferences": [
+        "mobile/src/duo-layout.test.ts",
+        "mobile/e2e/duo-layout.mjs"
+      ],
+      "dependsOn": [
+        "app-shell",
+        "keyboard-sheet"
+      ],
+      "contracts": [
+        "실제OSAPI/상태보존",
+        "fixture와하드웨어구분"
+      ],
+      "newAppMustReplace": [
+        "새제품지원여부",
+        "docen전용기하복사금지"
+      ]
+    },
+    {
+      "id": "landing-web",
+      "title": "소개·웹·가격UI",
+      "selection": "optional",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "website/src/App.jsx",
+        "website/src/styles.css",
+        "website/src/pricing-content.mjs"
+      ],
+      "verificationReferences": [
+        "website/tests/interaction.mjs",
+        "website/tests/sites-worker.test.mjs"
+      ],
+      "dependsOn": [
+        "launch-guard",
+        "design-tokens"
+      ],
+      "contracts": [
+        "합성demo/실제앱분리",
+        "단일가격정본"
+      ],
+      "newAppMustReplace": [
+        "내용/브랜드/언어",
+        "가격/배경/기능"
+      ]
+    },
+    {
+      "id": "documentation-packaging",
+      "title": "규칙·검수·ZIP·인계",
+      "selection": "required",
+      "status": "documented-existing-reference; extraction-and-new-app-validation-required",
+      "sources": [
+        "scripts/build-handoff.py",
+        "docs/DOCEN-START-HERE.md",
+        "docs/docen-product-build-playbook.md"
+      ],
+      "verificationReferences": [],
+      "dependsOn": [],
+      "contracts": [
+        "현재/이력/증거구분",
+        "비밀제외/manifest"
+      ],
+      "newAppMustReplace": [
+        "새제품계약/지도",
+        "다음AI시작문서"
+      ]
+    }
+  ]
+}

@@ -19,6 +19,8 @@
 
 ## 1. 읽는 순서와 증거 해석
 
+별개 앱을 만들기 위한 공통 기반은 [새 앱 입구](REUSABLE-APP-START-HERE.md)·[상세 설계](reusable-app-foundation.md)·[36개 모듈 지도](app-foundation-module-map.md)·[검수표](app-foundation-release-checklist.md)에 있다. 홈페이지/웹/어드민과 앱 전체를 함께 재사용하되 새 제품 identity/DB/키/외부 권한은 분리한다. 독립형 SDK나 PG/새 앱 실기기 검증이 완료됐다는 뜻은 아니다.
+
 1. 이 문서 → [결정·정정 목록](docen-decisions-register.md).
 2. [재사용 제작 매뉴얼](docen-product-build-playbook.md): 홈페이지/웹/앱/어드민의 실제 구조·스타일·제작 순서.
 3. [전체 문서 지도](docen-document-map.md)에서 해당 분야 계약과 QA를 찾는다.
