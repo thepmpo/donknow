@@ -42,7 +42,7 @@ try{
  title='빠르게 갱신한 검토';hold=false;release();await event(title).waitFor();
  hold=true;await button('월 보기로 전환').click();await event(title).waitFor({timeout:500});await shot('cache-updated-month');hold=false;release();
  // Refresh failure must preserve the previous calendar and login.
- fail=true;await command('Google 일정 새로고침');await page.getByText('일정을 확인하지 못했어요. 빈 시간으로 판단하지 마세요.',{exact:true}).waitFor();await close();await event(title).waitFor();assert.equal(await page.getByRole('button',{name:'덕 로그인',exact:true}).count(),0);fail=false;
+ fail=true;await command('Google 일정 새로고침');await page.getByText('일정을 확인하지 못했어요. 빈 시간으로 판단하지 마세요.',{exact:true}).waitFor();await close();await event(title).waitFor();assert.equal(await page.getByRole('button',{name:'docen 로그인',exact:true}).count(),0);fail=false;
  // All sources do not wait for the slowest source.
  teamHold=true;await command('캘린더 보기 전환');await button('캘린더 보기 설정').click();await button('표시할 캘린더 선택').click();await page.getByRole('checkbox',{name:'팀 일정 표시',exact:true}).click();title='빠른 캘린더 먼저 반영';await button('선택한 캘린더 적용').click();await event(title).waitFor({timeout:1000});assert.ok(pending.some(p=>p.id==='team'));await shot('cache-fast-source-first');teamHold=false;release('team');await event('팀 일정 유지').waitFor();
  // A full JS reload restores the last saved display and selected sources before held network reads.

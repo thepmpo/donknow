@@ -27,7 +27,7 @@ export function pushStore(db,box){
 }
 export function createPushSender(store,{fetcher=fetch}={}){
  let busy=false;return {async tick(){if(busy)return;busy=true;try{for(let i=0;i<20;i++){const item=store.claimMessagePush();if(!item)break;try{
-  const r=await fetcher('https://exp.host/--/api/v2/push/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:item.token,title:'덕',body:'새 예약 메시지가 도착했어요. 덕 채팅에서 확인해주세요.',data:{screen:'duck',messageId:item.messageId}}),signal:AbortSignal.timeout(8000),redirect:'error'});
+  const r=await fetcher('https://exp.host/--/api/v2/push/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:item.token,title:'docen',body:'새 예약 메시지가 도착했어요. docen 채팅에서 확인해주세요.',data:{screen:'duck',messageId:item.messageId}}),signal:AbortSignal.timeout(8000),redirect:'error'});
   if(!r.ok){store.finishMessagePush(item.id,'failed');continue;}const reply=await r.json();if(reply.data?.status==='ok')store.finishMessagePush(item.id,'accepted');else{store.finishMessagePush(item.id,'failed');if(reply.data?.details?.error==='DeviceNotRegistered')store.forgetPushToken(item.deviceHash);}
  }catch{store.finishMessagePush(item.id,'unknown');}}}finally{busy=false;}}};
 }

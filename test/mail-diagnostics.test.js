@@ -13,7 +13,7 @@ test('mail classifies sender verification, key, scope, rate limit and network wi
  const logs=[],mailer=createMailer({MAIL_API_KEY:'fixture',MAIL_FROM:'fixture@example.test'},async()=>{throw Object.assign(Error('contains-private-text'),{cause:{code:'ECONNRESET'}});},line=>logs.push(line));await assert.rejects(()=>mailer.deliver('fixture',{}),e=>e.mailKind==='ECONNRESET');assert.equal(logs.join('').includes('contains-private-text'),false);
 });
 test('mail config probe is GET-only and logs safe sender state without sending or exposing domains/keys',async()=>{
- const logs=[],env={MAIL_API_KEY:'private-key',MAIL_FROM:'Duck <sender@private-domain.test>'};let calls=0;
+ const logs=[],env={MAIL_API_KEY:'private-key',MAIL_FROM:'docen <sender@private-domain.test>'};let calls=0;
  await probeMailConfiguration(env,async(url,options)=>{calls++;assert.equal(url,'https://api.resend.com/domains');assert.notEqual(options.method,'POST');assert.equal(options.body,undefined);return Response.json({data:[{name:'private-domain.test',status:'verified'}]});},line=>logs.push(line));assert.equal(calls,1);assert.equal(JSON.parse(logs[0]).senderState,'verified');for(const v of ['private-key','private-domain.test','sender@'])assert.equal(logs.join('').includes(v),false);
  await probeMailConfiguration(env,async()=>Response.json({name:'restricted_api_key',message:'secret details'},{status:401}),line=>logs.push(line));assert.equal(JSON.parse(logs[1]).kind,'restricted-api-key');
 });

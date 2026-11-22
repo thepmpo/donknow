@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "duckduck",
+    "name": "docen",
     "slug": "duckduck-donknow",
     "version": "1.0.0",
     "orientation": "default",
@@ -12,7 +12,7 @@
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSMicrophoneUsageDescription": "덕과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
+        "NSMicrophoneUsageDescription": "docen과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
       }
     },
     "android": {
@@ -45,16 +45,16 @@
       [
         "expo-calendar",
         {
-          "remindersPermission": "선택한 미리 알림을 덕의 Todo로 가져오기 위해 접근 권한이 필요해요."
+          "remindersPermission": "선택한 미리 알림을 docen의 Todo로 가져오기 위해 접근 권한이 필요해요."
         }
       ],
       "./plugins/with-duck-shortcuts.cjs",
       [
         "expo-image-picker",
         {
-          "photosPermission": "선택한 사진을 덕에게 전달하기 위해 사진을 선택해요.",
+          "photosPermission": "선택한 사진을 docen에게 전달하기 위해 사진을 선택해요.",
           "cameraPermission": false,
-          "microphonePermission": "덕과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
+          "microphonePermission": "docen과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
         }
       ],
       [

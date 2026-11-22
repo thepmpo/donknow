@@ -13,7 +13,7 @@ export function createNaverMail(store,env=process.env,{imapFactory=options=>new 
  const api={
   status(user,saved=store.connection(user,'naver')){const features=saved?.features??[];return {provider:'naver',name:'네이버 메일',configured:enabled(),connected:!!saved,label:saved?.email??null,readOnly:readOnly(),modifyAvailable:enabled()&&!readOnly(),sendAvailable:enabled()&&smtpEnabled(),features:[...(saved?['mail']:[]),...(!readOnly()&&(features.includes('mailModify')||features.includes('mailWrite'))?['mailModify']:[]),...(smtpEnabled()&&(features.includes('mailSend')||features.includes('mailWrite'))?['mailSend']:[])],availableFeatures:['mail',...(!readOnly()?['mailModify']:[]),...(smtpEnabled()?['mailSend']:[])]};},
   async connect(user,email,password,options={}){
-   if(!enabled())throw fail(503,'네이버 메일 연결이 아직 활성화되지 않았어요.');if(!store.account(user)?.emailVerified)throw fail(403,'덕 이메일 인증을 먼저 완료해주세요.');
+   if(!enabled())throw fail(503,'네이버 메일 연결이 아직 활성화되지 않았어요.');if(!store.account(user)?.emailVerified)throw fail(403,'docen 이메일 인증을 먼저 완료해주세요.');
    if(typeof email!=='string'||!/^[A-Za-z0-9._-]+@naver\.com$/i.test(email)||typeof password!=='string'||password.length<8||password.length>128)throw fail(400,'네이버 주소와 앱 비밀번호를 확인해주세요.');
    if(!options||typeof options!=='object'||Array.isArray(options)||Object.keys(options).some(key=>!['modify','send'].includes(key))||['modify','send'].some(key=>options[key]!==undefined&&typeof options[key]!=='boolean'))throw fail(400,'네이버 연결 권한을 확인해주세요.');
    if(readOnly()&&(options.modify||options.send))throw fail(403,'네이버 메일은 읽기 전용이에요. 읽음 상태 변경과 발송 권한을 끄고 연결해주세요.');

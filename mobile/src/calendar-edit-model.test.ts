@@ -1,8 +1,8 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {eventDraft,calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './calendar-edit-model.ts';
 import type {CalendarEvent} from './calendar-model.ts';
-const event:CalendarEvent={id:'scoped',eventId:'event',calendarId:'primary',title:'회의',dueDate:'2026-11-01',startAt:'2026-11-01T01:30:00-05:00',endAt:'2026-11-01T02:30:00-05:00',timeZone:'America/New_York',etag:'v1',location:'서울',notes:'원본',duckDetails:{revision:2,fields:{localNotes:'덕 메모',reminderMinutes:30,url:'https://example.test',attachments:[]}}};
-test('unchanged and Duck-only edits never rewrite source times at a DST overlap',()=>{
+const event:CalendarEvent={id:'scoped',eventId:'event',calendarId:'primary',title:'회의',dueDate:'2026-11-01',startAt:'2026-11-01T01:30:00-05:00',endAt:'2026-11-01T02:30:00-05:00',timeZone:'America/New_York',etag:'v1',location:'서울',notes:'원본',duckDetails:{revision:2,fields:{localNotes:'docen 메모',reminderMinutes:30,url:'https://example.test',attachments:[]}}};
+test('unchanged and docen-only edits never rewrite source times at a DST overlap',()=>{
  const d=eventDraft('2026-11-01','America/New_York','primary',event);assert.equal(calendarWriteArgs(d,event),null);assert.deepEqual(calendarDuckPatch(d,event),{});
  const edited={...d,title:'바꾼 제목'};assert.deepEqual(calendarWriteArgs(edited,event),{title:'바꾼 제목',calendarId:'primary',id:'event',expectedETag:'v1'});assert.deepEqual(confirmedCalendarPatch(edited,event),{title:'바꾼 제목'});
  assert.equal(calendarWriteArgs({...d,localNotes:'별도 메모'},event),null);assert.deepEqual(calendarDuckPatch({...d,localNotes:'별도 메모'},event),{localNotes:'별도 메모'});

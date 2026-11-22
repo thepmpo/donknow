@@ -13,7 +13,7 @@ import {refreshCalendarSnapshots} from '../calendar-snapshot-cache';
 export type Provider = 'google' | 'slack' | 'notion';
 type Status=IntegrationStatus;
 type Item = { id: string; title: string; dueDate?: string | null; kind: string; completed?: boolean; completedAt?: string | null };
-const names: Record<string, string> = { gmailModify:'메일 읽음·상태 수정',gmailSend:'메일 발송',calendarWrite:'일정 작성·수정',driveContent:'Drive 파일 내용 읽기',driveWrite:'덕이 만들거나 허용한 Drive 파일 수정',assistantContact:'Slack에서 덕과 대화',messagesWrite:'Slack 메시지 보내기·덕 메시지 수정',pagesWrite:'Notion 페이지 작성·수정', google: 'Google', slack: 'Slack', notion: 'Notion', calendar: '기본 캘린더', gmail: '메일', drive: '드라이브', tasks: 'Google Tasks', channels: '채널', messages: '메시지', pages: '페이지' };
+const names: Record<string, string> = { gmailModify:'메일 읽음·상태 수정',gmailSend:'메일 발송',calendarWrite:'일정 작성·수정',driveContent:'Drive 파일 내용 읽기',driveWrite:'docen이 만들거나 허용한 Drive 파일 수정',assistantContact:'Slack에서 docen과 대화',messagesWrite:'Slack 메시지 보내기·docen 메시지 수정',pagesWrite:'Notion 페이지 작성·수정', google: 'Google', slack: 'Slack', notion: 'Notion', calendar: '기본 캘린더', gmail: '메일', drive: '드라이브', tasks: 'Google Tasks', channels: '채널', messages: '메시지', pages: '페이지' };
 export function IntegrationsScreen({ store, initialProvider, onClose }: { store: TodoStore; initialProvider: Provider; onClose: () => void }) {
   const [accountId,setAccountId]=useState<string|null>(null),[addingAccount,setAddingAccount]=useState(false);
   const [page,setPage]=useState<'overview'|'accounts'|'permissions'|'resources'|'sync'|'help'>('overview');

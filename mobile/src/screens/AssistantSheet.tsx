@@ -28,8 +28,8 @@ export function AssistantSheet({store,onClose,presentation='sheet',onOpenTodos,i
  {!!pastedText&&<Text style={s.muted}>붙여넣은 내용 {pastedText.length}자도 동의 후 AI에 전송돼요. 원문은 서버에 저장하지 않아요.</Text>}
  <TextInput accessibilityLabel="비서에게 요청" value={message} onChangeText={setMessage} maxLength={2000} multiline placeholder="오늘 해야 할 일을 찾아줘. 이 메일 답장도 준비해줘." style={[{borderWidth:1,borderColor:colors.line,borderRadius:12,padding:12,color:colors.text,minHeight:48},{minHeight:90}]}/>
  <Pressable accessibilityRole="checkbox" accessibilityLabel="선택한 자료와 내 Todo를 AI에 보내 분석하기 동의" accessibilityState={{checked:consent}} disabled={busy} onPress={()=>setConsent(x=>!x)} style={{minHeight:44,justifyContent:'center'}}><Text style={s.subtitle}>{consent?'☑':'□'} 요청·선택한 자료·내 Todo를 AI에 보내 분석하기</Text></Pressable>
- <Button title="덕에게 물어보기" disabled={busy||!status?.enabled||!consent||!message.trim()} loading={busy} onPress={()=>{void chat();}}/>
- {turns.slice(0,-2).map((turn,index)=><Text key={index} style={s.muted}>{turn.role==='user'?'나':'덕'}: {turn.text}</Text>)}
+ <Button title="docen에게 물어보기" disabled={busy||!status?.enabled||!consent||!message.trim()} loading={busy} onPress={()=>{void chat();}}/>
+ {turns.slice(0,-2).map((turn,index)=><Text key={index} style={s.muted}>{turn.role==='user'?'나':'docen'}: {turn.text}</Text>)}
  {!!answer&&<View style={s.card}><Text selectable style={s.subtitle}>{answer}</Text><Text style={s.muted}>AI 제안 단계예요. 아래에서 확인하고 실행해야 반영돼요.</Text></View>}
  {warnings.map((w,i)=><Text key={i} style={s.muted}>{w}</Text>)}
  {proposals.map((p,i)=><View key={i} style={s.card}><Text style={s.sectionTitle}>{p.label}</Text>{Object.entries(p.args).filter(([k])=>!targetKeys.includes(k)).map(([k,v])=><Text selectable key={k} style={s.subtitle}>{labels[k]??k}: {showValue(k,v)}</Text>)}{p.sourceRefs.map(ref=><Text key={ref} style={s.muted}>근거: {sources.find(s=>s.ref===ref)?.title??'자료'}</Text>)}<Button title={`${p.label} 초안 확인`} quiet disabled={busy} onPress={()=>{void prepare(p.operation,p.args);}}/></View>)}
@@ -44,5 +44,5 @@ export function AssistantSheet({store,onClose,presentation='sheet',onOpenTodos,i
  </>;
  if(presentation==='page')return <MePage title="AI 자료·실행 관리" onClose={onClose} disabled={busy} scrollable={false}>{contents}</MePage>;
  return <Modal visible transparent animationType="slide" onRequestClose={()=>{if(!busy)onClose();}}><KeyboardAvoidingView style={{flex:1,justifyContent:'flex-end',backgroundColor:'#00000066'}} behavior={Platform.OS==='ios'?'padding':undefined}><DraggableSheet disabled={busy} onDismiss={onClose} style={{maxHeight:'94%',backgroundColor:colors.bg,borderTopLeftRadius:28,borderTopRightRadius:28,padding:22}}>
- <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text accessibilityRole="header" style={[s.h1,{flex:1}]}>덕 비서</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={busy} onPress={onClose}/></View></View>{contents}</DraggableSheet></KeyboardAvoidingView></Modal>;
+ <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text accessibilityRole="header" style={[s.h1,{flex:1}]}>docen 비서</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={busy} onPress={onClose}/></View></View>{contents}</DraggableSheet></KeyboardAvoidingView></Modal>;
 }

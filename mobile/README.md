@@ -1,4 +1,4 @@
-# duckduck iPhone 앱
+# docen iPhone 앱
 
 최신: [Things형 Todo·원본 내용/시간 저장·초기 전체 ON](../docs/things-source-repair-2026-11-15.md) · [실제 AI 잔액 오류](../docs/ai-connection-investigation-2026-11-15.md). 마지막 native41(1fbedb1)은 Apple 업로드 성공이고 이번 수정은41 이후입니다. 정상 AI 생성·실기기 EventKit 검수는 별도이며 새 수동 앱 빌드가 필요합니다.
 

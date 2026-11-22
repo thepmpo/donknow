@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
 const out = resolve(
-  new URL("../../artifacts/duck-beta-annual-2026-11-19", import.meta.url)
+  new URL("../../artifacts/docen-brand-2026-11-22/site", import.meta.url)
     .pathname,
 );
 await mkdir(out, { recursive: true });
@@ -269,7 +269,7 @@ try {
       {
         time: new Date().toISOString(),
         source:
-          "Duck website in local Chromium; example data; no provider or production account calls",
+          "docen website in local Chromium; example data; no provider or production account calls",
         results,
       },
       null,

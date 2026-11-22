@@ -21,7 +21,7 @@ function fakeProvider(){const calls=[];let changed=false,failSend=false,delay=nu
  if(url.includes('/drive/'))return response({id:'file',name:'자료.txt',version:'1',mimeType:'text/plain',capabilities:{canEdit:true}},200,{etag:changed?'v2':'v1'});
  if(url.includes('/v1/pages/'))return response({id:'page',last_edited_time:changed?'later':'before',properties:{Name:{type:'title',title:[]}}});
  if(url.includes('/auth.test'))return response({ok:true,user_id:'U12345678'});
- if(url.includes('conversations.history'))return response({ok:true,messages:[{user:'U12345678',text:'덕의 메시지',ts:'123.456'}]});
+ if(url.includes('conversations.history'))return response({ok:true,messages:[{user:'U12345678',text:'docen의 메시지',ts:'123.456'}]});
  if(url.includes('conversations.info'))return response({ok:true,channel:{name:'팀 채널'}});
  throw Error('Unexpected fixture: '+url);
  }};}

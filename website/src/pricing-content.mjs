@@ -2,11 +2,11 @@
 export const pricingCopy = {
   ko: {
     lang: "ko",
-    title: "요금제와 기능 비교 · 덕",
-    meta: "덕 무료·라이트 월16,900원·프로 월49,900원·비즈니스 상담형 요금제. 브리핑부터 문서 초안과 AI 채팅까지, 필요한 사용량을 골라보세요. 결제 준비 중.",
-    nav: ["작동 방식", "요금제", "덕 열기"],
+    title: "요금제와 기능 비교 · docen",
+    meta: "docen 무료·라이트 월16,900원·프로 월49,900원·비즈니스 상담형 요금제. 브리핑부터 문서 초안과 AI 채팅까지, 필요한 사용량을 골라보세요. 결제 준비 중.",
+    nav: ["작동 방식", "요금제", "docen 열기"],
     eyebrow: "A PLAN FOR YOUR DAY",
-    heading: "내 방식에 맞는 덕.",
+    heading: "내 방식에 맞는 docen.",
     lead: "같은 정리 방식, 나에게 맞는 사용량.<br>더 깊은 대화가 필요하면 프로로.",
     billing: "월간 요금 · 부가세 포함 · 요금 개편안 · 결제 준비 중",
     month: "/ 월",
@@ -14,7 +14,7 @@ export const pricingCopy = {
       {
         name: "무료",
         tag: "직접 정리하는 하루",
-        description: "할 일과 일정을 직접 정리하며<br>덕을 시작하고 싶다면.",
+        description: "할 일과 일정을 직접 정리하며<br>docen을 시작하고 싶다면.",
         price: "0원",
         note: "기본 정리 기능",
         features: [
@@ -23,7 +23,7 @@ export const pricingCopy = {
           "지원 연결의 자료 가져오기",
           "완료 기록과 원본 링크",
         ],
-        cta: "덕 둘러보기",
+        cta: "docen 둘러보기",
         href: "/app",
       },
       {
@@ -51,7 +51,7 @@ export const pricingCopy = {
         note: "직접 AI 채팅 · 확대 월 사용량",
         features: [
           "라이트의 모든 정리 기능",
-          "덕 안에서 직접 AI와 대화",
+          "docen 안에서 직접 AI와 대화",
           "더 많은 문서·자료 처리",
           "더 넉넉한 공통 AI 사용량",
         ],
@@ -97,7 +97,7 @@ export const pricingCopy = {
       ["지원 자료 정리·문서 초안 작성", "no", "yes", "yes", "consult"],
       ["받은 내용 → Todo·일정 전환", "no", "yes", "yes", "consult"],
       ["동의한 기억·자료 맥락 활용", "no", "yes", "yes", "consult"],
-      ["덕 안에서 직접 AI와 대화", "no", "no", "yes", "consult"],
+      ["docen 안에서 직접 AI와 대화", "no", "no", "yes", "consult"],
       ["월 AI 사용량", "없음", "기본 제공량", "더 넉넉한 제공량", "맞춤 협의"],
       [
         "문서·자료 처리량",
@@ -120,16 +120,16 @@ export const pricingCopy = {
       "한도에 도달하면 AI 처리를 멈추고 알려드려요. 자동으로 추가 결제하지 않으며, 기본 Todo·캘린더 직접 정리는 계속 사용할 수 있어요. 더 큰 사용량이 필요하면 비즈니스 상담으로 범위를 정해요.",
       "지원되는 형식과 연결 권한 안에서 제공해요. 문서 초안은 실제로 확인한 자료를 바탕으로 작성하며 제출 전 검토가 필요해요. 외부 AI 연결은 준비 중이며 Dots의 기존 대화·기억·결과를 자동으로 가져오는 기능은 제공하지 않아요.",
     ],
-    footer: "덕 · 2026.11.19 요금 개편안",
+    footer: "docen · 2026.11.19 요금 개편안",
     footerLinks: ["개인정보 처리방침", "문의하기", "제품 기록"],
   },
   en: {
     lang: "en",
-    title: "Plans and features · Duck",
-    meta: "Compare Duck Free, Lite at ₩16,900/month, Pro at ₩49,900/month, and Business with custom pricing. Briefings, document drafts and AI chat, with clear usage limits. Paid checkout is in preparation.",
-    nav: ["How it works", "Pricing", "Open Duck"],
+    title: "Plans and features · docen",
+    meta: "Compare docen Free, Lite at ₩16,900/month, Pro at ₩49,900/month, and Business with custom pricing. Briefings, document drafts and AI chat, with clear usage limits. Paid checkout is in preparation.",
+    nav: ["How it works", "Pricing", "Open docen"],
     eyebrow: "A PLAN FOR YOUR DAY",
-    heading: "Duck, your way.",
+    heading: "docen, your way.",
     lead: "The same clear workflow. The right amount of help.<br>Go Pro when you want a deeper conversation.",
     billing:
       "Monthly pricing · VAT included · Proposed plans · Checkout in preparation",
@@ -147,7 +147,7 @@ export const pricingCopy = {
           "Import from supported connections",
           "Completion history and source links",
         ],
-        cta: "Explore Duck",
+        cta: "Explore docen",
         href: "/app",
       },
       {
@@ -175,7 +175,7 @@ export const pricingCopy = {
         note: "Direct AI chat · Larger monthly allowance",
         features: [
           "All Lite organization features",
-          "Chat directly with Duck AI",
+          "Chat directly with docen AI",
           "Process more documents and sources",
           "A larger shared AI allowance",
         ],
@@ -187,7 +187,7 @@ export const pricingCopy = {
         name: "Business",
         tag: "Designed around your team",
         description:
-          "Bringing Duck to a team?<br>Let’s discuss the scope you need.",
+          "Bringing docen to a team?<br>Let’s discuss the scope you need.",
         price: "Let’s talk",
         note: "A quote based on seats, volume and scope",
         features: [
@@ -245,7 +245,7 @@ export const pricingCopy = {
         "consult",
       ],
       ["Use approved memory and source context", "no", "yes", "yes", "consult"],
-      ["Chat directly with Duck AI", "no", "no", "yes", "consult"],
+      ["Chat directly with docen AI", "no", "no", "yes", "consult"],
       [
         "Monthly AI allowance",
         "None",
@@ -274,7 +274,7 @@ export const pricingCopy = {
       "When you reach your limit, AI processing pauses and we let you know. There are no automatic overage charges. You can still organize to-dos and events manually. Contact us about Business if you need a larger allowance.",
       "Features depend on supported formats and source permissions. Document drafts use information actually retrieved and should be reviewed before submission. External AI connections are in preparation; existing dot conversations, memories and results are not imported automatically.",
     ],
-    footer: "Duck · Proposed plans, November 19, 2026",
+    footer: "docen · Proposed plans, November 19, 2026",
     footerLinks: ["Privacy policy", "Contact us", "Product updates"],
   },
 };
@@ -322,8 +322,8 @@ for (const [lang, c] of Object.entries(pricingCopy)) {
   }
   c.notice += " " + c.billingTerms;
   c.meta = en
-    ? "Duck Lite: regular ₩19,900/month, annual equivalent ₩16,900/month. Pro: regular ₩55,900/month, annual equivalent ₩49,900/month. During beta, monthly billing gets the annual discounted rate. Checkout in preparation."
-    : "덕 정상 월요금 라이트19,900원·프로55,900원. 연간 결제 월환산16,900원·49,900원이며 베타 기간에는 월 결제에도 같은 할인가를 적용해요. 결제 준비 중.";
+    ? "docen Lite: regular ₩19,900/month, annual equivalent ₩16,900/month. Pro: regular ₩55,900/month, annual equivalent ₩49,900/month. During beta, monthly billing gets the annual discounted rate. Checkout in preparation."
+    : "docen 정상 월요금 라이트19,900원·프로55,900원. 연간 결제 월환산16,900원·49,900원이며 베타 기간에는 월 결제에도 같은 할인가를 적용해요. 결제 준비 중.";
   c.rows.unshift(
     en
       ? ["Regular monthly price", "₩0", "₩19,900", "₩55,900", "consult"]

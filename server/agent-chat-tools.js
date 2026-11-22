@@ -14,7 +14,7 @@ export const chatAgentTools=[
  def('search_all_sources','연결한 선택 자료의 전체 검색/이어 검색. {provider:google|slack|notion|naver,query,kind:documents|mail|calendar|tasks|database,connectionId?,channel?,cursor?}. 최근 몇 개에 없다는 이유로 없다고 말하지 않는다.'),
  def('read_connected_source','실제 검색 결과 ref의 본문/스레드/DB/시트 읽기. {ref,cursor?,range?}. 긴 자료는 다음 커서로 끝까지 이어 읽는다. 원문 쓰기는 하지 않는다.'),
  def('make_file','실제 결과 파일을 만든다. {name,format:md|txt|csv|json|html|pdf|docx|xlsx|pptx,title,content}. 큰/복잡한 분석과 수정은 delegate_work로 맡긴다.'),
- def('list_my_files','내가 올리거나 덕이 만든 파일을 찾는다. {query?:string}. 실제 내 파일 ID만 반환한다.'),
+ def('list_my_files','내가 올리거나 docen이 만든 파일을 찾는다. {query?:string}. 실제 내 파일 ID만 반환한다.'),
  def('read_my_file','내 파일 실제 내용 읽기/시각 분석. {id,offset?:number}. 사진/PDF는 다음 모델 입력에 실제 파일을 넣는다. 읽은 척하지 않는다.')
 ];
 export function createChatAgentTools({store,engine,assistant,integrations,memory=null}){

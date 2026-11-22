@@ -1,4 +1,4 @@
-# duckduck
+# docen
 
 ## 2026-11-15 — Things·피클 영상 UX/UI
 

@@ -9,7 +9,7 @@ export function createSourceEdits({store,assistant,integrations,deferred=false,o
   const source=todo.source,external=source.externalId,task=/^([^:]+):tasks:([^:]+):(.+)$/.exec(external),event=/^([^:]+):(calendar|calendar2):(.+)$/.exec(external);
   if(source.provider!=='google'||!task&&!event)throw fail(422,'이 자료는 원본 앱에서 수정해주세요.');
   let operation,args;
-  if(task){operation='tasks.update';args={connectionId:task[1]==='legacy'?undefined:task[1],list:task[2],id:task[3],...Object.fromEntries(Object.entries(patch).filter(([k])=>['title','notes','dueDate','done'].includes(k)))};if('dueTime' in patch&&patch.dueTime!=null)throw fail(422,'Google Tasks는 예정 시간을 저장하지 않아요. 캘린더 일정이나 덕 알림 시간을 사용해주세요.');}
+  if(task){operation='tasks.update';args={connectionId:task[1]==='legacy'?undefined:task[1],list:task[2],id:task[3],...Object.fromEntries(Object.entries(patch).filter(([k])=>['title','notes','dueDate','done'].includes(k)))};if('dueTime' in patch&&patch.dueTime!=null)throw fail(422,'Google Tasks는 예정 시간을 저장하지 않아요. 캘린더 일정이나 docen 알림 시간을 사용해주세요.');}
   else{
    if('done' in patch)throw fail(422,'캘린더 일정은 완료 상태를 제공하지 않아요.');
    const locator=store.importedSourceLocator(user,todo.id)??source,connectionId=event[1]==='legacy'?undefined:event[1];

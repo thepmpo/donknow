@@ -46,7 +46,7 @@ assert.equal(await page.getByTestId('BottomNavigation').getByRole('tab').count()
 // Verify shared layout at phone widths and with enlarged text before screenshots.
 for(const width of [320,390,430]){
  await page.setViewportSize({width,height:844});
- for(const name of ['캘린더','Todo 리스트','duckduck','log','ME']){
+ for(const name of ['캘린더','Todo 리스트','docen','log','ME']){
   await page.getByRole('tab',{name,exact:true}).click();
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} overflow at ${width}`);
   const tabBar=await page.getByTestId('BottomNavigation').boundingBox();assert.ok(tabBar&&tabBar.y+tabBar.height<=845,'navigation stays inside viewport');
@@ -76,10 +76,10 @@ await page.getByRole('tab',{name:'log',exact:true}).click();await page.getByText
 await page.getByRole('button',{name:'아이폰 앱 확인하기 되돌리기',exact:true}).click();await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();await page.getByText('아이폰 앱 확인하기',{exact:true}).filter({visible:true}).waitFor();
 
 await page.getByRole('tab',{name:'캘린더',exact:true}).click();assert.ok([28,35,42].includes(await page.getByRole('button',{name:/할 일 \d+개/}).count()));await page.locator('[data-testid="calendar-date-grid"] [aria-selected="true"]').click({position:{x:8,y:8}});await page.getByRole('button',{name:'아이폰 앱 확인하기 수정',exact:true}).click();assert.equal(await page.getByRole('textbox',{name:'메모',exact:true}).inputValue(),'• 준비물\n• agenda');await page.getByRole('button',{name:'닫기',exact:true}).click();await page.screenshot({path:join(artifacts,'mobile-calendar.png')});
-await page.getByRole('tab',{name:'duckduck',exact:true}).click();
+await page.getByRole('tab',{name:'docen',exact:true}).click();
 // The first-screen tools are deliberately hidden. Chat must never create a manual Todo fallback.
-for(const name of ['오늘의 브리핑 열기','덕 AI 비서 열기','할 일과 기록 찾기','카카오톡 대화 붙여넣기'])assert.equal(await page.getByRole('button',{name,exact:true}).count(),0);
-await page.screenshot({path:join(artifacts,'mobile-duckduck.png')});await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).fill('임시 메모');await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();assert.equal(await page.getByRole('textbox',{name:'정리한 할 일',exact:true}).count(),0);assert.equal(await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).inputValue(),'임시 메모');
+for(const name of ['오늘의 브리핑 열기','docen AI 비서 열기','할 일과 기록 찾기','카카오톡 대화 붙여넣기'])assert.equal(await page.getByRole('button',{name,exact:true}).count(),0);
+await page.screenshot({path:join(artifacts,'mobile-duckduck.png')});await page.getByRole('textbox',{name:'docen에게 이야기하기',exact:true}).fill('임시 메모');await page.getByRole('button',{name:'docen에게 보내기',exact:true}).click();assert.equal(await page.getByRole('textbox',{name:'정리한 할 일',exact:true}).count(),0);assert.equal(await page.getByRole('textbox',{name:'docen에게 이야기하기',exact:true}).inputValue(),'임시 메모');
 await page.getByRole('tab',{name:'Todo 리스트',exact:true}).click();await page.getByRole('button',{name:'할 일 추가',exact:true}).click();await page.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('회의 자료 보내기');await page.getByRole('button',{name:'저장',exact:true}).click();
 await page.getByRole('button',{name:'회의 자료 보내기 수정',exact:true}).click();
 await page.evaluate(()=>{Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.__sharedTodo=data.text;}});});
@@ -160,7 +160,7 @@ const calendarFixture=route=>{const today=new Date().toISOString().slice(0,10);r
 // Assistant manual execution stays separate from AI and does not write until explicit confirmation.
 await openAssistantSettings(page);
 await page.getByText('AI 서비스가 아직 설정되지 않았어요. 직접 작업을 작성하고 확인해 실행할 수 있어요.',{exact:true}).filter({visible:true}).waitFor();
-await page.getByRole('button',{name:'덕에게 물어보기',exact:true,disabled:true}).waitFor();await page.getByRole('button',{name:'자료 확인하기',exact:true}).click();await page.getByText('확인한 자료 1개',{exact:true}).filter({visible:true}).waitFor();
+await page.getByRole('button',{name:'docen에게 물어보기',exact:true,disabled:true}).waitFor();await page.getByRole('button',{name:'자료 확인하기',exact:true}).click();await page.getByText('확인한 자료 1개',{exact:true}).filter({visible:true}).waitFor();
 await page.getByRole('button',{name:'직접 작업 작성',exact:true}).click();await page.getByRole('button',{name:'Todo 추가',exact:true}).click();await page.getByRole('textbox',{name:'작업 제목',exact:true}).fill('비서가 확인 후 추가한 일');await page.getByRole('button',{name:'실행 전 내용 확인',exact:true}).click();await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).waitFor();
 assert.equal(await page.evaluate(async()=>(await(await fetch('/api/todos')).json()).length),1,'preview does not create todo');
 await page.getByRole('button',{name:'직접 작업 접기',exact:true}).click();await page.getByRole('button',{name:'Todo 추가 확인하고 실행',exact:true}).click();await page.getByText('Todo 추가 · 완료',{exact:true}).filter({visible:true}).waitFor();assert.equal(await page.evaluate(async()=>(await(await fetch('/api/todos')).json()).length),2);
@@ -173,16 +173,16 @@ await page.evaluate(async()=>{const session=await(await fetch('/api/auth/session
 const assistantStatus=await page.evaluate(async()=>await(await fetch('/api/assistant/status')).json());
 const assistantStatusFixture=route=>route.fulfill({json:{...assistantStatus,enabled:true,usage:{funded:true,remainingKrw:1000,proPriceKrw:49900},access:{plan:'pro',mode:'complimentary',chat:true,createFromSources:true},message:'테스트 응답 · AI 제안 흐름'}});
 let aiCalls=0;const assistantChatFixture=route=>{const b=route.request().postDataJSON();assert.equal(b.consent,true);assert.ok(b.providers.includes('google'));aiCalls++;return route.fulfill({json:{answer:'테스트 메일에 회의 자료 요청이 있어요. Todo로 정리해볼까요?',warnings:['테스트 공급자 응답이에요.'],sources:[{ref:'google:fixture-mail',provider:'google',kind:'mail',title:'테스트: 회의 자료 요청',text:'자료를 확인하고 답장해주세요.',locator:{id:'abc123'}}],proposals:[{operation:'todo.create',label:'Todo 추가',args:{title:'테스트: 회의 자료 보내기',notes:'메일 요청 확인',dueDate:null},sourceRefs:['google:fixture-mail']}]}});};
-await page.route('https://duckduck-api.test/api/assistant/status',assistantStatusFixture);await page.route('https://duckduck-api.test/api/assistant/chat',assistantChatFixture);const statusReady=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/assistant/status');await page.reload();await statusReady;await page.getByRole('tab',{name:'duckduck',exact:true}).click();
-await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).fill('오늘 메일에서 할 일 찾아줘');
-await page.getByRole('button',{name:'덕에게 보내기',exact:true,disabled:false}).waitFor();await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByTestId('duck-send-blocked').waitFor();
+await page.route('https://duckduck-api.test/api/assistant/status',assistantStatusFixture);await page.route('https://duckduck-api.test/api/assistant/chat',assistantChatFixture);const statusReady=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/assistant/status');await page.reload();await statusReady;await page.getByRole('tab',{name:'docen',exact:true}).click();
+await page.getByRole('textbox',{name:'docen에게 이야기하기',exact:true}).fill('오늘 메일에서 할 일 찾아줘');
+await page.getByRole('button',{name:'docen에게 보내기',exact:true,disabled:false}).waitFor();await page.getByRole('button',{name:'docen에게 보내기',exact:true}).click();await page.getByTestId('duck-send-blocked').waitFor();
 assert.equal(aiCalls,0,'typing does not call AI');
 assert.equal(await page.getByRole('textbox',{name:'비서에게 요청',exact:true}).count(),0,'normal chat does not open the advanced sheet');
 await openAssistantSettings(page);await page.getByRole('checkbox',{name:'Google 자료 사용',exact:true}).click();await closeAssistantSettings(page);
-await page.getByRole('button',{name:'덕에게 보내기',exact:true,disabled:false}).waitFor();await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();await page.getByTestId('duck-send-blocked').waitFor();
-assert.equal(await page.getByRole('textbox',{name:'덕에게 이야기하기',exact:true}).inputValue(),'오늘 메일에서 할 일 찾아줘');
+await page.getByRole('button',{name:'docen에게 보내기',exact:true,disabled:false}).waitFor();await page.getByRole('button',{name:'docen에게 보내기',exact:true}).click();await page.getByTestId('duck-send-blocked').waitFor();
+assert.equal(await page.getByRole('textbox',{name:'docen에게 이야기하기',exact:true}).inputValue(),'오늘 메일에서 할 일 찾아줘');
 await page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true}).click();
-await page.getByRole('button',{name:'덕에게 보내기',exact:true}).click();
+await page.getByRole('button',{name:'docen에게 보내기',exact:true}).click();
 await page.getByText('테스트 메일에 회의 자료 요청이 있어요. Todo로 정리해볼까요?',{exact:true}).filter({visible:true}).waitFor();
 assert.equal(aiCalls,1);
 assert.equal(await page.evaluate(async()=>(await(await fetch('/api/todos')).json()).length),1,'AI answer is not an automatic Todo write');

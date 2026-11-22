@@ -11,7 +11,7 @@ import {lensPosition,shouldScrub,tabAtPoint} from './navigation-geometry';
 export const appTabs=[
  {id:'calendar',name:'캘린더',label:'캘린더',icon:'calendar-outline'},
  {id:'todos',name:'Todo 리스트',label:'할 일',icon:'checkmark-circle-outline'},
- {id:'duck',name:'duckduck',label:'덕',icon:'chatbubble-outline'},
+ {id:'duck',name:'docen',label:'docen',icon:'chatbubble-outline'},
  {id:'log',name:'log',label:'log',icon:'time-outline'},
  {id:'profile',name:'ME',label:'ME',icon:'person-outline'},
 ] as const;

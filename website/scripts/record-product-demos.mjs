@@ -372,11 +372,11 @@ try {
     await page.getByRole("button", { name: "저장", exact: true }).click();
     await wait(2000);
   } else if (index === 2) {
-    await page.getByRole("tab", { name: "duckduck", exact: true }).click();
+    await page.getByRole("tab", { name: "docen", exact: true }).click();
     await wait(1300);
     await page.screenshot({ path: resolve(out, "duck-2.png") });
     await page
-      .getByRole("textbox", { name: "덕에게 이야기하기", exact: true })
+      .getByRole("textbox", { name: "docen에게 이야기하기", exact: true })
       .pressSequentially("금요일 발표 자료 준비를 할 일로 정리해줘", {
         delay: 70,
       });
@@ -388,7 +388,7 @@ try {
       })
       .click();
     await page
-      .getByRole("button", { name: "덕에게 보내기", exact: true })
+      .getByRole("button", { name: "docen에게 보내기", exact: true })
       .click();
     await wait(2200);
     await page
@@ -413,7 +413,7 @@ try {
   const video = page.video();
   await page.close();
   await video.saveAs(resolve(out, `duck-${index}.webm`));
-  console.log("Recorded actual Duck app with synthetic data:", index);
+  console.log("Recorded actual docen app with synthetic data:", index);
 } finally {
   await browser.close();
 }

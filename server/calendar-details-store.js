@@ -11,7 +11,7 @@ export function calendarDetailsStore(db,box){
    db.exec('BEGIN IMMEDIATE');
    try{
     const row=db.prepare('SELECT * FROM calendar_details WHERE user_id=? AND account_key=? AND calendar_id=? AND event_id=?').get(user,account,calendar,event),old=read(row);
-    if((old?.revision??0)!==expectedRevision){if(old&&old.revision===expectedRevision+1&&Object.entries(patch).every(([k,v])=>JSON.stringify(old.fields[k])===JSON.stringify(v))){db.exec('COMMIT');return old;}throw fail(409,'덕에 저장된 정보가 바뀌었어요. 새로 확인한 뒤 저장해주세요.');}
+    if((old?.revision??0)!==expectedRevision){if(old&&old.revision===expectedRevision+1&&Object.entries(patch).every(([k,v])=>JSON.stringify(old.fields[k])===JSON.stringify(v))){db.exec('COMMIT');return old;}throw fail(409,'docen에 저장된 정보가 바뀌었어요. 새로 확인한 뒤 저장해주세요.');}
     const id=old?.id??randomUUID(),revision=expectedRevision+1,data={fields:{...old?.fields,...patch},snapshot,checkedAt:Date.now()};
     db.prepare('INSERT INTO calendar_details VALUES (?,?,?,?,?,?,?) ON CONFLICT(user_id,account_key,calendar_id,event_id) DO UPDATE SET revision=excluded.revision,data=excluded.data').run(id,user,account,calendar,event,revision,box.seal(data));db.exec('COMMIT');return {id,revision,...data};
    }catch(e){db.exec('ROLLBACK');throw e;}

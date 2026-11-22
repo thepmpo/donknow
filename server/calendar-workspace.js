@@ -33,7 +33,7 @@ export function createCalendarWorkspace({store,token,request}){
    if(firstError&&!items.length)throw firstError;return {items,nextCursor,partial:!!failedConnectionIds.length,failedConnectionIds};
   },
   async saveDetails(user,input){
-   if(!input||Object.keys(input).some(k=>!['connectionId','calendarId','eventId','expectedRevision','patch','timeZone'].includes(k))||!Number.isInteger(input.expectedRevision)||input.expectedRevision<0)throw fail(400,'덕 저장 정보를 확인해주세요.');
+   if(!input||Object.keys(input).some(k=>!['connectionId','calendarId','eventId','expectedRevision','patch','timeZone'].includes(k))||!Number.isInteger(input.expectedRevision)||input.expectedRevision<0)throw fail(400,'docen 저장 정보를 확인해주세요.');
    const selected=calendarAccount(store,user,input.calendarId,input.connectionId),r=await access(user,selected.connectionId),account=calendarAccountKey(r);if(!account)throw fail(409,'Google 계정 정보를 확인할 수 없어요. 연결 상태를 확인해주세요.');
    if(!input.connectionId||input.connectionId!==r.connectionId)throw fail(409,'열어둔 뒤 Google 연결이 바뀌었어요. 다시 확인해주세요.');
    const calendar=selected.calendarId,event=validEventId(input.eventId),patch=calendarDetailsPatch(input.patch),zone=calendarZone(input.timeZone??'Asia/Seoul');

@@ -44,7 +44,7 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
     if (!owner || !supported || busy) return false;
     const originalOwner = owner; setBusy(true); setError('');
     try {
-      if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: '덕 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync();if(currentOwner.current!==originalOwner)return false;const allowed=permission.granted||permission.ios?.status===notifications.IosAuthorizationStatus.PROVISIONAL;setPermission(allowed?'allowed':permission.status==='denied'?'denied':'unknown'); if (!allowed) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return false; } }
+      if (value) { const notifications = await import('expo-notifications'); if (Platform.OS === 'android') await notifications.setNotificationChannelAsync('default', { name: 'docen 알림', importance: notifications.AndroidImportance.DEFAULT }); const permission = await notifications.requestPermissionsAsync();if(currentOwner.current!==originalOwner)return false;const allowed=permission.granted||permission.ios?.status===notifications.IosAuthorizationStatus.PROVISIONAL;setPermission(allowed?'allowed':permission.status==='denied'?'denied':'unknown'); if (!allowed) { setError('알림을 허용해야 예약한 시간에 알려드릴 수 있어요.'); return false; } }
       if (currentOwner.current !== originalOwner) return;
       await AsyncStorage.setItem('duckduck.reminders.' + originalOwner, String(value));
       if (currentOwner.current !== originalOwner) return;

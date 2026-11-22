@@ -84,7 +84,7 @@ export async function featureStore(db, directory, env = process.env) {
       if (previous && previous.created_at > now - 60000) throw fail(429, '인증번호는 1분 후 다시 요청해주세요.');
       if (db.prepare('SELECT COUNT(*) AS total FROM mail_outbox WHERE user_id=? AND created_at>?').get(userId, now - 3600000).total >= 5) throw fail(429, '인증 요청이 많아요. 잠시 후 다시 시도해주세요.');
       const code = String(randomInt(100000, 1000000)), id = randomUUID(), expiresAt = now + 15 * 60000;
-      const payload = { to: user.email, subject: purpose === 'verify' ? 'duckduck 이메일 인증번호' : 'duckduck 비밀번호 재설정', text: `인증번호: ${code}\n\n15분 안에 앱에 입력해주세요. 본인이 요청하지 않았다면 이 메일을 무시해주세요.` };
+      const payload = { to: user.email, subject: purpose === 'verify' ? 'docen 이메일 인증번호' : 'docen 비밀번호 재설정', text: `인증번호: ${code}\n\n15분 안에 앱에 입력해주세요. 본인이 요청하지 않았다면 이 메일을 무시해주세요.` };
       transaction(() => {
         db.prepare("UPDATE mail_outbox SET status='superseded',payload='' WHERE user_id=? AND purpose=? AND status IN ('pending','processing')").run(userId, purpose);
         db.prepare('INSERT INTO account_actions VALUES (?,?,?,?,0,?) ON CONFLICT(user_id,purpose) DO UPDATE SET code_hash=excluded.code_hash,expires_at=excluded.expires_at,attempts=0,created_at=excluded.created_at').run(userId, purpose, box.hash(`${purpose}:${userId}:${code}`), expiresAt, now);

@@ -49,7 +49,7 @@ export function RecordSearchSheet({ store, onClose: onDismiss, onOpenTodo }: { s
     <KeyboardAvoidingView style={styles.backdrop} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <DraggableSheet visible={visible} style={styles.sheet} onDismiss={()=>onClose()}>
         <View style={styles.heading}><Text style={[s.sectionTitle,{flex:1}]}>할 일과 기록 찾기</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton onPress={()=>onClose()} /></View></View>
-        <Text style={styles.note}>덕에 저장한 제목으로 찾아요. 연결한 Google Tasks도 따로 검색할 수 있어요. 완료 기록은 참고만 해요.</Text>
+        <Text style={styles.note}>docen에 저장한 제목으로 찾아요. 연결한 Google Tasks도 따로 검색할 수 있어요. 완료 기록은 참고만 해요.</Text>
         <TextInput accessibilityLabel="할 일과 기록 검색" placeholder="예: 회의 자료" value={query} onChangeText={changeQuery} maxLength={120} autoCorrect={false} returnKeyType="search" style={styles.input} />
         <View style={styles.filters} accessibilityRole="tablist">{filters.map(item => <Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={`${item.title} 기록`} accessibilityState={{ selected: item.id === filter }} onPress={() => { setFilter(item.id); setLimit(30); setMessage(''); }} style={[styles.filter, item.id === filter && styles.active]}><Text style={{ color: item.id === filter ? colors.blue : colors.muted }}>{item.title}</Text></Pressable>)}</View>
         <Text accessibilityLiveRegion="polite" style={styles.note}>{query.trim() ? `${results.length}개의 저장된 기록` : '찾고 싶은 할 일의 단어를 입력해주세요.'}</Text>
@@ -58,7 +58,7 @@ export function RecordSearchSheet({ store, onClose: onDismiss, onOpenTodo }: { s
           {!!query.trim() && !results.length && <Text style={styles.empty}>일치하는 기록이 없어요. 다른 단어로 찾아보세요.</Text>}
           {results.slice(0, limit).map(todo => <View key={todo.id} style={styles.result}>
             <Text style={styles.title}>{todo.title}</Text>
-            <Text style={styles.note}>{todo.done ? '완료' : '미완료'}{todo.dueDate ? ` · ${todo.dueDate}` : ''}{todo.source ? ` · ${{ google: 'Google', 'apple-reminders': '미리 알림', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일'}` : ' · 덕'}</Text>
+            <Text style={styles.note}>{todo.done ? '완료' : '미완료'}{todo.dueDate ? ` · ${todo.dueDate}` : ''}{todo.source ? ` · ${{ google: 'Google', 'apple-reminders': '미리 알림', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일'}` : ' · docen'}</Text>
             <View style={styles.actions}><Button title="할 일 열기" quiet disabled={restoring || store.busyIds.includes(todo.id)} onPress={() => { onClose(()=>onOpenTodo(todo)); }} />{todo.done && <Button title="미완료로 되돌리기" quiet disabled={restoring || store.busyIds.includes(todo.id)} onPress={() => { void restore(todo); }} />}</View>
           </View>)}
           {external && <><Text style={s.sectionTitle}>Google Tasks · {remoteResults.length}개</Text><Text style={styles.note}>{external.searchedLists}개 목록을 확인했어요. 완료 기록은 가져오지 않아요.</Text>{external.partial && <Text style={styles.note}>일부 기록만 검색했어요. 나머지는 서비스 연결 화면에서 목록별로 확인해주세요.</Text>}{!remoteResults.length && <Text style={styles.empty}>조회한 Google Tasks 기록에서 일치하는 항목이 없어요.</Text>}

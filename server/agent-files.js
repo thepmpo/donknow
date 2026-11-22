@@ -9,7 +9,7 @@ const xml=s=>'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+s;
 const packed=files=>Buffer.from(zipSync(Object.fromEntries(Object.entries(files).map(([k,v])=>[k,strToU8(v)]))));
 const mime={txt:'text/plain',md:'text/markdown',csv:'text/csv',json:'application/json',html:'text/html',pdf:'application/pdf',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation'};
 let koreanFont;
-export async function buildAgentFile({name,format,title='덕 문서',content}){
+export async function buildAgentFile({name,format,title='docen 문서',content}){
  if(!Object.hasOwn(mime,format)||typeof content!=='string'||content.length>250000||typeof name!=='string'||!name.trim()||/[\\/\x00-\x1f]/.test(name)||name.length>170)throw fail(400,'파일 이름·형식·내용을 확인해주세요.');
  const filename=name.toLowerCase().endsWith('.'+format)?name:name+'.'+format,lines=content.split('\n');let data;
  if(['txt','md'].includes(format))data=Buffer.from(content);
@@ -26,7 +26,7 @@ export async function buildAgentFile({name,format,title='덕 문서',content}){
   data=packed({'[Content_Types].xml':xml('<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'),'_rels/.rels':xml('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'),'xl/workbook.xml':xml('<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="자료" sheetId="1" r:id="rId1"/></sheets></workbook>'),'xl/_rels/workbook.xml.rels':xml('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'),'xl/worksheets/sheet1.xml':xml(sheet)});
  }
  if(format==='pptx'){
-  const deck=new pptxgen();deck.layout='LAYOUT_WIDE';deck.author='덕';deck.subject=title;deck.title=title;deck.company='Duck';deck.lang='ko-KR';
+  const deck=new pptxgen();deck.layout='LAYOUT_WIDE';deck.author='docen';deck.subject=title;deck.title=title;deck.company='docen';deck.lang='ko-KR';
   deck.theme={headFontFace:'Noto Sans KR',bodyFontFace:'Noto Sans KR',lang:'ko-KR'};
   for(const page of content.split(/\n---+\n/).slice(0,100)){
    const [heading,...rest]=page.split('\n'),slide=deck.addSlide();slide.background={color:'FFFFFF'};

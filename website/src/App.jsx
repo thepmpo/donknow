@@ -396,16 +396,16 @@ function Demo({ en }) {
 }
 const faqs = [
   [
-    "덕은 어떤 서비스인가요?",
-    "What is Duck?",
+    "docen은 어떤 서비스인가요?",
+    "What is docen?",
     "연결한 자료에서 챙길 일을 살펴보고, 브리핑·Todo·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 할 일로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
-    "Duck brings your next steps into a briefing, to-do list and calendar. Keep only the things you need, or finish them in the conversation.",
+    "docen brings your next steps into a briefing, to-do list and calendar. Keep only the things you need, or finish them in the conversation.",
   ],
   [
     "ChatGPT를 연결하면 Dots가 그대로 들어오나요?",
     "Does connecting ChatGPT import my dot?",
-    "그대로 자동 복제되는 방식은 아니에요. 외부 AI에서 선택한 일을 덕에 보내는 연결을 준비하고 있어요. ChatGPT 로그인이나 사용량 공유만으로 기존 대화·기억·Dots 결과를 읽을 수는 없어요.",
-    "No. We are preparing a connection that lets an external AI send selected tasks to Duck. Signing in or sharing plan usage does not import ChatGPT conversations, memories or dot results.",
+    "그대로 자동 복제되는 방식은 아니에요. 외부 AI에서 선택한 일을 docen에 보내는 연결을 준비하고 있어요. ChatGPT 로그인이나 사용량 공유만으로 기존 대화·기억·Dots 결과를 읽을 수는 없어요.",
+    "No. We are preparing a connection that lets an external AI send selected tasks to docen. Signing in or sharing plan usage does not import ChatGPT conversations, memories or dot results.",
   ],
   [
     "라이트와 프로는 무엇이 다른가요?",
@@ -416,8 +416,8 @@ const faqs = [
   [
     "할 일과 일정을 바꾸면 원본도 바뀌나요?",
     "Will changes update the original service?",
-    "지원되는 연결의 항목은 권한과 수정 내용을 확인한 뒤 원본에 반영해요. 읽기 전용이나 미지원 항목은 제한을 알려드려요. 덕에서만 만든 항목은 덕 안에서만 바뀌어요.",
-    "Supported connections can update the source with the necessary permissions and confirmation. Read-only and unsupported items have limits. Duck-only items stay in Duck.",
+    "지원되는 연결의 항목은 권한과 수정 내용을 확인한 뒤 원본에 반영해요. 읽기 전용이나 미지원 항목은 제한을 알려드려요. docen에서만 만든 항목은 docen 안에서만 바뀌어요.",
+    "Supported connections can update the source with the necessary permissions and confirmation. Read-only and unsupported items have limits. docen-only items stay in docen.",
   ],
   [
     "모든 자료를 실시간으로 확인하나요?",
@@ -427,8 +427,8 @@ const faqs = [
   ],
   [
     "지금 어디에서 사용할 수 있나요?",
-    "Where can I use Duck?",
-    "웹에서 덕을 열 수 있어요. iPhone 앱은 TestFlight로 검증 중이며 공개 초대는 준비 중이에요. 새 요금표는 개편안으로, 현재 결제가 시작되지는 않아요.",
+    "Where can I use docen?",
+    "웹에서 docen을 열 수 있어요. iPhone 앱은 TestFlight로 검증 중이며 공개 초대는 준비 중이에요. 새 요금표는 개편안으로, 현재 결제가 시작되지는 않아요.",
     "You can open the web app now. The iPhone app is being tested with TestFlight; a public invitation is not yet available. The new pricing is a proposal and checkout is not active.",
   ],
 ];
@@ -443,14 +443,14 @@ export function App() {
   useEffect(() => {
     document.documentElement.lang = en ? "en" : "ko";
     document.title = en
-      ? "Duck — Bring it together. Make room for your day."
-      : "덕 — 흩어진 일은 모으고, 나의 하루는 가볍게.";
+      ? "docen — Bring it together. Make room for your day."
+      : "docen — 흩어진 일은 모으고, 나의 하루는 가볍게.";
     document
       .querySelector('meta[name="description"]')
       ?.setAttribute(
         "content",
         en
-          ? "Your briefings, to-dos, calendar and document drafts, together in Duck. Beta monthly rates: Lite ₩16,900 and Pro ₩49,900, matching annual equivalents. Regular monthly rates: ₩19,900 and ₩55,900. Business by consultation."
+          ? "Your briefings, to-dos, calendar and document drafts, together in docen. Beta monthly rates: Lite ₩16,900 and Pro ₩49,900, matching annual equivalents. Regular monthly rates: ₩19,900 and ₩55,900. Business by consultation."
           : "흩어진 일은 모으고, 나의 하루는 가볍게. 정상 월요금 라이트19,900원·프로55,900원, 베타 월요금16,900원·49,900원으로 브리핑부터 문서 초안까지 이어가세요.",
       );
   }, [en]);
@@ -506,10 +506,10 @@ export function App() {
       </a>
       <header className="site-header">
         <div className="nav-wrap">
-          <a className="brand" href="#" aria-label={t("덕 홈", "Duck home")}>
+          <a className="brand" href="#" aria-label={t("docen 홈", "docen home")}>
             <Duck />
             <span>
-              duck<span className="brand-period">.</span>
+              docen<span className="brand-period">.</span>
             </span>
           </a>
           <nav
@@ -535,7 +535,7 @@ export function App() {
               {t("로그인", "Log in")}
             </a>
             <a className="btn nav-cta" href={APP}>
-              {t("덕 시작하기", "Get started")}
+              {t("docen 시작하기", "Get started")}
               <ArrowUpRight size={15} />
             </a>
             <button
@@ -565,7 +565,7 @@ export function App() {
               </a>
             ))}
             <a href={APP}>
-              {t("로그인 / 덕 열기", "Log in / Open Duck")}
+              {t("로그인 / docen 열기", "Log in / Open docen")}
               <ArrowUpRight size={17} />
             </a>
           </nav>
@@ -592,13 +592,13 @@ export function App() {
             )}
             <br />
             {t(
-              "덕에서 살펴보고, 필요한 일만 이어가세요.",
+              "docen에서 살펴보고, 필요한 일만 이어가세요.",
               "See what matters. Choose what happens next.",
             )}
           </p>
           <div className="hero-actions">
             <a className="btn btn-large" href={APP}>
-              {t("덕 시작하기", "Get started with Duck")}
+              {t("docen 시작하기", "Get started with docen")}
               <ArrowRight size={18} />
             </a>
             <a className="text-link" href="#product-demo">
@@ -922,7 +922,7 @@ export function App() {
                 <div className="ai-route">
                   <span>
                     <Duck />
-                    {t("덕 AI", "Duck AI")}
+                    {t("docen AI", "docen AI")}
                   </span>
                   <ArrowRight size={18} />
                   <span>Chat · Todo · Calendar</span>
@@ -944,7 +944,7 @@ export function App() {
               <h2>
                 {t("쓰던 곳에서 시작해,", "Start where you already are.")}
                 <br />
-                {t("덕에서 이어가세요.", "Bring the next step to Duck.")}
+                {t("docen에서 이어가세요.", "Bring the next step to docen.")}
               </h2>
             </div>
             <p>
@@ -1081,13 +1081,13 @@ export function App() {
           </h2>
           <p>
             {t(
-              "머릿속에 쌓아둔 일, 덕에서 하나씩 풀어보세요.",
+              "머릿속에 쌓아둔 일, docen에서 하나씩 풀어보세요.",
               "Give the things on your mind a place to go.",
             )}
           </p>
           <div className="hero-actions">
             <a href={APP} className="btn btn-large">
-              {t("덕 시작하기", "Get started with Duck")}
+              {t("docen 시작하기", "Get started with docen")}
               <ArrowRight size={18} />
             </a>
             <button className="text-link" onClick={() => setModal("iphone")}>
@@ -1102,7 +1102,7 @@ export function App() {
           <a className="brand" href="#">
             <Duck />
             <span>
-              duck<span className="brand-period">.</span>
+              docen<span className="brand-period">.</span>
             </span>
           </a>
           <p>
@@ -1111,7 +1111,7 @@ export function App() {
               "Bring it together. Make room for your day.",
             )}
           </p>
-          <small>© {new Date().getFullYear()} Duck.</small>
+          <small>© {new Date().getFullYear()} docen.</small>
         </div>
         <nav aria-label={t("하단 메뉴", "Footer navigation")}>
           <a href="#pricing">{t("요금제", "Pricing")}</a>
@@ -1154,16 +1154,16 @@ export function App() {
               {t(
                 modal === "qr" ? "휴대폰에서도 가볍게" : "iPhone에서 만나요",
                 modal === "qr"
-                  ? "Open Duck on your phone"
-                  : "Meet Duck on iPhone",
+                  ? "Open docen on your phone"
+                  : "Meet docen on iPhone",
               )}
             </h2>
             {modal === "qr" ? (
               <>
                 <p>
                   {t(
-                    "QR코드를 스캔해 덕 웹을 열어보세요.",
-                    "Scan the QR code to open the Duck web app.",
+                    "QR코드를 스캔해 docen 웹을 열어보세요.",
+                    "Scan the QR code to open the docen web app.",
                   )}
                 </p>
                 {qr && (
@@ -1173,8 +1173,8 @@ export function App() {
                     width="220"
                     height="220"
                     alt={t(
-                      "덕 웹 앱을 여는 QR 코드",
-                      "QR code for the Duck web app",
+                      "docen 웹 앱을 여는 QR 코드",
+                      "QR code for the docen web app",
                     )}
                   />
                 )}
@@ -1182,13 +1182,13 @@ export function App() {
             ) : (
               <p>
                 {t(
-                  "현재 TestFlight로 검증 중이에요. 공개 초대 링크는 준비 중이며, 지금은 웹에서 덕을 사용할 수 있어요.",
+                  "현재 TestFlight로 검증 중이에요. 공개 초대 링크는 준비 중이며, 지금은 웹에서 docen을 사용할 수 있어요.",
                   "The iPhone app is being tested with TestFlight. A public invitation is in preparation. You can use the web app now.",
                 )}
               </p>
             )}
             <a className="btn" href={APP}>
-              {t("웹에서 덕 열기", "Open Duck on the web")}
+              {t("웹에서 docen 열기", "Open docen on the web")}
               <ArrowUpRight size={16} />
             </a>
           </section>

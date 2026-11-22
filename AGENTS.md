@@ -1,3 +1,11 @@
+## 2026-11-22 — 서비스명 docen·도메인 docen.today (최신 확정)
+
+사용자가 모든 앱·웹 표시 이름을 소문자 docen으로 통일하라고 최종 확정했다. 앞서 도슨/Dosen/Docen 표기는 이 최종 지시보다 오래된 이력이다. 구매 도메인은 docen.today, 구매처는 호스팅KR이다. 현재 표시·AI 비서 기본 이름·메일 제목·알림·내보내기 파일명·앱 display name·관리자·지원·KR/EN 소개·요금표를 docen으로 변경한다. 오리 마스코트와 기능/가격/운영자·문의 주소는 변경하지 않는다.
+
+기존 Apple bundle ID·Expo project/slug·duckduck URL scheme·OAuth callback·SecureStore/쿠키/DB/암호화 salt·protocol/export format 식별자는 유지한다. 새 앱을 만들거나 기존 계정/로그인/알림 소유권을 끊는 식으로 이름을 바꾸지 않는다. 기존 저장 자료·대화·사용자 지정 비서 이름은 일괄 치환하지 않는다. 과거 기본 비서 이름만 읽기 시 docen으로 표시하며 암호화 원문은 덮어쓰지 않는다. 약관2026-11-22.2 신규 발행·이름 변경 고지, 이전 고정 버전과 동의 기록은 보존한다.
+
+docen.today는 공개 NS 조회에서NXDOMAIN이었다. 구매 실패를 단정하지 않고 등록/네임서버/전파 확인이 필요하다. Resend·호스팅KR 인증 연결이 없어 DNS·발신 검증 완료를 가장하지 않는다. 발신 도메인 검증 전 MAIL_FROM/PUBLIC_ORIGIN·Google/Slack OAuth URL을 바꾸지 않으며 기존 웹 주소를 유지한다. Resend 로그인 연결 여부를 사용자에게 물었고 답변 대기다. 앱 소스 display name 변경은 설치 앱을 자동 변경하지 않으므로 새 native 빌드가 필요하다. [계약/검증/DNS 남은 단계](docs/docen-brand-2026-11-22.md).
+
 ## 2026-11-22 — 가입 자동 인증메일·미인증 내부 진입 차단 (최신 정정)
 
 사용자가 가입 즉시 이메일 소유 확인을 요청하고 인증 후에만 내부 진입하도록 명시했다. 이전 수동 요청·미인증 기본 기능 허용 방침보다 이 요청이 우선한다. 가입/미인증 로그인은 인증 전용 제한 세션과 자동 메일 요청을 반환한다. 미인증 계정은 인증 화면만 보고 서버에서 session/account 최소 상태·verify send/confirm·logout 이외 회원 API를403 EMAIL_VERIFICATION_REQUIRED로 차단한다. 기존 미인증 세션도 예외가 없다. 관리자 별도 계정/초기 설정은 변경하지 않는다.

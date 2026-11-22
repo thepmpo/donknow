@@ -29,7 +29,7 @@ export async function adminAuthStore(db,box,env){
   adminSetupMail(email){
    if(!allowed(email))return null;const row=account(email);if(!row)return null;const now=Date.now(),old=db.prepare('SELECT requested_at FROM admin_setup_codes WHERE admin_id=?').get(row.id);if(old&&old.requested_at>now-60000)throw fail(429,'인증번호는 1분 후 다시 요청해주세요.');
    const code=String(randomInt(100000,1000000)),id=randomUUID();db.prepare('INSERT INTO admin_setup_codes VALUES(?,?,?,0,?,?) ON CONFLICT(admin_id) DO UPDATE SET code_hash=excluded.code_hash,expires_at=excluded.expires_at,attempts=0,requested_at=excluded.requested_at,delivery_id=excluded.delivery_id').run(row.id,box.hash('admin-setup:'+row.id+':'+code),now+10*60000,now,id);
-   return {id,adminId:row.id,message:{to:row.email,subject:'덕 어드민 전용 계정 인증번호',text:`덕 어드민 비밀번호 설정 인증번호: ${code}\n\n10분 안에 어드민 화면에 입력해주세요. 덕 앱 계정과는 별개의 관리자 전용 계정입니다. 본인이 요청하지 않았다면 이 메일을 무시해주세요.`}};
+   return {id,adminId:row.id,message:{to:row.email,subject:'docen 어드민 전용 계정 인증번호',text:`docen 어드민 비밀번호 설정 인증번호: ${code}\n\n10분 안에 어드민 화면에 입력해주세요. docen 앱 계정과는 별개의 관리자 전용 계정입니다. 본인이 요청하지 않았다면 이 메일을 무시해주세요.`}};
   },
   cancelAdminSetup(id){db.prepare('DELETE FROM admin_setup_codes WHERE delivery_id=?').run(id);},
   async finishAdminSetup(email,code,password){

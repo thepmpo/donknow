@@ -34,7 +34,7 @@ function render() {
 }
 $('add-form').onsubmit=async event=>{event.preventDefault();const title=$('title').value.trim();if(!title)return;$('add-button').disabled=true;try{await api('','POST',{title,category:$('category').value,dueDate:$('todo-date').value||null});todos=await api();$('title').value='';$('error').hidden=true;render();$('title').focus();}catch(e){showError(e);}finally{$('add-button').disabled=false;}};
 
-const tabNames = {calendar:'캘린더',todos:'Todo 리스트',duckduck:'duckduck',log:'log',profile:'내정보'};
+const tabNames = {calendar:'캘린더',todos:'Todo 리스트',duckduck:'docen',log:'log',profile:'내정보'};
 function navigate(selected) {
  document.querySelectorAll('[data-view]').forEach(view => { view.hidden = view.dataset.view !== selected; });
  document.querySelectorAll('[data-tab]').forEach(tab => {
@@ -125,7 +125,7 @@ function showDialog(title,description){
  const text=document.createElement('p');text.textContent=description;content.append(heading,text);
  $('detail-dialog').showModal();return content;
 }
-const serviceInfo={slack:['Slack 연결','대화에서 할 일을 찾고 덕과 함께 정리할 수 있도록 연결할 예정이에요. 현재는 연결되지 않았고 메시지를 읽거나 전송하지 않아요.'],google:['Google 연결','Gmail, Calendar, Drive 등의 정보를 덕과 함께 활용할 예정이에요. 필요한 권한을 선택하고 승인하는 연결 기능은 준비 중이에요. 현재 Google 데이터는 가져오지 않아요.'],notion:['Notion 연결','문서와 프로젝트에서 필요한 내용을 찾아 할 일로 정리할 예정이에요. 현재 Notion 연결과 데이터 접근은 제공하지 않아요.']};
+const serviceInfo={slack:['Slack 연결','대화에서 할 일을 찾고 docen과 함께 정리할 수 있도록 연결할 예정이에요. 현재는 연결되지 않았고 메시지를 읽거나 전송하지 않아요.'],google:['Google 연결','Gmail, Calendar, Drive 등의 정보를 docen과 함께 활용할 예정이에요. 필요한 권한을 선택하고 승인하는 연결 기능은 준비 중이에요. 현재 Google 데이터는 가져오지 않아요.'],notion:['Notion 연결','문서와 프로젝트에서 필요한 내용을 찾아 할 일로 정리할 예정이에요. 현재 Notion 연결과 데이터 접근은 제공하지 않아요.']};
 document.querySelectorAll('[data-service]').forEach(button=>button.onclick=()=>showDialog(...serviceInfo[button.dataset.service]));
 function applyProfile(){const name=readPreference('duckduck.name','나의 공간');$('profile-name').textContent=name;$('profile-avatar').textContent=Array.from(name)[0]||'나';}
 applyProfile();
@@ -139,7 +139,7 @@ $('edit-profile').onclick=()=>{
 $('compact-mode').checked=readPreference('duckduck.compact','false')==='true';
 document.body.classList.toggle('compact-mode',$('compact-mode').checked);
 $('compact-mode').onchange=()=>{writePreference('duckduck.compact',String($('compact-mode').checked));document.body.classList.toggle('compact-mode',$('compact-mode').checked);};
-$('privacy-info').onclick=()=>showDialog('데이터와 개인정보','할 일은 로그인한 계정별로 이 개발 환경의 서버에 저장돼요. 표시 이름과 목록 설정은 이 브라우저에 저장돼요. 덕의 입력 카드는 새로고침하면 사라지지만 Todo에 추가한 내용은 유지돼요. 로그인 정보는 HttpOnly 쿠키로 관리하고, 외부 서비스와 데이터를 주고받지 않아요.');
+$('privacy-info').onclick=()=>showDialog('데이터와 개인정보','할 일은 로그인한 계정별로 이 개발 환경의 서버에 저장돼요. 표시 이름과 목록 설정은 이 브라우저에 저장돼요. docen의 입력 카드는 새로고침하면 사라지지만 Todo에 추가한 내용은 유지돼요. 로그인 정보는 HttpOnly 쿠키로 관리하고, 외부 서비스와 데이터를 주고받지 않아요.');
 function editTodo(todo){
  const content=showDialog('할 일 수정','해야 할 일을 편하게 다듬어주세요.');
  const form=document.createElement('form');form.className='dialog-form todo-edit-form';
