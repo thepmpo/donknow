@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "68b2e3c5d5b7d67c2af9446ab0072bff96ef1366",
-  "assetCommit": "68b2e3c5d5b7d67c2af9446ab0072bff96ef1366",
-  "imageCount": 1576,
+  "codeCommit": "fc69ded6b9cf91cb69a0355529125f4f74527e1b",
+  "assetCommit": "fc69ded6b9cf91cb69a0355529125f4f74527e1b",
+  "imageCount": 1586,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -1935,6 +1935,76 @@
       "bytes": 36667,
       "sha256": "1bdb9246048655f3d36c5a0180d8f1e6c40112da4462d42927cac79f7d0ca084",
       "import_path": "images/artifacts__web-complete-2026-11-22__regression__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/audit.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 92656,
+      "sha256": "db88b30472857105ace2a975a567d0d350811115a115a4c89e07942c1988fbe5",
+      "import_path": "images/artifacts__admin-live-2026-11-22__audit.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/connections.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 71636,
+      "sha256": "4281e7163a6321aa90869f1c03615a05bf98e0b579abe393fecce33ed59256fb",
+      "import_path": "images/artifacts__admin-live-2026-11-22__connections.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/member-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 75527,
+      "sha256": "eb83c7e1c6abba2767fc6b953fcf324613015b64468337156fad6f262ce31c38",
+      "import_path": "images/artifacts__admin-live-2026-11-22__member-detail.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/members.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 67043,
+      "sha256": "d780866919e665255781be44a54a70010622be81a71ba7076b75d5ffc9d88c51",
+      "import_path": "images/artifacts__admin-live-2026-11-22__members.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/narrow.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40867,
+      "sha256": "2f03fbe4bbbdfbbd90039cb66d06139af4505ad9b0c32f1ad9f81773515f372e",
+      "import_path": "images/artifacts__admin-live-2026-11-22__narrow.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/ordinary-account-denied.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 44600,
+      "sha256": "53f2fccf77b22f43978264eb190f46a7b6a76e271f52eb6ea152ce78f2cfc80f",
+      "import_path": "images/artifacts__admin-live-2026-11-22__ordinary-account-denied.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/overview.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 57538,
+      "sha256": "1b96325285f5af957de26a819a4a0b0b4f820e8518ad2af313af452d03bd3147",
+      "import_path": "images/artifacts__admin-live-2026-11-22__overview.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/passes.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 61340,
+      "sha256": "34a3fe5287ccaf382d68201bedfa7296054a39d7dc0c165b499e948e6039ed65",
+      "import_path": "images/artifacts__admin-live-2026-11-22__passes.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/payments-unavailable.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 55381,
+      "sha256": "dc6c758e2bbf8842c84dcf21c0c97511ec00c26b38f5353293ee3d72b5408611",
+      "import_path": "images/artifacts__admin-live-2026-11-22__payments-unavailable.png"
+    },
+    {
+      "path": "artifacts/admin-live-2026-11-22/usage.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 70918,
+      "sha256": "e4444baad3b979837af0d194a780cf9b7f57292584bc60f8ecae86bcc7300ac7",
+      "import_path": "images/artifacts__admin-live-2026-11-22__usage.png"
     },
     {
       "path": "artifacts/admin-preview-2026-11-22/member-detail.png",
