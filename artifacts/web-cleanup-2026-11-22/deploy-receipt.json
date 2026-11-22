@@ -1,0 +1,12 @@
+{
+  "service": "duckduck-test",
+  "plan": "free",
+  "deployId": "dep-dc19s97f3r2c73c3jh0g",
+  "status": "live",
+  "finishedAt": "2026-11-22T07:48:53.323619Z",
+  "release": "cfad8eff0249653dc0f6b9fc1d70ada65d6e5e71",
+  "publicHealthVerified": true,
+  "healthRelease": "cfad8eff0249653dc0f6b9fc1d70ada65d6e5e71",
+  "app": "https://duckduck-test.onrender.com/app",
+  "scope": "Hide weather messages in web briefing and remove persistent ME child shortcuts; settings remain under ME. No schedule/data deletion, native release, or permission/budget changes."
+}
