@@ -286,11 +286,11 @@ export function useTodos() {
     if(calendarOwner.current)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=null;
     snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = null; completions.current.clear(); setCompletionIds([]); busy.current.clear(); setBusyIds([]); clearTimers(); setPending({}); setTodos([]); setUser(null); setLoading(false);
   }
-  async function authenticate(email: string, password: string, register: boolean): Promise<boolean> {
+  async function authenticate(email: string, password: string, register: boolean,agreements?:auth.SignupAgreements): Promise<boolean> {
     if (connection?.mode !== 'cloud' || connectingRef.current || busy.current.size) return false;
     connectingRef.current = true; refreshing.current=false;generation.current++; setConnecting(true); setError(''); setNotice('');
     try {
-      const account = await auth.authenticate(connection.baseUrl, email, password, register);
+      const account = await auth.authenticate(connection.baseUrl, email, password, register,agreements);
       const nextOwner=connection.baseUrl+':'+account.id;if(calendarOwner.current&&calendarOwner.current!==nextOwner)forgetCalendarSnapshots(calendarOwner.current);calendarOwner.current=nextOwner;
       const repository = createRepository(connection);
       snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = repository; clearTimers(); setPending({}); setTodos([]); setUser(account);setSessionStatus('ready');

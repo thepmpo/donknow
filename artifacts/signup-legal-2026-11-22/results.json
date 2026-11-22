@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "source": "Production Expo web bundle and actual local Node/SQLite server; synthetic signup only, no real mail/providers/models",
+  "flows": [
+    "failed legal metadata blocks signup and retries",
+    "refresh requires fresh explicit consent",
+    "390px signup",
+    "unchecked required agreements",
+    "signup disabled until complete",
+    "versioned legal link preserves form",
+    "age unchecked blocks signup",
+    "actual signup and HttpOnly cookie",
+    "exact consent timestamp/version persistence",
+    "reload login restoration",
+    "ME consent lookup",
+    "logout",
+    "wrong password denied",
+    "correct password login"
+  ],
+  "errors": []
+}

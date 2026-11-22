@@ -3,7 +3,8 @@ import {readJsonResponse,InvalidJsonResponseError,connectionRead,connectionWrite
 import * as SecureStore from 'expo-secure-store';
 import {createServerReadiness} from './server-readiness';
 const readiness=createServerReadiness({probe:async base=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(base+'/api/health',{signal:controller.signal});const data=await readJsonResponse(response) as {ok?:boolean};if(data?.ok!==true)throw new InvalidJsonResponseError(response.status);}finally{clearTimeout(timer);}}});
-export type User = { id: string; email: string; emailVerified: boolean;plan?:'pro';planAccess?:'complimentary' };
+export type User = { id: string; email: string; emailVerified: boolean;plan?:'free'|'lite'|'pro';planAccess?:'complimentary'|'manual' };
+export type SignupAgreements={termsVersion:string;privacyVersion:string;age14:true};
 export class AuthRequiredError extends Error { constructor() { super('다시 로그인해주세요.'); } }
 const storageKey = (origin: string) => 'duckduck.session.' + Array.from(origin).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 export async function request(baseUrl: string, path: string, method = 'GET', body?: unknown): Promise<unknown> {
@@ -44,8 +45,8 @@ export async function session(baseUrl: string): Promise<User> {
   if (!result.user || typeof result.user.id !== 'string' || typeof result.user.email !== 'string') throw new Error('로그인 정보를 확인할 수 없어요.');
   return result.user;
 }
-export async function authenticate(baseUrl: string, email: string, password: string, register: boolean): Promise<User> {
-  const result = await request(baseUrl, register ? '/api/auth/register' : '/api/auth/login', 'POST', { email, password }) as { user?: User; token?: string };
+export async function authenticate(baseUrl: string, email: string, password: string, register: boolean,agreements?:SignupAgreements): Promise<User> {
+  const result = await request(baseUrl, register ? '/api/auth/register' : '/api/auth/login', 'POST', { email, password,...(register?{agreements}:{}) }) as { user?: User; token?: string };
   if (!result.user || typeof result.user.id !== 'string' || typeof result.user.email !== 'string') throw new Error('로그인 정보를 확인할 수 없어요.');
   if (Platform.OS !== 'web') {
     if (typeof result.token !== 'string') throw new Error('로그인 정보를 저장할 수 없어요.');

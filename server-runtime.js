@@ -1,3 +1,4 @@
+import {publicLegal,validateSignupAgreements} from './server/legal-policy.js';
 import {probeMailConfiguration} from './server/mail-diagnostics.js';
 import {adminAuthRoute,adminToken} from './server/admin-auth-routes.js';
 import {adminRoute} from './server/admin-routes.js';
@@ -68,10 +69,12 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     if(['/agent-call','/agent-call.js'].includes(path)&&req.method==='GET'){const js=path.endsWith('.js'),content=await readFile(root+'server/agent-call'+(js?'.js':'.html'));res.writeHead(200,{'Content-Type':js?'application/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','Permissions-Policy':'microphone=(self), camera=()','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; media-src blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"});res.end(content);return;}
     if (await features.callback(req, res, path, url)) return;
     if(await siteRoutes(req,res,path))return;
-    const servicePages = { '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html', '/support': 'support.html', '/support/': 'support.html' };
+    const servicePages = { '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html','/terms':'terms.html','/terms/':'terms.html','/ai-policy':'ai-policy.html','/ai-policy/':'ai-policy.html','/cookies':'cookies.html','/cookies/':'cookies.html', '/support': 'support.html', '/support/': 'support.html' };
+    const archivedLegal=/^\/legal\/(\d{4}-\d{2}-\d{2}(?:\.\d+)?)\/(terms|privacy|ai-policy|cookies)\/?$/.exec(path);
+    if(archivedLegal)servicePages[path]='legal/'+archivedLegal[1]+'/'+archivedLegal[2]+'.html';
     if (Object.hasOwn(servicePages, path)) {
       if (!['GET', 'HEAD'].includes(req.method)) return send(405, { error: '이 안내는 조회만 할 수 있어요.' }, { Allow: 'GET, HEAD' });
-      const content = await readFile(root + 'public/' + servicePages[path]);
+      let content;try{content=await readFile(root+'public/'+servicePages[path]);}catch(error){if(error.code==='ENOENT')return send(404,{error:'문서 버전을 찾을 수 없어요.'});throw error;}
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': content.length, 'Cache-Control': 'no-cache', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" });
       res.end(req.method === 'HEAD' ? undefined : content); return;
     }
@@ -96,6 +99,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       if (origin && allowedOrigin === origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Access-Control-Allow-Credentials', 'true'); res.setHeader('Vary', 'Origin'); }
       if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE', 'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Duckduck-Client' }); return res.end(); }
       if (['POST', 'PATCH', 'DELETE'].includes(req.method) && !['web', 'native'].includes(req.headers['x-duckduck-client'])) return send(403, { error: '앱에서 다시 요청해주세요.' });
+      if(path==='/api/legal'&&req.method==='GET')return send(200,publicLegal());
       if(path.startsWith('/api/admin/')){if(await adminAuthRoute(req,path,store,mailer,json,send,limited,clientAddress(req),secureCookie))return;const admin=store.adminSession(adminToken(req));if(!admin)return send(401,{error:'관리자 전용 계정으로 로그인해주세요.'});if(await adminManagementRoute(req,path,admin.user,store,integrations,taskSync,json,send,limited,clientAddress(req))){if(/\/sync\/source\/[^/]+\/retry$/.test(path))features.wakeSource();return;}if(adminRoute(req,path,url,admin.user,store,send))return;}
       if(path==='/api/project/comments'&&req.method==='GET'){const viewer=store.session(tokenFrom(req));return send(200,store.listProjectComments(viewer?.user.id,{cursor:url.searchParams.get('cursor')??'',status:url.searchParams.get('status')??'all'}));}
       const publicComment=/^\/api\/project\/comments\/([a-f0-9-]{36})$/.exec(path);if(publicComment&&req.method==='GET'){const viewer=store.session(tokenFrom(req));return send(200,store.getProjectComment(publicComment[1],viewer?.user.id));}
@@ -105,7 +109,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         const body = await json(req);
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
         if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || typeof body.password !== 'string' || body.password.length < 10 || body.password.length > 128) return send(400, { error: '이메일과 10~128자의 비밀번호를 입력해주세요.' });
-        const result = path.endsWith('register') ? await store.register(email, body.password) : await store.login(email, body.password);
+        const result = path.endsWith('register') ? await store.register(email, body.password,validateSignupAgreements(body.agreements),req.headers['x-duckduck-client']) : await store.login(email, body.password);
         if (!result) return send(path.endsWith('register') ? 409 : 401, { error: path.endsWith('register') ? '이 이메일로 계정을 만들 수 없어요. 로그인해 주세요.' : '이메일 또는 비밀번호를 확인해주세요.' });
         const previous = tokenFrom(req); if (previous) store.logout(previous);
         return send(path.endsWith('register') ? 201 : 200, { user: result.user, expiresAt: result.expiresAt, ...(req.headers['x-duckduck-client'] === 'native' ? { token: result.token } : {}) }, { 'Set-Cookie': cookie(result.token, 30 * 24 * 60 * 60) });
@@ -128,6 +132,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       if(path==='/api/integrations/google/task-sync/pull'&&req.method==='POST'){const body=await json(req);return send(200,await taskSync.pull(session.user.id,body.cursor??'',body.connectionId));}
       if(path==='/api/integrations/google/task-sync/retry'&&req.method==='POST')return send(200,taskSync.retry(session.user.id,(await json(req)).connectionId));
       if (await features.private(req, path, url, session.user, json, send,token)) return;
+      if(path==='/api/account/agreements'&&req.method==='GET')return send(200,{accepted:store.signupAgreements(session.user.id),current:publicLegal()});
       if (path === '/api/auth/session' && req.method === 'GET') return send(200, session);
       if (path === '/api/auth/logout' && req.method === 'POST') { store.logout(token); return send(200, { ok: true }, { 'Set-Cookie': cookie('', 0) }); }
       if (path === '/api/todos' && req.method === 'GET') return send(200, store.list(session.user.id));

@@ -1,3 +1,4 @@
+import {legalVersion} from '../server/legal-policy.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -21,7 +22,7 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
   const directory=join(root,'app-one');
   store=await openStore(directory,{env:settings,remoteFactory});
   assert.deepEqual(store.memorySettings(null),{enabled:false,revision:0,count:0,turnCount:0});assert.equal(createAssistant(store,createIntegrations(store,{}),{}).status(null).memory.enabled,false);
-  const owner=await store.register('remote@example.test','fixture-password-123');
+  const owner=await store.register('remote@example.test','fixture-password-123',{termsVersion:legalVersion,privacyVersion:legalVersion,age14:true},'web');
   const todo=store.create(owner.user.id,{title:'원격 DB의 할 일',category:'업무',dueDate:'2030-01-01'});
   store.cacheResources(owner.user.id,'google',Array.from({length:120},(_,i)=>({id:'batch-'+i,title:'Batch '+i,dueDate:null})));
   store.saveCalendarDetails(owner.user.id,'google:fixture','primary','batch-event',{reminderMinutes:10},0,{title:'before'});
@@ -32,7 +33,7 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
   assert.deepEqual(await readdir(directory),[]);
   store.close();store=null;await rm(directory,{recursive:true});
   store=await openStore(join(root,'app-two'),{env:settings,remoteFactory});
-  assert.equal(store.session(owner.token).user.id,owner.user.id);
+  assert.equal(store.session(owner.token).user.id,owner.user.id);assert.equal(store.signupAgreements(owner.user.id).termsVersion,legalVersion);assert.equal(store.signupAgreements(owner.user.id).client,'web');
   assert.equal((await store.login('remote@example.test','fixture-password-123')).user.emailVerified,true);
   assert.equal(store.list(owner.user.id)[0].id,todo.id);assert.equal(store.memories(owner.user.id)[0].text,'원격 저장 기억');assert.equal(JSON.parse(JSON.stringify(createAssistant(store,createIntegrations(store,{}),{}).status(owner.user.id))).memory.enabled,true);
   assert.equal(store.connection(owner.user.id,'google').accessToken,'encrypted-fixture-token');
@@ -48,7 +49,7 @@ test('remote libSQL HTTP store keeps accounts, todos and encrypted connections w
   await assert.rejects(openStore(join(root,'wrong-key'),{env:{...settings,INTEGRATION_KEY_SEED:'a-different-fixture-seed-with-at-least-32-characters'},remoteFactory}),/Original token encryption key/);
   store=await openStore(join(root,'app-three'),{env:settings,remoteFactory});
   assert.equal(store.list(owner.user.id)[0].done,true);assert.equal(store.memberAccess(other.user.id).plan,'lite');assert.equal(store.adminControl(other.user.id).status,'suspended');assert.equal(store.adminSession(admin.token).user.role,'owner');assert.ok(store.adminOperationHistory().some(a=>a.operation==='member.status'));
-  assert.equal(await store.deleteAccount(owner.user.id,'fixture-password-123'),true);assert.equal(store.session(owner.token),null);assert.equal(store.list(owner.user.id).length,0);
+  assert.equal(await store.deleteAccount(owner.user.id,'fixture-password-123'),true);assert.equal(store.session(owner.token),null);assert.equal(store.list(owner.user.id).length,0);assert.equal(store.signupAgreements(owner.user.id),null);
  }finally{store?.close();const exited=once(child,'exit');child.kill();await exited;await rm(root,{recursive:true,force:true});}
 });
 test('free configuration fails closed without remote credentials or stable key and disallows insecure endpoints', async () => {

@@ -25,7 +25,7 @@ test('public support and privacy routes are anonymous read-only fixed documents 
       assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
       assert.match(html, /Kim Sanghyun/); assert.match(html, /thepmpo\.official@gmail\.com/);
       assert.ok(!html.includes('<script')); assert.ok(!response.headers.has('set-cookie'));
-      if (path.startsWith('/privacy')) assert.match(html, /검토 중인 안내/);
+      if (path.startsWith('/privacy')) assert.match(html, /국외 처리 상세 확인 사항/);
       const head = await fetch(h.baseUrl + path, { method: 'HEAD' });
       assert.equal(head.status, 200); assert.equal(await head.text(), ''); assert.equal(head.headers.get('content-length'), String(Buffer.byteLength(html)));
       const mutation = await fetch(h.baseUrl + path, { method: 'POST', body: '<script>bad</script>' });

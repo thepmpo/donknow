@@ -1116,7 +1116,10 @@ export function App() {
         <nav aria-label={t("하단 메뉴", "Footer navigation")}>
           <a href="#pricing">{t("요금제", "Pricing")}</a>
           <a href={WEB + "/support"}>{t("문의하기", "Support")}</a>
+          <a href={WEB + "/terms"}>{t("이용약관", "Terms")}</a>
           <a href={WEB + "/privacy"}>{t("개인정보 처리방침", "Privacy")}</a>
+          <a href={WEB + "/ai-policy"}>{t("AI·외부 서비스 안내", "AI and integrations")}</a>
+          <a href={WEB + "/cookies"}>{t("쿠키 안내", "Cookies")}</a>
           <a href={WEB + "/project"}>{t("제품 기록", "Product updates")}</a>
           <a href={APP}>
             {t("웹에서 열기", "Open web app")}

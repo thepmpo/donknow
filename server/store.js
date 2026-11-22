@@ -1,3 +1,4 @@
+import {signupAgreementsStore,validateSignupAgreements} from './legal-policy.js';
 import {adminStore} from './admin-store.js';
 import { featureStore } from './features-store.js';
 import {accountPolicySchema,accountActive,memberAccess} from './account-policy.js';
@@ -24,6 +25,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     CREATE INDEX IF NOT EXISTS todos_user ON todos(user_id);
     CREATE TABLE IF NOT EXISTS migrations (name TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id));`);
   accountPolicySchema(db);
+  const agreementsStore=signupAgreementsStore(db);
   const features = await featureStore(db, directory, env);
   const digest = token => createHash('sha256').update(token).digest('hex');
   const publicUser = user => {const access=memberAccess(db,user.id);return {id:user.id,email:user.email,emailVerified:!!user.email_verified_at,plan:access.plan,planAccess:access.mode};};
@@ -40,17 +42,18 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
   function get(userId, id) { const row = db.prepare('SELECT data FROM todos WHERE user_id = ? AND id = ?').get(userId, id); return row ? JSON.parse(row.data) : null; }
   return {
     ...features,
+    ...agreementsStore,
     ...adminStore(db),
     memberAccess:user=>memberAccess(db,user),
     accountActive:user=>accountActive(db,user),
     close: () => db.close(),
-    async register(email, password) {
+    async register(email, password,agreements,client='internal') {
+      const accepted=agreements===undefined?null:validateSignupAgreements(agreements);
       const salt = randomBytes(16).toString('hex');
       const passwordHash = (await scrypt(password, salt, 64)).toString('hex');
       const user = { id: randomUUID(), email };
-      try { db.prepare('INSERT INTO users (id,email,password_hash,salt,created_at) VALUES (?, ?, ?, ?, ?)').run(user.id, email, passwordHash, salt, new Date().toISOString()); }
-      catch (error) { if (error.code === 'ERR_SQLITE_ERROR' && error.errcode === 2067) return null; if (findUser(email)) return null; throw error; }
-      return newSession(user);
+      try { db.exec('BEGIN IMMEDIATE');db.prepare('INSERT INTO users (id,email,password_hash,salt,created_at) VALUES (?, ?, ?, ?, ?)').run(user.id, email, passwordHash, salt, new Date().toISOString());if(accepted)db.prepare('INSERT INTO signup_agreements VALUES(?,?,?,?,?,?)').run(user.id,accepted.termsVersion,accepted.privacyVersion,1,new Date().toISOString(),client==='web'?'web':client==='native'?'native':'internal');const result=newSession(user);db.exec('COMMIT');return result; }
+      catch (error) { db.exec('ROLLBACK');if (error.code === 'ERR_SQLITE_ERROR' && error.errcode === 2067) return null; if (findUser(email)) return null; throw error; }
     },
     async login(email, password) {
       const user = findUser(email);
