@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "2385c85bbfeb07ed907833c63521ec6f99903388",
-  "assetCommit": "2385c85bbfeb07ed907833c63521ec6f99903388",
-  "imageCount": 1613,
+  "codeCommit": "460a5ef2137ecc15ce97c1f1a34897cbbb330f7d",
+  "assetCommit": "460a5ef2137ecc15ce97c1f1a34897cbbb330f7d",
+  "imageCount": 1630,
   "images": [
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 91946,
+      "sha256": "000f04174c1082fb890249b20ea3a8ccb8c2c1cd9e6473a9df0ceba844fcca89",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-hero.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 53263,
+      "sha256": "77f6229cf06c6a3428ce62e9e0c43d516e2a6b0aa048cfaee51a6f63c40fc697",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-hero.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-pricing-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 128107,
+      "sha256": "4db5a593016006140d95c4596b1a1234b9d5e31c648a9d7e6465e2492b883dc8",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-pricing-en.png"
+    },
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
       "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
@@ -6191,6 +6212,104 @@
       "bytes": 51642,
       "sha256": "2b36df4a376c095bb0ea4f05521871b91ad9a164b69383ad8cc3be94646401b4",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__phone-unchanged.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/app/verification-desktop.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 45245,
+      "sha256": "9e83ba42d9753f4c30d55ece8c6601d2195b6f9caacbbcc4934e99e0956c1247",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__app__verification-desktop.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/app/verification-mobile.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 38280,
+      "sha256": "9dceaaed5a852bb90db6f248128fb89ee6614e9b6f6d34934338b07f699fc6d4",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__app__verification-mobile.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 82624,
+      "sha256": "365b10030b5b8243eb384f4c633b82e049cc4c0f2ef990ca058a5fc4dc8a959c",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-calendar.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-full-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 755140,
+      "sha256": "a9030e78f5d11726c66972396ba6f7fd8e81c9677f0ce5be3d01d26e50ba535a",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-full-en.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-full.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 694541,
+      "sha256": "57812025c3f8590cb74b8958dace7e58fb06e7ff54769e58e38c575cd4c41708",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-full.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-pricing.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 120097,
+      "sha256": "4f3040148755850d78cdb7b416a473112b15437c12c21eb26f4d8df8996dc658",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-pricing.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/desktop-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 81987,
+      "sha256": "52db07d8db1c58bfa8144efb74929efc689ed5ef22f7d27993b3521a11f2fb01",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__desktop-todo.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 44580,
+      "sha256": "e148054bce73538a08f4fc29dcee0b114d8b80cfc6e10adba55d171bac3b5248",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-calendar.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-comparison.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40012,
+      "sha256": "2f7928c81e84733a07cf7c9a96f92c918f3881cd367976f7161f8bf1472e1dc1",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-comparison.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-full-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 592547,
+      "sha256": "aa83cbbb66229006e9d3024d86b127db38adce530331f72b934a663a94782677",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-full-en.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-full.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 555501,
+      "sha256": "c150477bfa34ded1cbbed33874a10723432e9d396c03d8bfcbf7b7cb429aa821",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-full.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-pricing-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42378,
+      "sha256": "654ff178ff0b0cb8a399e5b838a9faa5ca0960b5fe082b250f0a40a6d5237fae",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-pricing-en.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-pricing.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40012,
+      "sha256": "2f7928c81e84733a07cf7c9a96f92c918f3881cd367976f7161f8bf1472e1dc1",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-pricing.png"
+    },
+    {
+      "path": "artifacts/docen-brand-2026-11-22/site/phone-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43970,
+      "sha256": "ffba10edfa4d09c38fbe08e0ca5c94f44b0ff8da5102e294e018a6f9e2ec5e66",
+      "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-todo.png"
     },
     {
       "path": "artifacts/dots-full-2026-11-15/computer/browser-fixture.jpg",
