@@ -1,0 +1,28 @@
+{
+  "service": "duckduck-test",
+  "plan": "free",
+  "release": "490454cb17af9a26443d4d1284461c581abf4629",
+  "deployId": "dep-dc1akihksfps738c5hrg",
+  "status": "live",
+  "finishedAt": "2026-11-22T08:40:35.611716Z",
+  "url": "https://duckduck-test.onrender.com/admin",
+  "publicVerification": {
+    "loginInputsVisible": true,
+    "internalNavigationNotRendered": true,
+    "formerPreviewRedirectsToLogin": true,
+    "anonymousMemberApiStatus": 401,
+    "healthOk": true,
+    "healthRelease": "490454cb17af9a26443d4d1284461c581abf4629"
+  },
+  "validation": {
+    "tests": 443,
+    "passed": 442,
+    "failed": 0,
+    "existingSkipped": 1,
+    "syntaxFiles": 114,
+    "separateAdminApiStorePassed": true,
+    "actualLocalBrowserSetupAndLoginPassed": true,
+    "delayedSessionKeepsInputsPassed": true
+  },
+  "boundaries": "Independent admin account/password/cookie. Allowlisted email invitations prepared on startup; first password is user-set after email code. No user password collected, no production admin sign-in or setup email sent by agent, and no Duck account/data/password modified."
+}
