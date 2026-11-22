@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "source": "Real local server and isolated SQLite; real signup/session/Todo CRUD/profile APIs; no provider or model calls",
+  "flows": [
+    "signup",
+    "HttpOnly session",
+    "create",
+    "reload persistence",
+    "edit",
+    "complete/log",
+    "restore",
+    "service settings",
+    "schedule settings",
+    "blocked AI input preserved",
+    "attachment upload",
+    "behavior save and reload",
+    "data export download",
+    "logout",
+    "account isolation"
+  ],
+  "errors": []
+}

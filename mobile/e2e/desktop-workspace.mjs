@@ -2,13 +2,14 @@ import {chromium} from 'playwright-core';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname} from 'node:path';
 import assert from 'node:assert/strict';
-const root=resolve(new URL('../dist-web/',import.meta.url).pathname),out=resolve(new URL('../../artifacts/web-format-correction-2026-11-22/',import.meta.url).pathname),origin='https://duck-workspace.test';await mkdir(out,{recursive:true});
+const root=resolve(new URL('../dist-web/',import.meta.url).pathname),out=resolve(new URL('../../artifacts/web-cleanup-2026-11-22/',import.meta.url).pathname),origin='https://duck-workspace.test';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 const page=await browser.newPage({viewport:{width:1440,height:1000},locale:'ko-KR',timezoneId:'Asia/Seoul'});page.setDefaultTimeout(15000);await page.emulateMedia({reducedMotion:'reduce'});
 const today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Seoul'}),errors=[],writes=[];let signed=true,statusFail=false;
 const todos=[{id:'t1',title:'제안서 피드백 전달하기',notes:'요청받은 의견을 확인하고 다음 행동을 정리해요.',done:false,category:'업무',dueDate:today,dueTime:'14:00',source:{provider:'google',externalId:'account:tasks:source-1'}},{id:'t2',title:'다음 주 회의 준비',done:false,category:'업무',dueDate:today}];
 const events=[],actions=[];
 const messages=[{id:'briefing-1',kind:'briefing',title:'오늘의 브리핑',summary:'연결한 자료에서 오늘 챙길 일을 정리했어요.',text:'합성 자료로 화면을 검증합니다.',createdAt:Date.now(),readAt:null,warnings:[],items:[{key:'1'.repeat(64),title:'디자인 피드백 미팅 잡기',notes:'내일 오후 가능한 시간을 확인해보세요.',dueDate:null,sourceRefs:['slack:fixture:1'],section:'함께 확인할 일',group:'new'}],sources:[{ref:'slack:fixture:1',title:'디자인 피드백 요청',provider:'slack'}]}];
+messages.push({id:'weather-hidden',kind:'weather',title:'날씨 카드 fixture',text:'날씨 전용 메시지 fixture',createdAt:Date.now(),readAt:null,warnings:[],items:[]});
 page.on('pageerror',e=>errors.push(e.message));
 await page.addInitScript(({origin})=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),{origin});
 await page.route(origin+'/**',async route=>{const r=route.request(),path=new URL(r.url()).pathname,method=r.method(),body=r.postDataJSON();
@@ -37,6 +38,7 @@ await page.route(origin+'/**',async route=>{const r=route.request(),path=new URL
 });
 try{
  await page.goto(origin);await page.getByTestId('desktop-workspace').waitFor();await page.getByTestId('desktop-briefing').getByText('디자인 피드백 미팅 잡기',{exact:true}).waitFor();
+ assert.equal(await page.getByTestId('desktop-briefing').getByText('날씨 전용 메시지 fixture',{exact:true}).count(),0);assert.equal(await page.getByRole('button',{name:'웹 서비스 연결 관리',exact:true}).count(),0);assert.equal(await page.getByRole('button',{name:'웹 브리핑 예약 관리',exact:true}).count(),0);
  statusFail=true;await page.getByRole('button',{name:'브리핑 새로고침',exact:true}).click();await page.getByText('비서 연결 상태를 확인하지 못했어요. 기존 내용은 유지하고 있어요. 새로고침으로 다시 확인해주세요.',{exact:true}).waitFor();await page.getByTestId('desktop-briefing').getByText('디자인 피드백 미팅 잡기',{exact:true}).waitFor();statusFail=false;await page.getByRole('button',{name:'브리핑 새로고침',exact:true}).click();await page.getByText('비서 연결 상태를 확인하지 못했어요. 기존 내용은 유지하고 있어요. 새로고침으로 다시 확인해주세요.',{exact:true}).waitFor({state:'hidden'});
  assert.equal(await page.getByTestId('BottomNavigation').count(),0);assert.equal(await page.getByTestId('desktop-workspace').getByRole('tab').count(),5);
  await page.screenshot({path:resolve(out,'desktop-briefing.png')});

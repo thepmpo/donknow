@@ -46,7 +46,6 @@ function ShellContent() {
   const [desktopChatRequest,setDesktopChatRequest]=useState(0);
   const [profileRequest,setProfileRequest]=useState<{id:number;kind:'services'|'briefing'|'overview'}|null>(null);
   const openDesktopChat=()=>{setTab('duck');setDesktopChatRequest(v=>v+1);};
-  const openDesktopProfile=(kind:'services'|'briefing')=>{setProfileRequest({id:Date.now(),kind});setTab('profile');};
   const calendarSequence=useRef(0),[calendarNavigation,setCalendarNavigation]=useState<{target:'active'|'fixed';request:CalendarNavigationRequest}|null>(null);
   const calendarScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
   const requestCalendar=useCallback((action:'today'|'fortnight',target:'active'|'fixed'='active',resetToToday=false)=>setCalendarNavigation({target,request:{id:++calendarSequence.current,action,resetToToday,scope:calendarScope}}),[calendarScope]);
@@ -69,7 +68,7 @@ function ShellContent() {
   const navigationVisible=!!store.connection&&!settings&&!needsAuth;
   const rightPane=scene?.panes?{marginLeft:scene.panes.trailing.x-scene.body.x,width:scene.panes.trailing.width}:null;
   if (store.loading && !store.connection) return <View style={styles.loading}><Text style={{ fontSize: 45 }}>🦆</Text><ActivityIndicator color={colors.blue} style={{ marginTop: 24 }} /></View>;
-  return <DesktopWorkspace active={desktop&&navigationVisible} tab={tab} onSelect={selectTab} store={store} disabled={sessionPending} unread={unread} onAdd={()=>onAdd(dateKey(new Date()))} onEdit={onEdit} onChat={openDesktopChat} onServices={()=>openDesktopProfile('services')} onSchedule={()=>openDesktopProfile('briefing')}><KeyboardAvoidingView style={[styles.root,(duo||desktop&&navigationVisible)&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+  return <DesktopWorkspace active={desktop&&navigationVisible} tab={tab} onSelect={selectTab} store={store} disabled={sessionPending} unread={unread} onAdd={()=>onAdd(dateKey(new Date()))} onEdit={onEdit} onChat={openDesktopChat}><KeyboardAvoidingView style={[styles.root,(duo||desktop&&navigationVisible)&&styles.duoRoot]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     {!duo&&!desktop&&<View testID="app-brand-header" style={styles.header}><Text accessibilityLabel="덕 오리 마크" style={{fontSize:26}}>🦆</Text><Text style={styles.storage}>{store.connection?.mode==='demo'?'체험 모드':''}</Text>{(!navigationVisible||tab!=='duck'&&tab!=='calendar')&&!editor&&<KeyboardDismiss fallback/>}</View>}
     {duo&&(!navigationVisible||tab!=='duck'&&tab!=='calendar')&&!editor&&<KeyboardDismiss fallback/>}
     {!!store.notice && <View style={[styles.errorBar,{backgroundColor:'#edf4ff'},rightPane]}><Text accessibilityLiveRegion="polite" style={[styles.error,{color:colors.blue}]}>{store.notice}</Text><Pressable style={styles.retry} accessibilityRole="button" accessibilityLabel="안내 닫기" onPress={()=>store.setNotice('')}><Text style={{color:colors.blue}}>×</Text></Pressable></View>}
