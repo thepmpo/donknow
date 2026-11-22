@@ -1,6 +1,6 @@
 # duckduck — 제품·구현·운영·이미지·AI 인계 문서
 
-> 기준: 2026-11-22 · 한국 시간 · 기능 코드 8c12c87 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-22 · 한국 시간 · 기능 코드 b61f771 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -480,7 +480,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 #### 2026-11-22 — 관리자 로그인 입력창 즉시 표시
 
-관리자권한확인GET이늦어져도아이디/비밀번호를먼저입력할수있도록초기HTML에로그인폼을제공한다. 내부프레임은인증후에만구성한다. 늦은권한확인이입력중내용을지우지않고로그인/설정과경쟁하지않게검증했다. 관리자/덕계정분리·기존조회보안은유지한다.
+로그인/설정폼의비JS기본전송도POST로고정해비밀번호가URL에들어가지않게했다. 관리자권한확인GET이늦어져도아이디/비밀번호를먼저입력할수있도록초기HTML에로그인폼을제공한다. 내부프레임은인증후에만구성한다. 늦은권한확인이입력중내용을지우지않고로그인/설정과경쟁하지않게검증했다. 관리자/덕계정분리·기존조회보안은유지한다.
 
 #### 2026-11-22 — 별도 어드민 인증과 로그인 전 내부 숨김
 
@@ -3052,10 +3052,12 @@ a6bbdcf Record protected admin live deployment and anonymous access rejection
 69f855f Separate admin accounts and credentials from Duck with login-only gate
 8d73be3 Document separate admin onboarding and protected entry verification
 8c12c87 Show admin login inputs immediately while session verification is pending
+fce84c6 Refresh immediate admin login verification handoff
+b61f771 Keep admin credential form fallbacks out of URL query strings
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 8c12c87에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: b61f771에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -11109,7 +11111,7 @@ a6bbdcf Record protected admin live deployment and anonymous access rejection
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/8c12c87bdfe58b691308365447ffe950721b5e26
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/b61f7719d9cef5c102ed287884775f7784faf1c5
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
