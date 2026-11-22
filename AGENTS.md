@@ -1,3 +1,13 @@
+## 2026-11-22 — docen.today는 소개만 공개·웹서비스 미오픈 (최신 확정)
+
+사용자가 docen.today 연결을 진행하되 우선 소개 페이지만 공개하고 웹서비스는 아직 오픈하지 않는다고 확정했다. 준비 완료 후 소개 페이지의 로그인에서 서비스로 들어가는 흐름이다. 소개 사이트의 KR/EN 시작·로그인·요금표·하단·모바일 메뉴는 오픈 준비 안내로 바꾸고 QR은 소개 메인으로 향한다. 예시 조작은 합성 자료만 사용한다. 가격/기능을 임의로 바꾸거나 대기자 이메일을 새로 수집하지 않는다.
+
+새 도메인docen.today/www.docen.today의 /app·/admin·내부 문서는 /coming-soon으로 보내고 회원가입/로그인/자료·비서 API는503 SERVICE_NOT_LAUNCHED로 차단한다. 새 도메인의Origin을 기존 호스트로 보내도 서비스 API를 열지 않는다. 요청 gateway와 실제 runtime에서 모두 검사한다. 소개/요금/약관/문의·사이트 자산·health/legal 최소 조회만 허용한다. 기존 테스트 주소의 앱·회원·관리자·native API·OAuth·웹훅은 유지한다. 기존 테스트 주소는 인터넷에서 접근 가능한 상태이며 이를 비밀 URL/초대 인증으로 보호했다고 주장하지 않는다.
+
+메일은 사용자가 새 Resend 계정 herryk153에서docen.today DNS4건을 직접 등록해Verified/Forge Ready 화면을 제공했다. 사용자가 Render MAIL_API_KEY·MAIL_FROM을 직접 수정했고 dep-dc1fbe9ksfps738ojumg가live인 것을 조회했다. 발신 설정값/키를 읽지 않았다. 사용자가 실제 인증메일 수신→번호 확인→내부 진입 완료를 확인했다. 이 결과를 이전의 발신 도메인 미해결 기록보다 최신으로 취급하되 사용자의 받은편지함을 직접 열어 검증했다고 주장하지 않는다. Sending access키의 도메인 조회401을 발송 실패로 해석하지 않는다.
+
+TinyFish 원격 입력이 동작하지 않아 사용자가 중단하고 수동 진행하기로 했다. 이 설정을 계속할 때 TinyFish 재로그인 반복을 요구하지 않는다. Render 플러그인에 custom domain 추가 기능이 없어 사용자가 Settings→Custom Domains에서docen.today등록하도록 안내했고 완료 응답 대기다. 그 다음 호스팅KR 사이트용 A/CNAME·Render 검증/TLS·공개 주소 조회가 필요하다. 메일 DNS/기존 설정을 덮어쓰지 않는다. PUBLIC_ORIGIN/OAuth/native API주소는 공개 웹 출시 때 별도 승인·검증 후 전환하며 지금은 변경하지 않는다. [계약/검증](docs/docen-introduction-2026-11-22.md).
+
 ## 2026-11-22 — 서비스명 docen·도메인 docen.today (최신 확정)
 
 사용자가 모든 앱·웹 표시 이름을 소문자 docen으로 통일하라고 최종 확정했다. 앞서 도슨/Dosen/Docen 표기는 이 최종 지시보다 오래된 이력이다. 구매 도메인은 docen.today, 구매처는 호스팅KR이다. 현재 표시·AI 비서 기본 이름·메일 제목·알림·내보내기 파일명·앱 display name·관리자·지원·KR/EN 소개·요금표를 docen으로 변경한다. 오리 마스코트와 기능/가격/운영자·문의 주소는 변경하지 않는다.

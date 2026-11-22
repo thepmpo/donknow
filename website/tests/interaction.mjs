@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
 const out = resolve(
-  new URL("../../artifacts/docen-brand-2026-11-22/site", import.meta.url)
+  new URL("../../artifacts/docen-introduction-2026-11-22/site", import.meta.url)
     .pathname,
 );
 await mkdir(out, { recursive: true });
@@ -219,12 +219,13 @@ try {
       );
     }
     const appLinks = await page
-      .locator('a[href$="/app"]')
+      .locator('a[href$="/coming-soon"]')
       .evaluateAll((all) =>
         all.map((a) => ({ href: a.href, target: a.target })),
       );
     assert.ok(appLinks.length >= 4);
-    assert.ok(appLinks.every((a) => a.href === origin + "/app" && !a.target));
+    assert.equal(await page.locator('a[href$="/app"]').count(),0);
+    assert.ok(appLinks.every((a) => a.href === origin + "/coming-soon" && !a.target));
     assert.deepEqual(errors, []);
     assert.deepEqual(network, []);
     assert.deepEqual(media, []);

@@ -32,7 +32,7 @@ const WEB =
   location.protocol === "file:"
     ? "https://duckduck-test.onrender.com"
     : location.origin;
-const APP = WEB + "/app";
+const APP = WEB + "/coming-soon";
 const initialTasks = [
   {
     id: "review",
@@ -428,8 +428,8 @@ const faqs = [
   [
     "지금 어디에서 사용할 수 있나요?",
     "Where can I use docen?",
-    "웹에서 docen을 열 수 있어요. iPhone 앱은 TestFlight로 검증 중이며 공개 초대는 준비 중이에요. 새 요금표는 개편안으로, 현재 결제가 시작되지는 않아요.",
-    "You can open the web app now. The iPhone app is being tested with TestFlight; a public invitation is not yet available. The new pricing is a proposal and checkout is not active.",
+    "현재는 소개 페이지만 공개하고 있어요. 웹서비스와 iPhone 앱은 내부 테스트 중이며, 공개 오픈 후 소개 페이지에서 로그인해 이용할 수 있어요. 결제는 아직 시작되지 않았어요.",
+    "Only our introduction website is public. The web app and iPhone app are in internal testing. After launch, you can sign in from this website. Checkout is not active.",
   ],
 ];
 export function App() {
@@ -456,7 +456,7 @@ export function App() {
   }, [en]);
   useEffect(() => {
     let alive = true;
-    QRCode.toDataURL(APP, { width: 220, margin: 2 }).then((data) => {
+    QRCode.toDataURL(WEB + "/", { width: 220, margin: 2 }).then((data) => {
       if (alive) setQr(data);
     });
     return () => {
@@ -531,11 +531,11 @@ export function App() {
               <Globe size={15} />
               {en ? "KR" : "EN"}
             </button>
-            <a className="login-link" href={APP}>
-              {t("로그인", "Log in")}
-            </a>
+            <span className="login-link" aria-disabled="true">
+              {t("로그인 준비 중", "Login coming soon")}
+            </span>
             <a className="btn nav-cta" href={APP}>
-              {t("docen 시작하기", "Get started")}
+              {t("오픈 준비 중", "Coming soon")}
               <ArrowUpRight size={15} />
             </a>
             <button
@@ -565,7 +565,7 @@ export function App() {
               </a>
             ))}
             <a href={APP}>
-              {t("로그인 / docen 열기", "Log in / Open docen")}
+              {t("서비스 오픈 준비 중", "Web app coming soon")}
               <ArrowUpRight size={17} />
             </a>
           </nav>
@@ -598,7 +598,7 @@ export function App() {
           </p>
           <div className="hero-actions">
             <a className="btn btn-large" href={APP}>
-              {t("docen 시작하기", "Get started with docen")}
+              {t("오픈 준비 중", "Coming soon")}
               <ArrowRight size={18} />
             </a>
             <a className="text-link" href="#product-demo">
@@ -608,8 +608,8 @@ export function App() {
           </div>
           <p className="hero-footnote">
             {t(
-              "웹에서 먼저 만나보세요 · 유료 결제 준비 중",
-              "Try the web app · Paid checkout is in preparation",
+              "현재는 소개 페이지만 공개하고 있어요 · 웹서비스 오픈 준비 중",
+              "Introduction website only · The web app is not open yet",
             )}
           </p>
           <Demo en={en} />
@@ -788,7 +788,7 @@ export function App() {
                 )}
               </p>
               <a className="text-link" href={APP}>
-                {t("내 하루 정리하러 가기", "Plan your day")}
+                {t("웹서비스 오픈 준비 중", "Web app coming soon")}
                 <ArrowRight size={17} />
               </a>
             </div>
@@ -1087,7 +1087,7 @@ export function App() {
           </p>
           <div className="hero-actions">
             <a href={APP} className="btn btn-large">
-              {t("docen 시작하기", "Get started with docen")}
+              {t("오픈 준비 중", "Coming soon")}
               <ArrowRight size={18} />
             </a>
             <button className="text-link" onClick={() => setModal("iphone")}>
@@ -1120,9 +1120,8 @@ export function App() {
           <a href={WEB + "/privacy"}>{t("개인정보 처리방침", "Privacy")}</a>
           <a href={WEB + "/ai-policy"}>{t("AI·외부 서비스 안내", "AI and integrations")}</a>
           <a href={WEB + "/cookies"}>{t("쿠키 안내", "Cookies")}</a>
-          <a href={WEB + "/project"}>{t("제품 기록", "Product updates")}</a>
           <a href={APP}>
-            {t("웹에서 열기", "Open web app")}
+            {t("서비스 오픈 안내", "Launch information")}
             <ArrowUpRight size={14} />
           </a>
         </nav>
@@ -1154,7 +1153,7 @@ export function App() {
               {t(
                 modal === "qr" ? "휴대폰에서도 가볍게" : "iPhone에서 만나요",
                 modal === "qr"
-                  ? "Open docen on your phone"
+                  ? "View our website on your phone"
                   : "Meet docen on iPhone",
               )}
             </h2>
@@ -1162,8 +1161,8 @@ export function App() {
               <>
                 <p>
                   {t(
-                    "QR코드를 스캔해 docen 웹을 열어보세요.",
-                    "Scan the QR code to open the docen web app.",
+                    "QR코드를 스캔하면 docen 소개 페이지가 열려요. 웹서비스는 아직 오픈 준비 중이에요.",
+                    "Scan to visit the docen introduction website. The web app is not open yet.",
                   )}
                 </p>
                 {qr && (
@@ -1173,8 +1172,8 @@ export function App() {
                     width="220"
                     height="220"
                     alt={t(
-                      "docen 웹 앱을 여는 QR 코드",
-                      "QR code for the docen web app",
+                      "docen 소개 페이지를 여는 QR 코드",
+                      "QR code for the docen introduction website",
                     )}
                   />
                 )}
@@ -1182,13 +1181,13 @@ export function App() {
             ) : (
               <p>
                 {t(
-                  "현재 TestFlight로 검증 중이에요. 공개 초대 링크는 준비 중이며, 지금은 웹에서 docen을 사용할 수 있어요.",
-                  "The iPhone app is being tested with TestFlight. A public invitation is in preparation. You can use the web app now.",
+                  "iPhone 앱은 TestFlight로 내부 테스트 중이에요. 현재는 소개 페이지만 공개하며, 웹서비스와 앱의 공개 오픈은 준비 중이에요.",
+                  "The iPhone app is in internal testing with TestFlight. Only our introduction website is public; the web app and public app launch are still in preparation.",
                 )}
               </p>
             )}
             <a className="btn" href={APP}>
-              {t("웹에서 docen 열기", "Open docen on the web")}
+              {t("오픈 준비 중", "Coming soon")}
               <ArrowUpRight size={16} />
             </a>
           </section>

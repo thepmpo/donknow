@@ -1,3 +1,4 @@
+import {publicLaunchRestriction,sendPublicLaunchRestriction} from './public-launch.js';
 import http from 'node:http';
 import {Worker} from 'node:worker_threads';
 import {randomBytes} from 'node:crypto';
@@ -37,6 +38,7 @@ export async function startRequestLanes({workerUrl=new URL('../server-runtime.js
  server=http.createServer((req,res)=>{
   let path;try{path=new URL(req.url,'http://localhost').pathname;}catch{res.writeHead(400);res.end();return;}
   res.setHeader('X-Content-Type-Options','nosniff');
+  const launchRestriction=publicLaunchRestriction(req,path);if(launchRestriction)return sendPublicLaunchRestriction(res,launchRestriction,req.method);
   if(path.startsWith('/api/')){
    const allowed=env.PUBLIC_ORIGIN||env.RENDER_EXTERNAL_URL||`${env.COOKIE_SECURE==='1'||env.NODE_ENV==='production'?'https':'http'}://${req.headers.host}`;
    if(req.headers.origin&&req.headers.origin!==allowed){res.writeHead(403,{'Content-Type':'application/json'});res.end(JSON.stringify({error:'허용되지 않은 요청 출처예요.'}));return;}

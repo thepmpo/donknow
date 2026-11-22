@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "source": "Actual production website build + isolated real two-lane Node server, virtual Host docen.today via local proxy; not a claim of live DNS/TLS",
+  "flows": [
+    "desktop/390px introduction",
+    "login coming-soon label",
+    "no app links",
+    "launch notice navigation",
+    "direct /app redirected",
+    "public signup API blocked",
+    "health remains healthy"
+  ],
+  "errors": []
+}
