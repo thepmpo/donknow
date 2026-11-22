@@ -1,0 +1,28 @@
+{
+  "verifiedAt": "2026-11-22T07:22:42.058179+00:00",
+  "service": "duckduck-test",
+  "workspace": "My Workspace",
+  "plan": "free",
+  "deployId": "dep-dc19f4ff3r2c73c2ed7g",
+  "status": "live",
+  "finishedAt": "2026-11-22T07:21:13.144085Z",
+  "release": "530fb726785cecda5f7c8e1abaf33fa15efe3fc0",
+  "urls": {
+    "app": "https://duckduck-test.onrender.com/app",
+    "site": "https://duckduck-test.onrender.com/",
+    "pricing": "https://duckduck-test.onrender.com/#pricing"
+  },
+  "anonymousPublicVerification": {
+    "method": "TinyFish fetch_content, fresh read, no account sign-in",
+    "appShowsLogin": true,
+    "health": {
+      "ok": true,
+      "authentication": "session",
+      "calendarWorkspace": 2,
+      "requestLanes": 2,
+      "release": "530fb726785cecda5f7c8e1abaf33fa15efe3fc0"
+    },
+    "publishedPricingUnchanged": true
+  },
+  "scope": "Web app and its existing API connections. No native IPA, new paid resource, AI funding/key changes or real user OAuth performed. This receipt is documentation after the deployed source commit."
+}

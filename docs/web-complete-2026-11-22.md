@@ -1,3 +1,5 @@
+> 공개 반영 확인: 기존 무료 duckduck-test의 dep-dc19f4ff3r2c73c2ed7g가2026-11-22 16:21:13 KST에 live가 됐다. 소스530fb726785cecda5f7c8e1abaf33fa15efe3fc0이며 외부 익명 조회에서 /app 로그인 화면·/api/health release 일치·기존 요금 유지를 확인했다. [배포 영수증](../artifacts/web-complete-2026-11-22/deploy-receipt.json). 영수증 추가 문서 커밋은 배포 코드와 별개다.
+
 # 실제 덕 웹앱 기능 연결 — 2026-11-22
 
 사용자는 PC 웹앱을 시안에서 끝내지 말고 전체 메뉴와 기능 연결까지 완성하라고 요청했다. 대상은 기존 /app이다. 소개 페이지/새 native 앱 작업으로 바꾸지 않는다. 소개와 요금은 기존 /, /#pricing에 유지한다.
