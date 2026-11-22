@@ -53,7 +53,8 @@
     "test:calendar": "node e2e/calendar-workspace.mjs",
     "test:calendar-sheet": "node e2e/calendar-sheet-motion.mjs",
     "test:integration-stability": "node e2e/integration-stability.mjs",
-    "check:native": "node ../scripts/check-native-prebuild.mjs"
+    "check:native": "node ../scripts/check-native-prebuild.mjs",
+    "test:desktop": "node e2e/desktop-workspace.mjs"
   },
   "private": true
 }

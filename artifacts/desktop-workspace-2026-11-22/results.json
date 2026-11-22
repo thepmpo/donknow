@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "source": "Exported Expo app, headless Chromium, synthetic account and API responses; no production/model calls",
+  "flows": [
+    "briefing display",
+    "existing todo update",
+    "chat draft survives overview switching",
+    "Todo/Calendar/ME navigation",
+    "1100-1920 overflow",
+    "phone bottom5tabs",
+    "dark theme"
+  ],
+  "writes": [
+    {
+      "path": "/api/assistant/messages/briefing-1/items/1111111111111111111111111111111111111111111111111111111111111111",
+      "body": {
+        "action": "todo",
+        "args": {
+          "title": "디자인 피드백 미팅 잡기",
+          "notes": "내일 오후 가능한 시간을 확인해보세요.",
+          "dueDate": null
+        }
+      }
+    },
+    {
+      "path": "/api/todos/t1",
+      "body": {
+        "done": true
+      }
+    }
+  ],
+  "errors": []
+}

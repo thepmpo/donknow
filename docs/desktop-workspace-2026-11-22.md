@@ -1,0 +1,18 @@
+# PC 웹 · 나의 하루 작업공간
+
+사용자가 소개 상단 제품 예시를 실제 웹앱에도 같은 구조로 구현하도록 승인했다. 추가 요청으로 현재 웹에 게시된 요금은 그대로 유지한다. 가격·사용 권한·AI 예산·서버·실제 결제는 변경하지 않는다.
+
+web1100px 이상이며 Duo가 아닐 때54px 상단,171px 메뉴,중앙 작업,245px 오늘 할 일과24px 외곽/16px 모서리를 사용한다. 브리핑/Todo/캘린더/기록/ME를 기존 앱 화면과 연결하며 기본은 브리핑이다. 실제 예약 메시지는 기존 BriefingContent/BriefingChecklist의 체크·Todo·캘린더 확인·원본 열기를 재사용한다. 아직 받은 브리핑이 없으면 빈 상태를 표시한다. 실제 저장된 오늘/지난 예정 Todo를 별도로 보여주며 샘플 문구를 계정에 저장하지 않는다. 새 할 일/상세 편집/완료는 기존 store와 편집기를 사용한다.
+
+대화와 브리핑 전환은 채팅을 unmount하지 않아 초안을 보존한다. 원래 탭도 그대로 살아 있으며 좁은 웹은 기존5탭으로 전환한다. native에서는 새 프레임의 View 구조 자체를 추가하지 않는다. Duo에서는 PC 모드가 켜지지 않는다. 인증 복원/로그아웃/권한·원본 확인·저장 실패 안내를 유지한다.
+
+## 실제 검증
+
+- mobile 타입 검사와 production web export 통과. Expo iOS JS export 통과이며 IPA/서명/실기기 검수가 아니다.
+- desktop-workspace.mjs: 실제 Expo 번들을 격리 Chromium1440×1000에서 실행. 합성 계정/API로 브리핑 표시·Todo 이동 기존 요청·완료 PATCH·새 작성기·채팅 초안 보존·Todo/캘린더/ME 이동·1100~1920 넘침0·390px 하단5탭·시스템 dark·빈 브리핑·401에서 작업공간 미노출을 확인했다. 브라우저 오류0. 실계정·원본 서비스·실제 모델 호출은 하지 않았다.
+-110개 서버/web/tool 문법 검사 통과. 기존 예약 회귀는 ME의 예전 예약 진입 경로에서 중단됐으며, 최신 경로로 임시 확인했을 때 예약 저장까지 진행한 후 옛 닫기 버튼 경로에서 중단됐다. 기존 Duo 회귀는 실제 선택 애니메이션이1.025배인데1.04배 초과를 요구해 중단됐고, 임시 기대값 보정 후에는2주 보기14셀 기대에서0으로 중단됐다. 기존 검사를 완전 통과했다고 하지 않는다. 임시 하네스 수정은 제품 변경에 포함하지 않았다.
+- 공유 데스크톱/인앱 브라우저 제어 도구가 노출되지 않아 프로젝트의 headless Chromium을 사용했다. 사용자에게 같은 로컬 URL이 열리는지는 별도 미확인이다.
+
+[PC 브리핑](../artifacts/desktop-workspace-2026-11-22/desktop-briefing.png) · [Todo](../artifacts/desktop-workspace-2026-11-22/desktop-todos.png) · [캘린더](../artifacts/desktop-workspace-2026-11-22/desktop-calendar.png) · [대화](../artifacts/desktop-workspace-2026-11-22/desktop-chat.png) · [QA](desktop-workspace-design-qa.md).
+
+현재는 검토용 수정본이다. 이번 요청으로 운영 사이트를 바꾸거나 새 native 빌드를 실행하지 않았다. source 오류·모델 품질·실제 EventKit·Duo 전체 회귀와 iPhone 실기기는 별도 검증이 필요하다.

@@ -1,3 +1,4 @@
+import {useDesktopPresentation} from './DesktopPresentation';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {ActivityIndicator,Animated,PanResponder,Platform,StyleSheet,Text,TextInput,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
@@ -9,6 +10,7 @@ import type {AssistantProposal} from './useAssistant';
 import type {ChecklistEntry} from './assistant-checklist';
 import type {Todo} from './domain';
 export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onExclude,onOpenTodos,onOpenLog,onCalendar,compact=false,sourceLabels=[],sourceLinks}:{sourceLinks?:React.ReactNode;onCalendar?:()=>void;compact?:boolean;sourceLabels?:string[];proposal:AssistantProposal;number:number;busy:boolean;entry:ChecklistEntry;todo?:Todo;onAction:(value:AssistantProposal,done:boolean)=>Promise<void>;onExclude:(excluded:boolean)=>void;onOpenTodos:()=>void;onOpenLog:()=>void}){
+ const desktop=useDesktopPresentation();
  const [menu,setMenu]=useState(false),[expanded,setExpanded]=useState(false);
  const [editing,setEditing]=useState(false),[notesOpen,setNotesOpen]=useState(false),[value,setValue]=useState(proposal);
  const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current;
@@ -33,7 +35,7 @@ export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onE
  const label='할 일 후보 '+number;
  return <View testID={'assistant-checklist-'+number} style={[s.wrap,compact&&{borderRadius:0,backgroundColor:'transparent'}]}>
   <View style={s.behind} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Text style={s.swipeLabel}>Todo에 추가</Text><Text style={s.swipeLabel}>{onCalendar?'캘린더':'제외 ×'}</Text></View>
-  <Animated.View testID={'assistant-checklist-row-'+number} {...responder.panHandlers} style={[s.card,compact&&{borderRadius:0,padding:0,paddingBottom:8},{transform:[{translateX:offset}]}]}>
+  <Animated.View testID={'assistant-checklist-row-'+number} {...responder.panHandlers} style={[s.card,desktop&&{backgroundColor:colors.bg},compact&&{borderRadius:0,padding:0,paddingBottom:8},{transform:[{translateX:offset}]}]}>
    <View style={s.row}>
     <Pressable accessibilityRole="checkbox" accessibilityLabel={label+(excluded?' 제외 취소':done?' 완료 취소':' 완료 표시')} accessibilityHint={excluded?'채팅 후보로 되돌려요.':done?'기존 항목을 미완료로 바꿔 Todo로 옮겨요.':'완료한 할 일로 저장하고 log에 남겨요.'} accessibilityState={{checked:done&&!excluded,disabled}} disabled={disabled} onPress={()=>press(()=>excluded?onExclude(false):act(!done))} style={s.control}>
      {entry.busy?<ActivityIndicator size="small" color={colors.blueText}/>:excluded?<View style={s.cancelBox}><Ionicons name="close" size={17} color={colors.muted}/></View>:<Ionicons name={done?'checkbox':'square-outline'} size={23} color={done?colors.action:colors.muted}/>}
@@ -43,11 +45,11 @@ export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onE
    </View>
    {compact&&!excluded&&<View style={{paddingLeft:44,gap:5}}>{!!value.args.notes&&<Text selectable style={{fontSize:14,lineHeight:22,color:colors.secondary}}>{expanded?String(value.args.notes):String(value.args.notes).slice(0,120)}{!expanded&&String(value.args.notes).length>120?'…':''}</Text>}{String(value.args.notes??'').length>120&&<Pressable accessibilityRole="button" accessibilityLabel={label+' 내용 '+(expanded?'접기':'더 보기')} onPress={()=>setExpanded(v=>!v)} style={{minHeight:44,justifyContent:'center'}}><Text style={s.link}>{expanded?'내용 접기':'내용 더 보기'}</Text></Pressable>}<View style={{flexDirection:'row',flexWrap:'wrap',alignItems:'center',gap:8}}>{(!!value.args.dueDate||sourceLabels.length>0)&&<Text style={s.meta}>{[value.args.dueDate,...sourceLabels].filter(Boolean).join(' · ')}</Text>}{sourceLinks}</View></View>}
    {editing&&!linked&&!excluded&&!locked&&<View style={{gap:8}}><TextInput accessibilityLabel={label+' 제목'} value={String(value.args.title??'')} onChangeText={v=>set('title',v)} editable={!disabled} maxLength={120} multiline style={s.input}/><DateField value={typeof value.args.dueDate==='string'?value.args.dueDate:null} onChange={v=>set('dueDate',v)}/><Pressable accessibilityRole="button" accessibilityLabel={`${label} 메모 ${notesOpen?'접기':'열기'}`} onPress={()=>setNotesOpen(v=>!v)} style={s.control}><Text style={s.link}>메모 {notesOpen?'접기':'편집'}</Text></Pressable>{notesOpen&&<NotesField label={label+' 메모'} value={String(value.args.notes??'')} onChange={v=>set('notes',v)}/>}</View>}
-   {(!compact||menu||!!linked||excluded||entry.calendarAdded)&&<View style={s.actions}>
+   {(!compact||desktop||menu||!!linked||excluded||entry.calendarAdded)&&<View style={[s.actions,desktop&&{paddingLeft:44,justifyContent:'flex-start'}]}>
     {excluded?<><Text style={[s.meta,{flex:1}]}>채팅에서 제외됨</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 다시 포함'} disabled={disabled} onPress={()=>press(()=>onExclude(false))} style={s.control}><Text style={s.link}>되돌리기</Text></Pressable></>:<>
      {compact&&menu&&!linked&&<Pressable accessibilityRole="button" accessibilityLabel={label+' 수정'} disabled={disabled} onPress={()=>setEditing(v=>!v)} style={s.control}><Text style={s.link}>수정</Text></Pressable>}
      {onCalendar&&!done&&(entry.calendarAdded?<Text style={s.meta}>캘린더에 추가됨</Text>:<Pressable accessibilityRole="button" accessibilityLabel={label+' 캘린더로 이동'} disabled={disabled} onPress={()=>press(onCalendar)} style={s.control}><Ionicons name="calendar-outline" size={17} color={colors.blueText}/><Text style={s.link}>캘린더</Text></Pressable>)}
-     <Pressable accessibilityRole="button" accessibilityLabel={label+' 할 일 아님'} disabled={disabled} onPress={()=>press(exclude)} style={s.control}><Text style={s.meta}>제외</Text></Pressable>
+     {(!desktop||menu)&&<Pressable accessibilityRole="button" accessibilityLabel={label+' 할 일 아님'} disabled={disabled} onPress={()=>press(exclude)} style={s.control}><Text style={s.meta}>제외</Text></Pressable>}
      {linked?<Pressable accessibilityRole="button" accessibilityLabel={label+(done?' log 보기':' Todo 보기')} disabled={disabled} onPress={()=>press(done?onOpenLog:onOpenTodos)} style={s.control}><Text style={s.link}>{done?'완료됨 · log 보기':'Todo에 추가됨 · 보기'}</Text></Pressable>:<Pressable accessibilityRole="button" accessibilityLabel={label+' Todo에 추가'} disabled={disabled||!String(value.args.title??'').trim()} onPress={()=>press(()=>act(false))} style={s.control}><Text style={s.link}>Todo에 추가</Text><Ionicons name="add" size={17} color={colors.blueText}/></Pressable>}
     </>}
    </View>}
