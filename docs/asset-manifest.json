@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "3c40bde40e053dbd365e2bebcb2802dd428145a7",
-  "assetCommit": "0a412ba7721040c2d5b6247c3aab7e901519c1ee",
-  "imageCount": 1598,
+  "codeCommit": "26dfd2f069ec7011ae552c503084ef25041fbf73",
+  "assetCommit": "b06f6fff63f821beaa8b7dd74507ed6688db62c3",
+  "imageCount": 1602,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -2005,6 +2005,34 @@
       "bytes": 70918,
       "sha256": "e4444baad3b979837af0d194a780cf9b7f57292584bc60f8ecae86bcc7300ac7",
       "import_path": "images/artifacts__admin-live-2026-11-22__usage.png"
+    },
+    {
+      "path": "artifacts/admin-management-2026-11-22/audit.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 113706,
+      "sha256": "289db96d67b5257be67337ad08a427ba253a5335d55072ab5be2c60103805c68",
+      "import_path": "images/artifacts__admin-management-2026-11-22__audit.png"
+    },
+    {
+      "path": "artifacts/admin-management-2026-11-22/operators.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 81480,
+      "sha256": "05b9fe281fef680b82af2bfafd9b62799e8e94b8349790b40e5b1a61e80ee69d",
+      "import_path": "images/artifacts__admin-management-2026-11-22__operators.png"
+    },
+    {
+      "path": "artifacts/admin-management-2026-11-22/passes.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 89029,
+      "sha256": "6062ce1aba3fe9e10a5046e1ec3baebd4fcaaa14289503dd6aa87e7f17e00489",
+      "import_path": "images/artifacts__admin-management-2026-11-22__passes.png"
+    },
+    {
+      "path": "artifacts/admin-management-2026-11-22/suspended.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 86863,
+      "sha256": "3038b8e1d474250926c900ef7755d7956abe029723b97c7e12c9aec0fb27e2c3",
+      "import_path": "images/artifacts__admin-management-2026-11-22__suspended.png"
     },
     {
       "path": "artifacts/admin-preview-2026-11-22/member-detail.png",
