@@ -1,9 +1,23 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "4dfedee3b8f6e3c4b28d84191e586b226bae4d0e",
-  "assetCommit": "0e42846ee7c8e15e0ad11de40e6ac6dd6612063c",
-  "imageCount": 1474,
+  "codeCommit": "5c13cf89ee1e1549266427a925d98c99e987bd37",
+  "assetCommit": "5c13cf89ee1e1549266427a925d98c99e987bd37",
+  "imageCount": 1483,
   "images": [
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 94294,
+      "sha256": "f481514d4071a65aaedc81827b5729c9ee7db59398bfc71fa3d07cec8e1ba0ee",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-briefing.png"
+    },
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-todos.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 63016,
+      "sha256": "dadf8aafd11da5f69511b5ca18ed29d42e3de5eb2384e8366e6c0ec1a43e5b8b",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-todos.png"
+    },
     {
       "path": "artifacts/duck-beta-annual-2026-11-19/desktop-pricing-en.png",
       "category": "덕 소개·베타 월요금/연간 환산/정상 월요금·합성 예시·실제 청구 아님",
@@ -5780,6 +5794,48 @@
       "import_path": "images/artifacts__design-guide-fixture.png"
     },
     {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-calendar.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 63325,
+      "sha256": "099055be0369890788e9e9c5bc1b2c401a7a8e84a0d284058781591051acdc66",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-calendar.png"
+    },
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-chat.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 82963,
+      "sha256": "38509f2b011bd6f9bb6fff48bac420b6bd11dc5c85d458c378e1aeb2531ab73c",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-chat.png"
+    },
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-dark.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 93967,
+      "sha256": "0ef54a4b591fa59d7a47d8f049ca4752ae26f008c1e432369261e3293c0ce4f2",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-dark.png"
+    },
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-empty.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 64804,
+      "sha256": "1449139e7c3cfaa57eac2ce430b64ff8b80857daf1d07560482b071262ebc9ce",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-empty.png"
+    },
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/desktop-me.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 72459,
+      "sha256": "d50fca4f22d26305d432b5258519483d1eb36417e3ee68f9ecd6113cb3fdebac",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__desktop-me.png"
+    },
+    {
+      "path": "artifacts/desktop-workspace-2026-11-22/phone-unchanged.png",
+      "category": "PC 웹 나의 하루 · 실제 Expo · 합성 계정/API · 실계정/AI 생성 아님",
+      "bytes": 49226,
+      "sha256": "373075805ee8360edefbc6502cfcb6ce67784d06d83c693bcf339b276c7db65e",
+      "import_path": "images/artifacts__desktop-workspace-2026-11-22__phone-unchanged.png"
+    },
+    {
       "path": "artifacts/dots-full-2026-11-15/computer/browser-fixture.jpg",
       "category": "실제 network-none Docker·합성 HTTP 사이트/분석 자료·공개 인터넷/실계정 아님",
       "bytes": 12086,
@@ -10300,6 +10356,13 @@
       "bytes": 4140,
       "sha256": "6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83",
       "import_path": "images/mobile__assets__android-icon-monochrome.png"
+    },
+    {
+      "path": "mobile/assets/duck-mark.png",
+      "category": "앱 초기 리소스·최종 브랜딩 미확정",
+      "bytes": 864,
+      "sha256": "d8d2108c8a27d67a71840235d663d467041ebd906912d9be14933ebb73b81beb",
+      "import_path": "images/mobile__assets__duck-mark.png"
     },
     {
       "path": "mobile/assets/favicon.png",
