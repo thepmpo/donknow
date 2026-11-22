@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-22",
-  "codeCommit": "4b207856fe1a1fa770933b2cf32a33025fe471bd",
-  "assetCommit": "4b207856fe1a1fa770933b2cf32a33025fe471bd",
-  "imageCount": 1610,
+  "codeCommit": "2385c85bbfeb07ed907833c63521ec6f99903388",
+  "assetCommit": "2385c85bbfeb07ed907833c63521ec6f99903388",
+  "imageCount": 1613,
   "images": [
     {
       "path": "artifacts/desktop-workspace-2026-11-22/desktop-briefing.png",
@@ -7108,6 +7108,27 @@
       "bytes": 39611,
       "sha256": "66bbb91975b9c4f751a572db7fa6be848dbcba2ca4ba0d6a943c86655eda2258",
       "import_path": "images/artifacts__editor-viewport-2026-11-15__current__06-camera-column-alignment.png"
+    },
+    {
+      "path": "artifacts/email-verification-2026-11-22/verification-desktop.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 44766,
+      "sha256": "a6ff90045e8eb2014bad4b8259888092905a537b2bb2fa8918cc148c3e641699",
+      "import_path": "images/artifacts__email-verification-2026-11-22__verification-desktop.png"
+    },
+    {
+      "path": "artifacts/email-verification-2026-11-22/verification-mail-failed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 49555,
+      "sha256": "54d3925161b2863b5752e189c4ac35b2fdbae3cb81add71d3c3d22a34517f3af",
+      "import_path": "images/artifacts__email-verification-2026-11-22__verification-mail-failed.png"
+    },
+    {
+      "path": "artifacts/email-verification-2026-11-22/verification-mobile.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 37928,
+      "sha256": "e9599e80facf217cdfba3ef8001088ccb2b9d0801627ad0cc2a9f340dea31194",
+      "import_path": "images/artifacts__email-verification-2026-11-22__verification-mobile.png"
     },
     {
       "path": "artifacts/features-overview.png",
