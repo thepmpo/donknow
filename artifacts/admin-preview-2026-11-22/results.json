@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "source": "Actual local Node server routes and headless Chromium, fixed synthetic members/entitlements/payments only",
+  "flows": [
+    "7 navigation panels",
+    "member search and filter",
+    "member details",
+    "entitlement/payment tabs",
+    "complimentary entitlement has no payment",
+    "empty search and safe rendering",
+    "390px layout",
+    "no API requests"
+  ],
+  "errors": [],
+  "apiRequests": []
+}
