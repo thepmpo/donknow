@@ -1,0 +1,64 @@
+// No admin credentials or role state are stored in the browser. Server authorization is required on every read.
+const names={overview:'운영 현황',members:'회원 관리',passes:'이용권',payments:'결제 내역',connections:'서비스 연결·동기화',usage:'AI·사용량',audit:'운영 기록'};
+const state={view:'members',selected:null,member:null,query:'',offset:0,authorized:false};
+const content=document.querySelector('#content'),logout=document.querySelector('#admin-logout'),sessionLabel=document.querySelector('#session-label');
+let controller=null,version=0;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date=v=>v?new Intl.DateTimeFormat('ko-KR',{dateStyle:'medium',timeZone:'Asia/Seoul'}).format(new Date(v)):'기록 없음';
+const instant=v=>v?new Intl.DateTimeFormat('ko-KR',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Seoul'}).format(new Date(v)):'—';
+const number=v=>Number(v??0).toLocaleString('ko-KR'),won=v=>number(v)+'원';
+const plan=v=>({pro:'프로',lite:'라이트',free:'무료'}[v]??v);
+const badge=(v,tone='')=>`<span class="badge ${tone}">${esc(v)}</span>`;
+const title=(v,copy)=>`<h1>${esc(v)}</h1><p class="subtitle">${esc(copy)}</p>`;
+const panel=(name,body,aside='')=>`<section class="panel"><div class="panel-head"><h2>${esc(name)}</h2><span>${esc(aside)}</span></div>${body}</section>`;
+const table=(head,rows)=>`<div class="table-wrap"><table><thead><tr>${head.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+const fields=list=>`<dl class="fields">${list.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
+const stats=list=>`<div class="stats">${list.map(([k,v,n])=>`<section class="stat"><p>${esc(k)}</p><strong>${esc(v)}</strong><small>${esc(n)}</small></section>`).join('')}</div>`;
+const memberLink=(id,label=id)=>`<button class="link mono" data-member="${esc(id)}">${esc(label)}</button>`;
+async function request(path,{method='GET',body,signal}={}){
+ const res=await fetch(path,{method,credentials:'same-origin',cache:'no-store',signal,headers:{'X-Duckduck-Client':'web',...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
+ let data;try{data=await res.json();}catch{throw Error('서버 응답을 확인하지 못했어요. 다시 확인해주세요.');}
+ if(!res.ok)throw Object.assign(Error(data.error??'조회하지 못했어요.'),{status:res.status});return data;
+}
+function clearData(){state.member=null;state.selected=null;state.query='';state.offset=0;state.authorized=false;logout.hidden=true;sessionLabel.textContent='운영자 로그인 필요';}
+function loginForm(message='운영자로 지정된 이메일 인증 계정으로 로그인해주세요.'){
+ controller?.abort();version++;clearData();content.setAttribute('aria-busy','false');
+ content.innerHTML=title('운영자 로그인','덕 계정으로 로그인하고 운영 권한을 확인해요.')+panel('로그인',`<form id="admin-login" class="admin-login"><label>이메일<input name="email" type="email" autocomplete="username" required maxlength="254"></label><label>비밀번호<input name="password" type="password" autocomplete="current-password" required minlength="10" maxlength="128"></label><p id="login-message" role="status">${esc(message)}</p><button class="pill-button" type="submit">로그인</button><a class="link" href="/app">덕에서 이메일 인증·계정 관리 ↗</a></form>`);
+}
+function updateNav(){document.querySelectorAll('[data-view]').forEach(b=>{if(b.dataset.view===(state.view==='profile'?'members':state.view))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});document.querySelector('#breadcrumb').textContent='운영 / '+(names[state.view]??'회원 상세');}
+function memberList(data){const rows=data.items.map(m=>`<tr><td>${memberLink(m.id)}</td><td><strong>${esc(m.email)}</strong></td><td>${date(m.joinedAt)}</td><td>${badge(plan(m.access.plan))}<small>무료 제공 · 현재 정책</small></td><td>${badge(m.emailVerified?'인증 완료':'인증 대기',m.emailVerified?'green':'amber')}</td><td><button class="link" data-member="${esc(m.id)}" aria-label="${esc(m.email)} 회원 상세">상세 보기 →</button></td></tr>`).join('');
+ return title('회원 관리','사용자 ID나 이메일로 검색한 뒤 회원별 정보를 확인하세요.')+`<section class="panel"><div class="panel-head"><h2>회원 목록</h2><span>${number(data.total)}명 · 검색 결과</span></div><form class="toolbar" id="member-search"><input name="query" type="search" aria-label="회원 검색" placeholder="사용자 ID 또는 이메일 검색" maxlength="100" value="${esc(state.query)}"><button class="pill-button" type="submit">검색</button></form>${table(['사용자 ID','이메일','가입일','현재 이용권','이메일 인증',''],rows||'<tr><td colspan="6" class="empty">검색 결과가 없어요.</td></tr>')}<div class="pagination"><button class="pill-button" data-offset="${Math.max(0,data.offset-25)}" ${!data.offset?'disabled':''}>이전</button><span>${data.total?number(data.offset+1):0}–${number(data.offset+data.items.length)} / ${number(data.total)}</span><button class="pill-button" data-offset="${data.nextOffset??0}" ${data.nextOffset===null?'disabled':''}>다음</button></div></section>`;
+}
+function memberHeader(m,tab){const tabs=[['profile','회원 정보'],['passes','이용권 목록'],['payments','결제 내역'],['connections','연결·동기화'],['usage','AI 사용량']];return `<button class="back" data-members>← 다른 회원 찾기</button><div class="detail-head"><div class="avatar">${esc(m.email.slice(0,1).toUpperCase())}</div><div><h1>${esc(m.email)}</h1><p class="mono">${esc(m.id)}</p></div></div><div class="tabs" role="tablist" aria-label="회원 상세 메뉴">${tabs.map(([key,label])=>`<button role="tab" data-section="${key}" aria-selected="${key===tab}">${label}</button>`).join('')}</div>`;}
+function memberBody(m,section){
+ if(section==='profile')return `<div class="grid">${panel('기본 정보',fields([['사용자 ID',m.id],['이메일',m.email],['가입일',date(m.joinedAt)],['이메일 인증',m.emailVerified?'인증 완료':'인증 대기'],['저장된 할 일',number(m.todos.total)+'개 · 완료 '+number(m.todos.completed)+'개']]))}${panel('현재 이용권',fields([['상품',plan(m.access.plan)],['제공 방식','현재 운영 정책 · 무료 제공'],['시작·종료일','개별 발급 이력 없음'],['자동 결제','사용하지 않음']]))}</div><p class="hint">현재 모든 계정의 프로 무료 제공 정책을 표시합니다. 가입일을 이용권 발급일로 추정하지 않아요.</p>`;
+ if(section==='passes')return panel('현재 적용 이용권',table(['상품','제공 방식','상태','시작일','종료일'],m.entitlements.map(p=>`<tr><td>${badge(plan(p.plan))}</td><td>운영 정책 · 무료 제공</td><td>${badge('사용 중','green')}</td><td>${date(p.startsAt)}</td><td>${p.endsAt?date(p.endsAt):'만료 설정 없음'}</td></tr>`).join('')))+`<p class="hint">현재 접근 정책을 조회한 목록입니다. 개별 이용권 발급·변경 이력과 유료 구독은 아직 연결되지 않았어요.</p>`;
+ if(section==='payments')return panel('결제 내역','<div class="empty">실제 결제 내역이 아직 연결되지 않았어요.<br>현재 프로 이용권은 무료 제공 중이며, 이를 결제로 기록하지 않아요.</div>','PG 연동 전');
+ if(section==='connections')return panel('저장된 연결 정보',table(['서비스','연결 계정','연결 정보 갱신일','상태'],m.connections.map(c=>`<tr><td>${esc({google:'Google',slack:'Slack',notion:'Notion',naver:'네이버'}[c.provider]??c.provider)}</td><td>${esc(c.label)}</td><td>${instant(c.updatedAt)}</td><td>${badge('정보 저장됨','gray')}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">저장된 외부 연결이 없어요.</td></tr>'))+panel('원본 반영 작업',table(['작업 종류','상태','건수'],[...m.sync.source.map(s=>({...s,kind:'원본 편집'})),...m.sync.tasks.map(s=>({...s,kind:'Google Tasks 완료 반영'}))].map(s=>`<tr><td>${s.kind}</td><td>${esc(s.status)}</td><td>${number(s.count)}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">저장된 반영 작업이 없어요.</td></tr>'))+'<p class="hint">연결 정보 갱신일은 마지막 동기화 성공 시각과 다릅니다. 외부 서비스의 현재 접속 성공 여부를 확인한 화면은 아니며, 원본 내용을 읽거나 작업을 재실행하지 않아요.</p>';
+ if(section==='usage')return stats([['에이전트 대화',number(m.usage.agentTurns)+'회',m.usage.period+' · 기록된 대화 기준'],['사용·예약 원가',won(m.usage.usedAndReservedKrw),'확정 원가와 진행 중 예약 포함'],['배정된 AI 예산',won(m.usage.limitKrw),'실제 확인된 예산'],['남은 AI 예산',won(m.usage.remainingKrw),'프로 이용권과 별도']])+panel('사용량 안내','<p class="skeleton-note">이용권을 무료 제공받아도 AI 처리 예산이 자동으로 생기지는 않아요. 모든 종류의 모델 호출 횟수를 집계한 수치는 아니며, 실제 예산과 에이전트 대화 기록을 표시합니다.</p>');
+ return '';
+}
+function selectFirst(){return title(names[state.view],'회원별로 확인할 수 있어요.')+panel('회원 선택','<div class="empty">먼저 회원을 찾아 선택해주세요.<br><button class="link" data-members>회원 찾기 →</button></div>');}
+async function load(view=state.view){
+ if(!state.authorized)return;state.view=view;updateNav();controller?.abort();controller=new AbortController();const captured=++version,signal=controller.signal;
+ content.setAttribute('aria-busy','true');content.innerHTML='<p class="subtitle" role="status">실제 정보를 확인하고 있어요.</p>';
+ try{
+  let html;
+  if(view==='members'){const data=await request('/api/admin/members?'+new URLSearchParams({q:state.query,offset:String(state.offset)}),{signal});html=memberList(data);}
+  else if(view==='overview'){const d=await request('/api/admin/overview',{signal});html=title('운영 현황','실제 계정·연결·사용 기록을 조회해요.')+stats([['전체 회원',number(d.members.total)+'명','가입 계정 기준'],['이메일 인증',number(d.members.verified)+'명','현재 인증 상태'],['저장된 연결',number(d.connections)+'개','외부 접속 정상 여부와 구분'],['에이전트 대화',number(d.agentTurns)+'회',d.period+' · 기록 기준']])+panel('이용권·결제 상태','<p class="skeleton-note">현재 전체 계정에 프로를 무료 제공하고 있습니다.<br>PG 결제 기록은 연결 전이며 매출은 집계하지 않습니다.</p>');}
+  else if(view==='audit'){const d=await request('/api/admin/audit',{signal});const labels={session:'운영자 접속 확인',overview:'운영 현황 조회',members:'회원 검색·목록 조회',member:'회원 상세 조회',audit:'운영 기록 조회'};html=title('운영 기록','실제 운영자 조회 이력을 최근 50건까지 표시합니다.')+panel('조회 이력',table(['일시','운영자','작업','대상 회원 ID'],d.items.map(a=>`<tr><td>${instant(a.createdAt)}</td><td>${esc(a.actorEmail??'삭제된 계정')}</td><td>${esc(labels[a.operation]??a.operation)}</td><td>${a.subjectId?memberLink(a.subjectId):'—'}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">저장된 기록이 없어요.</td></tr>'));}
+  else if(!state.selected)html=selectFirst();
+  else{const m=await request('/api/admin/members/'+encodeURIComponent(state.selected),{signal});if(captured!==version)return;state.member=m;const section=view==='profile'?'profile':view;html=memberHeader(m,section)+memberBody(m,section);}
+  if(captured!==version)return;content.innerHTML=html;content.setAttribute('aria-busy','false');
+ }catch(error){if(error.name==='AbortError'||captured!==version)return;if(error.status===401||error.status===403){loginForm(error.message);return;}content.setAttribute('aria-busy','false');content.innerHTML=title('조회하지 못했어요.',error.message)+'<button class="pill-button" data-retry>다시 확인</button>';}
+}
+async function bootstrap(){controller?.abort();const captured=++version;state.authorized=false;state.member=null;logout.hidden=true;content.innerHTML='<p class="subtitle" role="status">운영자 권한을 확인하고 있어요.</p>';
+ try{const d=await request('/api/admin/session');if(captured!==version)return;state.authorized=true;sessionLabel.textContent=d.user.email+' · 조회 전용';logout.hidden=false;await load();}catch(error){if(captured===version)loginForm(error.message);}
+}
+function showMembers(){state.selected=null;state.member=null;state.offset=0;void load('members');}
+content.addEventListener('submit',async event=>{event.preventDefault();const form=event.target;if(form.id==='admin-login'){const submit=form.querySelector('button[type=submit]'),message=form.querySelector('#login-message'),data=new FormData(form);submit.disabled=true;message.textContent='로그인 중…';try{await request('/api/auth/login',{method:'POST',body:{email:data.get('email'),password:data.get('password')}});form.reset();state.selected=null;state.query='';state.offset=0;state.view='members';await bootstrap();}catch(error){message.textContent=error.message;submit.disabled=false;}}else if(form.id==='member-search'){state.query=String(new FormData(form).get('query')??'');state.offset=0;void load('members');}});
+content.addEventListener('click',event=>{const b=event.target.closest('button');if(!b||b.disabled)return;if(b.dataset.member){state.selected=b.dataset.member;void load('profile');}else if(b.dataset.section)void load(b.dataset.section);else if(b.hasAttribute('data-members'))showMembers();else if(b.hasAttribute('data-retry'))void load();else if(b.hasAttribute('data-offset')){state.offset=Number(b.dataset.offset);void load('members');}});
+document.querySelector('nav').addEventListener('click',event=>{const b=event.target.closest('[data-view]');if(!b)return;if(b.dataset.view==='members')showMembers();else void load(b.dataset.view);});
+logout.addEventListener('click',async()=>{controller?.abort();version++;clearData();content.innerHTML='<p class="subtitle">로그아웃 중…</p>';try{await request('/api/auth/logout',{method:'POST',body:{}});loginForm('로그아웃했어요.');}catch(error){loginForm('로그아웃 응답을 확인하지 못했어요. '+error.message);}});
+window.addEventListener('pageshow',event=>{if(event.persisted)void bootstrap();});window.addEventListener('pagehide',()=>{controller?.abort();version++;clearData();content.innerHTML='';});
+void bootstrap();

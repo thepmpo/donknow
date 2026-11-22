@@ -1,0 +1,19 @@
+import {fail} from './secrets.js';
+export function isAdmin(user,env=process.env){
+ if(!user?.emailVerified||typeof env.DUCK_ADMIN_EMAILS!=='string'||env.DUCK_ADMIN_EMAILS.length>6000)return false;
+ const emails=env.DUCK_ADMIN_EMAILS.split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
+ return emails.length>0&&emails.length<=20&&emails.every(v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))&&emails.includes(user.email.toLowerCase());
+}
+export function adminRoute(req,path,url,user,store,send,env=process.env){
+ if(!path.startsWith('/api/admin/'))return false;
+ if(!isAdmin(user,env))throw fail(403,'운영자 권한이 있는 이메일 인증 계정으로 로그인해주세요.');
+ if(req.method!=='GET'){send(405,{error:'현재 어드민은 조회만 할 수 있어요.'},{Allow:'GET'});return true;}
+ let operation,result,subject=null;
+ if(path==='/api/admin/session'){operation='session';result={user:{id:user.id,email:user.email},role:'admin-reader',readOnly:true};}
+ else if(path==='/api/admin/overview'){operation='overview';result=store.adminOverview();}
+ else if(path==='/api/admin/members'){operation='members';const raw=url.searchParams.get('offset')??'0';if(!/^\d{1,7}$/.test(raw))throw fail(400,'페이지를 확인해주세요.');result=store.adminMembers({query:url.searchParams.get('q')??'',offset:Number(raw)});}
+ else if(path.startsWith('/api/admin/members/')){operation='member';subject=path.slice('/api/admin/members/'.length);result=store.adminMember(subject);}
+ else if(path==='/api/admin/audit'){operation='audit';result=store.adminAudit();}
+ else throw fail(404,'운영 메뉴를 찾을 수 없어요.');
+ store.recordAdminAccess(user.id,operation,subject);send(200,result);return true;
+}

@@ -1,0 +1,31 @@
+import {chromium} from 'playwright-core';
+import {apiHarness} from '../../test-support/api.js';
+import {openStore} from '../../server/store.js';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import assert from 'node:assert/strict';
+const out=resolve(new URL('../../artifacts/admin-live-2026-11-22/',import.meta.url).pathname);await mkdir(out,{recursive:true});
+const email='admin-ui@example.test',other='customer-ui@example.test',h=await apiHarness({DUCK_ADMIN_EMAILS:email,AI_ENABLED:'false'});
+async function verified(mail){const a=await h.register(mail);await h.request('/api/account/verification/send','POST',{},a.token);const item=await h.mail(mail,'이메일 인증');const code=/인증번호: (\d{6})/.exec(item.text)[1];await h.request('/api/account/verification/confirm','POST',{code},a.token);return a;}
+const a=await verified(email),b=await verified(other),store=await openStore(h.dir);
+store.create(b.user.id,{title:'PRIVATE_TASK_TITLE_MUST_NOT_APPEAR',notes:'PRIVATE_NOTE_MUST_NOT_APPEAR',dueDate:null});store.saveConnection(b.user.id,'google',{accessToken:'PRIVATE_ACCESS_TOKEN',connectionId:'test-account'},'Google fixture account');store.close();
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const page=await browser.newPage({viewport:{width:1440,height:1000},locale:'ko-KR'});page.setDefaultTimeout(15000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+async function login(mail){await page.getByLabel('이메일',{exact:true}).fill(mail);await page.getByLabel('비밀번호',{exact:true}).fill('fixture-password-123');await page.getByRole('button',{name:'로그인',exact:true}).click();}
+try{
+ await page.goto(h.baseUrl+'/admin');await page.getByRole('heading',{name:'운영자 로그인',exact:true}).waitFor();assert.equal(await page.getByText(other,{exact:true}).count(),0);await login(email);await page.getByRole('heading',{name:'회원 관리',exact:true}).waitFor();await page.screenshot({path:resolve(out,'members.png')});
+ await page.getByRole('searchbox',{name:'회원 검색'}).fill(other);await page.getByRole('button',{name:'검색',exact:true}).click();await page.getByRole('button',{name:other+' 회원 상세',exact:true}).waitFor();assert.equal(await page.locator('tbody tr').count(),1);await page.getByRole('button',{name:other+' 회원 상세',exact:true}).click();await page.getByRole('heading',{name:other,exact:true}).waitFor();await page.getByText('1개 · 완료 0개',{exact:true}).waitFor();assert.equal(await page.getByText('PRIVATE_TASK_TITLE_MUST_NOT_APPEAR',{exact:true}).count(),0);await page.screenshot({path:resolve(out,'member-detail.png')});
+ await page.getByRole('tab',{name:'이용권 목록',exact:true}).click();await page.getByRole('cell',{name:'운영 정책 · 무료 제공',exact:true}).waitFor();await page.screenshot({path:resolve(out,'passes.png')});
+ await page.getByRole('tab',{name:'결제 내역',exact:true}).click();await page.getByText('실제 결제 내역이 아직 연결되지 않았어요.',{exact:false}).waitFor();await page.screenshot({path:resolve(out,'payments-unavailable.png')});
+ await page.getByRole('tab',{name:'연결·동기화',exact:true}).click();await page.getByRole('cell',{name:'Google fixture account',exact:true}).waitFor();await page.screenshot({path:resolve(out,'connections.png')});
+ await page.getByRole('tab',{name:'AI 사용량',exact:true}).click();await page.getByRole('heading',{name:'사용량 안내',exact:true}).waitFor();await page.screenshot({path:resolve(out,'usage.png')});
+ await page.getByRole('navigation').getByRole('button',{name:'운영 기록',exact:true}).click();await page.getByRole('heading',{name:'운영 기록',exact:true}).waitFor();await page.getByRole('cell',{name:'회원 상세 조회',exact:true}).first().waitFor();await page.screenshot({path:resolve(out,'audit.png')});
+ await page.getByRole('navigation').getByRole('button',{name:'운영 현황',exact:true}).click();await page.getByRole('heading',{name:'운영 현황',exact:true}).waitFor();await page.screenshot({path:resolve(out,'overview.png')});
+ await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:resolve(out,'narrow.png')});await page.setViewportSize({width:1440,height:1000});
+ await page.getByRole('navigation').getByRole('button',{name:'회원 관리',exact:true}).click();await page.getByRole('searchbox',{name:'회원 검색'}).waitFor();
+ let release;const held=new Promise(resolve=>release=resolve);let intercepted;const seen=new Promise(resolve=>intercepted=resolve);
+ await page.route('**/api/admin/members/'+b.user.id,async route=>{const response=await route.fetch();intercepted();await held;try{await route.fulfill({response});}catch{}});
+ await page.getByRole('button',{name:other+' 회원 상세',exact:true}).click();await seen;await page.getByRole('button',{name:'로그아웃',exact:true}).click();await page.getByRole('heading',{name:'운영자 로그인',exact:true}).waitFor();release();await page.waitForTimeout(100);assert.equal(await page.getByRole('heading',{name:other,exact:true}).count(),0,'late response cannot restore member details after logout');await page.unroute('**/api/admin/members/'+b.user.id);
+ await login(other);await page.getByText('운영자 권한이 있는 이메일 인증 계정으로 로그인해주세요.',{exact:true}).waitFor();assert.equal(await page.getByRole('heading',{name:'회원 관리',exact:true}).count(),0);await page.screenshot({path:resolve(out,'ordinary-account-denied.png')});assert.deepEqual(errors,[]);
+ await writeFile(resolve(out,'results.json'),JSON.stringify({passed:true,source:'Actual local Node/SQLite server, verified fixture accounts and real HttpOnly browser sessions; no production accounts/providers/model calls',flows:['guest login gate','verified owner login','real member search','member metadata only','complimentary entitlement','unavailable billing is not fake payment','saved integration metadata','actual budget and agent usage','audit','overview','390px layout','logout rejects stale member response','ordinary verified user denied'],errors},null,2));console.log('PASS: real admin UI, session/roles, member search/detail, metadata, usage/audit, logout isolation');
+}catch(e){await page.screenshot({path:resolve(out,'failure.png')});throw e;}finally{await browser.close();await h.close();}

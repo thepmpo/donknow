@@ -1,3 +1,4 @@
+import {adminStore} from './admin-store.js';
 import { featureStore } from './features-store.js';
 import {accountAccess} from './plans.js';
 import {fail} from './secrets.js';
@@ -37,6 +38,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
   function get(userId, id) { const row = db.prepare('SELECT data FROM todos WHERE user_id = ? AND id = ?').get(userId, id); return row ? JSON.parse(row.data) : null; }
   return {
     ...features,
+    ...adminStore(db),
     close: () => db.close(),
     async register(email, password) {
       const salt = randomBytes(16).toString('hex');

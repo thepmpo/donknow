@@ -1,3 +1,4 @@
+import {adminRoute} from './server/admin-routes.js';
 import {requestMetrics} from './server/request-metrics.js';
 import {isMainThread,parentPort,workerData} from 'node:worker_threads';
 import {todoWire} from './server/todo-wire.js';
@@ -79,7 +80,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       } catch (error) { if(error.code !== 'ENOENT') throw error; send(404,{error:'이미지를 찾을 수 없어요.'}); }
       return;
     }
-    const projectFiles={'/admin-preview':'admin-preview.html','/admin-preview/':'admin-preview.html','/admin-preview.js':'admin-preview.js','/admin-preview.css':'admin-preview.css','/design-guide':'design-guide.html','/design-guide/':'design-guide.html','/project':'project.html','/project/':'project.html','/project-comments.js':'project-comments.js','/project-comments.css':'project-comments.css'};
+    const projectFiles={'/admin':'admin.html','/admin/':'admin.html','/admin.js':'admin.js','/admin-preview':'admin-preview.html','/admin-preview/':'admin-preview.html','/admin-preview.js':'admin-preview.js','/admin-preview.css':'admin-preview.css','/design-guide':'design-guide.html','/design-guide/':'design-guide.html','/project':'project.html','/project/':'project.html','/project-comments.js':'project-comments.js','/project-comments.css':'project-comments.css'};
     if(projectFiles[path]&&req.method==='GET'){
       const file=projectFiles[path],type=file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8';
       const content=await readFile(root+'public/'+file);res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-cache','Content-Security-Policy':"default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"});res.end(content);return;
@@ -107,6 +108,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       if (path === '/api/health' && req.method === 'GET') return send(200, { ok: true, authentication: 'session', version: 1, calendarWorkspace:2, release:/^[a-f0-9]{40}$/.test(process.env.RENDER_GIT_COMMIT??'')?process.env.RENDER_GIT_COMMIT:null });
       const token = tokenFrom(req), session = store.session(token);
       if (!session) return send(401, { error: '로그인이 필요해요.', code: 'AUTH_REQUIRED' });
+      if(adminRoute(req,path,url,session.user,store,send))return;
       if(path==='/api/project/comments'&&req.method==='POST'){
         if(!session.user.emailVerified)return send(403,{error:'이메일 인증된 계정으로 댓글을 작성해주세요.'});
         if(limited('comments:'+session.user.id))return send(429,{error:'댓글 작성이 많아요. 잠시 후 다시 시도해주세요.'});

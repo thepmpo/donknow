@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "source": "Actual local Node/SQLite server, verified fixture accounts and real HttpOnly browser sessions; no production accounts/providers/model calls",
+  "flows": [
+    "guest login gate",
+    "verified owner login",
+    "real member search",
+    "member metadata only",
+    "complimentary entitlement",
+    "unavailable billing is not fake payment",
+    "saved integration metadata",
+    "actual budget and agent usage",
+    "audit",
+    "overview",
+    "390px layout",
+    "logout rejects stale member response",
+    "ordinary verified user denied"
+  ],
+  "errors": []
+}
