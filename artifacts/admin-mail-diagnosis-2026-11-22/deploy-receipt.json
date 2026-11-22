@@ -1,0 +1,22 @@
+{
+  "service": "duckduck-test",
+  "deployId": "dep-dc1aogqjnfac73888pt0",
+  "release": "e0a7460aa7e48e6f2b346f11fb1afbfe1ac4fd89",
+  "status": "live",
+  "healthVerified": true,
+  "configurationProbe": {
+    "status": 401,
+    "kind": "restricted-api-key",
+    "meaning": "Domains read is not permitted; sending-only key may be valid. Does not establish delivery rejection cause."
+  },
+  "mailDeliveryResolved": false,
+  "pending": "User reproduction after refreshed diagnostic release; no delivery attempt initiated by agent.",
+  "validation": {
+    "targetedPassed": 11,
+    "tests": 447,
+    "passed": 446,
+    "failed": 0,
+    "existingSkipped": 1,
+    "syntaxFiles": 115
+  }
+}
