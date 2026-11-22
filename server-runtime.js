@@ -1,3 +1,4 @@
+import {probeMailConfiguration} from './server/mail-diagnostics.js';
 import {adminAuthRoute,adminToken} from './server/admin-auth-routes.js';
 import {adminRoute} from './server/admin-routes.js';
 import {requestMetrics} from './server/request-metrics.js';
@@ -173,6 +174,6 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     if (!files[path] || req.method !== 'GET') return send(404, { error: '페이지를 찾을 수 없어요.' });
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
   } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.' }); else res.end(); }
-})).listen(Number(process.env.PORT || 3000), lane?'127.0.0.1':'0.0.0.0', () => {if(lane)parentPort.postMessage({type:'ready',port:server.address().port});else console.log('Donknow listening on port ' + server.address().port);if(background&&process.env.NODE_ENV!=='test')void probeAiConnection();});
+})).listen(Number(process.env.PORT || 3000), lane?'127.0.0.1':'0.0.0.0', () => {if(lane)parentPort.postMessage({type:'ready',port:server.address().port});else console.log('Donknow listening on port ' + server.address().port);if(background&&process.env.NODE_ENV!=='test'){void probeAiConnection();void probeMailConfiguration();}});
 if(lane)parentPort.on('message',message=>{if(message.type==='wake')features.wakeSource();if(message.type==='close'){features.close();taskSync.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
 

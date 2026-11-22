@@ -1,3 +1,4 @@
+import {mailPublicError} from './mail-diagnostics.js';
 import {fail} from './secrets.js';
 export const adminToken=req=>/(?:^|;\s*)duckduck_admin_session=([A-Za-z0-9_-]{43})(?:;|$)/.exec(req.headers.cookie??'')?.[1]??'';
 const emailOf=body=>typeof body.email==='string'?body.email.trim().toLowerCase():'';
@@ -10,7 +11,7 @@ export async function adminAuthRoute(req,path,store,mailer,json,send,limited,add
  const body=await json(req),email=emailOf(body);if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw fail(400,'관리자 이메일을 확인해주세요.');
  if(path==='/api/admin/auth/setup/send'){
   if(!mailer.configured)throw fail(503,'관리자 인증 메일 발송이 아직 설정되지 않았어요.');const job=store.adminSetupMail(email);
-  if(job)try{await mailer.deliver(job.id,job.message);}catch{store.cancelAdminSetup(job.id);throw fail(503,'인증 메일을 보내지 못했어요. 잠시 뒤 다시 요청해주세요.');}
+  if(job)try{await mailer.deliver(job.id,job.message);}catch(error){store.cancelAdminSetup(job.id);throw fail(503,mailPublicError(error));}
   send(202,{queued:true,message:'등록된 관리자 주소라면 인증번호가 발송됩니다.'});return true;
  }
  if(typeof body.password!=='string'||body.password.length<10||body.password.length>128)throw fail(400,'비밀번호는 10~128자로 입력해주세요.');
