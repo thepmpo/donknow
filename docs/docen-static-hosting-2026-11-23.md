@@ -27,3 +27,9 @@ npm --prefix website run build:static 통과. node website/tests/static-host.mjs
 현재 docen.today/www는 기존 Docker 서비스에 연결돼 있다. 새 static을 먼저 live/공개URL검증한다. 연결 Render 도구에는 custom domain CRUD가 없어 dashboard 수동 이전이 필요하다. 기존 서버의 도메인만 제거하고 서비스 자체는 삭제/일시정지하지 않는다. 새 static Settings→Custom Domains에 docen.today를 추가하여 root/www를 이동한다. 호스팅KR A @216.24.57.1은 새 Render 안내와 같을 때 유지하고 www CNAME만 새호스트로 교체한다. Resend TXT/CNAME send/rsend/DMARC와 메일 설정은 건드리지 않는다. 동일 Render apex IP여도 도메인 서비스 매핑을 옮겨야 한다. 이 과정에는 짧은 DNS/TLS 전환 시간이 있을 수 있다. 기존서버/주소 유지로 rollback은 domain만 원래 서비스에 복원하고 www CNAME을 duckduck-test.onrender.com으로 복구한다.
 
 새 hostname/서비스ID/live/공개검사 및 실제 custom domain 이전은 후속 영수증에 기록한다. 새 정적 기본URL 성공을 docen.today 이전 완료로 보고하지 않는다.
+
+## 실제 배포 영수증과 남은 단계
+
+새 static 사이트 srv-dc1qt4uc6qcc73bjpffg, https://docen-introduction.onrender.com, dashboard https://dashboard.render.com/static/srv-dc1qt4uc6qcc73bjpffg. deploy dep-dc1qt56c6qcc73bjpgdg, release eeeaf414de25e08cf97ea4a2b89e2389e75c679e, 2026-11-23 12:10:43 KST live. 공개 fetch에서 홈페이지 제목/실제 내용·terms clean URL·coming-soon·static-release 동일 커밋 확인. 가격/Render static-site 공식문서도 실제 조회했다. 무료 정적 배포는 완료, docen.today 도메인 전환은 미완료다. 도메인 CRUD 도구 부재로 사용자 대시보드 단계가 필요하다. 기존 app/API/DB/메일/origin/DNS는 변경하지 않았다.
+
+사용자 실행 순서: 기존 duckduck-test Settings→Custom Domains에서 docen.today와www의 연결만 제거(서비스 삭제 금지) → 새 docen-introduction Settings→Custom Domains에서 docen.today 추가(루트/www 자동 생성 확인) → 호스팅KR의 www CNAME 값만 docen-introduction.onrender.com으로 수정, @ A216.24.57.1이 새 Render 안내와 같으면 유지 → 새 static의 Verify 실행, root/www Verified 및 Certificate Issued 후 실제주소 조회. 이 단계에서는 메일 TXT/CNAME/DMARC는 수정하지 않는다. 실패하면 기존 서비스를 보존했으므로 도메인 매핑만 원래 서비스로 복구한다.

@@ -1,3 +1,7 @@
+## 2026-11-23 — 무료 정적 소개 사이트 live·도메인 이전 대기
+
+사용자 무료 호스팅 승인에 따라 독립 static build/공개파일 allowlist/법적문서/준비안내·서비스 비노출을 구현했다. 실제 Chromium 정적페이지·영상/영문·법적경로·서비스코드404 검사 통과. docen-introduction.onrender.com 신규 무료static live, eeeaf41/dep-dc1qt56c6qcc73bjpgdg. 실제 새주소 내용/약관/준비안내/commit 확인. docen.today는 아직 기존 서비스이며 도메인 이동 도구 부재로 사용자 대시보드/DNS 작업 대기. [절차·영수증](docen-static-hosting-2026-11-23.md).
+
 ## 2026-11-23 — 하단 워드마크 최종 배포 live
 
 42d52e1 / dep-dc1qptijnfac739gs5lg가 2026-11-23 12:05:05 KST live. 작은 docen.·넓은 제목 간격·closing 구분선 제거 반영. 무료 Render sleep 대기 화면은 플랫폼 동작이며 소개 정적 호스팅 분리/상시 유료 서버는 이번에 실행하지 않았다.
