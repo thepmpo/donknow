@@ -1085,7 +1085,7 @@ export function App() {
           </div>
         </section>
         <section className="closing section-wrap">
-          <Duck />
+          <div className="closing-wordmark" aria-label="docen">docen<span className="brand-period" aria-hidden="true">.</span></div>
           <h2>
             {t("오늘은 조금 더 가볍게.", "A little less to carry today.")}
           </h2>

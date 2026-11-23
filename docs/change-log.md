@@ -1,3 +1,7 @@
+## 2026-11-23 — 마지막 소개 영역 큰 docen. 워드마크
+
+사용자 요청으로 closing의 그림 로고를 제거하고 헤더의 소문자 docen + #2366e8 파란 점을 큰 글자로 배치한다. clamp(80px,9vw,128px), weight800, line-height1.05. PC/모바일 웹 공통이며 헤더/법적 footer의 기존 로고는 유지. 앱 변경 없음. 빌드 및 390/1440px 실제 Chromium 화면·그림 제거·가로 넘침 검사 통과. 증거 artifacts/docen-closing-wordmark-2026-11-23/.
+
 ## 2026-11-23 — PC 소개 메인 우측 공 튀기기 배경
 
 첫 시안 선택에 따라 중앙 문구 유지, 우측에 첨부 원본 영상 muted/loop/inline 배치. 1100px 미만 숨김, reduced-motion/error 정지 이미지, offscreen/hidden pause. 실제 playback·KO/EN·반응형·오픈 guard 검사 통과. [상세/증거](docen-hero-bounce-2026-11-23.md), root design-qa.md. 모바일/앱/출시 상태/가격 유지.

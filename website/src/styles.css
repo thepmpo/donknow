@@ -1909,3 +1909,12 @@ a {
   }
   .hero-bounce video { background: #fff; }
 }
+
+/* Closing signature uses the header wordmark rather than the pictorial logo. */
+.closing-wordmark {
+  font-size: clamp(80px, 9vw, 128px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -.065em;
+  color: #17212d;
+}
