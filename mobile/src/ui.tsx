@@ -149,7 +149,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
   const [shareStatus, setShareStatus] = useState('');
   async function shareTodo() {
     if (!todo) return;
-    const message = `🦆 docen\n${todo.title}${todo.dueDate ? `\n예정일: ${todo.dueDate}` : ''}`;
+    const message = `docen\n${todo.title}${todo.dueDate ? `\n예정일: ${todo.dueDate}` : ''}`;
     try {
       if (Platform.OS === 'web') {
         if (navigator.share) await navigator.share({ text: message });

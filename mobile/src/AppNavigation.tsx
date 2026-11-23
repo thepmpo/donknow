@@ -1,3 +1,4 @@
+import {BrandMark} from './BrandMark';
 import React,{type ComponentRef,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {Animated,AppState,Easing,PanResponder,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
 import type {LayoutRectangle} from 'react-native';
@@ -74,7 +75,7 @@ function NavigationBar({tab,onSelect,onCalendarLongPress,duo,bottomInset=0,unrea
    <View ref={items} {...responder.panHandlers} testID="navigation-items" style={[styles.items,duo&&styles.verticalItems]}>
     {indicator&&<Animated.View pointerEvents="none" testID="navigation-selection" style={[styles.selection,indicator,{transform:[{translateX:x},{translateY:y},{scale}]}]}><NavigationGlass variant="selection" active={preview!==null} pointerEvents="none" style={[StyleSheet.absoluteFill,styles.selectionMaterial]}/></Animated.View>}
     {appTabs.map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={item.name} disabled={blocked} accessibilityState={{selected:item.id===tab,disabled:blocked}} aria-selected={item.id===tab} accessibilityHint={item.id==='calendar'?'다시 누르면 오늘, 길게 누르면 2주 보기':item.id==='profile'?'계정, 서비스 연결, 알림과 개인 설정':undefined} delayLongPress={500} onLongPress={item.id==='calendar'&&onCalendarLongPress?()=>{if(!drag.current&&!suppress.current){suppress.current=true;onCalendarLongPress();}}:undefined} onPressIn={()=>begin(item.id)} onPressOut={()=>{if(!drag.current)settle();}} onPress={()=>{if(!suppress.current)onSelect(item.id);}} onLayout={event=>{const next=event.nativeEvent.layout;setFrames(old=>{const prior=old[item.id];return prior&&Object.keys(next).every(key=>next[key as keyof LayoutRectangle]===prior[key as keyof LayoutRectangle])?old:{...old,[item.id]:next};});}} style={[styles.tab,duo&&styles.compact]}>
-     {item.id==='duck'?<Text testID={'navigation-icon-'+item.id} style={[styles.duck,duo&&styles.duoDuck]}>🦆</Text>:<Ionicons testID={'navigation-icon-'+item.id} name={item.icon} size={duo?layout.duoNavigationIconSize:24} color={item.id===(preview??tab)?colors.blueText:palette.grey600}/>}
+     {item.id==='duck'?<BrandMark testID={'navigation-icon-'+item.id} size={duo?layout.duoNavigationIconSize:26} decorative/>:<Ionicons testID={'navigation-icon-'+item.id} name={item.icon} size={duo?layout.duoNavigationIconSize:24} color={item.id===(preview??tab)?colors.blueText:palette.grey600}/>}
      {item.id==='duck'&&unread>0&&<View style={styles.badge}><Text style={styles.badgeText}>{unread>99?'99+':unread}</Text></View>}
      {!duo&&<Text numberOfLines={2} style={[styles.label,item.id===(preview??tab)&&styles.selected]}>{item.label}</Text>}
     </Pressable>)}

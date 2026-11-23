@@ -1,3 +1,4 @@
+import {BrandMark} from './BrandMark';
 import React from 'react';
 import './desktop-theme';
 import {DesktopPresentation} from './DesktopPresentation';
@@ -9,14 +10,14 @@ import type {AppTab} from './AppNavigation';
 import type {TodoStore} from './useTodos';
 import {dateKey,type Todo} from './domain';
 import {useSurfaceBlocked} from './SurfaceInteraction';
-const mark=require('../assets/duck-mark.png');
+
 const tabs=[{id:'duck',label:'브리핑',icon:'sparkles-outline'},{id:'todos',label:'Todo',icon:'list-outline'},{id:'calendar',label:'캘린더',icon:'calendar-outline'},{id:'log',label:'기록',icon:'checkmark-done-outline'},{id:'profile',label:'ME',icon:'person-outline'}] as const;
 export function DesktopWorkspace({active,children,tab,onSelect,store,disabled,onAdd,onEdit,unread,onChat}:{onChat:()=>void;active:boolean;children:React.ReactNode;tab:AppTab;onSelect:(tab:AppTab)=>void;store:TodoStore;disabled:boolean;onAdd:()=>void;onEdit:(todo:Todo)=>void;unread:number}){
  const {width}=useWindowDimensions(),narrow=width<760;
  const blocked=useSurfaceBlocked()||disabled,today=dateKey(new Date()),due=store.visible.filter(t=>t.dueDate===today);
  if(Platform.OS!=='web')return <>{children}</>;
  return <View testID={active?'desktop-workspace':'compact-workspace'} style={[s.outer,active&&s.desktop,active&&{width:Math.max(0,Math.min(1128,width-(narrow?16:48))),margin:narrow?8:24}]}>
-  {active&&<View style={[s.top,narrow&&{paddingHorizontal:10,gap:5}]}><View style={[s.brand,narrow&&{marginRight:'auto'}]}><Image source={mark} style={s.mark}/><Text style={s.brandText}>나의 하루</Text></View><Text style={[s.topHint,narrow&&{display:'none'}]}>{store.connection?.mode==='demo'?'체험 모드':new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}</Text><Pressable accessibilityRole="button" accessibilityLabel="웹에서 docen과 대화하기" disabled={blocked} onPress={onChat} style={s.add}><Ionicons name="chatbubble-outline" size={17} color={colors.blueText}/>{width>=430&&<Text style={s.addText}>docen과 대화</Text>}</Pressable><Pressable accessibilityRole="button" accessibilityLabel="새 할 일 작성" disabled={blocked} onPress={onAdd} style={s.add}><Ionicons name="add" size={17} color={colors.blueText}/>{width>=430&&<Text style={s.addText}>새 할 일</Text>}</Pressable>{blocked&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim}]}/>}</View>}
+  {active&&<View style={[s.top,narrow&&{paddingHorizontal:10,gap:5}]}><View style={[s.brand,narrow&&{marginRight:'auto'}]}><BrandMark size={28} decorative/><Text style={s.brandText}>나의 하루</Text></View><Text style={[s.topHint,narrow&&{display:'none'}]}>{store.connection?.mode==='demo'?'체험 모드':new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}</Text><Pressable accessibilityRole="button" accessibilityLabel="웹에서 docen과 대화하기" disabled={blocked} onPress={onChat} style={s.add}><Ionicons name="chatbubble-outline" size={17} color={colors.blueText}/>{width>=430&&<Text style={s.addText}>docen과 대화</Text>}</Pressable><Pressable accessibilityRole="button" accessibilityLabel="새 할 일 작성" disabled={blocked} onPress={onAdd} style={s.add}><Ionicons name="add" size={17} color={colors.blueText}/>{width>=430&&<Text style={s.addText}>새 할 일</Text>}</Pressable>{blocked&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim}]}/>}</View>}
   <View style={[s.body,narrow&&{flexDirection:'column'}]}>
    {active&&<View style={[s.sidebar,narrow&&{width:'100%',padding:6,paddingTop:6,borderRightWidth:0,borderBottomWidth:1,borderBottomColor:colors.line}]} pointerEvents={blocked?'none':'auto'} accessibilityElementsHidden={blocked} aria-hidden={blocked}>
     {!narrow&&<Text style={s.label}>WORKSPACE</Text>}<View accessibilityRole="tablist" accessibilityLabel="나의 하루 메뉴" style={[s.menu,narrow&&{flexDirection:'row',gap:0}]}>

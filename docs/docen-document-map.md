@@ -21,6 +21,7 @@
 
 | 원본 문서 | 첫 제목 |
 |---|---|
+|[docen-identity-2026-11-23.md](docen-identity-2026-11-23.md)|새 docen 로고·로딩 영상·FAQ 문항 삭제|
 |[DOCEN-START-HERE.md](DOCEN-START-HERE.md)|docen 전체 인수인계 — 다른 AI가 가장 먼저 읽을 문서|
 |[REUSABLE-APP-START-HERE.md](REUSABLE-APP-START-HERE.md)|다른 앱을 만들 AI가 먼저 읽을 문서|
 |[reusable-app-foundation.md](reusable-app-foundation.md)|재사용 앱 공통 기반 — 핵심 기능 개발에 집중하기 위한 상세 설계서|

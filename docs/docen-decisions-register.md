@@ -93,6 +93,7 @@
 |A17|홈페이지구성/배경·어드민도다른앱재사용가능하게|실제CSS/파일/API/인증/제작순서까지기록|docen-product-build-playbook.md|
 |A18|앞으로 정리 요청은 이번 방식으로 아주 상세히|기본 문서화 규칙으로 지속 적용. 결정/이유/방법/증거/미완료·재사용 절차와 전달물 보충|DOCEN-START-HERE.md 18절|
 |A19|앱 공통 기반 전부 상세 기록·새 앱은 핵심 기능에 집중·전체 ZIP/GitHub 재제공|30개 주제/36개 모듈/새 앱 양식/출시 검수·전체 추적소스 패키지 추가. 도메인 추출/실계정 검증은 구분|REUSABLE-APP-START-HERE.md|
+|A20|사용자새로고전체적용·로딩첨부영상활용·Dots FAQ문항삭제|새BrandMark/Loading·motion/reduced/failure·native설치별도. root/www Verified·Certificate Issued사용자캡처확인|docen-identity-2026-11-23.md|
 
 ## 5. 과거 금지/대기 문장을 읽을 때
 

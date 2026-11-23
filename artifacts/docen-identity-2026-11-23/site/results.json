@@ -1,0 +1,52 @@
+{
+  "time": "2026-11-23T01:18:32.961Z",
+  "source": "docen website in local Chromium; example data; no provider or production account calls",
+  "results": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "passed": true,
+      "flows": [
+        "todo",
+        "schedule date and time",
+        "finish in chat",
+        "restore and complete",
+        "reset",
+        "pricing and overflow",
+        "FAQ",
+        "QR and dialog focus",
+        "iPhone status",
+        "language and mobile navigation"
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "mediaRequests": [
+        "http://127.0.0.1:41329/assets/brand/docen-loading.mp4"
+      ]
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "flows": [
+        "todo",
+        "schedule date and time",
+        "finish in chat",
+        "restore and complete",
+        "reset",
+        "pricing and overflow",
+        "FAQ",
+        "QR and dialog focus",
+        "iPhone status",
+        "language and mobile navigation"
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "mediaRequests": [
+        "http://127.0.0.1:41329/assets/brand/docen-loading.mp4"
+      ]
+    }
+  ]
+}

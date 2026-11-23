@@ -1,3 +1,7 @@
+## 2026-11-23 — 새 로고/로딩·FAQ 문항 삭제
+
+사용자새로고를모든기존브랜드표식과favicon에사용한다. Dots자동가져오기FAQ문항은KR/EN모두삭제한다. 영상없는소개구조는유지하며이번첨부mp4는실제boot/loading에만짧게반복한다. 동작줄이기/재생실패는정지로고,React mount후즉시제거하고가짜대기시간을추가하지않는다. Vite실제publicDir는public-site이며public은가격정본생성경로다. 준비페이지/미오픈guard·기존계정/API/가격은유지한다. 상세는../docs/docen-identity-2026-11-23.md를읽는다.
+
 ## 2026-11-22 — 전체 인수인계 입구
 
 현재 제품/출시/가격/이름 기준은 [통합 기준](../docs/DOCEN-START-HERE.md)과 [결정 원장](../docs/docen-decisions-register.md)을 먼저 읽는다. 홈페이지 섹션·배경·실제 CSS 수치·반응형·데모·어드민·다른 앱 제작 순서는 [제작 매뉴얼](../docs/docen-product-build-playbook.md)에 있다. 현재 main.jsx가 로딩하는 styles.css 기준으로 판단하며 과거 reference.css의 피클 하늘/영상 배경을 현재 구현으로 설명하지 않는다. 아래 과거 ‘최신’ 문구보다 통합 입구와 이후 사용자 확정이 우선한다.

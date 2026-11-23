@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-11-22",
+  "asOf": "2026-11-23",
   "purpose": "새 앱 공통 기반 재사용",
   "scope": "docen source references, not a standalone SDK or certification of a new app",
   "pg": "not implemented; add payment provider verification separately",
@@ -194,15 +194,21 @@
       "status": "documented-existing-reference; extraction-and-new-app-validation-required",
       "sources": [
         "mobile/src/theme.ts",
-        "mobile/src/ui.tsx"
+        "mobile/src/ui.tsx",
+        "mobile/src/BrandMark.tsx",
+        "mobile/src/BrandLoading.tsx",
+        "mobile/src/BrandLoading.web.tsx"
       ],
       "verificationReferences": [
-        "mobile/e2e/ux-audit.mjs"
+        "mobile/e2e/ux-audit.mjs",
+        "test/brand-assets.test.js",
+        "website/tests/brand-identity.mjs"
       ],
       "dependsOn": [],
       "contracts": [
         "token/상태일관성",
-        "ui.tsx의Todo부분분리"
+        "ui.tsx의Todo부분분리",
+        "사용자자산/로딩전용·동작줄이기·재생실패fallback"
       ],
       "newAppMustReplace": [
         "브랜드/밀도",

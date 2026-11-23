@@ -7,7 +7,7 @@ export function publicLaunchRestriction(req,path){
  let originHost;try{originHost=new URL(req.headers.origin).hostname.toLowerCase().replace(/\.$/,'');}catch{}
  if(!publicHosts.has(host)&&!publicHosts.has(originHost))return null;
  const read=['GET','HEAD'].includes(req.method);
- if(read&&(pages.has(path)||pages.has(path.replace(/\/$/,''))||/^\/legal\/\d{4}-\d{2}-\d{2}(?:\.\d+)?\/(terms|privacy|ai-policy|cookies)\/?$/.test(path)||path.startsWith('/site/')||/^\/assets\/(reference\/|demos\/|duck\.png$)/.test(path)||path==='/api/health'||path==='/api/legal'))return null;
+ if(read&&(pages.has(path)||pages.has(path.replace(/\/$/,''))||/^\/legal\/\d{4}-\d{2}-\d{2}(?:\.\d+)?\/(terms|privacy|ai-policy|cookies)\/?$/.test(path)||path.startsWith('/site/')||/^\/assets\/(reference\/|demos\/|duck\.png$|brand\/(?:docen-logo\.png|docen-loading\.mp4|loading\.js|brand\.css)$)/.test(path)||path==='/api/health'||path==='/api/legal'))return null;
  return path.startsWith('/api/')?'api':'page';
 }
 export function sendPublicLaunchRestriction(res,kind,method='GET'){

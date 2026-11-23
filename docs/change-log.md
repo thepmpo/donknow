@@ -1,5 +1,11 @@
 ## 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
 
+## 2026-11-23 — 사용자 새 로고·3초 로딩 영상·Dots FAQ 문항 삭제
+
+앱/웹/어드민/웰컴/비서탭/icon/favicon/선택형widget소스를새로고로교체하고공통BrandMark/BrandLoading을추가했다. 첨부원본보존·영상실제대기중만재생·동작줄이기/실패fallback·backgroundpause·단일승인기기배치유지. 홈페이지KR/EN Dots자동가져오기문항삭제. 고정브랜드정적자산/Safari byte range를지원하며미오픈guard와계정/DB/키/가격/권한은유지한다.
+
+최종467중466통과·기존1skip·실패0,문법123·타입·web/iOS JS·격리nativeprebuild/autolinking·Sites4·PC390px/언어/예시/QR/FAQ/로딩motion/reduced/실패/어드민gate회귀통과. native사전검사고정옛프로젝트이름을실제생성명으로수정했다. 설치앱은새native빌드/설치가필요하고이번에는TestFlight를실행하지않는다. Render root/www Verified·Certificate Issued는사용자캡처확인. [상세계약/증거](docen-identity-2026-11-23.md). 실제배포는별도영수증으로확인한다.
+
 ## 2026-11-22 — 앱 공통 기반·새 앱 양식·전체 소스 인계 패키지
 
 사용자가 앱 공통 사항까지 아주 상세히 정리해 다음 앱은 핵심 기능에 집중하도록 하고 전체 ZIP/GitHub 재제공을 요청했다.31개 주제 공통 설계,36모듈/176개 실제소스·검증경로/의존목록,추출할상태·repository·provider연결계약예시,58항목새앱검수표,프로젝트계약/AI인계양식을작성했다. 현재docen의도메인결합을독립SDK로가장하지않고기존업데이트와별개앱의identity/DB/키분리를명시한다.

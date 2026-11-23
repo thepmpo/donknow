@@ -18,7 +18,8 @@ import { createMailer, startMailWorker } from './server/mail.js';
 import { createIntegrations } from './server/integrations.js';
 import { featureRoutes } from './server/feature-routes.js';
 import http from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
+import {createReadStream} from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
 import { realpath } from 'node:fs/promises';
@@ -61,6 +62,7 @@ async function json(req) {
 }
 function validReminder(value) { return value === null || (typeof value === 'string' && value.length <= 30 && Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value); }
 const siteRoutes=createSiteRoutes(process.env.LANDING_DIR);
+const brandRoutes=createSiteRoutes(root+'public');
 const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
   res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Referrer-Policy', 'same-origin');
   const send = (status,data,headers={}) => sendJson(res,status,todoWire(data,/(?:[?&])writeStatus=2(?:&|$)/.test(req.url)),headers);
@@ -69,8 +71,9 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     const launchRestriction=publicLaunchRestriction(req,path);if(launchRestriction)return sendPublicLaunchRestriction(res,launchRestriction,req.method);
     // Only fixed, cryptographically authenticated provider receivers bypass app CSRF headers.
     if (await features.webhook(req,path,(status,data)=>{if(path==='/api/webhooks/sms'&&status===200){res.writeHead(200,{'Content-Type':'text/xml','Cache-Control':'no-store'});res.end('<Response/>');}else send(status,data);})) return;
-    if(['/agent-call','/agent-call.js'].includes(path)&&req.method==='GET'){const js=path.endsWith('.js'),content=await readFile(root+'server/agent-call'+(js?'.js':'.html'));res.writeHead(200,{'Content-Type':js?'application/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','Permissions-Policy':'microphone=(self), camera=()','Content-Security-Policy':"default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; media-src blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"});res.end(content);return;}
+    if(['/agent-call','/agent-call.js'].includes(path)&&req.method==='GET'){const js=path.endsWith('.js'),content=await readFile(root+'server/agent-call'+(js?'.js':'.html'));res.writeHead(200,{'Content-Type':js?'application/javascript; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','Permissions-Policy':'microphone=(self), camera=()','Content-Security-Policy':"default-src 'none'; img-src 'self'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; media-src blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"});res.end(content);return;}
     if (await features.callback(req, res, path, url)) return;
+    if(path.startsWith('/assets/brand/')&&await brandRoutes(req,res,path))return;
     if(await siteRoutes(req,res,path))return;
     const servicePages = { '/coming-soon':'coming-soon.html','/coming-soon/':'coming-soon.html', '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html','/terms':'terms.html','/terms/':'terms.html','/ai-policy':'ai-policy.html','/ai-policy/':'ai-policy.html','/cookies':'cookies.html','/cookies/':'cookies.html', '/support': 'support.html', '/support/': 'support.html' };
     const archivedLegal=/^\/legal\/(\d{4}-\d{2}-\d{2}(?:\.\d+)?)\/(terms|privacy|ai-policy|cookies)\/?$/.exec(path);
@@ -78,7 +81,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     if (Object.hasOwn(servicePages, path)) {
       if (!['GET', 'HEAD'].includes(req.method)) return send(405, { error: '이 안내는 조회만 할 수 있어요.' }, { Allow: 'GET, HEAD' });
       let content;try{content=await readFile(root+'public/'+servicePages[path]);}catch(error){if(error.code==='ENOENT')return send(404,{error:'문서 버전을 찾을 수 없어요.'});throw error;}
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': content.length, 'Cache-Control': 'no-cache', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" });
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': content.length, 'Cache-Control': 'no-cache', 'Content-Security-Policy': "default-src 'none'; img-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" });
       res.end(req.method === 'HEAD' ? undefined : content); return;
     }
     if (/^\/project-assets\/[a-f0-9]{64}\.(png|jpg|jpeg|gif|webp|svg|ico)$/.test(path) && req.method === 'GET') {
@@ -189,7 +192,12 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       if(candidate===directory)candidate=resolve(directory,'index.html');
       try { candidate=await realpath(candidate); if(!candidate.startsWith(directory+sep))return send(404,{error:'페이지를 찾을 수 없어요.'}); }
       catch(error){if(error.code!=='ENOENT')throw error;if(extname(candidate))return send(404,{error:'파일을 찾을 수 없어요.'});candidate=resolve(directory,'index.html');}
-      const type={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.ttf':'font/ttf','.woff2':'font/woff2','.png':'image/png','.ico':'image/x-icon','.json':'application/json'}[extname(candidate)]||'application/octet-stream';
+      const type={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.ttf':'font/ttf','.woff2':'font/woff2','.png':'image/png','.mp4':'video/mp4','.jpg':'image/jpeg','.ico':'image/x-icon','.json':'application/json'}[extname(candidate)]||'application/octet-stream';
+      if(extname(candidate)==='.mp4'){
+        const info=await stat(candidate),headers={'Content-Type':type,'Accept-Ranges':'bytes','Cache-Control':'public,max-age=3600'};let start=0,end=info.size-1,status=200;
+        if(req.headers.range){const match=/^bytes=(\d*)-(\d*)$/.exec(req.headers.range);if(!match||!match[1]&&!match[2]){res.writeHead(416,{'Content-Range':'bytes */'+info.size});res.end();return;}if(!match[1])start=Math.max(0,info.size-Number(match[2]));else start=Number(match[1]);if(match[1]&&match[2])end=Math.min(end,Number(match[2]));if(!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start<0||start>end||start>=info.size){res.writeHead(416,{'Content-Range':'bytes */'+info.size});res.end();return;}status=206;headers['Content-Range']='bytes '+start+'-'+end+'/'+info.size;}
+        headers['Content-Length']=Math.max(0,end-start+1);res.writeHead(status,headers);if(req.method==='HEAD')res.end();else{const stream=createReadStream(candidate,{start,end});stream.on('error',()=>res.destroy());res.on('close',()=>stream.destroy());stream.pipe(res);}return;
+      }
       const content=await readFile(candidate);res.writeHead(200,{'Content-Type':type,'Cache-Control':extname(candidate)==='.html'?'no-cache':'public,max-age=3600'});res.end(content);return;
     }
     const files = { '/app': ['index.html', 'text/html; charset=utf-8'], '/app/': ['index.html', 'text/html; charset=utf-8'], '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };

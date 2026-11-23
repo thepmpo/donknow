@@ -8,7 +8,7 @@ export function createSiteRoutes(directory){
  const base=realpath(directory);
  return async(req,res,path)=>{
   const main=['/','/index.html','/home','/home/'].includes(path),pricing=['/pricing','/pricing/'].includes(path);
-  const asset=path.startsWith('/site/')||/^\/assets\/(reference\/|demos\/|duck\.png$)/.test(path);
+  const asset=path.startsWith('/site/')||/^\/assets\/(reference\/|demos\/|duck\.png$|brand\/(?:docen-logo\.png|docen-loading\.mp4|loading\.js|brand\.css)$)/.test(path);
   if(!main&&!pricing&&!asset)return false;
   if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,{Allow:'GET, HEAD'});res.end();return true;}
   if(pricing){res.writeHead(302,{Location:'/#pricing','Cache-Control':'no-cache'});res.end();return true;}

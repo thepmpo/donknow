@@ -93,7 +93,7 @@ function Duck({ className = "" }) {
   return (
     <img
       className={"duck-mark " + className}
-      src={import.meta.env.BASE_URL + "assets/duck.png"}
+      src={import.meta.env.BASE_URL + "assets/brand/docen-logo.png"}
       alt=""
       width="32"
       height="32"
@@ -400,12 +400,6 @@ const faqs = [
     "What is docen?",
     "연결한 자료에서 챙길 일을 살펴보고, 브리핑·Todo·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 할 일로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
     "docen brings your next steps into a briefing, to-do list and calendar. Keep only the things you need, or finish them in the conversation.",
-  ],
-  [
-    "ChatGPT를 연결하면 Dots가 그대로 들어오나요?",
-    "Does connecting ChatGPT import my dot?",
-    "그대로 자동 복제되는 방식은 아니에요. 외부 AI에서 선택한 일을 docen에 보내는 연결을 준비하고 있어요. ChatGPT 로그인이나 사용량 공유만으로 기존 대화·기억·Dots 결과를 읽을 수는 없어요.",
-    "No. We are preparing a connection that lets an external AI send selected tasks to docen. Signing in or sharing plan usage does not import ChatGPT conversations, memories or dot results.",
   ],
   [
     "라이트와 프로는 무엇이 다른가요?",

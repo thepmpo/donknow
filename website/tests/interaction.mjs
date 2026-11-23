@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
 const out = resolve(
-  new URL("../../artifacts/docen-introduction-2026-11-22/site", import.meta.url)
+  new URL("../../artifacts/docen-identity-2026-11-23/site", import.meta.url)
     .pathname,
 );
 await mkdir(out, { recursive: true });
@@ -228,7 +228,7 @@ try {
     assert.ok(appLinks.every((a) => a.href === origin + "/coming-soon" && !a.target));
     assert.deepEqual(errors, []);
     assert.deepEqual(network, []);
-    assert.deepEqual(media, []);
+    assert.ok(media.every(url=>url.endsWith('/assets/brand/docen-loading.mp4')), 'only the provided loading movie may be requested');
     results.push({
       name,
       width,

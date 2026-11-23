@@ -1,3 +1,9 @@
+## 2026-11-23 — 사용자 제공 새 로고·로딩 영상·FAQ 정정
+
+현재 브랜드 표식은 오리 대신 사용자 제공 파란 받침/반투명층/구 로고다. 앱/웹/어드민/아이콘/favicon/웰컴/비서탭은공통BrandMark를사용한다. 로딩은첨부3초mp4를실제대기중에만재생하고동작줄이기/실패에는정지로고,background에서는pause한다. Duo장식헤더는숨김유지,기존기술ID/Bundle/scheme/계정/DB/키/가격/권한은유지한다. 홈페이지KR/EN FAQ의Dots자동가져오기질문/답변을통째로삭제한다. 기능/역사문서삭제로확장하지않는다. [계약·파일·검사·native경계](docs/docen-identity-2026-11-23.md).
+
+사용자Render캡처에서docen.today/www.docen.today 모두Verified/Certificate Issued를확인했다. 이전DNS/TLS대기보다최신이며소개만공개·서비스미오픈은유지한다. 설치앱의새아이콘/영상native모듈에는새빌드/설치가필요하며웹배포를앱업데이트로보고하지않는다.
+
 ## 2026-11-22 — 다른 앱에 재사용할 전체 앱 공통 기반 (사용자 확정)
 
 사용자가 앱 공통 사항까지 모두 상세히 기록해 다음 앱은 핵심 기능 구현에 집중할 수 있도록 하고 전체 ZIP과 GitHub를 다시 제공하라고 요청했다. [새 앱 입구](docs/REUSABLE-APP-START-HERE.md) → [공통 설계서](docs/reusable-app-foundation.md) → [36개 모듈 파일 지도](docs/app-foundation-module-map.md)/JSON → [검수표](docs/app-foundation-release-checklist.md)를 읽고 새 제품 계약/AI 인계 양식을 사용한다. 기존 docen 수정은 기존 identity/DB/키 보존, 별개 새 앱은 새 identity/DB/키/외부앱으로 분리한다. 현재 코드를 독립형 범용 SDK/PG 완성/모든 OS 검증으로 가장하지 않는다. UI·auth·transport·repository의 도메인 의존과 필요한 추출 절차를 구분한다. 문서 전용 ZIP과 Git 추적 소스/문서/테스트/자산 전체 ZIP을 별도로 제공하며 비밀·실DB·node_modules·Git 내부는 제외한다.

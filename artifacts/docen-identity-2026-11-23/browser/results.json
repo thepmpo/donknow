@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "source": "Real production website and Expo web bundles with isolated HTTP server/verified synthetic user; no provider/model calls or native hardware",
+  "flows": [
+    "motion website boot/logo/FAQ",
+    "reduce website boot/logo/FAQ",
+    "motion app session loader",
+    "reduce app session loader",
+    "failure app session loader",
+    "admin logo, gate preserved"
+  ]
+}
