@@ -1889,3 +1889,23 @@ a {
 
 /* Keep the enlarged identity readable on narrow phones; launch info stays in the menu. */
 @media(max-width:360px){.site-header .nav-cta{display:none}.site-header .nav-end{gap:8px}}
+
+/* Selected centered desktop hero; decoration stays behind readable live text. */
+#main { overflow-x: clip; }
+.hero { position: relative; isolation: isolate; }
+.hero-bounce { display: none; pointer-events: none; }
+@media (min-width: 1100px) {
+  .hero-bounce {
+    display: block; position: absolute; z-index: -1;
+    width: 720px; height: 720px; top: -90px;
+    right: calc(50% - 50vw - 100px); opacity: .42;
+    mask-image: linear-gradient(to right, transparent, #000 42%), linear-gradient(to bottom, #000 65%, transparent 96%);
+    mask-composite: intersect;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 42%), linear-gradient(to bottom, #000 65%, transparent 96%);
+    -webkit-mask-composite: source-in;
+  }
+  .hero-bounce img, .hero-bounce video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  }
+  .hero-bounce video { background: #fff; }
+}

@@ -100,6 +100,34 @@ function Duck({ className = "" }) {
     />
   );
 }
+// Decorative desktop hero: reuse the supplied animation; never delay page content.
+function HeroBounce() {
+  const root = useRef(null), video = useRef(null);
+  const [animate, setAnimate] = useState(false), [failed, setFailed] = useState(false);
+  useEffect(() => {
+    const desktop = matchMedia('(min-width: 1100px)'), motion = matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setAnimate(desktop.matches && !motion.matches);
+    update(); desktop.addEventListener('change', update); motion.addEventListener('change', update);
+    return () => { desktop.removeEventListener('change', update); motion.removeEventListener('change', update); };
+  }, []);
+  useEffect(() => {
+    if (!animate || failed || !video.current) return;
+    const player = video.current;
+    let visible = true;
+    const update = () => {
+      if (document.hidden || !visible) player.pause();
+      else player.play().catch(() => setFailed(true));
+    };
+    const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; update(); });
+    observer.observe(root.current); document.addEventListener('visibilitychange', update); update();
+    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', update); player.pause(); };
+  }, [animate, failed]);
+  const base = import.meta.env.BASE_URL + 'assets/brand/';
+  return <div className="hero-bounce" ref={root} aria-hidden="true">
+    <img src={base + 'docen-logo.png'} alt="" width="720" height="720" />
+    {animate && !failed && <video ref={video} src={base + 'docen-loading.mp4'} autoPlay muted loop playsInline preload="metadata" onError={() => setFailed(true)} />}
+  </div>;
+}
 function Demo({ en }) {
   const tr = (a) => (Array.isArray(a) ? a[en ? 1 : 0] : a);
   const [tasks, setTasks] = useState(initialTasks),
@@ -564,6 +592,7 @@ export function App() {
       </header>
       <main id="main">
         <section className="hero section-wrap">
+          <HeroBounce />
           <p className="hero-kicker">
             <span className="tiny-blue-dot" />
             {t(

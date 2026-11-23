@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "results": [
+    "real video playback advances; muted loop inline; center headline; CTA; offscreen pause/resume; reduced-motion; error fallback; mobile hidden; no overflow; no page errors"
+  ]
+}
