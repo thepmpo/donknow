@@ -1,5 +1,9 @@
 ## 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
 
+## 2026-11-23 — 새 브랜드 웹 배포 live·공개주소 확인
+
+f83567d·dep-dc1paqvf3r2c73dc282g가2026-11-23T01:24:27.361019Z live. 공개docen.today소개새로고/삭제문항·health동일release·준비안내를실제URLfetch로확인했다. 기존무료서비스/미오픈guard/설치native미빌드유지. [영수증](docen-identity-deployment-2026-11-23.md).
+
 ## 2026-11-23 — 사용자 새 로고·3초 로딩 영상·Dots FAQ 문항 삭제
 
 앱/웹/어드민/웰컴/비서탭/icon/favicon/선택형widget소스를새로고로교체하고공통BrandMark/BrandLoading을추가했다. 첨부원본보존·영상실제대기중만재생·동작줄이기/실패fallback·backgroundpause·단일승인기기배치유지. 홈페이지KR/EN Dots자동가져오기문항삭제. 고정브랜드정적자산/Safari byte range를지원하며미오픈guard와계정/DB/키/가격/권한은유지한다.

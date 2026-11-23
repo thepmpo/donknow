@@ -19,7 +19,7 @@
 3. 기존 테스트 주소는 https://duckduck-test.onrender.com 이다. 기존 앱·인증·native API·OAuth·어드민은 그 주소에서 유지한다. 인터넷에 접근 가능한 테스트 주소이며 초대 인증으로 보호했다고 하지 않는다.
 4. 메일 발신 문제는 최신 사용자 확인 기준으로 해결됐다. 새 Resend 계정에서 도메인 Verified/Forge Ready, 사용자가 Render 키를 직접 등록했고 **실제 메일 수신→인증번호 확인→내부 진입 완료**를 확인했다. AI가 받은편지함을 직접 열어 확인한 것은 아니다.
 5. 웹용 DNS는 사용자 캡처로 **A @ →216.24.57.1 / CNAME www →duckduck-test.onrender.com / TTL180** 저장을 확인했다. 마지막 공개 DNS 조회에서 www CNAME은 확인됐고 루트 A는 아직 응답에 없었다. 이후사용자Render캡처로root/www모두Verified·Certificate Issued를확인했다. 실제페이지외부접속검사는별도다.
-6. 최신 확인한 서비스 배포는 구현96e3b48을 포함하는 b5631cdb1320fcadf1d479bf3c9807fc465d9e09, Render dep-dc1fj8mc6qcc73anm4u0, 2026-11-22T14:19:07.296071Z live다. 문서화 시작 시 로컬 HEAD는89489e6이다. 이 해시는 영구 최신이 아니므로 다음 작업 시 Git/Render를 조회한다.
+6. 최신확인서비스배포는구현d89ed9f를포함한f83567dcffb062908702e8090b8426e078a638d2,Render dep-dc1paqvf3r2c73dc282g,2026-11-23T01:24:27.361019Z live다. 실제docen.today소개/새로고/health의동일release를공개URL조회로확인했다. [배포영수증](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-deployment-2026-11-23.md). 문서/원격HEAD는그후진행될수있으므로실제Git/Render를조회한다.
 7. 공개 요금은 사용자가 마지막에 **웹 표시 그대로 유지**하라고 했다. 현재 소스는 Lite 정상19,900/베타월16,900, Pro 정상55,900/베타월49,900, 연간총202,800/598,800, Business상담이다. 앞서 말한45,000/39,900·Lite에도 직접채팅 등은 현재 게시 내용과 다르므로 아래 충돌 기록을 읽는다. 문서 작업으로 가격·권한을 바꾸지 않는다.
 8. 기존 미변경 계정은 무료 Pro 정책이다. 운영자가 개별 이용권을 관리한 회원은 그 이용권을 따른다. **Pro 권한·실제 결제·AI 원가 예산은 세 가지 별개**다. PG는 연결되지 않았다.
 9. 사용자 원칙: docen에서 외부 연결 항목의 내용·날짜·시간·완료를 명시적으로 바꾸면 지원되는 원본도 바꾼다. 직접 만든 항목은 docen에서만 바꾼다. 원본 권한·버전·기기 제한을 우회하지 않는다. 실패·불가에는 채팅에서 이유와 대안까지 알린다.
@@ -848,6 +848,10 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 ## 3. 최근 변경과 매일 기록
 
 #### 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
+
+#### 2026-11-23 — 새 브랜드 웹 배포 live·공개주소 확인
+
+f83567d·dep-dc1paqvf3r2c73dc282g가2026-11-23T01:24:27.361019Z live. 공개docen.today소개새로고/삭제문항·health동일release·준비안내를실제URLfetch로확인했다. 기존무료서비스/미오픈guard/설치native미빌드유지. [영수증](docen-identity-deployment-2026-11-23.md).
 
 #### 2026-11-23 — 사용자 새 로고·3초 로딩 영상·Dots FAQ 문항 삭제
 
@@ -3612,6 +3616,7 @@ b5631cd Publish introduction-only release evidence and email verification status
 926d862 Document reusable app foundations and package full source handoff
 57b08c4 docs: daily project update [skip ci]
 d89ed9f Use supplied docen identity and loading video across app and web
+f83567d Publish new docen brand documentation and verified web evidence
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -12215,6 +12220,8 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 #### 2026-11-23 — 사용자 제공 새 로고·로딩 영상·FAQ 정정
 
+실제웹배포:f83567d·dep-dc1paqvf3r2c73dc282g가2026-11-23T01:24:27.361019Z live. 공개docen.today소개/새로고/FAQ삭제·health동일release/준비안내확인. 설치native는미빌드. [영수증](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-deployment-2026-11-23.md).
+
 현재 브랜드 표식은 오리 대신 사용자 제공 파란 받침/반투명층/구 로고다. 앱/웹/어드민/아이콘/favicon/웰컴/비서탭은공통BrandMark를사용한다. 로딩은첨부3초mp4를실제대기중에만재생하고동작줄이기/실패에는정지로고,background에서는pause한다. Duo장식헤더는숨김유지,기존기술ID/Bundle/scheme/계정/DB/키/가격/권한은유지한다. 홈페이지KR/EN FAQ의Dots자동가져오기질문/답변을통째로삭제한다. 기능/역사문서삭제로확장하지않는다. [계약·파일·검사·native경계](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-2026-11-23.md).
 
 사용자Render캡처에서docen.today/www.docen.today 모두Verified/Certificate Issued를확인했다. 이전DNS/TLS대기보다최신이며소개만공개·서비스미오픈은유지한다. 설치앱의새아이콘/영상native모듈에는새빌드/설치가필요하며웹배포를앱업데이트로보고하지않는다.
@@ -12908,6 +12915,31 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
 
+### 원문 / docs/docen-identity-deployment-2026-11-23.md
+
+### 새 로고·로딩·FAQ 삭제 실제 배포 영수증 — 2026-11-23
+
+- 구현커밋:d89ed9f843732a461adfb8b5a365d51b37b6ddd5.
+- 배포소스:f83567dcffb062908702e8090b8426e078a638d2. GitHub main/작업branch에일반push성공. 기존일일문서커밋57b08c4를ff로보존했다.
+- Render서비스:srv-dbgpc0ff3r2c73abc7e0, 기존duckduck-test/Free/Docker/Singapore, 자동배포off유지. workspace tea-dbgoqa0ae00c73d1q47g는기존사용자확정대상이다. 새서비스/유료자원/환경키/DB/Origin변경없음.
+- 새deploy:dep-dc1paqvf3r2c73dc282g, trigger api, 시작2026-11-23T01:22:51.191323Z, **live완료2026-11-23T01:24:27.361019Z**. Render get_deploy로해당SHA와terminal live를확인했다. 기존live dep-dc1ijgeq1p3s738an2g0/57b08c4를대체한다.
+
+#### 배포 뒤 공개주소 확인
+
+실행환경curl의CONNECT proxy403은이환경의접근제한이며운영서비스403으로보고하지않는다. 로그인/원격브라우저조작없이공개URL fetch도구로다음결과를읽었다.
+
+1. https://docen.today/ :실제소개본문이조회되고image_links에https://docen.today/site/assets/brand/docen-logo.png가포함된다. 삭제요청한KR Dots FAQ질문이본문에없음을검사했다. 로컬production실조작의KR/EN문항삭제검사도통과했다.
+2. https://docen.today/api/health :ok=true,requestLanes=2,release=f83567dcffb062908702e8090b8426e078a638d2. 새배포로응답하는것을확인했다.
+3. https://docen.today/coming-soon :웹서비스미오픈준비안내와새/assets/brand/docen-logo.png가조회됐다. 새도메인의소개전용단계는유지한다.
+
+실제iPhone/OS키보드/VoiceOver/native영상/Apple처리/설치를검증한것은아니다. 공개페이지fetch가실계정AI/외부원본쓰기를시험한것도아니다. native설치는새서명빌드가필요하며이번작업에서는수동TestFlight실행/Apple업로드를하지않았다.
+
+#### 검증과전달
+
+467자동검사중466통과/기존1skip/실패0,관련5HTTP검사와Sites4검사·문법123·타입·web/iOS JS·격리prebuild/autolink·PC/390px/KR/EN/브랜드/로딩motion/reduced/실패/어드민gate/미오픈브라우저회귀를통과했다. [상세계약/원본/검사](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-2026-11-23.md).
+
+문서전용ZIP과전체Git추적소스ZIP은재생성한다. 전체ZIP은sourceCommit/각파일SHA-256/CRC/추적tree일치/금지경로검사를생성시수행한다. 배포뒤추가된이영수증/문서만으로다시서비스를배포하지않으며,운영소스SHA는위f83567d다. 개인Notion에실제로저장했다고하지않는다.
+
 ### 원문 / docs/docen-identity-2026-11-23.md
 
 ### 새 docen 로고·로딩 영상·FAQ 문항 삭제 — 2026-11-23
@@ -12980,6 +13012,10 @@ mp4는video/mp4·Accept-Ranges·유효한206/Content-Range·범위오류416를�
 기존무료Render/자동배포off·같은서비스/DB/키/Origin을유지하고최신소스를한번수동배포한다. 배포ID/소스SHA/live/공개접속의실제결과는별도배포영수증에기록한다. trigger접수만으로live라고하지않는다.
 
 설치iPhone앱의아이콘/영상모듈은새서명native빌드·Apple처리·설치가필요하다. 이번요청에서수동TestFlightworkflow/유료runner/새widget서명을실행하지않는다. 실기기영상/OSsplash/푸시/접근성은그후별도확인한다. 이전GitHub자동일일문서커밋57b08c4는ff로보존했으며그기록을덮거나force push하지않았다.
+
+#### 실제 배포 결과
+
+[배포 영수증](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-deployment-2026-11-23.md):f83567d·dep-dc1paqvf3r2c73dc282g가01:24:27.361019Z live,공개소개새로고/삭제문항/health release/준비안내를실제공개URL조회로확인했다. native빌드/설치는별도다.
 
 ### 원문 / docs/REUSABLE-APP-START-HERE.md
 
@@ -13796,7 +13832,7 @@ python3 scripts/build-docen-complete-handoff.py
 3. 기존 테스트 주소는 https://duckduck-test.onrender.com 이다. 기존 앱·인증·native API·OAuth·어드민은 그 주소에서 유지한다. 인터넷에 접근 가능한 테스트 주소이며 초대 인증으로 보호했다고 하지 않는다.
 4. 메일 발신 문제는 최신 사용자 확인 기준으로 해결됐다. 새 Resend 계정에서 도메인 Verified/Forge Ready, 사용자가 Render 키를 직접 등록했고 **실제 메일 수신→인증번호 확인→내부 진입 완료**를 확인했다. AI가 받은편지함을 직접 열어 확인한 것은 아니다.
 5. 웹용 DNS는 사용자 캡처로 **A @ →216.24.57.1 / CNAME www →duckduck-test.onrender.com / TTL180** 저장을 확인했다. 마지막 공개 DNS 조회에서 www CNAME은 확인됐고 루트 A는 아직 응답에 없었다. 이후사용자Render캡처로root/www모두Verified·Certificate Issued를확인했다. 실제페이지외부접속검사는별도다.
-6. 최신 확인한 서비스 배포는 구현96e3b48을 포함하는 b5631cdb1320fcadf1d479bf3c9807fc465d9e09, Render dep-dc1fj8mc6qcc73anm4u0, 2026-11-22T14:19:07.296071Z live다. 문서화 시작 시 로컬 HEAD는89489e6이다. 이 해시는 영구 최신이 아니므로 다음 작업 시 Git/Render를 조회한다.
+6. 최신확인서비스배포는구현d89ed9f를포함한f83567dcffb062908702e8090b8426e078a638d2,Render dep-dc1paqvf3r2c73dc282g,2026-11-23T01:24:27.361019Z live다. 실제docen.today소개/새로고/health의동일release를공개URL조회로확인했다. [배포영수증](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-deployment-2026-11-23.md). 문서/원격HEAD는그후진행될수있으므로실제Git/Render를조회한다.
 7. 공개 요금은 사용자가 마지막에 **웹 표시 그대로 유지**하라고 했다. 현재 소스는 Lite 정상19,900/베타월16,900, Pro 정상55,900/베타월49,900, 연간총202,800/598,800, Business상담이다. 앞서 말한45,000/39,900·Lite에도 직접채팅 등은 현재 게시 내용과 다르므로 아래 충돌 기록을 읽는다. 문서 작업으로 가격·권한을 바꾸지 않는다.
 8. 기존 미변경 계정은 무료 Pro 정책이다. 운영자가 개별 이용권을 관리한 회원은 그 이용권을 따른다. **Pro 권한·실제 결제·AI 원가 예산은 세 가지 별개**다. PG는 연결되지 않았다.
 9. 사용자 원칙: docen에서 외부 연결 항목의 내용·날짜·시간·완료를 명시적으로 바꾸면 지원되는 원본도 바꾼다. 직접 만든 항목은 docen에서만 바꾼다. 원본 권한·버전·기기 제한을 우회하지 않는다. 실패·불가에는 채팅에서 이유와 대안까지 알린다.
@@ -14602,6 +14638,7 @@ python3 scripts/build-handoff.py
 
 | 원본 문서 | 첫 제목 |
 |---|---|
+|[docen-identity-deployment-2026-11-23.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-deployment-2026-11-23.md)|새 로고·로딩·FAQ 삭제 실제 배포 영수증|
 |[docen-identity-2026-11-23.md](https://github.com/thepmpo/donknow/blob/main/docs/docen-identity-2026-11-23.md)|새 docen 로고·로딩 영상·FAQ 문항 삭제|
 |[DOCEN-START-HERE.md](https://github.com/thepmpo/donknow/blob/main/docs/DOCEN-START-HERE.md)|docen 전체 인수인계 — 다른 AI가 가장 먼저 읽을 문서|
 |[REUSABLE-APP-START-HERE.md](https://github.com/thepmpo/donknow/blob/main/docs/REUSABLE-APP-START-HERE.md)|다른 앱을 만들 AI가 먼저 읽을 문서|

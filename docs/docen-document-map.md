@@ -21,6 +21,7 @@
 
 | 원본 문서 | 첫 제목 |
 |---|---|
+|[docen-identity-deployment-2026-11-23.md](docen-identity-deployment-2026-11-23.md)|새 로고·로딩·FAQ 삭제 실제 배포 영수증|
 |[docen-identity-2026-11-23.md](docen-identity-2026-11-23.md)|새 docen 로고·로딩 영상·FAQ 문항 삭제|
 |[DOCEN-START-HERE.md](DOCEN-START-HERE.md)|docen 전체 인수인계 — 다른 AI가 가장 먼저 읽을 문서|
 |[REUSABLE-APP-START-HERE.md](REUSABLE-APP-START-HERE.md)|다른 앱을 만들 AI가 먼저 읽을 문서|

@@ -68,3 +68,7 @@ mp4는video/mp4·Accept-Ranges·유효한206/Content-Range·범위오류416를�
 기존무료Render/자동배포off·같은서비스/DB/키/Origin을유지하고최신소스를한번수동배포한다. 배포ID/소스SHA/live/공개접속의실제결과는별도배포영수증에기록한다. trigger접수만으로live라고하지않는다.
 
 설치iPhone앱의아이콘/영상모듈은새서명native빌드·Apple처리·설치가필요하다. 이번요청에서수동TestFlightworkflow/유료runner/새widget서명을실행하지않는다. 실기기영상/OSsplash/푸시/접근성은그후별도확인한다. 이전GitHub자동일일문서커밋57b08c4는ff로보존했으며그기록을덮거나force push하지않았다.
+
+## 실제 배포 결과
+
+[배포 영수증](docen-identity-deployment-2026-11-23.md):f83567d·dep-dc1paqvf3r2c73dc282g가01:24:27.361019Z live,공개소개새로고/삭제문항/health release/준비안내를실제공개URL조회로확인했다. native빌드/설치는별도다.
