@@ -1920,3 +1920,11 @@ a {
 }
 
 .closing-wordmark + h2 { margin-top: clamp(36px, 3.4vw, 48px); }
+
+.site-footer { flex-wrap: wrap; }
+.site-footer > nav { flex: 1 1 560px; justify-content: flex-end; }
+.site-footer .footer-business { flex: 0 0 100%; border-top: 1px solid #e9edf2; padding-top: 20px; }
+.site-footer .footer-business p { font-size: 12px; line-height: 1.9; color: #687789; margin: 6px 0; overflow-wrap: anywhere; }
+.footer-business .footer-company, .footer-business .footer-contact { display: flex; flex-wrap: wrap; column-gap: 18px; row-gap: 2px; }
+.footer-business a { text-decoration: underline; text-underline-offset: 3px; }
+@media(max-width:600px) { .site-footer > nav { justify-content: flex-start; flex-basis: auto; } .footer-business .footer-company, .footer-business .footer-contact { display: grid; gap: 2px; } }

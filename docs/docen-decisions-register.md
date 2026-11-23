@@ -118,3 +118,5 @@
 |A21|로고 이미지 두 배·docen 파란 점 통일·중앙/하단 준비 CTA와 설명·상단 로그인 준비 문구 삭제|KR/EN·320~1440px 확인. 미오픈 guard 유지, native는 다음 빌드|docen-brand-polish-2026-11-23.md|
 
 |A22|PC 메인 첫 시안·중앙 문구/우측 공 튀는 로고 배경 적용|1100px 이상·동작 줄이기 정지·비활성/화면 밖 pause. 모바일/앱 유지|docen-hero-bounce-2026-11-23.md|
+
+|A23|첨부 사업자정보·약관·환불정책 원문보존 반영|푸터상세/terms/refund·날짜/금액/placeholder보존·개인정보/과거동의유지·문서별버전|docen-business-legal-2026-11-23.md|

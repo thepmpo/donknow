@@ -75,8 +75,8 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     if (await features.callback(req, res, path, url)) return;
     if(path.startsWith('/assets/brand/')&&await brandRoutes(req,res,path))return;
     if(await siteRoutes(req,res,path))return;
-    const servicePages = { '/coming-soon':'coming-soon.html','/coming-soon/':'coming-soon.html', '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html','/terms':'terms.html','/terms/':'terms.html','/ai-policy':'ai-policy.html','/ai-policy/':'ai-policy.html','/cookies':'cookies.html','/cookies/':'cookies.html', '/support': 'support.html', '/support/': 'support.html' };
-    const archivedLegal=/^\/legal\/(\d{4}-\d{2}-\d{2}(?:\.\d+)?)\/(terms|privacy|ai-policy|cookies)\/?$/.exec(path);
+    const servicePages = { '/refund':'refund.html','/refund/':'refund.html', '/coming-soon':'coming-soon.html','/coming-soon/':'coming-soon.html', '/pricing':'pricing.html', '/pricing/':'pricing.html', '/privacy': 'privacy.html', '/privacy/': 'privacy.html','/terms':'terms.html','/terms/':'terms.html','/ai-policy':'ai-policy.html','/ai-policy/':'ai-policy.html','/cookies':'cookies.html','/cookies/':'cookies.html', '/support': 'support.html', '/support/': 'support.html' };
+    const archivedLegal=/^\/legal\/(\d{4}-\d{2}-\d{2}(?:\.\d+)?)\/(terms|privacy|ai-policy|cookies|refund)\/?$/.exec(path);
     if(archivedLegal)servicePages[path]='legal/'+archivedLegal[1]+'/'+archivedLegal[2]+'.html';
     if (Object.hasOwn(servicePages, path)) {
       if (!['GET', 'HEAD'].includes(req.method)) return send(405, { error: '이 안내는 조회만 할 수 있어요.' }, { Allow: 'GET, HEAD' });

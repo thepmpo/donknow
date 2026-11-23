@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "viewports": [
+    320,
+    390,
+    1440
+  ],
+  "checks": [
+    "business identity/contact exact",
+    "terms/refund article text unchanged vs supplied originals",
+    "footer three real page navigations",
+    "mobile document width",
+    "pageerror none"
+  ]
+}

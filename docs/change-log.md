@@ -1,3 +1,7 @@
+## 2026-11-23 — 사용자 첨부 사업자 푸터·이용약관·환불정책
+
+첨부 HTML3종을 content/legal/2026-11-23/에 원본 보존한다. 더피엠피오/김상현/480-30-01764/주소/전화/이메일/날짜2026년11월23일/신고번호 자리표시자와 법률 문구·금액을 임의 수정하지 않는다. 푸터는 기존 톤의 상세 정보 블록, /terms 및 /refund는 원문 article에 레이아웃만 추가한다. privacy 본문·기존 고정약관·과거 동의는 유지한다. 새 가입 terms2026-11-23/privacy2026-11-22.2를 각각 기록하며 새동의를 과거기록에 덮지 않는다. 서버/정적호스트 모두 refund 및 archive 허용, 내부서비스 미오픈 유지. 상세 docs/docen-business-legal-2026-11-23.md.
+
 ## 2026-11-23 — 무료 정적 소개 사이트 live·도메인 이전 대기
 
 사용자 무료 호스팅 승인에 따라 독립 static build/공개파일 allowlist/법적문서/준비안내·서비스 비노출을 구현했다. 실제 Chromium 정적페이지·영상/영문·법적경로·서비스코드404 검사 통과. docen-introduction.onrender.com 신규 무료static live, eeeaf41/dep-dc1qt56c6qcc73bjpgdg. 실제 새주소 내용/약관/준비안내/commit 확인. docen.today는 아직 기존 서비스이며 도메인 이동 도구 부재로 사용자 대시보드/DNS 작업 대기. [절차·영수증](docen-static-hosting-2026-11-23.md).

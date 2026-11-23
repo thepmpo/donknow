@@ -26,6 +26,7 @@ import {
   QrCode,
 } from "lucide-react";
 import QRCode from "qrcode";
+import suppliedFooter from "../../content/legal/2026-11-23/docen-footer.html?raw";
 import { Pricing } from "./Pricing.jsx";
 
 const WEB =
@@ -33,6 +34,8 @@ const WEB =
     ? "https://duckduck-test.onrender.com"
     : location.origin;
 const APP = WEB + "/coming-soon";
+// Supplied business text remains verbatim; discard template comments and duplicate links.
+const companyFooter = suppliedFooter.replace(/<!--[\s\S]*?-->/g, "").match(/<div class="footer-inner">([\s\S]*?)<\/div>/)[1].replace(/<p class="footer-links">[\s\S]*?<\/p>/, "");
 const initialTasks = [
   {
     id: "review",
@@ -1124,6 +1127,7 @@ export function App() {
           <a href={WEB + "/support"}>{t("문의하기", "Support")}</a>
           <a href={WEB + "/terms"}>{t("이용약관", "Terms")}</a>
           <a href={WEB + "/privacy"}>{t("개인정보 처리방침", "Privacy")}</a>
+          <a href={WEB + "/refund"}>{t("환불정책", "Refund policy")}</a>
           <a href={WEB + "/ai-policy"}>{t("AI·외부 서비스 안내", "AI and integrations")}</a>
           <a href={WEB + "/cookies"}>{t("쿠키 안내", "Cookies")}</a>
           <a href={APP}>
@@ -1131,6 +1135,7 @@ export function App() {
             <ArrowUpRight size={14} />
           </a>
         </nav>
+        <div className="footer-business" lang="ko" dangerouslySetInnerHTML={{__html: companyFooter}} />
       </footer>
       {modal && (
         <div

@@ -4,9 +4,9 @@ import {DatabaseSync} from 'node:sqlite';
 import {join} from 'node:path';
 import {apiHarness} from '../test-support/api.js';
 import {openStore} from '../server/store.js';
-import {legalVersion} from '../server/legal-policy.js';
+import {legalVersion,legalDocuments} from '../server/legal-policy.js';
 import {validNewPassword} from '../server/password-policy.js';
-const agreements={termsVersion:legalVersion,privacyVersion:legalVersion,age14:true};
+const agreements={termsVersion:legalDocuments.terms.version,privacyVersion:legalVersion,age14:true};
 test('new user passwords require eight characters, a digit and punctuation; confirmation is enforced by the API',async()=>{
  const h=await apiHarness();try{
   const passwords=['Ab12!xy','abcdefgh!','abcdef12','12345678','        ','a'.repeat(129)+'1!'];

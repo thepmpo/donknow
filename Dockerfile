@@ -3,6 +3,7 @@ WORKDIR /build/website
 COPY website/package.json website/package-lock.json ./
 RUN --mount=type=secret,id=extra_ca,required=false if [ -s /run/secrets/extra_ca ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/extra_ca; fi; npm ci --include=dev --no-audit --no-fund && npm cache clean --force
 COPY website/ ./
+COPY content/legal/ /build/content/legal/
 COPY public/pricing.html /build/public/pricing.html
 RUN npm run build
 

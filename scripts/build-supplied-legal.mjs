@@ -1,0 +1,15 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+const style=`*{box-sizing:border-box}html{color-scheme:light}body{margin:0;background:#fff;color:#17212d;font:16px/1.85 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-wrap:anywhere}main{max-width:960px;margin:auto;padding:36px 28px 80px}a{color:#2366e8;text-underline-offset:3px}nav{display:flex;flex-wrap:wrap;gap:8px 24px;margin-bottom:48px}nav a{min-height:44px;display:inline-flex;align-items:center}h1{font-size:34px;line-height:1.4;letter-spacing:-1px}h2{font-size:22px;line-height:1.5;letter-spacing:-.5px;margin:0 0 18px}section{padding:32px 0;border-top:1px solid #e9edf2}header{padding-bottom:28px}.legal-meta{font-size:14px;color:#687789}p{margin:14px 0}li{margin:10px 0}ol,ul{padding-left:24px}.table-wrap{overflow-x:auto;max-width:100%;margin:22px 0}table{width:100%;min-width:580px;border-collapse:collapse;font-size:14px}caption{text-align:left;font-weight:600;margin-bottom:12px}th,td{border:1px solid #e0e7ef;padding:12px 14px;text-align:left;vertical-align:top}th{background:#f5f8fc}.legal-company{font-size:14px}footer{padding-top:30px;color:#687789;font-size:14px}@media(max-width:600px){main{padding:20px 20px 56px}nav{gap:4px 18px;margin-bottom:28px}h1{font-size:27px}h2{font-size:20px}section{padding:24px 0}body{font-size:15px}}@media print{nav{display:none}main{max-width:none}.table-wrap{overflow:visible}table{min-width:0}}`;
+for(const name of ['terms','refund']){
+ const source=await readFile(new URL('../content/legal/2026-11-23/docen-'+name+'.html',import.meta.url),'utf8');
+ // Only add layout wrappers; never rewrite supplied prose, amounts or placeholders.
+ const article=source.match(/<article[\s\S]*<\/article>/)[0].replaceAll('<table>','<div class="table-wrap" tabindex="0" role="region" aria-label="표 가로 스크롤"><table>').replaceAll('</table>','</table></div>');
+ const title=name==='terms'?'docen 이용약관':'docen 청약철회 및 환불정책';
+ const html=`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>${style}</style></head><body><main><nav aria-label="서비스 및 정책"><a href="/">docen 소개</a><a href="/terms">이용약관</a><a href="/privacy">개인정보처리방침</a><a href="/refund">환불정책</a></nav>${article}<footer><a href="/legal/2026-11-23/${name}">이 버전의 고정 주소</a> · <a href="/legal/2026-11-22.2/terms">이전 이용약관</a></footer></main></body></html>`;
+ await mkdir(new URL('../public/legal/2026-11-23/',import.meta.url),{recursive:true});
+ const archived=new URL('../public/legal/2026-11-23/'+name+'.html',import.meta.url);
+ let existing;try{existing=await readFile(archived,'utf8');}catch(e){if(e.code!=='ENOENT')throw e;}
+ if(existing&&existing!==html)throw Error('Published supplied legal version changed; use a new version.');
+ await writeFile(archived,html);await writeFile(new URL('../public/'+name+'.html',import.meta.url),html);
+}
+console.log('Rendered supplied terms/refund verbatim, version 2026-11-23.');

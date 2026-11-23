@@ -1,4 +1,4 @@
-import {legalVersion} from '../server/legal-policy.js';
+import {legalVersion,legalDocuments} from '../server/legal-policy.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -15,7 +15,7 @@ async function harness() {
  const verify=id=>{const db=new DatabaseSync(join(dir,'duckduck.sqlite'));try{db.prepare('UPDATE users SET email_verified_at=? WHERE id=?').run(new Date().toISOString(),id);}finally{db.close();}};
  await start();return {verify,dir,start,stop,request,cleanup:async()=>{await stop();await rm(dir,{recursive:true,force:true});}};
 }
-const credentials=email=>({email,password:'test-password-12345',passwordConfirmation:'test-password-12345',agreements:{termsVersion:legalVersion,privacyVersion:legalVersion,age14:true}});
+const credentials=email=>({email,password:'test-password-12345',passwordConfirmation:'test-password-12345',agreements:{termsVersion:legalDocuments.terms.version,privacyVersion:legalVersion,age14:true}});
 test('authentication, tenant isolation, persistent sessions, and immutable ownership',async()=>{
  const h=await harness();try{
   assert.equal((await h.request('/api/todos')).status,401);
