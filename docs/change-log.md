@@ -1,5 +1,9 @@
 ## 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
 
+## 2026-11-23 — 로고 두 배·파란 점·소개 준비 문구 정리
+
+웹 로고 이미지 크기를 두 배로 키우고 로고형 docen 이름에는 #2366e8 파란 점을 통일한다. 중앙/최하단 주요 준비 CTA·중앙 소개만 공개 문장·상단 로그인 준비 중 문구를 KR/EN에서 삭제한다. 상단 준비 안내 버튼·footer 안내 링크·서버 미오픈 차단은 유지한다. [상세 계약](docen-brand-polish-2026-11-23.md). 설치 앱 반영은 다음 native 빌드가 필요하다.
+
 ## 2026-11-23 — iPhone 최신 수정본 빌드 시작 요청 차단
 
 최신main9ad050e/일반CI45094564731success확인후사용자요청으로ios-testflight.yml의main수동실행을시도했다. CLI GET/POST dispatch가Forbidden으로거부됐다. 새run/번호/IPA/Apple업로드는미시작이며컴파일실패와다르다. 무료/수동/서명고정정책을보존했다. 사용자의기존빌드화면Run workflow→main→Run workflow한번실행이필요하다. [세부영수증](native-build-request-2026-11-23.md).

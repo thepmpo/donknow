@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "source": "Production landing build + isolated real Node server; no production account changes",
+  "cases": [
+    {
+      "width": 320,
+      "lang": "ko",
+      "headerLogo": 56
+    },
+    {
+      "width": 320,
+      "lang": "en",
+      "headerLogo": 56
+    },
+    {
+      "width": 360,
+      "lang": "ko",
+      "headerLogo": 56
+    },
+    {
+      "width": 360,
+      "lang": "en",
+      "headerLogo": 56
+    },
+    {
+      "width": 361,
+      "lang": "ko",
+      "headerLogo": 56
+    },
+    {
+      "width": 361,
+      "lang": "en",
+      "headerLogo": 56
+    },
+    {
+      "width": 375,
+      "lang": "ko",
+      "headerLogo": 56
+    },
+    {
+      "width": 375,
+      "lang": "en",
+      "headerLogo": 56
+    },
+    {
+      "width": 390,
+      "lang": "ko",
+      "headerLogo": 56
+    },
+    {
+      "width": 390,
+      "lang": "en",
+      "headerLogo": 56
+    },
+    {
+      "width": 600,
+      "lang": "ko",
+      "headerLogo": 56
+    },
+    {
+      "width": 600,
+      "lang": "en",
+      "headerLogo": 56
+    },
+    {
+      "width": 900,
+      "lang": "ko",
+      "headerLogo": 62
+    },
+    {
+      "width": 900,
+      "lang": "en",
+      "headerLogo": 62
+    },
+    {
+      "width": 1440,
+      "lang": "ko",
+      "headerLogo": 62
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "headerLogo": 62
+    }
+  ],
+  "checks": [
+    "2x logo",
+    "blue wordmark period",
+    "hero/footer CTA and disclaimer removed",
+    "login coming-soon label removed",
+    "320-1440px no overflow",
+    "KR/EN",
+    "admin wordmark and login gate"
+  ]
+}

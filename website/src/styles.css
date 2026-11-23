@@ -88,6 +88,10 @@ a {
   height: 31px;
   flex-shrink: 0;
 }
+.brand > .duck-mark {
+  width: 62px;
+  height: 62px;
+}
 .site-header {
   height: 88px;
   background: rgba(255, 255, 255, 0.96);
@@ -1100,8 +1104,8 @@ a {
   border-top: 1px solid #e9edf2;
 }
 .closing > .duck-mark {
-  width: 49px;
-  height: 49px;
+  width: 98px;
+  height: 98px;
 }
 .closing h2 {
   font-size: 38px;
@@ -1124,8 +1128,8 @@ a {
   font-size: 25px;
 }
 .site-footer .duck-mark {
-  width: 25px;
-  height: 25px;
+  width: 50px;
+  height: 50px;
 }
 .site-footer p {
   font-size: 11px;
@@ -1181,8 +1185,8 @@ a {
   top: 10px;
 }
 .site-modal > .duck-mark {
-  width: 42px;
-  height: 42px;
+  width: 84px;
+  height: 84px;
 }
 .site-modal h2 {
   font-size: 24px;
@@ -1322,8 +1326,8 @@ a {
     gap: 5px;
   }
   .brand .duck-mark {
-    width: 28px;
-    height: 28px;
+    width: 56px;
+    height: 56px;
   }
   .nav-end {
     gap: 9px;
@@ -1721,8 +1725,8 @@ a {
     padding-block: 55px 65px;
   }
   .closing > .duck-mark {
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
   }
   .closing h2 {
     font-size: 27px;
@@ -1882,3 +1886,6 @@ a {
 
 .schedule-form input,.schedule-form .small-primary,.schedule-form .plain-btn{min-height:44px}
 @media(max-width:600px){.site-footer nav a{min-height:44px}}
+
+/* Keep the enlarged identity readable on narrow phones; launch info stays in the menu. */
+@media(max-width:360px){.site-header .nav-cta{display:none}.site-header .nav-end{gap:8px}}

@@ -503,7 +503,7 @@ export function App() {
           <a className="brand" href="#" aria-label={t("docen 홈", "docen home")}>
             <Duck />
             <span>
-              docen<span className="brand-period">.</span>
+              docen<span className="brand-period" aria-hidden="true">.</span>
             </span>
           </a>
           <nav
@@ -525,9 +525,6 @@ export function App() {
               <Globe size={15} />
               {en ? "KR" : "EN"}
             </button>
-            <span className="login-link" aria-disabled="true">
-              {t("로그인 준비 중", "Login coming soon")}
-            </span>
             <a className="btn nav-cta" href={APP}>
               {t("오픈 준비 중", "Coming soon")}
               <ArrowUpRight size={15} />
@@ -591,21 +588,11 @@ export function App() {
             )}
           </p>
           <div className="hero-actions">
-            <a className="btn btn-large" href={APP}>
-              {t("오픈 준비 중", "Coming soon")}
-              <ArrowRight size={18} />
-            </a>
             <a className="text-link" href="#product-demo">
               {t("어떻게 쓰나요?", "See how it works")}
               <ChevronDown size={17} />
             </a>
           </div>
-          <p className="hero-footnote">
-            {t(
-              "현재는 소개 페이지만 공개하고 있어요 · 웹서비스 오픈 준비 중",
-              "Introduction website only · The web app is not open yet",
-            )}
-          </p>
           <Demo en={en} />
           <div className="demo-caption">
             <span>
@@ -1080,10 +1067,6 @@ export function App() {
             )}
           </p>
           <div className="hero-actions">
-            <a href={APP} className="btn btn-large">
-              {t("오픈 준비 중", "Coming soon")}
-              <ArrowRight size={18} />
-            </a>
             <button className="text-link" onClick={() => setModal("iphone")}>
               <Smartphone size={17} />
               {t("iPhone 앱 안내", "About the iPhone app")}
@@ -1096,7 +1079,7 @@ export function App() {
           <a className="brand" href="#">
             <Duck />
             <span>
-              docen<span className="brand-period">.</span>
+              docen<span className="brand-period" aria-hidden="true">.</span>
             </span>
           </a>
           <p>
