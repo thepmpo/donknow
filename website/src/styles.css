@@ -1101,7 +1101,7 @@ a {
   text-align: center;
   padding-top: 65px;
   padding-bottom: 108px;
-  border-top: 1px solid #e9edf2;
+  border-top: 0;
 }
 .closing > .duck-mark {
   width: 98px;
@@ -1912,9 +1912,11 @@ a {
 
 /* Closing signature uses the header wordmark rather than the pictorial logo. */
 .closing-wordmark {
-  font-size: clamp(80px, 9vw, 128px);
+  font-size: clamp(50px, 4.8vw, 70px);
   line-height: 1.05;
   font-weight: 800;
   letter-spacing: -.065em;
   color: #17212d;
 }
+
+.closing-wordmark + h2 { margin-top: clamp(36px, 3.4vw, 48px); }
