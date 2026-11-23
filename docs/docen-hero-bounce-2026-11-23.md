@@ -15,3 +15,7 @@ npm --prefix website run build 및 node website/tests/hero-bounce.mjs 통과. �
 시안/구현/비교 이미지 및 결과: artifacts/docen-hero-bounce-2026-11-23/. 원본 시안은 selected-reference.jpg로 보관. 초기 구현에서 영상 하단 네모 경계 P2 발견, top -90px와 하단 fade 후 재촬영하여 해결. root design-qa.md 참조. 시안의 데모 날짜 변경은 이미지 생성 예시이며 이번 실제 제품 데이터/예시 날짜를 바꾸는 범위가 아니다. 실제 프레임은 반복 영상 시간에 따라 공 위치가 달라진다.
 
 앱·모바일·native 빌드·가격·메일·키·외부 연결·오픈 guard는 변경하지 않는다. 배포 상태는 별도 영수증을 따른다.
+
+## 배포 영수증
+
+기존 무료 Render autoDeploy=no 확인 후 수동 배포. 74b8f8410edfdccfb655af9217280e6322d8f9e5 / dep-dc1q6p59fdbs73bicp2g / 2026-11-23 11:23:32 KST live. 실제 docen.today 및 health의 동일 release 조회 성공. 공개 fetch는 정제된 텍스트이므로 움직임 검증 근거는 위 production build Chromium playback 검사다. 신규 리소스·요금 변경·native 빌드 없음.

@@ -1,3 +1,7 @@
+## 2026-11-23 — PC 소개 메인 우측 공 튀기기 배경
+
+첫 시안 선택에 따라 중앙 문구 유지, 우측에 첨부 원본 영상 muted/loop/inline 배치. 1100px 미만 숨김, reduced-motion/error 정지 이미지, offscreen/hidden pause. 실제 playback·KO/EN·반응형·오픈 guard 검사 통과. [상세/증거](docen-hero-bounce-2026-11-23.md), root design-qa.md. 모바일/앱/출시 상태/가격 유지.
+
 ## 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
 
 ## 2026-11-23 — 로고 두 배·파란 점·소개 준비 문구 정리
