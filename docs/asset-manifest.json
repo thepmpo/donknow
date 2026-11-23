@@ -1,9 +1,30 @@
 {
   "generatedAt": "2026-11-23",
-  "codeCommit": "96e3b487364f74c8e0d9bae2a201370a25df3f8c",
-  "assetCommit": "96e3b487364f74c8e0d9bae2a201370a25df3f8c",
-  "imageCount": 1649,
+  "codeCommit": "d89ed9f843732a461adfb8b5a365d51b37b6ddd5",
+  "assetCommit": "d89ed9f843732a461adfb8b5a365d51b37b6ddd5",
+  "imageCount": 1675,
   "images": [
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/motion-home.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 92597,
+      "sha256": "6e5981452820b048e24343b6b7c8a790753c57418c399d21789b660d37f5683c",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__motion-home.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/app-motion-restore.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 20799,
+      "sha256": "008bc1e9005d2c8624bc04ed4d9f857fca9f90bff2802ae9f8d366cf6e87cb68",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__app-motion-restore.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/admin-login-logo.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 23611,
+      "sha256": "46645ba8a0b400385f9b6e5e4d07e3353eae37f9e00d4a2ccad17947e7e3af6d",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__admin-login-logo.png"
+    },
     {
       "path": "artifacts/docen-brand-2026-11-22/site/desktop-hero.png",
       "category": "단계별 개요 또는 초기 웹 프로토타입",
@@ -6312,6 +6333,146 @@
       "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-todo.png"
     },
     {
+      "path": "artifacts/docen-identity-2026-11-23/browser/app-failure-restore.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 20799,
+      "sha256": "008bc1e9005d2c8624bc04ed4d9f857fca9f90bff2802ae9f8d366cf6e87cb68",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__app-failure-restore.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/app-reduce-restore.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 20799,
+      "sha256": "008bc1e9005d2c8624bc04ed4d9f857fca9f90bff2802ae9f8d366cf6e87cb68",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__app-reduce-restore.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/motion-boot.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 24385,
+      "sha256": "14f02e0d0a9aef93aeecba5156be3567e931065b2c39e4fee47955a4aadebf16",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__motion-boot.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/reduce-boot.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 13572,
+      "sha256": "c0bb945869bce1d3336884105e63518b5ff5a5a06bf4a7d73d156226b18008a1",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__reduce-boot.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/browser/reduce-home.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 61878,
+      "sha256": "0ae5a9ff6e528debac5f46c73ac910f423984979cf836519cca38e13933d22c7",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__browser__reduce-home.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-calendar.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 83259,
+      "sha256": "b63b0599d80bef7a59df5a141bbb3467642b463af2faa99dc7bef7f3234e334c",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-calendar.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-full-en.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 762636,
+      "sha256": "65037323f9f20e31613376d38ea0e393558fba9dabe8f2a0e7bf6eac2bdbd7a0",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-full-en.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-full.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 689251,
+      "sha256": "7909c65f61f6403fe104697758dcfc1d75d283902fa0b304c6ea55139547a113",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-full.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-hero.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 92597,
+      "sha256": "6e5981452820b048e24343b6b7c8a790753c57418c399d21789b660d37f5683c",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-hero.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-pricing-en.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 128973,
+      "sha256": "492ce6c9485850a0ab46efb6e55c38059c2e466747c15c9e76da4bb73bbd5797",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-pricing-en.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-pricing.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 120194,
+      "sha256": "9b034d1f738786812411af2fa332096e23293af0586ebddb40e122e047e1c84d",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-pricing.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/desktop-todo.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 82613,
+      "sha256": "0c74f18a1aa802bd100f892ab52a50eb2dea7bdc1d73dcb25147df49c1597422",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__desktop-todo.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-calendar.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 45033,
+      "sha256": "46a158f1fcfdc94c1cc8f198343012ec20246caf3cdb26312200b90ec1e8d5d0",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-calendar.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-comparison.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 39506,
+      "sha256": "c0dbe627a712981dffbff8af0bbf9b86af4740de5fb31ca8195083fd6ff854e8",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-comparison.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-full-en.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 596741,
+      "sha256": "89c63e8e15ada5bd67a3ea0db8717380b9b1fe28a82d4087ce1c2f57b21c8980",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-full-en.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-full.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 550993,
+      "sha256": "57ebd6f22b9f74003482513744cffe2b4a105f79a5276aa4deceb53b60e13511",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-full.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-hero.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 53148,
+      "sha256": "389f23f7c86cca536899c98d85f099cd30a1ea5ede68bb24bc1fc6431a118db5",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-hero.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-pricing-en.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 42144,
+      "sha256": "47589fdebe25d92719e46f5e9007ba594554f31dd0713bcd28cf51a59fcaf9c1",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-pricing-en.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-pricing.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 39506,
+      "sha256": "c0dbe627a712981dffbff8af0bbf9b86af4740de5fb31ca8195083fd6ff854e8",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-pricing.png"
+    },
+    {
+      "path": "artifacts/docen-identity-2026-11-23/site/phone-todo.png",
+      "category": "사용자 새 docen 로고·로딩 · 실제 production 웹/합성 계정 · native 캡처 아님",
+      "bytes": 44437,
+      "sha256": "32e85ad906adfdfcd80f016bb7163e2865b3be8bb7e60615ee5616f9d64b9775",
+      "import_path": "images/artifacts__docen-identity-2026-11-23__site__phone-todo.png"
+    },
+    {
       "path": "artifacts/docen-introduction-2026-11-22/public-host/desktop-coming-soon.png",
       "category": "단계별 개요 또는 초기 웹 프로토타입",
       "bytes": 40652,
@@ -11500,51 +11661,72 @@
     },
     {
       "path": "mobile/assets/android-icon-background.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
       "bytes": 17549,
       "sha256": "fb139c2dee362ebf2070e23b96da6fc0d43f8492de38b8af1fd7223e19b5861d",
       "import_path": "images/mobile__assets__android-icon-background.png"
     },
     {
       "path": "mobile/assets/android-icon-foreground.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
-      "bytes": 78796,
-      "sha256": "9e3d0315a33c6799de601dd34cd8bf8cc3a8d16f3bf75592baec2ceb7240b391",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
+      "bytes": 287438,
+      "sha256": "51a0799ec220e85174c43da7dde4fcfe7c2c2b8fef9bf23a9d5ea9b4b52e6b03",
       "import_path": "images/mobile__assets__android-icon-foreground.png"
     },
     {
       "path": "mobile/assets/android-icon-monochrome.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
       "bytes": 4140,
       "sha256": "6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83",
       "import_path": "images/mobile__assets__android-icon-monochrome.png"
     },
     {
+      "path": "mobile/assets/brand/docen-logo-original.jpg",
+      "category": "사용자 제공 새 docen 브랜드 자산 · 원본 보존/기계적 크기 변환",
+      "bytes": 67402,
+      "sha256": "816f7863306fd59b6f8444c16a7cbd8bb003871cecf8c5e50fa6afd32ca764db",
+      "import_path": "images/mobile__assets__brand__docen-logo-original.jpg"
+    },
+    {
+      "path": "mobile/assets/brand/docen-logo-shadow-original.jpg",
+      "category": "사용자 제공 새 docen 브랜드 자산 · 원본 보존/기계적 크기 변환",
+      "bytes": 77380,
+      "sha256": "2a24969a9a1535742ba631c64ca3b62cd73079739720f3b784cc34526c754e45",
+      "import_path": "images/mobile__assets__brand__docen-logo-shadow-original.jpg"
+    },
+    {
+      "path": "mobile/assets/brand/docen-logo.png",
+      "category": "사용자 제공 새 docen 브랜드 자산 · 원본 보존/기계적 크기 변환",
+      "bytes": 94528,
+      "sha256": "9bdf779171e766fde273b91f23750beb32a927152a5ff7c938908b22ecd0e854",
+      "import_path": "images/mobile__assets__brand__docen-logo.png"
+    },
+    {
       "path": "mobile/assets/duck-mark.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
-      "bytes": 864,
-      "sha256": "d8d2108c8a27d67a71840235d663d467041ebd906912d9be14933ebb73b81beb",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
+      "bytes": 94528,
+      "sha256": "9bdf779171e766fde273b91f23750beb32a927152a5ff7c938908b22ecd0e854",
       "import_path": "images/mobile__assets__duck-mark.png"
     },
     {
       "path": "mobile/assets/favicon.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
-      "bytes": 1129,
-      "sha256": "a4e030697a7571b3e95d31860e4da55d2f98e5e861e2b55e414f45a8556828ba",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
+      "bytes": 3274,
+      "sha256": "05b79e02a24fd93627ee126110d93fd8a0dd6e0497d57f84ceaed76e78b5f784",
       "import_path": "images/mobile__assets__favicon.png"
     },
     {
       "path": "mobile/assets/icon.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
-      "bytes": 393493,
-      "sha256": "119462bb78eb240a65c869fc067ee599639b3cb5a41953f25c07b17d2a8c7e0f",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
+      "bytes": 287438,
+      "sha256": "51a0799ec220e85174c43da7dde4fcfe7c2c2b8fef9bf23a9d5ea9b4b52e6b03",
       "import_path": "images/mobile__assets__icon.png"
     },
     {
       "path": "mobile/assets/splash-icon.png",
-      "category": "앱 초기 리소스·최종 브랜딩 미확정",
-      "bytes": 17547,
-      "sha256": "5f4c0a732b6325bf4071d9124d2ae67e037cb24fcc9c482ef82bea742109a3b8",
+      "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
+      "bytes": 94528,
+      "sha256": "9bdf779171e766fde273b91f23750beb32a927152a5ff7c938908b22ecd0e854",
       "import_path": "images/mobile__assets__splash-icon.png"
     }
   ]
