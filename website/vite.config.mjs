@@ -70,7 +70,7 @@ function pricingContent() {
 }
 
 export default defineConfig(({ command }) => ({
-  base: command === "build" ? "/site/" : "/",
+  base: command === "build" && process.env.VITE_STATIC_SITE !== "1" ? "/site/" : "/",
   publicDir: "public-site",
   build: {
     outDir: "dist/client",

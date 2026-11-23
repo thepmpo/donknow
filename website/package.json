@@ -11,7 +11,8 @@
     "test:interaction": "node tests/interaction.mjs",
     "download": "node scripts/prepare-download.mjs",
     "test:download": "node --test tests/download.test.mjs",
-    "predev": "node scripts/build-pricing.mjs"
+    "predev": "node scripts/build-pricing.mjs",
+    "build:static": "node scripts/build-pricing.mjs && VITE_STATIC_SITE=1 vite build && node scripts/prepare-static-host.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",
