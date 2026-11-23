@@ -23,3 +23,7 @@ server-runtime.js servicePages와 archivedLegal regex에 refund를 추가한다.
 첨부 대비 새 article textContent를 공백 정규화 후 전체 비교해 본문/금액/날짜/자리표시자 동일을 확인한다. 정규화는 HTML 들여쓰기/표 wrapper 차이만 무시하고 문자는 그대로 비교한다. 실제 Chromium 320/390/1440px에서 사업자 필드 모두 존재, terms/privacy/refund footer 클릭 이동, 문서/푸터 가로넘침 없음, JS pageerror 없음 통과. screenshot/results: artifacts/docen-business-legal-2026-11-23/. 모바일 footer390/terms320 직접 확인. 표는 컨테이너 내부에서 가로 스크롤하며 본문 페이지 전체는 넘치지 않는다.
 
 build:static·기존 서버용 website build·정적호스트 KR/EN 영상 및 안내·오픈 guard 브라우저 회귀·문법 검사 통과. signup/password/public-launch/turso/todos 13테스트 통과. 구약관 버전으로 신규가입 거절과 /refund의 public GET/archive 검사도 보충했다. 개인정보/이전고정버전 git diff없음 확인. 배포 영수증은 실행 후 보충한다.
+
+## 배포 영수증
+
+코드a27e07adff34785a4b1c6b517b875942c13ab13f. 정적 srv-dc1qt4uc6qcc73bjpffg / dep-dc1r14tg1s2s73e54ctg는2026-11-23 12:19:03 KST live. 기존 Docker srv-dbgpc0ff3r2c73abc7e0 / dep-dc1r16ff3r2c73dgl6pg는12:19:53 KST live. 실제 docen.today/terms, /refund의 legal-doc에서 사업자번호/날짜/placeholder, 홈페이지 site-footer에서 사업자번호/placeholder를 확인했다. 새 static의 두 정책과 footer·시행일도 별도 확인했다. 무료정적 도메인 매핑이 완료됐다고 이 정책 작업으로 주장하지 않는다. 기존/정적 두 호스트의 콘텐츠를 동일하게 배포했다.
