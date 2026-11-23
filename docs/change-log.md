@@ -1,5 +1,9 @@
 ## 2026-11-22 — docen 소개만 공개·서비스 오픈 보류
 
+## 2026-11-23 — iPhone 최신 수정본 빌드 시작 요청 차단
+
+최신main9ad050e/일반CI45094564731success확인후사용자요청으로ios-testflight.yml의main수동실행을시도했다. CLI GET/POST dispatch가Forbidden으로거부됐다. 새run/번호/IPA/Apple업로드는미시작이며컴파일실패와다르다. 무료/수동/서명고정정책을보존했다. 사용자의기존빌드화면Run workflow→main→Run workflow한번실행이필요하다. [세부영수증](native-build-request-2026-11-23.md).
+
 ## 2026-11-23 — 새 브랜드 웹 배포 live·공개주소 확인
 
 f83567d·dep-dc1paqvf3r2c73dc282g가2026-11-23T01:24:27.361019Z live. 공개docen.today소개새로고/삭제문항·health동일release·준비안내를실제URLfetch로확인했다. 기존무료서비스/미오픈guard/설치native미빌드유지. [영수증](docen-identity-deployment-2026-11-23.md).

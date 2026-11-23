@@ -1,5 +1,9 @@
 # iPhone 테스트 수동 빌드·자동 제출
 
+## 2026-11-23 — 새 로고/영상 빌드 요청·dispatch Forbidden
+
+사용자가최신수정본빌드를요청했다. 9ad050e(main)는새로고/아이콘/BrandLoading·expo-video SDK58·native프로젝트이름사전검사수정을포함한다. 일반CI45094564731은success다. 기존무료Mac수동workflow의CLI조회와직접POST dispatch가Forbidden으로거부돼새run/IPA/Apple업로드는시작되지않았다. 연결도구에는새dispatch기능이없고옛run재실행/자동push native/유료경로로우회하지않았다. 마지막조회native43828995337/045f3107/11월16일success는수정전이므로이번빌드로표시하지않는다. [요청/실제결과/수동버튼](native-build-request-2026-11-23.md).
+
 ## 2026-11-15 22:30 UTC — 영상 UX/UI 수정본 빌드 요청·시작 거부
 
 사용자가 방금 수정본 빌드를 요청했다. main `de2f9aa`는 구현 `8d7545e`/`d47d246`와 검수·공개 문서를 포함한다. 추가된 원격 변경은 일일 문서뿐이며 앱/워크플로 변경은 없다. 진행 중 iPhone 실행은 없고, 마지막 확인은1.0.0(41)·43716180572다.
