@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-23",
-  "codeCommit": "d89ed9f843732a461adfb8b5a365d51b37b6ddd5",
-  "assetCommit": "d89ed9f843732a461adfb8b5a365d51b37b6ddd5",
-  "imageCount": 1675,
+  "codeCommit": "833a7bf935bd1f136d6cb81ad4b33cc28011fd3c",
+  "assetCommit": "833a7bf935bd1f136d6cb81ad4b33cc28011fd3c",
+  "imageCount": 1683,
   "images": [
     {
       "path": "artifacts/docen-identity-2026-11-23/browser/motion-home.png",
@@ -6331,6 +6331,62 @@
       "bytes": 43970,
       "sha256": "ffba10edfa4d09c38fbe08e0ca5c94f44b0ff8da5102e294e018a6f9e2ec5e66",
       "import_path": "images/artifacts__docen-brand-2026-11-22__site__phone-todo.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/1440-en-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 59900,
+      "sha256": "d003823b1214cc6ead6e49e2c9d06820d78fb40baa413c4a70111fd935e222f2",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__1440-en-footer.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/1440-en-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 106568,
+      "sha256": "1e891f33c27a361681224c4819973570c55346c01866af2d0d6eddbe90af9e1b",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__1440-en-hero.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/1440-ko-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 54870,
+      "sha256": "afcef35f3ddea9e80af5fc0634cae8248932e55ad1eb667df67612e336130005",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__1440-ko-footer.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/1440-ko-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 93879,
+      "sha256": "15f120f437784227821fa4a34a92ab03c851b471e9af7acf25ef7b16d4872d5d",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__1440-ko-hero.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/390-en-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42729,
+      "sha256": "5261c50aadd96314a111791fac0f1cd4ad81331c367aa1154e9cb549565232c4",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__390-en-footer.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/390-en-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 63685,
+      "sha256": "0c570c110c47ca2f13a7e85bbe7261aaf8f69419ac2979f4be1519a38c3d0946",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__390-en-hero.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/390-ko-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42709,
+      "sha256": "e52e5498f11f9759a6dad585f214ce6f5bcc0f3fa99a7359a1939701ba5f4881",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__390-ko-footer.png"
+    },
+    {
+      "path": "artifacts/docen-brand-polish-2026-11-23/390-ko-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 61743,
+      "sha256": "22c594713548b14a6a6ab916fd5484b9677e387b4480b8bee420fb57ec0df474",
+      "import_path": "images/artifacts__docen-brand-polish-2026-11-23__390-ko-hero.png"
     },
     {
       "path": "artifacts/docen-identity-2026-11-23/browser/app-failure-restore.png",
