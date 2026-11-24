@@ -9,3 +9,7 @@
 검증: mobile typecheck 통과. Expo production web export 통과. 실제 Chromium에서 같은 공통 chat 화면의 docen heading/wordmark 및 새 로고를 확인했다. artifacts/docen-app-brand-2026-11-24/navigation-chat.png. web presentation은 desktop mode이므로 이를 iPhone native 내비게이션 실행 확인으로 가장하지 않는다. native AppNavigation은 소스/타입 검사로 확인, 실제 설치 디바이스 검사는 다음 빌드 후 필요하다.
 
 설치 앱 아이콘/이름/내비게이션의 최종 적용에는 새 TestFlight 빌드·설치가 필요하다. native빌드 실행 상태는 작업 후속 기록을 따른다. 기존 native-build-request-2026-11-23.md의 dispatch Forbidden은 당시 실행경로 제약이며 새 빌드 성공 근거가 아니다.
+
+## 저장과 native 실행 영수증
+
+앱 변경 d578cd1. push 시 main에 일일 문서 자동 커밋2건이 추가되어 fast-forward가 거절되었고, origin/main을 fetch/merge하여 문서 자산을 보존한 후 정상 push했다. force push하지 않았다. gh api POST repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches ref=main은 Forbidden으로 거절됐다. 자동 승인 심사 거절 응답은 아니며 새run/IPA/Apple업로드를 생성했다고 주장하지 않는다. 사용자가 https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml 에서 Run workflow→main→Run workflow를 실행하면 최신 로고/워드마크/앱이름이 포함된다. 이후 TestFlight에 새 빌드가 처리되고 설치돼야 기기에서 확인할 수 있다. 일반 웹 export 성공은 이 native 빌드/설치를 대신하지 않는다.
