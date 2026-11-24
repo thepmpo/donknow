@@ -1,5 +1,47 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-25:start -->
+### 2026-11-25 — 당일 저장된 작업
+
+실제 정리: 05:35 KST. 새 저장 작업 0개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+이 실행 구간에 새로 저장된 작업이 없습니다. 이전 작업과 최신 수동 변경 기록은 유지합니다.
+<!-- daily:2026-11-25:end -->
+
+<!-- daily:2026-11-24:start -->
+### 2026-11-24 — 당일 저장된 작업
+
+실제 정리: 06:58 KST. 새 저장 작업 14개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [d89ed9f](https://github.com/sjfieni/donknow/commit/d89ed9f843732a461adfb8b5a365d51b37b6ddd5) · 11-23 10:22 · Use supplied docen identity and loading video across app and web
+
+- [9ad050e](https://github.com/sjfieni/donknow/commit/9ad050ed27a1e2624ceac8dbccd2615277f5ee58) · 11-23 10:26 · Record verified docen branding deployment and current public domain
+
+- [b41c03b](https://github.com/sjfieni/donknow/commit/b41c03bbf34dd8ff546c9afdc51b2247d031cc78) · 11-23 10:34 · Record authorized iPhone build dispatch rejection and manual start path
+
+- [833a7bf](https://github.com/sjfieni/donknow/commit/833a7bf935bd1f136d6cb81ad4b33cc28011fd3c) · 11-23 10:45 · Polish docen branding and simplify introduction calls to action
+
+- [8c90cf8](https://github.com/sjfieni/donknow/commit/8c90cf8840f07a94f712d9c7aee5e212a180fa06) · 11-23 10:47 · Record verified live introduction branding deployment
+
+- [74b8f84](https://github.com/sjfieni/donknow/commit/74b8f8410edfdccfb655af9217280e6322d8f9e5) · 11-23 11:22 · Animate selected centered desktop hero with supplied docen video
+
+- [bacf5fa](https://github.com/sjfieni/donknow/commit/bacf5fa22f1172d08f6981c48f4287457bcbd031) · 11-23 11:24 · Record live desktop animation deployment and documentation index
+
+- [b80b708](https://github.com/sjfieni/donknow/commit/b80b7089003d630b55fef9dd5b196087a5537c25) · 11-23 11:54 · Replace closing illustration with large docen wordmark
+
+- [42d52e1](https://github.com/sjfieni/donknow/commit/42d52e1a20a20f9eebf4f93e9bf35e7e94bb5b1c) · 11-23 12:03 · Finalize smaller closing wordmark spacing and remove divider
+
+- [e2133f4](https://github.com/sjfieni/donknow/commit/e2133f4c78c474df6427c51d8c82d8fdbc52b966) · 11-23 12:05 · Record final closing wordmark deployment
+
+- [eeeaf41](https://github.com/sjfieni/donknow/commit/eeeaf414de25e08cf97ea4a2b89e2389e75c679e) · 11-23 12:09 · Prepare standalone static introduction without app server dependencies
+
+- [7f5a9cb](https://github.com/sjfieni/donknow/commit/7f5a9cb7003e143e6d663e898c90b5cd466dac4e) · 11-23 12:11 · Record live free static introduction and pending domain cutover
+
+- [a27e07a](https://github.com/sjfieni/donknow/commit/a27e07adff34785a4b1c6b517b875942c13ab13f) · 11-23 12:18 · Publish supplied business footer, terms and refund policy verbatim
+
+- [fe877dd](https://github.com/sjfieni/donknow/commit/fe877dd8ea47ceafa687a6d0138fd79848df6c43) · 11-23 12:20 · Record verified live supplied legal pages and operator footer
+<!-- daily:2026-11-24:end -->
+
 <!-- daily:2026-11-23:start -->
 ### 2026-11-23 — 당일 저장된 작업
 

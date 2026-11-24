@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-23",
-  "codeCommit": "833a7bf935bd1f136d6cb81ad4b33cc28011fd3c",
-  "assetCommit": "833a7bf935bd1f136d6cb81ad4b33cc28011fd3c",
-  "imageCount": 1683,
+  "generatedAt": "2026-11-25",
+  "codeCommit": "a27e07adff34785a4b1c6b517b875942c13ab13f",
+  "assetCommit": "a27e07adff34785a4b1c6b517b875942c13ab13f",
+  "imageCount": 1702,
   "images": [
     {
       "path": "artifacts/docen-identity-2026-11-23/browser/motion-home.png",
@@ -1011,6 +1011,13 @@
       "bytes": 38385,
       "sha256": "0243672fa182d000c050ebb741100a257275d96f5e5060b79990e1a81c7fe30e",
       "import_path": "images/artifacts__calendar-year-2026-11-14__app__mobile-verification.png"
+    },
+    {
+      "path": "artifacts/docen-hero-bounce-2026-11-23/mobile-unchanged.png",
+      "category": "네이티브 기반 웹의 격리 테스트 화면",
+      "bytes": 64421,
+      "sha256": "58810cf39772978ac52a897b116b3e7868277f0a7cdfd1e750e4b1c44ec72946",
+      "import_path": "images/artifacts__docen-hero-bounce-2026-11-23__mobile-unchanged.png"
     },
     {
       "path": "artifacts/dots-full-2026-11-15/regression/mobile-account-settings.png",
@@ -6387,6 +6394,132 @@
       "bytes": 61743,
       "sha256": "22c594713548b14a6a6ab916fd5484b9677e387b4480b8bee420fb57ec0df474",
       "import_path": "images/artifacts__docen-brand-polish-2026-11-23__390-ko-hero.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/footer-1440.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 73314,
+      "sha256": "d779fe09892d5581a4e47a25f3d442835c1aa3ff7ee7f7b9b3785628d9c79302",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__footer-1440.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/footer-320.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 54031,
+      "sha256": "9d79180fcf76a9bd2a1aa2f436192cda0b88f89b28868bcf89199c3eb8aae6a7",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__footer-320.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/footer-390.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 56350,
+      "sha256": "85c8ca68e4c5f33dce36e2989f17c170cb571d6294873668e43093352897780a",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__footer-390.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/refund-1440.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 121527,
+      "sha256": "b9120e112a2492e732cf3a834ba5c1d99677fe2952618bfb3379a40fe6713e69",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__refund-1440.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/refund-320.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 69004,
+      "sha256": "aeee5df0e2fdc03b39918b471ff80a8d38d0849bd30ded7f4040fb77a42344ee",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__refund-320.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/refund-390.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 86522,
+      "sha256": "84d1fb8b803ca07e773eb75106375d9b354725123524d92eb3bbbd06b2e3d478",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__refund-390.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/terms-1440.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 150280,
+      "sha256": "0dbc81bb827bb54c9fcfdf946b1d9cd2967dab72678707a8be40d73b0e94b35f",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__terms-1440.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/terms-320.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 79103,
+      "sha256": "148d5439477c46b6ec2c36097d6a6f145a51cbc3b084bdac83cc11c71495a667",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__terms-320.png"
+    },
+    {
+      "path": "artifacts/docen-business-legal-2026-11-23/terms-390.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 94079,
+      "sha256": "9a87c403df314cf263923d569559c90a0938502a982bae2463f239ddfae438aa",
+      "import_path": "images/artifacts__docen-business-legal-2026-11-23__terms-390.png"
+    },
+    {
+      "path": "artifacts/docen-closing-final-2026-11-23/1440.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 53132,
+      "sha256": "8e5a32940f1117c1183eabcf6db7b3e465669292b70d2ccd53f49813c09c0e19",
+      "import_path": "images/artifacts__docen-closing-final-2026-11-23__1440.png"
+    },
+    {
+      "path": "artifacts/docen-closing-final-2026-11-23/390.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 41852,
+      "sha256": "a89add2132828db4eb544be8989faf47bbcf46b19aff6de3a340b04109b15dcd",
+      "import_path": "images/artifacts__docen-closing-final-2026-11-23__390.png"
+    },
+    {
+      "path": "artifacts/docen-closing-wordmark-2026-11-23/1440.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 55965,
+      "sha256": "150177536fbdcc4725462d667cec51a625cdea1b3d9ab10abdbe2283344f4d64",
+      "import_path": "images/artifacts__docen-closing-wordmark-2026-11-23__1440.png"
+    },
+    {
+      "path": "artifacts/docen-closing-wordmark-2026-11-23/390.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43439,
+      "sha256": "f1e893ec3502107720b77fce2b67c8469435ff201eac67fadad6c661b435ccae",
+      "import_path": "images/artifacts__docen-closing-wordmark-2026-11-23__390.png"
+    },
+    {
+      "path": "artifacts/docen-hero-bounce-2026-11-23/comparison.jpg",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 99104,
+      "sha256": "7785c3ebd80a7ca1bcd6dd60594ae9261cd336549cff259c7fdc40b06bd17487",
+      "import_path": "images/artifacts__docen-hero-bounce-2026-11-23__comparison.jpg"
+    },
+    {
+      "path": "artifacts/docen-hero-bounce-2026-11-23/desktop-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 272319,
+      "sha256": "783b857dc862bd484402a4c23e299e129a14a423c0fc36102162f24beee56661",
+      "import_path": "images/artifacts__docen-hero-bounce-2026-11-23__desktop-en.png"
+    },
+    {
+      "path": "artifacts/docen-hero-bounce-2026-11-23/desktop-ko.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 258909,
+      "sha256": "aca41718c507a5406db39d369d2f86b327ce03360978d16ee32a77b007d8ca89",
+      "import_path": "images/artifacts__docen-hero-bounce-2026-11-23__desktop-ko.png"
+    },
+    {
+      "path": "artifacts/docen-hero-bounce-2026-11-23/reduced-motion.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 191925,
+      "sha256": "ea05e78434a9b9e42404d478f4aac5ec5214529fdbdcb5b91c14387430622ba9",
+      "import_path": "images/artifacts__docen-hero-bounce-2026-11-23__reduced-motion.png"
+    },
+    {
+      "path": "artifacts/docen-hero-bounce-2026-11-23/selected-reference.jpg",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 78833,
+      "sha256": "c46de626867ca9b5e790f212c6cdf58815fa80480c31d6f5f100e0d130d1cd1f",
+      "import_path": "images/artifacts__docen-hero-bounce-2026-11-23__selected-reference.jpg"
     },
     {
       "path": "artifacts/docen-identity-2026-11-23/browser/app-failure-restore.png",
