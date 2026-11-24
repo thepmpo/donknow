@@ -1,4 +1,5 @@
 import React from 'react';
-import {Text,View} from 'react-native';
+import {BrandMark} from './BrandMark';
 type Appearance={color:string;eyes:string;glasses:boolean;accessory:string};
-export function AgentAvatar({appearance,size=28}:{appearance?:Appearance;size?:number}){const a=appearance??{color:'#2166d8',eyes:'normal',glasses:false,accessory:'none'},eye=a.eyes==='smile'?'⌒':a.eyes==='sleepy'?'−':'•';return <View accessibilityLabel={'docen 모습'+(a.glasses?' · 안경':'')} style={{width:size,height:size,borderRadius:size*.4,backgroundColor:a.color,alignItems:'center',justifyContent:'center'}}><Text style={{fontSize:size*.46,color:'#fff',fontWeight:'700',letterSpacing:1}}>{a.glasses?'⌐■_■':eye+' '+eye}</Text><View style={{position:'absolute',bottom:size*.16,width:size*.27,height:size*.12,borderRadius:size*.1,backgroundColor:'#ffbd59'}}/>{a.accessory!=='none'&&<Text style={{position:'absolute',top:-size*.22,right:-size*.08,fontSize:size*.5}}>{{hat:'🎩',ribbon:'🎀',headphones:'🎧'}[a.accessory]??''}</Text>}</View>;}
+// Keep the persisted persona contract; all app brand avatars use the supplied logo.
+export function AgentAvatar({size=28}:{appearance?:Appearance;size?:number}){return <BrandMark size={size}/>;}
