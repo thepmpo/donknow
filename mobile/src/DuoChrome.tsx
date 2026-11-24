@@ -2,7 +2,7 @@ import React,{createContext,useCallback,useContext,useEffect,useLayoutEffect,use
 import {Animated,Pressable,StyleSheet,Text,View} from 'react-native';
 import type {ReactNode} from 'react';
 import {DuoBackProvider,useDuoBackState} from './DuoBackNavigation';
-import {duoTabFrame,duoTodayFrame,duoCalendarViewFrame,duoScrollIndicatorFrame} from './duo-layout';
+import {duoTabFrame,duoCalendarViewFrame,duoScrollIndicatorFrame} from './duo-layout';
 import {NavigationGlass} from './NavigationGlass';
 import {SheetBackdropProvider} from './SheetBackdrop';
 import {Ionicons} from '@expo/vector-icons';
@@ -12,7 +12,7 @@ import {SurfaceInteractionProvider,useSurfaceBlocked} from './SurfaceInteraction
 type CalendarViewControl={expanded:boolean;onPress:()=>void;label?:string;accessibilityLabel?:string};
 type TodayEntry={id:symbol;day:string;onPress:()=>void;priority:number;view?:CalendarViewControl};
 export type DuoScrollEntry={id:symbol;opacity:Animated.Value;progress:Animated.Value;fraction:number};
-type Chrome={showScroll:(entry:DuoScrollEntry)=>void;clearScroll:(id:symbol)=>void;scene:DuoSceneLayout|null;ready:boolean;setNavigation:React.Dispatch<React.SetStateAction<ReactNode>>;registerToday:(entry:TodayEntry)=>()=>void};
+type Chrome={showScroll:(entry:DuoScrollEntry)=>void;clearScroll:(id:symbol)=>void;scene:DuoSceneLayout|null;ready:boolean;calendarDay?:string;setNavigation:React.Dispatch<React.SetStateAction<ReactNode>>;registerToday:(entry:TodayEntry)=>()=>void};
 const Context=createContext<Chrome>({showScroll:()=>{},clearScroll:()=>{},scene:null,ready:true,setNavigation:()=>{},registerToday:()=>()=>{}});
 export function useDuoScene(){return useContext(Context);}
 export function useDuoNavigationPortal(node:ReactNode,enabled:boolean){
@@ -25,9 +25,9 @@ export function useDuoToday(day:string,onPress:()=>void,enabled:boolean,priority
 }
 function NavigationHost({scene,children,today}:{scene:DuoSceneLayout;children:ReactNode;today?:TodayEntry}){
  const blocked=useSurfaceBlocked();
- const {available,controlsBottom}=useDuoBackState(),frame=duoTabFrame(scene,available,controlsBottom),accessory=duoTodayFrame(scene,available,!!today?.view,controlsBottom),viewFrame=duoCalendarViewFrame(scene,available,controlsBottom);
+ const {available,controlsBottom}=useDuoBackState(),frame=duoTabFrame(scene,available,controlsBottom),viewFrame=duoCalendarViewFrame(scene,available,controlsBottom);
  return <>{today?.view&&viewFrame&&<Pressable disabled={blocked} accessibilityElementsHidden={blocked} importantForAccessibility={blocked?'no-hide-descendants':'auto'} aria-hidden={blocked} testID="DuoCalendarViewButton" accessibilityRole="button" accessibilityLabel={today.view.accessibilityLabel??(today.view.expanded?"월 보기로 전환":"2주 보기로 전환")} accessibilityState={{selected:today.view.expanded,disabled:blocked}} onPress={today.view.onPress} style={[styles.today,{left:viewFrame.x,top:viewFrame.y,width:viewFrame.width,height:viewFrame.height}]}><NavigationGlass pointerEvents="none" style={[StyleSheet.absoluteFill,{borderRadius:32}]}/><Ionicons name="albums-outline" size={viewFrame.height<56?20:24} color={colors.text}/><Text style={{fontSize:10,lineHeight:12,color:colors.text}}>{today.view.label??(today.view.expanded?'월':'2주')}</Text>{blocked&&<View testID="DuoCalendarViewDim" pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim}]}/>}</Pressable>}{frame&&<View pointerEvents="box-none" style={[styles.navigation,{left:frame.x,top:frame.y,width:frame.width,height:frame.height}]} testID="duo-camera-column-controls">{children}</View>}
- {today&&accessory&&<Pressable disabled={blocked} accessibilityElementsHidden={blocked} importantForAccessibility={blocked?'no-hide-descendants':'auto'} aria-hidden={blocked} testID="DuoTodayButton" accessibilityRole="button" accessibilityLabel="오늘" accessibilityState={{disabled:blocked}} onPress={today.onPress} style={[styles.today,{left:accessory.x,top:accessory.y,width:accessory.width,height:accessory.height}]}><NavigationGlass pointerEvents="none" style={[StyleSheet.absoluteFill,{borderRadius:32}]}/><Text style={[styles.weekday,accessory.height<56&&{fontSize:10,lineHeight:12}]}>{new Intl.DateTimeFormat('ko-KR',{weekday:'short'}).format(new Date(today.day+'T12:00:00'))}</Text><Text style={[styles.date,accessory.height<56&&{fontSize:20,lineHeight:24}]}>{Number(today.day.slice(8))}</Text>{blocked&&<View testID="DuoTodayDim" pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim}]}/>}</Pressable>}</>;
+</>;
 }
 /** Host stays in full native coordinates; content may be inset or split independently. */
 export function DuoChromeProvider({scene,ready,children}:{scene:DuoSceneLayout|null;ready:boolean;children:ReactNode}){
@@ -36,7 +36,7 @@ export function DuoChromeProvider({scene,ready,children}:{scene:DuoSceneLayout|n
  const clearScroll=useCallback((id:symbol)=>setIndicator(old=>old?.id===id?null:old),[]);
  const [navigation,setNavigation]=useState<ReactNode>(null),[today,setToday]=useState<TodayEntry[]>([]);
  const registerToday=useCallback((entry:TodayEntry)=>{setToday(old=>[...old.filter(e=>e.id!==entry.id),entry].sort((a,b)=>b.priority-a.priority));return()=>setToday(old=>old.filter(e=>e.id!==entry.id));},[]);
- const value=useMemo(()=>({scene,ready,setNavigation,registerToday,showScroll,clearScroll}),[scene,ready,registerToday,showScroll,clearScroll]);
+ const value=useMemo(()=>({scene,ready,setNavigation,registerToday,showScroll,clearScroll,calendarDay:today[0]?.day}),[scene,ready,registerToday,showScroll,clearScroll,today]);
  return <Context.Provider value={value}><SurfaceInteractionProvider><SheetBackdropProvider><DuoBackProvider enabled={!!scene} frame={scene?.back??null} scene={scene}>{children}{scene&&indicator&&<DuoScrollThumb scene={scene} entry={indicator}/ >}{scene&&navigation&&<NavigationHost scene={scene} today={today[0]}>{navigation}</NavigationHost>}</DuoBackProvider></SheetBackdropProvider></SurfaceInteractionProvider></Context.Provider>;
 }
 function DuoScrollThumb({scene,entry}:{scene:DuoSceneLayout;entry:DuoScrollEntry}){

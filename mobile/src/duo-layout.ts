@@ -158,7 +158,7 @@ export function duoTodayFrame(scene:DuoSceneLayout,backVisible:boolean,viewVisib
  const {lower,upper}=calendarAccessorySlots(scene,backVisible,controlsBottom);return viewVisible&&upper?upper:lower;
 }
 export function duoCalendarViewFrame(scene:DuoSceneLayout,backVisible:boolean,controlsBottom?:number):DuoRect|null{
- const {lower,upper}=calendarAccessorySlots(scene,backVisible,controlsBottom);return upper?lower:null;
+ const {lower}=calendarAccessorySlots(scene,backVisible,controlsBottom);return lower;
 }
 
 /** An indicator belongs beyond the unchanged tab capsule, never inside a content pane. */

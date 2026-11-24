@@ -52,7 +52,7 @@ function ShellContent() {
   const calendarSequence=useRef(0),[calendarNavigation,setCalendarNavigation]=useState<{target:'active'|'fixed';request:CalendarNavigationRequest}|null>(null);
   const calendarScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
   const requestCalendar=useCallback((action:'today'|'fortnight',target:'active'|'fixed'='active',resetToToday=false)=>setCalendarNavigation({target,request:{id:++calendarSequence.current,action,resetToToday,scope:calendarScope}}),[calendarScope]);
-  const selectTab=useCallback((next:AppTab)=>{keyboard.dismiss();if(next==='profile')setProfileRequest(desktop?{id:Date.now(),kind:'overview'}:null);if(next==='calendar'&&(!duo||tab==='calendar'))requestCalendar('today');if(next==='todos'&&tab==='todos')setTodoTopRequest(v=>v+1);setTab(next);},[duo,tab,requestCalendar,desktop]);
+  const selectTab=useCallback((next:AppTab)=>{keyboard.dismiss();if(next==='profile')setProfileRequest(desktop?{id:Date.now(),kind:'overview'}:null);if(next==='calendar')requestCalendar('today');if(next==='todos'&&tab==='todos')setTodoTopRequest(v=>v+1);setTab(next);},[duo,tab,requestCalendar,desktop]);
   const longPressCalendar=useCallback(()=>{
    const target=duo&&split&&tab!=='calendar'?'fixed':'active';
    requestCalendar('fortnight',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');

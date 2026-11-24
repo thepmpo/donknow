@@ -119,3 +119,9 @@ test('Duo scrollbar is beyond the camera-column tabs, never inside body or reser
  const {duoSceneLayout,duoScrollIndicatorFrame,duoTabFrame}=await import('./duo-layout.ts');
  for(const [width,height,hingeStatus] of [[390,844,'closed'],[960,740,'fullyOpen'],[740,960,'fullyOpen']] as const){const g=base({width,height,hingeStatus,safeArea:{left:16,right:80,top:20,bottom:20}}),s=duoSceneLayout(g),f=duoScrollIndicatorFrame(s,false)!,tabs=duoTabFrame(s,false)!;assert.ok(f.x>tabs.x+tabs.width);assert.ok(f.x>s.body.x+s.body.width);assert.ok(f.x+f.width<=width-2);assert.equal(f.height,264);assert.ok(f.y>=tabs.y&&f.y+f.height<=tabs.y+tabs.height);assert.deepEqual(duoTabFrame(s,false),tabs);const reserved={...s,reserved:[f]};assert.equal(duoScrollIndicatorFrame(reserved,false),null);}
 });
+
+test('calendar view switch survives in a single 44pt accessory slot with tall reserved media area',async()=>{
+ const {duoSceneLayout,duoCalendarViewFrame}=await import('./duo-layout.ts');
+ const g=base({width:430,height:540,hingeStatus:'closed',safeArea:{left:16,top:20,right:80,bottom:20},regions:[{kind:'occlusion',active:true,frame:{x:370,y:32,width:28,height:28}},{kind:'occlusion',active:true,frame:{x:350,y:60,width:80,height:120}}]});
+ const frame=duoCalendarViewFrame(duoSceneLayout(g),false);assert.ok(frame);assert.ok(frame.height>=44);for(const region of g.regions)assert.equal(intersectRects(frame,region.frame),null);
+});
