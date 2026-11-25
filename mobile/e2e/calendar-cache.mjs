@@ -33,7 +33,7 @@ try{
   return route.fulfill({status:404,json:{error:'fixture endpoint unavailable'}});
  });
  const tab=name=>page.getByRole('tab',{name,exact:true}),button=name=>page.getByRole('button',{name,exact:true}),grid=()=>page.getByTestId('calendar-date-grid');
- async function command(name){await button('캘린더 더보기').click();if(name==='Google 일정 새로고침'||name==='일정 더 불러오기')await button('캘린더 상태·새로고침').click();await button(name).click();}
+ async function command(name){await button('캘린더 더보기').click();if(name==='일정 새로고침'||name==='일정 더 불러오기')await button('캘린더 상태·새로고침').click();await button(name).click();}
  async function close(){await page.getByTestId('calendar-sheet').getByRole('button',{name:'닫기',exact:true}).click();}
  const event=name=>grid().getByRole('button',{name:name+' 일정 상세',exact:true});
  async function shot(name){await page.screenshot({path:resolve(output,name+'.png')});}
@@ -42,13 +42,13 @@ try{
  title='빠르게 갱신한 검토';hold=false;release();await event(title).waitFor();
  hold=true;await button('월 보기로 전환').click();await event(title).waitFor({timeout:500});await shot('cache-updated-month');hold=false;release();
  // Refresh failure must preserve the previous calendar and login.
- fail=true;await command('Google 일정 새로고침');await page.getByText('일정을 확인하지 못했어요. 빈 시간으로 판단하지 마세요.',{exact:true}).waitFor();await close();await event(title).waitFor();assert.equal(await page.getByRole('button',{name:'docen 로그인',exact:true}).count(),0);fail=false;
+ fail=true;await command('일정 새로고침');await page.getByText('일정을 확인하지 못했어요.',{exact:true}).waitFor();await close();await event(title).waitFor();assert.equal(await page.getByRole('button',{name:'docen 로그인',exact:true}).count(),0);fail=false;
  // All sources do not wait for the slowest source.
  teamHold=true;await command('캘린더 보기 전환');await button('캘린더 보기 설정').click();await button('표시할 캘린더 선택').click();await page.getByRole('checkbox',{name:'팀 일정 표시',exact:true}).click();title='빠른 캘린더 먼저 반영';await button('선택한 캘린더 적용').click();await event(title).waitFor({timeout:1000});assert.ok(pending.some(p=>p.id==='team'));await shot('cache-fast-source-first');teamHold=false;release('team');await event('팀 일정 유지').waitFor();
  // A full JS reload restores the last saved display and selected sources before held network reads.
  await page.waitForTimeout(400);hold=true;await page.reload();await tab('캘린더').click();await event(title).waitFor({timeout:1500});await event('팀 일정 유지').waitFor({timeout:1500});await shot('cache-cold-reload');assert.ok(pending.length>0);hold=false;release();await page.waitForTimeout(100);
  // Partial pagination keeps known items, and final authoritative completion removes deleted items.
- deleted=true;paged=true;await command('Google 일정 새로고침');await page.getByText('일부 일정만 표시 중이에요. 더 불러오거나 다시 확인해주세요.',{exact:true}).waitFor();await close();await event('이후 삭제된 일정').waitFor();
+ deleted=true;paged=true;await command('일정 새로고침');await page.getByText('일부 일정만 표시 중이에요. 더 불러오거나 다시 확인해주세요.',{exact:true}).waitFor();await close();await event('이후 삭제된 일정').waitFor();
  await command('일정 더 불러오기');await page.getByText('업데이트 09:00',{exact:true}).waitFor();await close();assert.equal(await event('이후 삭제된 일정').count(),0);await shot('cache-authoritative-delete');paged=false;
  // Going to a different month and back keeps the current month snapshot; late responses are ignored.
  hold=true;await command('다음 달');await command('이전 달');await event(title).waitFor({timeout:500});await event('팀 일정 유지').waitFor({timeout:500});assert.equal(await event('이후 삭제된 일정').count(),0);hold=false;release();
@@ -56,7 +56,7 @@ try{
  // Visible calendars refresh without a tab switch; held reads cannot duplicate every tick.
  await settled();const beforePoll=eventCalls;title='화면을 연 채로 갱신한 일정';await page.clock.fastForward(31000);await event(title).waitFor();assert.ok(eventCalls>beforePoll);await shot('cache-foreground-refresh');await settled();hold=true;await page.clock.fastForward(31000);const pollDeadline=Date.now()+3000;while(!pending.length){assert.ok(Date.now()<pollDeadline);await new Promise(r=>setTimeout(r,10));}const heldCount=pending.length;await page.clock.fastForward(31000);assert.equal(pending.length,heldCount,'a slow refresh is not duplicated on later timer ticks');hold=false;release();await page.waitForTimeout(80);
  // Cache and late calendar results cannot cross a Duck account boundary.
- hold=true;await command('Google 일정 새로고침');await close();await openMeAccount(page);await button('로그아웃').click();
+ hold=true;await command('일정 새로고침');await close();await openMeAccount(page);await button('로그아웃').click();
  await page.getByRole('textbox',{name:'이메일',exact:true}).fill('second@example.test');await page.getByRole('textbox',{name:'비밀번호',exact:true}).fill('fixture-password-only');title='두 번째 계정 일정';await button('로그인').click();await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();await tab('캘린더').click();await grid().waitFor();assert.equal(await event('빠른 캘린더 먼저 반영').count(),0);
  for(const p of pending.filter(p=>p.owner==='viewport-user'))p.resolve();await page.waitForTimeout(100);assert.equal(await event('빠른 캘린더 먼저 반영').count(),0,'old owner response is ignored');hold=false;release();await event(title).waitFor();await shot('cache-account-isolation');
  assert.deepEqual(errors,[]);await writeFile(resolve(output,'cache-verification.json'),JSON.stringify({capCalls,eventCalls,errors,holdsReleased:pending.length,cache:'session memory, account/server/timezone scoped, 12 periods',foregroundRefreshSeconds:30,slowPollDeduplicated:true,nativeDeviceVerified:false},null,2));console.log('PASS: immediate cached ranges, source-by-source arrival, bounded capability cache, overlap updates, refresh failure preservation, pagination/deletion, late-range response isolation');

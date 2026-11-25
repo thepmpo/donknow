@@ -201,7 +201,6 @@ export function useTodos() {
           if(saved.source?.provider==='apple-reminders'&&saved.sourceSync?.state==='device-required')saved=await updateAppleSource(saved,featureRequest,()=>version===generation.current);
           if(version!==generation.current||completions.current.get(id)!==job)return false;job.confirmed=saved;
           if(revision!==job.revision)continue;
-          if(saved.sourceSync&&saved.sourceSync.state!=='succeeded'&&saved.sourceSync.state!=='queued')setNotice('docen의 완료 상태는 저장했지만 원본 반영은 확인이 필요해요. 항목에서 원본 저장을 다시 시도할 수 있어요.');
           setTodos(current => current.map(todo => todo.id === id ? saved : todo));
           setError(''); return true;
         }
@@ -244,7 +243,6 @@ export function useTodos() {
     }
     writeResolved(id);reminderBaselines.current.delete(id);
     reflectOriginal(saved,fields);
-    if(saved.sourceSync&&saved.sourceSync.state!=='succeeded'&&saved.sourceSync.state!=='queued')setNotice('docen에 저장했지만 원본 반영은 확인이 필요해요. 항목을 열어 다시 시도하거나 원본 앱에서 확인해주세요.');
     setTodos(current=>current.map(todo=>todo.id===id?saved:todo));
     if(patch.done!==undefined)completionDeadline(id,null);
     return true;

@@ -94,30 +94,56 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const suppressUntil = useRef(0);
   const swiping = useRef(false);
   function press(action?: () => void, toggle = false) { if (!swiping.current && Date.now() >= suppressUntil.current && !(toggle ? toggleBlocked.current : busyRef.current)) action?.(); }
-  const reset = () => { offset.stopAnimation(); if (reducedRef.current) offset.setValue(0); else Animated.timing(offset, { toValue: 0, duration: motion.feedback, useNativeDriver: Platform.OS !== 'web' }).start(); };
+  const reset = () => { offset.stopAnimation(); if (reducedRef.current) offset.setValue(0); else Animated.spring(offset, { toValue: 0, damping: 23, stiffness: 300, mass: 0.8, overshootClamping: true, useNativeDriver: Platform.OS !== 'web' }).start(); };
   useEffect(() => () => offset.stopAnimation(), [offset]);
-  const selecting=useRef(selected!==undefined);selecting.current=selected!==undefined;
+  const swipeSelect = useRef(onSelect);
+  swipeSelect.current = onSelect;
+  const swipeOrigin = useRef(0);
   const responder = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponderCapture: (_, gesture) => !selecting.current && !toggleBlocked.current && Math.abs(gesture.dx) > 12 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
-    onPanResponderGrant: () => { offset.stopAnimation(); swiping.current = true; },
-    onPanResponderMove: (_, gesture) => offset.setValue(Math.max(-95, Math.min(95, gesture.dx))),
-    onPanResponderRelease: (_, gesture) => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); if (Math.abs(gesture.dx) >= 64 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4 && !toggleBlocked.current) onToggleRef.current(); },
-    onPanResponderTerminate: () => { swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); },
+    onMoveShouldSetPanResponderCapture: (_, gesture) => {
+      if (gesture.numberActiveTouches !== 1 || Math.abs(gesture.dx) <= 12 || Math.abs(gesture.dx) <= Math.abs(gesture.dy)*1.4) return false;
+      if (gesture.dx > 0 ? busyRef.current || !swipeSelect.current : toggleBlocked.current) return false;
+      swipeOrigin.current = gesture.dx;
+      return true;
+    },
+    onPanResponderGrant: () => { offset.stopAnimation(); offset.setValue(swipeOrigin.current); swiping.current = true; },
+    onPanResponderMove: (_, gesture) => offset.setValue(Math.max(-96, Math.min(96, gesture.dx + swipeOrigin.current))),
+    onPanResponderRelease: (_, gesture) => {
+      const distance = gesture.dx + swipeOrigin.current;
+      swipeOrigin.current = 0;
+      swiping.current = false;
+      suppressUntil.current = Date.now() + 300;
+      reset();
+      if (Math.abs(distance) < 64 || Math.abs(distance) <= Math.abs(gesture.dy)*1.4) return;
+      if (distance > 0) {
+        if (!busyRef.current) swipeSelect.current?.();
+      } else if (!toggleBlocked.current) onToggleRef.current();
+    },
+    onPanResponderTerminate: () => { swipeOrigin.current = 0; swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); },
   }), [offset]);
-  const source = todo.source ? (todo.source.provider === 'apple-reminders' ? '미리 알림' : todo.source.provider === 'google' && todo.source.externalId.includes(':tasks:') ? 'Google Tasks' : ({ google: 'Google', slack: 'Slack', notion: 'Notion' }[todo.source.provider] ?? '가져온 할 일')) : '';
   const date = log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : '';
-  const provenance=todoSource(todo),detail = [date, provenance.label].filter(Boolean).join(' · ');
+  const provenance=todoSource(todo);
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
-    <View style={s.swipeBack}><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
+    <View pointerEvents="none" aria-hidden style={s.swipeBack}><Text style={s.swipeBackText}>{onSelect ? selected ? '선택 취소' : '선택' : ''}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
     <Animated.View onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}} {...responder.panHandlers} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&{backgroundColor:colors.pale,borderRadius:12}, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: selected??todo.done, disabled: busy && !canToggleWhileBusy }} accessibilityLabel={selected!==undefined?`${todo.title} 선택`:`${todo.title} ${todo.done ? '미완료로 변경' : '완료하기'}`} disabled={busy && !canToggleWhileBusy} onPress={() => selected!==undefined?onSelect?.():press(onToggle, true)} hitSlop={compact?10:9} style={[s.checkbox,compact&&{width:24,height:24,borderRadius:7,borderWidth:1.5},desktop&&{width:19,height:19,borderRadius:5,borderWidth:1.5}, (selected??todo.done) && s.checked]}>{selected!==undefined?(selected?<Ionicons name="checkmark" size={18} color={colors.white}/>:null):<Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text>}</Pressable>
-      <Pressable disabled={(!onEdit&&selected===undefined) || busy} onPress={() => selected!==undefined?onSelect?.():press(onEdit)} onLongPress={onLongPress?()=>{suppressUntil.current=Date.now()+600;onLongPress();}:undefined} delayLongPress={280} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={onLongPress?'길게 눌러 선택한 뒤 움직이면 이동할 수 있어요.':undefined} accessibilityActions={onLongPress?[{name:'longpress',label:'할 일 선택 및 이동'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onLongPress?.();}} style={s.todoBody}>
+      <Pressable accessibilityRole="checkbox" accessibilityState={{checked:todo.done,disabled:busy&&!canToggleWhileBusy}} accessibilityLabel={`${todo.title} ${todo.done?'미완료로 변경':'완료하기'}`} disabled={busy&&!canToggleWhileBusy} onPress={()=>press(onToggle,true)} hitSlop={compact?10:9} style={[s.checkbox,compact&&{width:24,height:24,borderRadius:7,borderWidth:1.5},desktop&&{width:19,height:19,borderRadius:5,borderWidth:1.5},todo.done&&s.checked]}>
+        <Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text>
+      </Pressable>
+      <Pressable disabled={(!onEdit&&selected===undefined) || busy} onPress={() => selected!==undefined?press(onSelect):press(onEdit)} onLongPress={onLongPress?()=>{suppressUntil.current=Date.now()+600;onLongPress();}:undefined} delayLongPress={280} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={onLongPress?'길게 눌러 선택한 뒤 움직이면 이동할 수 있어요.':undefined} accessibilityActions={onLongPress?[{name:'longpress',label:'할 일 선택 및 이동'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onLongPress?.();}} style={s.todoBody}>
         <Text numberOfLines={2} style={[s.todoTitle,desktop&&{fontSize:13,lineHeight:21,fontWeight:'500'}, todo.done && !log && s.doneText]}>{todo.title}</Text>
-        {pending ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `${log?'되돌림':'완료'} · ${countdown}초 후 ${log?'할 일':'log'}로 이동` : `${log?'되돌림':'완료'} · ${log?'할 일':'log'}로 이동`}</Text> : !!detail && <View style={{flexDirection:'row',gap:5,alignItems:'center'}}>{!!todo.source&&<Ionicons name={provenance.icon} size={13} color={provenance.color}/>}<Text numberOfLines={1} style={[s.todoDate,{flexShrink:1},desktop&&{fontSize:10,lineHeight:17}]}>{detail}</Text></View>}
+        {pending ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `${log?'되돌림':'완료'} · ${countdown}초 후 ${log?'할 일':'log'}로 이동` : `${log?'되돌림':'완료'} · ${log?'할 일':'log'}로 이동`}</Text> : <View style={s.todoMetadata}>
+          <Text numberOfLines={1} style={[s.todoDate,{flexShrink:0},desktop&&s.desktopTodoDate]}>{date}</Text>
+          <View testID={`todo-source-${todo.id}`} style={s.todoProvenance}>
+            {!!todo.source&&<Ionicons name={provenance.icon} size={13} color={provenance.color}/>}
+            <Text numberOfLines={1} style={[s.todoDate,{flexShrink:1,textAlign:'right'},desktop&&s.desktopTodoDate]}>{provenance.label}</Text>
+          </View>
+        </View>}
         {!!todo.saveState&&<Text accessibilityLiveRegion="polite" style={s.todoDate}>{todo.saveState==='saving'?'저장 중':'저장 결과 확인 중'}</Text>}
         {!!todo.sourceSync&&todo.sourceSync.state!=='succeeded'&&!pending&&<Text style={[s.todoDate,{color:todo.sourceSync.state==='queued'?colors.muted:colors.danger}]}>{todo.sourceSync.state==='queued'?'원본 반영 중':'원본 저장 확인 필요'}</Text>}
       </Pressable>
-      {selected!==undefined?(onOpenSource||pending||log||onEdit&&!compact?<View pointerEvents="none" style={s.more}/>:null):pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onOpenSource ? <Pressable accessibilityRole="link" accessibilityLabel={`${todo.title} 원본 열기`} onPress={()=>press(onOpenSource)} disabled={busy} style={s.more}><Ionicons name="open-outline" size={21} color={colors.blueText}/></Pressable> : onEdit&&!compact ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : null}
+      {selected!==undefined?<Pressable accessibilityRole="checkbox" accessibilityLabel={`${todo.title} 선택`} accessibilityState={{checked:selected,disabled:busy}} disabled={busy} onPress={()=>press(onSelect)} style={s.rowAccessory}>
+        <Ionicons name={selected?'checkmark-circle':'ellipse-outline'} size={21} color={selected?colors.blueText:colors.muted}/>
+      </Pressable>:pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onOpenSource ? <Pressable accessibilityRole="link" accessibilityLabel={`${todo.title} 원본 열기`} onPress={()=>press(onOpenSource)} disabled={busy} style={s.rowAccessory}><Ionicons name="open-outline" size={21} color={colors.blueText}/></Pressable> : onEdit&&!compact ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : compact ? <View pointerEvents="none" style={s.rowAccessory}/> : null}
     </Animated.View>
   </Animated.View>;
 }
@@ -177,7 +203,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
   }
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
   if(inline)return <View testID="todo-inline-editor" style={{backgroundColor:colors.surface,borderRadius:20,padding:16,gap:8,marginVertical:6}}>
-    <TextInput ref={titleRef} autoFocus={visible} accessibilityLabel="할 일 제목" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} placeholder="새 할 일" placeholderTextColor={colors.muted} onFocus={()=>{setActivePicker(null);focusInput(titleRef.current);}} style={[s.editorInput,{backgroundColor:'transparent',padding:0,minHeight:44}]}/>
+    <TextInput ref={titleRef} autoFocus={visible&&!todo} accessibilityLabel="할 일 제목" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} placeholder="새 할 일" placeholderTextColor={colors.muted} onFocus={()=>{setActivePicker(null);focusInput(titleRef.current);}} style={[s.editorInput,{backgroundColor:'transparent',padding:0,minHeight:44}]}/>
     <NotesField compact value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);focusInput(input);}} onResize={revealInput}/>
     <View style={{flexDirection:'row',alignItems:'center',gap:4,flexWrap:'wrap'}}>
      <Pressable accessibilityRole="button" accessibilityLabel="예정일 편집" accessibilityState={{expanded:tools==='date'}} disabled={saving} onPress={()=>{Keyboard.dismiss();setActivePicker(null);setTools(v=>v==='date'?null:'date');}} style={[s.more,{flexDirection:'row',gap:6,paddingHorizontal:8}]}><Ionicons name="calendar-outline" size={20} color={colors.blueText}/><Text style={s.subtitle}>{date?formatDueDate(date):'날짜 없음'}</Text></Pressable>
@@ -216,6 +242,10 @@ export const s = StyleSheet.create({
   todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 6, gap: spacing.md, minHeight: 60, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
   swipeWrap: { overflow: 'hidden' }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },
   checkbox: { width: 26, height: 26, borderRadius: 8, borderWidth: 1.5, borderColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }, checked: { backgroundColor: colors.blue, borderColor: colors.blue }, checkText: { color: colors.white, fontSize: 18 },
+  rowAccessory: {width:44,minHeight:44,alignItems:'flex-end',justifyContent:'center'},
+  todoMetadata: {flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},
+  todoProvenance: {flexDirection:'row',alignItems:'center',justifyContent:'flex-end',flexShrink:1,gap:5},
+  desktopTodoDate: {fontSize:10,lineHeight:17},
   todoBody: { flex: 1, minHeight: 44, justifyContent: 'center' }, todoTitle: { ...typography.list, color: colors.text }, doneText: { color: colors.subtle, textDecorationLine: 'line-through' }, todoDate: { ...typography.caption, color: colors.muted, marginTop: 2 }, pendingText: { ...typography.caption, color: colors.blueText, marginTop: 2 },
   more: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }, moreText: { fontSize: 23, color: colors.muted }, restore: { ...typography.caption, color: colors.blueText },
   dateField: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg, flexWrap: 'wrap' }, dateInput: { flex: 1, minHeight: 48, padding: spacing.md, borderRadius: radius.small, backgroundColor: colors.grouped, color: colors.text, ...typography.detail }, datePick: { flex: 1, minHeight: 44, padding: spacing.md, alignItems: 'flex-end', justifyContent: 'center' },
