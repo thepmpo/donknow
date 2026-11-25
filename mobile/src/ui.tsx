@@ -1,4 +1,4 @@
-import type {PointerEvent} from 'react-native';
+import type {PointerEvent,ViewStyle} from 'react-native';
 import {TodoGestureRow,TodoGestureScroll} from './todo-gestures';
 import type {RowPoint} from './todo-gesture-types';
 import {ScreenHeading} from './ScreenHeading';
@@ -116,7 +116,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const swipeOrigin = useRef(0);
   const held = useRef(false);
   const webGesture = useRef<'swipe'|'drag'|null>(null);
-  const mouse=useRef<{id:number;start:RowPoint;kind:'swipe'|'drag'|null}|null>(null);
+  const mouse=useRef<{id:number;start:RowPoint;kind:'swipe'|'drag'|null;distance:number}|null>(null);
   const drag = useRef({onLift,onDrag,onDrop});
   drag.current={onLift,onDrag,onDrop};
   function startSwipe() {
@@ -148,7 +148,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   function mouseStart(event:PointerEvent){
     const e=event.nativeEvent;
     if(e.pointerType!=='mouse'||e.button!==0)return;
-    mouse.current={id:e.pointerId,start:{x:e.pageX,y:e.pageY},kind:null};
+    mouse.current={id:e.pointerId,start:{x:e.pageX,y:e.pageY},kind:null,distance:0};
   }
   function mouseMove(event:PointerEvent){
     const e=event.nativeEvent,active=mouse.current;
@@ -162,6 +162,8 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
       }else return;
       (event.currentTarget as unknown as HTMLElement)?.setPointerCapture?.(e.pointerId);
     }
+    event.preventDefault();
+    active.distance=distance;
     if(active.kind==='drag')drag.current.onDrag?.({x:e.pageX,y:e.pageY});
     else moveSwipe(distance);
   }
@@ -169,8 +171,10 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
     const e=event.nativeEvent,active=mouse.current;
     if(!active||e.pointerId!==active.id)return;
     mouse.current=null;
+    const element=event.currentTarget as unknown as HTMLElement;
+    if(element?.hasPointerCapture?.(e.pointerId))element.releasePointerCapture(e.pointerId);
     if(held.current)drop(completed);
-    else if(active.kind==='swipe')finishSwipe(e.pageX-active.start.x,completed);
+    else if(active.kind==='swipe')finishSwipe(active.distance,completed);
   }
   const responder = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponderCapture: (_,g)=>{
@@ -211,7 +215,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
     <TodoGestureRow canSwipeLeft={!busy||canToggleWhileBusy} canSwipeRight={!!onSelect&&!selectionBlocked.current} canLift={canLift} reduced={reduced}
       onSwipeStart={startSwipe} onSwipeEnd={finishSwipe} onLift={lift} onDrag={point=>drag.current.onDrag?.(point)} onDrop={drop}>
     <Animated.View collapsable={false} onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}}
-      {...(Platform.OS==='web'?{...responder.panHandlers,onPointerDown:mouseStart,onPointerMove:mouseMove,onPointerUp:(event:PointerEvent)=>mouseEnd(event,true),onPointerCancel:(event:PointerEvent)=>mouseEnd(event,false),onTouchEnd:()=>drop(true),onTouchCancel:()=>drop(false)}:{})} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&s.selectedTodoRow,Platform.OS==='web'&&{transform:[{translateX:offset}]}]} testID={`todo-${todo.id}`}>
+      {...(Platform.OS==='web'?{...responder.panHandlers,onPointerDown:mouseStart,onPointerMove:mouseMove,onPointerUp:(event:PointerEvent)=>mouseEnd(event,true),onPointerCancel:(event:PointerEvent)=>mouseEnd(event,false),onTouchEnd:()=>drop(true),onTouchCancel:()=>drop(false)}:{})} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&s.selectedTodoRow,Platform.OS==='web'&&({userSelect:'none'} as ViewStyle),Platform.OS==='web'&&{transform:[{translateX:offset}]}]} testID={`todo-${todo.id}`}>
       <Pressable accessibilityRole="checkbox" accessibilityState={{checked:todo.done,disabled:busy&&!canToggleWhileBusy}} accessibilityLabel={`${todo.title} ${todo.done?'미완료로 변경':'완료하기'}`} disabled={busy&&!canToggleWhileBusy} onPressIn={beginPress} onPress={()=>press(onToggle,'toggle')} hitSlop={compact?10:9} style={[s.checkbox,compact&&{width:24,height:24,borderRadius:7,borderWidth:1.5},desktop&&{width:19,height:19,borderRadius:5,borderWidth:1.5},todo.done&&s.checked]}>
         <Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text>
       </Pressable>

@@ -115,6 +115,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    assert.equal(await row.evaluate(el=>getComputedStyle(el).borderTopLeftRadius),'14px');
    await swipe(row,1);await selection.waitFor({state:'detached'});
    if(mode==='web'){
+    await swipe(row,1);await selection.waitFor();
     const other=page.getByTestId('todo-todo-second');
     const from=await row.boundingBox(),to=await other.boundingBox();
     await page.mouse.move(from.x+80,from.y+from.height/2);await page.mouse.down();
