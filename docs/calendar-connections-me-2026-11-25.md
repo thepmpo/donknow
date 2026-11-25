@@ -46,7 +46,7 @@ Google Sheets의 일반 자료 읽기는 첫 3개 시트의 각 `A1:Z200` 셀 �
 
 `apple-calendar-device.ts`는 설치된 Expo Calendar 58의 새 API를 사용한다. 런타임에서 예외가 나는 deprecated `get*Async` 메서드를 새로 사용하지 않는다. `getCalendarPermissions(false)`와 `requestCalendarPermissions(false)`로 전체 접근을 확인하고, 실제 승인 요청은 ME에서만 한다. 웹에서는 기기 연결을 제공하지 않는다.
 
-`@apple/<encoded calendar ID>`를 Google ID와 분리해 Apple ID를 Google API로 전송하지 않는다. 계정 소유자별 선택 목록과 캐시를 사용하고, 읽기는 기기 앱 활성화·선택 날짜 범위·30초 갱신 기준이다. 네이버 CalDAV인지 계정 이름으로 추측해 권한을 만들어 내지 않는다. 기기가 반환한 `allowsModifications`를 사용한다.
+`@apple/<encoded calendar ID>`를 Google ID와 분리해 Apple ID를 Google API로 전송하지 않는다. 계정 소유자별 선택 목록과 캐시를 사용하고, 읽기는 기기 앱 활성화·선택 날짜 범위·30초 갱신 기준이다. 네이버 CalDAV인지 계정 이름으로 추측해 권한을 만들어 내지 않는다. 기기가 반환한 `allowsModifications`를 사용한다. 권한 해제 시 이전 디스크 캐시를 다시 살리지 않고 경고를 표시한다. native 읽기 실패를 빈 일정으로 처리하지 않으며, native만 연결됐을 때 Google 미연결 메시지로 대체하지 않는다.
 
 원본 저장 전 권한·쓰기 가능한 소스·계정 유지·현재 원본 버전을 확인한다. 원본 버전에는 수정시각과 실제 내용/날짜/반복/알림을 반영한다. 변경된 필드만 저장해 기존 장소·반복·초대·알림을 보존한다. 부분 표시된 긴 메모를 짧은 텍스트로 덮어쓰지 않는다. 반복 일정 편집/삭제는 선택한 발생 건으로 제한한다. native 초대와 캘린더 간 이동은 원본 앱에서 진행하며 지원한 것처럼 표시하지 않는다.
 

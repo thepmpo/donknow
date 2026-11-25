@@ -5,7 +5,7 @@ export function assistantNotice(store,user,input){
  if(!input||!['connection-reauthorization','calendar-failed','calendar-unknown','source-failed','source-limited','source-unsupported','source-unknown','source-completion-limited','device-update-required','device-required','reminders-empty','reminders-import-failed','ai-credit'].includes(input.code)||typeof input.title!=='string'||input.title.length>160||input.todoId&&!store.get(user,input.todoId))throw fail(400,'안내할 항목을 확인해주세요.');
  const name=providers[input.provider]??'원본 서비스',title=input.title||'요청한 항목';
  const texts={
-  'connection-reauthorization':`${name}에서 연결 승인을 갱신하지 못했어요. 캘린더 선택의 ‘Google 연결 확인’ 또는 ME → 연결된 서비스에서 해당 계정을 다시 승인해주세요. 기존 자료와 작성 중인 내용은 유지돼요. 다시 연결하기 전에는 원본 앱에서 급한 일정을 확인하거나 docen에 할 일로 기록할 수 있어요.`,
+  'connection-reauthorization':`${name}에서 연결 승인을 갱신하지 못했어요. ME → 연결된 서비스에서 해당 계정을 다시 승인해주세요. 기존 자료와 작성 중인 내용은 유지돼요. 다시 연결하기 전에는 원본 앱에서 급한 일정을 확인하거나 docen에 할 일로 기록할 수 있어요.`,
   'calendar-failed':`${title}의 원본 일정 저장을 완료하지 못했어요. 작성 내용은 편집창에 남아 있어요. ME → 연결된 서비스에서 캘린더 수정 권한을 확인하고, 원본을 새로 확인한 뒤 저장해주세요. 급하면 Google 캘린더에서 같은 일정을 수정할 수 있어요.`,
   'calendar-unknown':`${title}의 원본 저장 결과를 확인하지 못했어요. 자동으로 다시 저장하지 않았어요. 일정 편집창의 ‘저장 결과 확인’을 먼저 누르고 ${name} 원본을 확인해주세요. 이미 반영됐다면 다시 저장하지 않아도 돼요.`,
   'source-failed':`${title}의 ${name} 원본 저장을 완료하지 못했어요. 연결된 서비스의 수정 권한과 원본 변경 여부를 확인해주세요. 권한을 연결한 뒤 해당 할 일의 ‘원본 저장 다시 시도’를 누를 수 있어요. 급하면 원본 앱에서 같은 항목을 수정한 뒤 docen에서 새로고침해주세요.`,
