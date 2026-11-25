@@ -318,7 +318,8 @@ a {
 .demo-body {
   display: grid;
   grid-template-columns: 171px minmax(0, 1fr) 245px;
-  block-size: 540px;
+  /* Three briefing rows set the shared demo height. */
+  block-size: 642px;
   grid-template-rows: minmax(0, 1fr);
 }
 .demo-sidebar {
@@ -1424,7 +1425,7 @@ a {
   .demo-body {
     display: flex;
     flex-direction: column;
-    block-size: 630px;
+    block-size: 676px;
   }
   .demo-sidebar {
     flex-direction: row;
@@ -1895,6 +1896,12 @@ a {
   }
   .demo-status {
     font-size: 10px;
+  }
+}
+
+@media (max-width: 343px) {
+  .demo-body {
+    block-size: 718px;
   }
 }
 

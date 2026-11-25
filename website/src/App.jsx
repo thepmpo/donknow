@@ -73,7 +73,7 @@ const initialTasks = [
 ];
 const demoNotices = {
   todo: [
-    "Todo에 담았어요. 왼쪽 Todo에서 확인해보세요.",
+    "할 일에 담았어요. 할 일 탭에서 확인해보세요.",
     "Added to To-dos. Open To-dos to see it.",
   ],
   calendar: [
@@ -88,7 +88,7 @@ const demoNotices = {
 };
 const views = [
   { id: "inbox", icon: Sparkles, name: ["브리핑", "Briefing"] },
-  { id: "todo", icon: ListTodo, name: ["Todo", "To-dos"] },
+  { id: "todo", icon: ListTodo, name: ["할 일", "To-dos"] },
   { id: "calendar", icon: CalendarDays, name: ["캘린더", "Calendar"] },
   { id: "done", icon: CheckCheck, name: ["기록", "Log"] },
 ];
@@ -435,7 +435,7 @@ const faqs = [
   [
     "docen은 어떤 서비스인가요?",
     "What is docen?",
-    "연결한 자료에서 챙길 일을 살펴보고, 브리핑·Todo·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 할 일로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
+    "연결한 자료에서 챙길 일을 살펴보고, 브리핑·할 일·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 할 일로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
     "docen brings your next steps into a briefing, to-do list and calendar. Keep only the things you need, or finish them in the conversation.",
   ],
   [
@@ -738,7 +738,7 @@ export function App() {
             <div className="todo-illustration product-surface">
               <div className="mini-toolbar">
                 <span>
-                  <ListTodo size={18} /> Todo
+                  <ListTodo size={18} /> {t("할 일", "To-dos")}
                 </span>
                 <span className="segmented-label">
                   {t("날짜별", "By date")}
@@ -846,7 +846,7 @@ export function App() {
                   <strong>{t("제안서 검토하기", "Review the proposal")}</strong>
                   <small>
                     {t(
-                      "Todo에서 일정으로",
+                      "할 일에서 일정으로",
                       "From a to-do to time on your calendar",
                     )}
                   </small>
@@ -901,7 +901,7 @@ export function App() {
                 </h3>
                 <p>
                   {t(
-                    "자료를 정리하고, 브리핑을 받고, 문서 초안을 만들어요. 필요한 내용은 Todo와 캘린더로 이어가세요.",
+                    "자료를 정리하고, 브리핑을 받고, 문서 초안을 만들어요. 필요한 내용은 할 일과 캘린더로 이어가세요.",
                     "Organize sources, receive briefings and draft supported documents. Keep the next step as a to-do or calendar event.",
                   )}
                 </p>
@@ -909,7 +909,7 @@ export function App() {
                   <span>{t("자료 · 브리핑", "Sources · Briefings")}</span>
                   <ArrowRight size={18} />
                   <span>
-                    <Duck /> Todo · Calendar
+                    <Duck /> {t("할 일 · 캘린더", "To-dos · Calendar")}
                   </span>
                 </div>
                 <small>
@@ -944,7 +944,7 @@ export function App() {
                     {t("docen AI", "docen AI")}
                   </span>
                   <ArrowRight size={18} />
-                  <span>Chat · Todo · Calendar</span>
+                  <span>{t("채팅 · 할 일 · 캘린더", "Chat · To-dos · Calendar")}</span>
                 </div>
                 <small>
                   {t(

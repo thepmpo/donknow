@@ -59,7 +59,8 @@ try {
       .click();
     assert.equal(await demo.locator(".demo-task").count(), 2);
     await assertDemoHeight();
-    await demo.getByRole("button", { name: /Todo/ }).click();
+    await demo.locator(".demo-sidebar").getByRole("button", { name: /^할 일/ }).click();
+    await assertDemoHeight();
     assert.match(
       await demo.locator(".demo-task").innerText(),
       /다음 주 제안서/,
@@ -80,6 +81,7 @@ try {
       .getByRole("button", { name: "일정에 담기", exact: true })
       .click();
     await demo.getByRole("button", { name: /캘린더/ }).click();
+    await assertDemoHeight();
     assert.match(
       await demo.locator(".demo-task").innerText(),
       /2026-11-20 14:00/,
@@ -95,6 +97,7 @@ try {
     assert.equal(await demo.locator(".demo-task").count(), 0);
     await assertDemoHeight();
     await demo.getByRole("button", { name: /기록/ }).click();
+    await assertDemoHeight();
     assert.match(await demo.locator(".demo-task").innerText(), /도서관/);
     await demo.getByRole("button", { name: /미완료로 되돌리기/ }).click();
     await demo
