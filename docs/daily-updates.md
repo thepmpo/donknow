@@ -1,5 +1,85 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-26:start -->
+### 2026-11-26 — 당일 저장된 작업
+
+실제 정리: 04:51 KST. 새 저장 작업 37개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [d578cd1](https://github.com/sjfieni/donknow/commit/d578cd1b4939fcb5a7ff65ad372275ba26fabff2) · 11-25 07:36 · Unify app navigation, assistant avatars and headings under docen brand
+
+- [7b5e177](https://github.com/sjfieni/donknow/commit/7b5e177fd96dfa9049b775128e3d6a33721f994a) · 11-25 07:36 · Record app branding checks and blocked native build dispatch
+
+- [e0972fc](https://github.com/sjfieni/donknow/commit/e0972fca083b77a3bb3342ec9c9ca020ff7ef6ab) · 11-25 08:52 · Merge calendar today control into navigation and enlarge transparent logo
+
+- [09acea4](https://github.com/sjfieni/donknow/commit/09acea4261c3fe2cb9e02e57eb3b4cb852d1feb2) · 11-25 09:28 · Unify transparent bouncing loaders, docen.ai chat and device-specific calendar gestures
+
+- [11e284c](https://github.com/sjfieni/donknow/commit/11e284c8220f8a897db77deeb668f3da9a4dcf89) · 11-25 09:33 · Enable responsive bouncing hero on mobile introduction while preserving app motion
+
+- [a22f666](https://github.com/sjfieni/donknow/commit/a22f6665a0ae216cf11d385526fafab5df16f8d5) · 11-25 09:36 · Record live mobile introduction and blocked TestFlight dispatch
+
+- [f5faef0](https://github.com/sjfieni/donknow/commit/f5faef04dce0877503b58d6fa88a0ac121b64970) · 11-25 10:03 · Refine navigation touch motion and raise web brand marks
+
+- [6ca14d5](https://github.com/sjfieni/donknow/commit/6ca14d55ed591b16a5ccb366f2f920ca985ef23e) · 11-25 10:05 · Record live logo alignment deployment and navigation verification
+
+- [ba9ec3b](https://github.com/sjfieni/donknow/commit/ba9ec3b17cc9d26f626620758066067d666b17a5) · 11-25 12:20 · Fix mobile headers, bounded refresh and stable todo selection
+
+- [82b550c](https://github.com/sjfieni/donknow/commit/82b550c92ff551c41e5e5f3784857a5f618a8d4e) · 11-25 12:20 · Record mobile verification, rollback point and blocked native dispatch
+
+- [83c9ac3](https://github.com/sjfieni/donknow/commit/83c9ac3364558020472bd8a2ce0b7da1815ed32e) · 11-25 15:04 · Refine mobile pinned controls and daily swipes with separate one-week design preview
+
+- [37a4218](https://github.com/sjfieni/donknow/commit/37a4218d40d8a1fb5d1a525553b03c107b843d01) · 11-25 15:17 · Preview chronological weekly schedules with Tue-Wed span and non-Duo layout
+
+- [0746cf2](https://github.com/sjfieni/donknow/commit/0746cf249ed805a6d995d69be285157604aed947) · 11-25 15:43 · Preview scrollable weekly time grid with stacked weekends and overlapping event lanes
+
+- [376c761](https://github.com/sjfieni/donknow/commit/376c7618b91da47474ee221033f2521779d99743) · 11-25 15:48 · Restore right stacked weekends and preview live current-time indicator
+
+- [86322a1](https://github.com/sjfieni/donknow/commit/86322a138692107e392ea79cab6f397b03072d77) · 11-25 16:09 · Preview Duo, standard mobile and web with right month controls and pinned multi-day area
+
+- [7326318](https://github.com/sjfieni/donknow/commit/7326318af0ddea7ee5ff1e014bc0c5c3645a24b7) · 11-25 16:26 · Preview compact mobile month row replacing calendar arrow controls
+
+- [4d16226](https://github.com/sjfieni/donknow/commit/4d16226d118077a6cd1e686a270e6c22c214e071) · 11-25 17:00 · Implement approved weekly calendar with pinned spans, time lanes and stacked weekends
+
+- [62ec56c](https://github.com/sjfieni/donknow/commit/62ec56cc9473afc146879727f9337f6d700e81c3) · 11-25 17:00 · Record verified weekly implementation and blocked TestFlight dispatch
+
+- [678d55a](https://github.com/sjfieni/donknow/commit/678d55a94a7296ff63d9c29d95e2efa99c49f28a) · 11-25 18:01 · Restore Duo calendar view control and center AI welcome
+
+- [b874b0f](https://github.com/sjfieni/donknow/commit/b874b0f99b4772bf7c0ca037995daa235e05253c) · 11-25 18:16 · Remove bouncing logo from empty AI welcome
+
+- [a08319d](https://github.com/sjfieni/donknow/commit/a08319d772c1510debb473fba889bad7657c0976) · 11-25 18:35 · Add reference-based calendar and Todo creation sheet with direct date entry
+
+- [1578e28](https://github.com/sjfieni/donknow/commit/1578e2809c553b5a1a4c1e4662402bf2f3a6bc10) · 11-25 19:29 · Manage calendar connections in ME and add native calendar write-back
+
+- [e34cc6c](https://github.com/sjfieni/donknow/commit/e34cc6cb8fc890da036707c0dc528cfee1f48410) · 11-25 19:30 · Refresh calendar connection handoff and verified UI captures
+
+- [a38616e](https://github.com/sjfieni/donknow/commit/a38616e9411273b26c9444d6575d179cd3303c36) · 11-25 19:32 · Keep calendar recovery in ME and report device read failures
+
+- [ff941eb](https://github.com/sjfieni/donknow/commit/ff941eb5f238f295380b850682c38608543fdd37) · 11-25 19:35 · Record verified calendar ME server deployment and device limits
+
+- [dd434f6](https://github.com/sjfieni/donknow/commit/dd434f62453a26d09d2a34f75de2058422912f42) · 11-25 20:19 · Refine Todo swipe actions and simplify calendar status UI
+
+- [61a6613](https://github.com/sjfieni/donknow/commit/61a66139cdb9f61299ea41c3e6b71ca633f36083) · 11-25 20:30 · Speed up admin navigation and grant passes from member details
+
+- [677a70d](https://github.com/sjfieni/donknow/commit/677a70dba58dc84015bc266df6d1f7bd54cc0953) · 11-25 20:31 · Keep product demo frame stable as tasks are handled
+
+- [c891420](https://github.com/sjfieni/donknow/commit/c891420ecf0c32972c7f89c5fe33448ae6d469cf) · 11-25 20:32 · Match every demo tab to the full briefing height and unify Korean labels
+
+- [01bcb7a](https://github.com/sjfieni/donknow/commit/01bcb7a927e7ae4cc0a707acdbb019a414ea091e) · 11-25 21:02 · Lock Todo swipe direction and lift rows for direct drag
+
+- [70db4c8](https://github.com/sjfieni/donknow/commit/70db4c86496f100e963f24dd41c8046ccf637ebe) · 11-25 21:41 · Smooth Todo drag and selection on iPhone and web
+
+- [b2b3690](https://github.com/sjfieni/donknow/commit/b2b3690a67a615d92f1b0ecd0736ad8bc54b335c) · 11-25 21:44 · Keep consecutive desktop swipes captured through release
+
+- [35bc3fb](https://github.com/sjfieni/donknow/commit/35bc3fb0d516e60082ccc3876a845475cef07646) · 11-25 21:56 · Add a direct web app entry to the admin sidebar
+
+- [0c555af](https://github.com/sjfieni/donknow/commit/0c555af4f340c11652bafcb6f96751de373b5382) · 11-25 22:47 · Keep task selection in place and recover Google calendar reads
+
+- [a94f510](https://github.com/sjfieni/donknow/commit/a94f510232340d2eef4d48ae6c0a2a6583e0dcc4) · 11-25 22:48 · Put the admin handoff under its own heading
+
+- [fc5a8d8](https://github.com/sjfieni/donknow/commit/fc5a8d83b23201a99b886b7d4902bfc46e626dd5) · 11-25 22:48 · Retry transient Google token refresh failures once
+
+- [76dc799](https://github.com/sjfieni/donknow/commit/76dc799ab00eed58f217f15628e46cc2324def8c) · 11-25 22:50 · Keep partial batch recovery coverage on date changes
+<!-- daily:2026-11-26:end -->
+
 <!-- daily:2026-11-25:start -->
 ### 2026-11-25 — 당일 저장된 작업
 
