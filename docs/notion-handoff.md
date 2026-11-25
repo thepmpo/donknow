@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-25 · 한국 시간 · 기능 코드 a38616e · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-25 · 한국 시간 · 기능 코드 dd434f6 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -867,11 +867,19 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 ## 3. 최근 변경과 매일 기록
 
+#### 2026-11-25 — 할 일·로그 스와이프와 캘린더 헤더 정리
+
+첨부 첫 영상에서 도슨의 기존 선택 흐름을, 두 번째 영상에서 행이 이동할 때 따라오는 모션과 오른쪽 선택 표시를 확인했다. 도슨의 색과 터치 영역에서 행을 손가락 방향으로 움직이고 놓으면 원위치로 복귀한다. 할 일과 로그 모두 오른쪽 스와이프로 선택하고 같은 방향으로 다시 밀면 선택을 해제한다. 왼쪽 스와이프는 할 일 완료, 완료된 로그에서는 되돌리기다. 선택용 원과 완료 체크박스는 각각 오른쪽과 왼쪽에 둔다. 길게 눌러 순서를 옮길 때 이동 카드는 처음 잡은 위치를 따라간다. 완료 유예·원본 쓰기와 항목별 원본 상태 표시는 유지한다.
+
+기존 할 일 수정은 글 입력칸을 누를 때 포커스된다. 할 일 메타데이터는 날짜를 왼쪽, 출처를 오른쪽에 놓는다. 원본 반영 문제가 헤더 전체를 밀던 배너는 제거한다. 캘린더 헤더의 상시 오류 문구와 년월 옆 더하기를 삭제했다. 일정 추가는 날짜 길게 누르기와 캘린더 메뉴에서 가능하다. 개발 환경에서만 연결 조회 실패 시 헤더 오른쪽 빨간 원 안에 ×를 표시한다. 누르면 원인과 ME 연결 관리 경로를 표시한다. 내부 테스트용 번들에서는 `EXPO_PUBLIC_CALENDAR_DIAGNOSTICS=1`로 켤 수 있다.
+
+Duo·일반폰·웹 Chromium 생성 화면, Duo·일반폰 터치 스와이프/선택 토글/완료·되돌리기/입력 포커스, 캘린더 연결 경고와 초안 유지, 기존 길게 눌러 순서 이동 및 고정 헤더, 합성 아이폰 캘린더 원본 쓰기 흐름을 검사했다. 모바일 타입 검사와 iOS JS 번들 검사를 통과했다. 첨부 개인 영상은 저장소에 포함하지 않았다. 이번 변경의 설치 앱과 실제 기기 검수는 새 TestFlight 빌드가 필요하다.
+
 #### 2026-11-25 — 캘린더 연결 관리는 ME / 원본 연동과 입력 정리
 
 사용자 최신 확정으로 서비스 연결·재인증·권한 관리는 모두 ME에서 한다. 캘린더는 실제 연결 소스 선택만 하며 ME 이동 후 초안을 복원한다. 위치/영상·시간대·첨부 UI/불필요한 하단 설명을 제거하고 알림 행 정렬과 오늘 음영 위 구분선을 수정했다. Google invalid_grant 반복 갱신을 인증 지문별로 중단하고 새 승인 후 갱신한다. 필수 서비스 ME 행, 아이폰 캘린더 실제 EventKit 읽기/원본 생성·부분수정·삭제, 등록된 네이버 CalDAV, 선택한 실제 일정 본문을 AI 입력창에 전달하는 경로를 추가했다. 네이버 PC/웹 직접 CalDAV와 기기의 서버 상시읽기는 구현하지 않았다. [상세 구현·지원표·복구·검증](calendar-connections-me-2026-11-25.md).
 
-검증: npm check, 단위/서버 486통과·1skip·실패0, mobile typecheck, 격리 iOS prebuild, iOS JS export 통과. 실제 컴포넌트/합성 API·기기 어댑터로 Duo·일반폰·웹 입력 정리/ME 이동·재인증/초안 복원, Duo·일반폰 native 생성·변경 필드만 수정·삭제·실제 본문 전달을 확인했다. 실제 계정/EventKit 기기 검수가 아니며 TestFlight 새 제출은 아직 안 됐다. 서버 게시 결과는 확인 후 별도 기록한다. 후속 검수로 상태 화면의 ME 관리 버튼/재인증 안내도 통일했고 native 읽기 실패·권한 해제·캐시 복원 경합을 처리했다. 관련 서버 테스트22개와 native 두 기기 흐름을 재검증했다. 기존 미리알림 원본 완료/복원, PG/요금/서명 ID/소개만 공개 범위는 유지한다.
+검증: npm check, 단위/서버 486통과·1skip·실패0, mobile typecheck, 격리 iOS prebuild, iOS JS export 통과. 실제 컴포넌트/합성 API·기기 어댑터로 Duo·일반폰·웹 입력 정리/ME 이동·재인증/초안 복원, Duo·일반폰 native 생성·변경 필드만 수정·삭제·실제 본문 전달을 확인했다. 실제 계정/EventKit 기기 검수가 아니며 TestFlight 새 제출은 아직 안 됐다. 서버는 d04d060/dep-dc3birqjnfac73a9qdb0가 2026-11-25 10:34:36 UTC live임을 확인했다. [배포 근거와 남은 실제 검수](calendar-connections-deployment-2026-11-25.md). 후속 검수로 상태 화면의 ME 관리 버튼/재인증 안내도 통일했고 native 읽기 실패·권한 해제·캐시 복원 경합을 처리했다. 관련 서버 테스트22개와 native 두 기기 흐름을 재검증했다. 기존 미리알림 원본 완료/복원, PG/요금/서명 ID/소개만 공개 범위는 유지한다.
 
 #### 모바일 소개 페이지 메인 영상 활성화·앱 첫 화면 작업 유지
 
@@ -3771,10 +3779,13 @@ a08319d Add reference-based calendar and Todo creation sheet with direct date en
 1578e28 Manage calendar connections in ME and add native calendar write-back
 e34cc6c Refresh calendar connection handoff and verified UI captures
 a38616e Keep calendar recovery in ME and report device read failures
+d04d060 Publish ME connection recovery documentation
+ff941eb Record verified calendar ME server deployment and device limits
+dd434f6 Refine Todo swipe actions and simplify calendar status UI
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: a38616e에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: dd434f6에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13043,7 +13054,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/a38616e9411273b26c9444d6575d179cd3303c36
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/dd434f62453a26d09d2a34f75de2058422912f42
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -13201,6 +13212,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 17. AI 개발 지침 전문
 
 ### 원문 / AGENTS.md
+
+#### 2026-11-25 — 할 일·로그 스와이프와 캘린더 헤더 정리
+
+첨부 첫 영상에서 도슨의 기존 선택 흐름을, 두 번째 영상에서 행이 이동할 때 따라오는 모션과 오른쪽 선택 표시를 확인했다. 도슨의 색과 터치 영역에서 행을 손가락 방향으로 움직이고 놓으면 원위치로 복귀한다. 할 일과 로그 모두 오른쪽 스와이프로 선택하고 같은 방향으로 다시 밀면 선택을 해제한다. 왼쪽 스와이프는 할 일 완료, 완료된 로그에서는 되돌리기다. 선택용 원과 완료 체크박스는 각각 오른쪽과 왼쪽에 둔다. 길게 눌러 순서를 옮길 때 이동 카드는 처음 잡은 위치를 따라간다. 완료 유예·원본 쓰기와 항목별 원본 상태 표시는 유지한다.
+
+기존 할 일 수정은 글 입력칸을 누를 때 포커스된다. 할 일 메타데이터는 날짜를 왼쪽, 출처를 오른쪽에 놓는다. 원본 반영 문제가 헤더 전체를 밀던 배너는 제거한다. 캘린더 헤더의 상시 오류 문구와 년월 옆 더하기를 삭제했다. 일정 추가는 날짜 길게 누르기와 캘린더 메뉴에서 가능하다. 개발 환경에서만 연결 조회 실패 시 헤더 오른쪽 빨간 원 안에 ×를 표시한다. 누르면 원인과 ME 연결 관리 경로를 표시한다. 내부 테스트용 번들에서는 `EXPO_PUBLIC_CALENDAR_DIAGNOSTICS=1`로 켤 수 있다.
+
+Duo·일반폰·웹 Chromium 생성 화면, Duo·일반폰 터치 스와이프/선택 토글/완료·되돌리기/입력 포커스, 캘린더 연결 경고와 초안 유지, 기존 길게 눌러 순서 이동 및 고정 헤더, 합성 아이폰 캘린더 원본 쓰기 흐름을 검사했다. 모바일 타입 검사와 iOS JS 번들 검사를 통과했다. 첨부 개인 영상은 저장소에 포함하지 않았다. 이번 변경의 설치 앱과 실제 기기 검수는 새 TestFlight 빌드가 필요하다.
 
 #### 2026-11-25 — 캘린더 연결 관리는 ME / 원본 연동과 입력 정리
 
