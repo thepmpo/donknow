@@ -28,7 +28,7 @@ export function LogScreen({store}: {store: TodoStore}) {
     finally { setPulling(false); }
   }
 
-  return <Page testID="log-list-scroll" refreshControl={<RefreshControl refreshing={pulling} onRefresh={() => void pull()} tintColor={colors.blue}/>}>
+  return <Page todoGestures testID="log-list-scroll" refreshControl={<RefreshControl refreshing={pulling} onRefresh={() => void pull()} tintColor={colors.blue}/>}>
     <ScreenHeading embedded title="log">
       {selected.length > 0 && <Pressable accessibilityRole="button" accessibilityLabel="로그 선택 마치기" onPress={() => setSelected([])} style={{minHeight:44,minWidth:44,justifyContent:'center',alignItems:'center'}}>
         <Ionicons name="checkmark" size={22} color={colors.blueText}/>

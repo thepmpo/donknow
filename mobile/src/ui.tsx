@@ -1,3 +1,5 @@
+import {TodoGestureRow,TodoGestureScroll} from './todo-gestures';
+import type {RowPoint} from './todo-gesture-types';
 import {ScreenHeading} from './ScreenHeading';
 import {useRefreshIndicator} from './useRefreshIndicator';
 import {BrandLoading} from './BrandLoading';
@@ -39,7 +41,7 @@ export function BackButton({onPress,disabled=false}:{onPress:()=>void;disabled?:
 }
 /** Page-owned secondary controls stay below the title while only the body scrolls. */
 export function PagePinned({children,testID}:{children:React.ReactNode;testID?:string}){return <View testID={testID}>{children}</View>;}
-export function Page({ children, refreshControl, compact = false, scrollRef,onScroll,testID,scrollEnabled,bottomSpace=0 }: { bottomSpace?:number;scrollEnabled?:boolean;scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean;onScroll?:React.ComponentProps<typeof ScrollView>['onScroll'];testID?:string }) {
+export function Page({ children, refreshControl, compact = false, scrollRef,onScroll,testID,scrollEnabled,bottomSpace=0,todoGestures=false }: { todoGestures?:boolean;bottomSpace?:number;scrollEnabled?:boolean;scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean;onScroll?:React.ComponentProps<typeof ScrollView>['onScroll'];testID?:string }) {
   const desktop=useDesktopPresentation();
   const insets=useSafeAreaInsets();
   const duo=useDuoTrailingNavigation();
@@ -52,9 +54,10 @@ export function Page({ children, refreshControl, compact = false, scrollRef,onSc
   const chrome=!!heading||pinned.length>0;
   const body=chrome?parts.filter(child=>child!==heading&&!pinned.includes(child)):children;
   const nativeRefresh=refresh?React.cloneElement(refresh,{refreshing:indicator.visible,onRefresh:()=>{indicator.begin();refresh.props.onRefresh?.();},tintColor:'transparent',colors:['transparent'],progressBackgroundColor:'transparent'}):undefined;
-  return <MotionView style={{flex:1,minHeight:0}} distance={0}>{chrome&&<View testID="fixed-page-heading" onLayout={event=>setChromeHeight(event.nativeEvent.layout.height)} style={{paddingHorizontal:layout.pageInset,paddingTop:layout.pageTop,backgroundColor:colors.bg,zIndex:1}}>{heading}{pinned}</View>}<ScrollView style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:chrome?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{body}</ScrollView>{!!refresh&&!indicator.expired&&(indicator.visible||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:chromeHeight,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
+  const pageScroll=<ScrollView directionalLockEnabled={todoGestures} style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:chrome?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{body}</ScrollView>;
+  return <MotionView style={{flex:1,minHeight:0}} distance={0}>{chrome&&<View testID="fixed-page-heading" onLayout={event=>setChromeHeight(event.nativeEvent.layout.height)} style={{paddingHorizontal:layout.pageInset,paddingTop:layout.pageTop,backgroundColor:colors.bg,zIndex:1}}>{heading}{pinned}</View>}{todoGestures?<TodoGestureScroll>{pageScroll}</TodoGestureScroll>:pageScroll}{!!refresh&&!indicator.expired&&(indicator.visible||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:chromeHeight,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
 }
-export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLongPress }: { selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;onLongPress?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
+export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLift,onDrag,onDrop,onSelectAccessible }: { onLift?:(point:RowPoint)=>void;onDrag?:(point:RowPoint)=>void;onDrop?:(completed:boolean)=>void;onSelectAccessible?:()=>void;selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
   const desktop=useDesktopPresentation();
   const reduced = useReducedMotion();
   const reducedRef = useRef(reduced); reducedRef.current = reduced;
@@ -93,43 +96,85 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const toggleBlocked = useRef(busy && !canToggleWhileBusy); toggleBlocked.current = busy && !canToggleWhileBusy;
   const suppressUntil = useRef(0);
   const swiping = useRef(false);
-  function press(action?: () => void, toggle = false) { if (!swiping.current && Date.now() >= suppressUntil.current && !(toggle ? toggleBlocked.current : busyRef.current)) action?.(); }
+  function press(action?: () => void, toggle = false) { if (!swiping.current && !held.current && Date.now() >= suppressUntil.current && !(toggle ? toggleBlocked.current : busyRef.current)) action?.(); }
   const reset = () => { offset.stopAnimation(); if (reducedRef.current) offset.setValue(0); else Animated.spring(offset, { toValue: 0, damping: 23, stiffness: 300, mass: 0.8, overshootClamping: true, useNativeDriver: Platform.OS !== 'web' }).start(); };
   useEffect(() => () => offset.stopAnimation(), [offset]);
   const swipeSelect = useRef(onSelect);
   swipeSelect.current = onSelect;
   const swipeOrigin = useRef(0);
+  const held = useRef(false);
+  const webGesture = useRef<'swipe'|'drag'|null>(null);
+  const drag = useRef({onLift,onDrag,onDrop});
+  drag.current={onLift,onDrag,onDrop};
+  function startSwipe() {
+    offset.stopAnimation();
+    swiping.current=true;
+  }
+  function moveSwipe(distance:number) {
+    const sign=Math.sign(distance),length=Math.abs(distance);
+    offset.setValue(sign*Math.min(104,length<=72?length:72+(length-72)*0.32));
+  }
+  function finishSwipe(distance:number,completed:boolean) {
+    swiping.current=false;
+    suppressUntil.current=Date.now()+250;
+    reset();
+    if(!completed||Math.abs(distance)<48)return;
+    if(distance>0){if(!busyRef.current)swipeSelect.current?.();}
+    else if(!toggleBlocked.current)onToggleRef.current();
+  }
+  function lift(point:RowPoint) {
+    if(busyRef.current||!drag.current.onLift)return;
+    held.current=true;suppressUntil.current=Date.now()+400;
+    drag.current.onLift(point);
+  }
+  function drop(completed:boolean) {
+    if(!held.current)return;
+    held.current=false;suppressUntil.current=Date.now()+250;
+    drag.current.onDrop?.(completed);
+  }
   const responder = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponderCapture: (_, gesture) => {
-      if (gesture.numberActiveTouches !== 1 || Math.abs(gesture.dx) <= 12 || Math.abs(gesture.dx) <= Math.abs(gesture.dy)*1.4) return false;
-      if (gesture.dx > 0 ? busyRef.current || !swipeSelect.current : toggleBlocked.current) return false;
-      swipeOrigin.current = gesture.dx;
+    onMoveShouldSetPanResponderCapture: (_,g)=>{
+      if(held.current)return true;
+      if(g.numberActiveTouches!==1||Math.abs(g.dx)<10||Math.abs(g.dx)<Math.abs(g.dy)*0.85)return false;
+      if(g.dx>0?busyRef.current||!swipeSelect.current:toggleBlocked.current)return false;
+      swipeOrigin.current=g.dx;
       return true;
     },
-    onPanResponderGrant: () => { offset.stopAnimation(); offset.setValue(swipeOrigin.current); swiping.current = true; },
-    onPanResponderMove: (_, gesture) => offset.setValue(Math.max(-96, Math.min(96, gesture.dx + swipeOrigin.current))),
-    onPanResponderRelease: (_, gesture) => {
-      const distance = gesture.dx + swipeOrigin.current;
-      swipeOrigin.current = 0;
-      swiping.current = false;
-      suppressUntil.current = Date.now() + 300;
-      reset();
-      if (Math.abs(distance) < 64 || Math.abs(distance) <= Math.abs(gesture.dy)*1.4) return;
-      if (distance > 0) {
-        if (!busyRef.current) swipeSelect.current?.();
-      } else if (!toggleBlocked.current) onToggleRef.current();
+    onPanResponderGrant:()=>{
+      webGesture.current=held.current?'drag':'swipe';
+      if(!held.current){startSwipe();moveSwipe(swipeOrigin.current);}
     },
-    onPanResponderTerminate: () => { swipeOrigin.current = 0; swiping.current = false; suppressUntil.current = Date.now() + 300; reset(); },
+    onPanResponderMove:(event,g)=>{
+      if(webGesture.current==='drag'){if(held.current)drag.current.onDrag?.({x:event.nativeEvent.pageX,y:event.nativeEvent.pageY});}
+      else if(webGesture.current==='swipe')moveSwipe(g.dx+swipeOrigin.current);
+    },
+    onPanResponderRelease:(_,g)=>{
+      if(webGesture.current==='drag')drop(true);
+      else if(webGesture.current==='swipe')finishSwipe(g.dx+swipeOrigin.current,true);
+      webGesture.current=null;
+      swipeOrigin.current=0;
+    },
+    onPanResponderTerminate:()=>{
+      if(webGesture.current==='drag')drop(false);
+      else if(webGesture.current==='swipe')finishSwipe(0,false);
+      webGesture.current=null;
+      swipeOrigin.current=0;
+    },
+    onPanResponderTerminationRequest:()=>!held.current&&!swiping.current,
   }), [offset]);
+  const canLift=!!onLift&&!busy;
   const date = log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : '';
   const provenance=todoSource(todo);
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View pointerEvents="none" aria-hidden style={s.swipeBack}><Text style={s.swipeBackText}>{onSelect ? selected ? '선택 취소' : '선택' : ''}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
-    <Animated.View onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}} {...responder.panHandlers} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&{backgroundColor:colors.pale,borderRadius:12}, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
+    <TodoGestureRow canSwipeLeft={!busy||canToggleWhileBusy} canSwipeRight={!!onSelect&&!busy} canLift={canLift}
+      onSwipeStart={startSwipe} onSwipeMove={moveSwipe} onSwipeEnd={finishSwipe} onLift={lift} onDrag={point=>drag.current.onDrag?.(point)} onDrop={drop}>
+    <Animated.View collapsable={false} onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}}
+      {...(Platform.OS==='web'?{...responder.panHandlers,onPointerUp:()=>drop(true),onTouchEnd:()=>drop(true),onTouchCancel:()=>drop(false)}:{})} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&{backgroundColor:colors.pale,borderRadius:12}, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
       <Pressable accessibilityRole="checkbox" accessibilityState={{checked:todo.done,disabled:busy&&!canToggleWhileBusy}} accessibilityLabel={`${todo.title} ${todo.done?'미완료로 변경':'완료하기'}`} disabled={busy&&!canToggleWhileBusy} onPress={()=>press(onToggle,true)} hitSlop={compact?10:9} style={[s.checkbox,compact&&{width:24,height:24,borderRadius:7,borderWidth:1.5},desktop&&{width:19,height:19,borderRadius:5,borderWidth:1.5},todo.done&&s.checked]}>
         <Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text>
       </Pressable>
-      <Pressable disabled={(!onEdit&&selected===undefined) || busy} onPress={() => selected!==undefined?press(onSelect):press(onEdit)} onLongPress={onLongPress?()=>{suppressUntil.current=Date.now()+600;onLongPress();}:undefined} delayLongPress={280} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={onLongPress?'길게 눌러 선택한 뒤 움직이면 이동할 수 있어요.':undefined} accessibilityActions={onLongPress?[{name:'longpress',label:'할 일 선택 및 이동'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onLongPress?.();}} style={s.todoBody}>
+      <Pressable disabled={(!onEdit&&selected===undefined) || busy} onPress={() => selected!==undefined?press(onSelect):press(onEdit)} onLongPress={canLift&&Platform.OS==='web'?event=>lift({x:event.nativeEvent.pageX,y:event.nativeEvent.pageY}):undefined} delayLongPress={320} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={canLift?'길게 눌러 끌면 옮길 수 있어요.':undefined} accessibilityActions={onSelectAccessible?[{name:'longpress',label:'할 일 선택 및 이동 메뉴'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onSelectAccessible?.();}} style={s.todoBody}>
         <Text numberOfLines={2} style={[s.todoTitle,desktop&&{fontSize:13,lineHeight:21,fontWeight:'500'}, todo.done && !log && s.doneText]}>{todo.title}</Text>
         {pending ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `${log?'되돌림':'완료'} · ${countdown}초 후 ${log?'할 일':'log'}로 이동` : `${log?'되돌림':'완료'} · ${log?'할 일':'log'}로 이동`}</Text> : <View style={s.todoMetadata}>
           <Text numberOfLines={1} style={[s.todoDate,{flexShrink:0},desktop&&s.desktopTodoDate]}>{date}</Text>
@@ -145,6 +190,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
         <Ionicons name={selected?'checkmark-circle':'ellipse-outline'} size={21} color={selected?colors.blueText:colors.muted}/>
       </Pressable>:pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onOpenSource ? <Pressable accessibilityRole="link" accessibilityLabel={`${todo.title} 원본 열기`} onPress={()=>press(onOpenSource)} disabled={busy} style={s.rowAccessory}><Ionicons name="open-outline" size={21} color={colors.blueText}/></Pressable> : onEdit&&!compact ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : compact ? <View pointerEvents="none" style={s.rowAccessory}/> : null}
     </Animated.View>
+    </TodoGestureRow>
   </Animated.View>;
 }
 export function DateField({value,onChange,disabled=false,activePicker,onPickerChange}:{value:string|null;onChange:(date:string|null)=>void;disabled?:boolean;activePicker?:string|null;onPickerChange?:(value:string|null)=>void}){return <DateTimeField label="예정일" inputLabel="예정일 선택" value={value} onChange={onChange} clearable disabled={disabled} activePicker={activePicker} onPickerChange={onPickerChange}/>;}

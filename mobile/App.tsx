@@ -1,3 +1,4 @@
+import {TodoGestureRoot} from './src/todo-gestures';
 import {BrandLoading} from './src/BrandLoading';
 import {BrandMark} from './src/BrandMark';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -89,7 +90,7 @@ function ShellContent() {
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView></DesktopWorkspace>;
 }
-export default function App() { return <MotionProvider><SafeAreaProvider><SafeAreaView edges={[]} style={styles.safe}><StatusBar style="auto" /><DuoSafeSurface workspace><Shell /></DuoSafeSurface></SafeAreaView></SafeAreaProvider></MotionProvider>; }
+export default function App() { return <TodoGestureRoot><MotionProvider><SafeAreaProvider><SafeAreaView edges={[]} style={styles.safe}><StatusBar style="auto" /><DuoSafeSurface workspace><Shell /></DuoSafeSurface></SafeAreaView></SafeAreaProvider></MotionProvider></TodoGestureRoot>; }
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg }, root: { flex: 1, width: '100%', maxWidth: 760, alignSelf: 'center', backgroundColor: colors.bg },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },

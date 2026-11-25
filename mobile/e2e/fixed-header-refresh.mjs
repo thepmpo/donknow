@@ -11,10 +11,35 @@ try{
  const header=page.locator('[data-testid="mobile-page-header"]:visible');assert.equal(await header.count(),1);assert.match(await header.innerText(),/docen/);assert.equal(await page.getByRole('button',{name:'할 일 여러 개 선택',exact:true}).count(),0);
  const start=await header.boundingBox(),pinnedStart=await page.getByTestId('todos-pinned-controls').boundingBox();await page.getByTestId('todos-list-scroll').evaluate(e=>{e.scrollTop=160;e.dispatchEvent(new Event('scroll'));});await page.waitForTimeout(250);assert.equal((await page.getByTestId('todos-pinned-controls').boundingBox()).y,pinnedStart.y);assert.equal((await header.boundingBox()).y,start.y);assert.ok(await page.getByTestId('todos-pinned-controls').evaluate(e=>!document.querySelector('[data-testid=\"todos-list-scroll\"]').contains(e)));
  await page.getByTestId('todos-list-scroll').evaluate(e=>{e.scrollTop=0;e.dispatchEvent(new Event('scroll'));});
- const body=page.getByRole('button',{name:/ 수정$/}).first();const before=await body.boundingBox();const b=await body.boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.waitForTimeout(400);await page.mouse.up();
- await page.getByTestId('todo-selection-toolbar').waitFor();assert.equal(await page.getByTestId('todo-drag-preview').count(),0,'stationary long press selects without a detached drag card');await page.waitForTimeout(300);const after=await body.boundingBox();assert.ok(Math.abs(after.y-before.y)<2,'selection does not move the row');
- await page.screenshot({path:out+'/01-selection.png'});await page.getByRole('button',{name:'할 일 선택 마치기',exact:true}).click();await page.getByTestId('todo-selection-toolbar').waitFor({state:'detached'});
- const dragStart=await body.boundingBox();await page.mouse.move(dragStart.x+20,dragStart.y+dragStart.height/2);await page.mouse.down();await page.waitForTimeout(400);await page.mouse.move(dragStart.x+20,dragStart.y+95,{steps:12});await page.getByTestId('todo-drag-preview').waitFor();await page.screenshot({path:out+'/01b-drag.png'});await page.mouse.up();await page.getByTestId('todo-drag-preview').waitFor({state:'detached'});if(await page.getByRole('button',{name:'할 일 선택 마치기',exact:true}).count())await page.getByRole('button',{name:'할 일 선택 마치기',exact:true}).click();
+ const body=page.getByRole('button',{name:/ 수정$/}).first();
+ const row=await body.boundingBox();
+ await page.mouse.move(row.x+row.width/2,row.y+row.height/2);
+ await page.mouse.down();
+ const lift=page.getByTestId('todo-drag-preview');
+ await lift.waitFor();
+ assert.equal(await page.getByTestId('todo-selection-toolbar').count(),0,'holding lifts the row without the selection toolbar');
+ const lifted=await lift.boundingBox();
+ assert.ok(Math.abs(lifted.y-row.y)<26,'lift starts at the row');
+ await page.mouse.move(row.x+row.width/2,row.y+row.height/2+80,{steps:12});
+ const moved=await lift.boundingBox();
+ assert.ok(moved.y>lifted.y+45,'drag follows the pointer');
+ assert.equal(await page.getByTestId('todo-selection-toolbar').count(),0,'drag keeps the date action hidden');
+ await page.screenshot({path:out+'/01b-drag.png'});
+ await page.mouse.up();
+ await lift.waitFor({state:'detached'});
+ const movedTitle=await body.getAttribute('aria-label');
+ assert.notEqual(movedTitle,'팀 회의 자료 준비하기 수정','dropping the lifted first row changes persisted order');
+ const session=await page.context().newCDPSession(page);
+ const position=await body.boundingBox();
+ const x=position.x+position.width/2,y=position.y+position.height/2;
+ try{
+  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+  await lift.waitFor();
+  assert.equal(await page.getByTestId('todo-selection-toolbar').count(),0);
+  await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await lift.waitFor({state:'detached'});
+  assert.equal(await body.getAttribute('aria-label'),movedTitle,'holding and releasing in place preserves order');
+ }finally{await session.detach();}
  await page.getByRole('tab',{name:'docen',exact:true}).click();await page.waitForTimeout(300);const aiHeader=page.locator('[data-testid=\"mobile-page-header\"]:visible');assert.equal(await aiHeader.getByRole('heading').count(),0);assert.equal(await aiHeader.getByLabel('docen.ai',{exact:true}).count(),1);await page.screenshot({path:out+'/01c-ai-brand.png'});
  const heights=[];for(const [name,title] of [['캘린더','캘린더'],['log','log'],['ME','ME']]){await page.getByRole('tab',{name,exact:true}).click();await page.waitForTimeout(300);const h=page.locator('[data-testid="mobile-page-header"]:visible');assert.equal(await h.count(),1);assert.match(await h.innerText(),new RegExp(title));const brand=h.getByLabel('docen',{exact:true});assert.ok((await brand.boundingBox()).width>35);heights.push((await h.boundingBox()).height);if(name==='log'){assert.equal(await page.getByText('완료한 기록',{exact:true}).count(),0);const desc=page.getByTestId('log-pinned-description');assert.ok(await desc.evaluate(e=>!e.closest('[data-testid=\"log-list-scroll\"]')));await page.screenshot({path:out+'/02c-log.png'});}if(name==='캘린더'){const controls=await page.getByTestId('calendar-date-controls').boundingBox(),head=await h.boundingBox();assert.ok(controls.y>=head.y+head.height);await page.screenshot({path:out+'/02a-calendar-before-year.png'});await page.getByRole('button',{name:'년월 선택',exact:true}).click();await page.getByTestId('calendar-year-overview').waitFor();await page.waitForTimeout(600);await page.getByRole('button',{name:'월간 보기로 돌아가기',exact:true}).click();await page.getByTestId('calendar-year-overview').waitFor({state:'detached'});await page.waitForTimeout(350);await page.screenshot({path:out+'/02-calendar.png'});assert.equal(await page.getByRole('button',{name:'캘린더 더보기',exact:true}).count(),0);const month=await page.getByRole('button',{name:'년월 선택',exact:true}).boundingBox();assert.ok(month.x+month.width>=controls.x+controls.width-2,'month aligns right');await page.getByRole('button',{name:'년월 선택',exact:true}).click({delay:650});await page.getByTestId('calendar-sheet').waitFor();await page.getByTestId('DuoBackButton').click();await page.getByTestId('calendar-sheet').waitFor({state:'detached'});
  await page.getByRole('button',{name:'년월 선택',exact:true}).click({delay:650});await page.getByRole('button',{name:'캘린더 보기 전환',exact:true}).click();await page.getByRole('tab',{name:'일 보기',exact:true}).click();await page.getByTestId('calendar-day-strip').waitFor();const dayAgenda=page.locator('[data-testid="calendar-agenda"]:visible');const agendaBox=await dayAgenda.boundingBox();const padding=await dayAgenda.evaluate(e=>parseFloat(getComputedStyle(e).paddingLeft));assert.ok(padding>=24);const textBefore=await dayAgenda.innerText();const touch=await page.context().newCDPSession(page);const sx=agendaBox.x+agendaBox.width-45,sy=agendaBox.y+100;await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:sx,y:sy,id:1}]});for(let i=1;i<=16;i++)await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:sx-i*(agendaBox.width-90)/16,y:sy,id:1}]});await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(500);assert.notEqual(await page.locator('[data-testid="calendar-agenda"]:visible').innerText(),textBefore,'swiping the agenda changes day');await page.screenshot({path:out+'/02b-day-agenda.png'});await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:agendaBox.x+45,y:sy,id:2}]});for(let i=1;i<=16;i++)await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:agendaBox.x+45+i*(agendaBox.width-90)/16,y:sy,id:2}]});await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(500);assert.equal(await page.locator('[data-testid=\"calendar-agenda\"]:visible').innerText(),textBefore,'right swipe returns to the previous day');}}

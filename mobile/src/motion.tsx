@@ -46,14 +46,21 @@ export function MotionView({ children, transitionKey, style, distance = 0,disabl
   return <MotionAncestor.Provider value={ancestor||!disabled}><Animated.View {...props} style={[style, { opacity:progress.interpolate({inputRange:[0,1],outputRange:[variant==='navigation'?.98:.96,1]}), transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [variant==='navigation'?0:distance, 0] }) }] }]}>{children}</Animated.View></MotionAncestor.Provider>;
 }
 /** Reordered siblings settle from their previous location; the page never zooms. */
-export const ReorderItem=React.forwardRef<React.ComponentRef<typeof View>,ViewProps&{moving?:boolean;position?:number}>(({moving=false,position,onLayout,children,...props},ref)=>{
+export const ReorderItem=React.forwardRef<React.ComponentRef<typeof View>,ViewProps&{moving?:boolean;position?:number;previewShift?:number}>(({moving=false,position,previewShift=0,onLayout,children,...props},ref)=>{
   const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current,previousY=useRef<number|null>(null),value=useRef(0),node=useRef<React.ComponentRef<typeof View>|null>(null),read=useRef(0);
   useEffect(()=>{const id=offset.addListener(v=>{value.current=v.value;});return()=>{offset.removeListener(id);offset.stopAnimation();};},[offset]);
   useEffect(()=>{if(reduced||moving){offset.stopAnimation();offset.setValue(0);previousY.current=null;}},[reduced,moving,offset]);
+  const preview=useRef(new Animated.Value(0)).current;
+  useEffect(()=>{
+    if(reduced){preview.setValue(previewShift);return;}
+    const animation=Animated.spring(preview,{toValue:previewShift,damping:25,stiffness:330,mass:.7,useNativeDriver:native});
+    animation.start();
+    return()=>animation.stop();
+  },[preview,previewShift,reduced]);
   const measure=()=>{const version=++read.current;node.current?.measureInWindow((_x,pageY)=>{if(version!==read.current)return;const y=pageY-value.current,prior=previousY.current;previousY.current=y;if(prior!==null&&Math.abs(prior-y)>1&&!reduced&&!moving){const start=prior-y+value.current;offset.stopAnimation();offset.setValue(start);Animated.timing(offset,{toValue:0,duration:motion.page,easing:Easing.out(Easing.cubic),useNativeDriver:native}).start();}});};
   // Web's ResizeObserver does not report movement between same-size siblings.
   useLayoutEffect(()=>{measure();return()=>{read.current++;};},[position,reduced,moving]);
-  return <Animated.View {...props} ref={el=>{node.current=el;if(typeof ref==='function')ref(el);else if(ref)ref.current=el;}} onLayout={e=>{measure();onLayout?.(e);}} style={[props.style,{transform:[{translateY:offset}]}]}>{children}</Animated.View>;
+  return <Animated.View {...props} ref={el=>{node.current=el;if(typeof ref==='function')ref(el);else if(ref)ref.current=el;}} onLayout={e=>{measure();onLayout?.(e);}} style={[props.style,{transform:[{translateY:offset},{translateY:preview}]}]}>{children}</Animated.View>;
 });
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export function MotionPressable({ style, onPressIn, onPressOut, disabled, ...props }: PressableProps) {

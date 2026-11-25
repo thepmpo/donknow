@@ -73,13 +73,13 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await page.setViewportSize({width,height});
    await page.getByRole('tab',{name:/^(할 일|Todo 리스트)$/}).click();
    const row=page.getByTestId('todo-todo-0');
-   async function swipe(target,direction){
+   async function swipe(target,direction,verticalStep=4){
     const box=await target.boundingBox();
     const x=box.x+box.width/2,y=box.y+box.height/2;
     const session=await page.context().newCDPSession(page);
     try{
      await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
-     for(let i=1;i<=8;i++)await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+direction*i*12,y}]});
+     for(let i=1;i<=8;i++)await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+direction*i*10,y:y+i*verticalStep}]});
      await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
     }finally{await session.detach();}
    }
