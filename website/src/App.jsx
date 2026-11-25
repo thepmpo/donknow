@@ -140,6 +140,7 @@ function Demo({ en }) {
     [date, setDate] = useState(""),
     [time, setTime] = useState("");
   const dateRef = useRef(null);
+  const itemsRef = useRef(null);
   const move = (id, status) => {
     setTasks((all) =>
       all.map((t) =>
@@ -157,6 +158,9 @@ function Demo({ en }) {
     setNotice(status);
     setSchedule(null);
   };
+  useEffect(() => {
+    if (itemsRef.current) itemsRef.current.scrollTop = 0;
+  }, [view]);
   useEffect(() => {
     if (schedule) dateRef.current?.focus();
   }, [schedule]);
@@ -248,136 +252,138 @@ function Demo({ en }) {
                       ],
             )}
           </p>
-          <div className="demo-list">
-            {visible.map((task) => (
-              <article className="demo-task" key={task.id}>
-                <button
-                  className="task-check"
-                  aria-label={
-                    tr(
-                      task.status === "done"
-                        ? ["미완료로 되돌리기: ", "Restore: "]
-                        : ["완료: ", "Complete: "],
-                    ) + tr(task.title)
-                  }
-                  aria-pressed={task.status === "done"}
-                  onClick={() =>
-                    move(task.id, task.status === "done" ? "inbox" : "done")
-                  }
-                >
-                  {task.status === "done" && <Check size={17} />}
-                </button>
-                <div className="task-content">
-                  <h3>{tr(task.title)}</h3>
-                  <div className="task-meta">
-                    <span
-                      className={
-                        "source-dot " +
-                        (task.source === "Slack"
-                          ? "violet"
-                          : task.source === "Gmail"
-                            ? "coral"
-                            : "amber")
-                      }
-                    />
-                    {tr(task.source)}
-                    <span>·</span>
-                    <span>{task.scheduled || tr(task.date)}</span>
-                  </div>
-                  {view === "inbox" && (
-                    <>
-                      <p>{tr(task.note)}</p>
-                      <div className="task-actions">
-                        <button onClick={() => move(task.id, "todo")}>
-                          <Plus size={14} />
-                          {tr(["할 일로", "To-do"])}
+          <div className="demo-items" ref={itemsRef}>
+            <div className="demo-list">
+              {visible.map((task) => (
+                <article className="demo-task" key={task.id}>
+                  <button
+                    className="task-check"
+                    aria-label={
+                      tr(
+                        task.status === "done"
+                          ? ["미완료로 되돌리기: ", "Restore: "]
+                          : ["완료: ", "Complete: "],
+                      ) + tr(task.title)
+                    }
+                    aria-pressed={task.status === "done"}
+                    onClick={() =>
+                      move(task.id, task.status === "done" ? "inbox" : "done")
+                    }
+                  >
+                    {task.status === "done" && <Check size={17} />}
+                  </button>
+                  <div className="task-content">
+                    <h3>{tr(task.title)}</h3>
+                    <div className="task-meta">
+                      <span
+                        className={
+                          "source-dot " +
+                          (task.source === "Slack"
+                            ? "violet"
+                            : task.source === "Gmail"
+                              ? "coral"
+                              : "amber")
+                        }
+                      />
+                      {tr(task.source)}
+                      <span>·</span>
+                      <span>{task.scheduled || tr(task.date)}</span>
+                    </div>
+                    {view === "inbox" && (
+                      <>
+                        <p>{tr(task.note)}</p>
+                        <div className="task-actions">
+                          <button onClick={() => move(task.id, "todo")}>
+                            <Plus size={14} />
+                            {tr(["할 일로", "To-do"])}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSchedule(schedule === task.id ? null : task.id);
+                              setDate("");
+                              setTime("");
+                            }}
+                          >
+                            <CalendarDays size={14} />
+                            {tr(["일정으로", "Schedule"])}
+                          </button>
+                          <button onClick={() => move(task.id, "done")}>
+                            {tr(["대화에서 마치기", "Finish here"])}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {schedule === task.id && (
+                      <form
+                        className="schedule-form"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          move(task.id, "calendar");
+                        }}
+                      >
+                        <label>
+                          {tr(["날짜", "Date"])}
+                          <input
+                            ref={dateRef}
+                            aria-label={tr(["일정 날짜", "Event date"])}
+                            type="date"
+                            required
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                          />
+                        </label>
+                        <label>
+                          {tr(["시간", "Time"])}
+                          <input
+                            aria-label={tr(["일정 시간", "Event time"])}
+                            type="time"
+                            required
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}
+                          />
+                        </label>
+                        <button type="submit" className="small-primary">
+                          {tr(["일정에 담기", "Add event"])}
                         </button>
                         <button
-                          onClick={() => {
-                            setSchedule(schedule === task.id ? null : task.id);
-                            setDate("");
-                            setTime("");
-                          }}
+                          type="button"
+                          className="plain-btn"
+                          onClick={() => setSchedule(null)}
                         >
-                          <CalendarDays size={14} />
-                          {tr(["일정으로", "Schedule"])}
+                          {tr(["취소", "Cancel"])}
                         </button>
-                        <button onClick={() => move(task.id, "done")}>
-                          {tr(["대화에서 마치기", "Finish here"])}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                  {schedule === task.id && (
-                    <form
-                      className="schedule-form"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        move(task.id, "calendar");
-                      }}
-                    >
-                      <label>
-                        {tr(["날짜", "Date"])}
-                        <input
-                          ref={dateRef}
-                          aria-label={tr(["일정 날짜", "Event date"])}
-                          type="date"
-                          required
-                          value={date}
-                          onChange={(e) => setDate(e.target.value)}
-                        />
-                      </label>
-                      <label>
-                        {tr(["시간", "Time"])}
-                        <input
-                          aria-label={tr(["일정 시간", "Event time"])}
-                          type="time"
-                          required
-                          value={time}
-                          onChange={(e) => setTime(e.target.value)}
-                        />
-                      </label>
-                      <button type="submit" className="small-primary">
-                        {tr(["일정에 담기", "Add event"])}
-                      </button>
-                      <button
-                        type="button"
-                        className="plain-btn"
-                        onClick={() => setSchedule(null)}
-                      >
-                        {tr(["취소", "Cancel"])}
-                      </button>
-                    </form>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-          {!visible.length && (
-            <div className="demo-empty">
-              <CircleCheck size={30} />
-              <h3>
-                {tr(
-                  view === "inbox"
-                    ? [
-                        "지금 확인할 일은 모두 정리했어요",
-                        "You’re all caught up",
-                      ]
-                    : ["아직 담긴 일이 없어요", "Nothing here yet"],
-                )}
-              </h3>
-              <p>
-                {tr([
-                  "브리핑에서 할 일을 골라 담아보세요.",
-                  "Choose an item from your briefing.",
-                ])}
-              </p>
-              <button onClick={() => setView("inbox")}>
-                {tr(["브리핑 보기", "See briefing"])}
-                <ArrowRight size={15} />
-              </button>
+                      </form>
+                    )}
+                  </div>
+                </article>
+              ))}
             </div>
-          )}
+            {!visible.length && (
+              <div className="demo-empty">
+                <CircleCheck size={30} />
+                <h3>
+                  {tr(
+                    view === "inbox"
+                      ? [
+                          "지금 확인할 일은 모두 정리했어요",
+                          "You’re all caught up",
+                        ]
+                      : ["아직 담긴 일이 없어요", "Nothing here yet"],
+                  )}
+                </h3>
+                <p>
+                  {tr([
+                    "브리핑에서 할 일을 골라 담아보세요.",
+                    "Choose an item from your briefing.",
+                  ])}
+                </p>
+                <button onClick={() => setView("inbox")}>
+                  {tr(["브리핑 보기", "See briefing"])}
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+            )}
+          </div>
           <div className="demo-status" aria-live="polite" role="status">
             {notice
               ? tr(demoNotices[notice])

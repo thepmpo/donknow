@@ -23,6 +23,7 @@ try {
       viewport: { width, height },
       isMobile: name === "phone",
       hasTouch: name === "phone",
+      reducedMotion: "reduce",
     });
     const page = await context.newPage();
     const errors = [],
@@ -48,11 +49,16 @@ try {
     });
     await page.locator("#product-demo").scrollIntoViewIfNeeded();
     const demo = page.locator("#product-demo");
+    const initialHeight = (await demo.boundingBox()).height;
+    async function assertDemoHeight() {
+      assert.equal((await demo.boundingBox()).height, initialHeight);
+    }
     await demo
       .getByRole("button", { name: "할 일로", exact: true })
       .first()
       .click();
     assert.equal(await demo.locator(".demo-task").count(), 2);
+    await assertDemoHeight();
     await demo.getByRole("button", { name: /Todo/ }).click();
     assert.match(
       await demo.locator(".demo-task").innerText(),
@@ -68,6 +74,7 @@ try {
       .first()
       .click();
     await demo.getByLabel("일정 날짜").fill("2026-11-20");
+    await assertDemoHeight();
     await demo.getByLabel("일정 시간").fill("14:00");
     await demo
       .getByRole("button", { name: "일정에 담기", exact: true })
@@ -86,6 +93,7 @@ try {
       .getByRole("button", { name: "대화에서 마치기", exact: true })
       .click();
     assert.equal(await demo.locator(".demo-task").count(), 0);
+    await assertDemoHeight();
     await demo.getByRole("button", { name: /기록/ }).click();
     assert.match(await demo.locator(".demo-task").innerText(), /도서관/);
     await demo.getByRole("button", { name: /미완료로 되돌리기/ }).click();
@@ -94,6 +102,7 @@ try {
       .getByRole("button", { name: /브리핑/ })
       .click();
     await demo.getByRole("button", { name: /완료: 도서관/ }).click();
+    await assertDemoHeight();
     await demo.getByRole("button", { name: /기록/ }).click();
     assert.equal(await demo.locator(".demo-task").count(), 1);
     await demo.getByRole("button", { name: "예시 초기화" }).click();
