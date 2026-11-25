@@ -57,4 +57,9 @@
 - 홈페이지/Render배포/DNS변경을이번빌드작업으로확대하지않는다. 공용RN웹코드는변경됐으나실제웹호스트배포여부는별도다.
 
 ## 빌드 영수증
-GitHub 반영과 native workflow 실행 결과는 아래에 기록한다.
+- 기능 커밋 `4d16226`, main과 codex/desktop-day-workspace에 push 완료. 롤백 브랜치 codex/rollback-before-week-build-20261125도 origin에 push 완료.
+- 최신 소스로 typecheck/모바일127개/3기기주간통합/고정헤더·로딩회귀/내비게이션회귀/native prebuild/iOS Hermes export가 통과했다.
+- `gh api --method POST repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches -f ref=main` 요청은 현재 연결에서 `Forbidden`으로 거절됐다. 이 응답을 자동 승인 심사 거부라고 판정할 근거는 없다. 서명된 IPA/TestFlight workflow는 시작되지 않았다.
+- 수동 실행: https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml → Run workflow → main → Run workflow. 최신 main으로 실행해야 하며 예전 run의 재실행은 최신 기능 소스의 빌드가 아니다.
+- 이번에 workflow 트리거/서명/요금/배포 타겟을 바꾸거나 유료 클라우드 빌드로 우회하지 않았다. 설치 iPhone 반영은 위 native build-and-submit 성공 및 새 빌드 설치 후 가능하다.
+
