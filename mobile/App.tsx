@@ -84,7 +84,7 @@ function ShellContent() {
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen request={profileRequest} store={store} onOpenTodos={()=>selectTab('todos')} onConnection={() => setSettings(true)} />}
     </MotionView>}</DuoWorkspace></MotionView>
-    {navigationVisible && !desktop && (duo||!keyboard.occluding) && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={duo?undefined:longPressCalendar} unread={unread} disabled={sessionPending} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
+    {navigationVisible && !desktop && (duo||!keyboard.occluding) && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={duo?undefined:longPressCalendar} onCalendarDoublePress={duo?undefined:longPressCalendar} unread={unread} disabled={sessionPending} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView></DesktopWorkspace>;
 }

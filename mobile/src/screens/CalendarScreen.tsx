@@ -77,7 +77,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  const nextView=view==='month'?'week':view==='week'?'day':'month';
  const nextViewLabel=nextView==='week'?'주간':nextView==='day'?'일간':'월',viewLabel=view==='week'?'주간':view==='day'?'일간':'월';
  function cycleView(){setYearOpen(false);setView(nextView);savedScroll.current=0;scroll.current?.scrollTo({y:0,animated:false});animatePeriod();}
- useDuoToday(today,()=>{setYearOpen(false);now();},active&&!overlay,fixedPane?1:2);
+ useDuoToday(today,()=>{setYearOpen(false);now();},active&&!overlay,fixedPane?1:2,duo?{expanded:view!=='month',label:viewLabel,accessibilityLabel:nextViewLabel+' 보기로 전환',onPress:cycleView}:undefined);
  function now(){setWeekScrollReset(v=>v+1);animatePeriod();setMonth(today.slice(0,7));setSelected(today);scroll.current?.scrollTo({y:0,animated:!reduced});}
  const handledNavigation=useRef(0),navigationScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
  useEffect(()=>{
