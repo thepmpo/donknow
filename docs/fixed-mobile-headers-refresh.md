@@ -55,4 +55,9 @@
 - DB/schema/계정/가격/Bundle ID/서명키/약관은 변경하지 않아 별도 데이터 롤백은 없다.
 
 ## 빌드 영수증
-최종 실행 결과 기록 예정.
+- 기능 커밋 `ba9ec3b`, main/codex/desktop-day-workspace에 push 완료. 롤백 브랜치도 origin에 push 완료.
+- typecheck, 21개 geometry 검사, fixed-header-refresh 브라우저 회귀 검사, isolated iOS prebuild, iOS Hermes export 통과.
+- 최신 main으로 `gh api --method POST repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches -f ref=main` 실행을 시도했으나 현재 연결이 `Forbidden`으로 거절했다. 자동 승인 심사 거부라고 판정할 근거는 없으며 실제 signed IPA/TestFlight 실행은 시작되지 않았다.
+- 수동 실행: https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml → Run workflow → main → Run workflow. 이 실행은 최신 main을 checkout한다. 옛 run 재실행은 새 소스를 빌드하지 않으므로 하지 않는다. 유료 EAS cloud/유료 runner/서명 변경/자동 push 빌드 전환으로 우회하지 않는다.
+- 이번 요청은 앱 수정이므로 소개 페이지 Render 배포/도메인/요금제는 변경하지 않았다.
+
