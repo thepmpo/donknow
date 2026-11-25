@@ -49,7 +49,7 @@ export function MotionView({ children, transitionKey, style, distance = 0,disabl
 export const ReorderItem=React.forwardRef<React.ComponentRef<typeof View>,ViewProps&{moving?:boolean;position?:number}>(({moving=false,position,onLayout,children,...props},ref)=>{
   const reduced=useReducedMotion(),offset=useRef(new Animated.Value(0)).current,previousY=useRef<number|null>(null),value=useRef(0),node=useRef<React.ComponentRef<typeof View>|null>(null),read=useRef(0);
   useEffect(()=>{const id=offset.addListener(v=>{value.current=v.value;});return()=>{offset.removeListener(id);offset.stopAnimation();};},[offset]);
-  useEffect(()=>{if(reduced||moving){offset.stopAnimation();offset.setValue(0);}},[reduced,moving,offset]);
+  useEffect(()=>{if(reduced||moving){offset.stopAnimation();offset.setValue(0);previousY.current=null;}},[reduced,moving,offset]);
   const measure=()=>{const version=++read.current;node.current?.measureInWindow((_x,pageY)=>{if(version!==read.current)return;const y=pageY-value.current,prior=previousY.current;previousY.current=y;if(prior!==null&&Math.abs(prior-y)>1&&!reduced&&!moving){const start=prior-y+value.current;offset.stopAnimation();offset.setValue(start);Animated.timing(offset,{toValue:0,duration:motion.page,easing:Easing.out(Easing.cubic),useNativeDriver:native}).start();}});};
   // Web's ResizeObserver does not report movement between same-size siblings.
   useLayoutEffect(()=>{measure();return()=>{read.current++;};},[position,reduced,moving]);

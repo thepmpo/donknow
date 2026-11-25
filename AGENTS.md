@@ -1,3 +1,7 @@
+## 2026-11-25 — 모바일 고정 docen. 헤더·3초 이하 새로고침·선택 모션
+
+사용자 새 영상 및 최종 지시로 모든 주 모바일 화면의 헤더를 56pt 높이/좌측 docen.(파란 점)/중앙 페이지명으로 통일한다. 캘린더 년월은 다음 줄 우측. Page 제목은 ScrollView 밖 고정, 이전 Duo 제목 숨김/축약 규칙보다 이번 요청 우선. 새로고침 표시는 최대2800ms, 실제 요청은 유지하고 캐시·늦은 응답 반영/계정·revision 보호 유지. Todo 기본 선택 버튼 숨김, 길게 눌러 선택, 앞 체크박스만 선택 UI로 쓰고 하단 도구는 본문을 밀지 않는다. 실제 이동은 길게 누른 뒤6pt 이동 시 시작. 상세 docs/fixed-mobile-headers-refresh.md. 롤백 기준6ca14d5/브랜치 codex/rollback-before-fixed-headers-20261125. 설치 앱 반영은 새 native 빌드 필요.
+
 ## 2026-11-25 — 영상 기반 내비게이션 모션·웹 로고 상향 정렬
 
 참조 영상처럼 누를 때 렌즈/아이콘 확대, 손가락 추적, release spring 정착. 스크럽은 해제 시 한 번 선택/밖에서 취소, overflow 스크롤 및 reduced motion/모달 차단 유지. 웹 touch 후 click 누락은 웹 전용 짧은 터치 commit+중복 방지로 처리하며 native Pressable은 유지한다. 웹 로고 그림은 공통 표시에서 높이의 8% 올리고 기존 크기/글자/파란 점/영상/native 내비게이션 컷아웃은 유지한다. 상세 docs/navigation-reference-motion.md. 설치 iPhone 반영은 새 native 빌드 필요.
