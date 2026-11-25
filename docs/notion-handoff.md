@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 d89595d · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 c9c8818 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-25 — 할 일 소속 이동, 로그 선택 바 및 일정 추가 레이아웃
+
+- 선택 도구의 이동은 도슨의 일상·업무·건강 분류, 같은 Google 계정의 Tasks 목록 또는 같은 아이폰 미리 알림 계정의 쓰기 가능한 목록 사이에서 소속을 바꾼다. Google 목록 변경은 원본 이동 API를 사용하고, 아이폰은 EventKit으로 원본 항목의 목록을 바꾼다. 도슨의 기존 항목 ID와 날짜·완료 상태는 유지한다. 이전·새 원본 ID를 같은 도슨 항목에 연결해 중복 가져오기를 방지한다. 목록 이동을 제공하지 않는 연결 자료는 원본에서 변경하도록 안내한다. 길게 눌러 끄는 순서 조작은 별도로 사용할 수 있다.
+- 로그 선택 바는 할 일과 같은 구성요소로 하단 중앙에 배치한다. 선택한 기록을 되돌리거나 확인 후 도슨에서 삭제할 수 있다.
+- 일정 추가의 일정·할 일 탭을 폼 중앙에 두고, 작은 화면의 날짜 선택에는 가용 너비를 나누는 7열 달력을 사용한다. 캘린더 목록은 원본에서 반환된 계정과 목록 순서를 이용해 계정별로 묶는다. 이름 뒤 계정 접미사를 없애고 원본 색과 선택 표시를 사용한다. 아이폰 기본 캘린더 앱의 사용자 지정 순서는 EventKit에서 별도 제공하지 않는다.
+- 원본 권한은 기존 범위를 사용한다. 미리 알림 소속 이동은 새 아이폰 앱의 EventKit 모듈이 필요하다. 합성 브라우저와 Google API 테스트, iOS prebuild 및 JS 번들 검증과 실제 Apple 기기·TestFlight 제출은 별도로 확인한다.
 
 #### 2026-11-25 — 주간 캘린더 금요일·토요일 헤더 정렬
 
@@ -3926,10 +3933,12 @@ dbc1d4c Refresh handoff with the Google recovery check
 76dc799 Keep partial batch recovery coverage on date changes
 c901617 docs: daily project update [skip ci]
 d89595d Align Friday and Saturday in the weekly calendar
+679ad44 Update handoff for the weekly calendar alignment
+c9c8818 Move tasks between source lists and refine calendar creation
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: d89595d에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: c9c8818에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13198,7 +13207,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/d89595daed3663e2b3a1bbc1c6d3baca527fb73b
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/c9c881841bf4cb413f1cb644bbb85aa550c92ce7
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
