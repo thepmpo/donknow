@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-25 · 한국 시간 · 기능 코드 c891420 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-25 · 한국 시간 · 기능 코드 01bcb7a · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-25 — 할 일·로그의 스와이프와 길게 눌러 끌기 재작업
+
+사용자가 첨부한 두 번째 조작 영상에서 길게 누른 행이 그 자리에서 들어 올려지고 주변 순서와 하단 메뉴가 달라지는 동작을 확인했다. 할 일에서 320ms 누르면 행을 1.045배로 들어 올리고 부드러운 그림자를 적용한다. 행은 처음 잡은 위치를 기준으로 손가락을 따라가며, 같은 그룹에서 목적지 앞뒤 행을 움직여 자리를 만든다. 실제 끌기 동안에는 선택용 날짜/이동/완료 메뉴를 숨긴다. 제자리에서 놓으면 순서를 저장하지 않는다. 스와이프로 선택한 경우에는 기존 날짜 변경 및 이동 도구를 사용할 수 있다.
+
+iPhone에서는 Expo SDK 권장 Gesture Handler의 native pan으로 할 일·로그의 가로 제스처를 인식한다. 약하게 대각선으로 시작하는 가로 움직임을 받아들이고, 가로가 먼저 잡히면 손을 뗄 때까지 세로 스크롤과 경쟁하지 않는다. 세로로 시작하면 목록을 스크롤한다. 오른쪽으로 밀면 선택 또는 해제, 왼쪽으로 밀면 완료 또는 로그에서 복원이다. 웹은 별도 PanResponder로 같은 조작 계약을 유지한다. 길게 눌러 끌기와 짧은 스와이프가 동시에 실행되지 않게 하고, 보조 기술에서 여는 선택 메뉴와 완료 유예·원본 동기화를 유지한다.
+
+검증은 Chromium Duo/일반폰의 대각선 터치, 길게 누르는 도중 행을 띄우기, 손가락 추적, 하단 도구 숨김, 드롭 후 순서 변경, 제자리 해제, iOS 타입 검사·JS 번들·prebuild 및 새 패키지 iOS podspec 연결이다. 개인 첨부 영상은 커밋하지 않는다. 실제 iPhone/Duo의 손가락 감각과 서명 빌드는 별도로 확인한다.
 
 #### 2026-11-25 — 소개 페이지 시연 창 높이 유지
 
@@ -3798,10 +3806,12 @@ b2954f4 Record calendar and Todo interaction changes in handoff
 61a6613 Speed up admin navigation and grant passes from member details
 677a70d Keep product demo frame stable as tasks are handled
 c891420 Match every demo tab to the full briefing height and unify Korean labels
+1e81892 Update handoff for admin navigation and the stable product demo
+01bcb7a Lock Todo swipe direction and lift rows for direct drag
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: c891420에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 01bcb7a에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13070,7 +13080,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/c891420ecf0c32972c7f89c5fe33448ae6d469cf
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/01bcb7a927e7ae4cc0a707acdbb019a414ea091e
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -13228,6 +13238,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 17. AI 개발 지침 전문
 
 ### 원문 / AGENTS.md
+
+#### 2026-11-25 — 할 일·로그의 스와이프와 길게 눌러 끌기 재작업
+
+사용자가 첨부한 두 번째 조작 영상에서 길게 누른 행이 그 자리에서 들어 올려지고 주변 순서와 하단 메뉴가 달라지는 동작을 확인했다. 할 일에서 320ms 누르면 행을 1.045배로 들어 올리고 부드러운 그림자를 적용한다. 행은 처음 잡은 위치를 기준으로 손가락을 따라가며, 같은 그룹에서 목적지 앞뒤 행을 움직여 자리를 만든다. 실제 끌기 동안에는 선택용 날짜/이동/완료 메뉴를 숨긴다. 제자리에서 놓으면 순서를 저장하지 않는다. 스와이프로 선택한 경우에는 기존 날짜 변경 및 이동 도구를 사용할 수 있다.
+
+iPhone에서는 Expo SDK 권장 Gesture Handler의 native pan으로 할 일·로그의 가로 제스처를 인식한다. 약하게 대각선으로 시작하는 가로 움직임을 받아들이고, 가로가 먼저 잡히면 손을 뗄 때까지 세로 스크롤과 경쟁하지 않는다. 세로로 시작하면 목록을 스크롤한다. 오른쪽으로 밀면 선택 또는 해제, 왼쪽으로 밀면 완료 또는 로그에서 복원이다. 웹은 별도 PanResponder로 같은 조작 계약을 유지한다. 길게 눌러 끌기와 짧은 스와이프가 동시에 실행되지 않게 하고, 보조 기술에서 여는 선택 메뉴와 완료 유예·원본 동기화를 유지한다.
+
+검증은 Chromium Duo/일반폰의 대각선 터치, 길게 누르는 도중 행을 띄우기, 손가락 추적, 하단 도구 숨김, 드롭 후 순서 변경, 제자리 해제, iOS 타입 검사·JS 번들·prebuild 및 새 패키지 iOS podspec 연결이다. 개인 첨부 영상은 커밋하지 않는다. 실제 iPhone/Duo의 손가락 감각과 서명 빌드는 별도로 확인한다.
 
 #### 2026-11-25 — 어드민 메뉴 전환과 회원 상세 이용권 발급
 
