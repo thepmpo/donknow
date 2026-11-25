@@ -17,3 +17,9 @@ styles.css: PC1100px이상 기존720px/opacity.42/중앙문구 구성을 유지.
 ## 배포와 확인 경계
 
 기존무료static srv-dc1qt4uc6qcc73bjpffg 및 Docker srv-dbgpc0ff3r2c73abc7e0 모두 autoDeploy=no 확인후 각각배포한다. 도메인 매핑을 자동 이동하거나 결제플랜을 바꾸지 않는다. 기본URL/actualdocen.today 확인과 iPhone/TestFlight 빌드 상태는 별도 영수증으로 기록한다. Render Docker 배포가 nativeIPA를 생성하는 것은 아니다. 앱 코드는 유지하지만 설치앱이 갱신됐다고 주장하지 않는다.
+
+## 실제 배포/앱빌드 영수증
+
+11e284c8220f8a897db77deeb668f3da9a4dcf89. 무료static dep-dc32purrjlhs73ehk7kg는2026-11-25T00:34:33.404898Z live, Docker dep-dc32q0navr4c73e3rk7g는00:35:27.380432Z live. 새 static의 static-release동일commit/소개내용 실제 fetch확인. docen.today의 소개/health도 후속조회했다. 실제모바일영상움직임/레이아웃 근거는 앞서 production build Chromium 검사이며 URL텍스트fetch가 움직임을 검증했다고 주장하지 않는다.
+
+최신main을push한후 gh api POST repos/thepmpo/donknow/actions/workflows/ios-testflight.yml/dispatches ref=main 실행을 시도했으나 Forbidden으로거절됐다. 이는자동승인심사거부응답이아니며새native빌드/IPA/TestFlight업로드는시작되지않았다. 사용자는 https://github.com/thepmpo/donknow/actions/workflows/ios-testflight.yml →Run workflow→main→Run workflow로실행해야한다. 옛run재실행/자동pushnative전환/유료빌드우회는하지않았다. 앱첫화면모션소스와이전로딩/docen.ai/기기별캘린더수정은main에유지된다.
