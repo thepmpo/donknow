@@ -43,6 +43,7 @@
       [
         "expo-calendar",
         {
+          "calendarPermission": "아이폰 캘린더의 일정을 docen에서 확인하고 원본에 변경을 반영하기 위해 접근 권한이 필요해요.",
           "remindersPermission": "선택한 미리 알림을 docen의 Todo로 가져오기 위해 접근 권한이 필요해요."
         }
       ],

@@ -1,3 +1,4 @@
+import {assistantNotice} from './assistant-notices.js';
 import {measureExternal} from './request-metrics.js';
 import {createAgentSync} from './agent-sync.js';
 import {createIntegrationAgentTools} from './integration-agent-tools.js';
@@ -19,7 +20,9 @@ const googleScopes = { gmailModify:'https://www.googleapis.com/auth/gmail.modify
 const expiresAt = seconds => { if(seconds==null)return null;const value=Number(seconds);if(!Number.isFinite(value)||value<=0||value>31536000)throw fail(502,'서비스 인증 유효시간을 확인하지 못했어요.');return Date.now()+value*1000; };
 const title = (value, fallback = '제목 없음') => (typeof value === 'string' && value.trim() ? value.trim() : fallback).slice(0, 120);
 export function createIntegrations(store, env = process.env, fetcher = fetch) {
-  const locks = new Map();
+  const locks = new Map(),refreshFailures=new Map();
+  const credentialVersion=record=>createHash('sha256').update(JSON.stringify([record.connectionId,record.accountId,record.accessToken,record.refreshToken])).digest('hex');
+  function reauthorizationRequired(){const error=fail(409,'서비스 연결을 다시 승인해주세요.');error.code='integration-reauthorization';return error;}
   const naver=createNaverMail(store,env);
   function settings(provider) {
     const definition = definitions[provider]; if (!definition) throw fail(404, '지원하지 않는 서비스예요.');
@@ -39,7 +42,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     let value; try { value = await response.json(); } catch { reportFailure(url,response.status,'invalid-response',options.method??'GET');throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
     if (!response.ok || (slack && value.ok === false)) {
       reportFailure(url,response.status,response.status===401||['invalid_auth','token_revoked','invalid_grant'].includes(value.error)?'reauthorization':response.status===403?'permission':response.status===429||value.error==='ratelimited'?'rate-limit':response.status>=500?'upstream-unavailable':'provider-rejected',options.method??'GET');
-      if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw fail(409, '서비스 연결을 다시 승인해주세요.');
+      if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw reauthorizationRequired();
       if(response.status===412)throw fail(409,'원본이 동시에 바뀌었어요. 새 초안에서 다시 확인해주세요.');
       if(response.status===403)throw fail(403,'이 작업의 외부 서비스 권한을 확인해주세요.');
       if(response.status===410)throw fail(410,'외부 서비스에서 삭제된 대상이에요.');
@@ -61,12 +64,14 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
   async function token(userId, provider, connectionId) {
     if(store.accountActive&&!store.accountActive(userId))throw fail(403,'이 계정은 이용이 정지되어 있어요.');
     let record = provider==='google'?googleConnection(store,userId,connectionId):store.connection(userId,provider); if (!record) throw fail(409, '서비스를 먼저 연결해주세요.');
+    const key = `${userId}:${provider}:${record.connectionId??'legacy'}`,fingerprint=credentialVersion(record),failed=refreshFailures.get(key);
+    if(failed===fingerprint)throw reauthorizationRequired();
+    if(failed)refreshFailures.delete(key);
     if (!record.expiresAt || record.expiresAt > Date.now() + 60000) return record;
-    if (!record.refreshToken) throw fail(409, '서비스 연결을 다시 승인해주세요.');
-    const key = `${userId}:${provider}:${record.connectionId??'legacy'}`;
+    if (!record.refreshToken) throw reauthorizationRequired();
     if (!locks.has(key)) locks.set(key, (async () => {
       const current = store.connection(userId, provider,record.connectionId); if (!current) throw fail(409, '서비스 연결이 해제됐어요.');
-      const value = await exchange(provider, { grant_type: 'refresh_token', refresh_token: current.refreshToken });
+      let value;try{value=await exchange(provider, { grant_type: 'refresh_token', refresh_token: current.refreshToken });}catch(error){if(error.code==='integration-reauthorization'){refreshFailures.set(key,credentialVersion(current));try{assistantNotice(store,userId,{code:'connection-reauthorization',provider,title:'서비스 연결'});}catch{}while(refreshFailures.size>1000)refreshFailures.delete(refreshFailures.keys().next().value);}throw error;}
       if (typeof value.access_token !== 'string') throw fail(502, '외부 서비스 인증 응답을 확인해주세요.');
       const updated = { ...current, accessToken: value.access_token, refreshToken: value.refresh_token ?? current.refreshToken, expiresAt: expiresAt(value.expires_in) };
       // A disconnect during refresh must not recreate a deleted connection.
@@ -216,7 +221,11 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     async readSource(userId,provider,id) {
       const selected=provider==='google'?googleAccounts(store,userId).find(r=>id.startsWith((r.connectionId??'legacy')+':')):null;const record=await token(userId,provider,selected?.connectionId);const prefix=(record.connectionId??'legacy')+':';if(!id.startsWith(prefix))throw fail(409,'연결한 계정이 바뀌었어요.');const source=id.slice(prefix.length);const headers={Authorization:'Bearer '+record.accessToken};let result;
       if(provider==='google'&&source.startsWith('gmail:')&&record.features.includes('gmail')){const v=await providerRequest('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encodeURIComponent(source.slice(6))+'?format=full',{headers});const recipients=(v.payload?.headers??[]).filter(h=>['to','cc'].includes(h.name.toLowerCase())).map(h=>h.value).join(', ').slice(0,1000);result={text:mailText(v),recipients,title:v.payload?.headers?.find(h=>h.name.toLowerCase()==='subject')?.value??'메일',id:source.slice(6)};}
-      else if(provider==='google'&&source.startsWith('drive:')&&record.features.includes('driveContent')){const file=await providerRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(source.slice(6))+'?fields=id,name,description,mimeType',{headers});let text=file.description??'';if(['text/plain','application/vnd.google-apps.document'].includes(file.mimeType)){const path=file.mimeType==='text/plain'?'/'+encodeURIComponent(source.slice(6))+'?alt=media':'/'+encodeURIComponent(source.slice(6))+'/export?mimeType=text%2Fplain';const response=await fetcher('https://www.googleapis.com/drive/v3/files'+path,{headers,signal:AbortSignal.timeout(10000)});if(!response.ok)throw fail(502,'파일 본문을 읽지 못했어요.');const reader=response.body.getReader();const chunks=[];let size=0;try{while(size<32000){const part=await reader.read();if(part.done)break;chunks.push(Buffer.from(part.value).subarray(0,32000-size));size+=part.value.length;}}finally{await reader.cancel();}text=Buffer.concat(chunks).toString('utf8');}result={id:source.slice(6),title:file.name,text:text.slice(0,8000),partial:true,notice:'일반 텍스트·Google 문서는 본문 일부, 다른 파일은 설명만 조회해요.'};}
+      else if(provider==='google'&&source.startsWith('drive:')&&record.features.includes('driveContent')){const file=await providerRequest('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(source.slice(6))+'?fields=id,name,description,mimeType',{headers});let text=file.description??'';if(['application/vnd.google-apps.document','application/vnd.google-apps.spreadsheet','application/vnd.google-apps.presentation'].includes(file.mimeType)){
+        let document=await this.readAgentSource(userId,{provider:'google',id:(record.connectionId??'legacy')+':'+source});
+        if(document.sheets){const parts=[];for(const sheet of document.sheets.slice(0,3)){const range="'"+sheet.name.replaceAll("'","''")+"'!A1:Z200",part=await this.readAgentSource(userId,{provider:'google',id:(record.connectionId??'legacy')+':'+source,range});parts.push(sheet.name+'\n'+part.text);}document={...document,text:parts.join('\n\n'),partial:true,notice:'시트 본문 일부를 읽었어요. 필요한 범위는 자료 읽기 도구로 이어 확인할 수 있어요.'};}
+        return {...document,id:source.slice(6),title:file.name};
+       }if(['text/plain','application/vnd.google-apps.document'].includes(file.mimeType)){const path=file.mimeType==='text/plain'?'/'+encodeURIComponent(source.slice(6))+'?alt=media':'/'+encodeURIComponent(source.slice(6))+'/export?mimeType=text%2Fplain';const response=await fetcher('https://www.googleapis.com/drive/v3/files'+path,{headers,signal:AbortSignal.timeout(10000)});if(!response.ok)throw fail(502,'파일 본문을 읽지 못했어요.');const reader=response.body.getReader();const chunks=[];let size=0;try{while(size<32000){const part=await reader.read();if(part.done)break;chunks.push(Buffer.from(part.value).subarray(0,32000-size));size+=part.value.length;}}finally{await reader.cancel();}text=Buffer.concat(chunks).toString('utf8');}result={id:source.slice(6),title:file.name,text:text.slice(0,8000),partial:true,notice:'일반 텍스트·Google 문서는 본문 일부, 다른 파일은 설명만 조회해요.'};}
       else if(provider==='notion'&&source.startsWith('page:')&&record.features.includes('pages')){result=await readNotionDocument((block,cursor)=>providerRequest('https://api.notion.com/v1/blocks/'+encodeURIComponent(block)+'/children?'+new URLSearchParams({page_size:'50',...(cursor?{start_cursor:cursor}:{})}),{headers:{...headers,'Notion-Version':'2025-09-03'}}),source.slice(5));}
       else throw fail(400,'이 자료의 상세 읽기는 지원되지 않거나 추가 권한이 필요해요.');
       if(store.connection(userId,provider,record.connectionId)?.connectionId!==record.connectionId)throw fail(409,'연결한 계정이 바뀌었어요.');return result;

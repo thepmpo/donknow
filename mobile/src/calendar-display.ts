@@ -9,7 +9,7 @@ export function calendarStartLabel(event:CalendarEvent,day:string,zone:string){
 }
 export const reminderChoices=[null,0,5,10,15,30,60,120,1440,2880,10080] as const;
 export function reminderOffsetLabel(minutes:number|null){
- if(minutes===null)return '없음';if(minutes===0)return '이벤트 시간';
+ if(minutes===null)return '없음';if(minutes===0)return '시작 시간';
  if(minutes===10080)return '1주 전';if(minutes%1440===0)return minutes/1440+'일 전';
  if(minutes%60===0)return minutes/60+'시간 전';return minutes+'분 전';
 }

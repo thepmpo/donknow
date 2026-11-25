@@ -14,9 +14,9 @@ export type Provider = 'google' | 'slack' | 'notion';
 type Status=IntegrationStatus;
 type Item = { id: string; title: string; dueDate?: string | null; kind: string; completed?: boolean; completedAt?: string | null };
 const names: Record<string, string> = { gmailModify:'메일 읽음·상태 수정',gmailSend:'메일 발송',calendarWrite:'일정 작성·수정',driveContent:'Drive 파일 내용 읽기',driveWrite:'docen이 만들거나 허용한 Drive 파일 수정',assistantContact:'Slack에서 docen과 대화',messagesWrite:'Slack 메시지 보내기·docen 메시지 수정',pagesWrite:'Notion 페이지 작성·수정', google: 'Google', slack: 'Slack', notion: 'Notion', calendar: '기본 캘린더', gmail: '메일', drive: '드라이브', tasks: 'Google Tasks', channels: '채널', messages: '메시지', pages: '페이지' };
-export function IntegrationsScreen({ store, initialProvider, onClose }: { store: TodoStore; initialProvider: Provider; onClose: () => void }) {
-  const [accountId,setAccountId]=useState<string|null>(null),[addingAccount,setAddingAccount]=useState(false);
-  const [page,setPage]=useState<'overview'|'accounts'|'permissions'|'resources'|'sync'|'help'>('overview');
+export function IntegrationsScreen({ store, initialProvider, initialConnectionId, initialPage, onClose }: { store: TodoStore; initialProvider: Provider; initialConnectionId?:string; initialPage?:'overview'|'permissions'; onClose: () => void }) {
+  const [accountId,setAccountId]=useState<string|null>(initialConnectionId??null),[addingAccount,setAddingAccount]=useState(false);
+  const [page,setPage]=useState<'overview'|'accounts'|'permissions'|'resources'|'sync'|'help'>(initialPage??'overview');
   const [writeOptionsOpen,setWriteOptionsOpen]=useState(false),[statusStale,setStatusStale]=useState(false),[statusError,setStatusError]=useState(''),[readAttempted,setReadAttempted]=useState(false);
   const [statuses,setStatuses]=useState<Status[]>([]),provider=initialProvider,[feature,setFeature]=useState(initialProvider==='google'?'calendar':initialProvider==='slack'?'channels':'pages');
   const [features, setFeatures] = useState<string[]>(initialProvider==='google'?['calendar','calendarWrite','gmail','drive','driveContent','tasks','tasksWrite']:initialProvider==='slack'?['channels','messages']:['pages']), [items, setItems] = useState<Item[]>([]), [selected, setSelected] = useState<string[]>([]), [channel, setChannel] = useState<string | null>(null), [next, setNext] = useState<string | null>(null);
@@ -44,12 +44,12 @@ export function IntegrationsScreen({ store, initialProvider, onClose }: { store:
       if (Platform.OS === 'web') { if (!popup) throw new Error('브라우저에서 팝업을 허용한 뒤 다시 눌러주세요.'); popup.location.href = value.url;stopWebAuthorization.current?.();
         const authWindow=popup;let stopped=false,observedClosed=false;
         const stop=()=>{if(stopped)return;stopped=true;clearInterval(timer);clearTimeout(expiry);window.removeEventListener('focus',returned);document.removeEventListener('visibilitychange',visible);};
-        const returned=()=>{if(!active.current||stopped)return;void loadStatus();};
+        const returned=()=>{if(!active.current||stopped)return;void loadStatus();if(store.connection?.mode==='cloud'&&store.user)refreshCalendarSnapshots(store.connection.baseUrl+':'+store.user.id);};
         const visible=()=>{if(document.visibilityState==='visible')returned();};
         const timer=setInterval(()=>{if(authWindow.closed&&!observedClosed){observedClosed=true;returned();}},500),expiry=setTimeout(stop,10*60*1000);
         window.addEventListener('focus',returned);document.addEventListener('visibilitychange',visible);stopWebAuthorization.current=stop;
         setMessage('승인 후 돌아오면 연결 상태를 다시 확인해요. 반영이 늦으면 연결 상태 새로고침을 눌러주세요.'); }
-      else { const result = await WebBrowser.openAuthSessionAsync(value.url, 'duckduck://integrations/complete'); if (result.type !== 'success') setMessage('연결 창을 닫았어요. 다시 연결할 수 있어요.'); }
+      else { const result = await WebBrowser.openAuthSessionAsync(value.url, 'duckduck://integrations/complete'); if (result.type !== 'success') setMessage('연결 창을 닫았어요. 다시 연결할 수 있어요.');else if(store.connection?.mode==='cloud'&&store.user)refreshCalendarSnapshots(store.connection.baseUrl+':'+store.user.id); }
       setAddingAccount(false);await loadStatus();
     } catch (e) { popup?.close(); setError(e instanceof Error ? e.message : '연결을 시작하지 못했어요.'); }
     finally { if (active.current) setBusy(false); }
