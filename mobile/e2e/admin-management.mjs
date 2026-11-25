@@ -3,12 +3,41 @@ import {apiHarness} from '../../test-support/api.js';
 import {mkdir} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const email='owner-ui-management@example.test',memberEmail='customer-ui-management@example.test',temporary='OwnerInitial123!',permanent='OwnerPermanent123!';
-const h=await apiHarness({DUCK_ADMIN_EMAILS:email,DUCK_ADMIN_INITIAL_PASSWORD:temporary});const member=await h.register(memberEmail);
+const webDir=process.env.ADMIN_TEST_WEB_DIR;
+const h=await apiHarness({DUCK_ADMIN_EMAILS:email,DUCK_ADMIN_INITIAL_PASSWORD:temporary,...(webDir?{WEB_DIR:webDir}:{})});const member=await h.verified(memberEmail);
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);const out='/tmp/duck-admin-management-ui';await mkdir(out,{recursive:true});
 async function login(p,address,password){await p.goto(h.baseUrl+'/admin');await p.getByLabel('아이디 (이메일)',{exact:true}).fill(address);await p.getByLabel('관리자 비밀번호',{exact:true}).fill(password);await p.getByRole('button',{name:'로그인',exact:true}).click();}
 async function change(p,password){await p.getByRole('heading',{name:'비밀번호 변경',exact:true}).waitFor();await p.getByLabel('새 비밀번호',{exact:true}).fill(password);await p.getByLabel('새 비밀번호 확인',{exact:true}).fill(password);await p.getByRole('button',{name:'변경하고 들어가기',exact:true}).click();await p.getByRole('heading',{name:'회원 관리',exact:true}).waitFor();}
 try{
  await login(page,email,temporary);assert.equal(await page.getByRole('navigation').count(),0);await change(page,permanent);
+ const webLink=page.getByRole('link',{name:'웹 앱 열기',exact:true});
+ assert.equal(await webLink.getAttribute('href'),'/app');
+ async function openApp(){
+  const tab=page.waitForEvent('popup');
+  await webLink.click();
+  const app=await tab;await app.waitForURL(h.baseUrl+'/app');
+  return app;
+ }
+ const appEmail=app=>webDir?app.getByRole('textbox',{name:'이메일',exact:true}):app.locator('#auth-email');
+ const appPassword=app=>webDir?app.getByLabel('비밀번호',{exact:true}):app.locator('#auth-password');
+ const appLogin=app=>webDir?app.getByRole('button',{name:'로그인',exact:true}):app.locator('#auth-submit');
+ async function waitForAppSession(app){
+  if(webDir)await app.getByTestId('desktop-workspace').waitFor();
+  else await app.waitForFunction(email=>document.getElementById('web-user-email')?.textContent===email,memberEmail);
+  assert.equal((await (await app.request.get(h.baseUrl+'/api/auth/session')).json()).user.email,memberEmail);
+ }
+ const guestApp=await openApp();
+ await appEmail(guestApp).waitFor();
+ assert.equal((await guestApp.request.get(h.baseUrl+'/api/auth/session')).status(),401,'admin login is not an app session');
+ await appEmail(guestApp).fill(memberEmail);
+ await appPassword(guestApp).fill('fixture-password-123');
+ await appLogin(guestApp).click();
+ await waitForAppSession(guestApp);
+ await guestApp.close();
+ const returningApp=await openApp();
+ await waitForAppSession(returningApp);
+ await returningApp.close();
+ assert.equal((await page.request.get(h.baseUrl+'/api/admin/session')).status(),200,'app login preserves the separate admin session');
  await page.getByRole('searchbox',{name:'회원 검색'}).fill(memberEmail);await page.getByRole('button',{name:'검색',exact:true}).click();await page.getByRole('button',{name:memberEmail+' 회원 상세',exact:true}).click();await page.getByRole('heading',{name:memberEmail,exact:true}).waitFor();await page.getByRole('heading',{name:'회원 상태 관리',exact:true}).waitFor();
  const memberPath='/api/admin/members/'+member.user.id;
  let detailReads=0;
