@@ -1,3 +1,7 @@
+## 2026-11-25 — 주말 위치 최종 정정: 두 기기 모두 오른쪽
+
+사용자가 주말이 왼쪽으로 옮겨진 것을 정정했다. Duo·논Duo 모두 **오른쪽에 토요일 위/일요일 아래**로 둔다. 이전 임시 왼쪽 해석 및 확인 질문은 해소됐으며 다시 적용하지 않는다. timeline.html/capture-timeline.mjs 기본값right, 새 캡처 artifacts/week-timeline-right-preview/. 시간표 스크롤/겹친 일정lane/상단여러날스택/논DuoAI글자제거는 유지. 추가 요청으로 현재 시각의 빨간 가로선과 HH:mm 표시를 시간표에 넣고30초마다 갱신하며 화면 복귀 시 즉시 재계산한다. 여전히 시안이며 앱2주뷰는미변경.
+
 ## 2026-11-25 — 두 기기 주말 상하·주간 시간표 시안
 
 사용자가 논Duo7열을 정정: Duo·논Duo 모두 토/일을 상하로 둔다. 논Duo AI탭은 그림만·docen.ai글자없음. 평일은1시간가로선/세로스크롤,동시간일정좌우lane,여러날일정상단행쌓기→시간표아래로밀기,주말은시간순목록. timeline.html/capture-timeline.mjs 및 artifacts/week-timeline-preview로 시안만 제작,앱2주뷰는미변경. 주말위치는 이전오른쪽과최신문장왼쪽이달라확인질문중이며응답전시안은최신왼쪽을임시기준으로했다(확정아님). side=right도지원. 상세 docs/mobile-refinements-week-preview.md 마지막절.
