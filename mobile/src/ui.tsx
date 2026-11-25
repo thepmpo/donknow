@@ -37,18 +37,22 @@ export function BackButton({onPress,disabled=false}:{onPress:()=>void;disabled?:
   const duo=useDuoBackAction(onPress,disabled);
   return duo?null:<Button title="돌아가기" quiet disabled={disabled} onPress={onPress}/>;
 }
+/** Page-owned secondary controls stay below the title while only the body scrolls. */
+export function PagePinned({children,testID}:{children:React.ReactNode;testID?:string}){return <View testID={testID}>{children}</View>;}
 export function Page({ children, refreshControl, compact = false, scrollRef,onScroll,testID,scrollEnabled,bottomSpace=0 }: { bottomSpace?:number;scrollEnabled?:boolean;scrollRef?: React.RefObject<React.ComponentRef<typeof ScrollView>|null>; children: React.ReactNode; refreshControl?: React.ReactElement; compact?: boolean;onScroll?:React.ComponentProps<typeof ScrollView>['onScroll'];testID?:string }) {
   const desktop=useDesktopPresentation();
   const insets=useSafeAreaInsets();
   const duo=useDuoTrailingNavigation();
-  const [pullVisible,setPullVisible]=useState(false);
+  const [pullVisible,setPullVisible]=useState(false),[chromeHeight,setChromeHeight]=useState(0);
   const refresh=refreshControl as React.ReactElement<import('react-native').RefreshControlProps>|undefined;
   const refreshing=!!refresh?.props.refreshing;
   const indicator=useRefreshIndicator(refreshing);
   const parts=React.Children.toArray(children),heading=!desktop?parts.find(child=>React.isValidElement(child)&&child.type===ScreenHeading):undefined;
-  const body=heading?parts.filter(child=>child!==heading):children;
+  const pinned=!desktop?parts.filter(child=>React.isValidElement(child)&&child.type===PagePinned):[];
+  const chrome=!!heading||pinned.length>0;
+  const body=chrome?parts.filter(child=>child!==heading&&!pinned.includes(child)):children;
   const nativeRefresh=refresh?React.cloneElement(refresh,{refreshing:indicator.visible,onRefresh:()=>{indicator.begin();refresh.props.onRefresh?.();},tintColor:'transparent',colors:['transparent'],progressBackgroundColor:'transparent'}):undefined;
-  return <MotionView style={{flex:1,minHeight:0}} distance={0}>{heading&&<View testID="fixed-page-heading" style={{paddingHorizontal:layout.pageInset,paddingTop:layout.pageTop,backgroundColor:colors.bg,zIndex:1}}>{heading}</View>}<ScrollView style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:heading?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{body}</ScrollView>{!!refresh&&!indicator.expired&&(indicator.visible||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:heading?layout.pageTop+56:0,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
+  return <MotionView style={{flex:1,minHeight:0}} distance={0}>{chrome&&<View testID="fixed-page-heading" onLayout={event=>setChromeHeight(event.nativeEvent.layout.height)} style={{paddingHorizontal:layout.pageInset,paddingTop:layout.pageTop,backgroundColor:colors.bg,zIndex:1}}>{heading}{pinned}</View>}<ScrollView style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:chrome?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{body}</ScrollView>{!!refresh&&!indicator.expired&&(indicator.visible||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:chromeHeight,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLongPress }: { selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;onLongPress?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
   const desktop=useDesktopPresentation();

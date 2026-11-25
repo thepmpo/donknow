@@ -1,3 +1,7 @@
+## 2026-11-25 — 헤더 후속·일간 스와이프·1주 시안 대기
+
+사용자 1~6번 요청 반영: 모바일 워드마크26px/좁은폭20px, AI는 왼쪽docen.ai만·가운데 제목 제거. 일간 agenda24pt 여백 및 본문 전체 좌우 하루 이동. 년월은 아래 줄 왼쪽, ellipsis 제거·년월 길게 누르기로 메뉴 유지. 날짜별/출처별 줄과log 수치/설명은 PagePinned로 고정, log ‘완료한 기록’ 소제목 삭제. 7번은 월~금5열+오른쪽 토/일 상하+카메라 예약 열의1주뷰를 HTML/PNG 시안으로만 제작했다. 사용자 확인 전 앱의2주뷰/데이터조회주기를1주로 바꾸지 않는다. 상세 docs/mobile-refinements-week-preview.md. 이전 기준82b550c/rollback-before-week-preview-20261125 보존.
+
 ## 2026-11-25 — 모바일 고정 docen. 헤더·3초 이하 새로고침·선택 모션
 
 사용자 새 영상 및 최종 지시로 모든 주 모바일 화면의 헤더를 56pt 높이/좌측 docen.(파란 점)/중앙 페이지명으로 통일한다. 캘린더 년월은 다음 줄 우측. Page 제목은 ScrollView 밖 고정, 이전 Duo 제목 숨김/축약 규칙보다 이번 요청 우선. 새로고침 표시는 최대2800ms, 실제 요청은 유지하고 캐시·늦은 응답 반영/계정·revision 보호 유지. Todo 기본 선택 버튼 숨김, 길게 눌러 선택, 앞 체크박스만 선택 UI로 쓰고 하단 도구는 본문을 밀지 않는다. 실제 이동은 길게 누른 뒤6pt 이동 시 시작. 상세 docs/fixed-mobile-headers-refresh.md. 롤백 기준6ca14d5/브랜치 codex/rollback-before-fixed-headers-20261125. 설치 앱 반영은 새 native 빌드 필요.
