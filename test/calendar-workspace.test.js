@@ -92,3 +92,24 @@ test('concurrent Google calendar and tasks reads recover a rejected access token
   assert.equal(refreshes,1);
  }finally{await h.close();}
 });
+
+
+test('a temporary Google refresh network failure is retried exactly once',async()=>{
+ const h=await setup();
+ try{
+  const record=h.store.connection(h.user,'google');
+  h.store.saveConnection(h.user,'google',{...record,refreshToken:'valid-refresh',expiresAt:1},'Google');
+  let refreshes=0;
+  const api=createIntegrations(h.store,env,async(url,options)=>{
+   if(String(url).endsWith('/token')){
+    assert.equal(new URLSearchParams(options.body).get('grant_type'),'refresh_token');
+    if(++refreshes===1)throw new Error('temporary network failure');
+    return response({access_token:'fresh-access',expires_in:3600});
+   }
+   assert.equal(options.headers.Authorization,'Bearer fresh-access');
+   return response({items:[]});
+  });
+  await api.calendarList(h.user);
+  assert.equal(refreshes,2);
+ }finally{await h.close();}
+});

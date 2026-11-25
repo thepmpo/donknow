@@ -31,12 +31,12 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     return { ...definition, clientId, clientSecret, origin, configured: !!(clientId && (clientSecret || (provider === 'notion' && env.NOTION_BASIC_AUTH)) && origin), basicAuth: provider === 'notion' ? env.NOTION_BASIC_AUTH : null, callback: origin ? `${origin}/api/integrations/${provider}/callback` : null };
   }
   function reportFailure(url,status,kind,method){if(env.NODE_ENV!=='production')return;const host=new URL(url).hostname,provider=host==='slack.com'?'slack':host==='api.notion.com'?'notion':host.endsWith('googleapis.com')?'google':'external';console.warn(JSON.stringify({event:'integration-request-failure',provider,status,kind,method}));}
-  function providerRequest(url,options={},slack=false){return measureExternal(()=>providerRequestBody(url,options,slack));}
-  async function providerRequestBody(url, options = {}, slack = false) {
-    let response;const safeRead=(options.method??'GET')==='GET';
-    for(let attempt=0;attempt<(safeRead?2:1);attempt++){
-      try{response=await fetcher(url,{...options,signal:AbortSignal.timeout(10000)});}catch{if(safeRead&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue;}reportFailure(url,0,'network-or-timeout',options.method??'GET');throw fail(502,'외부 서비스 연결이 늦어요. 다시 시도해주세요.');}
-      if(safeRead&&attempt===0&&response.status>=500){await response.body?.cancel();await new Promise(resolve=>setTimeout(resolve,150));continue;}break;
+  function providerRequest(url,options={},slack=false,retryRefresh=false){return measureExternal(()=>providerRequestBody(url,options,slack,retryRefresh));}
+  async function providerRequestBody(url, options = {}, slack = false, retryRefresh = false) {
+    let response;const retryable=(options.method??'GET')==='GET'||retryRefresh;
+    for(let attempt=0;attempt<(retryable?2:1);attempt++){
+      try{response=await fetcher(url,{...options,signal:AbortSignal.timeout(retryRefresh?5000:10000)});}catch{if(retryable&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue;}reportFailure(url,0,'network-or-timeout',options.method??'GET');throw fail(502,'외부 서비스 연결이 늦어요. 다시 시도해주세요.');}
+      if(retryable&&attempt===0&&response.status>=500){await response.body?.cancel();await new Promise(resolve=>setTimeout(resolve,150));continue;}break;
     }
     if(response.ok&&response.status===204)return {};
     let value; try { value = await response.json(); } catch { reportFailure(url,response.status,'invalid-response',options.method??'GET');throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
@@ -59,7 +59,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     const config = settings(provider);
     if (!config.configured) throw fail(503, '이 서비스의 연결 설정이 아직 준비되지 않았어요.');
     const notion = provider === 'notion';
-    return providerRequest(config.token, { method: 'POST', headers: { 'Content-Type': notion ? 'application/json' : 'application/x-www-form-urlencoded', ...(notion ? { Authorization: 'Basic ' + (config.basicAuth || Buffer.from(config.clientId + ':' + config.clientSecret).toString('base64')) } : {}) }, body: notion ? JSON.stringify(parameters) : new URLSearchParams({ ...parameters, client_id: config.clientId, client_secret: config.clientSecret }).toString() }, provider === 'slack');
+    return providerRequest(config.token, { method: 'POST', headers: { 'Content-Type': notion ? 'application/json' : 'application/x-www-form-urlencoded', ...(notion ? { Authorization: 'Basic ' + (config.basicAuth || Buffer.from(config.clientId + ':' + config.clientSecret).toString('base64')) } : {}) }, body: notion ? JSON.stringify(parameters) : new URLSearchParams({ ...parameters, client_id: config.clientId, client_secret: config.clientSecret }).toString() }, provider === 'slack',provider==='google'&&parameters.grant_type==='refresh_token');
   }
   async function token(userId, provider, connectionId, rejectedAccessToken) {
     if(store.accountActive&&!store.accountActive(userId))throw fail(403,'이 계정은 이용이 정지되어 있어요.');
