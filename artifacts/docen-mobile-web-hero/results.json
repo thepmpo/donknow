@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 320,
+      "playback": true,
+      "overflow": false,
+      "motionFallback": true,
+      "pauseResume": true
+    },
+    {
+      "width": 390,
+      "playback": true,
+      "overflow": false,
+      "motionFallback": true,
+      "pauseResume": true
+    },
+    {
+      "width": 430,
+      "playback": true,
+      "overflow": false,
+      "motionFallback": true,
+      "pauseResume": true
+    },
+    {
+      "width": 768,
+      "playback": true,
+      "overflow": false,
+      "motionFallback": true,
+      "pauseResume": true
+    },
+    {
+      "width": 1099,
+      "playback": true,
+      "overflow": false,
+      "motionFallback": true,
+      "pauseResume": true
+    },
+    {
+      "width": 1440,
+      "playback": true,
+      "overflow": false,
+      "motionFallback": true,
+      "pauseResume": true
+    }
+  ]
+}

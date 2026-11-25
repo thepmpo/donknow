@@ -103,15 +103,15 @@ function Duck({ className = "" }) {
     />
   );
 }
-// Decorative desktop hero: reuse the supplied animation; never delay page content.
+// Decorative responsive hero: reuse the supplied animation; never delay page content.
 function HeroBounce() {
   const root = useRef(null), video = useRef(null);
   const [animate, setAnimate] = useState(false), [failed, setFailed] = useState(false);
   useEffect(() => {
-    const desktop = matchMedia('(min-width: 1100px)'), motion = matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setAnimate(desktop.matches && !motion.matches);
-    update(); desktop.addEventListener('change', update); motion.addEventListener('change', update);
-    return () => { desktop.removeEventListener('change', update); motion.removeEventListener('change', update); };
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setAnimate(!motion.matches);
+    update(); motion.addEventListener('change', update);
+    return () => { motion.removeEventListener('change', update); };
   }, []);
   useEffect(() => {
     if (!animate || failed || !video.current) return;

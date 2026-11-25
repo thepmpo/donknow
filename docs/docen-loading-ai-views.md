@@ -37,3 +37,7 @@ mobile/e2e/calendar-navigation-brand.mjs에는 Duo캘린더700ms길게누른전�
 ## 전달 경계
 
 소스/검사/GitHub 반영이며 기존 설치 iPhone이 자동 갱신됐다고 주장하지 않는다. 이전 GitHub dispatch Forbidden으로 native빌드 미시작인 상태는 그대로다. user가 build를 요청하면 당시 연결상태를 확인한다. 사이트/API/가격/메일/PG/로그인 권한/사용자 자료는 변경하지 않는다. Mobile introduction hero는 위 대상 질문의 응답 전에는 바꾸지 않은 상태다.
+
+## 후속 대상 확정
+
+사용자가 모바일 메인은 docen.today 소개 페이지라고 답했고, 앱에 이미 작업한 첫 화면 모션도 일단 그대로 두라고 확정했다. 앱 모션은 유지하며 모바일 소개웹 배경영상은 docen-mobile-web-hero.md에서 별도로 구현/검증한다. 앞선 ‘모바일웹미변경’은 그 작업 당시 경계이며 후속 웹요청보다 우선하지 않는다.
