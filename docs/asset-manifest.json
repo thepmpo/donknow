@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-25",
-  "codeCommit": "a27e07adff34785a4b1c6b517b875942c13ab13f",
-  "assetCommit": "a27e07adff34785a4b1c6b517b875942c13ab13f",
-  "imageCount": 1702,
+  "codeCommit": "1578e2809c553b5a1a4c1e4662402bf2f3a6bc10",
+  "assetCommit": "1578e2809c553b5a1a4c1e4662402bf2f3a6bc10",
+  "imageCount": 1841,
   "images": [
     {
       "path": "artifacts/docen-identity-2026-11-23/browser/motion-home.png",
@@ -3428,6 +3428,209 @@
       "import_path": "images/artifacts__calendar-comfort-2026-11-14__current__11-small-dark-editor.png"
     },
     {
+      "path": "artifacts/calendar-compose-cleanup/duo-confirmation.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 41336,
+      "sha256": "231e4538d0c7ae6c034fc89cef6c822359e38baa464af79d30bbcade493c14ba",
+      "import_path": "images/artifacts__calendar-compose-cleanup__duo-confirmation.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/duo-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 36407,
+      "sha256": "550319cf0f4c966ed334656ab133a98e22422e624e8a3a020960b87e2f6502a4",
+      "import_path": "images/artifacts__calendar-compose-cleanup__duo-event.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/duo-reminder.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 31828,
+      "sha256": "9c19dfe94210dd399b2a6db6221f677c356678b64dd1f454b000082ba8d2debd",
+      "import_path": "images/artifacts__calendar-compose-cleanup__duo-reminder.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/duo-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 24916,
+      "sha256": "2517e13687bc5cf95286f487a653d8f68f6af4c523953b94c24dae5c7cc652da",
+      "import_path": "images/artifacts__calendar-compose-cleanup__duo-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-320-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 29168,
+      "sha256": "21b2605525b535eacdc7524fb25914fd17203aeb24b8eb7a43e6c4c019b6055e",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-320-event.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-confirmation.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 38739,
+      "sha256": "3583d065f086b96e53c48689cd1987d4d4ecd31a8edd0dcd1b974648508b95ac",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-confirmation.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-connection-required.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 27904,
+      "sha256": "814850556909e7fc32a7c735ad9d52844f0147b1c139f7bce48ddd91d94c0f4a",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-connection-required.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-connection-restored.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 32431,
+      "sha256": "79bd6d943676dc2feb03beca49c0ae6b09fc4d2f2e10ea3957ed161901bd00d1",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-connection-restored.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 35313,
+      "sha256": "68fb96c11c8650c4357a2b574d54899c5b00e07b5ca98296604b47f1dba43dbe",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-event.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-month-divider.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 35009,
+      "sha256": "4e80db0cbcaaf0b80376400b9e3bcf01edc8f1ab3bd38c7c42a3ec2c7960ea66",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-month-divider.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-reminder.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 29299,
+      "sha256": "388b0ca9a7030349fcfacad3deeb6498f9eb39747c9f68ac4d5af0abcbe5af53",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-reminder.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/standard-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 22561,
+      "sha256": "2f2464f0a0dd52c52ccf7981cb8102f0ffc9f4d812187d7520e693950c1e9561",
+      "import_path": "images/artifacts__calendar-compose-cleanup__standard-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/web-confirmation.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42846,
+      "sha256": "81dda87ac1f4006e1059e51c9e63b287b3b45fee645f27f98b5741bdea4cd6b0",
+      "import_path": "images/artifacts__calendar-compose-cleanup__web-confirmation.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/web-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 39490,
+      "sha256": "e5d1c939eaf2797b4e08248cf3814d6d365f9723d6517741b4928c25ebfb180f",
+      "import_path": "images/artifacts__calendar-compose-cleanup__web-event.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/web-reminder.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34456,
+      "sha256": "f9b82b124816138b114a744a1f1c65499264cab95ff509efe7bf395ee24a601a",
+      "import_path": "images/artifacts__calendar-compose-cleanup__web-reminder.png"
+    },
+    {
+      "path": "artifacts/calendar-compose-cleanup/web-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25771,
+      "sha256": "d193902ac947b01a28ab207617487058b8616e832fa8fc41aa711675210da2bb",
+      "import_path": "images/artifacts__calendar-compose-cleanup__web-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/duo-confirmation.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40437,
+      "sha256": "559bb7af0796401f2a8afaa63118e652df1abf9ed408237e01641ae90b583f75",
+      "import_path": "images/artifacts__calendar-create-reference__duo-confirmation.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/duo-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 38427,
+      "sha256": "178b7271627172e1de5b4235439f74625891e475abcc679046ed98851c4f546a",
+      "import_path": "images/artifacts__calendar-create-reference__duo-event.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/duo-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 23753,
+      "sha256": "daafe42175dbb9f4e6783995e883200555d533a28aadd2f64909c105d3e92881",
+      "import_path": "images/artifacts__calendar-create-reference__duo-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/standard-320-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 28986,
+      "sha256": "fbbea71603f876d8441fec366c94b4784c404b1a6dd971d7a632b3a9329f614f",
+      "import_path": "images/artifacts__calendar-create-reference__standard-320-event.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/standard-confirmation.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 38106,
+      "sha256": "7b9d5e6ed69180834faf3172e859e21ab8841a75904be3212754824e75c48b79",
+      "import_path": "images/artifacts__calendar-create-reference__standard-confirmation.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/standard-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 35589,
+      "sha256": "29b0d3714964f6085d2e3308e369273e3d891d2accd5bd0f4d58d589b49b9a41",
+      "import_path": "images/artifacts__calendar-create-reference__standard-event.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/standard-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 21540,
+      "sha256": "a5c5f59c0ac34e9f9956045f5ad6d79e82d809052c236225a71d8acdfa33314f",
+      "import_path": "images/artifacts__calendar-create-reference__standard-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/web-confirmation.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43587,
+      "sha256": "0adac40bc45225734cb1c2154c731750af8c7bc08a6553bbbee4662ab1ab142f",
+      "import_path": "images/artifacts__calendar-create-reference__web-confirmation.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/web-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43195,
+      "sha256": "56dadbed2dc97098b489bcc9806c69acc4bd2b49dc5a61bd5ee161f3da58b767",
+      "import_path": "images/artifacts__calendar-create-reference__web-event.png"
+    },
+    {
+      "path": "artifacts/calendar-create-reference/web-todo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 26106,
+      "sha256": "0dce7acb298b4099e142c38cd9c89ca0bab972cdd062aa551a4340b792229004",
+      "import_path": "images/artifacts__calendar-create-reference__web-todo.png"
+    },
+    {
+      "path": "artifacts/calendar-create-week-regression/duo-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 37205,
+      "sha256": "0799f6a40be60ba83204ed18a513a54dda4e30442f7bd56b4ff7436d2e31c221",
+      "import_path": "images/artifacts__calendar-create-week-regression__duo-week.png"
+    },
+    {
+      "path": "artifacts/calendar-create-week-regression/standard-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 36160,
+      "sha256": "19b70ca89cb9f118cf4503db352b8d9563803fea93c88a106943ecb1212a2608",
+      "import_path": "images/artifacts__calendar-create-week-regression__standard-week.png"
+    },
+    {
+      "path": "artifacts/calendar-create-week-regression/web-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 66653,
+      "sha256": "0f1aecc6d05845beab8752abd54a68f789aafb4b26e899d29451d6dc2226d2be",
+      "import_path": "images/artifacts__calendar-create-week-regression__web-week.png"
+    },
+    {
       "path": "artifacts/calendar-event-review-2026-11-14/after/01-clean-adaptive-month.png",
       "category": "상세·편집·덕 알림·화면 전환/스크롤바 · 실제 Expo·합성 API·Duo 기하 · native/실계정 아님",
       "bytes": 80087,
@@ -5010,6 +5213,139 @@
       "import_path": "images/artifacts__calendar-viewport-2026-11-13__workspace__20-fortnight-expanded.png"
     },
     {
+      "path": "artifacts/calendar-week-build/duo-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 35087,
+      "sha256": "920f19c3eb77190b93153add48efe90a1c34c0c0089c3d50c4ceb2268ad5d577",
+      "import_path": "images/artifacts__calendar-week-build__duo-week.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/01-selection.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 30920,
+      "sha256": "afd728cafe56801f9e5c7ff02914ad7346c76bf17b80a24e4d4d10a99692f270",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__01-selection.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/01b-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 32525,
+      "sha256": "bc57b944dca4145be1bee7951dcf7d26245eb48277a736ed9c4d5ec0cd5f11ca",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__01b-drag.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/01c-ai-brand.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 35996,
+      "sha256": "e0c8830874ec65d53988f53aebec64da18bd827df724fadc4bb20a365a66253e",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__01c-ai-brand.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/02-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 26792,
+      "sha256": "5c4309069c021aaa2394f95c3be701eb0f8ced3adeb75e94df6673596bbcebe5",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__02-calendar.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/02a-calendar-before-year.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 26788,
+      "sha256": "c4a4ace7eb0931dfe387e62bd11ee9c67312345a2b700aaa3f6418911abca3a1",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__02a-calendar-before-year.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/02b-day-agenda.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 33560,
+      "sha256": "6c7807461050a1ae275d9f4c036c91b706fe5491980f5bf03d33771406ed9a75",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__02b-day-agenda.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/02c-log.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 26038,
+      "sha256": "eae6d9d0b25214f92506da35aa33a554645f6e1e5fedd7ec61ef35ab775d1da2",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__02c-log.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/03-slow-refresh-keeps-content.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 24745,
+      "sha256": "19a00cd23a0677f756eb02ea3912ca22334a645a5f3c6d85eb5921473e5a0cf3",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__03-slow-refresh-keeps-content.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/04-late-result.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25079,
+      "sha256": "4dc4cd0985c18b9216dd4223d9b9f47ccce01d561c7c42803024e3ef258b19cf",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__04-late-result.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/header-regression/05-narrow-header.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 23964,
+      "sha256": "ab719828e20b74d2b303941d00810d2580653a03cdcd8ab82d14127d177d659c",
+      "import_path": "images/artifacts__calendar-week-build__header-regression__05-narrow-header.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/navigation-regression/duo-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15844,
+      "sha256": "497d861e0231901da89be23741cf58ab4af840456ece466ba91adaaff7204a12",
+      "import_path": "images/artifacts__calendar-week-build__navigation-regression__duo-drag.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/navigation-regression/duo-pressed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15832,
+      "sha256": "1c7dd5f7eb9147fa4f0e5f0772e4e0fde113384beac99391e72b9b1d784d8e42",
+      "import_path": "images/artifacts__calendar-week-build__navigation-regression__duo-pressed.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/navigation-regression/duo-settled.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 13656,
+      "sha256": "0936b3dc4ddf47ad313cece0655820fdf20df8d122286c940c1aace7a0415ebc",
+      "import_path": "images/artifacts__calendar-week-build__navigation-regression__duo-settled.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/navigation-regression/standard-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 16742,
+      "sha256": "d54d7d67a829a00c08ee5e35b34b705d1499c7da75c6a474240959dbf053d8f9",
+      "import_path": "images/artifacts__calendar-week-build__navigation-regression__standard-drag.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/navigation-regression/standard-pressed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 16888,
+      "sha256": "729079a1cf8f25edd71751b391acbead27b192e4a8ae72df37ecdb6c60f89b9b",
+      "import_path": "images/artifacts__calendar-week-build__navigation-regression__standard-pressed.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/navigation-regression/standard-settled.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 14354,
+      "sha256": "a35b41027f4bd315f0eb9810e24721e692bee67572434552f07d16361ca6febb",
+      "import_path": "images/artifacts__calendar-week-build__navigation-regression__standard-settled.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/standard-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 36054,
+      "sha256": "07fc0b6d883851429d6e668142d40193cdc672fd302a5068af50a03cc62dabc9",
+      "import_path": "images/artifacts__calendar-week-build__standard-week.png"
+    },
+    {
+      "path": "artifacts/calendar-week-build/web-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 66549,
+      "sha256": "d314214ab647fdb56c06c59bf9313b4579f6e00096e25278b03aec9062d1c04c",
+      "import_path": "images/artifacts__calendar-week-build__web-week.png"
+    },
+    {
       "path": "artifacts/calendar-week-day-2026-11-16/01-duo-fortnight-top.png",
       "category": "선택 시안1·3:주간·일간·즉시 저장/실제 Expo·합성 API·Duo 기하/native 아님",
       "bytes": 39272,
@@ -6193,6 +6529,34 @@
       "import_path": "images/artifacts__connection-stability-2026-11-15__inputs__07-background-refresh-keeps-new-write.png"
     },
     {
+      "path": "artifacts/core-calendar-connections/duo-me-calendars.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 48864,
+      "sha256": "6d55becd080cac99f5439d0fff082744aec9e24141c6780b8f36b82ed43d5261",
+      "import_path": "images/artifacts__core-calendar-connections__duo-me-calendars.png"
+    },
+    {
+      "path": "artifacts/core-calendar-connections/duo-native-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 31929,
+      "sha256": "939ede772f0e50b40db4cc3555f70424054dd8d601afc746fd978cd4cb5e2870",
+      "import_path": "images/artifacts__core-calendar-connections__duo-native-event.png"
+    },
+    {
+      "path": "artifacts/core-calendar-connections/standard-me-calendars.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 46545,
+      "sha256": "ca7833c312fba3a6de7592e9f1a70205e4c54dc801bdd088ab1408209dbb658b",
+      "import_path": "images/artifacts__core-calendar-connections__standard-me-calendars.png"
+    },
+    {
+      "path": "artifacts/core-calendar-connections/standard-native-event.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 28484,
+      "sha256": "3372e091ed6be37edfa8a48a00c36d6da8f482a0240b27352a0de50ed8e2a2e8",
+      "import_path": "images/artifacts__core-calendar-connections__standard-native-event.png"
+    },
+    {
       "path": "artifacts/design-guide-fixture.png",
       "category": "모의 응답 테스트 화면",
       "bytes": 438564,
@@ -6240,6 +6604,13 @@
       "bytes": 51642,
       "sha256": "2b36df4a376c095bb0ea4f05521871b91ad9a164b69383ad8cc3be94646401b4",
       "import_path": "images/artifacts__desktop-workspace-2026-11-22__phone-unchanged.png"
+    },
+    {
+      "path": "artifacts/docen-app-brand-2026-11-24/navigation-chat.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 33589,
+      "sha256": "53db35f9f39c7647e72d06e7fbc2f1ba97b0f0543997f7c648e4cdf43651e9a0",
+      "import_path": "images/artifacts__docen-app-brand-2026-11-24__navigation-chat.png"
     },
     {
       "path": "artifacts/docen-brand-2026-11-22/app/verification-desktop.png",
@@ -6459,6 +6830,27 @@
       "import_path": "images/artifacts__docen-business-legal-2026-11-23__terms-390.png"
     },
     {
+      "path": "artifacts/docen-calendar-navigation/calendar-month-picker.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42543,
+      "sha256": "20a129e676c1dedbca638a3d4f4eb23b55c29085ac800c4e0d1cfea2ad7f2099",
+      "import_path": "images/artifacts__docen-calendar-navigation__calendar-month-picker.png"
+    },
+    {
+      "path": "artifacts/docen-calendar-navigation/calendar-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25554,
+      "sha256": "31d723ae1ad548e59ec178262570027f9322d002b6e0f2717671cb9f8b82d256",
+      "import_path": "images/artifacts__docen-calendar-navigation__calendar-week.png"
+    },
+    {
+      "path": "artifacts/docen-calendar-navigation/navigation-preview.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 31326,
+      "sha256": "5b518344ae96a2fb5752024a75925566ca6cf02a18071630bd453076e5a56eb1",
+      "import_path": "images/artifacts__docen-calendar-navigation__navigation-preview.png"
+    },
+    {
       "path": "artifacts/docen-closing-final-2026-11-23/1440.png",
       "category": "단계별 개요 또는 초기 웹 프로토타입",
       "bytes": 53132,
@@ -6485,6 +6877,27 @@
       "bytes": 43439,
       "sha256": "f1e893ec3502107720b77fce2b67c8469435ff201eac67fadad6c661b435ccae",
       "import_path": "images/artifacts__docen-closing-wordmark-2026-11-23__390.png"
+    },
+    {
+      "path": "artifacts/docen-duo-no-longpress/calendar-month-picker.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42754,
+      "sha256": "8c1157c6b4548f19a8dc5bd331bb142c302e26af83ba3274febb11329f171042",
+      "import_path": "images/artifacts__docen-duo-no-longpress__calendar-month-picker.png"
+    },
+    {
+      "path": "artifacts/docen-duo-no-longpress/calendar-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25949,
+      "sha256": "9f5e728b6780ce462b5c23eb751a0dab95ba71ea95d8e0ba8221c12c312d768e",
+      "import_path": "images/artifacts__docen-duo-no-longpress__calendar-week.png"
+    },
+    {
+      "path": "artifacts/docen-duo-no-longpress/navigation-preview.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 31120,
+      "sha256": "1db3b54a4c1cff3a33ecf357d2b5fa7e38b13e48081c8ffddc9ec81441e78f64",
+      "import_path": "images/artifacts__docen-duo-no-longpress__navigation-preview.png"
     },
     {
       "path": "artifacts/docen-hero-bounce-2026-11-23/comparison.jpg",
@@ -6793,6 +7206,125 @@
       "bytes": 44603,
       "sha256": "16449286589b03b4202dd018ad1b561595ba408667c0b393a6d9eab7cacd5869",
       "import_path": "images/artifacts__docen-introduction-2026-11-22__site__phone-todo.png"
+    },
+    {
+      "path": "artifacts/docen-loading-ai/non-duo-longpress-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43452,
+      "sha256": "0dd1045e8c8470f88f481f79e1e76c1f286419aa18d50a646840e1618bbe7421",
+      "import_path": "images/artifacts__docen-loading-ai__non-duo-longpress-week.png"
+    },
+    {
+      "path": "artifacts/docen-loading-ai/transparent-loader-refresh.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34043,
+      "sha256": "57976ea494b9e54e05398d963347d0d56c2f126ccfa5c90acfe155d33a154557",
+      "import_path": "images/artifacts__docen-loading-ai__transparent-loader-refresh.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/1440-en-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 58753,
+      "sha256": "f7e8d8331cc377bb08ff14a5ab1efaef484282fa0da06ba5beab232f749c487a",
+      "import_path": "images/artifacts__docen-logo-alignment__1440-en-footer.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/1440-en-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 267562,
+      "sha256": "a9183b244b53b6cfcc718081800014c0ff7a6cf20683e97b531d8389109436cb",
+      "import_path": "images/artifacts__docen-logo-alignment__1440-en-hero.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/1440-ko-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 53703,
+      "sha256": "798c3a9a28fff44135f2ea236b17718823393a8deb6edafede48b0799543f595",
+      "import_path": "images/artifacts__docen-logo-alignment__1440-ko-footer.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/1440-ko-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 252482,
+      "sha256": "50d6b65cac9f4701b10d33f02b68d56cb7bdd806a42b0cb3501c00dbf04ef8a0",
+      "import_path": "images/artifacts__docen-logo-alignment__1440-ko-hero.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/390-en-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42541,
+      "sha256": "f3055942fab0252abe3a17a5abaede27c1069f5326d9d6446deadabc6ed2b721",
+      "import_path": "images/artifacts__docen-logo-alignment__390-en-footer.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/390-en-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 101164,
+      "sha256": "0b02aadd89ef02d3dc87c5240725a68ffa38289a921633480177a79a176f1e10",
+      "import_path": "images/artifacts__docen-logo-alignment__390-en-hero.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/390-ko-footer.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42626,
+      "sha256": "27e8ff6800b1a21de961be4c4b00ce6998f79b1b76a58c3ca5ea8346c1510572",
+      "import_path": "images/artifacts__docen-logo-alignment__390-ko-footer.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/390-ko-hero.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 98634,
+      "sha256": "6db8a0dddae3e21769ba0e6cb21c7e0863b3874ef4ff8c38cc9c2e0eb30f8ed1",
+      "import_path": "images/artifacts__docen-logo-alignment__390-ko-hero.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/legal-footer-1440.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 73302,
+      "sha256": "bcc7e80293592f09d947b3b87df858313f54f8ecbc4b3b90a1f60c295ac56f38",
+      "import_path": "images/artifacts__docen-logo-alignment__legal-footer-1440.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/legal-footer-320.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 54117,
+      "sha256": "f5b6df56aa2b7496573ec580771a60be9b502b8a931061a064efdd118ecaf86d",
+      "import_path": "images/artifacts__docen-logo-alignment__legal-footer-320.png"
+    },
+    {
+      "path": "artifacts/docen-logo-alignment/legal-footer-390.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 56461,
+      "sha256": "586c2aee53186910f558801f736132de3231ea20ad96fcadbecd0eabd962882b",
+      "import_path": "images/artifacts__docen-logo-alignment__legal-footer-390.png"
+    },
+    {
+      "path": "artifacts/docen-mobile-web-hero/1440-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 272826,
+      "sha256": "49f62718a108a85abde07d82d320ad9cee921a45ee9b725402b8c28c0861d1a6",
+      "import_path": "images/artifacts__docen-mobile-web-hero__1440-en.png"
+    },
+    {
+      "path": "artifacts/docen-mobile-web-hero/1440-ko.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 259545,
+      "sha256": "145c9c550d9f4ce36a3a2a7dd089889c2b8704c1e94f350dfa4a07b537e04c64",
+      "import_path": "images/artifacts__docen-mobile-web-hero__1440-ko.png"
+    },
+    {
+      "path": "artifacts/docen-mobile-web-hero/390-en.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 93009,
+      "sha256": "e5a6a5814f1047e06e5729ad5066e2d4060cb2871ab74061d1e55271cf7cc77a",
+      "import_path": "images/artifacts__docen-mobile-web-hero__390-en.png"
+    },
+    {
+      "path": "artifacts/docen-mobile-web-hero/390-ko.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 89712,
+      "sha256": "26b010a8e4b81ad726c27af235e6e96470bd025deff919dbf70bfe965d481273",
+      "import_path": "images/artifacts__docen-mobile-web-hero__390-ko.png"
     },
     {
       "path": "artifacts/dots-full-2026-11-15/computer/browser-fixture.jpg",
@@ -7738,6 +8270,55 @@
       "bytes": 133916,
       "sha256": "a1abc8332214ac92610194afaa18563d4540265dd4cbc57e6fd79c2f20e432ba",
       "import_path": "images/artifacts__features-overview.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/01-selection.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 30505,
+      "sha256": "22d999b23f61a80f92fce197a74e75882dde9a2c9ec94926c170bce584673b7a",
+      "import_path": "images/artifacts__fixed-headers-refresh__01-selection.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/01b-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 32109,
+      "sha256": "0e97f020676056d9dd9d38af9c1adaee6d1566a8a9fe9dadc803f62fc3f9b67d",
+      "import_path": "images/artifacts__fixed-headers-refresh__01b-drag.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/02-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34513,
+      "sha256": "5426496cb3f1257ac239b9987f181803cf674493c27fa565b8d93f919292b5b2",
+      "import_path": "images/artifacts__fixed-headers-refresh__02-calendar.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/02a-calendar-before-year.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34515,
+      "sha256": "ace3e9a0aff28f4e2f590d977f06d45765831f30086e79ce525c6bc9131a3a19",
+      "import_path": "images/artifacts__fixed-headers-refresh__02a-calendar-before-year.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/03-slow-refresh-keeps-content.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 24305,
+      "sha256": "971810c875fb4f7c0d3c72bb7a36547a22439a64efbe5cccc35adeca649164d3",
+      "import_path": "images/artifacts__fixed-headers-refresh__03-slow-refresh-keeps-content.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/04-late-result.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 24640,
+      "sha256": "3273b7e3f49a85200416c0beb4c654c2cb313683de6f77dd349b8de141c81fb0",
+      "import_path": "images/artifacts__fixed-headers-refresh__04-late-result.png"
+    },
+    {
+      "path": "artifacts/fixed-headers-refresh/05-narrow-header.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 23676,
+      "sha256": "fb899b8a412cf84c3db26b13a91e20c1c87577571ac61facba89730c71481b60",
+      "import_path": "images/artifacts__fixed-headers-refresh__05-narrow-header.png"
     },
     {
       "path": "artifacts/interaction-polish-2026-11-14/calendar/01-compact-long-source.png",
@@ -8727,6 +9308,90 @@
       "import_path": "images/artifacts__me-simple-2026-11-15__17-small-dark.png"
     },
     {
+      "path": "artifacts/mobile-refinements-week-preview/01-selection.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 30920,
+      "sha256": "afd728cafe56801f9e5c7ff02914ad7346c76bf17b80a24e4d4d10a99692f270",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__01-selection.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/01b-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 32525,
+      "sha256": "bc57b944dca4145be1bee7951dcf7d26245eb48277a736ed9c4d5ec0cd5f11ca",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__01b-drag.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/01c-ai-brand.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 36001,
+      "sha256": "646e53152405bbfd4c6a8cb938d17d2a27d1b7f25ac0627c82e98159976f1dca",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__01c-ai-brand.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/02-calendar.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34770,
+      "sha256": "7c9ded064fafb83d753861aeb53e2f63e8d32eefa85e5fc2025debead6babbc4",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__02-calendar.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/02a-calendar-before-year.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34770,
+      "sha256": "7c9ded064fafb83d753861aeb53e2f63e8d32eefa85e5fc2025debead6babbc4",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__02a-calendar-before-year.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/02b-day-agenda.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 34884,
+      "sha256": "4494e6df1f09657e962158338a208066a0c6240bf61293ed157730f0b964c364",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__02b-day-agenda.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/02c-log.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25974,
+      "sha256": "9957ac3e9fd99e6065eda7e0cfa26f58146396f087f2fb89d466ad0826b40787",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__02c-log.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/03-slow-refresh-keeps-content.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 24745,
+      "sha256": "19a00cd23a0677f756eb02ea3912ca22334a645a5f3c6d85eb5921473e5a0cf3",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__03-slow-refresh-keeps-content.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/04-late-result.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25079,
+      "sha256": "4dc4cd0985c18b9216dd4223d9b9f47ccce01d561c7c42803024e3ef258b19cf",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__04-late-result.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/05-narrow-header.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 23964,
+      "sha256": "ab719828e20b74d2b303941d00810d2580653a03cdcd8ab82d14127d177d659c",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__05-narrow-header.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/06-week-landscape-proposal.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 79701,
+      "sha256": "52d6354f3de0adbab90d3c156fb48c1492224c46acf68488b5ecd58d3d296815",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__06-week-landscape-proposal.png"
+    },
+    {
+      "path": "artifacts/mobile-refinements-week-preview/07-week-portrait-proposal.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 68104,
+      "sha256": "029b401ca3cb56f8902fe258187bea744c0d9dc5d3b4e876b8a94d310c019207",
+      "import_path": "images/artifacts__mobile-refinements-week-preview__07-week-portrait-proposal.png"
+    },
+    {
       "path": "artifacts/multi-google-clean-chat-2026-11-14/before/folded-chat-with-tools-and-metadata.png",
       "category": "채팅 정리·Google 여러 계정·맞춤 브리핑 · 실제 Expo/합성 API·기하 · native/실계정 아님",
       "bytes": 37170,
@@ -8907,6 +9572,55 @@
       "bytes": 25375,
       "sha256": "e6a28b4ef6f0499017a8ad7cf90cf1f3d81a909f318ed1e2e8fe12cc242702d0",
       "import_path": "images/artifacts__navigation-interaction-2026-11-13__08-iphone-320-text-160-percent.png"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/duo-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15833,
+      "sha256": "9da002bd17e859c68ecbb04271ea9c067b86c11acc2b64e469be6d2c92373559",
+      "import_path": "images/artifacts__navigation-reference-motion__duo-drag.png"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/duo-pressed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15833,
+      "sha256": "4f20a4ab0c456a9cd4f7ac33d92868719fd07b05c1fe713b7e7677975ca7f67c",
+      "import_path": "images/artifacts__navigation-reference-motion__duo-pressed.png"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/duo-settled.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 13656,
+      "sha256": "0936b3dc4ddf47ad313cece0655820fdf20df8d122286c940c1aace7a0415ebc",
+      "import_path": "images/artifacts__navigation-reference-motion__duo-settled.png"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/reference-nav-frames.jpg",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 41667,
+      "sha256": "9547cccda5b1e27e28d51ce5e4f60bd0533c190192fe2cc5104c7262ac1c5822",
+      "import_path": "images/artifacts__navigation-reference-motion__reference-nav-frames.jpg"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/standard-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 17778,
+      "sha256": "8f153ff0e53c15b33d9f9e167fd9e15e6372f20dab749677e0ac6942b19b765a",
+      "import_path": "images/artifacts__navigation-reference-motion__standard-drag.png"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/standard-pressed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 17690,
+      "sha256": "573d0e42bebcc02fcf71b27c027218e21763500cfc39f2414248728dcab35fe6",
+      "import_path": "images/artifacts__navigation-reference-motion__standard-pressed.png"
+    },
+    {
+      "path": "artifacts/navigation-reference-motion/standard-settled.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15123,
+      "sha256": "7f7834ab185063820b1e70c37ba4d5da5000271f2f18e11909381fd5c7f8d3fa",
+      "import_path": "images/artifacts__navigation-reference-motion__standard-settled.png"
     },
     {
       "path": "artifacts/navigation-refinement-2026-11-14/before/01-folded-calendar.png",
@@ -11373,6 +12087,111 @@
       "import_path": "images/artifacts__ux-fixes-2026-11-12__19-small-editor-fixture.png"
     },
     {
+      "path": "artifacts/view-welcome-correction/duo-demo-welcome.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 28185,
+      "sha256": "4aaefb2f4a685c815a89f2b1c75c214d701ebaf23c7578477faddafff8b3e6a9",
+      "import_path": "images/artifacts__view-welcome-correction__duo-demo-welcome.png"
+    },
+    {
+      "path": "artifacts/view-welcome-correction/duo-signed-in-welcome.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25265,
+      "sha256": "d5702211497fb182ba4b25ebd367f697f93e458e734400bf6fbf195d0127a50e",
+      "import_path": "images/artifacts__view-welcome-correction__duo-signed-in-welcome.png"
+    },
+    {
+      "path": "artifacts/view-welcome-correction/duo-view-control.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 43744,
+      "sha256": "2154ac706d4dd751a6ad6c598fbbeb812455a8ff55d5ea786410a9b3c08ba660",
+      "import_path": "images/artifacts__view-welcome-correction__duo-view-control.png"
+    },
+    {
+      "path": "artifacts/view-welcome-correction/standard-demo-welcome.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 28753,
+      "sha256": "91c09ea18f48396db70ed16ec0ddb33610670e0b8202808d1a09673192cc4d56",
+      "import_path": "images/artifacts__view-welcome-correction__standard-demo-welcome.png"
+    },
+    {
+      "path": "artifacts/view-welcome-correction/standard-signed-in-welcome.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 25903,
+      "sha256": "89d52ccaa0f809b1cb399a4a980b5de93e69738a8610d41397296ec0bd1101a0",
+      "import_path": "images/artifacts__view-welcome-correction__standard-signed-in-welcome.png"
+    },
+    {
+      "path": "artifacts/view-welcome-correction/web-signed-in-welcome.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 23794,
+      "sha256": "8616d79d67c6ecdc0fa80bb01417b7a474a829164f6b6a9727cbc0b7f3003f03",
+      "import_path": "images/artifacts__view-welcome-correction__web-signed-in-welcome.png"
+    },
+    {
+      "path": "artifacts/view-welcome-nav-regression/duo-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15833,
+      "sha256": "9da002bd17e859c68ecbb04271ea9c067b86c11acc2b64e469be6d2c92373559",
+      "import_path": "images/artifacts__view-welcome-nav-regression__duo-drag.png"
+    },
+    {
+      "path": "artifacts/view-welcome-nav-regression/duo-pressed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 15832,
+      "sha256": "1c7dd5f7eb9147fa4f0e5f0772e4e0fde113384beac99391e72b9b1d784d8e42",
+      "import_path": "images/artifacts__view-welcome-nav-regression__duo-pressed.png"
+    },
+    {
+      "path": "artifacts/view-welcome-nav-regression/duo-settled.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 13656,
+      "sha256": "0936b3dc4ddf47ad313cece0655820fdf20df8d122286c940c1aace7a0415ebc",
+      "import_path": "images/artifacts__view-welcome-nav-regression__duo-settled.png"
+    },
+    {
+      "path": "artifacts/view-welcome-nav-regression/standard-drag.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 16742,
+      "sha256": "d54d7d67a829a00c08ee5e35b34b705d1499c7da75c6a474240959dbf053d8f9",
+      "import_path": "images/artifacts__view-welcome-nav-regression__standard-drag.png"
+    },
+    {
+      "path": "artifacts/view-welcome-nav-regression/standard-pressed.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 16890,
+      "sha256": "9c5913187604d00fb8f6a2b9619053deb1e7dc4677c19c7afe8e487eac233496",
+      "import_path": "images/artifacts__view-welcome-nav-regression__standard-pressed.png"
+    },
+    {
+      "path": "artifacts/view-welcome-nav-regression/standard-settled.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 14338,
+      "sha256": "7010aeef32b17417e37ac587caf8ae38d3bb8f1d9c67f076e81888748298ca40",
+      "import_path": "images/artifacts__view-welcome-nav-regression__standard-settled.png"
+    },
+    {
+      "path": "artifacts/view-welcome-week-regression/duo-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 37099,
+      "sha256": "beb893e866db813d4fc4b66b122f75a19b7a8dfe2408b6d52b00c9e12cab81e4",
+      "import_path": "images/artifacts__view-welcome-week-regression__duo-week.png"
+    },
+    {
+      "path": "artifacts/view-welcome-week-regression/standard-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 36054,
+      "sha256": "07fc0b6d883851429d6e668142d40193cdc672fd302a5068af50a03cc62dabc9",
+      "import_path": "images/artifacts__view-welcome-week-regression__standard-week.png"
+    },
+    {
+      "path": "artifacts/view-welcome-week-regression/web-week.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 66549,
+      "sha256": "d314214ab647fdb56c06c59bf9313b4579f6e00096e25278b03aec9062d1c04c",
+      "import_path": "images/artifacts__view-welcome-week-regression__web-week.png"
+    },
+    {
       "path": "artifacts/web-cleanup-2026-11-22/desktop-briefing.png",
       "category": "단계별 개요 또는 초기 웹 프로토타입",
       "bytes": 80225,
@@ -11849,6 +12668,139 @@
       "import_path": "images/artifacts__web-format-correction-2026-11-22__source-focus.png"
     },
     {
+      "path": "artifacts/week-mobile-month-row-preview/01-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 74241,
+      "sha256": "a815b4a3f32eb9052212b08fa95616b917ba6f9d380ad9471967e634442095a5",
+      "import_path": "images/artifacts__week-mobile-month-row-preview__01-duo.png"
+    },
+    {
+      "path": "artifacts/week-mobile-month-row-preview/02-non-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 72786,
+      "sha256": "7b77fea74f74b461d23b1c544f1f267afa5f394598cb98eaefc9b67c86b1ad72",
+      "import_path": "images/artifacts__week-mobile-month-row-preview__02-non-duo.png"
+    },
+    {
+      "path": "artifacts/week-multiday-preview/01-duo-landscape.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 88585,
+      "sha256": "ef9afb90049d30c5f464f9b40d49bafc7d11a4eda9aa412c45faa6fb7bf1dfcf",
+      "import_path": "images/artifacts__week-multiday-preview__01-duo-landscape.png"
+    },
+    {
+      "path": "artifacts/week-multiday-preview/02-duo-portrait.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 73958,
+      "sha256": "d3e46f94a533254810eba22d04748bc5a2b637ff009740eb6b2e7b5dfa401690",
+      "import_path": "images/artifacts__week-multiday-preview__02-duo-portrait.png"
+    },
+    {
+      "path": "artifacts/week-multiday-preview/03-non-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 73488,
+      "sha256": "bc155ca93c4018c948292da308d4039b17af7f15353838cda56949c2a2a38f69",
+      "import_path": "images/artifacts__week-multiday-preview__03-non-duo.png"
+    },
+    {
+      "path": "artifacts/week-three-surface-preview/01-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 73892,
+      "sha256": "ad7af458db181728d2363d1d855ec702c65a9eaae5f27cf6dfd89a0397028978",
+      "import_path": "images/artifacts__week-three-surface-preview__01-duo.png"
+    },
+    {
+      "path": "artifacts/week-three-surface-preview/02-non-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 72830,
+      "sha256": "222f0d148193737f3c097f28b0b5d5de12dc819c2de6f2949b711cc4f56aef2e",
+      "import_path": "images/artifacts__week-three-surface-preview__02-non-duo.png"
+    },
+    {
+      "path": "artifacts/week-three-surface-preview/03-web.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 87626,
+      "sha256": "a9865e3cae265d7a75b5668b65bdd0a698b2f79f78c13718aabe17a2dbcb9ce0",
+      "import_path": "images/artifacts__week-three-surface-preview__03-web.png"
+    },
+    {
+      "path": "artifacts/week-three-surface-preview/04-web-scrolled-pinned-spans.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 87437,
+      "sha256": "77d964c1eb3b2af812aac11297b36e5b76e5e86a96e04732c750bd57a18fbcca",
+      "import_path": "images/artifacts__week-three-surface-preview__04-web-scrolled-pinned-spans.png"
+    },
+    {
+      "path": "artifacts/week-timeline-preview/01-duo-landscape.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 81905,
+      "sha256": "c3afff23985a2ea8090a3e630e9f77cd0d06bbf65b70de6ec80b8dab933b6ac6",
+      "import_path": "images/artifacts__week-timeline-preview__01-duo-landscape.png"
+    },
+    {
+      "path": "artifacts/week-timeline-preview/02-duo-portrait.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 72618,
+      "sha256": "5b8b07e0efe98b271a0d1cabd0237ae17b8fa3c40da02df801155498845b2c1f",
+      "import_path": "images/artifacts__week-timeline-preview__02-duo-portrait.png"
+    },
+    {
+      "path": "artifacts/week-timeline-preview/03-non-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 71500,
+      "sha256": "d1bb0973f9fe19b559fea02a532a7263636f27363a64f0c375781f3036a4a289",
+      "import_path": "images/artifacts__week-timeline-preview__03-non-duo.png"
+    },
+    {
+      "path": "artifacts/week-timeline-preview/04-scrolled-hours.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 82114,
+      "sha256": "6ce0fcf7e7e7accd2e5490f28d082ef77a13b981a4d5a42a895d363a04aa4496",
+      "import_path": "images/artifacts__week-timeline-preview__04-scrolled-hours.png"
+    },
+    {
+      "path": "artifacts/week-timeline-preview/05-additional-span-pushes-grid.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 81655,
+      "sha256": "b1718461c30ab4d4f5148a060f634b5135449246be06c8ecdb070e6b9faba0c9",
+      "import_path": "images/artifacts__week-timeline-preview__05-additional-span-pushes-grid.png"
+    },
+    {
+      "path": "artifacts/week-timeline-right-preview/01-duo-landscape.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 82408,
+      "sha256": "1c3ac76008b21786bb91a9a33ebb801e2dca23454051e4ee1497ea39bbf3e08a",
+      "import_path": "images/artifacts__week-timeline-right-preview__01-duo-landscape.png"
+    },
+    {
+      "path": "artifacts/week-timeline-right-preview/02-duo-portrait.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 73004,
+      "sha256": "8b5f021e2de3acaca5057fc3b76a7d3c3b00a56ec20721994d25a7f7f7b81590",
+      "import_path": "images/artifacts__week-timeline-right-preview__02-duo-portrait.png"
+    },
+    {
+      "path": "artifacts/week-timeline-right-preview/03-non-duo.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 71924,
+      "sha256": "712644ab899ade8cbeb8f15d671b0c49b3a498351835cbcb8bc08ac097558448",
+      "import_path": "images/artifacts__week-timeline-right-preview__03-non-duo.png"
+    },
+    {
+      "path": "artifacts/week-timeline-right-preview/04-scrolled-hours.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 82584,
+      "sha256": "a1add4834b8d12842e179c9d3eb8b9e03e2f36a471964d9bac38539f5eea5395",
+      "import_path": "images/artifacts__week-timeline-right-preview__04-scrolled-hours.png"
+    },
+    {
+      "path": "artifacts/week-timeline-right-preview/05-additional-span-pushes-grid.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 82119,
+      "sha256": "de6fdaf44df2180afb5f64a716bd9063a3c65ac6899de72cc2c1ac9351c618db",
+      "import_path": "images/artifacts__week-timeline-right-preview__05-additional-span-pushes-grid.png"
+    },
+    {
       "path": "mobile/assets/android-icon-background.png",
       "category": "앱 리소스·현재 브랜딩은 최신 로고 계약 참조",
       "bytes": 17549,
@@ -11868,6 +12820,27 @@
       "bytes": 4140,
       "sha256": "6371fc2c12e33ad2215a86c281db3d682a81bebe7c957a842c13b8bf00cceb83",
       "import_path": "images/mobile__assets__android-icon-monochrome.png"
+    },
+    {
+      "path": "mobile/assets/brand/docen-loading-ball.png",
+      "category": "사용자 제공 새 docen 브랜드 자산 · 원본 보존/기계적 크기 변환",
+      "bytes": 1171289,
+      "sha256": "6e9cf05b7cf6cf7aeca5d0e3cac39d69c4b4b2132cba7cc2eff6e35aabd1b57f",
+      "import_path": "images/mobile__assets__brand__docen-loading-ball.png"
+    },
+    {
+      "path": "mobile/assets/brand/docen-loading-base.png",
+      "category": "사용자 제공 새 docen 브랜드 자산 · 원본 보존/기계적 크기 변환",
+      "bytes": 907476,
+      "sha256": "120a30e948cd15983e35a69d91ebc629245298c7808d9c70d2391c09f434c9f0",
+      "import_path": "images/mobile__assets__brand__docen-loading-base.png"
+    },
+    {
+      "path": "mobile/assets/brand/docen-logo-cutout.png",
+      "category": "사용자 제공 새 docen 브랜드 자산 · 원본 보존/기계적 크기 변환",
+      "bytes": 1026302,
+      "sha256": "3b319c8feb4e83ca6862d623b5448a6307ec231292abc625a7a3651717d2f415",
+      "import_path": "images/mobile__assets__brand__docen-logo-cutout.png"
     },
     {
       "path": "mobile/assets/brand/docen-logo-original.jpg",
