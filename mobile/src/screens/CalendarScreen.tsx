@@ -26,11 +26,11 @@ import {CalendarEventEditor,eventDraft} from '../CalendarEventEditor';
 import type {CalendarDraft,CalendarActionState} from '../CalendarEventEditor';
 import {useCalendarData} from '../useCalendarData';
 import {useCalendarSelection} from '../useCalendarSelection';
-import {deviceZone,eventOccurs,eventTime,localTime,monthCellHeight,periodShift,safeCalendarLink,shiftDay,validZone,visibleDays,weekDays,zonedDay} from '../calendar-model';
+import {deviceZone,eventOccurs,eventTime,localTime,monthCellHeight,nextLongPressCalendarView,periodShift,safeCalendarLink,shiftDay,validZone,visibleDays,weekDays,zonedDay} from '../calendar-model';
 import type {CalendarEvent,CalendarView} from '../calendar-model';
 import type {Todo} from '../domain';
 import type {TodoStore} from '../useTodos';
-export type CalendarNavigationRequest={id:number;action:'today'|'fortnight';resetToToday?:boolean;scope:string};
+export type CalendarNavigationRequest={id:number;action:'today'|'fortnight'|'cycle';resetToToday?:boolean;scope:string};
 type Overlay='day'|'event'|'add'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|null;
 export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,navigationRequest}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest}){
  const keyboard=useKeyboardUX();
@@ -85,6 +85,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
   if(!active||overlay)return;
   setYearOpen(false);
   if(navigationRequest.action==='today'||navigationRequest.resetToToday)now();
+  if(navigationRequest.action==='cycle'){const target=nextLongPressCalendarView(view);if(target==='fortnight')setFortnightAnchor(navigationRequest.resetToToday?today:selected);setView(target);savedScroll.current=0;scroll.current?.scrollTo({y:0,animated:false});}
   if(navigationRequest.action==='fortnight'){setFortnightAnchor(navigationRequest.resetToToday?today:selected);setView('fortnight');}
   animatePeriod();void feedback();
  },[navigationRequest?.id,active,navigationScope]);

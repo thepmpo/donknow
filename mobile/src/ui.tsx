@@ -1,3 +1,4 @@
+import {BrandLoading} from './BrandLoading';
 import {useDesktopPresentation} from './DesktopPresentation';
 import {Ionicons} from '@expo/vector-icons';
 import {todoSource} from './todo-organization';
@@ -11,7 +12,7 @@ import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {Animated, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share, ActivityIndicator} from 'react-native';
+import {Animated, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share} from 'react-native';
 import {DateTimeField} from './DateTimeField';
 import {todoReminderInstant,reminderDateLabel} from './calendar-display';
 import {deviceZone} from './calendar-model';
@@ -23,7 +24,7 @@ export { colors } from './theme';
 export function Label({ children }: { children: React.ReactNode }) { return <Text style={s.label}>{children}</Text>; }
 export function Button({ title, onPress, disabled = false, quiet = false, loading = false, accessibilityLabel, expanded }: { title: string; onPress: () => void; disabled?: boolean; quiet?: boolean; loading?: boolean; accessibilityLabel?: string; expanded?:boolean }) {
   const reduced = useReducedMotion();
-  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading, ...(expanded===undefined?{}:{expanded}) }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && !reduced && <ActivityIndicator color={quiet ? colors.blueText : colors.white} size="small" />}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? title} accessibilityState={{ disabled: disabled || loading, busy: loading, ...(expanded===undefined?{}:{expanded}) }} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [s.button, quiet && s.quietButton, { opacity: disabled ? .4 : pressed ? .75 : 1 }]}>{loading && <BrandLoading size={28}/>}<Text style={[s.buttonText, quiet && { color: colors.blueText }]}>{title}</Text></Pressable>;
 }
 export function CloseButton({onPress,disabled=false}:{onPress:()=>void;disabled?:boolean}) {
   const duo=useDuoBackAction(onPress,disabled,'close');
@@ -38,7 +39,11 @@ export function Page({ children, refreshControl, compact = false, scrollRef,onSc
   const desktop=useDesktopPresentation();
   const insets=useSafeAreaInsets();
   const duo=useDuoTrailingNavigation();
-  return <MotionView style={{flex:1}} distance={0}><ScrollView ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} onScroll={onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={refreshControl} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{children}</ScrollView></MotionView>;
+  const [pullVisible,setPullVisible]=useState(false);
+  const refresh=refreshControl as React.ReactElement<import('react-native').RefreshControlProps>|undefined;
+  const refreshing=!!refresh?.props.refreshing;
+  const nativeRefresh=refresh?React.cloneElement(refresh,{tintColor:'transparent',colors:['transparent'],progressBackgroundColor:'transparent'}):undefined;
+  return <MotionView style={{flex:1}} distance={0}><ScrollView ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{children}</ScrollView>{!!refresh&&(refreshing||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:0,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLongPress }: { selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;onLongPress?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
   const desktop=useDesktopPresentation();

@@ -1,3 +1,4 @@
+import {BrandLoading} from '../BrandLoading';
 import {appleReminderDevice} from '../apple-reminder-device';
 import type {ReminderDevice} from '../apple-reminder-device';
 import {MeCopy,MePage,MeRow,MeSection,MeServiceIntro} from '../MeSettings';
@@ -7,7 +8,7 @@ import {importReminderItems} from '../apple-reminder-import';
 import type {ReminderImportProgress} from '../apple-reminder-import';
 import {readAllReminderItems,readReminderItems} from '../apple-reminder-read';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator,Linking,Platform, Text, View } from 'react-native';
+import { Linking,Platform, Text, View } from 'react-native';
 import type { TodoStore } from '../useTodos';
 import { Button, s } from '../ui';
 import {Ionicons} from '@expo/vector-icons';
@@ -73,7 +74,7 @@ export function AppleRemindersScreen({ store, onClose,device=appleReminderDevice
   const back=()=>{if(page==='overview')onClose();else setPage(page==='items'?'lists':'overview');};
   return <MePage key={page} title={page==='lists'?'미리 알림 목록':page==='items'?lists.find(l=>l.id===listId)?.title||'전체 미완료':page==='sync'?'완료 상태 맞추기':'아이폰 미리 알림'} onClose={back} disabled={busy}>
     {!!progress&&<Text accessibilityLiveRegion="polite" style={s.muted}>{progress.total}개 중 {progress.processed}개 확인 · 새로 {progress.created}개 추가</Text>}{failedLists.length>0&&<View style={{gap:8}}><Text style={s.muted}>확인 필요: {failedLists.map(l=>l.title).join(' · ')}</Text><Button title="읽지 못한 목록 다시 확인" quiet disabled={busy} onPress={()=>void loadAll()}/></View>}
-    {busy&&<View style={{flexDirection:'row',alignItems:'center',gap:8,marginTop:16}}><ActivityIndicator/><Text accessibilityLiveRegion="polite" style={s.muted}>{loadingName?loadingName+' 목록 확인 중…':'미리 알림 확인 중…'}</Text></View>}
+    {busy&&<View style={{flexDirection:'row',alignItems:'center',gap:8,marginTop:16}}><BrandLoading size={28}/><Text accessibilityLiveRegion="polite" style={s.muted}>{loadingName?loadingName+' 목록 확인 중…':'미리 알림 확인 중…'}</Text></View>}
     {!!message&&<Text accessibilityLiveRegion="polite" style={[s.subtitle,{marginTop:16}]}>{message}</Text>}{!!error&&<View style={{gap:8,marginTop:16}}><Text accessibilityRole="alert" style={s.error}>{error}</Text>{Platform.OS==='ios'&&/권한|접근/.test(error)&&<Button title="아이폰 설정 열기" quiet onPress={()=>void Linking.openSettings().catch(()=>setError('아이폰 설정에서 docen의 미리 알림 접근을 허용해주세요.'))}/>}</View>}
     {page==='overview'&&<>
      <MeServiceIntro title="미리 알림" icon="checkbox-outline" description="아이폰의 할 일을 가져와 docen에서 함께 관리해요."/>

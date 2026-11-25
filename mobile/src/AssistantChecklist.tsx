@@ -1,6 +1,7 @@
+import {BrandLoading} from './BrandLoading';
 import {useDesktopPresentation} from './DesktopPresentation';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {ActivityIndicator,Animated,PanResponder,Platform,StyleSheet,Text,TextInput,View} from 'react-native';
+import {Animated,PanResponder,Platform,StyleSheet,Text,TextInput,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {MotionPressable as Pressable,useReducedMotion} from './motion';
 import {DateField} from './ui';
@@ -36,7 +37,7 @@ export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onE
  if(desktop&&compact)return <View testID={'assistant-checklist-'+number} style={web.card}>
   <View style={web.row}>
    <Pressable accessibilityRole="checkbox" accessibilityLabel={label+(excluded?' 제외 취소':done?' 완료 취소':' 완료 표시')} accessibilityState={{checked:done&&!excluded,disabled}} disabled={disabled} onPress={()=>press(()=>excluded?onExclude(false):act(!done))} style={web.check}>
-    {entry.busy?<ActivityIndicator size="small" color={colors.blueText}/>:<Ionicons name={excluded?'close-circle-outline':done?'checkbox-outline':'square-outline'} size={22} color={done?colors.blueText:colors.subtle}/>}
+    {entry.busy?<BrandLoading size={28}/>:<Ionicons name={excluded?'close-circle-outline':done?'checkbox-outline':'square-outline'} size={22} color={done?colors.blueText:colors.subtle}/>}
    </Pressable>
    <View style={web.body}>
     <View style={web.titleRow}><Text style={[web.title,(done||excluded)&&s.mutedTitle]}>{String(linked?.title??entry.action?.args.title??value.args.title??'')}</Text><Pressable accessibilityRole="button" accessibilityLabel={label+' 더보기'} accessibilityState={{expanded:menu}} disabled={disabled} onPress={()=>setMenu(v=>!v)} style={web.more}><Ionicons name="ellipsis-horizontal" size={16} color={colors.subtle}/></Pressable></View>
@@ -61,7 +62,7 @@ export function AssistantChecklist({proposal,number,busy,entry,todo,onAction,onE
   <Animated.View testID={'assistant-checklist-row-'+number} {...responder.panHandlers} style={[s.card,desktop&&{backgroundColor:colors.bg},compact&&{borderRadius:0,padding:0,paddingBottom:8},{transform:[{translateX:offset}]}]}>
    <View style={s.row}>
     <Pressable accessibilityRole="checkbox" accessibilityLabel={label+(excluded?' 제외 취소':done?' 완료 취소':' 완료 표시')} accessibilityHint={excluded?'채팅 후보로 되돌려요.':done?'기존 항목을 미완료로 바꿔 Todo로 옮겨요.':'완료한 할 일로 저장하고 log에 남겨요.'} accessibilityState={{checked:done&&!excluded,disabled}} disabled={disabled} onPress={()=>press(()=>excluded?onExclude(false):act(!done))} style={s.control}>
-     {entry.busy?<ActivityIndicator size="small" color={colors.blueText}/>:excluded?<View style={s.cancelBox}><Ionicons name="close" size={17} color={colors.muted}/></View>:<Ionicons name={done?'checkbox':'square-outline'} size={23} color={done?colors.action:colors.muted}/>}
+     {entry.busy?<BrandLoading size={28}/>:excluded?<View style={s.cancelBox}><Ionicons name="close" size={17} color={colors.muted}/></View>:<Ionicons name={done?'checkbox':'square-outline'} size={23} color={done?colors.action:colors.muted}/>}
     </Pressable>
     <Text selectable={false} numberOfLines={3} style={[s.title,compact&&{fontSize:16,lineHeight:24,fontWeight:'600'},(done||excluded)&&s.mutedTitle]}>{String(linked?.title??entry.action?.args.title??value.args.title??'')}</Text>
     {!linked&&!excluded&&!locked&&<Pressable accessibilityRole="button" accessibilityLabel={label+(compact?' 더보기':' 수정')} accessibilityState={{expanded:compact?menu:editing}} disabled={disabled} onPress={()=>press(()=>compact?setMenu(v=>!v):setEditing(v=>!v))} style={s.control}><Ionicons name="ellipsis-horizontal" size={20} color={colors.muted}/></Pressable>}

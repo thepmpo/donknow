@@ -44,3 +44,6 @@ export function timedLayout(events:CalendarEvent[],day:string,zone:string,minDur
  let group:typeof list=[],end=-1;const flush=()=>{const n=Math.max(1,...group.map(x=>x.lane+1));for(const x of group)x.lanes=n;group=[];};
  for(const item of list){if(item.start>=end){flush();end=-1;}const used=new Set(group.filter(x=>occupiedEnd(x)>item.start).map(x=>x.lane));while(used.has(item.lane))item.lane++;group.push(item);end=Math.max(end,occupiedEnd(item));}flush();return list;
 }
+
+/** Native non-Duo calendar long press alternates week and day after entering week. */
+export function nextLongPressCalendarView(view:CalendarView):'fortnight'|'day'{return view==='fortnight'?'day':'fortnight';}

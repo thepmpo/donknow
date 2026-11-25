@@ -71,9 +71,13 @@
       }
     },
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/brand/docen-logo-cutout.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#FFFFFF",
+      "dark": {
+        "image": "./assets/brand/docen-logo-cutout.png",
+        "backgroundColor": "#000000"
+      }
     }
   }
 }

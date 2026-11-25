@@ -17,7 +17,7 @@ import { MotionPressable as Pressable } from './src/motion';
 import {VerificationScreen} from './src/screens/VerificationScreen';
 import { AuthScreen } from './src/screens/AuthScreen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {  Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTodos } from './src/useTodos';
@@ -51,11 +51,11 @@ function ShellContent() {
   const openDesktopChat=()=>{setTab('duck');setDesktopChatRequest(v=>v+1);};
   const calendarSequence=useRef(0),[calendarNavigation,setCalendarNavigation]=useState<{target:'active'|'fixed';request:CalendarNavigationRequest}|null>(null);
   const calendarScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
-  const requestCalendar=useCallback((action:'today'|'fortnight',target:'active'|'fixed'='active',resetToToday=false)=>setCalendarNavigation({target,request:{id:++calendarSequence.current,action,resetToToday,scope:calendarScope}}),[calendarScope]);
+  const requestCalendar=useCallback((action:'today'|'fortnight'|'cycle',target:'active'|'fixed'='active',resetToToday=false)=>setCalendarNavigation({target,request:{id:++calendarSequence.current,action,resetToToday,scope:calendarScope}}),[calendarScope]);
   const selectTab=useCallback((next:AppTab)=>{keyboard.dismiss();if(next==='profile')setProfileRequest(desktop?{id:Date.now(),kind:'overview'}:null);if(next==='calendar')requestCalendar('today');if(next==='todos'&&tab==='todos')setTodoTopRequest(v=>v+1);setTab(next);},[duo,tab,requestCalendar,desktop]);
   const longPressCalendar=useCallback(()=>{
    const target=duo&&split&&tab!=='calendar'?'fixed':'active';
-   requestCalendar('fortnight',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');
+   requestCalendar('cycle',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');
   },[duo,split,tab,requestCalendar]);
 
   useEffect(()=>{let active=true;const stop=listenAssistantEntry(value=>{void(async()=>{const files=[];if(store.user)for(const f of value.files??[]){if(!active)return;files.push(await store.featureRequest('/api/agent/files','POST',f) as import('./src/agent').AgentFile);}if(!active)return;setEntry({id:value.id,message:value.message,autoSend:value.autoSend&&!!store.user,files});setTab('duck');})().catch(()=>{if(active)store.setError('전달한 자료를 준비하지 못했어요. docen 채팅에서 다시 확인해주세요.');});});return()=>{active=false;stop();};},[store.user?.id,calendarScope]);
@@ -84,7 +84,7 @@ function ShellContent() {
       {tab === 'log' && <LogScreen store={store} />}
       {tab === 'profile' && <ProfileScreen request={profileRequest} store={store} onOpenTodos={()=>selectTab('todos')} onConnection={() => setSettings(true)} />}
     </MotionView>}</DuoWorkspace></MotionView>
-    {navigationVisible && !desktop && (duo||!keyboard.occluding) && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={longPressCalendar} unread={unread} disabled={sessionPending} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
+    {navigationVisible && !desktop && (duo||!keyboard.occluding) && <AppNavigation tab={tab} onSelect={selectTab} onCalendarLongPress={duo?undefined:longPressCalendar} unread={unread} disabled={sessionPending} duo={duo} bottomInset={insets.bottom} small={width<360}/>}
     {editor && !needsAuth && !settings && <TodoEditor key={editor.instance} todo={editor.todo} dueDate={editor.date} store={store} onClose={() => setEditor(current=>current?.instance===editor.instance?null:current)} />}
   </KeyboardAvoidingView></DesktopWorkspace>;
 }

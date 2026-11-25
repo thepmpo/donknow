@@ -17,3 +17,8 @@ test('month bounds include 4/5/6 intersecting weeks and fortnight expands select
  assert.equal(periodShift('2026-12','2026-12-28','fortnight',1).selected,'2027-01-11');
  assert.ok(monthCellHeight(844,120,8,1,2)>monthCellHeight(844,120,8,1,5)*2);
 });
+
+test('non-Duo long press enters week then alternates week and day',async()=>{
+ const {nextLongPressCalendarView}=await import('./calendar-model.ts');
+ assert.equal(nextLongPressCalendarView('month'),'fortnight');assert.equal(nextLongPressCalendarView('fortnight'),'day');assert.equal(nextLongPressCalendarView('day'),'fortnight');
+});
