@@ -53,4 +53,4 @@ export const layout = {
 } as const;
 
 // Duck implementation values, not Apple-mandated timings or dimensions.
-export const navigationMotion = { travel: 200, press: 90, release: 140, pressedScale: 1.025 } as const;
+export const navigationMotion = { travel: 200, press: 85, release: 180, pressedScale: 1.09, iconScale: 1.12, stiffness: 420, damping: 32, mass: .65 } as const;

@@ -1941,3 +1941,6 @@ a {
 @media(max-width:600px) {
  .hero-bounce {width:380px;height:380px;right:-150px;top:0;opacity:.3;}
 }
+
+/* Optical alignment: the source artwork sits low inside its square canvas. */
+.duck-mark { transform: translateY(-8%); }

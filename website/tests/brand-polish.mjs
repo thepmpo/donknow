@@ -3,7 +3,7 @@ import {apiHarness} from '../../test-support/api.js';
 import {resolve} from 'node:path';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-const out=resolve('artifacts/docen-brand-polish-2026-11-23');await mkdir(out,{recursive:true});
+const out=resolve(process.env.BRAND_CAPTURE_DIR||'artifacts/docen-brand-polish-2026-11-23');await mkdir(out,{recursive:true});
 const h=await apiHarness({LANDING_DIR:resolve('website/dist/client')}),browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 const cases=[];
 try{
@@ -16,6 +16,7 @@ try{
    assert.equal(await page.locator('.hero .btn-large,.closing .btn-large').count(),0);
    const mark=page.locator('.site-header .brand img');await page.waitForFunction(()=>document.querySelector('.site-header .brand img')?.naturalWidth>0);
    assert.equal(Math.round((await mark.boundingBox()).width),width<=600?56:62);
+   assert.ok(await mark.evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).m42)<-3,'logo is optically raised without changing its size');
    assert.equal(await page.locator('.site-header .brand-period').evaluate(el=>getComputedStyle(el).color),'rgb(35, 102, 232)');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${width}/${lang}: overflow`);
    if([390,1440].includes(width)){await page.screenshot({path:out+'/'+width+'-'+lang+'-hero.png'});await page.locator('.closing').scrollIntoViewIfNeeded();await page.screenshot({path:out+'/'+width+'-'+lang+'-footer.png'});await page.evaluate(()=>scrollTo(0,0));}

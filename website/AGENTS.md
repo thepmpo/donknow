@@ -1,3 +1,7 @@
+## 2026-11-25 — 영상 기반 내비게이션 모션·웹 로고 상향 정렬
+
+참조 영상처럼 누를 때 렌즈/아이콘 확대, 손가락 추적, release spring 정착. 스크럽은 해제 시 한 번 선택/밖에서 취소, overflow 스크롤 및 reduced motion/모달 차단 유지. 웹 touch 후 click 누락은 웹 전용 짧은 터치 commit+중복 방지로 처리하며 native Pressable은 유지한다. 웹 로고 그림은 공통 표시에서 높이의 8% 올리고 기존 크기/글자/파란 점/영상/native 내비게이션 컷아웃은 유지한다. 상세 docs/navigation-reference-motion.md. 설치 iPhone 반영은 새 native 빌드 필요.
+
 ## 모바일 소개 페이지 메인 영상 활성화·앱 첫 화면 작업 유지
 
 사용자가 ‘모바일 메인’은 docen.today 소개 페이지라고 답했고, 앱 첫 화면 모션 소스도 일단 그대로 두라고 확정했다. 앱 모션을 되돌리지 않는다. HeroBounce는 desktop-only matchMedia 제한을 제거해 휴대폰에서도 기존 첨부 mp4를 muted/loop/inline 재생한다. 중앙 문구/PC배치/가격/약관/공개제한은 유지하며 모바일전용 크기/마스크/opacity로 가독성을 확보한다. reduced-motion/재생실패는정지로고,화면밖/백그라운드는pause. 상세 docs/docen-mobile-web-hero.md. 이전 PC전용/모바일미변경 지시보다 이번 확정이 최신이다.

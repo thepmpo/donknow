@@ -7,7 +7,7 @@ import {chromium} from '../../mobile/node_modules/playwright-core/index.mjs';
 const root=resolve('website/dist/static');
 const server=createServer(async(req,res)=>{try{let file=join(root,decodeURIComponent(new URL(req.url,'http://local').pathname));if((await stat(file)).isDirectory())file=join(file,'index.html');const body=await readFile(file);res.setHeader('Content-Type',({'.html':'text/html','.js':'application/javascript','.css':'text/css','.mp4':'video/mp4','.png':'image/png'})[extname(file)]||'application/octet-stream');res.end(body);}catch{res.writeHead(404);res.end('Not found');}}).listen(0,'127.0.0.1');await once(server,'listening');const base='http://127.0.0.1:'+server.address().port;
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
-const out=resolve('artifacts/docen-business-legal-2026-11-23');await mkdir(out,{recursive:true});
+const out=resolve(process.env.LEGAL_BUSINESS_CAPTURE_DIR||'artifacts/docen-business-legal-2026-11-23');await mkdir(out,{recursive:true});
 const normalize=t=>t.replace(/\s+/g,' ').trim();
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1100}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
