@@ -16,3 +16,9 @@ test('all-day end is inclusive in UI, exclusive in source; local patches do not 
 test('long provider notes remain untouched and legacy servers receive the previous complete common fields',()=>{
  const e={...event,notesPartial:true},d=eventDraft('2026-11-01','America/New_York','primary',e);const args=calendarWriteArgs({...d,title:'수정'},e,true)!;assert.equal(args.notes,undefined);assert.ok(args.start);assert.equal(args.localNotes,undefined);assert.equal(args.attachments,undefined);
 });
+test('new events validate invitation addresses, preserve repeat options and reject reversed times',()=>{
+ const d={...eventDraft('2026-11-25','Asia/Seoul','primary'),title:'주간 회의',repeat:'weekly' as const,guests:'Person@example.test; other@example.test,Person@example.test'};
+ const args=calendarWriteArgs(d)!;assert.deepEqual(args.recurrence,['RRULE:FREQ=WEEKLY']);assert.deepEqual(args.attendees,['person@example.test','other@example.test']);
+ assert.throws(()=>calendarWriteArgs({...d,guests:'잘못된 주소'}),/이메일/);assert.throws(()=>calendarWriteArgs({...d,allDay:false,startTime:'12:00',endTime:'11:00'}),/종료 시간/);
+ const edit=calendarWriteArgs({...eventDraft('2026-11-25','Asia/Seoul','primary',event),title:'제목만 변경',repeat:'daily',guests:'new@example.test'},event)!;assert.equal(edit.recurrence,undefined);assert.equal(edit.attendees,undefined);
+});

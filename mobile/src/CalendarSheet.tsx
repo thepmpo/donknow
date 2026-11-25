@@ -1,3 +1,4 @@
+import {useDesktopPresentation} from './DesktopPresentation';
 import {useKeyboardInset} from './useFocusedField';
 import {KeyboardDismiss,useKeyboardUX} from './KeyboardUX';
 import React,{useEffect,useRef} from 'react';
@@ -7,8 +8,8 @@ import {DraggableSheet,MotionView,useReducedMotion} from './motion';
 import {useSheetTopBackdrop} from './SheetBackdrop';
 import {colors,typography} from './theme';
 /** Pane-scoped contents, with the same dimming across the app-owned header/safe area. */
-export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=false,animateDismiss=true,headerAction,fill=false,children}:{title:string;onClose:()=>void;busy?:boolean;bottomInset?:number;expanded?:boolean;animateDismiss?:boolean;headerAction?:React.ReactNode;fill?:boolean;children:React.ReactNode}){
- const keyboard=useKeyboardUX(),filled=fill;
+export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=false,animateDismiss=true,headerAction,headerContent,fill=false,children}:{title:string;onClose:()=>void;busy?:boolean;bottomInset?:number;expanded?:boolean;animateDismiss?:boolean;headerAction?:React.ReactNode;headerContent?:React.ReactNode;fill?:boolean;children:React.ReactNode}){
+ const keyboard=useKeyboardUX(),filled=fill,desktop=useDesktopPresentation();
  const root=useRef<React.ComponentRef<typeof View>>(null),close=useRef(onClose),blocked=useRef(busy),closing=useRef(false),entered=useRef(false),measured=useRef(0);
  const keyboardInset=useKeyboardInset(root);
  const reduced=useReducedMotion(),{height}=useWindowDimensions(),offset=useRef(new Animated.Value(height)).current,dim=useRef(new Animated.Value(0)).current;
@@ -20,11 +21,11 @@ export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=f
  useEffect(()=>{if(reduced){offset.stopAnimation();dim.stopAnimation();offset.setValue(0);dim.setValue(1);if(closing.current)close.current();}},[reduced]);
  useEffect(()=>()=>{offset.stopAnimation();dim.stopAnimation();},[]);
  useEffect(()=>{if(Platform.OS!=='web')return;const element=root.current as unknown as HTMLElement;if(!element)return;const previous=document.activeElement as HTMLElement|null,owner=element.parentElement;const focusable=()=>Array.from(element.querySelectorAll<HTMLElement>('button,input,select,textarea,[tabindex="0"]')).filter(e=>!e.hasAttribute('disabled')&&e.offsetParent!==null&&e.getAttribute('data-testid')!=='calendar-sheet-backdrop');focusable()[0]?.focus();function key(e:KeyboardEvent){if(e.key==='Escape'){e.preventDefault();dismiss();}if(e.key==='Tab'){const items=focusable(),first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}}element.addEventListener('keydown',key);return()=>{element.removeEventListener('keydown',key);if(element.contains(document.activeElement)||document.activeElement===document.body||(document.activeElement as HTMLElement)?.getAttribute('data-testid')==='calendar-top-backdrop'){if(previous?.isConnected)previous.focus();else requestAnimationFrame(()=>{if(owner?.isConnected)owner.querySelector<HTMLElement>('[aria-label="년월 선택"]')?.focus();});}};},[title,reduced,animateDismiss]);
- return <View ref={root} collapsable={false} onLayout={keyboardInset.measure} style={[s.backdrop,{bottom:filled?0:bottomInset}]} testID="calendar-sheet" accessibilityViewIsModal role="dialog" aria-modal aria-label={title}>
+ return <View ref={root} collapsable={false} onLayout={keyboardInset.measure} style={[s.backdrop,{bottom:filled&&keyboard.occluding?0:bottomInset}]} testID="calendar-sheet" accessibilityViewIsModal role="dialog" aria-modal aria-label={title}>
   <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim,opacity:dim}]}/>
   <Pressable testID="calendar-sheet-backdrop" accessibilityRole="button" accessibilityLabel="배경 눌러 닫기" disabled={busy} onPress={dismiss} style={StyleSheet.absoluteFill}/>
-  <Animated.View onLayout={e=>open(e.nativeEvent.layout.height)} style={[s.wrap,expanded&&{maxHeight:'96%'},filled&&{height:'100%',maxHeight:'100%'},{transform:[{translateY:offset}]}]}><DraggableSheet presentation="none" testID="calendar-sheet-surface" disabled={busy} onDismiss={dismiss} style={[s.sheet,filled&&{flex:1},expanded&&{borderRadius:28,margin:8,backgroundColor:colors.surface}]}>
-   <View style={s.heading}><Text accessibilityRole="header" style={s.title}>{title}</Text><View style={{flexDirection:'row',alignItems:'center',gap:4}}><KeyboardDismiss/><CloseButton onPress={dismiss} disabled={busy}/>{headerAction}</View></View><MotionView initial={false} transitionKey={title} distance={0} disabled style={{minHeight:0,flexShrink:1,marginBottom:filled?Math.max(0,keyboardInset.inset-8):0,...(filled?{flex:1}:{})}}>{children}</MotionView>
+  <Animated.View onLayout={e=>open(e.nativeEvent.layout.height)} style={[s.wrap,desktop&&{width:'100%',maxWidth:640,alignSelf:'center'},expanded&&{maxHeight:'96%'},filled&&{height:'100%',maxHeight:'100%'},{transform:[{translateY:offset}]}]}><DraggableSheet presentation="none" testID="calendar-sheet-surface" disabled={busy} onDismiss={dismiss} style={[s.sheet,filled&&{flex:1},expanded&&{borderRadius:28,margin:8,backgroundColor:colors.surface}]}>
+   <View style={s.heading}>{headerContent?<View style={{flex:1,minWidth:0}}>{headerContent}</View>:<Text accessibilityRole="header" style={s.title}>{title}</Text>}<View style={{flexDirection:'row',alignItems:'center',gap:4}}><KeyboardDismiss/><CloseButton onPress={dismiss} disabled={busy}/>{headerAction}</View></View><MotionView initial={false} transitionKey={title} distance={0} disabled style={{minHeight:0,flexShrink:1,marginBottom:filled?Math.max(0,keyboardInset.inset-8):0,...(filled?{flex:1}:{})}}>{children}</MotionView>
   </DraggableSheet></Animated.View>
  </View>;
 }

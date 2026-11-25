@@ -68,3 +68,15 @@ test('pasted sources require consent, stay ephemeral and produce drafts without 
 test('read-only Naver policy removes every Naver write from AI and manual catalogs without removing other providers',async()=>{
  const h=await setup();try{const integration=createIntegrations(h.store,env,()=>{throw Error('No provider call expected');});let readOnly=false;integration.naver={status:()=>({readOnly,sendAvailable:false})};const a=createAssistant(h.store,integration);assert.ok(a.status(null).availableActions.some(x=>x.operation==='naver.markRead'));readOnly=true;const actions=a.status(null).availableActions;assert.ok(!actions.some(x=>x.provider==='naver'));assert.ok(actions.some(x=>x.operation==='gmail.send'));assert.ok(actions.some(x=>x.operation==='notion.create'));}finally{await h.close();}
 });
+test('calendar creation repeats and invitations are bounded and only sent on explicit confirmation',async()=>{
+ const h=await setup();try{connections(h);const fixture=fakeProvider(),integration=createIntegrations(h.store,env,fixture.fetch),assistant=createAssistant(h.store,integration);
+ const base={title:'주간 리뷰',start:'2030-01-01T10:00:00+09:00',end:'2030-01-01T11:00:00+09:00',timeZone:'Asia/Seoul',calendarId:'primary'};
+ for(const extra of [{recurrence:['RRULE:FREQ=SECONDLY']},{recurrence:['RRULE:FREQ=DAILY\nBAD']},{attendees:['bad']},{attendees:Array(21).fill('x@example.test')},{attendees:['same@example.test','SAME@example.test']}])assert.throws(()=>validateAction('calendar.create',{...base,...extra}));
+ assert.throws(()=>validateAction('calendar.update',{id:'event',attendees:['x@example.test']}),'editing a title must not introduce invitation updates');
+ const draft=await assistant.prepare(h.user,'calendar.create',{...base,recurrence:['RRULE:FREQ=WEEKLY'],attendees:['guest@example.test']});
+ assert.equal(fixture.calls.filter(c=>c.method!=='GET').length,0);const result=await assistant.confirm(h.user,draft.id,true);assert.equal(result.status,'succeeded');
+ const write=fixture.calls.find(c=>c.method==='POST'&&c.url.includes('/events?'));assert.equal(new URL(write.url).searchParams.get('sendUpdates'),'all');const body=JSON.parse(write.body);assert.deepEqual(body.recurrence,['RRULE:FREQ=WEEKLY']);assert.deepEqual(body.attendees,[{email:'guest@example.test'}]);
+ const count=fixture.calls.length;await assistant.confirm(h.user,draft.id,true);assert.equal(fixture.calls.length,count);
+ const plain=await assistant.prepare(h.user,'calendar.create',base);await assistant.confirm(h.user,plain.id,true);const writes=fixture.calls.filter(c=>c.method==='POST'&&c.url.includes('/events?'));assert.equal(new URL(writes.at(-1).url).searchParams.get('sendUpdates'),'none');
+ }finally{await h.close();}
+});

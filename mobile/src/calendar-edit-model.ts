@@ -1,6 +1,6 @@
 import {localTime,shiftDay,wallTime,zonedDay} from './calendar-model.ts';
 import type {CalendarDuckFields,CalendarEvent} from './calendar-model.ts';
-export type CalendarDraft={title:string;startDay:string;endDay:string;startTime:string;endTime:string;allDay:boolean;notes:string;location:string;calendarId:string;timeZone:string;reminderMinutes:number|null;localNotes:string;duckUrl:string;attachments:{name:string;url:string}[]};
+export type CalendarDraft={repeat?:'none'|'daily'|'weekly'|'monthly'|'yearly';guests?:string;title:string;startDay:string;endDay:string;startTime:string;endTime:string;allDay:boolean;notes:string;location:string;calendarId:string;timeZone:string;reminderMinutes:number|null;localNotes:string;duckUrl:string;attachments:{name:string;url:string}[]};
 export function eventDraft(day:string,zone:string,calendarId:string,event?:CalendarEvent):CalendarDraft{
  const first=event?.dueDate??day,local=event?.duckDetails?.fields;
  return {title:event?.title??'',startDay:event?.allDay?first:event?.startAt?zonedDay(event.startAt,zone):day,endDay:event?.allDay?shiftDay(event.endDate??shiftDay(first,1),-1):event?.endAt?zonedDay(event.endAt,zone):day,startTime:event?.startAt?localTime(event.startAt,zone):'09:00',endTime:event?.endAt?localTime(event.endAt,zone):'10:00',allDay:event?!!event.allDay:true,notes:event?.notes??'',location:event?.location??'',calendarId:event?.calendarId??calendarId,timeZone:zone,reminderMinutes:local?.reminderMinutes??null,localNotes:local?.localNotes??'',duckUrl:local?.url??'',attachments:local?.attachments??[]};
@@ -9,11 +9,18 @@ export function eventDraft(day:string,zone:string,calendarId:string,event?:Calen
 export function calendarWriteArgs(draft:CalendarDraft,event?:CalendarEvent,legacy=false):Record<string,unknown>|null{
  const original=event?eventDraft(event.dueDate??draft.startDay,draft.timeZone,draft.calendarId,event):null;
  const patch:Record<string,unknown>={};
+ if(!event){
+  if(draft.repeat&&draft.repeat!=='none')patch.recurrence=['RRULE:FREQ='+draft.repeat.toUpperCase()];
+  const guests=(draft.guests??'').split(/[,;\n]/).map(v=>v.trim()).filter(Boolean);
+  if(guests.length>20||guests.some(v=>!/^[A-Za-z0-9.!#$%&'*+\/=\?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v)))throw Error('초대할 사람은 이메일 주소로 최대 20명까지 입력해주세요.');
+  if(guests.length)patch.attendees=[...new Set(guests.map(v=>v.toLowerCase()))];
+ }
  if(!original||legacy||draft.title!==original.title){if(!draft.title.trim())throw Error('일정 제목을 적어주세요.');patch.title=draft.title.trim();}
  if(!original||legacy||draft.location!==original.location)patch.location=draft.location;
  if(!event?.notesPartial&&(!original||legacy||draft.notes!==original.notes))patch.notes=draft.notes;
  if(!original||legacy||(['startDay','endDay','startTime','endTime','allDay'] as const).some(k=>draft[k]!==original[k])){
   if(draft.endDay<draft.startDay)throw Error('종료일은 시작일 이후로 선택해주세요.');
+  if(!draft.allDay&&Date.parse(wallTime(draft.endDay,draft.endTime,draft.timeZone))<=Date.parse(wallTime(draft.startDay,draft.startTime,draft.timeZone)))throw Error('종료 시간은 시작 시간 이후로 선택해주세요.');
   Object.assign(patch,draft.allDay?{allDay:true,startDate:draft.startDay,endDate:shiftDay(draft.endDay,1),timeZone:draft.timeZone}:{allDay:false,start:wallTime(draft.startDay,draft.startTime,draft.timeZone),end:wallTime(draft.endDay,draft.endTime,draft.timeZone),timeZone:draft.timeZone});
  }
  if(event&&draft.calendarId!==(event.calendarId??'primary'))patch.destinationCalendarId=draft.calendarId;
