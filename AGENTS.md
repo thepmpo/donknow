@@ -1,3 +1,7 @@
+## 2026-11-25 — 두 기기 주말 상하·주간 시간표 시안
+
+사용자가 논Duo7열을 정정: Duo·논Duo 모두 토/일을 상하로 둔다. 논Duo AI탭은 그림만·docen.ai글자없음. 평일은1시간가로선/세로스크롤,동시간일정좌우lane,여러날일정상단행쌓기→시간표아래로밀기,주말은시간순목록. timeline.html/capture-timeline.mjs 및 artifacts/week-timeline-preview로 시안만 제작,앱2주뷰는미변경. 주말위치는 이전오른쪽과최신문장왼쪽이달라확인질문중이며응답전시안은최신왼쪽을임시기준으로했다(확정아님). side=right도지원. 상세 docs/mobile-refinements-week-preview.md 마지막절.
+
 ## 2026-11-25 — 1주 방향 확인·여러 날/논 Duo 시안 후속
 
 사용자가 월~금5열+오른쪽 토/일 상하 방향을 확인하고 시간 오름차순, 화~수에 걸친 일정 및 논 Duo 시안을 요청했다. multi-day.html은 화11/24~수11/25 연결 막대를 날짜 아래 띠로 표시하고 당일 일정은 시작 시간순, 시간 없는 할 일은 아래에 둔다. 논 Duo는 오른쪽 하드웨어 열 없이 월~일7열+하단탭으로 제안했다. 이 요청은 여전히 시안 단계이며 앱2주뷰/조회기간을 변경하지 않는다. 원본 시안 보존, 후속파일 design-previews/docen-one-week/multi-day.html 및 artifacts/week-multiday-preview/. 상세 docs/mobile-refinements-week-preview.md 후속 절.
