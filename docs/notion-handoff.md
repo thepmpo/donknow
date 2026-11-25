@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-25 · 한국 시간 · 기능 코드 01bcb7a · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-25 · 한국 시간 · 기능 코드 70db4c8 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-25 — 할 일·로그 모션 안정화와 채팅 하단 정리
+
+도슨 영상과 참고 영상을 확인했다. iOS의 스와이프 위치와 끌어 올린 행 위치는 Reanimated/Worklets로 UI 스레드에서 갱신한다. JavaScript는 약 32ms 간격으로 삽입 위치와 자동 스크롤을 확인한다. 웹에서는 마우스 포인터를 잡아 행 밖으로 이동해도 진행 중인 조작을 유지하고, 모바일 웹 터치는 별도 세로/가로 판별을 유지한다. 세 플랫폼의 움직임은 175ms 감속 복귀, 115ms 들어 올리기, 14pt 둥근 파란 선택 음영을 공유한다. 동작 줄이기에서는 확대와 복귀 효과를 생략한다.
+
+삽입선과 이동 메시지를 목록 높이에 영향을 주지 않는 레이어로 바꿨다. 삽입 지점 경계에서 작은 떨림을 무시하고, 놓은 뒤 주변 행에 이전 위치로 돌아가는 애니메이션을 중복 실행하지 않는다. 실제 정렬 저장과 실패 복원은 기존 경로를 사용한다. 완료/되돌리기 저장 중에도 선택·선택 해제는 바로 할 수 있다. 원본 반영 처리와 완료 유예는 그대로다. 채팅 입력 아래 상시 AI 예산 설명을 제거했다. 실제 요청 실패나 한도 안내는 요청 시 확인할 수 있다.
+
+Chromium에서 Duo·일반폰 터치와 PC 웹 마우스, 선택 음영 및 반경, 완료 저장 응답 지연 중 완료→되돌리기→선택, 주변 행을 다시 밀지 않는 드롭을 검사한다. iOS prebuild 및 JS export, Gesture Handler·Reanimated·Worklets의 iOS podspec 연결을 확인했다. 아이폰의 실제 프레임 속도와 TestFlight 서명 빌드는 별도다. 참조 영상은 저장소에 넣지 않는다.
 
 #### 2026-11-25 — 할 일·로그의 스와이프와 길게 눌러 끌기 재작업
 
@@ -3808,10 +3816,12 @@ b2954f4 Record calendar and Todo interaction changes in handoff
 c891420 Match every demo tab to the full briefing height and unify Korean labels
 1e81892 Update handoff for admin navigation and the stable product demo
 01bcb7a Lock Todo swipe direction and lift rows for direct drag
+54aef0a Record the corrected iPhone Todo gestures
+70db4c8 Smooth Todo drag and selection on iPhone and web
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 01bcb7a에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 70db4c8에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13080,7 +13090,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/01bcb7a927e7ae4cc0a707acdbb019a414ea091e
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/70db4c86496f100e963f24dd41c8046ccf637ebe
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -13238,6 +13248,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 17. AI 개발 지침 전문
 
 ### 원문 / AGENTS.md
+
+#### 2026-11-25 — 할 일·로그 모션 안정화와 채팅 하단 정리
+
+도슨 영상과 참고 영상을 확인했다. iOS의 스와이프 위치와 끌어 올린 행 위치는 Reanimated/Worklets로 UI 스레드에서 갱신한다. JavaScript는 약 32ms 간격으로 삽입 위치와 자동 스크롤을 확인한다. 웹에서는 마우스 포인터를 잡아 행 밖으로 이동해도 진행 중인 조작을 유지하고, 모바일 웹 터치는 별도 세로/가로 판별을 유지한다. 세 플랫폼의 움직임은 175ms 감속 복귀, 115ms 들어 올리기, 14pt 둥근 파란 선택 음영을 공유한다. 동작 줄이기에서는 확대와 복귀 효과를 생략한다.
+
+삽입선과 이동 메시지를 목록 높이에 영향을 주지 않는 레이어로 바꿨다. 삽입 지점 경계에서 작은 떨림을 무시하고, 놓은 뒤 주변 행에 이전 위치로 돌아가는 애니메이션을 중복 실행하지 않는다. 실제 정렬 저장과 실패 복원은 기존 경로를 사용한다. 완료/되돌리기 저장 중에도 선택·선택 해제는 바로 할 수 있다. 원본 반영 처리와 완료 유예는 그대로다. 채팅 입력 아래 상시 AI 예산 설명을 제거했다. 실제 요청 실패나 한도 안내는 요청 시 확인할 수 있다.
+
+Chromium에서 Duo·일반폰 터치와 PC 웹 마우스, 선택 음영 및 반경, 완료 저장 응답 지연 중 완료→되돌리기→선택, 주변 행을 다시 밀지 않는 드롭을 검사한다. iOS prebuild 및 JS export, Gesture Handler·Reanimated·Worklets의 iOS podspec 연결을 확인했다. 아이폰의 실제 프레임 속도와 TestFlight 서명 빌드는 별도다. 참조 영상은 저장소에 넣지 않는다.
 
 #### 2026-11-25 — 할 일·로그의 스와이프와 길게 눌러 끌기 재작업
 
