@@ -63,7 +63,7 @@ function rawMail(to,subject,text,reply) {
  if(reply){if(!/^<[^<>\r\n]{1,250}>$/.test(reply))throw fail(409,'답장 원본의 Message-ID를 확인할 수 없어요.');lines.push(`In-Reply-To: ${reply}`,`References: ${reply}`);}
  return Buffer.from([...lines,'',Buffer.from(text).toString('base64').match(/.{1,76}/g).join('\r\n')].join('\r\n')).toString('base64url');
 }
-export function createProviderActions({store,token,request}) {
+export function createProviderActions({store,token,request,googleRead}) {
  async function access(user,operation,args) {
   const def=actionDefinitions[operation];if(!def||def.provider==='todo')return null;
   const record=await token(user,def.provider,args?.connectionId);if(!record.features.includes(def.feature))throw fail(403,'이 작업의 수정·발송 권한을 먼저 연결 화면에서 승인해주세요.');return record;
@@ -73,7 +73,7 @@ export function createProviderActions({store,token,request}) {
  async function inspect(user,operation,args){
   args=selectedArgs(user,operation,args);
   const def=actionDefinitions[operation],record=await access(user,operation,args);let target=null,version=null,extra={};
-  const read=async url=>request(url,opts(record,'GET'),def.provider==='slack');
+  const read=url=>def.provider==='google'&&googleRead?googleRead(user,record,url,opts(record,'GET')):request(url,opts(record,'GET'),def.provider==='slack');
   if(operation==='todo.update'){target=store.get(user,args.id);if(!target)throw fail(404,'내 할 일을 찾지 못했어요.');version=JSON.stringify(target);}
   if(operation==='gmail.markRead'||operation==='gmail.reply'){
    target=await read('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+encode(args.id)+'?format=full');version=JSON.stringify([target.historyId,target.threadId]);

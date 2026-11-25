@@ -43,11 +43,11 @@ try{
  const popupPromise=page.waitForEvent('popup');await page.getByRole('link',{name:'제안서 검토 원본 열기',exact:true}).click();const popup=await popupPromise;assert.ok(popup.url().startsWith('https://tasks.google.com/'));await popup.close();
  await page.emulateMedia({colorScheme:'dark'});await capture('01-date-default');
  await page.getByTestId('todos-view-source').click();await page.getByTestId('agenda-source:slack').waitFor();await capture('02-source-default');
- assert.equal(await page.getByTestId('agenda-source:slack').getByText('11 / 15 · Slack',{exact:true}).count(),1);
+ assert.equal(await page.getByTestId('todo-source-slack-one').getByText('Slack',{exact:true}).count(),1);
  assert.equal(await page.getByTestId('agenda-source:apple-reminders').getByRole('link').count(),0,'no invented native Apple URL');
  await button('할 일 여러 개 선택').click();await page.getByRole('checkbox',{name:'견적 내용 확인하기 선택',exact:true}).click();const beforeComplete=calls.filter(c=>c.method==='PATCH').length;
  assert.equal(todos.find(t=>t.id==='slack-one').done,false,'selection never marks completion');
- await button('선택한 할 일 이동').click();await button('선택한 할 일 아래로 이동').click();await page.getByText('할 일을 옮겼어요.',{exact:true}).waitFor();
+ await button('선택한 할 일 이동').click();await button('선택한 할 일 아래로 이동').click();await page.getByTestId('todo-selection-toolbar').waitFor({state:'hidden'});
  assert.equal(calls.filter(c=>c.method==='PATCH').length,beforeComplete,'order does not patch a source');
  assert.ok(todos.find(t=>t.id==='slack-two').order<todos.find(t=>t.id==='slack-one').order);
  await capture('03-source-manual-order');
@@ -61,7 +61,7 @@ try{
  await capture('05-date-after-drop');
  await page.setViewportSize({width:390,height:1200});await button('할 일 여러 개 선택').click();await page.getByRole('checkbox',{name:'견적 내용 확인하기 선택',exact:true}).click();await page.getByRole('checkbox',{name:'디자인 의견 전달 선택',exact:true}).click();
  const multiFrom=await page.getByRole('button',{name:'디자인 의견 전달 수정',exact:true}).boundingBox(),multiTarget=await page.getByRole('button',{name:'전화 요금 확인 수정',exact:true}).boundingBox();
- await page.mouse.move(multiFrom.x+30,multiFrom.y+12);await page.mouse.down();await page.clock.runFor(340);await page.mouse.move(multiFrom.x+30,multiFrom.y+22,{steps:3});await page.getByTestId('todo-drag-preview').waitFor();assert.ok((await page.getByTestId('todo-drag-preview').innerText()).includes('2'));await page.mouse.move(multiTarget.x+30,multiTarget.y+10,{steps:10});await capture('05a-two-tasks-drag');await page.mouse.up();await page.getByText('할 일을 옮겼어요.',{exact:true}).waitFor();assert.equal(todos.find(t=>t.id==='slack-one').dueDate,'2026-11-17');assert.equal(todos.find(t=>t.id==='slack-two').dueDate,'2026-11-17');
+ await page.mouse.move(multiFrom.x+30,multiFrom.y+12);await page.mouse.down();await page.clock.runFor(340);await page.mouse.move(multiFrom.x+30,multiFrom.y+22,{steps:3});await page.getByTestId('todo-drag-preview').waitFor();assert.ok((await page.getByTestId('todo-drag-preview').innerText()).includes('2'));await page.mouse.move(multiTarget.x+30,multiTarget.y+10,{steps:10});await capture('05a-two-tasks-drag');await page.mouse.up();await page.getByTestId('todo-selection-toolbar').waitFor({state:'hidden'});assert.equal(todos.find(t=>t.id==='slack-one').dueDate,'2026-11-17');assert.equal(todos.find(t=>t.id==='slack-two').dueDate,'2026-11-17');
 
  for(const [name,width,height,duo,open,dark]of [['06-iphone-light',390,844,false,false,false],['07-duo-folded-dark',431,640,true,false,true],['08-duo-open-light',960,740,true,true,false],['09-small-phone',320,740,false,false,false]]){
   await page.setViewportSize({width,height});await page.emulateMedia({colorScheme:dark?'dark':'light'});await page.evaluate(g=>window.keyboardDevice.geometry(g),duo?geometry(width,height,open):null);await page.clock.runFor(160);await capture(name);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);

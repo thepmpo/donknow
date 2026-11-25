@@ -7,17 +7,16 @@ import {calendarZone,calendarDay,calendarMidnight,calendarIdentifier} from './ca
 const writable=role=>['owner','writer'].includes(role);
 const label=(v,fallback)=>typeof v==='string'&&v.trim()?v.trim().slice(0,200):fallback;
 const webLink=v=>{try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}};
-export function createCalendarWorkspace({store,token,request}){
+export function createCalendarWorkspace({store,token,read}){
  async function access(user,connectionId){const r=await token(user,'google',connectionId);if(!r.features.includes('calendar'))throw fail(403,'Google 캘린더 읽기 권한을 연결해주세요.');return r;}
  function unchanged(user,r){const latest=store.connection(user,'google',r.connectionId);if(!latest||latest.connectionId!==r.connectionId||latest.accountId!==r.accountId||(!r.connectionId&&latest.accessToken!==r.accessToken)||!latest.features.includes('calendar'))throw fail(409,'캘린더 연결이 바뀌었어요. 다시 확인해주세요.');}
- const get=(r,url)=>request(url,{headers:{Authorization:'Bearer '+r.accessToken}});
  function normalize(user,r,id,e,zone,canWrite,name,saved,sourceKey){
   const prefix=(r.connectionId??'legacy')+':'+(id==='primary'?'calendar:':'calendar2:'+createHash('sha256').update(id).digest('hex').slice(0,24)+':');
   return {id:prefix+e.id,eventId:e.id,calendarId:sourceKey,calendarName:label(name,'Google 캘린더'),accountLabel:r.label,title:label(e.summary,'제목 없음'),kind:'event',dueDate:e.start?.date??(e.start?.dateTime?calendarDay(e.start.dateTime,zone):null),endDate:e.end?.date??(e.end?.dateTime?calendarDay(e.end.dateTime,zone):null),startAt:e.start?.dateTime??null,endAt:e.end?.dateTime??null,allDay:!!e.start?.date,timeZone:e.start?.timeZone??zone,dueTimeZone:zone,dueTime:e.start?.dateTime?new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(e.start.dateTime)):null,canWrite:canWrite&&!e.locked,etag:e.etag??null,location:typeof e.location==='string'?e.location.slice(0,1000):'',notes:typeof e.description==='string'?e.description.slice(0,4000):'',notesPartial:(e.description?.length??0)>4000,url:webLink(e.htmlLink),meetingUrl:webLink(e.hangoutLink??e.conferenceData?.entryPoints?.find(p=>p.entryPointType==='video')?.uri),recurring:!!e.recurringEventId,
    providerDetails:{recurrence:(e.recurrence??[]).slice(0,10),attendees:(e.attendees??[]).slice(0,100).map(a=>({email:a.email??'',name:a.displayName??'',response:a.responseStatus??''})),attendeesPartial:(e.attendees?.length??0)>100,attachments:(e.attachments??[]).slice(0,20).map(a=>({name:label(a.title,'첨부 파일'),url:webLink(a.fileUrl)})),reminders:e.reminders??null},
    connectionId:r.connectionId??null,duckDetails:{revision:saved?.revision??0,fields:saved?.fields??{}}};
  }
- async function readEvent(user,r,calendar,event){const result=await get(r,'https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(calendar)+'/events/'+encodeURIComponent(event));unchanged(user,r);return result;}
+ async function readEvent(user,r,calendar,event){const result=await read(user,r,'https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(calendar)+'/events/'+encodeURIComponent(event));unchanged(user,r);return result;}
  return {
   async calendars(user,cursor){
    const accounts=googleAccounts(store,user).filter(r=>r.features.includes('calendar'));let resume=null;
@@ -25,7 +24,7 @@ export function createCalendarWorkspace({store,token,request}){
    const items=[],failedConnectionIds=[],defaultId=store.connection(user,'google')?.connectionId;let nextCursor=null,firstError;
    for(const initial of accounts.slice(resume?accounts.findIndex(r=>r.connectionId===resume.connectionId):0)){
     try{const r=await access(user,initial.connectionId),page=initial.connectionId===resume?.connectionId?resume.page:null;
-     const data=await get(r,'https://www.googleapis.com/calendar/v3/users/me/calendarList?'+new URLSearchParams({maxResults:'100',showDeleted:'false',...(page?{pageToken:page}:{})}));unchanged(user,r);
+     const data=await read(user,r,'https://www.googleapis.com/calendar/v3/users/me/calendarList?'+new URLSearchParams({maxResults:'100',showDeleted:'false',...(page?{pageToken:page}:{})}));unchanged(user,r);
      items.push(...(data.items??[]).filter(c=>!c.deleted).map(c=>({id:r.connectionId===defaultId?(c.primary?'primary':c.id):'@g/'+r.connectionId+'/'+(c.primary?'primary':c.id),name:label(c.summaryOverride??c.summary,'캘린더')+(accounts.length>1?' · '+r.label:''),primary:!!c.primary&&r.connectionId===defaultId,timeZone:c.timeZone??'UTC',color:/^#[a-f\d]{6}$/i.test(c.backgroundColor)?c.backgroundColor:null,canWrite:r.features.includes('calendarWrite')&&writable(c.accessRole),connectionId:r.connectionId??null,accountLabel:r.label})));
      if(data.nextPageToken){nextCursor='multi.'+Buffer.from(JSON.stringify({connectionId:r.connectionId,page:data.nextPageToken,accounts:accounts.map(r=>r.connectionId)})).toString('base64url');break;}
     }catch(e){firstError??=e;failedConnectionIds.push(initial.connectionId);}
@@ -62,7 +61,7 @@ export function createCalendarWorkspace({store,token,request}){
    if(!start||!end||!validDate(start)||!validDate(end)||end<=start||Date.parse(end)-Date.parse(start)>370*86400000)throw fail(400,'조회할 날짜 범위를 확인해주세요.');
    if(cursor&&(typeof cursor!=='string'||cursor.length>3000))throw fail(400,'페이지 정보를 확인해주세요.');
    const query=new URLSearchParams({timeMin:calendarMidnight(start,zone),timeMax:calendarMidnight(end,zone),timeZone:zone,singleEvents:'true',orderBy:'startTime',maxResults:'50',...(cursor?{pageToken:cursor}:{})});
-   const data=await get(r,'https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(id)+'/events?'+query);unchanged(user,r);
+   const data=await read(user,r,'https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(id)+'/events?'+query);unchanged(user,r);
    const canWrite=r.features.includes('calendarWrite')&&writable(data.accessRole),prefix=(r.connectionId??'legacy')+':'+(id==='primary'?'calendar:':'calendar2:'+createHash('sha256').update(id).digest('hex').slice(0,24)+':');
    const visible=(data.items??[]).filter(e=>e.status!=='cancelled'),account=calendarAccountKey(r),sourceKey=options.calendarId??calendarKey(store,user,r,id);
    const details=account?store.refreshCalendarSnapshots(user,account,id,visible.map(e=>({eventId:e.id,snapshot:calendarSnapshot(e,zone)}))):new Map();

@@ -3,7 +3,7 @@ import {useKeyboardUX} from './KeyboardUX';
 import {ScrollRevealContext,ScrollRevealRegion,useFocusedField} from './useFocusedField';
 import {Ionicons} from '@expo/vector-icons';
 import {ScrollArea as ScrollView} from './ScrollArea';
-import React,{useContext,useRef,useState} from 'react';
+import React,{useContext,useEffect,useRef,useState} from 'react';
 import {Platform,StyleSheet,Switch,Text,TextInput,View} from 'react-native';
 import {CalendarDateTimeRow,DateTimeField} from './DateTimeField';
 import {reminderChoices,reminderOffsetLabel} from './calendar-display';
@@ -31,6 +31,12 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[calendarOpen,setCalendarOpen]=useState(false),[reminderOpen,setReminderOpen]=useState(false),[repeatOpen,setRepeatOpen]=useState(false);
  const update=(patch:Partial<CalendarDraft>)=>onDraft({...draft,...patch});
  const source=sources.find(c=>c.id===draft.calendarId),canWrite=event?event.canWrite===true:source?.canWrite===true;
+ const writableDestination=sources.find(calendar=>calendar.canWrite&&(!sourceError||isAppleCalendar(calendar.id)));
+ useEffect(()=>{
+  if(!event&&!pending&&!sourceLoading&&!canWrite&&writableDestination){
+   onDraft({...draft,calendarId:writableDestination.id});
+  }
+ },[event,pending,sourceLoading,canWrite,writableDestination?.id,draft,onDraft]);
  const localPatch=metadataAvailable?calendarDuckPatch(draft,event):{},hasLocal=Object.keys(localPatch).length>0;
  const native=isAppleCalendar(draft.calendarId)||event?.provider==='apple-calendar',nativeWriting=useRef(false);
  const connectionId=event?.connectionId??source?.connectionId;

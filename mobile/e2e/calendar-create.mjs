@@ -18,6 +18,9 @@ try{
     for(const item of todos)item.order=ids.indexOf(item.id);
     return route.fulfill({json:todos});
    }
+   if(p.startsWith('/api/todos/')&&method==='DELETE'){
+    const index=todos.findIndex(t=>t.id===p.split('/').at(-1));if(index>=0)todos.splice(index,1);return route.fulfill({json:{ok:true}});
+   }
    if(p.startsWith('/api/todos/')&&method==='PATCH'){
     if(completionGate){waitingCompletion++;await completionGate;}
     const item=todos.find(t=>t.id===p.split('/').at(-1));
@@ -39,6 +42,11 @@ try{
   await page.goto('http://127.0.0.1:'+server.address().port+'/?reminderError=1&mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();await page.waitForTimeout(250);
   const date=page.getByTestId('week-date-2026-11-25');await date.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();
   const sheet=page.getByTestId('calendar-sheet');
+  const closeSheet=async()=>{
+   if(mode==='duo')await page.getByTestId('DuoBackButton').click();
+   else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
+   await sheet.waitFor({state:'detached'});
+  };
   assert.equal(await page.getByTestId('calendar-add').count(),0);
   async function openAdd(){
    const year=page.getByTestId('calendar-year-trigger');
@@ -60,6 +68,15 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
   await openAdd();await sheet.waitFor();await todo.click();await sheet.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('리뷰 할 일 저장');await sheet.getByRole('textbox',{name:'메모',exact:true}).fill('다음 검토 자료');await sheet.getByRole('button',{name:'저장',exact:true}).click();await sheet.waitFor({state:'detached'});await page.waitForTimeout(300);assert.equal(writes,1);assert.equal(todos.length,1);assert.equal(todos[0].dueDate,'2026-11-25');assert.equal(todos[0].title,'리뷰 할 일 저장');assert.equal(todos[0].notes,'다음 검토 자료');assert.equal(details.length,1);assert.equal(details[0].patch.url,'https://example.test/review');assert.equal(details[0].patch.attachments,undefined);assert.deepEqual(errors,[]);
   await openAdd();await sheet.waitFor();if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});
   await page.getByRole('button',{name:'2026-11-26 13시 일정 추가',exact:true}).click();await sheet.waitFor();assert.equal(await sheet.getByLabel('일정 시작일',{exact:true}).inputValue(),'2026-11-26');assert.equal(await sheet.getByLabel('일정 시작 시간',{exact:true}).inputValue(),'13:00');assert.equal(await sheet.getByLabel('일정 종료 시간',{exact:true}).inputValue(),'14:00');if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});
+  await openAdd();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('닫으면 지울 초안');
+  await sheet.getByLabel('일정 종료일',{exact:true}).fill('2026-11-29');
+  await todo.click();await sheet.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('닫으면 지울 할 일');
+  await closeSheet();
+  await openAdd();await sheet.waitFor();
+  assert.equal(await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).inputValue(),'');
+  assert.equal(await sheet.getByLabel('일정 종료일',{exact:true}).inputValue(),await sheet.getByLabel('일정 시작일',{exact:true}).inputValue());
+  await todo.click();assert.equal(await sheet.getByRole('textbox',{name:'할 일 제목',exact:true}).inputValue(),'');
+  await closeSheet();
   if(mode==='standard'){
    async function selectView(label){const year=page.getByTestId('calendar-year-trigger');await year.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();await sheet.getByRole('button',{name:'캘린더 보기 전환',exact:true}).click();await sheet.getByRole('tab',{name:label,exact:true}).click();}
    for(const label of ['월 보기','일 보기']){await selectView(label);if(label==='월 보기'){const divider=page.getByTestId('calendar-week-divider-2026-11-22'),cell=page.getByTestId('calendar-day-2026-11-25');const d=await divider.boundingBox(),c=await cell.boundingBox();assert.ok(d.x<=c.x&&d.x+d.width>=c.x+c.width-1);assert.equal(await cell.evaluate(e=>getComputedStyle(e).borderTopWidth),'0px');await page.screenshot({path:out+'/standard-month-divider.png'});}const day=label==='일 보기'?page.getByTestId('calendar-period-current').getByRole('button',{name:'2026-11-25 일간 보기',exact:true}):page.getByTestId('calendar-day-2026-11-25');await day.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();await sheet.waitFor();assert.equal(await sheet.getByLabel('일정 시작일',{exact:true}).inputValue(),'2026-11-25');await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});}
@@ -113,6 +130,20 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await swipe(row,1);await selection.waitFor();assert.equal(await selection.getAttribute('aria-checked'),'true');assert.equal(todos[0].done,false);
    assert.notEqual(await row.evaluate(el=>getComputedStyle(el).backgroundColor),originalColor);
    assert.equal(await row.evaluate(el=>getComputedStyle(el).borderTopLeftRadius),'14px');
+   const list=page.getByTestId('todos-list-scroll');
+   const beforeDate=await list.evaluate(el=>el.scrollTop);
+   await page.getByRole('button',{name:'선택한 할 일 예정일 변경',exact:true}).click();
+   const dateDialog=page.getByRole('dialog',{name:'날짜 변경'});
+   await dateDialog.getByRole('button',{name:'2026-11-25로 변경',exact:true}).waitFor();
+   assert.equal(await list.evaluate(el=>el.scrollTop),beforeDate);
+   assert.equal(await selection.getAttribute('aria-checked'),'true');
+   await page.screenshot({path:out+'/'+mode+'-todo-batch-date.png'});
+   await closeSheet();
+   await page.getByRole('button',{name:'선택한 할 일 이동',exact:true}).click();
+   await page.getByRole('dialog',{name:'이동'}).waitFor();await closeSheet();
+   await page.getByRole('button',{name:'선택한 할 일 삭제',exact:true}).click();
+   await page.getByRole('dialog',{name:'할 일 삭제'}).waitFor();await closeSheet();
+   assert.equal(todos[0].done,false);
    await swipe(row,1);await selection.waitFor({state:'detached'});
    if(mode==='web'){
     await swipe(row,1);await selection.waitFor();
@@ -150,6 +181,20 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await swipe(logged,1);await logSelection.waitFor();assert.equal(await logSelection.getAttribute('aria-checked'),'true');
    await swipe(logged,1);await logSelection.waitFor({state:'detached'});
    await swipe(logged,-1);await logged.getByRole('checkbox',{name:'리뷰 할 일 저장 완료하기',exact:true}).waitFor();
+   if(mode==='web'){
+    await page.evaluate(()=>window.viewWelcomeFixture.showTodos());
+    const other=page.getByTestId('todo-todo-second');
+    await swipe(other,1);
+    await page.getByRole('button',{name:'선택한 할 일 예정일 변경',exact:true}).click();
+    await page.getByRole('dialog',{name:'날짜 변경'}).getByRole('button',{name:'2026-11-26로 변경',exact:true}).click();await sheet.waitFor({state:'detached'});
+    assert.equal(todos.find(t=>t.id==='todo-second').dueDate,'2026-11-26');
+    await swipe(other,1);
+    await page.getByRole('button',{name:'선택한 할 일 삭제',exact:true}).click();
+    await page.getByRole('dialog',{name:'할 일 삭제'}).getByRole('button',{name:'도슨에서 선택한 할 일 삭제 확인',exact:true}).click();
+    await other.waitFor({state:'detached'});
+    assert.deepEqual(todos.map(t=>t.id),['todo-0']);
+   }
+
   }
   console.log('PASS '+mode+': calendar creation, selected shape, rapid select during pending completion and log swipe');await page.close();
  }

@@ -61,13 +61,13 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     const notion = provider === 'notion';
     return providerRequest(config.token, { method: 'POST', headers: { 'Content-Type': notion ? 'application/json' : 'application/x-www-form-urlencoded', ...(notion ? { Authorization: 'Basic ' + (config.basicAuth || Buffer.from(config.clientId + ':' + config.clientSecret).toString('base64')) } : {}) }, body: notion ? JSON.stringify(parameters) : new URLSearchParams({ ...parameters, client_id: config.clientId, client_secret: config.clientSecret }).toString() }, provider === 'slack');
   }
-  async function token(userId, provider, connectionId) {
+  async function token(userId, provider, connectionId, rejectedAccessToken) {
     if(store.accountActive&&!store.accountActive(userId))throw fail(403,'이 계정은 이용이 정지되어 있어요.');
     let record = provider==='google'?googleConnection(store,userId,connectionId):store.connection(userId,provider); if (!record) throw fail(409, '서비스를 먼저 연결해주세요.');
     const key = `${userId}:${provider}:${record.connectionId??'legacy'}`,fingerprint=credentialVersion(record),failed=refreshFailures.get(key);
     if(failed===fingerprint)throw reauthorizationRequired();
     if(failed)refreshFailures.delete(key);
-    if (!record.expiresAt || record.expiresAt > Date.now() + 60000) return record;
+    if (record.accessToken!==rejectedAccessToken&&(!record.expiresAt || record.expiresAt > Date.now() + 60000)) return record;
     if (!record.refreshToken) throw reauthorizationRequired();
     if (!locks.has(key)) locks.set(key, (async () => {
       const current = store.connection(userId, provider,record.connectionId); if (!current) throw fail(409, '서비스 연결이 해제됐어요.');
@@ -79,6 +79,17 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       store.saveConnection(userId, provider, updated, current.label); return updated;
     })().finally(() => locks.delete(key)));
     return locks.get(key);
+  }
+  async function googleRead(userId,record,url,options={}){
+    const read=current=>providerRequest(url,{...options,headers:{...options.headers,Authorization:'Bearer '+current.accessToken}});
+    try{return await read(record);}catch(error){
+      if(error.code!=='integration-reauthorization')throw error;
+      const current=store.connection(userId,'google',record.connectionId);
+      if(!current||current.connectionId!==record.connectionId||current.accountId!==record.accountId||JSON.stringify(current.features)!==JSON.stringify(record.features))throw fail(409,'서비스 연결이 바뀌었어요. 다시 불러와주세요.');
+      const renewed=await token(userId,'google',current.connectionId,record.accessToken);
+      if(renewed.accountId!==record.accountId||JSON.stringify(renewed.features)!==JSON.stringify(record.features))throw fail(409,'서비스 연결이 바뀌었어요. 다시 불러와주세요.');
+      return read(renewed);
+    }
   }
   return {
     ...createProviderWatches({store,env,token,request:providerRequest}),
@@ -160,25 +171,25 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         if(month!=null&&(typeof month!=='string'||!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)))throw fail(400,'조회할 달을 확인해주세요.');
         const start=month?month+'-01':today;const end=month?new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5)),1)).toISOString().slice(0,10):new Date(Date.parse(today+'T00:00:00Z')+30*86400000).toISOString().slice(0,10);
         const query = new URLSearchParams({ timeMin:start+'T00:00:00+09:00',timeMax:end+'T00:00:00+09:00',timeZone:'Asia/Seoul',singleEvents:'true',orderBy:'startTime',maxResults:'50',...(cursor?{pageToken:cursor}:{}) });
-        const value = await providerRequest('https://www.googleapis.com/calendar/v3/calendars/primary/events?' + query, { headers });
+        const value = await googleRead(userId,record,'https://www.googleapis.com/calendar/v3/calendars/primary/events?' + query);
         items = (value.items ?? []).filter(item => item.status !== 'cancelled').map(item => ({ id: 'calendar:' + item.id, title: title(item.summary), url:item.htmlLink, dueDate: item.start?.date ?? (item.start?.dateTime ? new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.start.dateTime)) : null), kind: 'event',startAt:item.start?.dateTime??null,endAt:item.end?.dateTime??null,allDay:!!item.start?.date,endDate:item.end?.date??(item.end?.dateTime?new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.end.dateTime)):null) })); nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'tasks') {
         if (channel && (typeof channel !== 'string' || channel.length > 1024)) throw fail(400, '목록을 다시 선택해주세요.');
         const path = channel ? `lists/${encodeURIComponent(channel)}/tasks` : 'users/@me/lists';
         const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus === 'completed' ? 'true' : 'false', showHidden: taskStatus === 'completed' ? 'true' : 'false', showDeleted: 'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
-        const value = await providerRequest('https://www.googleapis.com/tasks/v1/' + path + '?' + query, { headers });
+        const value = await googleRead(userId,record,'https://www.googleapis.com/tasks/v1/' + path + '?' + query);
         items = (value.items ?? []).filter(item => !item.deleted && (!channel || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null } : { id: item.id, title: title(item.title), kind: 'tasklist' });
         nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'drive') {
-        const value = await providerRequest('https://www.googleapis.com/drive/v3/files?' + new URLSearchParams({ q: 'trashed=false', pageSize: '50', fields: 'nextPageToken,files(id,name)', orderBy: 'modifiedTime desc', ...(cursor ? { pageToken: cursor } : {}) }), { headers });
+        const value = await googleRead(userId,record,'https://www.googleapis.com/drive/v3/files?' + new URLSearchParams({ q: 'trashed=false', pageSize: '50', fields: 'nextPageToken,files(id,name)', orderBy: 'modifiedTime desc', ...(cursor ? { pageToken: cursor } : {}) }));
         items = (value.files ?? []).map(item => ({ id: 'drive:' + item.id, title: title(item.name), dueDate: null, kind: 'file' })); nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'gmail') {
-        const value = await providerRequest('https://gmail.googleapis.com/gmail/v1/users/me/messages?' + new URLSearchParams({ q: 'in:inbox newer_than:30d', maxResults: '20', ...(cursor ? { pageToken: cursor } : {}) }), { headers });
+        const value = await googleRead(userId,record,'https://gmail.googleapis.com/gmail/v1/users/me/messages?' + new URLSearchParams({ q: 'in:inbox newer_than:30d', maxResults: '20', ...(cursor ? { pageToken: cursor } : {}) }));
         const messages = value.messages ?? []; nextCursor = value.nextPageToken ?? null;
-        for (let index = 0; index < messages.length; index += 4) { const batch = await Promise.all(messages.slice(index, index + 4).map(async item => { if (!/^[a-f0-9]+$/i.test(item.id)) throw fail(502, '메일 식별자를 읽을 수 없어요.'); const detail = await providerRequest(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${item.id}?format=metadata&metadataHeaders=Subject`, { headers }); return { id: 'gmail:' + item.id, title: title(detail.payload?.headers?.find(header => header.name.toLowerCase() === 'subject')?.value, '제목 없는 메일'), dueDate: null, kind: 'mail' }; })); items.push(...batch); }
+        for (let index = 0; index < messages.length; index += 4) { const batch = await Promise.all(messages.slice(index, index + 4).map(async item => { if (!/^[a-f0-9]+$/i.test(item.id)) throw fail(502, '메일 식별자를 읽을 수 없어요.'); const detail = await googleRead(userId,record,`https://gmail.googleapis.com/gmail/v1/users/me/messages/${item.id}?format=metadata&metadataHeaders=Subject`); return { id: 'gmail:' + item.id, title: title(detail.payload?.headers?.find(header => header.name.toLowerCase() === 'subject')?.value, '제목 없는 메일'), dueDate: null, kind: 'mail' }; })); items.push(...batch); }
       }
       if (provider === 'slack' && feature === 'channels') {
         const value = await providerRequest('https://slack.com/api/conversations.list?' + new URLSearchParams({ types:record.tokenType==='user'?'public_channel,private_channel,im,mpim':'public_channel,private_channel',exclude_archived:'true',limit:'50',...(cursor?{cursor}:{}) }), { headers }, true);
@@ -193,14 +204,14 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         const value = await providerRequest('https://api.notion.com/v1/search', { method: 'POST', headers: { ...headers, 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' }, body: JSON.stringify({ page_size: 50, ...(cursor ? { start_cursor: cursor } : {}), filter: { property: 'object', value: 'page' }, sort: { direction: 'descending', timestamp: 'last_edited_time' } }) });
         items = (value.results ?? []).map(item => { const property = Object.values(item.properties ?? {}).find(property => property.type === 'title'); return { id: 'page:' + item.id, title: title(property?.title?.map(part => part.plain_text ?? part.text?.content ?? '').join(''), '제목 없는 페이지'), dueDate: null, kind: 'page' }; }); nextCursor = value.next_cursor || null;
       }
-      const latest=store.connection(userId,provider,record.connectionId);if(!latest||latest.accessToken!==record.accessToken)throw fail(409,'서비스 연결이 바뀌었어요. 다시 불러와주세요.');
+      const latest=store.connection(userId,provider,record.connectionId);if(!latest||(provider==='google'&&record.connectionId?latest.connectionId!==record.connectionId||latest.accountId!==record.accountId||!latest.features.includes(feature):latest.accessToken!==record.accessToken))throw fail(409,'서비스 연결이 바뀌었어요. 다시 불러와주세요.');
       if(feature!=='channels' && !(feature==='tasks'&&!channel))items=items.map(item=>({...item,id:(record.connectionId??'legacy')+':'+item.id}));
       if (feature !== 'channels' && !(feature === 'tasks' && !channel)) store.cacheResources(userId, provider, items);
       return { items, hasMore: !!nextCursor, nextCursor, limit: feature === 'gmail' ? 20 : 50 };
     },
     naver,
-    async inspect(user,operation,args){return operation.startsWith('naver.')?naver.inspect(user,operation,args):createProviderActions({store,token,request:providerRequest}).inspect(user,operation,args);},
-    async execute(user,operation,args,preview,actionId,guard=()=>true){const active=()=>guard()&&(!store.accountActive||store.accountActive(user));return operation.startsWith('naver.')?naver.execute(user,operation,args,preview,actionId,active):createProviderActions({store,token,request:providerRequest}).execute(user,operation,args,preview,actionId,active);},
+    async inspect(user,operation,args){return operation.startsWith('naver.')?naver.inspect(user,operation,args):createProviderActions({store,token,request:providerRequest,googleRead}).inspect(user,operation,args);},
+    async execute(user,operation,args,preview,actionId,guard=()=>true){const active=()=>guard()&&(!store.accountActive||store.accountActive(user));return operation.startsWith('naver.')?naver.execute(user,operation,args,preview,actionId,active):createProviderActions({store,token,request:providerRequest,googleRead}).execute(user,operation,args,preview,actionId,active);},
     async searchDocuments(userId,provider,query,connectionId){
       if(!['google','notion'].includes(provider)||typeof query!=='string'||!query.trim()||query.length>120)throw fail(400,'문서 검색어를 확인해주세요.');
       const record=await token(userId,provider,connectionId),headers={Authorization:'Bearer '+record.accessToken};let value,items;
@@ -288,9 +299,9 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       } catch {} finally { const latest=store.connection(userId,provider,record.connectionId);if(latest?.accessToken===record.accessToken)store.removeConnection(userId, provider,provider==='google'?record.connectionId:undefined); }
       return { revoked };
     },
-    async calendarDetails(userId,input){return createCalendarWorkspace({store,token,request:providerRequest}).saveDetails(userId,input);},
-    async calendarReminders(userId){return createCalendarWorkspace({store,token,request:providerRequest}).reminders(userId);},
-    async calendarList(userId,cursor){return createCalendarWorkspace({store,token,request:providerRequest}).calendars(userId,cursor);},
-    async calendar(userId,month,cursor,options) { if(options)return createCalendarWorkspace({store,token,request:providerRequest}).events(userId,month,cursor,options); const record=store.connection(userId,'google');if(!record?.features.includes('calendar'))return month?{items:[],nextCursor:null}:[];const result=await this.resources(userId,'google','calendar',null,cursor,'incomplete',month);return month?result:result.items; },
+    async calendarDetails(userId,input){return createCalendarWorkspace({store,token,read:googleRead}).saveDetails(userId,input);},
+    async calendarReminders(userId){return createCalendarWorkspace({store,token,read:googleRead}).reminders(userId);},
+    async calendarList(userId,cursor){return createCalendarWorkspace({store,token,read:googleRead}).calendars(userId,cursor);},
+    async calendar(userId,month,cursor,options) { if(options)return createCalendarWorkspace({store,token,read:googleRead}).events(userId,month,cursor,options); const record=store.connection(userId,'google');if(!record?.features.includes('calendar'))return month?{items:[],nextCursor:null}:[];const result=await this.resources(userId,'google','calendar',null,cursor,'incomplete',month);return month?result:result.items; },
   };
 }

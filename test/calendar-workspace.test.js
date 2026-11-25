@@ -69,3 +69,26 @@ test('transient calendar GET recovers once, persistent errors stay bounded, prov
 test('AI consent scope stays stable for normal token refresh but changes with provider account or grants',async()=>{const h=await setup();try{const a=createAssistant(h.store,createIntegrations(h.store,env)),before=a.status(h.user).consentScopes.google,record=h.store.connection(h.user,'google');h.store.saveConnection(h.user,'google',{...record,accessToken:'refreshed-access',expiresAt:Date.now()+3600000},'Google');assert.equal(a.status(h.user).consentScopes.google,before);h.store.saveConnection(h.user,'google',{...record,features:['calendar']},'Google');assert.notEqual(a.status(h.user).consentScopes.google,before);h.store.saveConnection(h.user,'google',{...record,connectionId:'another-connection'},'Google');assert.notEqual(a.status(h.user).consentScopes.google,before);assert.equal(JSON.stringify(a.status(h.user)).includes('fixture-access'),false);}finally{await h.close();}});
 
 test('remembered consent rejects a replaced connection before any AI request',async()=>{const h=await setup();try{const api=createIntegrations(h.store,env);let calls=0;const ai=createAssistant(h.store,api,{AI_ENABLED:'true',OPENAI_API_KEY:'fixture-key',OPENAI_MODEL:'fixture'},async()=>{calls++;throw Error('unexpected AI call');}),consentScopes=ai.status(h.user).consentScopes,record=h.store.connection(h.user,'google');h.store.saveConnection(h.user,'google',{...record,connectionId:'replaced'},'Google');await assert.rejects(ai.chat(h.user,{message:'자료를 정리해줘',consent:true,consentScopes,providers:['google']}),e=>e.status===409);assert.equal(calls,0);}finally{await h.close();}});
+
+test('concurrent Google calendar and tasks reads recover a rejected access token with one refresh',async()=>{
+ const h=await setup();
+ try{
+  const record=h.store.connection(h.user,'google');
+  h.store.saveConnection(h.user,'google',{...record,features:[...record.features,'tasks'],refreshToken:'valid-refresh',expiresAt:Date.now()+3600000},'Google');
+  let refreshes=0,staleReads=0,freshReads=0;
+  const api=createIntegrations(h.store,env,async(url,options)=>{
+   if(String(url).endsWith('/token')){refreshes++;return response({access_token:'fresh-access',expires_in:3600});}
+   if(options.headers.Authorization==='Bearer fixture-access'){
+    staleReads++;
+    return new Response('{"error":"invalid_token"}',{status:401});
+   }
+   assert.equal(options.headers.Authorization,'Bearer fresh-access');
+   freshReads++;
+   return response({items:[]});
+  });
+  await Promise.all([api.calendarList(h.user),api.resources(h.user,'google','tasks')]);
+  assert.equal(staleReads,2);
+  assert.equal(freshReads,2);
+  assert.equal(refreshes,1);
+ }finally{await h.close();}
+});
