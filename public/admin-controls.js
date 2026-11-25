@@ -4,8 +4,11 @@ export function createAdminControls({state,esc,panel,table,fields,date,instant,b
  const memberRoot=m=>'/api/admin/members/'+encodeURIComponent(m.id);
  function member(m,section){const root=memberRoot(m);let html='';
   if(section==='profile'&&can('members.write'))html+=panel('회원 상태 관리',form(root+'/status',`<label>이용 상태<select name="status" aria-label="이용 상태"><option value="active" ${m.status==='active'?'selected':''}>이용 가능</option><option value="suspended" ${m.status==='suspended'?'selected':''}>이용 정지</option></select></label>${reason}${submit('회원 상태 저장')}`,m.version)+form(root+'/sessions/revoke',reason+submit('모든 기기 로그아웃'),m.version)+'<p class="description">정지하면 기존 로그인도 종료되고 예약·원본 처리도 멈춥니다. 해제 후 다시 로그인할 수 있어요. 데이터는 보존합니다.</p>');
+  if((section==='profile'||section==='passes')&&can('passes.write')){
+   const options='<option value="" selected disabled>이용권 선택</option>'+plans();
+   html+=panel('이용권 발급',form(root+'/passes',`<label>이용권<select name="plan" aria-label="이용권" required>${options}</select></label><label>종료일 (비우면 만료 없음)<input name="endsAt" type="datetime-local"></label>${reason}${submit('이용권 발급')}`,m.version)+'<p class="description">발급하면 선택한 이용권이 즉시 적용되고 기존 수동 이용권을 대체합니다.</p>');
+  }
   if(section==='passes'&&can('passes.write')){
-   html+=panel('이용권 발급',form(root+'/passes',`<label>상품<select name="plan">${plans('pro')}</select></label><label>종료일 (비우면 만료 없음)<input name="endsAt" type="datetime-local"></label>${reason}${submit('이용권 발급')}`,m.version)+'<p class="description">지금부터 적용합니다. 기존 수동 이용권을 대체하며, 결제나 AI 예산을 생성하지 않습니다. 회수·만료되면 무료로 전환됩니다.</p>');
    for(const p of m.entitlements.filter(p=>p.source==='operator'&&!p.revokedAt))html+=panel('이용권 변경 · '+plan(p.plan),form(root+'/passes/'+encodeURIComponent(p.id),`<label>상품<select name="plan">${plans(p.plan)}</select></label><label>종료일<input name="endsAt" type="datetime-local" value="${p.endsAt?localDate(p.endsAt):''}"></label>${reason}${submit('이용권 변경')}<button class="pill-button danger" name="intent" value="revoke" type="submit">이용권 회수</button>`,m.version,'PATCH'));
   }
   if(section==='connections'){
