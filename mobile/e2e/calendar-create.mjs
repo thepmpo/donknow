@@ -6,14 +6,20 @@ const server=http.createServer(async(req,res)=>{const path=new URL(req.url,'http
 const origin='https://view-welcome.test';
 try{
  for(const [mode,width,height] of [['duo',430,844],['standard',390,844],['web',1100,860]].filter(([mode])=>!process.env.CREATE_SURFACE||process.env.CREATE_SURFACE===mode)){
-  const page=await browser.newPage({viewport:{width,height},hasTouch:true,isMobile:mode!=='web'}),errors=[],actions=[],todos=[],saved=[],details=[];let writes=0,sourceFailure=false,authorization=null;
+  const page=await browser.newPage({viewport:{width,height},hasTouch:true,isMobile:mode!=='web'}),errors=[],actions=[],todos=[],saved=[],details=[];let writes=0,sourceFailure=false,authorization=null,completionGate=null,waitingCompletion=0;
   page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));await page.emulateMedia({reducedMotion:'reduce',colorScheme:process.env.CREATE_COLOR_SCHEME||'dark'});await page.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
   await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
   await page.route(origin+'/**',async route=>{const r=route.request(),p=new URL(r.url()).pathname,method=r.method(),body=()=>r.postDataJSON();
    if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'view-user',email:'view@example.test',emailVerified:true}}});
-   if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,todoNotes:true}});
+   if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,todoNotes:true,todoOrdering:1}});
    if(p==='/api/todos'){if(method==='POST'){const todo={...body(),id:'todo-'+todos.length,done:false};todos.push(todo);return route.fulfill({status:201,json:todo});}return route.fulfill({json:todos});}
+   if(p==='/api/todo-order'&&method==='PUT'){
+    const {ids}=body();
+    for(const item of todos)item.order=ids.indexOf(item.id);
+    return route.fulfill({json:todos});
+   }
    if(p.startsWith('/api/todos/')&&method==='PATCH'){
+    if(completionGate){waitingCompletion++;await completionGate;}
     const item=todos.find(t=>t.id===p.split('/').at(-1));
     Object.assign(item,body(),{completedAt:body().done?new Date().toISOString():null});
     return route.fulfill({json:item});
@@ -69,13 +75,23 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await openAdd();await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('재연결 후 유지할 초안');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).waitFor();assert.equal(await sheet.getByText('기본 캘린더',{exact:true}).count(),0);assert.equal(await sheet.getByRole('radio',{name:'캘린더 기본 캘린더',exact:true}).count(),0);await page.screenshot({path:out+'/standard-connection-required.png'});
    await page.context().route('https://accounts.google.com/**',r=>r.fulfill({contentType:'text/html',body:'<p>연결 확인 테스트</p>'}));await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).click();await sheet.waitFor({state:'detached'});await page.getByRole('button',{name:'Google 캘린더 연결 관리',exact:true}).click();await page.getByRole('button',{name:'연결 권한 관리',exact:true}).click();const permission=page.getByRole('button',{name:'연결 권한 다시 선택',exact:true});await permission.waitFor();const popupPromise=page.waitForEvent('popup');await permission.click();const popup=await popupPromise;await popup.waitForURL('https://accounts.google.com/**');assert.equal(authorization.mode,'reauthorize');assert.equal(authorization.connectionId,'connection-google');assert.ok(authorization.features.includes('calendarWrite'));sourceFailure=false;await popup.close();await page.bringToFront();await page.getByRole('tab',{name:'캘린더',exact:true}).click();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).waitFor();assert.equal(await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).inputValue(),'재연결 후 유지할 초안');await page.waitForFunction(()=>document.querySelector('[aria-label="저장할 캘린더 선택"]')?.textContent.includes('내 일정'));assert.equal(writes,1);await page.screenshot({path:out+'/standard-connection-restored.png'});await sheet.getByRole('button',{name:'닫기',exact:true}).click();
   }
-  if(mode!=='web'){
+  {
    await page.setViewportSize({width,height});
-   await page.getByRole('tab',{name:/^(할 일|Todo 리스트)$/}).click();
+   if(mode==='web'){
+    todos[0].order=0;
+    todos.push({...todos[0],id:'todo-second',title:'주변 행 위치 검증',order:1});
+    await page.reload();
+    await page.evaluate(()=>window.viewWelcomeFixture.showTodos());
+   }
+   else await page.getByRole('tab',{name:/^(할 일|Todo 리스트)$/}).click();
    const row=page.getByTestId('todo-todo-0');
    async function swipe(target,direction,verticalStep=4){
     const box=await target.boundingBox();
     const x=box.x+box.width/2,y=box.y+box.height/2;
+    if(mode==='web'){
+     await page.mouse.move(x,y);await page.mouse.down();
+     await page.mouse.move(x+direction*80,y,{steps:8});await page.mouse.up();return;
+    }
     const session=await page.context().newCDPSession(page);
     try{
      await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
@@ -93,10 +109,39 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await page.getByRole('button',{name:'할 일 편집 취소',exact:true}).click();
    await title.waitFor({state:'detached'});
    const selection=row.getByRole('checkbox',{name:'리뷰 할 일 저장 선택',exact:true});
+   const originalColor=await row.evaluate(el=>getComputedStyle(el).backgroundColor);
    await swipe(row,1);await selection.waitFor();assert.equal(await selection.getAttribute('aria-checked'),'true');assert.equal(todos[0].done,false);
+   assert.notEqual(await row.evaluate(el=>getComputedStyle(el).backgroundColor),originalColor);
+   assert.equal(await row.evaluate(el=>getComputedStyle(el).borderTopLeftRadius),'14px');
    await swipe(row,1);await selection.waitFor({state:'detached'});
+   if(mode==='web'){
+    const other=page.getByTestId('todo-todo-second');
+    const from=await row.boundingBox(),to=await other.boundingBox();
+    await page.mouse.move(from.x+80,from.y+from.height/2);await page.mouse.down();
+    await page.getByTestId('todo-drag-preview').waitFor();
+    assert.equal(await page.getByTestId('todo-selection-toolbar').count(),0);
+    await page.mouse.move(from.x+80,to.y+to.height-3,{steps:10});
+    const reordered=page.waitForResponse(r=>r.url().endsWith('/api/todo-order')&&r.request().method()==='PUT');
+    await page.mouse.up();assert.equal((await reordered).status(),200);
+    assert.equal(todos.find(t=>t.id==='todo-second').order,0);
+    const settled=await other.boundingBox();
+    await page.waitForTimeout(220);
+    assert.ok(Math.abs((await other.boundingBox()).y-settled.y)<2,'neighbor stays settled after drop');
+   }
+   let releaseCompletion;
+   completionGate=new Promise(resolve=>{releaseCompletion=resolve;});
    await swipe(row,-1);await page.waitForFunction(()=>document.querySelector('[data-testid="completion-countdown-todo-0"]'));
-   await page.getByRole('tab',{name:/^(log|완료 기록)$/i}).click();
+   await swipe(row,-1);
+   await row.getByRole('checkbox',{name:'리뷰 할 일 저장 완료하기',exact:true}).waitFor();
+   await swipe(row,1);await selection.waitFor();
+   assert.equal(await selection.getAttribute('aria-checked'),'true');
+   assert.equal(waitingCompletion,1,'selection works before the first completion write resolves');
+   await swipe(row,1);await selection.waitFor({state:'detached'});
+   completionGate=null;releaseCompletion();
+   await swipe(row,-1);
+   await row.getByRole('checkbox',{name:'리뷰 할 일 저장 미완료로 변경',exact:true}).waitFor();
+   if(mode==='web')await page.evaluate(()=>window.viewWelcomeFixture.showLog());
+   else await page.getByRole('tab',{name:/^(log|완료 기록)$/i}).click();
    await page.clock.setFixedTime(new Date('2026-11-25T10:00:05Z'));
    const logged=page.getByTestId('log-list-scroll').getByTestId('todo-todo-0');
    await logged.waitFor();
@@ -105,6 +150,6 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await swipe(logged,1);await logSelection.waitFor({state:'detached'});
    await swipe(logged,-1);await logged.getByRole('checkbox',{name:'리뷰 할 일 저장 완료하기',exact:true}).waitFor();
   }
-  console.log('PASS '+mode+': long press, top tabs, retained drafts, repeat/invite preview, single original write, metadata and Todo save');await page.close();
+  console.log('PASS '+mode+': calendar creation, selected shape, rapid select during pending completion and log swipe');await page.close();
  }
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

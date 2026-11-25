@@ -1,3 +1,4 @@
+import type {PointerEvent} from 'react-native';
 import {TodoGestureRow,TodoGestureScroll} from './todo-gestures';
 import type {RowPoint} from './todo-gesture-types';
 import {ScreenHeading} from './ScreenHeading';
@@ -16,7 +17,7 @@ import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {Animated, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share} from 'react-native';
+import {Animated, Easing, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share} from 'react-native';
 import {DateTimeField} from './DateTimeField';
 import {todoReminderInstant,reminderDateLabel} from './calendar-display';
 import {deviceZone} from './calendar-model';
@@ -57,7 +58,7 @@ export function Page({ children, refreshControl, compact = false, scrollRef,onSc
   const pageScroll=<ScrollView directionalLockEnabled={todoGestures} style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:chrome?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{body}</ScrollView>;
   return <MotionView style={{flex:1,minHeight:0}} distance={0}>{chrome&&<View testID="fixed-page-heading" onLayout={event=>setChromeHeight(event.nativeEvent.layout.height)} style={{paddingHorizontal:layout.pageInset,paddingTop:layout.pageTop,backgroundColor:colors.bg,zIndex:1}}>{heading}{pinned}</View>}{todoGestures?<TodoGestureScroll>{pageScroll}</TodoGestureScroll>:pageScroll}{!!refresh&&!indicator.expired&&(indicator.visible||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:chromeHeight,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
 }
-export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLift,onDrag,onDrop,onSelectAccessible }: { onLift?:(point:RowPoint)=>void;onDrag?:(point:RowPoint)=>void;onDrop?:(completed:boolean)=>void;onSelectAccessible?:()=>void;selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
+export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, canSelectWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLift,onDrag,onDrop,onSelectAccessible }: { onLift?:(point:RowPoint)=>void;onDrag?:(point:RowPoint)=>void;onDrop?:(completed:boolean)=>void;onSelectAccessible?:()=>void;selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; canSelectWhileBusy?:boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
   const desktop=useDesktopPresentation();
   const reduced = useReducedMotion();
   const reducedRef = useRef(reduced); reducedRef.current = reduced;
@@ -93,17 +94,29 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   }, [todo.done, reduced, checked]);
   const onToggleRef = useRef(onToggle); onToggleRef.current = onToggle;
   const busyRef = useRef(busy); busyRef.current = busy;
+  const selectionBlocked=useRef(busy&&!canSelectWhileBusy);
+  selectionBlocked.current=busy&&!canSelectWhileBusy;
   const toggleBlocked = useRef(busy && !canToggleWhileBusy); toggleBlocked.current = busy && !canToggleWhileBusy;
   const suppressUntil = useRef(0);
   const swiping = useRef(false);
-  function press(action?: () => void, toggle = false) { if (!swiping.current && !held.current && Date.now() >= suppressUntil.current && !(toggle ? toggleBlocked.current : busyRef.current)) action?.(); }
-  const reset = () => { offset.stopAnimation(); if (reducedRef.current) offset.setValue(0); else Animated.spring(offset, { toValue: 0, damping: 23, stiffness: 300, mass: 0.8, overshootClamping: true, useNativeDriver: Platform.OS !== 'web' }).start(); };
+  function press(action?:()=>void,kind:'edit'|'toggle'|'select'='edit') {
+    const blocked=kind==='toggle'?toggleBlocked.current:kind==='select'?selectionBlocked.current:busyRef.current;
+    if(!swiping.current&&!held.current&&Date.now()>=suppressUntil.current&&!blocked)action?.();
+  }
+  const beginPress=()=>{if(!swiping.current&&!held.current)suppressUntil.current=0;};
+  const reset = () => {
+    if(Platform.OS!=='web')return;
+    offset.stopAnimation();
+    if(reducedRef.current)offset.setValue(0);
+    else Animated.timing(offset,{toValue:0,duration:175,easing:Easing.out(Easing.cubic),useNativeDriver:false}).start();
+  };
   useEffect(() => () => offset.stopAnimation(), [offset]);
   const swipeSelect = useRef(onSelect);
   swipeSelect.current = onSelect;
   const swipeOrigin = useRef(0);
   const held = useRef(false);
   const webGesture = useRef<'swipe'|'drag'|null>(null);
+  const mouse=useRef<{id:number;start:RowPoint;kind:'swipe'|'drag'|null}|null>(null);
   const drag = useRef({onLift,onDrag,onDrop});
   drag.current={onLift,onDrag,onDrop};
   function startSwipe() {
@@ -119,7 +132,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
     suppressUntil.current=Date.now()+250;
     reset();
     if(!completed||Math.abs(distance)<48)return;
-    if(distance>0){if(!busyRef.current)swipeSelect.current?.();}
+    if(distance>0){if(!selectionBlocked.current)swipeSelect.current?.();}
     else if(!toggleBlocked.current)onToggleRef.current();
   }
   function lift(point:RowPoint) {
@@ -132,11 +145,39 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
     held.current=false;suppressUntil.current=Date.now()+250;
     drag.current.onDrop?.(completed);
   }
+  function mouseStart(event:PointerEvent){
+    const e=event.nativeEvent;
+    if(e.pointerType!=='mouse'||e.button!==0)return;
+    mouse.current={id:e.pointerId,start:{x:e.pageX,y:e.pageY},kind:null};
+  }
+  function mouseMove(event:PointerEvent){
+    const e=event.nativeEvent,active=mouse.current;
+    if(!active||e.pointerId!==active.id||!(e.buttons&1))return;
+    const distance=e.pageX-active.start.x,vertical=e.pageY-active.start.y;
+    if(!active.kind){
+      if(held.current)active.kind='drag';
+      else if(Math.abs(distance)>=10&&Math.abs(distance)>=Math.abs(vertical)*0.85&&
+        (distance>0?!!swipeSelect.current&&!selectionBlocked.current:!toggleBlocked.current)){
+        active.kind='swipe';startSwipe();
+      }else return;
+      (event.currentTarget as unknown as HTMLElement)?.setPointerCapture?.(e.pointerId);
+    }
+    if(active.kind==='drag')drag.current.onDrag?.({x:e.pageX,y:e.pageY});
+    else moveSwipe(distance);
+  }
+  function mouseEnd(event:PointerEvent,completed:boolean){
+    const e=event.nativeEvent,active=mouse.current;
+    if(!active||e.pointerId!==active.id)return;
+    mouse.current=null;
+    if(held.current)drop(completed);
+    else if(active.kind==='swipe')finishSwipe(e.pageX-active.start.x,completed);
+  }
   const responder = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponderCapture: (_,g)=>{
+      if(mouse.current)return false;
       if(held.current)return true;
       if(g.numberActiveTouches!==1||Math.abs(g.dx)<10||Math.abs(g.dx)<Math.abs(g.dy)*0.85)return false;
-      if(g.dx>0?busyRef.current||!swipeSelect.current:toggleBlocked.current)return false;
+      if(g.dx>0?selectionBlocked.current||!swipeSelect.current:toggleBlocked.current)return false;
       swipeOrigin.current=g.dx;
       return true;
     },
@@ -167,14 +208,14 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const provenance=todoSource(todo);
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View pointerEvents="none" aria-hidden style={s.swipeBack}><Text style={s.swipeBackText}>{onSelect ? selected ? '선택 취소' : '선택' : ''}</Text><Text style={s.swipeBackText}>{todo.done ? '되돌리기' : '완료'}</Text></View>
-    <TodoGestureRow canSwipeLeft={!busy||canToggleWhileBusy} canSwipeRight={!!onSelect&&!busy} canLift={canLift}
-      onSwipeStart={startSwipe} onSwipeMove={moveSwipe} onSwipeEnd={finishSwipe} onLift={lift} onDrag={point=>drag.current.onDrag?.(point)} onDrop={drop}>
+    <TodoGestureRow canSwipeLeft={!busy||canToggleWhileBusy} canSwipeRight={!!onSelect&&!selectionBlocked.current} canLift={canLift} reduced={reduced}
+      onSwipeStart={startSwipe} onSwipeEnd={finishSwipe} onLift={lift} onDrag={point=>drag.current.onDrag?.(point)} onDrop={drop}>
     <Animated.View collapsable={false} onLayout={event=>{if(!collapsing)rowHeight.current=event.nativeEvent.layout.height;}}
-      {...(Platform.OS==='web'?{...responder.panHandlers,onPointerUp:()=>drop(true),onTouchEnd:()=>drop(true),onTouchCancel:()=>drop(false)}:{})} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&{backgroundColor:colors.pale,borderRadius:12}, { transform: [{ translateX: offset }] }]} testID={`todo-${todo.id}`}>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{checked:todo.done,disabled:busy&&!canToggleWhileBusy}} accessibilityLabel={`${todo.title} ${todo.done?'미완료로 변경':'완료하기'}`} disabled={busy&&!canToggleWhileBusy} onPress={()=>press(onToggle,true)} hitSlop={compact?10:9} style={[s.checkbox,compact&&{width:24,height:24,borderRadius:7,borderWidth:1.5},desktop&&{width:19,height:19,borderRadius:5,borderWidth:1.5},todo.done&&s.checked]}>
+      {...(Platform.OS==='web'?{...responder.panHandlers,onPointerDown:mouseStart,onPointerMove:mouseMove,onPointerUp:(event:PointerEvent)=>mouseEnd(event,true),onPointerCancel:(event:PointerEvent)=>mouseEnd(event,false),onTouchEnd:()=>drop(true),onTouchCancel:()=>drop(false)}:{})} style={[s.todoRow,compact&&{borderBottomWidth:0,minHeight:todo.source||todo.dueDate?64:44,paddingVertical:6,gap:10}, selected&&s.selectedTodoRow,Platform.OS==='web'&&{transform:[{translateX:offset}]}]} testID={`todo-${todo.id}`}>
+      <Pressable accessibilityRole="checkbox" accessibilityState={{checked:todo.done,disabled:busy&&!canToggleWhileBusy}} accessibilityLabel={`${todo.title} ${todo.done?'미완료로 변경':'완료하기'}`} disabled={busy&&!canToggleWhileBusy} onPressIn={beginPress} onPress={()=>press(onToggle,'toggle')} hitSlop={compact?10:9} style={[s.checkbox,compact&&{width:24,height:24,borderRadius:7,borderWidth:1.5},desktop&&{width:19,height:19,borderRadius:5,borderWidth:1.5},todo.done&&s.checked]}>
         <Animated.Text style={[s.checkText,{opacity:checked,transform:[{scale:checked.interpolate({inputRange:[0,1],outputRange:[0.7,1]})}]}]}>✓</Animated.Text>
       </Pressable>
-      <Pressable disabled={(!onEdit&&selected===undefined) || busy} onPress={() => selected!==undefined?press(onSelect):press(onEdit)} onLongPress={canLift&&Platform.OS==='web'?event=>lift({x:event.nativeEvent.pageX,y:event.nativeEvent.pageY}):undefined} delayLongPress={320} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={canLift?'길게 눌러 끌면 옮길 수 있어요.':undefined} accessibilityActions={onSelectAccessible?[{name:'longpress',label:'할 일 선택 및 이동 메뉴'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onSelectAccessible?.();}} style={s.todoBody}>
+      <Pressable disabled={selected!==undefined?selectionBlocked.current:!onEdit||busy} onPressIn={beginPress} onPress={() => selected!==undefined?press(onSelect,'select'):press(onEdit)} onLongPress={canLift&&Platform.OS==='web'?event=>lift({x:event.nativeEvent.pageX,y:event.nativeEvent.pageY}):undefined} delayLongPress={320} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={canLift?'길게 눌러 끌면 옮길 수 있어요.':undefined} accessibilityActions={onSelectAccessible?[{name:'longpress',label:'할 일 선택 및 이동 메뉴'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onSelectAccessible?.();}} style={s.todoBody}>
         <Text numberOfLines={2} style={[s.todoTitle,desktop&&{fontSize:13,lineHeight:21,fontWeight:'500'}, todo.done && !log && s.doneText]}>{todo.title}</Text>
         {pending ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `${log?'되돌림':'완료'} · ${countdown}초 후 ${log?'할 일':'log'}로 이동` : `${log?'되돌림':'완료'} · ${log?'할 일':'log'}로 이동`}</Text> : <View style={s.todoMetadata}>
           <Text numberOfLines={1} style={[s.todoDate,{flexShrink:0},desktop&&s.desktopTodoDate]}>{date}</Text>
@@ -186,9 +227,9 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
         {!!todo.saveState&&<Text accessibilityLiveRegion="polite" style={s.todoDate}>{todo.saveState==='saving'?'저장 중':'저장 결과 확인 중'}</Text>}
         {!!todo.sourceSync&&todo.sourceSync.state!=='succeeded'&&!pending&&<Text style={[s.todoDate,{color:todo.sourceSync.state==='queued'?colors.muted:colors.danger}]}>{todo.sourceSync.state==='queued'?'원본 반영 중':'원본 저장 확인 필요'}</Text>}
       </Pressable>
-      {selected!==undefined?<Pressable accessibilityRole="checkbox" accessibilityLabel={`${todo.title} 선택`} accessibilityState={{checked:selected,disabled:busy}} disabled={busy} onPress={()=>press(onSelect)} style={s.rowAccessory}>
+      {selected!==undefined?<Pressable accessibilityRole="checkbox" accessibilityLabel={`${todo.title} 선택`} accessibilityState={{checked:selected,disabled:selectionBlocked.current}} disabled={selectionBlocked.current} onPressIn={beginPress} onPress={()=>press(onSelect,'select')} style={s.rowAccessory}>
         <Ionicons name={selected?'checkmark-circle':'ellipse-outline'} size={21} color={selected?colors.blueText:colors.muted}/>
-      </Pressable>:pending || log ? <Pressable onPress={() => press(onToggle, true)} disabled={busy && !canToggleWhileBusy} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.more}><Text style={s.restore}>되돌리기</Text></Pressable> : onOpenSource ? <Pressable accessibilityRole="link" accessibilityLabel={`${todo.title} 원본 열기`} onPress={()=>press(onOpenSource)} disabled={busy} style={s.rowAccessory}><Ionicons name="open-outline" size={21} color={colors.blueText}/></Pressable> : onEdit&&!compact ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : compact ? <View pointerEvents="none" style={s.rowAccessory}/> : null}
+      </Pressable>:pending || log ? <Pressable onPress={() => press(onToggle,'toggle')} disabled={busy && !canToggleWhileBusy} onPressIn={beginPress} accessibilityRole="button" accessibilityLabel={`${todo.title} 되돌리기`} style={s.rowAccessory}><Text style={s.restore}>되돌리기</Text></Pressable> : onOpenSource ? <Pressable accessibilityRole="link" accessibilityLabel={`${todo.title} 원본 열기`} onPress={()=>press(onOpenSource)} disabled={busy} style={s.rowAccessory}><Ionicons name="open-outline" size={21} color={colors.blueText}/></Pressable> : onEdit&&!compact ? <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정 메뉴`} onPress={() => press(onEdit)} disabled={busy} style={s.more}><Text style={s.moreText}>···</Text></Pressable> : compact ? <View pointerEvents="none" style={s.rowAccessory}/> : null}
     </Animated.View>
     </TodoGestureRow>
   </Animated.View>;
@@ -286,9 +327,10 @@ export const s = StyleSheet.create({
   button: { backgroundColor: colors.action, paddingHorizontal: 20, paddingVertical: 14, minHeight: 56, borderRadius: radius.button, flexDirection: 'row', gap: spacing.sm, alignItems: 'center', justifyContent: 'center' },
   buttonText: { ...typography.body, color: colors.white, fontWeight: '600', textAlign: 'center', flexShrink: 1 }, quietButton: { backgroundColor: colors.pale, minHeight: 48 },
   todoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bg, paddingVertical: 6, gap: spacing.md, minHeight: 60, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
-  swipeWrap: { overflow: 'hidden' }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },
+  selectedTodoRow: {backgroundColor:colors.todoSelection,borderRadius:14},
+  swipeWrap: { overflow: 'hidden',borderRadius:14 }, swipeBack: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.pale, padding: 20 }, swipeBackText: { ...typography.detail, color: colors.blueText, fontWeight: '600' },
   checkbox: { width: 26, height: 26, borderRadius: 8, borderWidth: 1.5, borderColor: colors.subtle, alignItems: 'center', justifyContent: 'center' }, checked: { backgroundColor: colors.blue, borderColor: colors.blue }, checkText: { color: colors.white, fontSize: 18 },
-  rowAccessory: {width:44,minHeight:44,alignItems:'flex-end',justifyContent:'center'},
+  rowAccessory: {width:54,minHeight:44,alignItems:'flex-end',justifyContent:'center'},
   todoMetadata: {flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},
   todoProvenance: {flexDirection:'row',alignItems:'center',justifyContent:'flex-end',flexShrink:1,gap:5},
   desktopTodoDate: {fontSize:10,lineHeight:17},

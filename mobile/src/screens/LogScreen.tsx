@@ -43,7 +43,7 @@ export function LogScreen({store}: {store: TodoStore}) {
       selected={selected.length ? selected.includes(todo.id) : undefined}
       onSelect={() => toggleSelection(todo.id)}
       pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]}
-      busy={store.busyIds.includes(todo.id)} canToggleWhileBusy={store.completionIds.includes(todo.id)}
+      busy={store.busyIds.includes(todo.id)} canToggleWhileBusy={store.completionIds.includes(todo.id)} canSelectWhileBusy={store.completionIds.includes(todo.id)}
       onToggle={() => {void store.update(todo.id, {done:!todo.done});}}/>)}
   </Page>;
 }

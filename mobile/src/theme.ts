@@ -19,7 +19,7 @@ const semantic = {
  text: ['#191f28','#f5f5f7'], secondary: ['#4e5968','#d1d1d6'], muted: ['#6b7684','#98989d'],
  subtle: ['#8b95a1','#8e8e93'], outsideMonth: ['#9299a3','#77777e'],
  blue: ['#3182f6','#64a8ff'], action: ['#1b64da','#1b64da'], blueText: ['#1b64da','#64a8ff'],
- line: ['#e5e8eb','#38383a'], pale: ['#e8f3ff','#10243e'], white: ['#ffffff','#ffffff'],
+ line: ['#e5e8eb','#38383a'], todoSelection: ['#deedff','#173655'], pale: ['#e8f3ff','#10243e'], white: ['#ffffff','#ffffff'],
  danger: ['#d92d40','#ff626c'],
 } as const;
 if(Platform.OS==='web'&&typeof document!=='undefined'&&!document.getElementById('duckduck-system-theme')){
