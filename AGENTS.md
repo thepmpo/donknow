@@ -1,3 +1,7 @@
+## 2026-11-25 — 1주 방향 확인·여러 날/논 Duo 시안 후속
+
+사용자가 월~금5열+오른쪽 토/일 상하 방향을 확인하고 시간 오름차순, 화~수에 걸친 일정 및 논 Duo 시안을 요청했다. multi-day.html은 화11/24~수11/25 연결 막대를 날짜 아래 띠로 표시하고 당일 일정은 시작 시간순, 시간 없는 할 일은 아래에 둔다. 논 Duo는 오른쪽 하드웨어 열 없이 월~일7열+하단탭으로 제안했다. 이 요청은 여전히 시안 단계이며 앱2주뷰/조회기간을 변경하지 않는다. 원본 시안 보존, 후속파일 design-previews/docen-one-week/multi-day.html 및 artifacts/week-multiday-preview/. 상세 docs/mobile-refinements-week-preview.md 후속 절.
+
 ## 2026-11-25 — 헤더 후속·일간 스와이프·1주 시안 대기
 
 사용자 1~6번 요청 반영: 모바일 워드마크26px/좁은폭20px, AI는 왼쪽docen.ai만·가운데 제목 제거. 일간 agenda24pt 여백 및 본문 전체 좌우 하루 이동. 년월은 아래 줄 왼쪽, ellipsis 제거·년월 길게 누르기로 메뉴 유지. 날짜별/출처별 줄과log 수치/설명은 PagePinned로 고정, log ‘완료한 기록’ 소제목 삭제. 7번은 월~금5열+오른쪽 토/일 상하+카메라 예약 열의1주뷰를 HTML/PNG 시안으로만 제작했다. 사용자 확인 전 앱의2주뷰/데이터조회주기를1주로 바꾸지 않는다. 상세 docs/mobile-refinements-week-preview.md. 이전 기준82b550c/rollback-before-week-preview-20261125 보존.
