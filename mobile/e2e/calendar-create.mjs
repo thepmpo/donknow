@@ -18,6 +18,10 @@ try{
     for(const item of todos)item.order=ids.indexOf(item.id);
     return route.fulfill({json:todos});
    }
+   if(p.endsWith('/membership')&&method==='POST'){
+    const item=todos.find(t=>t.id===p.split('/').at(-2));
+    item.category=body().destination;return route.fulfill({json:item});
+   }
    if(p.startsWith('/api/todos/')&&method==='DELETE'){
     const index=todos.findIndex(t=>t.id===p.split('/').at(-1));if(index>=0)todos.splice(index,1);return route.fulfill({json:{ok:true}});
    }
@@ -54,6 +58,11 @@ try{
    await sheet.getByRole('button',{name:'캘린더 항목 추가',exact:true}).click();
   }
 await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).waitFor();
+  await page.waitForFunction(()=>{
+   const a=document.querySelector('[data-testid="calendar-create-tabs"]').getBoundingClientRect();
+   const b=document.querySelector('[data-testid="calendar-sheet-surface"]').getBoundingClientRect();
+   return Math.abs((a.left+a.width/2)-(b.left+b.width/2))<1;
+  });
   assert.equal(await sheet.getByLabel('일정 시작일',{exact:true}).inputValue(),'2026-11-25');
   const event=sheet.getByRole('tab',{name:'일정',exact:true}),todo=sheet.getByRole('tab',{name:/^(할 일|Todo 리스트)$/});assert.equal(await event.getAttribute('aria-selected'),'true');
   for(const label of ['일정 장소','일정 시간대 선택','첨부 파일 링크 추가'])assert.equal(await sheet.getByLabel(label,{exact:true}).count(),0);
@@ -135,12 +144,19 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await page.getByRole('button',{name:'선택한 할 일 예정일 변경',exact:true}).click();
    const dateDialog=page.getByRole('dialog',{name:'날짜 변경'});
    await dateDialog.getByRole('button',{name:'2026-11-25로 변경',exact:true}).waitFor();
+   const grid=dateDialog.getByTestId('month-picker-grid'),satDate=grid.getByRole('button',{name:'2026-11-28로 변경',exact:true});
+   const gridBounds=await grid.boundingBox(),satBounds=await satDate.boundingBox();
+   assert.ok(satBounds.x+satBounds.width<=gridBounds.x+gridBounds.width+1,'the final date column fits in the picker');
+
    assert.equal(await list.evaluate(el=>el.scrollTop),beforeDate);
    assert.equal(await selection.getAttribute('aria-checked'),'true');
    await page.screenshot({path:out+'/'+mode+'-todo-batch-date.png'});
    await closeSheet();
    await page.getByRole('button',{name:'선택한 할 일 이동',exact:true}).click();
-   await page.getByRole('dialog',{name:'이동'}).waitFor();await closeSheet();
+   await page.getByRole('dialog',{name:'이동'}).getByRole('button',{name:'업무로 이동',exact:true}).click();await sheet.waitFor({state:'detached'});
+   assert.equal(todos[0].category,'업무');
+   assert.equal(todos[0].dueDate,'2026-11-25','moving membership never changes the due date');
+   await swipe(row,1);await selection.waitFor();
    await page.getByRole('button',{name:'선택한 할 일 삭제',exact:true}).click();
    await page.getByRole('dialog',{name:'할 일 삭제'}).waitFor();await closeSheet();
    assert.equal(todos[0].done,false);
@@ -179,6 +195,14 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await logged.waitFor();
    const logSelection=logged.getByRole('checkbox',{name:'리뷰 할 일 저장 선택',exact:true});
    await swipe(logged,1);await logSelection.waitFor();assert.equal(await logSelection.getAttribute('aria-checked'),'true');
+   const logToolbar=page.getByTestId('log-selection-toolbar');
+   await logToolbar.getByRole('button',{name:'선택한 로그 되돌리기',exact:true}).waitFor();
+   const logListBounds=await page.getByTestId('log-list-scroll').boundingBox(),logBarBounds=await logToolbar.boundingBox();
+   assert.ok(Math.abs((logListBounds.x+logListBounds.width/2)-(logBarBounds.x+logBarBounds.width/2))<2,'the log toolbar is centered within its own pane');
+   await logToolbar.getByRole('button',{name:'선택한 로그 삭제',exact:true}).click();
+   await page.getByRole('dialog',{name:'로그 삭제'}).waitFor();
+   await closeSheet();
+
    await swipe(logged,1);await logSelection.waitFor({state:'detached'});
    await swipe(logged,-1);await logged.getByRole('checkbox',{name:'리뷰 할 일 저장 완료하기',exact:true}).waitFor();
    if(mode==='web'){

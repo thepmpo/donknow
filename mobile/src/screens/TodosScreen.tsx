@@ -10,13 +10,11 @@ import {Ionicons} from '@expo/vector-icons';
 import {dateKey} from '../domain';
 import type {Todo} from '../domain';
 import type {TodoStore} from '../useTodos';
-import {typography,layout} from '../theme';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useDuoTrailingNavigation} from '../DuoLayout';
+import {typography} from '../theme';
 import {Button,colors,Page,PagePinned,TodoEditorForm,TodoRow} from '../ui';
 import {ScrollRevealContext,ScrollRevealRegion,useFocusedField,useKeyboardInset} from '../useFocusedField';
 import {useDuoBackAction} from '../DuoBackNavigation';
-import {deviceZone,periodShift,shiftDay,visibleDays} from '../calendar-model';
+import {deviceZone,shiftDay} from '../calendar-model';
 import {calendarStartLabel} from '../calendar-display';
 import {useCalendarData} from '../useCalendarData';
 import {useCalendarSelection} from '../useCalendarSelection';
@@ -25,6 +23,9 @@ import {moveTodoIds,sourceAgenda,todoSource} from '../todo-organization';
 import type {TodoView} from '../todo-organization';
 import {safeCalendarLink} from '../calendar-model';
 import {CalendarSheet} from '../CalendarSheet';
+import {CalendarMonthPickerGrid} from '../CalendarMonthPickerGrid';
+import {TodoMoveMenu} from '../TodoMoveMenu';
+import {TodoSelectionToolbar,useTodoSelectionInset} from '../TodoSelectionToolbar';
 type Editor={id:number;todo?:Todo;date:string|null;group:string};
 type Target={key:string;before:string|null;day:string;group:string;y:number;height:number};
 type Drag={ids:string[];todo:Todo;group:string;x:number;y:number;width:number;height:number;geometry:LiftPreviewProps['geometry']};
@@ -36,7 +37,7 @@ export function TodosScreen(props:TodosScreenProps){
 }
 function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps){
  const desktop=useDesktopPresentation();
- const insets=useSafeAreaInsets(),duo=useDuoTrailingNavigation(),today=dateKey(new Date()),zone=deviceZone(),selection=useCalendarSelection(store);
+ const toolbarInset=useTodoSelectionInset(),today=dateKey(new Date()),zone=deviceZone(),selection=useCalendarSelection(store);
  const [view,setView]=useState<TodoView>('date'),[pulling,setPulling]=useState(false);
  const reduced=useReducedMotion();
  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
@@ -83,10 +84,10 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
   }finally{if(ownerRef.current===captured)setBatchBusy(false);}
  }
  async function openSource(todo:Todo){const captured=owner;try{const result=await store.featureRequest('/api/todos/'+encodeURIComponent(todo.id)+'/source-link') as {url:string};if(ownerRef.current!==captured)return;const url=safeCalendarLink(result.url);if(!url)throw Error('원본 링크를 확인하지 못했어요.');await Linking.openURL(url);}catch(e){if(ownerRef.current===captured)setBatchMessage(e instanceof Error?e.message:'원본 앱에서 이 할 일을 확인해주세요.');}}
- async function drop(ids:string[],target:Target,reorderOnly=false){
+ async function drop(ids:string[],target:Target){
   if(busy||editor)return;const captured=owner;setBatchBusy(true);setBatchMessage('');const failed:string[]=[];
   try{
-   if(view==='date'&&!reorderOnly)for(const id of ids){if(ownerRef.current!==captured||!store.isCurrentSession())return;const t=store.findTodo(id),date=target.day||null;if(t&&target.group!=='overdue'&&t.dueDate!==date){if(!await store.update(id,{dueDate:date}))failed.push(id);}}
+   if(view==='date')for(const id of ids){if(ownerRef.current!==captured||!store.isCurrentSession())return;const t=store.findTodo(id),date=target.day||null;if(t&&target.group!=='overdue'&&t.dueDate!==date){if(!await store.update(id,{dueDate:date}))failed.push(id);}}
    if(ownerRef.current!==captured||!store.isCurrentSession())return;
    const movable=ids.filter(id=>!failed.includes(id)),items=store.visible.filter(t=>!t.done),order=moveTodoIds(items,movable,target.before);
    const reordered=movable.length?await store.reorder(order):true;
@@ -186,9 +187,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
   return 0;
  }
  function register(key:string,node:React.ComponentRef<typeof View>|null,before:string|null,day:string,group:string){if(node)nodes.current.set(key,{node,before,day,group});else nodes.current.delete(key);}
- async function step(direction:-1|1){const first=selected[0],group=groups.find(g=>g.todos.some(t=>t.id===first));if(!group)return;const picked=new Set(selected),rest=group.todos.filter(t=>!picked.has(t.id)),ordered=group.todos;const at=ordered.findIndex(t=>t.id===first),next=direction<0?[...ordered.slice(0,at)].reverse().find(t=>!picked.has(t.id)):ordered.slice(at+1).find(t=>!picked.has(t.id));if(!next)return;const before=direction<0?next.id:rest[rest.findIndex(t=>t.id===next.id)+1]?.id??null;await drop(selected,{key:'step',before,day:store.findTodo(first)?.dueDate??'',group:group.key,y:0,height:0},true);}
- const toolbarInset=duo||desktop?0:layout.navigationHeight+insets.bottom;
- const selectedDates=new Set(selected.map(id=>store.findTodo(id)?.dueDate));
+ const selectedDates=new Set(selected.map(id=>store.findTodo(id)?.dueDate??null));
  const inline=(group:string)=>editor?.group===group?<ScrollRevealRegion key={editor.id} testID="todo-inline-region">{active&&<OverlayBack onClose={closeEditor} busy={editingBusy}/>}<TodoEditorForm presentation="inline" todo={editor.todo} dueDate={editor.date} store={store} onClose={closeEditor} onBusy={setEditingBusy}/></ScrollRevealRegion>:null;
  return <ScrollRevealContext.Provider value={focus.show}><View ref={surface} collapsable={false} onLayout={keyboardInset.measure} style={{flex:1,minHeight:0}}><View onLayout={focus.reveal} style={{flex:1,minHeight:0,marginBottom:keyboardInset.inset}}>
  <Page todoGestures testID="todos-list-scroll" scrollRef={scroll} scrollEnabled={!drag} bottomSpace={selecting?112:0} onScroll={e=>{scrollY.current=e.nativeEvent.contentOffset.y;focus.onScroll(e);}} compact refreshControl={<RefreshControl refreshing={pulling} onRefresh={()=>void pull()} enabled={!drag} tintColor={colors.blue}/>}>
@@ -211,41 +210,21 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
   {view==='date'&&calendar.phase==='error'&&<View style={styles.refresh}><Text style={styles.hint}>일정을 새로 확인하지 못했어요. 저장된 내용은 유지해요.</Text><Pressable accessibilityRole="button" accessibilityLabel="할 일 화면 일정 다시 확인" onPress={()=>void calendar.load()} style={styles.headingAction}><Text style={{color:colors.blueText}}>다시 확인</Text></Pressable></View>}
   {view==='date'&&!!Object.keys(calendar.cursors).length&&<Pressable accessibilityRole="button" accessibilityLabel="일정 더 불러오기" onPress={()=>void calendar.load(true)} style={styles.inlineAdd}><Text style={{color:colors.blueText}}>일정 더 불러오기</Text></Pressable>}
  </Page>
- {!!batchMessage&&!drag&&<View pointerEvents="none" style={[styles.batchNotice,{bottom:(duo||desktop?0:layout.navigationHeight+insets.bottom)+(selecting?100:12)}]}><Text accessibilityLiveRegion="polite" style={styles.hint}>{batchMessage}</Text></View>}
- {selecting&&!drag&&<View testID="todo-selection-toolbar" style={[styles.selectionToolbar,{marginBottom:toolbarInset+12}]}>
-  <Text accessibilityLiveRegion="polite" style={styles.hint}>{selected.length}개 선택</Text>
-  <View style={styles.batchActions}>
-   {([
-    ['date','calendar-outline','날짜 변경','선택한 할 일 예정일 변경'],
-    ['move','move-outline','이동','선택한 할 일 이동'],
-    ['delete','trash-outline','삭제','선택한 할 일 삭제'],
-   ] as const).map(([panel,icon,label,description])=><Pressable key={panel} accessibilityRole="button" accessibilityLabel={description} disabled={!selected.length||busy||!!batchPanel} onPress={()=>{if(panel==='date')setBatchMonth((store.findTodo(selected[0])?.dueDate??today).slice(0,7));setBatchPanel(panel);}} style={[styles.batchAction,(!selected.length||busy)&&{opacity:.4}]}>
-    <Ionicons name={icon} size={18} color={panel==='delete'?colors.danger:colors.blueText}/><Text style={[styles.addText,panel==='delete'&&styles.destructive]}>{label}</Text>
-   </Pressable>)}
-  </View>
- </View>}
+ {!!batchMessage&&!drag&&<View pointerEvents="none" style={[styles.batchNotice,{bottom:toolbarInset+(selecting?100:12)}]}><Text accessibilityLiveRegion="polite" style={styles.hint}>{batchMessage}</Text></View>}
+ {selecting&&!drag&&<TodoSelectionToolbar count={selected.length} inset={toolbarInset} busy={!selected.length||busy||!!batchPanel} testID="todo-selection-toolbar" actions={[
+  {icon:'calendar-outline',label:'날짜 변경',description:'선택한 할 일 예정일 변경',onPress:()=>{setBatchMonth((store.findTodo(selected[0])?.dueDate??today).slice(0,7));setBatchPanel('date');}},
+  {icon:'folder-outline',label:'이동',description:'선택한 할 일 이동',onPress:()=>setBatchPanel('move')},
+  {icon:'trash-outline',label:'삭제',description:'선택한 할 일 삭제',destructive:true,onPress:()=>setBatchPanel('delete')},
+ ]}/>}
  {!!batchPanel&&active&&<CalendarSheet centered bottomInset={toolbarInset} title={batchPanel==='date'?'날짜 변경':batchPanel==='move'?'이동':'할 일 삭제'} onClose={()=>setBatchPanel(null)} busy={busy}>
   <OverlayBack onClose={()=>setBatchPanel(null)} busy={busy}/>
   <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.batchPanel}>
    {batchPanel==='date'&&<>
     <View style={styles.batchActions}><Button title="오늘" quiet disabled={busy} onPress={()=>void applyBatch(id=>store.update(id,{dueDate:today}))}/><Button title="내일" quiet disabled={busy} onPress={()=>void applyBatch(id=>store.update(id,{dueDate:shiftDay(today,1)}))}/></View>
-    <View style={styles.monthRow}>
-     <Pressable accessibilityRole="button" accessibilityLabel="이전 달" disabled={busy} onPress={()=>setBatchMonth(month=>periodShift(month,month+'-01','month',-1).month)} style={styles.headingAction}><Ionicons name="chevron-back" size={20} color={colors.blueText}/></Pressable>
-     <Text style={styles.monthLabel}>{Number(batchMonth.slice(0,4))}년 {Number(batchMonth.slice(5))}월</Text>
-     <Pressable accessibilityRole="button" accessibilityLabel="다음 달" disabled={busy} onPress={()=>setBatchMonth(month=>periodShift(month,month+'-01','month',1).month)} style={styles.headingAction}><Ionicons name="chevron-forward" size={20} color={colors.blueText}/></Pressable>
-    </View>
-    <View style={styles.dateGrid}>
-     {[...'일월화수목금토'].map(day=><Text key={day} style={styles.weekday}>{day}</Text>)}
-     {visibleDays(batchMonth,batchMonth+'-01','month').map(day=><Pressable key={day} accessibilityRole="button" accessibilityLabel={day+'로 변경'} accessibilityState={{selected:selectedDates.has(day)}} disabled={busy} onPress={()=>void applyBatch(id=>store.update(id,{dueDate:day}))} style={styles.dateCell}>
-      <Text style={[styles.dateNumber,!day.startsWith(batchMonth)&&{color:colors.muted},day===today&&styles.todayNumber,selectedDates.has(day)&&styles.selectedDate]}>{Number(day.slice(8))}</Text>
-     </Pressable>)}
-    </View>
+    <CalendarMonthPickerGrid month={batchMonth} onMonth={setBatchMonth} today={today} selected={selectedDates} disabled={busy} onDay={day=>void applyBatch(id=>store.update(id,{dueDate:day}))}/>
     <Button title="날짜 없음" quiet disabled={busy} onPress={()=>void applyBatch(id=>store.update(id,{dueDate:null}))}/>
    </>}
-   {batchPanel==='move'&&<>
-    <Button title="선택한 할 일 위로 이동" quiet disabled={busy} onPress={()=>void step(-1)}/>
-    <Button title="선택한 할 일 아래로 이동" quiet disabled={busy} onPress={()=>void step(1)}/>
-   </>}
+   {batchPanel==='move'&&<TodoMoveMenu store={store} ids={selected} busy={busy} onMove={(target,page)=>void applyBatch(id=>store.moveMembership(id,target.id,page))}/>}
    {batchPanel==='delete'&&<>
     <Text style={styles.monthLabel}>선택한 할 일 {selected.length}개를 도슨에서 삭제할까요?</Text>
     <Pressable accessibilityRole="button" accessibilityLabel="도슨에서 선택한 할 일 삭제 확인" disabled={busy} onPress={()=>void applyBatch(store.remove)} style={styles.confirmDelete}><Text style={[styles.addText,styles.destructive]}>삭제</Text></Pressable>
@@ -266,4 +245,4 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  </TodoLiftPreview>}
  </View></View></ScrollRevealContext.Provider>;
 }
-const styles=StyleSheet.create({headingAction:{minHeight:44,minWidth:44,justifyContent:'center',alignItems:'center'},count:{...typography.detail,color:colors.blueText,fontWeight:'600'},hint:{...typography.caption,color:colors.muted},viewBar:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:4},tabs:{flexDirection:'row',gap:18},viewTab:{minHeight:44,justifyContent:'center',borderBottomWidth:2,borderBottomColor:'transparent'},activeTab:{borderBottomColor:colors.blueText},tabText:{...typography.detail,color:colors.muted,fontWeight:'600'},group:{marginTop:20,marginBottom:4},heading:{flexDirection:'row',alignItems:'center',gap:8,marginBottom:10,minHeight:44},number:{fontSize:34,lineHeight:42,fontWeight:'700',letterSpacing:-1,color:colors.text,minWidth:38},day:{fontSize:17,lineHeight:25,fontWeight:'600',color:colors.muted},sourceTitle:{fontSize:21,lineHeight:29,color:colors.text},line:{height:StyleSheet.hairlineWidth,backgroundColor:colors.line,flex:1,marginLeft:6},events:{gap:1,marginBottom:8},event:{flexDirection:'row',gap:8,minHeight:24},time:{fontSize:15,lineHeight:24,color:colors.blueText,minWidth:47},eventTitle:{fontSize:16,lineHeight:24,color:colors.secondary,flex:1},inlineAdd:{flexDirection:'row',alignItems:'center',gap:6,minHeight:44,paddingVertical:6},refresh:{gap:4,marginVertical:8},add:{flexDirection:'row',alignItems:'center',gap:3,minHeight:44,paddingVertical:8},addText:{...typography.detail,color:colors.blueText,fontWeight:'600'},selectionToolbar:{position:'absolute',bottom:0,alignSelf:'center',maxWidth:'94%',zIndex:10,backgroundColor:colors.surface,borderRadius:22,borderWidth:StyleSheet.hairlineWidth,borderColor:colors.line,paddingHorizontal:10,paddingTop:6,alignItems:'center',gap:2},batchAction:{minHeight:44,paddingHorizontal:8,flexDirection:'row',alignItems:'center',gap:5},batchActions:{flexDirection:'row',gap:4,flexWrap:'wrap'},batchPanel:{gap:8},monthRow:{flexDirection:'row',alignItems:'center',justifyContent:'space-between'},monthLabel:{...typography.detail,color:colors.text,fontWeight:'600'},dateGrid:{flexDirection:'row',flexWrap:'wrap'},weekday:{width:'14.2857%',textAlign:'center',...typography.caption,color:colors.muted},dateCell:{width:'14.2857%',minHeight:40,alignItems:'center',justifyContent:'center'},dateNumber:{...typography.detail,color:colors.text},todayNumber:{color:colors.blueText,fontWeight:'700',backgroundColor:colors.pale,borderRadius:14,minWidth:28,textAlign:'center'},selectedDate:{color:colors.white,backgroundColor:colors.action,minWidth:28,borderRadius:14,textAlign:'center'},destructive:{color:colors.danger},confirmDelete:{minHeight:48,alignItems:'center',justifyContent:'center',backgroundColor:colors.grouped,borderRadius:14},dropLine:{position:'absolute',top:0,left:0,right:0,height:2,backgroundColor:colors.blueText,zIndex:1},batchNotice:{position:'absolute',alignSelf:'center',maxWidth:'88%',paddingHorizontal:12,paddingVertical:8,borderRadius:12,backgroundColor:colors.surface,zIndex:12},dropEnd:{minHeight:12},dragPreview:{position:'absolute',paddingHorizontal:10,paddingVertical:6,borderRadius:11,backgroundColor:colors.surface,flexDirection:'row',alignItems:'center',gap:10,shadowColor:'#101828',shadowOpacity:.19,shadowRadius:13,shadowOffset:{width:0,height:6},elevation:9,zIndex:20},dragCheckbox:{width:24,height:24,borderRadius:7,borderWidth:1.5,borderColor:colors.subtle},dragBody:{flex:1,minWidth:0},dragMeta:{flexDirection:'row',gap:8,justifyContent:'space-between'},dragTitle:{...typography.list,color:colors.text},dragCount:{...typography.caption,color:colors.blueText,padding:5}});
+const styles=StyleSheet.create({headingAction:{minHeight:44,minWidth:44,justifyContent:'center',alignItems:'center'},count:{...typography.detail,color:colors.blueText,fontWeight:'600'},hint:{...typography.caption,color:colors.muted},viewBar:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:4},tabs:{flexDirection:'row',gap:18},viewTab:{minHeight:44,justifyContent:'center',borderBottomWidth:2,borderBottomColor:'transparent'},activeTab:{borderBottomColor:colors.blueText},tabText:{...typography.detail,color:colors.muted,fontWeight:'600'},group:{marginTop:20,marginBottom:4},heading:{flexDirection:'row',alignItems:'center',gap:8,marginBottom:10,minHeight:44},number:{fontSize:34,lineHeight:42,fontWeight:'700',letterSpacing:-1,color:colors.text,minWidth:38},day:{fontSize:17,lineHeight:25,fontWeight:'600',color:colors.muted},sourceTitle:{fontSize:21,lineHeight:29,color:colors.text},line:{height:StyleSheet.hairlineWidth,backgroundColor:colors.line,flex:1,marginLeft:6},events:{gap:1,marginBottom:8},event:{flexDirection:'row',gap:8,minHeight:24},time:{fontSize:15,lineHeight:24,color:colors.blueText,minWidth:47},eventTitle:{fontSize:16,lineHeight:24,color:colors.secondary,flex:1},inlineAdd:{flexDirection:'row',alignItems:'center',gap:6,minHeight:44,paddingVertical:6},refresh:{gap:4,marginVertical:8},add:{flexDirection:'row',alignItems:'center',gap:3,minHeight:44,paddingVertical:8},addText:{...typography.detail,color:colors.blueText,fontWeight:'600'},batchActions:{flexDirection:'row',gap:4,flexWrap:'wrap'},batchPanel:{gap:8},monthLabel:{...typography.detail,color:colors.text,fontWeight:'600'},destructive:{color:colors.danger},confirmDelete:{minHeight:48,alignItems:'center',justifyContent:'center',backgroundColor:colors.grouped,borderRadius:14},dropLine:{position:'absolute',top:0,left:0,right:0,height:2,backgroundColor:colors.blueText,zIndex:1},batchNotice:{position:'absolute',alignSelf:'center',maxWidth:'88%',paddingHorizontal:12,paddingVertical:8,borderRadius:12,backgroundColor:colors.surface,zIndex:12},dropEnd:{minHeight:12},dragPreview:{position:'absolute',paddingHorizontal:10,paddingVertical:6,borderRadius:11,backgroundColor:colors.surface,flexDirection:'row',alignItems:'center',gap:10,shadowColor:'#101828',shadowOpacity:.19,shadowRadius:13,shadowOffset:{width:0,height:6},elevation:9,zIndex:20},dragCheckbox:{width:24,height:24,borderRadius:7,borderWidth:1.5,borderColor:colors.subtle},dragBody:{flex:1,minWidth:0},dragMeta:{flexDirection:'row',gap:8,justifyContent:'space-between'},dragTitle:{...typography.list,color:colors.text},dragCount:{...typography.caption,color:colors.blueText,padding:5}});

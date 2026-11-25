@@ -1,1 +1,1 @@
-{"platforms":["apple"],"apple":{"modules":["DuckduckDuoModule","DuckduckKeyboardModule","DuckduckAssistantModule"]}}
+{"platforms":["apple"],"apple":{"modules":["DuckduckDuoModule","DuckduckKeyboardModule","DuckduckAssistantModule","DuckduckReminderMoveModule"]}}

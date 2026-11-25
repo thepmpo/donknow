@@ -13,6 +13,7 @@ import {originalTodoLink} from './server/todo-source-link.js';
 import {sendJson} from './server/http-json.js';
 import {probeAiConnection} from './server/ai-transport.js';
 import { createTaskSync } from './server/task-sync.js';
+import {createTodoMembership} from './server/todo-membership.js';
 import { backupScheduler } from './server/backups.js';
 import { createMailer, startMailWorker } from './server/mail.js';
 import { createIntegrations } from './server/integrations.js';
@@ -35,6 +36,7 @@ const mailer = createMailer();
 // Explicit account-mail requests still call worker.tick immediately. Idle remote DB polling is bounded.
 const worker = startMailWorker(store, mailer, background?(process.env.NODE_ENV === 'test' ? 20 : process.env.STORE_DRIVER==='turso'?15000:2000):null);
 const integrations = createIntegrations(store);
+const todoMembership=createTodoMembership(store,integrations);
 const taskSync=createTaskSync(store,integrations,{background});
 const features = featureRoutes(store, mailer, worker, integrations, limited, clientAddress,{background});
 const secureCookie = process.env.COOKIE_SECURE === '1' || process.env.NODE_ENV === 'production';
@@ -157,6 +159,12 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       if (path === '/api/todos' && req.method === 'GET') return send(200, store.list(session.user.id));
       if(path==='/api/todo-order'&&req.method==='PUT'){if(limited('todo-order:'+session.user.id))return send(429,{error:'잠시 뒤 다시 옮겨주세요.'});return send(200,store.reorder(session.user.id,(await json(req)).ids));}
       const writeReceipt=/^\/api\/todo-writes\/([A-Za-z0-9_-]{20,120})$/.exec(path);if(writeReceipt&&req.method==='GET')return send(200,{todo:store.todoWriteReceipt(session.user.id,writeReceipt[1])});
+      if(path==='/api/todo-membership/options'&&req.method==='POST'){
+        const body=await json(req);
+        return send(200,await todoMembership.options(session.user.id,body.ids,body.cursor));
+      }
+      const todoMove=/^\/api\/todos\/([a-f0-9-]{36})\/membership$/.exec(path);
+      if(todoMove&&req.method==='POST')return send(200,await todoMembership.move(session.user.id,todoMove[1],await json(req)));
       if (path === '/api/todos' && req.method === 'POST') {
         const body = await json(req);
         if (!validNotes(body.notes ?? '')) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' });
@@ -169,6 +177,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         const id = path.slice('/api/todos/'.length), userId = session.user.id;
         if (!store.get(userId, id)) return send(404, { error: '할 일을 찾을 수 없어요.' });
         if(req.method==='GET')return send(200,store.get(userId,id));
+        if(todoMembership.isMoving(userId,id))return send(409,{error:'할 일의 원본 목록을 옮기고 있어요.'});
         if (req.method === 'DELETE') { store.remove(userId, id); return send(200, { ok: true }); }
         if (req.method === 'PATCH') {
           const body = await json(req), patch = {};

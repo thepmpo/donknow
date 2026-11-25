@@ -91,10 +91,47 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       return read(renewed);
     }
   }
+  async function taskMoveAccess(userId,connectionId){
+    const record=await token(userId,'google',connectionId);
+    if(!record.features.includes('tasksWrite'))throw fail(403,'ME에서 Google 할 일 수정 권한을 승인해주세요.');
+    return record;
+  }
   return {
     ...createProviderWatches({store,env,token,request:providerRequest}),
     ...createAgentSync({store,token,request:providerRequest}),
     ...createIntegrationAgentTools({store,token,request:providerRequest,fetcher}),
+    async taskMoveLists(userId,connectionId,cursor){
+      if(cursor!=null&&(typeof cursor!=='string'||cursor.length>3000))throw fail(400,'Google 할 일 목록을 다시 열어주세요.');
+      const record=await taskMoveAccess(userId,connectionId);
+      const query=new URLSearchParams({maxResults:'100',...(cursor?{pageToken:cursor}:{})});
+      const data=await googleRead(userId,record,'https://tasks.googleapis.com/tasks/v1/users/@me/lists?'+query);
+      return {items:data.items?.map(list=>({id:list.id,title:title(list.title,'할 일 목록')}))??[],nextCursor:data.nextPageToken??null};
+    },
+    async moveTaskBetweenLists(userId,{connectionId,listId,taskId},destination){
+      const record=await taskMoveAccess(userId,connectionId);
+      const origin='https://tasks.googleapis.com/tasks/v1';
+      const taskPath=list=>origin+'/lists/'+encodeURIComponent(list)+'/tasks/'+encodeURIComponent(taskId);
+      const target=await googleRead(userId,record,origin+'/users/@me/lists/'+encodeURIComponent(destination));
+      if(target.id!==destination)throw fail(409,'이동할 Google 할 일 목록을 찾을 수 없어요.');
+      const label=title(target.title,'할 일 목록');
+      async function movedAlready(){
+        const actual=await googleRead(userId,record,taskPath(destination));
+        if(actual.id!==taskId||actual.deleted)throw fail(409,'이동한 할 일을 확인하지 못했어요.');
+        return {id:actual.id,title:label};
+      }
+      try{const task=await googleRead(userId,record,taskPath(listId));if(task.id!==taskId||task.deleted||task.status==='completed')throw fail(409,'미완료 상태의 원본 할 일을 확인해주세요.');}
+      catch(error){if(error.status!==404&&error.status!==410)throw error;return movedAlready();}
+      const current=await taskMoveAccess(userId,connectionId);
+      if(current.accountId!==record.accountId)throw fail(409,'Google 계정 연결이 바뀌었어요.');
+      try{
+        const result=await providerRequest(taskPath(listId)+'/move?'+new URLSearchParams({destinationTasklist:destination}),{method:'POST',headers:{Authorization:'Bearer '+current.accessToken}});
+        return {id:result.id,title:label};
+      }catch(error){
+        if(error.status!==502)throw error;
+        try{return await movedAlready();}
+        catch{throw fail(502,'Google에서 이동했는지 확인 중이에요. 원본 목록을 확인해주세요.');}
+      }
+    },
     async originalLink(userId,todo){
       const source=todo.source;if(!source)return null;
       const external=source.externalId;

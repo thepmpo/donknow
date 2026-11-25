@@ -68,7 +68,7 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
     }
     setEvents(snapshot.current);cursorRef.current={...next};setCursors(cursorRef.current);
     if(result.readAt)readTimes.push(result.readAt);if(readTimes.length){readAtRef.current=readTimes.sort().at(-1)!;setReadAt(readAtRef.current);}
-    setSources(old=>old.map(s=>s.id===id?{...s,name:result.calendarName??s.name,canWrite:result.canWrite===true,connectionId:result.connectionId??s.connectionId}:s));ok.push(result);remember();
+    setSources(old=>old.map(s=>s.id===id?{...s,canWrite:result.canWrite===true,connectionId:result.connectionId??s.connectionId}:s));ok.push(result);remember();
    }));if(!fresh())return;
    const failed=pages.filter(p=>p.status==='rejected');
    if(!ok.length&&failed.length)throw (failed[0] as PromiseRejectedResult).reason;

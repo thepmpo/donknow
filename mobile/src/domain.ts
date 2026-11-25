@@ -2,7 +2,7 @@ import {MAX_NOTES_LENGTH} from './notes.ts';
 export type Category = '일상' | '업무' | '건강';
 export type Todo = {
   id: string; title: string; category: Category; done: boolean; order?:number;saveState?:'saving'|'checking';
-  dueDate: string | null; dueTime?:string|null; reminderAt?: string | null; notes?: string; source?: { provider: string; externalId: string;url?:string;modifiedAt?:string;calendarId?:string;connectionId?:string;eventId?:string;timeZone?:string };sourceSync?:{state:'succeeded'|'failed'|'unknown'|'device-required'|'queued';revision:number;at?:number;patch?:Record<string,unknown>;reason?:'completion-unsupported'}; createdAt?: string; completedAt?: string | null;
+  dueDate: string | null; dueTime?:string|null; reminderAt?: string | null; notes?: string; source?: { provider: string; externalId: string;url?:string;modifiedAt?:string;listId?:string;listTitle?:string;calendarId?:string;connectionId?:string;eventId?:string;timeZone?:string };sourceSync?:{state:'succeeded'|'failed'|'unknown'|'device-required'|'queued';revision:number;at?:number;patch?:Record<string,unknown>;reason?:'completion-unsupported'}; createdAt?: string; completedAt?: string | null;
 };
 export type Draft = { title: string; dueDate: string | null;dueTime?:string|null; category: Category; reminderAt?: string | null; notes?: string };
 export type Connection = { mode: 'demo' } | { mode: 'cloud'; baseUrl: string };

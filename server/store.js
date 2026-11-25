@@ -99,6 +99,25 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
         db.exec('COMMIT');return todo;
       } catch(error){db.exec('ROLLBACK');throw error;}
     },
+    relocateTodoSource(userId,id,expected,next){
+      db.exec('BEGIN IMMEDIATE');
+      try{
+        const current=get(userId,id);
+        if(!current||current.done||current.source?.provider!==next.provider)throw fail(409,'이동할 할 일이 바뀌었어요.');
+        if(current.source.externalId!==expected){
+          if(current.source.externalId!==next.externalId||current.source.listId!==next.listId)throw fail(409,'할 일의 원본이 이미 바뀌었어요.');
+          db.exec('COMMIT');return current;
+        }
+        const alias=db.prepare('SELECT todo_id FROM imported_resources WHERE user_id=? AND provider=? AND resource_key=?').get(userId,next.provider,next.externalId);
+        if(alias&&alias.todo_id!==id&&get(userId,alias.todo_id))throw fail(409,'이동한 원본이 이미 도슨에 있어요.');
+        const updated={...current,source:next};
+        db.prepare('UPDATE todos SET data=? WHERE user_id=? AND id=?').run(JSON.stringify(updated),userId,id);
+        const remember=db.prepare('INSERT INTO imported_resources VALUES (?,?,?,?) ON CONFLICT(user_id,provider,resource_key) DO UPDATE SET todo_id=excluded.todo_id');
+        remember.run(userId,next.provider,expected,id);
+        remember.run(userId,next.provider,next.externalId,id);
+        db.exec('COMMIT');return updated;
+      }catch(error){db.exec('ROLLBACK');throw error;}
+    },
     remove(userId, id) { return db.prepare('DELETE FROM todos WHERE id = ? AND user_id = ?').run(id, userId).changes > 0; },
     importLegacy(email, items) {
       const user = findUser(email); if (!user) throw new Error('가져올 계정을 먼저 만들어주세요.');

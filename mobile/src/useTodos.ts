@@ -1,4 +1,7 @@
 import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
+import {moveAppleReminder} from './todo-membership';
+import type {AppleMoveReceipt,MembershipPage} from './todo-membership';
+import type {Category} from './domain';
 import {updateAppleSource} from './apple-source-edit';
 import {originalContentConfirmed,importedCalendarPatch} from './calendar-source-edit';
 import {calendarSnapshots,invalidateCalendarSnapshotReads,persistCalendarSnapshots,broadcastCalendarSnapshots,refreshCalendarSnapshots} from './calendar-snapshot-cache';
@@ -273,6 +276,32 @@ export function useTodos() {
     if(!result){setTodos(old=>old.map(t=>previous.has(t.id)?{...t,order:previous.get(t.id)}:t));return false;}
     const saved=new Map(result.map(t=>[t.id,t.order]));setTodos(old=>old.map(t=>saved.has(t.id)?{...t,order:saved.get(t.id)}:t));return true;
   }
+  const appleMoveReceipts=useRef(new Map<string,AppleMoveReceipt>());
+  async function moveMembership(id:string,destination:string,target:MembershipPage){
+    const todo=todosRef.current.find(item=>item.id===id),version=generation.current;
+    if(!todo||todo.done||todo.saveState||todo.sourceSync?.state==='queued')return false;
+    const current=()=>version===generation.current;
+    const saved=await mutate(id,async repository=>{
+      if(connection?.mode==='demo'){
+        if(target.kind!=='local'||todo.source)throw Error('같은 출처의 목록을 골라주세요.');
+        return repository.update(id,{category:destination as Category});
+      }
+      const body:{destination:string;connectionId?:string;apple?:AppleMoveReceipt}={destination,connectionId:target.connectionId};
+      const receiptKey=JSON.stringify([version,id,destination]);
+      if(target.kind==='apple'){
+        body.apple=appleMoveReceipts.current.get(receiptKey)??await moveAppleReminder(todo,destination,current);
+        if(!current())return null;
+        if(appleMoveReceipts.current.size>=200)appleMoveReceipts.current.delete(appleMoveReceipts.current.keys().next().value!);
+        appleMoveReceipts.current.set(receiptKey,body.apple);
+      }
+      const result=await featureRequest('/api/todos/'+encodeURIComponent(id)+'/membership','POST',body) as Todo;
+      appleMoveReceipts.current.delete(receiptKey);
+      return result;
+    });
+    if(!saved||!current())return false;
+    setTodos(items=>items.map(item=>item.id===id?saved:item));
+    return true;
+  }
   async function remove(id: string): Promise<boolean> {
     if(todosRef.current.find(t=>t.id===id)?.saveState)return false;
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
@@ -349,6 +378,6 @@ export function useTodos() {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

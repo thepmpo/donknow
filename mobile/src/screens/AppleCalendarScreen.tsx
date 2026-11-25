@@ -3,7 +3,7 @@ import {Linking,Text,View} from 'react-native';
 import {MePage,MeRow,MeSection} from '../MeSettings';
 import {DateTimeField} from '../DateTimeField';
 import {dateKey} from '../domain';
-import {shiftDay} from '../calendar-model';
+import {groupCalendarSources,shiftDay} from '../calendar-model';
 import {appleCalendarDocument,utf8Base64} from '../apple-calendar-export';
 import {publishAssistantEntry} from '../assistant-entry';
 import {Button} from '../ui';
@@ -24,7 +24,7 @@ export function AppleCalendarScreen({store,onClose,naver=false,device=appleCalen
  {!device.available?<Text style={{...typography.detail,color:colors.muted}}>아이폰 앱에서 연결할 수 있어요.</Text>:<View style={{gap:16}}>
  {naver&&<><Text style={{...typography.detail,color:colors.secondary}}>아이폰에 등록한 네이버 CalDAV 캘린더를 연결해요.</Text><Button title="네이버 공식 설정 안내" quiet onPress={()=>void Linking.openURL('https://help.naver.com/service/5620/contents/2426?lang=ko')}/></>}
  <MeSection compact><MeRow title="캘린더 접근" status={granted?'연결됨':'연결 필요'} icon="calendar-outline" onPress={()=>void read(true)}/></MeSection>
- {granted&&<MeSection title="표시할 캘린더" compact>{calendars.map(c=>{const id=appleCalendarSource(c).id,selected=selection.ids.includes(id);return <MeRow key={id} title={c.title} detail={c.account} status={selected?'선택됨':undefined} icon={selected?'checkmark-circle':'ellipse-outline'} label={'아이폰 캘린더 '+c.title+' 표시'} onPress={()=>{selection.setIds(selected?selection.ids.filter(v=>v!==id):[...selection.ids,id].slice(0,10));refreshAppleCalendar(owner);}}/>;})}</MeSection>}
+ {granted&&groupCalendarSources(calendars.map(appleCalendarSource)).map(group=><MeSection key={group.id} title={group.label} compact>{group.items.map(c=>{const selected=selection.ids.includes(c.id);return <MeRow key={c.id} title={c.name} status={selected?'선택됨':undefined} icon={selected?'checkmark-circle':'ellipse-outline'} label={'아이폰 캘린더 '+c.name+' 표시'} onPress={()=>{selection.setIds(selected?selection.ids.filter(v=>v!==c.id):[...selection.ids,c.id].slice(0,10));refreshAppleCalendar(owner);}}/>;})}</MeSection>)}
  {granted&&<MeSection title="AI에 전달할 일정" compact><View style={{padding:12,gap:8}}><DateTimeField label="시작 날짜" value={start} onChange={v=>v&&setStart(v)}/><DateTimeField label="종료 날짜" value={end} onChange={v=>v&&setEnd(v)}/><Button title="선택한 일정·메모를 AI 채팅에 전달" disabled={busy||!store.user} onPress={()=>void sendToAI()}/></View></MeSection>}
  <Button title={granted?'다시 확인':'아이폰 캘린더 연결'} loading={busy} onPress={()=>void read(!granted)}/>
  {!!error&&<Text accessibilityRole="alert" style={{...typography.detail,color:colors.danger}}>{error}</Text>}

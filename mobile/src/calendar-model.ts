@@ -1,6 +1,17 @@
 export type CalendarDuckFields={reminderMinutes?:number|null;localNotes?:string;url?:string;attachments?:{name:string;url:string}[]};
 export type CalendarEvent={id:string;provider?:'google'|'apple-calendar';nativeStart?:string;saveState?:'saving'|'checking';eventId?:string;calendarId?:string;calendarName?:string;title:string;dueDate:string|null;endDate?:string|null;startAt?:string|null;endAt?:string|null;allDay?:boolean;timeZone?:string;canWrite?:boolean;etag?:string|null;location?:string;notes?:string;notesPartial?:boolean;url?:string|null;meetingUrl?:string|null;recurring?:boolean;connectionId?:string|null;duckDetails?:{revision:number;fields:CalendarDuckFields};providerDetails?:{recurrence?:string[];attendees?:{email:string;name:string;response:string}[];attendeesPartial?:boolean;attachments?:{name:string;url:string|null}[];reminders?:{useDefault?:boolean;overrides?:{method:string;minutes:number}[]}|null}};
-export type CalendarSource={id:string;name:string;provider?:'google'|'apple-calendar';primary?:boolean;canWrite:boolean;timeZone?:string;color?:string|null;connectionId?:string|null};
+export type CalendarSource={id:string;name:string;provider?:'google'|'apple-calendar';primary?:boolean;canWrite:boolean;timeZone?:string;color?:string|null;connectionId?:string|null;accountId?:string;accountLabel?:string};
+export function groupCalendarSources(sources:CalendarSource[]){
+ const groups=new Map<string,{id:string;label:string;items:CalendarSource[]}>();
+ for(const source of sources){
+  const label=source.accountLabel??(source.provider==='apple-calendar'?'아이폰':'Google');
+  const id=JSON.stringify([source.provider??'google',source.accountId??source.connectionId??label]);
+  const group=groups.get(id)??{id,label,items:[]};
+  group.items.push(source);
+  groups.set(id,group);
+ }
+ return [...groups.values()];
+}
 export type CalendarView='month'|'fortnight'|'week'|'day'|'list';
 export function deviceZone(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Seoul';}catch{return 'Asia/Seoul';}}
 export function validZone(zone:string){try{new Intl.DateTimeFormat('en',{timeZone:zone});return !!zone;}catch{return false;}}

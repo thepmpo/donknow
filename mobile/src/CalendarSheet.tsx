@@ -1,7 +1,7 @@
 import {useDesktopPresentation} from './DesktopPresentation';
 import {useKeyboardInset} from './useFocusedField';
 import {KeyboardDismiss,useKeyboardUX} from './KeyboardUX';
-import React,{useEffect,useRef} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {Animated,Easing,Platform,Pressable,StyleSheet,Text,View,useWindowDimensions} from 'react-native';
 import {CloseButton} from './ui';
 import {DraggableSheet,MotionView,useReducedMotion} from './motion';
@@ -10,6 +10,7 @@ import {colors,typography} from './theme';
 /** Pane-scoped contents, with the same dimming across the app-owned header/safe area. */
 export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=false,animateDismiss=true,headerAction,headerContent,fill=false,centered=false,children}:{title:string;onClose:()=>void;busy?:boolean;bottomInset?:number;expanded?:boolean;animateDismiss?:boolean;headerAction?:React.ReactNode;headerContent?:React.ReactNode;fill?:boolean;centered?:boolean;children:React.ReactNode}){
  const keyboard=useKeyboardUX(),filled=fill,desktop=useDesktopPresentation();
+ const [headerControlsWidth,setHeaderControlsWidth]=useState(0);
  const root=useRef<React.ComponentRef<typeof View>>(null),close=useRef(onClose),blocked=useRef(busy),closing=useRef(false),entered=useRef(false),measured=useRef(0);
  const keyboardInset=useKeyboardInset(root);
  const reduced=useReducedMotion(),{height}=useWindowDimensions(),offset=useRef(new Animated.Value(height)).current,dim=useRef(new Animated.Value(0)).current;
@@ -25,8 +26,11 @@ export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=f
   <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:colors.scrim,opacity:dim}]}/>
   <Pressable testID="calendar-sheet-backdrop" accessibilityRole="button" accessibilityLabel="배경 눌러 닫기" disabled={busy} onPress={dismiss} style={StyleSheet.absoluteFill}/>
   <Animated.View onLayout={e=>open(e.nativeEvent.layout.height)} style={[s.wrap,centered&&s.centered,desktop&&!centered&&{width:'100%',maxWidth:640,alignSelf:'center'},expanded&&{maxHeight:'96%'},filled&&{height:'100%',maxHeight:'100%'},{transform:[{translateY:offset}]}]}><DraggableSheet presentation="none" testID="calendar-sheet-surface" disabled={busy} onDismiss={dismiss} style={[s.sheet,filled&&{flex:1},centered&&{borderRadius:24},expanded&&{borderRadius:28,margin:8,backgroundColor:colors.surface}]}>
-   <View style={s.heading}>{headerContent?<View style={{flex:1,minWidth:0}}>{headerContent}</View>:<Text accessibilityRole="header" style={s.title}>{title}</Text>}<View style={{flexDirection:'row',alignItems:'center',gap:4}}><KeyboardDismiss/><CloseButton onPress={dismiss} disabled={busy}/>{headerAction}</View></View><MotionView initial={false} transitionKey={title} distance={0} disabled style={{minHeight:0,flexShrink:1,marginBottom:filled?Math.max(0,keyboardInset.inset-8):0,...(filled?{flex:1}:{})}}>{children}</MotionView>
+   {headerContent?<View style={[s.heading,s.centeredHeading,{paddingHorizontal:headerControlsWidth}]}>
+    <View style={s.headerContent}>{headerContent}</View>
+    <View onLayout={event=>setHeaderControlsWidth(Math.ceil(event.nativeEvent.layout.width))} style={[s.headerControls,s.trailingControls]}><KeyboardDismiss/><CloseButton onPress={dismiss} disabled={busy}/>{headerAction}</View>
+   </View>:<View style={s.heading}><Text accessibilityRole="header" style={s.title}>{title}</Text><View style={s.headerControls}><KeyboardDismiss/><CloseButton onPress={dismiss} disabled={busy}/>{headerAction}</View></View>}<MotionView initial={false} transitionKey={title} distance={0} disabled style={{minHeight:0,flexShrink:1,marginBottom:filled?Math.max(0,keyboardInset.inset-8):0,...(filled?{flex:1}:{})}}>{children}</MotionView>
   </DraggableSheet></Animated.View>
  </View>;
 }
-const s=StyleSheet.create({backdrop:{position:'absolute',top:0,right:0,bottom:0,left:0,justifyContent:'flex-end',zIndex:15},centered:{alignSelf:'center',width:'92%',maxWidth:360},wrap:{maxHeight:'94%',flexShrink:1},sheet:{backgroundColor:colors.sheet,borderTopLeftRadius:28,borderTopRightRadius:28,padding:20,paddingTop:16,maxHeight:'100%',flexShrink:1},heading:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:12,marginBottom:12},title:{...typography.section,color:colors.text,flex:1}});
+const s=StyleSheet.create({backdrop:{position:'absolute',top:0,right:0,bottom:0,left:0,justifyContent:'flex-end',zIndex:15},centered:{alignSelf:'center',width:'92%',maxWidth:360},wrap:{maxHeight:'94%',flexShrink:1},sheet:{backgroundColor:colors.sheet,borderTopLeftRadius:28,borderTopRightRadius:28,padding:20,paddingTop:16,maxHeight:'100%',flexShrink:1},heading:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:12,marginBottom:12},centeredHeading:{minHeight:44,justifyContent:'center'},headerContent:{flex:1,minWidth:0},headerControls:{flexDirection:'row',alignItems:'center',gap:4},trailingControls:{position:'absolute',right:0},title:{...typography.section,color:colors.text,flex:1}});

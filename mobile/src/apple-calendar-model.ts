@@ -4,11 +4,11 @@ import type {CalendarEvent,CalendarSource} from './calendar-model.ts';
 import type {CalendarDraft} from './calendar-edit-model.ts';
 export const appleCalendarPrefix='@apple/';
 export const isAppleCalendar=(id?:string|null)=>!!id?.startsWith(appleCalendarPrefix);
-export type DeviceCalendar={id:string;title:string;color?:string|null;writable:boolean;account?:string};
+export type DeviceCalendar={id:string;title:string;color?:string|null;writable:boolean;account?:string;accountId?:string};
 export type DeviceEvent={id:string;calendarId:string;title:string;notes:string;location?:string|null;url?:string|null;startDate:string;endDate:string;allDay:boolean;timeZone?:string;modified?:string;alarms?:{relativeOffset?:number;absoluteDate?:string}[];recurrence?:unknown};
 export type DeviceEventPatch={title?:string;notes?:string;location?:string;url?:string;startDate?:string;endDate?:string;allDay?:boolean;timeZone?:string;alarms?:{relativeOffset:number}[];repeat?:string};
 export function appleEventVersion(e:DeviceEvent){return JSON.stringify([e.id,e.calendarId,e.modified,e.title,e.notes,e.location,e.url,e.startDate,e.endDate,e.allDay,e.timeZone,e.alarms,e.recurrence]);}
-export function appleCalendarSource(c:DeviceCalendar):CalendarSource{return {id:appleCalendarPrefix+encodeURIComponent(c.id),name:c.title+(c.account?' · '+c.account:''),canWrite:c.writable,provider:'apple-calendar',color:c.color,timeZone:undefined};}
+export function appleCalendarSource(c:DeviceCalendar):CalendarSource{return {id:appleCalendarPrefix+encodeURIComponent(c.id),name:c.title,accountLabel:c.account,accountId:c.accountId,canWrite:c.writable,provider:'apple-calendar',color:c.color};}
 export function normalizeAppleEvent(e:DeviceEvent,calendar:DeviceCalendar):CalendarEvent{
  const zone=validZone(e.timeZone??'')?e.timeZone!:deviceZone(),first=zonedDay(e.startDate,zone),end=zonedDay(e.endDate,zone),offset=e.alarms?.[0]?.relativeOffset;
  return {id:'apple:'+encodeURIComponent(e.id)+':'+e.startDate,eventId:e.id,calendarId:appleCalendarPrefix+encodeURIComponent(e.calendarId),calendarName:calendar.title,title:e.title||'제목 없음',notes:e.notes.slice(0,4000),notesPartial:e.notes.length>4000,location:e.location??'',dueDate:first,endDate:e.allDay?end:null,allDay:e.allDay,startAt:e.allDay?null:e.startDate,endAt:e.allDay?null:e.endDate,timeZone:e.timeZone,canWrite:calendar.writable,etag:appleEventVersion(e),recurring:!!e.recurrence,provider:'apple-calendar',nativeStart:e.startDate,duckDetails:{revision:0,fields:{url:e.url??'',reminderMinutes:typeof offset==='number'&&offset<=0?-offset:null}}};
