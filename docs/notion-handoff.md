@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-25 · 한국 시간 · 기능 코드 70db4c8 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-25 · 한국 시간 · 기능 코드 35bc3fb · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,10 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-25 — 어드민에서 기능 웹 열기
+
+인증된 어드민 사이드바 상단의 **웹 앱 열기**는 같은 서버의 `/app`을 새 탭으로 연다. 기존 어드민 탭과 관리자 세션을 유지한다. 일반 웹 세션이 없으면 일반 계정 로그인이 먼저 나오고, 같은 브라우저에 유효한 일반 계정 세션이 있으면 계정을 복원한다. 어드민 로그인 쿠키는 웹 앱 로그인으로 사용하지 않는다. 테스트 서버의 기능 웹 경로를 사용하며 소개 도메인의 공개 제한은 유지한다.
 
 #### 2026-11-25 — 할 일·로그 모션 안정화와 채팅 하단 정리
 
@@ -3818,10 +3822,13 @@ c891420 Match every demo tab to the full briefing height and unify Korean labels
 01bcb7a Lock Todo swipe direction and lift rows for direct drag
 54aef0a Record the corrected iPhone Todo gestures
 70db4c8 Smooth Todo drag and selection on iPhone and web
+9a7b0c5 Update handoff for Todo motion and selection
+b2b3690 Keep consecutive desktop swipes captured through release
+35bc3fb Add a direct web app entry to the admin sidebar
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 70db4c8에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 35bc3fb에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13090,7 +13097,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/70db4c86496f100e963f24dd41c8046ccf637ebe
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/35bc3fb0d516e60082ccc3876a845475cef07646
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
