@@ -36,4 +36,10 @@
 ## 실제 확인의 한계
 브라우저 fixture는 실제 공유 RN Web 코드를 실행하지만 iPhone의 native optical Liquid Glass 렌더러나 실제 손가락 체감을 대신하지 않는다. 설치된 iPhone 앱에는 새 native 빌드/설치가 필요하다. iOS JS export 성공은 App Store/TestFlight 빌드 제출 성공을 의미하지 않는다. 기존 로그인/공개 제한/가격/사업자 및 약관 문구/Bundle ID/키/사용자 데이터를 변경하지 않는다.
 
-배포 결과는 아래에 별도 기록한다.
+## 배포 영수증
+- 구현 커밋 `f5faef04dce0877503b58d6fa88a0ac121b64970`, GitHub main 및 codex/desktop-day-workspace에 push 완료.
+- 무료 정적 소개 `srv-dc1qt4uc6qcc73bjpffg`: `dep-dc337ohksfps738rcv50`, 2026-11-25T01:03:51Z live.
+- 기존 Docker 웹/API `srv-dbgpc0ff3r2c73abc7e0`: `dep-dc337q1ksfps738rd2hg`, 2026-11-25T01:04:53Z live. 기존 두 서비스는 autoDeploy off이므로 각각 명시적 배포했다. 요금제/도메인/DNS/비밀 설정 변경 없음.
+- 공개 https://docen.today/api/health 응답 `ok:true`, release `f5faef04dce0877503b58d6fa88a0ac121b64970` 확인. 홈페이지 외부 접근 및 소개만 공개 guard 유지 확인. 브라우저 로고 정렬의 시각 검사는 위 로컬 production 캡처로 수행했다.
+- 설치 iPhone TestFlight 새 빌드는 이번에 제출하지 않았다. iOS JS export만 성공했으며 실제 iPhone 모션/광학 효과는 새 빌드로 확인해야 한다.
+
