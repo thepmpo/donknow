@@ -1,3 +1,7 @@
+## 2026-11-25 — 주간 시안 실제 구현 및 빌드 승인
+
+사용자가 최신2모바일시안 뒤 ‘빌드 진행’을 지시해 실제구현으로전환했다. CalendarScreen은초기1주보기,월~금시간표+오른쪽토/일상하,고정여러날스택/아래24시간스크롤/겹친시간lane/현재시간30초갱신. 모바일기간·오른쪽년월한줄,별도뷰버튼/떠있는Duo뷰버튼삭제,년월길게누르기메뉴유지. 논Duo AI탭은그림만. 웹은기존DesktopWorkspace내헤더오른쪽월+뷰. CalendarWeekWorkspace/calendar-week-model 및 실제3기기통합검증추가. 이전‘아직시안/2주유지’지침보다이번실제구현이최신이다. 상세 docs/calendar-week-build-2026-11-25.md. 설치iPhone은서명native빌드후반영이며JSexport를TestFlight성공으로보고하지않는다. 롤백7326318/rollback-before-week-build-20261125.
+
 ## 2026-11-25 — 모바일 년월 한 줄 시안 / 이번만 Duo·논 Duo
 
 사용자가 캘린더 바로 위의월이동‹›를빼고그자리에년월을넣으라고요청했다. Duo·논Duo 모바일시안에서 화살표를제거하고오른쪽년월을기존주기간줄에합쳐중복년월줄을없앴다. 주간기간은왼쪽,년월은오른쪽,바로아래요일/날짜. 이번은명시적으로두모바일시안만제공하며웹은미변경. 앞으로별도지시없을때3종기본규칙은유지한다. mobile-month-row.html/capture-mobile-month-row.mjs 및 artifacts/week-mobile-month-row-preview/. 고정여러날/아래시간표스크롤/오른쪽주말/현재시간선은유지,앱실구현미적용.

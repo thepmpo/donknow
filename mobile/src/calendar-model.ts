@@ -46,4 +46,4 @@ export function timedLayout(events:CalendarEvent[],day:string,zone:string,minDur
 }
 
 /** Native non-Duo calendar long press alternates week and day after entering week. */
-export function nextLongPressCalendarView(view:CalendarView):'fortnight'|'day'{return view==='fortnight'?'day':'fortnight';}
+export function nextLongPressCalendarView(view:CalendarView):'week'|'day'{return view==='week'||view==='fortnight'?'day':'week';}

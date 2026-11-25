@@ -58,7 +58,8 @@
     "check:native": "node ../scripts/check-native-prebuild.mjs",
     "test:desktop": "node e2e/desktop-workspace.mjs",
     "test:web-connected": "node e2e/web-connected.mjs",
-    "test:web-oauth": "node e2e/web-oauth.mjs"
+    "test:web-oauth": "node e2e/web-oauth.mjs",
+    "test:calendar-week": "node e2e/calendar-week.mjs"
   },
   "private": true
 }

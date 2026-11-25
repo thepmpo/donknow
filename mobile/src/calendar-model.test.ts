@@ -20,5 +20,5 @@ test('month bounds include 4/5/6 intersecting weeks and fortnight expands select
 
 test('non-Duo long press enters week then alternates week and day',async()=>{
  const {nextLongPressCalendarView}=await import('./calendar-model.ts');
- assert.equal(nextLongPressCalendarView('month'),'fortnight');assert.equal(nextLongPressCalendarView('fortnight'),'day');assert.equal(nextLongPressCalendarView('day'),'fortnight');
+ assert.equal(nextLongPressCalendarView('month'),'week');assert.equal(nextLongPressCalendarView('fortnight'),'day');assert.equal(nextLongPressCalendarView('week'),'day');assert.equal(nextLongPressCalendarView('day'),'week');
 });
