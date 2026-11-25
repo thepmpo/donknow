@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-25 · 한국 시간 · 기능 코드 dd434f6 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-25 · 한국 시간 · 기능 코드 c891420 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,18 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-25 — 소개 페이지 시연 창 높이 유지
+
+상단 시연에서 체크·할 일로 이동·일정 저장을 하면 해당 항목만 목록에서 빠진다. 외곽 창은 브리핑 3개가 모두 보이는 높이를 기준으로 동일 화면 폭에서 고정한다. 할 일·캘린더·기록도 브리핑과 높이가 같고, 내용이 길 때는 시연 목록 안에서 스크롤한다. 소개 본문·시연·한국어 요금표는 ‘할 일’로 통일한다. 시연 탭을 바꾸면 목록 스크롤 위치가 위로 돌아온다. 정적 소개 사이트 빌드와 Chromium 320·390·600·768·1440px에서 항목 3개→0개, 체크·할 일 이동·일정 폼·저장·캘린더 이동 중 시연 창 높이가 일정하고 가로 넘침이 없음을 확인했다.
+
+#### 2026-11-25 — 어드민 메뉴 전환과 회원 상세 이용권 발급
+
+어드민 메뉴는 선택 즉시 제목과 읽는 상태를 표시한다. 최근 20초 안에 읽은 메뉴와 같은 회원의 상세 탭은 현재 운영자 세션의 메모리에서 바로 연다. 검색·페이지 이동·재시도는 서버에서 조회하고 운영자 변경 작업, 로그아웃, 페이지 이탈 시 화면 캐시를 삭제한다. 조회마다 서버 인증과 읽기 감사 기록을 유지한다. 운영 현황 집계를 한 번의 SQL로 묶고 회원 상세의 기본 정보·상태·현재 이용권 조회를 합쳤다. 느린 관리자 API는 회원 ID 없이 경과 시간, DB 호출 횟수와 DB 소요 시간을 기록한다.
+
+회원 상세의 회원 정보에서 무료·라이트·프로를 선택해 이용권을 즉시 발급할 수 있다. 종료일은 선택이고 사유는 필수다. 기존 실제 발급 API, 역할 권한, 버전 확인, 변경 기록을 사용한다. 발급 뒤 서버에서 상세를 새로 읽고 현재 이용권을 표시한다. 조회 전용 운영자에게 발급 폼을 표시하지 않는다. 이용권 목록에서도 발급 및 기존 변경·회수를 할 수 있다.
+
+어드민 서버 테스트 9개와 문법 검사, 실제 Chromium에서 응답 지연 중 제목 전환, 최근 메뉴/같은 회원 탭의 추가 조회 0회, 발급 뒤 회원 세션에 라이트 적용, 회수 후 무료 전환, 조회 전용 제어, 390px 레이아웃을 확인했다. 운영 계정의 체감 시간은 서버 게시 후 별도 확인한다.
 
 #### 2026-11-25 — 할 일·로그 스와이프와 캘린더 헤더 정리
 
@@ -3782,10 +3794,14 @@ a38616e Keep calendar recovery in ME and report device read failures
 d04d060 Publish ME connection recovery documentation
 ff941eb Record verified calendar ME server deployment and device limits
 dd434f6 Refine Todo swipe actions and simplify calendar status UI
+b2954f4 Record calendar and Todo interaction changes in handoff
+61a6613 Speed up admin navigation and grant passes from member details
+677a70d Keep product demo frame stable as tasks are handled
+c891420 Match every demo tab to the full briefing height and unify Korean labels
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: dd434f6에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: c891420에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13054,7 +13070,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/dd434f62453a26d09d2a34f75de2058422912f42
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/c891420ecf0c32972c7f89c5fe33448ae6d469cf
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -13212,6 +13228,14 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 ## 17. AI 개발 지침 전문
 
 ### 원문 / AGENTS.md
+
+#### 2026-11-25 — 어드민 메뉴 전환과 회원 상세 이용권 발급
+
+어드민 메뉴는 선택 즉시 제목과 읽는 상태를 표시한다. 최근 20초 안에 읽은 메뉴와 같은 회원의 상세 탭은 현재 운영자 세션의 메모리에서 바로 연다. 검색·페이지 이동·재시도는 서버에서 조회하고 운영자 변경 작업, 로그아웃, 페이지 이탈 시 화면 캐시를 삭제한다. 조회마다 서버 인증과 읽기 감사 기록을 유지한다. 운영 현황 집계를 한 번의 SQL로 묶고 회원 상세의 기본 정보·상태·현재 이용권 조회를 합쳤다. 느린 관리자 API는 회원 ID 없이 경과 시간, DB 호출 횟수와 DB 소요 시간을 기록한다.
+
+회원 상세의 회원 정보에서 무료·라이트·프로를 선택해 이용권을 즉시 발급할 수 있다. 종료일은 선택이고 사유는 필수다. 기존 실제 발급 API, 역할 권한, 버전 확인, 변경 기록을 사용한다. 발급 뒤 서버에서 상세를 새로 읽고 현재 이용권을 표시한다. 조회 전용 운영자에게 발급 폼을 표시하지 않는다. 이용권 목록에서도 발급 및 기존 변경·회수를 할 수 있다.
+
+어드민 서버 테스트 9개와 문법 검사, 실제 Chromium에서 응답 지연 중 제목 전환, 최근 메뉴/같은 회원 탭의 추가 조회 0회, 발급 뒤 회원 세션에 라이트 적용, 회수 후 무료 전환, 조회 전용 제어, 390px 레이아웃을 확인했다. 운영 계정의 체감 시간은 서버 게시 후 별도 확인한다.
 
 #### 2026-11-25 — 할 일·로그 스와이프와 캘린더 헤더 정리
 
