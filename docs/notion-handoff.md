@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-25 · 한국 시간 · 기능 코드 1578e28 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-25 · 한국 시간 · 기능 코드 a38616e · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -871,7 +871,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 사용자 최신 확정으로 서비스 연결·재인증·권한 관리는 모두 ME에서 한다. 캘린더는 실제 연결 소스 선택만 하며 ME 이동 후 초안을 복원한다. 위치/영상·시간대·첨부 UI/불필요한 하단 설명을 제거하고 알림 행 정렬과 오늘 음영 위 구분선을 수정했다. Google invalid_grant 반복 갱신을 인증 지문별로 중단하고 새 승인 후 갱신한다. 필수 서비스 ME 행, 아이폰 캘린더 실제 EventKit 읽기/원본 생성·부분수정·삭제, 등록된 네이버 CalDAV, 선택한 실제 일정 본문을 AI 입력창에 전달하는 경로를 추가했다. 네이버 PC/웹 직접 CalDAV와 기기의 서버 상시읽기는 구현하지 않았다. [상세 구현·지원표·복구·검증](calendar-connections-me-2026-11-25.md).
 
-검증: npm check, 단위/서버 486통과·1skip·실패0, mobile typecheck, 격리 iOS prebuild, iOS JS export 통과. 실제 컴포넌트/합성 API·기기 어댑터로 Duo·일반폰·웹 입력 정리/ME 이동·재인증/초안 복원, Duo·일반폰 native 생성·변경 필드만 수정·삭제·실제 본문 전달을 확인했다. 실제 계정/EventKit 기기 검수가 아니며 TestFlight 새 제출은 아직 안 됐다. 서버 게시 결과는 확인 후 별도 기록한다. 기존 미리알림 원본 완료/복원, PG/요금/서명 ID/소개만 공개 범위는 유지한다.
+검증: npm check, 단위/서버 486통과·1skip·실패0, mobile typecheck, 격리 iOS prebuild, iOS JS export 통과. 실제 컴포넌트/합성 API·기기 어댑터로 Duo·일반폰·웹 입력 정리/ME 이동·재인증/초안 복원, Duo·일반폰 native 생성·변경 필드만 수정·삭제·실제 본문 전달을 확인했다. 실제 계정/EventKit 기기 검수가 아니며 TestFlight 새 제출은 아직 안 됐다. 서버 게시 결과는 확인 후 별도 기록한다. 후속 검수로 상태 화면의 ME 관리 버튼/재인증 안내도 통일했고 native 읽기 실패·권한 해제·캐시 복원 경합을 처리했다. 관련 서버 테스트22개와 native 두 기기 흐름을 재검증했다. 기존 미리알림 원본 완료/복원, PG/요금/서명 ID/소개만 공개 범위는 유지한다.
 
 #### 모바일 소개 페이지 메인 영상 활성화·앱 첫 화면 작업 유지
 
@@ -3769,10 +3769,12 @@ ba9ec3b Fix mobile headers, bounded refresh and stable todo selection
 b874b0f Remove bouncing logo from empty AI welcome
 a08319d Add reference-based calendar and Todo creation sheet with direct date entry
 1578e28 Manage calendar connections in ME and add native calendar write-back
+e34cc6c Refresh calendar connection handoff and verified UI captures
+a38616e Keep calendar recovery in ME and report device read failures
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 1578e28에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: a38616e에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13041,7 +13043,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/1578e2809c553b5a1a4c1e4662402bf2f3a6bc10
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/a38616e9411273b26c9444d6575d179cd3303c36
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -14045,7 +14047,7 @@ Google Sheets의 일반 자료 읽기는 첫 3개 시트의 각 `A1:Z200` 셀 �
 
 `apple-calendar-device.ts`는 설치된 Expo Calendar 58의 새 API를 사용한다. 런타임에서 예외가 나는 deprecated `get*Async` 메서드를 새로 사용하지 않는다. `getCalendarPermissions(false)`와 `requestCalendarPermissions(false)`로 전체 접근을 확인하고, 실제 승인 요청은 ME에서만 한다. 웹에서는 기기 연결을 제공하지 않는다.
 
-`@apple/<encoded calendar ID>`를 Google ID와 분리해 Apple ID를 Google API로 전송하지 않는다. 계정 소유자별 선택 목록과 캐시를 사용하고, 읽기는 기기 앱 활성화·선택 날짜 범위·30초 갱신 기준이다. 네이버 CalDAV인지 계정 이름으로 추측해 권한을 만들어 내지 않는다. 기기가 반환한 `allowsModifications`를 사용한다.
+`@apple/<encoded calendar ID>`를 Google ID와 분리해 Apple ID를 Google API로 전송하지 않는다. 계정 소유자별 선택 목록과 캐시를 사용하고, 읽기는 기기 앱 활성화·선택 날짜 범위·30초 갱신 기준이다. 네이버 CalDAV인지 계정 이름으로 추측해 권한을 만들어 내지 않는다. 기기가 반환한 `allowsModifications`를 사용한다. 권한 해제 시 이전 디스크 캐시를 다시 살리지 않고 경고를 표시한다. native 읽기 실패를 빈 일정으로 처리하지 않으며, native만 연결됐을 때 Google 미연결 메시지로 대체하지 않는다.
 
 원본 저장 전 권한·쓰기 가능한 소스·계정 유지·현재 원본 버전을 확인한다. 원본 버전에는 수정시각과 실제 내용/날짜/반복/알림을 반영한다. 변경된 필드만 저장해 기존 장소·반복·초대·알림을 보존한다. 부분 표시된 긴 메모를 짧은 텍스트로 덮어쓰지 않는다. 반복 일정 편집/삭제는 선택한 발생 건으로 제한한다. native 초대와 캘린더 간 이동은 원본 앱에서 진행하며 지원한 것처럼 표시하지 않는다.
 
