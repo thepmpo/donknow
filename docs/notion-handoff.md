@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 8c68978 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 c93acd7 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -874,7 +874,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - 일정을 길게 누르고 놓아도 선택 색이 남는다. 쓰기 권한과 최신 버전이 있는 일정은 누른 상태로 다른 날짜로 끌 수 있다. 월·주·일 화면은 개별 Google 일정 색, Google 캘린더 기본색, 아이폰 캘린더 색을 표시한다. iOS 미리 알림 가져오기에는 원본 목록 색을 저장한다. 기존 항목은 다시 가져올 때 중복 없이 해당 색을 갱신한다. Google Tasks API는 색을 제공하지 않는다.
 - 할 일의 다중 선택 바와 이동 팝업에서 소속 변경을 제거했다. 할 일과 로그 행에는 로컬 분류인 ‘일상’ 등을 보조 라벨로 표시하지 않는다. 실제 원본 목록 이름과 내부 분류 데이터는 보존한다.
 - 관련 화면 점검에서 AI 실행 및 브리핑에서 제안한 일정의 확인, 일정 삭제 확인, ME의 Google Tasks 및 아이폰 미리 알림 동기화 안내, 실제 쓰기 오류의 복구 안내를 확인했다.
-- 듀오·일반폰·웹 Chromium의 수동 일정 저장 및 미표시 Google 캘린더 표시, 아이폰 캘린더 모의 EventKit의 선택·날짜 이동·수정·삭제, 원본 색 전달, iOS JS export를 확인했다. 실제 원본 계정과 실기기·TestFlight는 별도 검증이다.
+- 듀오·일반폰·웹 Chromium의 수동 일정 저장 및 미표시 Google 캘린더 표시, 아이폰 캘린더 모의 EventKit의 선택·날짜 이동·수정·삭제, 원본 색 전달, iOS JS export를 확인했다. 주간 뷰의 연속 드래그는 첫 원본 요청의 응답을 기다려 검사했고, 두 번째 쓰기가 거부되면 이전 날짜로 돌아오는 것을 확인했다. 실제 원본 계정과 실기기·TestFlight는 별도 검증이다.
 
 #### 2026-11-26 — 할 일·로그 간결화와 일정 날짜 끌어 옮기기
 
@@ -3959,10 +3959,12 @@ c3d5eea Clean up task controls and drag calendar events to another date
 e68029e Update handoff for the calendar drag interaction
 1f3d318 Verify a dragged iPhone calendar date through the device adapter
 8c68978 Show saved calendar events in Docen and preserve source colors
+6e484a5 Refresh handoff for one-tap calendar saves and source colors
+c93acd7 Restore calendar drag permission when a timed refresh arrives
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 8c68978에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: c93acd7에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13231,7 +13233,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/8c68978dc21c5485a00524d4b579b5943dd0807c
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/c93acd7e625722d3c4048583d6e1af8298cddb6b
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
