@@ -7,6 +7,7 @@ import type {LiftPreviewProps, RowGestureProps, RowPoint} from './todo-gesture-t
 
 const ScrollGesture = createContext<ReturnType<typeof Gesture.Native>|null>(null);
 const CalendarPeriodContext=createContext<ReturnType<typeof Gesture.Pan>|null>(null);
+const CalendarLiftActive=createContext<SharedValue<boolean>|null>(null);
 const CalendarTranslation=createContext<SharedValue<number>|null>(null);
 export function useCalendarTranslation(){return useContext(CalendarTranslation);}
 const LiftCoordinates = createContext<SharedValue<RowPoint>|null>(null);
@@ -19,12 +20,12 @@ export function CalendarPeriodGesture({children,enabled,reduced=false,width,show
  const callbacks=useRef({onDrag,onEnd});callbacks.current={onDrag,onEnd};
  const peek=useCallback((distance:number)=>callbacks.current.onDrag(distance),[]);
  const end=useCallback((distance:number)=>callbacks.current.onEnd(distance),[]);
- const translation=useSharedValue(0),previousDirection=useSharedValue(0),origin=useSharedValue(0),active=useSharedValue(false);
+ const translation=useSharedValue(0),previousDirection=useSharedValue(0),origin=useSharedValue(0),active=useSharedValue(false),liftActive=useSharedValue(false);
  const gesture=useMemo(()=>Gesture.Pan().enabled(enabled).maxPointers(1).activeOffsetX([-20,20]).failOffsetY([-16,16])
-  .onStart(()=>{'worklet';cancelAnimation(translation);origin.value=translation.value;active.value=true;previousDirection.value=0;})
+  .onStart(()=>{'worklet';if(liftActive.value)return;cancelAnimation(translation);origin.value=translation.value;active.value=true;previousDirection.value=0;})
   .onUpdate(e=>{
    'worklet';
-   if(reduced)return;
+   if(reduced||!active.value||liftActive.value)return;
    const limit=width??400;
    const position=Math.max(-limit,Math.min(limit,origin.value+e.translationX));
    translation.value=position;
@@ -35,14 +36,15 @@ export function CalendarPeriodGesture({children,enabled,reduced=false,width,show
    'worklet';
    if(!active.value)return;
    active.value=false;
-   const distance=successful?e.translationX:0;
+   const distance=successful&&!liftActive.value?e.translationX:0;
    if(!showPreview&&Math.abs(distance)<=55)translation.value=reduced?0:withTiming(0,{duration:220,easing:easeOut});
    scheduleOnRN(end,distance);
-  }),[enabled,reduced,width,showPreview,translation,active,origin,previousDirection,peek,end]);
- return <CalendarPeriodContext.Provider value={gesture}><CalendarTranslation.Provider value={translation}><GestureDetector gesture={gesture}>{children}</GestureDetector></CalendarTranslation.Provider></CalendarPeriodContext.Provider>;
+  }),[enabled,reduced,width,showPreview,translation,active,liftActive,origin,previousDirection,peek,end]);
+ return <CalendarPeriodContext.Provider value={gesture}><CalendarLiftActive.Provider value={liftActive}><CalendarTranslation.Provider value={translation}><GestureDetector gesture={gesture}>{children}</GestureDetector></CalendarTranslation.Provider></CalendarLiftActive.Provider></CalendarPeriodContext.Provider>;
 }
 export function TodoGestureScroll({children}:{children:React.ReactElement}) {
-  const scroll=useMemo(()=>Gesture.Native(),[]);
+  const period=useContext(CalendarPeriodContext);
+  const scroll=useMemo(()=>{const gesture=Gesture.Native();return period?gesture.simultaneousWithExternalGesture(period):gesture;},[period]);
   return <ScrollGesture.Provider value={scroll}>
     <GestureDetector gesture={scroll}>{children}</GestureDetector>
   </ScrollGesture.Provider>;
@@ -73,10 +75,11 @@ export function TodoLiftPreview({testID='todo-drag-preview',geometry,reduced,sty
 
 export function TodoGestureRow(props:RowGestureProps) {
   const scroll=useContext(ScrollGesture),period=useContext(CalendarPeriodContext);
-  const liftCoordinates=useContext(LiftCoordinates);
+  const liftCoordinates=useContext(LiftCoordinates),calendarLift=useContext(CalendarLiftActive);
   const swipeOffset=useSharedValue(0);
   const lastHover=useSharedValue(0);
   const liftStarted=useSharedValue(false);
+  const down=useSharedValue<RowPoint>({x:0,y:0}),lastPoint=useSharedValue<RowPoint>({x:0,y:0});
   const callbacks=useRef(props);
   callbacks.current=props;
   const startSwipe=useCallback(()=>callbacks.current.onSwipeStart(),[]);
@@ -109,43 +112,73 @@ export function TodoGestureRow(props:RowGestureProps) {
         swipeOffset.value=reduced?0:withTiming(0,{duration:175,easing:easeOut});
         scheduleOnRN(finishSwipe,e.translationX,success);
       });
-    const lift=Gesture.Pan()
-      .enabled(canLift)
-      .maxPointers(1)
-      .minDistance(0)
-      .activateAfterLongPress(320)
-      .onStart(e=>{
-        'worklet';
-        const point={x:e.absoluteX,y:e.absoluteY};
-        if(liftCoordinates)liftCoordinates.value=point;
-        liftStarted.value=true;
-        lastHover.value=0;
-        scheduleOnRN(startLift,point);
-      })
-      .onUpdate(e=>{
-        'worklet';
-        const point={x:e.absoluteX,y:e.absoluteY};
-        if(liftCoordinates)liftCoordinates.value=point;
-        // Keep finger tracking on the UI thread. JS only evaluates possible destinations.
-        if(Date.now()-lastHover.value>=32){
-          lastHover.value=Date.now();
-          scheduleOnRN(dragHover,point);
-        }
-      })
-      .onFinalize((e,success)=>{
-        'worklet';
-        if(!liftStarted.value)return;
-        liftStarted.value=false;
-        scheduleOnRN(finishLift,{x:e.absoluteX,y:e.absoluteY},success);
-      });
-    if(scroll){
-      swipe.blocksExternalGesture(scroll);
-      lift.blocksExternalGesture(scroll);
+    function pickup(x:number,y:number){
+      'worklet';
+      const point={x,y};
+      lastPoint.value=point;
+      if(liftCoordinates)liftCoordinates.value=point;
+      liftStarted.value=true;
+      if(calendarLift)calendarLift.value=true;
+      lastHover.value=0;
+      scheduleOnRN(startLift,point);
     }
-    if(period){swipe.blocksExternalGesture(period);lift.blocksExternalGesture(period);}
+    function track(x:number,y:number){
+      'worklet';
+      const point={x,y};
+      lastPoint.value=point;
+      if(liftCoordinates)liftCoordinates.value=point;
+      // JS only evaluates possible destinations. The preview follows on the UI thread.
+      if(Date.now()-lastHover.value>=32){
+        lastHover.value=Date.now();
+        scheduleOnRN(dragHover,point);
+      }
+    }
+    function release(success:boolean){
+      'worklet';
+      if(!liftStarted.value)return;
+      liftStarted.value=false;
+      scheduleOnRN(finishLift,lastPoint.value,success);
+      if(calendarLift)calendarLift.value=false;
+    }
+
+    // Stop early movement before pickup, then keep tracking beyond the original card.
+    const lift=period?Gesture.LongPress().enabled(canLift)
+      .minDuration(320).maxDistance(10000).shouldCancelWhenOutside(false)
+      .onTouchesDown((e,state)=>{
+        'worklet';
+        const point=e.allTouches[0];
+        if(e.numberOfTouches!==1||!point){state.fail();return;}
+        down.value={x:point.absoluteX,y:point.absoluteY};
+      })
+      .onTouchesMove((e,state)=>{
+        'worklet';
+        const point=e.allTouches[0];
+        if(!point)return;
+        if(liftStarted.value){track(point.absoluteX,point.absoluteY);return;}
+        if(Math.hypot(point.absoluteX-down.value.x,point.absoluteY-down.value.y)>10)state.fail();
+      })
+      .onTouchesUp(e=>{
+        'worklet';
+        const point=e.changedTouches[0];
+        if(liftStarted.value&&point)lastPoint.value={x:point.absoluteX,y:point.absoluteY};
+      })
+      .onStart(e=>{'worklet';pickup(e.absoluteX,e.absoluteY);})
+      .onFinalize((_,success)=>{'worklet';release(success);})
+      :Gesture.Pan().enabled(canLift).maxPointers(1).minDistance(0).activateAfterLongPress(320)
+        .onStart(e=>{'worklet';pickup(e.absoluteX,e.absoluteY);})
+        .onUpdate(e=>{'worklet';track(e.absoluteX,e.absoluteY);})
+        .onFinalize((e,success)=>{
+          'worklet';
+          if(liftStarted.value&&success)lastPoint.value={x:e.absoluteX,y:e.absoluteY};
+          release(success);
+        });
+    if(scroll&&(canSwipeLeft||canSwipeRight))swipe.blocksExternalGesture(scroll);
+    if(scroll&&canLift)lift.blocksExternalGesture(scroll);
+    if(period&&(canSwipeLeft||canSwipeRight))swipe.blocksExternalGesture(period);
+    if(period&&canLift)lift.simultaneousWithExternalGesture(period);
     if(!canSwipeLeft&&!canSwipeRight)return lift;
     return canLift?Gesture.Race(swipe,lift):swipe;
-  },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,period,liftCoordinates,swipeOffset,lastHover,liftStarted,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
+  },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,period,liftCoordinates,calendarLift,swipeOffset,lastHover,liftStarted,down,lastPoint,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
   const movement=useAnimatedStyle(()=>({transform:[{translateX:swipeOffset.value}]}));
   return <GestureDetector gesture={gesture}>
     <Animated.View collapsable={false} style={[props.fill&&{flex:1},movement]}>{props.children}</Animated.View>

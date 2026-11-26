@@ -54,12 +54,12 @@ export function useCalendarSelection(store:TodoStore){
   if(!isAppleCalendar(id)&&before.ids.filter(value=>!isAppleCalendar(value)).length>=10)return false;
   setIds([...before.ids,id]);return true;
  }
- function reconcileApple(available:string[],includeAll=false){
+ function reconcileApple(available:string[]){
   if(!ready||!available.length)return;
   const value=latest.current,known=value.knownAppleIds;
-  const eligible=available.filter(id=>!value.hiddenIds?.includes(id));
-  const additions=includeAll||!known&&(value.ids.length>=10||!value.ids.some(isAppleCalendar))?eligible:known?eligible.filter(id=>!known.includes(id)):[];
-  if(known&&available.every(id=>known.includes(id))&&!additions.some(id=>!value.ids.includes(id)))return;
+  // Earlier versions could omit calendars without the user hiding them.
+  const additions=available.filter(id=>!value.hiddenIds?.includes(id)&&!value.ids.includes(id));
+  if(known&&available.every(id=>known.includes(id))&&!additions.length)return;
   save({...value,ids:[...new Set([...value.ids,...additions])],knownAppleIds:[...new Set([...(known??[]),...available])]});
  }
  return {ids:value.ids,showDocen:!value.hideDocen,ready,setIds,toggle,reveal,reconcileApple};

@@ -25,10 +25,12 @@ export function hideCalendarDeletion(owner:string,event:CalendarEvent){
  };
 }
 export function matchesCalendarMirror(event:CalendarEvent,mirror:Omit<NonNullable<CalendarEvent['mirror']>,'state'>,day?:string|null){
+ const sameId=event.eventId===mirror.externalEventId;
+ const sameUid=day!==undefined&&!!mirror.externalUid&&event.externalUid===mirror.externalUid;
  return mirror.calendarId===event.calendarId
   &&(mirror.connectionId??null)===(event.connectionId??null)&&!!mirror.externalEventId
-  &&(event.eventId===mirror.externalEventId||event.seriesId===mirror.externalEventId)
-  &&(day===undefined||event.dueDate===day||!event.recurring&&event.eventId===mirror.externalEventId);
+  &&(sameId||event.seriesId===mirror.externalEventId||sameUid)
+  &&(day===undefined||event.dueDate===day||!event.recurring&&(sameId||sameUid));
 }
 function notify(owner:string){listeners.get(owner)?.forEach(fn=>fn());}
 export function putCalendarWrite(owner:string,key:string,event:CalendarEvent,replaces?:string,confirmed=false){let entries=writes.get(owner);if(!entries){entries=new Map();writes.set(owner,entries);}const entry={event,replaces,confirmedUntil:confirmed?Date.now()+90_000:undefined};entries.set(key,entry);notify(owner);

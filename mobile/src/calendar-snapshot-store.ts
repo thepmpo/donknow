@@ -58,7 +58,7 @@ export function createCalendarSnapshotStore(storage:SnapshotStorage){
  }
  function write(owner:string,periods:CalendarSnapshot[]){
   // Keep only display data. The device snapshot cannot grant provider write authority.
-  const safe=periods.slice(-12).map(p=>({...p,items:p.items.slice(0,250).map(e=>({id:e.id,eventId:e.eventId,connectionId:e.connectionId,calendarId:e.calendarId,calendarName:e.calendarName,provider:e.provider,mirror:e.mirror,color:e.color,title:e.title,dueDate:e.dueDate,startAt:e.startAt,endAt:e.endAt,endDate:e.endDate,allDay:e.allDay,timeZone:e.timeZone,canWrite:false}))}));
+  const safe=periods.slice(-12).map(p=>({...p,items:p.items.slice(0,250).map(e=>({id:e.id,eventId:e.eventId,externalUid:e.externalUid,connectionId:e.connectionId,calendarId:e.calendarId,calendarName:e.calendarName,provider:e.provider,mirror:e.mirror,color:e.color,title:e.title,dueDate:e.dueDate,startAt:e.startAt,endAt:e.endAt,endDate:e.endDate,allDay:e.allDay,timeZone:e.timeZone,canWrite:false}))}));
   while(safe.length&&JSON.stringify(safe).length>250000)safe.shift();
   return disk.write(owner,JSON.stringify(safe),JSON.stringify(safe.map(({readAt,...period})=>period)));
  }

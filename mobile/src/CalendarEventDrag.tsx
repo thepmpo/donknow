@@ -24,9 +24,16 @@ export function useCalendarEventDrag(enabled:boolean,onMove:(event:CalendarEvent
  function finish(completed:boolean){
   const current=session.current;session.current=null;setLifted(null);setHover('');
   if(!enabled||!current||!completed||Math.hypot(current.point.x-current.origin.x,current.point.y-current.origin.y)<8)return;
-  const day=current.boxes.find(box=>within(current.point,box))?.day;
-  const anchor=current.boxes.find(box=>within(current.origin,box))?.day??current.anchor;
-  if(day&&day!==anchor){if(current.item.todo)onTodoMove(current.item.todo,day);else onMove(current.item.event,anchor,day);}
+  function apply(boxes:Bounds[]){
+   if(!availability.current||!current||session.current)return;
+   const day=boxes.find(box=>within(current.point,box))?.day;
+   const anchor=boxes.find(box=>within(current.origin,box))?.day??current.anchor;
+   if(day&&day!==anchor){if(current.item.todo)onTodoMove(current.item.todo,day);else onMove(current.item.event,anchor,day);}
+  }
+  if(current.boxes.some(box=>within(current.point,box))){apply(current.boxes);return;}
+  void Promise.all([...targets.current].map(target=>new Promise<Bounds>(resolve=>{
+   target.node.measureInWindow((x,y,width,height)=>resolve({x,y,width,height,day:target.day}));
+  }))).then(apply);
  }
  useEffect(()=>{if(!enabled&&session.current)finish(false);},[enabled]);
  function move(point:RowPoint){

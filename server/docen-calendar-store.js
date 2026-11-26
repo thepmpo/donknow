@@ -138,8 +138,9 @@ export function docenCalendarStore(db,box){
     if(!db.prepare("UPDATE docen_calendar_delivery SET state='sending',available_at=? WHERE user_id=? AND event_id=? AND state='queued'").run(Date.now()+120000,user,id).changes)throw fail(409,'이 일정은 이미 처리 중이에요.');
    }else if(['synced','checking','blocked'].includes(input?.state)&&row.state==='sending'){
     const externalEventId=input.externalEventId;
+    const externalUid=typeof input.externalUid==='string'&&input.externalUid.length<=1500?input.externalUid:undefined;
     if(input.state==='synced'&&(typeof externalEventId!=='string'||!externalEventId||externalEventId.length>1500))throw fail(400,'원본 일정 번호를 확인해주세요.');
-    db.prepare("UPDATE docen_calendar_delivery SET state=?,data=? WHERE user_id=? AND event_id=? AND state='sending'").run(input.state==='synced'&&deleted(user,id)?'delete-queued':input.state,box.seal({...target,...(input.state==='synced'?{externalEventId}:{})}),user,id);
+    db.prepare("UPDATE docen_calendar_delivery SET state=?,data=? WHERE user_id=? AND event_id=? AND state='sending'").run(input.state==='synced'&&deleted(user,id)?'delete-queued':input.state,box.seal({...target,...(input.state==='synced'?{externalEventId,...(externalUid?{externalUid}:{})}:{})}),user,id);
    }else throw fail(409,'동기화 상태가 바뀌었어요.');
    return mirror(delivery(user,id));
   },

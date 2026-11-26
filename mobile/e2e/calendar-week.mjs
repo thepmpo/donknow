@@ -25,7 +25,9 @@ try{
     reads.push(Object.fromEntries(u.searchParams));
     const calendarId=u.searchParams.get('calendarId');
     const items=calendarId==='@docen'?[localEvent,mirroredEvent]:calendarId==='team-calendar'?[teamEvent]:events;
-    return route.fulfill({json:{items,calendarId,calendarName:'테스트 일정',canWrite:calendarId!=='team-calendar',connectionState:'connected',nextCursor:null,readAt:'2026-11-25T01:30:00Z'}});
+    const nextPage=calendarId==='primary'&&!u.searchParams.has('cursor')?'later-events':null;
+    const displayed=u.searchParams.get('cursor')==='later-events'?[all('둘째 페이지 일정','2026-11-26','2026-11-27')]:items;
+    return route.fulfill({json:{items:displayed,calendarId,calendarName:'테스트 일정',canWrite:calendarId!=='team-calendar',connectionState:'connected',nextCursor:nextPage,readAt:'2026-11-25T01:30:00Z'}});
    }
    if(p==='/api/assistant/actions'&&route.request().method()==='POST'){moveArgs=route.request().postDataJSON();return route.fulfill({json:{id:'drag-fixture',status:'pending'}});}
    if(p==='/api/assistant/actions/drag-fixture/confirm'){
@@ -40,6 +42,7 @@ try{
    return route.fulfill({status:404,json:{error:'fixture endpoint unavailable'}});
   });
   await page.goto('http://127.0.0.1:'+server.address().port+'/?mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();await page.getByTestId('week-span-span').waitFor();await page.waitForTimeout(100);
+  await page.getByText('둘째 페이지 일정',{exact:true}).waitFor();assert.ok(reads.some(r=>r.cursor==='later-events'));
   assert.ok(reads.some(r=>r.start==='2026-11-23'&&r.end==='2026-11-30'),'query is one Mon-Sun week, not fourteen days');assert.equal(await page.getByTestId('calendar-date-grid').count(),0);assert.equal(await page.getByTestId('DuoCalendarViewButton').count(),mode==='duo'?1:0);
   const month=await page.getByTestId('calendar-year-trigger').boundingBox();if(mode==='web'){const toggle=await page.getByTestId('calendar-view-toggle').boundingBox();assert.ok(toggle.x>=month.x+month.width);}else{assert.equal(await page.getByTestId('calendar-view-toggle').count(),0);const bar=await page.getByTestId('calendar-date-controls').boundingBox();assert.ok(month.x+month.width>bar.x+bar.width-2);}
   const sat=await page.getByTestId('week-saturday').boundingBox(),sun=await page.getByTestId('week-sunday').boundingBox(),hours=page.getByTestId('calendar-week-hours'),hbox=await hours.boundingBox();assert.equal(sat.x,sun.x);assert.ok(sun.y>=sat.y+sat.height-1);assert.ok(sat.x>=hbox.x+hbox.width-1);
@@ -62,6 +65,38 @@ try{
   await page.getByTestId('week-date-2026-11-25').click();await page.getByTestId('calendar-day-detail').waitFor();assert.ok(await page.getByTestId('calendar-day-detail').getByText('시간 없는 할 일',{exact:true}).isVisible());if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await page.getByRole('button',{name:'닫기',exact:true}).click();await page.getByTestId('calendar-sheet').waitFor({state:'detached'});
   await hours.evaluate(e=>{e.scrollTop=960;e.dispatchEvent(new Event('scroll'));});await page.getByTestId('week-timed-week-todo:task').click();assert.equal(await page.getByTestId('week-fixture-last').innerText(),'todo:task');await page.evaluate(()=>window.weekFixture.today());await page.waitForFunction(()=>document.querySelector('[data-testid=\"calendar-week-hours\"]').scrollTop<700);assert.ok(await hours.evaluate(e=>e.scrollTop)<700,'today navigation restores the current hours even in the same week');
   const year=await page.getByTestId('calendar-year-trigger').boundingBox();await page.mouse.move(year.x+year.width/2,year.y+year.height/2);await page.mouse.down();await page.clock.fastForward(650);await page.mouse.up();await page.getByTestId('calendar-sheet').waitFor();await page.getByRole('button',{name:'캘린더 보기 전환',exact:true}).click();await page.getByRole('tab',{name:'일 보기',exact:true}).click();await page.getByTestId('calendar-day-strip').waitFor();assert.equal(await page.getByTestId('calendar-week-workspace').count(),0);await page.evaluate(()=>window.weekFixture.week());await page.getByTestId('calendar-week-workspace').waitFor();
+  if(mode!=='web'){
+   const touch=await page.context().newCDPSession(page);
+   async function swipePeriod(surface){
+    const box=await page.getByTestId(surface).boundingBox();
+    const x=box.x+box.width*.73,y=box.y+Math.min(58,box.height/2);
+    await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+    for(let step=1;step<=8;step++)await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-box.width*.47*step/8,y}]});
+    await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await page.clock.runFor(250);
+   }
+   async function openView(label){
+    const rect=await page.getByTestId('calendar-year-trigger').boundingBox();
+    await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+    await page.mouse.down();await page.clock.fastForward(650);await page.mouse.up();
+    await page.getByRole('button',{name:'캘린더 보기 전환',exact:true}).click();
+    await page.getByRole('tab',{name:label,exact:true}).click();
+   }
+   const dateControls=page.getByTestId('calendar-date-controls');
+   await swipePeriod('calendar-week-swipe-surface');
+   assert.match(await dateControls.innerText(),/12월/,'swipe advances the visible week');
+   await page.evaluate(()=>window.weekFixture.today());
+   await openView('일 보기');
+   await swipePeriod('calendar-day-strip');
+   assert.match(await dateControls.innerText(),/11월 26일/,'swipe advances the visible day');
+   await openView('월 보기');
+   await swipePeriod('calendar-date-grid');
+   assert.match(await dateControls.innerText(),/2026년 12월/,'swipe advances the visible month');
+   await page.evaluate(()=>window.weekFixture.today());
+   await page.evaluate(()=>window.weekFixture.week());
+   await page.getByTestId('calendar-week-workspace').waitFor();
+   await touch.detach();
+  }
   if(mode==='duo'){const rect=await page.getByTestId('calendar-year-trigger').boundingBox();await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);await page.mouse.down();await page.clock.fastForward(650);await page.mouse.up();await page.getByRole('button',{name:'캘린더 상태·새로고침',exact:true}).click();failCalendar=true;await page.getByRole('button',{name:'일정 새로고침',exact:true}).click();await page.getByTestId('calendar-sync-notice').waitFor();await page.getByTestId('DuoBackButton').click();await page.getByTestId('calendar-sheet').waitFor({state:'detached'});assert.ok(await page.getByTestId('week-span-span').isVisible(),'failed refresh keeps cached source events');failCalendar=false;}
   if(mode!=='duo'){
    async function dragMeeting(destination){
@@ -73,6 +108,7 @@ try{
      if(client)await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
      else {await page.mouse.move(x,y);await page.mouse.down();}
      await page.clock.fastForward(400);await page.clock.runFor(40);await page.getByTestId('calendar-drag-preview').waitFor();
+     assert.equal(await page.getByRole('button',{name:'선택한 일정 날짜 이동'}).count(),0);
      if(client){
       for(let step=1;step<=8;step++)await client.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+(targetX-x)*step/8,y}]});
       await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});

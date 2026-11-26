@@ -8,8 +8,8 @@ import type {CalendarEvent,CalendarSource} from './calendar-model';
 import type {CalendarDraft} from './calendar-edit-model';
 import {eventOverlaps,shiftDay} from './calendar-model';
 type Snapshot={owner?:string;start?:string;end?:string;selection?:string;calendarIds?:string[];sources:CalendarSource[];events:CalendarEvent[];readAt:string|null};
-function displayEvent({id,eventId,nativeStart,calendarId,calendarName,provider,color,title,dueDate,endDate,startAt,endAt,allDay,timeZone,recurring}:CalendarEvent):CalendarEvent{
- return {id,eventId,nativeStart,calendarId,calendarName,provider,color,title,dueDate,endDate,startAt,endAt,allDay,timeZone,recurring,canWrite:false};
+function displayEvent({id,eventId,nativeStart,externalUid,calendarId,calendarName,provider,color,title,dueDate,endDate,startAt,endAt,allDay,timeZone,recurring}:CalendarEvent):CalendarEvent{
+ return {id,eventId,nativeStart,externalUid,calendarId,calendarName,provider,color,title,dueDate,endDate,startAt,endAt,allDay,timeZone,recurring,canWrite:false};
 }
 const emptyEvents:CalendarEvent[]=[],emptySources:CalendarSource[]=[],emptyIds:string[]=[];
 const cache=new Map<string,Snapshot>(),listeners=new Map<string,Set<()=>void>>();
@@ -25,7 +25,10 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,active,e
   const first=shiftDay(windowStart,-14),last=shiftDay(windowEnd,14);
   const items=ids.length?await device.events(ids,first,last):[];if(!fresh())return;
   const byId=new Map(calendars.map(calendar=>[calendar.id,calendar]));
-  const events=items.flatMap(item=>{const calendar=byId.get(item.calendarId);return calendar?[normalizeAppleEvent(item,calendar)]:[];});
+  const events=items.flatMap(item=>{
+   const calendar=byId.get(item.calendarId);
+   return calendar&&Number.isFinite(Date.parse(item.startDate))&&Number.isFinite(Date.parse(item.endDate))?[normalizeAppleEvent(item,calendar)]:[];
+  });
   const sources=calendars.map(appleCalendarSource),previous=cache.get(owner);
   const calendarIds=ids.map(id=>appleCalendarPrefix+encodeURIComponent(id));
   const next={owner,start:first,end:last,selection:selectedKey,calendarIds:JSON.stringify(calendarIds)===JSON.stringify(previous?.calendarIds)?previous!.calendarIds:calendarIds,
@@ -33,10 +36,12 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,active,e
    events:JSON.stringify(previous?.events)===JSON.stringify(events)?previous!.events:events,readAt:new Date().toISOString()};
   cache.set(owner,next);setState(next);
   if(next.events!==previous?.events||next.sources!==previous?.sources||next.start!==previous?.start||next.end!==previous?.end){
-   const display=next.events.slice(0,400).map(displayEvent);
+   const visibleRange=next.events.filter(event=>eventOverlaps(event,start,end,timeZone));
+   const visibleIds=new Set(visibleRange.map(event=>event.id));
+   const display=[...visibleRange,...next.events.filter(event=>!visibleIds.has(event.id))].slice(0,1000).map(displayEvent);
    void AsyncStorage.setItem(key,JSON.stringify({...next,calendarIds:[],sources:next.sources.map(source=>({...source,canWrite:false})),events:display})).catch(()=>{});
   }
- }catch(e){if(fresh())setError(e instanceof Error?e.message:'아이폰 일정을 확인하지 못했어요.');}finally{if(fresh())setLoading(false);}},[owner,windowStart,windowEnd,selectedKey,enabled,device]);
+ }catch(e){if(fresh())setError(e instanceof Error?e.message:'아이폰 일정을 확인하지 못했어요.');}finally{if(fresh())setLoading(false);}},[owner,windowStart,windowEnd,selectedKey,enabled,device,start,end,timeZone]);
  useEffect(()=>{let alive=true;const runOwner=owner;if(device.available&&enabled)void AsyncStorage.getItem(key).then(raw=>{if(!alive||current.current.owner!==runOwner||cache.has(owner)||!raw)return;try{const saved=JSON.parse(raw);if(Array.isArray(saved.sources)&&Array.isArray(saved.events)){const display:Snapshot={...saved,owner,selection:undefined,calendarIds:[],events:saved.events.map(displayEvent),sources:saved.sources.map((source:CalendarSource)=>({...source,canWrite:false}))};cache.set(owner,display);setState(display);}}catch{}});return()=>{alive=false;generation.current++;};},[owner,device,enabled]);
  const activeBefore=useRef(false);
  useEffect(()=>{
@@ -59,6 +64,6 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,active,e
   return state.events.filter(event=>ids.has(event.calendarId??'')&&eventOverlaps(event,start,end,timeZone));
  },[enabled,state.owner,state.events,owner,start,end,selectedKey,timeZone]);
  async function save(draft:CalendarDraft,event?:CalendarEvent){const captured=owner,result=await saveAppleCalendar(device,draft,event,()=>current.current.owner===captured&&current.current.enabled);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');setState(old=>{const next={...old,events:[...old.events.filter(e=>e.id!==event?.id&&e.id!==result.id),result]};cache.set(owner,next);return next;});refreshAppleCalendar(owner);return result;}
- async function remove(event:CalendarEvent){const captured=owner;if(!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 확인해주세요.');const fresh=await device.read(event.eventId!,event.nativeStart);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');if(appleEventVersion(fresh)!==event.etag)throw Error('원본이 바뀌었어요. 다시 확인해주세요.');await device.remove(event.eventId!,event.nativeStart);if(current.current.owner===captured){setState(old=>({...old,events:old.events.filter(e=>e.id!==event.id)}));refreshAppleCalendar(owner);}}
+ async function remove(event:CalendarEvent){const captured=owner;if(!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 확인해주세요.');const rawId=decodeURIComponent(event.calendarId!.slice(appleCalendarPrefix.length));const fresh=await device.read(event.eventId!,event.nativeStart,rawId);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');if(appleEventVersion(fresh)!==event.etag)throw Error('원본이 바뀌었어요. 다시 확인해주세요.');await device.remove(event.eventId!,event.nativeStart,rawId);if(current.current.owner===captured){setState(old=>({...old,events:old.events.filter(e=>e.id!==event.id)}));refreshAppleCalendar(owner);}}
  return {available:device.available,sources:enabled&&state.owner===owner?state.sources:emptySources,events:visible,readAt:state.readAt,error,loading,load,save,remove,cached:state.owner===owner?state.events:emptyEvents,covered:enabled&&covers(state)?state.calendarIds??emptyIds:emptyIds};
 }

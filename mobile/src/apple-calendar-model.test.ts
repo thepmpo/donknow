@@ -13,3 +13,12 @@ test('permission, source conflicts and owner changes block native writes; uncert
  let calls=0;await assert.rejects(saveAppleCalendar({...f.d,create:async()=>{calls++;throw Error('lost result');}},draft,undefined,()=>true),e=>!!e&&typeof e==='object'&&'writeState' in e&&e.writeState==='unknown');assert.equal(calls,1);
 });
 test('AI calendar export contains selected real event bodies only, with owner-visible dates and UTF-8 intact',()=>{const text=appleCalendarDocument([calendar],[native,{...native,id:'other',calendarId:'not-selected'}],'2026-11-01','2026-12-01'),decoded=Buffer.from(utf8Base64(text),'base64').toString('utf8');assert.equal(decoded,text);const document=JSON.parse(decoded);assert.equal(document.events.length,1);assert.equal(document.events[0].notes,native.notes);assert.equal(document.start,'2026-11-01');assert.equal(document.end,'2026-12-01');assert.throws(()=>appleCalendarDocument([calendar],[native],'2026-12-01','2026-11-01'));});
+
+test('EventKit civil dates stay on the selected local day for all-day events',()=>{
+ const event=normalizeAppleEvent({...native,allDay:true,timeZone:'UTC',
+  startDate:'2026-11-25T15:00:00Z',endDate:'2026-11-26T15:00:00Z',
+  allDayStart:'2026-11-26',allDayEnd:'2026-11-27',externalUid:'eventkit-uid'},calendar);
+ assert.equal(event.dueDate,'2026-11-26');
+ assert.equal(event.endDate,'2026-11-27');
+ assert.equal(event.externalUid,'eventkit-uid');
+});

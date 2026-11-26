@@ -5,7 +5,7 @@ import {calendarStartLabel,reminderOffsetLabel,calendarReminderInstant,reminderD
 import {CalendarEventDelete} from '../CalendarEventDelete';
 import {ScrollArea as ScrollView} from '../ScrollArea';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {AccessibilityInfo,findNodeHandle,Linking,PanResponder,Platform,Pressable as NativePressable,StyleSheet,Text,TextInput,View,useWindowDimensions} from 'react-native';
+import {AccessibilityInfo,findNodeHandle,Linking,Platform,Pressable as NativePressable,StyleSheet,Text,TextInput,View,useWindowDimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Ionicons} from '@expo/vector-icons';
 import {duoCalendarViewFrame} from '../duo-layout';
@@ -24,7 +24,6 @@ import type {CalendarPeriodMotionHandle} from '../CalendarPeriodMotion';
 import {CalendarDragSurface,CalendarDraggableEvent,CalendarDropDate,useCalendarEventDrag} from '../CalendarEventDrag';
 import {CalendarPeriodGesture,TodoGestureScroll} from '../todo-gestures';
 import {calendarWriteArgs,confirmedCalendarPatch,eventDraftForDateMove} from '../calendar-edit-model';
-import {CalendarMonthPickerGrid} from '../CalendarMonthPickerGrid';
 import {CalendarDayTodos} from '../CalendarDayTodos';
 import {CalendarWeekWorkspace} from '../CalendarWeekWorkspace';
 import {calendarWeekDays} from '../calendar-week-model';
@@ -43,14 +42,14 @@ import type {CalendarEvent,CalendarView} from '../calendar-model';
 import type {Todo} from '../domain';
 import type {TodoStore} from '../useTodos';
 export type CalendarNavigationRequest={id:number;action:'today'|'week'|'fortnight'|'cycle';resetToToday?:boolean;scope:string};
-type Overlay='day'|'event'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|'move-event'|null;
+const webCalendarSwipe=Platform.OS==='web'?{touchAction:'pan-y' as const}:undefined;
+type Overlay='day'|'event'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|null;
 export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,navigationRequest,onManageConnections,appleDevice,deviceCreateQueue}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest;onManageConnections?:()=>void;appleDevice?:AppleCalendarDevice;deviceCreateQueue?:CalendarCreateQueue}){
  const keyboard=useKeyboardUX(),desktop=useDesktopPresentation();
  const {scene}=useDuoScene(),backState=useDuoBackState();
  const insets=useSafeAreaInsets(),duo=useDuoTrailingNavigation(),reduced=useReducedMotion(),{fontScale}=useWindowDimensions();
  const yearButton=useRef<React.ComponentRef<typeof NativePressable>>(null);
  const [weekScrollReset,setWeekScrollReset]=useState(0),[focusMinute,setFocusMinute]=useState<number>();
- const [moveTarget,setMoveTarget]=useState<{event:CalendarEvent;anchor:string;month:string}|null>(null);
  const [yearOpen,setYearOpen]=useState(false),[yearCloseRequest,setYearCloseRequest]=useState(0);
  const [zone,setZone]=useState(deviceZone),[zoneDraft,setZoneDraft]=useState(zone),[startDay,setStartDay]=useState(0),[density,setDensity]=useState<'details'|'compact'>('details');
  const today=zonedDay(Date.now(),zone),[selected,setSelected]=useState(today),[month,setMonth]=useState(today.slice(0,7)),[view,setView]=useState<Exclude<CalendarView,'fortnight'>>('week');
@@ -112,8 +111,84 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  const calendarDrag=useCalendarEventDrag(active&&(!overlay||overlay==='day')&&!yearOpen,moveEventDate,(todo,day)=>{
   if(store.isCurrentSession())void store.update(todo.id,{dueDate:day});
  });
- const moveRef=useRef(move),swipeConsumed=useRef(false),todoTouch=useRef(false);moveRef.current=move;
- const swipe=useMemo(()=>PanResponder.create({onStartShouldSetPanResponderCapture:e=>{swipeConsumed.current=false;todoTouch.current=Platform.OS==='web'&&typeof Element!=='undefined'&&e.target instanceof Element&&!!e.target.closest('[data-testid="calendar-day-todos"]');return false;},onMoveShouldSetPanResponderCapture:(_,g)=>{const take=!todoTouch.current&&!calendarDrag.session.current&&Math.abs(g.dx)>20&&Math.abs(g.dx)>Math.abs(g.dy)*1.6;if(take)swipeConsumed.current=true;return take;},onPanResponderMove:(_,g)=>periodMotion.current?.drag(g.dx),onPanResponderRelease:(_,g)=>{if(Math.abs(g.dx)>55)moveRef.current(g.dx<0?1:-1);else periodMotion.current?.cancel();},onPanResponderTerminate:()=>periodMotion.current?.cancel()}),[]);
+ const moveRef=useRef(move),swipeConsumed=useRef(false),viewport=useRef<React.ComponentRef<typeof View>>(null);moveRef.current=move;
+ useEffect(()=>{
+  if(Platform.OS!=='web'||!active||overlay||yearOpen)return;
+  const node=viewport.current as unknown as HTMLElement|null;
+  if(!node)return;
+  let touch:{id:number;x:number;y:number;horizontal:boolean}|null=null;
+  function start(event:TouchEvent){
+   swipeConsumed.current=false;
+   const point=event.touches[0],target=event.target;
+   touch=event.touches.length===1&&point&&target instanceof Element&&!target.closest('[data-testid="calendar-day-todos"]')
+    ?{id:point.identifier,x:point.clientX,y:point.clientY,horizontal:false}:null;
+  }
+  function dragPoint(x:number,y:number,event:Event){
+   if(!touch)return;
+   if(calendarDrag.session.current){cancel();return;}
+   const dx=x-touch.x,dy=y-touch.y;
+   if(!touch.horizontal&&Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){cancel();return;}
+   if(!touch.horizontal&&Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.5)touch.horizontal=true;
+   if(!touch.horizontal)return;
+   if(event.cancelable)event.preventDefault();
+   swipeConsumed.current=true;
+   periodMotion.current?.drag(dx);
+  }
+  function drag(event:TouchEvent){
+   const point=event.touches[0];
+   if(!point||event.touches.length!==1||point.identifier!==touch?.id){cancel();return;}
+   dragPoint(point.clientX,point.clientY,event);
+  }
+  function endAt(x:number){
+   if(!touch)return;
+   const dx=x-touch.x;
+   if(touch.horizontal&&Math.abs(dx)>55&&!calendarDrag.session.current)moveRef.current(dx<0?1:-1);
+   else if(touch.horizontal)periodMotion.current?.cancel();
+   touch=null;
+  }
+  function end(event:TouchEvent){
+   const point=Array.from(event.changedTouches).find(point=>point.identifier===touch?.id);
+   if(point)endAt(point.clientX);
+  }
+  function cancel(){
+   if(touch?.horizontal)periodMotion.current?.cancel();
+   touch=null;
+  }
+  function clearClick(event:MouseEvent){
+   if(swipeConsumed.current){event.preventDefault();event.stopPropagation();swipeConsumed.current=false;}
+  }
+  function mouseStart(event:PointerEvent){
+   if(event.pointerType!=='mouse'||event.button!==0)return;
+   swipeConsumed.current=false;
+   const target=event.target;
+   touch=target instanceof Element&&!target.closest('[data-testid="calendar-day-todos"]')
+    ?{id:-1,x:event.clientX,y:event.clientY,horizontal:false}:null;
+  }
+  function mouseDrag(event:PointerEvent){
+   if(event.pointerType==='mouse'&&touch?.id===-1)dragPoint(event.clientX,event.clientY,event);
+  }
+  function mouseEnd(event:PointerEvent){
+   if(event.pointerType==='mouse'&&touch?.id===-1)endAt(event.clientX);
+  }
+  node.addEventListener('touchstart',start,{capture:true,passive:true});
+  node.addEventListener('touchmove',drag,{capture:true,passive:false});
+  node.addEventListener('touchend',end,true);
+  node.addEventListener('touchcancel',cancel,true);
+  node.addEventListener('click',clearClick,true);
+  node.addEventListener('pointerdown',mouseStart,true);
+  window.addEventListener('pointermove',mouseDrag,true);
+  window.addEventListener('pointerup',mouseEnd,true);
+  return ()=>{
+   node.removeEventListener('touchstart',start,true);
+   node.removeEventListener('touchmove',drag,true);
+   node.removeEventListener('touchend',end,true);
+   node.removeEventListener('touchcancel',cancel,true);
+   node.removeEventListener('click',clearClick,true);
+   node.removeEventListener('pointerdown',mouseStart,true);
+   window.removeEventListener('pointermove',mouseDrag,true);
+   window.removeEventListener('pointerup',mouseEnd,true);
+  };
+ },[active,overlay,yearOpen]);
  async function feedback(){if(Platform.OS!=='ios'||reduced)return;try{const h=await import('expo-haptics');await h.selectionAsync();}catch{}}
  function choose(day:string,detail=true){setSelected(day);if(day.slice(0,7)!==month)setMonth(day.slice(0,7));if(detail)setOverlay('day');void feedback();}
  const nextView=view==='month'?'week':view==='week'?'day':'month';
@@ -160,13 +235,6 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  async function external(value?:string|null){const url=safeCalendarLink(value);if(!url){setLocalError('열 수 있는 안전한 링크가 없어요.');return;}try{await Linking.openURL(url);}catch{setLocalError('링크를 열지 못했어요.');}}
  const statusText=data.phase==='unconnected'?'Google 캘린더를 연결하면 일정을 함께 볼 수 있어요.':data.phase==='loading'?(events.length?'기존 일정을 보며 새로 확인하고 있어요.':'일정을 불러오고 있어요.'):data.phase==='error'?'일정을 확인하지 못했어요.':data.phase==='partial'?'일부 일정만 표시 중이에요. 더 불러오거나 다시 확인해주세요.':data.readAt?'업데이트 '+new Intl.DateTimeFormat('ko-KR',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(data.readAt)):store.user?'선택한 기간의 일정을 표시해요.':'내 할 일을 달력에서 확인하세요.';
  function sourceColor(e:CalendarEvent){return e.color??e.mirror?.color??data.sources.find(c=>c.id===(e.calendarId??'primary'))?.color??colors.action;}
- const selectedCalendarEvent=events.find(item=>item.id===calendarDrag.selectedId);
- function startDateMove(item:CalendarEvent){
-  const anchor=eventOccurs(item,selected,zone)?selected:item.dueDate??selected;
-  setMoveTarget({event:item,anchor,month:anchor.slice(0,7)});setOverlay('move-event');
- }
- const selectionMove=selectedCalendarEvent?.canWrite&&selectedCalendarEvent.etag
-  ?<Pressable accessibilityRole="button" accessibilityLabel="선택한 일정 날짜 이동" style={s.control} onPress={()=>startDateMove(selectedCalendarEvent)}><Text style={s.link}>날짜 이동</Text></Pressable>:null;
  const hasCursor=Object.keys(data.cursors).length>0;
  function eventRow(e:CalendarEvent,day:string,dragEnabled=true){return <CalendarDraggableEvent key={e.id} event={e} day={day} dragEnabled={dragEnabled} accessibilityRole="button" accessibilityLabel={e.title+' 일정 상세'} onPress={()=>openEvent(e)} contentStyle={s.eventRow}>
   <View style={s.timeColumn}><Text style={s.eventTime}>{e.allDay?'종일':eventTime(e,zone).split(' – ')[0]}</Text></View>
@@ -175,7 +243,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  </CalendarDraggableEvent>;}
  function agenda(day=selected,periodEvents=events,interactive=true){const agendaEvents=periodEvents===events?[...dayEvents(day)]:periodEvents.filter(e=>eventOccurs(e,day,zone)),agendaTodos=store.todos.filter(t=>t.dueDate===day),agendaUnfinished=agendaTodos.filter(t=>!t.done),agendaCompleted=agendaTodos.filter(t=>t.done);return <View testID="calendar-agenda" onLayout={interactive?e=>{agendaY.current=e.nativeEvent.layout.y;}:undefined} style={[s.agenda,view==='day'&&s.dayAgenda]}>
   <View style={s.agendaHeading}><Text style={s.section}>{new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'short'}).format(new Date(day+'T12:00:00'))}{day===today?' · 오늘':''}</Text><Pressable accessibilityRole="button" accessibilityLabel="일정 또는 할 일 추가" style={s.control} onPress={()=>beginEvent(day)}><Text style={s.link}>추가 ＋</Text></Pressable></View>
-  <View style={s.agendaHeading}><Text style={s.section}>일정</Text>{interactive&&selectionMove}</View>
+  <View style={s.agendaHeading}><Text style={s.section}>일정</Text></View>
   {agendaEvents.length?agendaEvents.sort((a,b)=>Number(!!b.allDay)-Number(!!a.allDay)||(a.startAt??'').localeCompare(b.startAt??'')).map(e=>eventRow(e,day,interactive)):<Text style={s.empty}>{data.phase==='loading'?'일정을 확인하고 있어요.':data.phase==='error'?'연결이 복구되면 이 날의 일정을 확인할 수 있어요.':data.phase==='unconnected'?'Google 캘린더를 연결하면 일정을 표시해요.':data.phase==='partial'?'아직 읽지 않은 일정이 있을 수 있어요.':'이 날은 일정이 없어요.'}</Text>}
   <Text style={[s.section,{marginTop:16}]}>할 일</Text>{!agendaUnfinished.length&&<Text style={s.empty}>미완료 할 일이 없어요.</Text>}<CalendarDayTodos day={day} todos={agendaUnfinished} store={store} interactive={interactive} dateTargets={calendarDrag.targets.current} onEdit={t=>{setOverlay(null);onEdit(t);}}/>
   {!!agendaCompleted.length&&<><Pressable accessibilityRole="button" accessibilityState={{expanded:showDone}} accessibilityLabel="완료한 할 일 펼치기" style={s.control} onPress={()=>setShowDone(v=>!v)}><Text style={s.link}>완료 {agendaCompleted.length}개 {showDone?'접기':'보기'}</Text></Pressable>{showDone&&agendaCompleted.map(t=><TodoRow key={t.id} todo={t} onToggle={()=>void store.update(t.id,{done:false})} onEdit={()=>{setOverlay(null);onEdit(t);}}/>)}</>}
@@ -185,7 +253,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  function dateGrid(periodDays=days,periodMonth=month,periodSelected=selected,periodEvents=events,interactive=true){const periodRows=gridView?periodDays.length/7:1,height=monthCellHeight(size.height,headHeight,duo?0:bottom,fontScale,periodRows,weekdaysHeight);
   if(view==='day')return <View testID="calendar-day-strip" style={{flexDirection:'row'}}>{weekDays(periodSelected,startDay).map(day=><CalendarDropDate key={day} day={day} enabled={interactive} style={{flex:1}}><Pressable accessibilityRole="button" accessibilityLabel={day+' 일간 보기'} accessibilityState={{selected:day===periodSelected}} onPress={()=>{if(!swipeConsumed.current&&!calendarDrag.session.current)choose(day,false);}} delayLongPress={500} accessibilityHint="길게 누르면 이 날짜에 일정 또는 할 일을 추가해요." accessibilityActions={[{name:'longpress',label:'이 날짜에 일정 또는 할 일 추가'}]} onAccessibilityAction={e=>{if(e.nativeEvent.actionName==='longpress')beginEvent(day);}} onLongPress={()=>{if(!swipeConsumed.current&&!calendarDrag.session.current)beginEvent(day);}} style={[{flex:1,minHeight:48,alignItems:'center',justifyContent:'center'},day===today&&s.todayCell]}><Text style={[s.number,day===periodSelected&&s.chosenNumber]}>{Number(day.slice(8))}</Text></Pressable></CalendarDropDate>)}</View>;
   const indexByDay=periodEvents===events?eventsByDay:calendarEventsByDay(periodEvents,periodDays,zone);
-  return <View testID="calendar-date-grid" {...(Platform.OS==='web'?swipe.panHandlers:{})}>{Array.from({length:periodRows},(_,index)=><View key={periodDays[index*7]} style={{flexDirection:'row'}}>{gridView&&(()=>{const row=periodDays.slice(index*7,index*7+7),first=row.findIndex(day=>day.slice(0,7)===periodMonth),count=row.filter(day=>day.slice(0,7)===periodMonth).length;return first<0?null:<View testID={'calendar-week-divider-'+row[0]} pointerEvents="none" style={{position:'absolute',top:0,left:first*size.width/7,width:count*size.width/7,height:StyleSheet.hairlineWidth,backgroundColor:colors.line,zIndex:1}}/>;})()}{periodDays.slice(index*7,index*7+7).map(day=>{
+  return <View testID="calendar-date-grid" style={webCalendarSwipe}>{Array.from({length:periodRows},(_,index)=><View key={periodDays[index*7]} style={{flexDirection:'row'}}>{gridView&&(()=>{const row=periodDays.slice(index*7,index*7+7),first=row.findIndex(day=>day.slice(0,7)===periodMonth),count=row.filter(day=>day.slice(0,7)===periodMonth).length;return first<0?null:<View testID={'calendar-week-divider-'+row[0]} pointerEvents="none" style={{position:'absolute',top:0,left:first*size.width/7,width:count*size.width/7,height:StyleSheet.hairlineWidth,backgroundColor:colors.line,zIndex:1}}/>;})()}{periodDays.slice(index*7,index*7+7).map(day=>{
    const ev=indexByDay.get(day)??[],ts=dayTasks(day),tasks=ts.filter(t=>!t.done),count=ev.length+tasks.length,chosen=periodSelected===day,isToday=day===today;
    const fullSlots=Math.max(0,Math.floor((height-42)/23)),slots=count>fullSlots?Math.max(0,Math.floor((height-60)/23)):fullSlots,shownEvents=Math.min(ev.length,slots),shownTodos=Math.min(1,tasks.length,slots-shownEvents),remaining=count-shownEvents-shownTodos;
    const weekday=new Date(day+'T12:00:00Z').getUTCDay();
@@ -270,15 +338,15 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
    <Text numberOfLines={1} style={s.visibilityLabel}>{desktop?'캘린더 목록':'목록'}</Text>
   </View>
  </Pressable>;
- const title=overlay==='move-event'?'일정 날짜 이동':overlay==='connection'?'캘린더 연결 상태':overlay==='views'?'캘린더 보기':overlay==='day'?'선택일 일정과 할 일':overlay==='event'?'일정 상세':overlay==='editor'?(event?'일정 수정':'일정 또는 할 일 추가'):overlay==='picker'?(calendarFeatures.yearOverview?'캘린더 더보기':'이동할 년·월'):overlay==='sources'?'표시할 캘린더':overlay==='settings'?'캘린더 보기 설정':'현재 기간 검색';
+ const title=overlay==='connection'?'캘린더 연결 상태':overlay==='views'?'캘린더 보기':overlay==='day'?'선택일 일정과 할 일':overlay==='event'?'일정 상세':overlay==='editor'?(event?'일정 수정':'일정 또는 할 일 추가'):overlay==='picker'?(calendarFeatures.yearOverview?'캘린더 더보기':'이동할 년·월'):overlay==='sources'?'표시할 캘린더':overlay==='settings'?'캘린더 보기 설정':'현재 기간 검색';
  const monthControl=<NativePressable ref={yearButton} testID="calendar-year-trigger" accessibilityRole="button" accessibilityLabel={yearOpen?'월간 보기로 돌아가기':'년월 선택'} accessibilityState={{expanded:yearOpen}} accessibilityHint="길게 누르면 캘린더 메뉴를 열어요." accessibilityActions={[{name:'longpress',label:'캘린더 메뉴 열기'}]} onAccessibilityAction={e=>{if(e.nativeEvent.actionName==='longpress')setOverlay('picker');}} style={s.control} onLongPress={()=>setOverlay('picker')} onPress={()=>{if(calendarFeatures.yearOverview){if(yearOpen)setYearCloseRequest(v=>v+1);else setYearOpen(true);}else{setPickedMonth(month);setOverlay('picker');}}}><View style={{flexDirection:'row',alignItems:'center',gap:4}}><Text style={[s.month,!desktop&&{fontSize:16}]}>{yearOpen?'월간 보기':month.slice(0,4)+'년 '+Number(month.slice(5))+'월'}</Text><Ionicons name={yearOpen?'chevron-up':'chevron-down'} size={15} color={colors.secondary}/></View></NativePressable>;
  return <CalendarDragSurface drag={calendarDrag} testID="calendar-workspace" style={[s.root,extension>0&&{marginBottom:-extension}]} onLayout={e=>{const {width,height}=e.nativeEvent.layout;if(width>0&&height>0)setSize(old=>old.width===width&&old.height===height?old:{width,height});}}>
-  <View accessibilityElementsHidden={!!overlay} importantForAccessibility={overlay?'no-hide-descendants':'auto'} aria-hidden={!!overlay} onLayout={e=>setHeadHeight(e.nativeEvent.layout.height)}><ScreenHeading title="캘린더">{desktop?<View style={{flexDirection:'row',alignItems:'center',gap:8}}>{view!=='day'&&selectionMove}{monthControl}<Pressable testID="calendar-view-toggle" accessibilityRole="button" accessibilityLabel={nextViewLabel+' 보기로 전환'} onPress={cycleView} style={s.control}><Text style={s.link}>{viewLabel}</Text></Pressable>{connectionIssue}{visibility}</View>:visibility}</ScreenHeading>
-   {!desktop&&<View testID="calendar-date-controls" style={{marginHorizontal:layout.pageInset,minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8}}><Text numberOfLines={1} style={{fontSize:10,lineHeight:16,color:colors.muted,flex:1}}>{view==='week'?days[0].slice(5).replace('-','월 ')+'일 — '+days[6].slice(5).replace('-','월 ')+'일':view==='day'?selected.slice(5).replace('-','월 ')+'일':''}</Text>{!overlay&&view!=='day'&&selectionMove}{connectionIssue}{monthControl}</View>}
+  <View accessibilityElementsHidden={!!overlay} importantForAccessibility={overlay?'no-hide-descendants':'auto'} aria-hidden={!!overlay} onLayout={e=>setHeadHeight(e.nativeEvent.layout.height)}><ScreenHeading title="캘린더">{desktop?<View style={{flexDirection:'row',alignItems:'center',gap:8}}>{monthControl}<Pressable testID="calendar-view-toggle" accessibilityRole="button" accessibilityLabel={nextViewLabel+' 보기로 전환'} onPress={cycleView} style={s.control}><Text style={s.link}>{viewLabel}</Text></Pressable>{connectionIssue}{visibility}</View>:visibility}</ScreenHeading>
+   {!desktop&&<View testID="calendar-date-controls" style={{marginHorizontal:layout.pageInset,minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8}}><Text numberOfLines={1} style={{fontSize:10,lineHeight:16,color:colors.muted,flex:1}}>{view==='week'?days[0].slice(5).replace('-','월 ')+'일 — '+days[6].slice(5).replace('-','월 ')+'일':view==='day'?selected.slice(5).replace('-','월 ')+'일':''}</Text>{connectionIssue}{monthControl}</View>}
   </View>
   <CalendarYearNavigator enabled={calendarFeatures.yearOverview} visible={yearOpen} active={active} blocked={!!overlay} closeRequest={yearCloseRequest} scope={navigationScope} month={month} today={today} startDay={startDay} bottomInset={bottom} onClose={()=>{setYearOpen(false);requestAnimationFrame(()=>{yearButton.current?.focus();if(Platform.OS!=='web'){const node=findNodeHandle(yearButton.current);if(node)AccessibilityInfo.setAccessibilityFocus(node);}});}} onChoose={key=>{setMonth(key);setSelected(key+'-01');setView('month');savedScroll.current=0;scroll.current?.scrollTo({y:0,animated:false});void feedback();}}>
-  <CalendarPeriodGesture reduced={reduced} width={size.width} showPreview={gridView||view==='day'} enabled={active&&!overlay&&!yearOpen} onDrag={dx=>periodMotion.current?.drag(dx)} onEnd={dx=>{if(Math.abs(dx)>55)move(dx<0?1:-1);else periodMotion.current?.cancel();}}><View collapsable={false} style={{flex:1,minHeight:0}}><CalendarViewTransition view={view}>
-  {view==='week'?<View accessibilityElementsHidden={!!overlay} importantForAccessibility={overlay?'no-hide-descendants':'auto'} aria-hidden={!!overlay} testID="calendar-week-swipe-surface" style={{flex:1,minHeight:0}} {...(Platform.OS==='web'?swipe.panHandlers:{})}><CalendarWeekMotion identity={days[0]} enabled={active&&!overlay&&!yearOpen&&!reduced}><CalendarWeekWorkspace days={days} events={events} todos={store.todos} selected={selected} zone={zone} active={active&&!overlay&&!yearOpen} resetRequest={weekScrollReset} focusMinute={focusMinute} bottomInset={duo?8:bottom} color={sourceColor} onDay={day=>{if(!calendarDrag.session.current)choose(day);}} onAdd={day=>{if(!calendarDrag.session.current)beginEvent(day);}} onEvent={openEvent} onTodo={onEdit} onCreate={(day,time)=>{setSelected(day);beginEvent(day,time,undefined,true);}}/></CalendarWeekMotion></View>:<View testID="calendar-period-swipe-surface" style={{flex:1,minHeight:0}} {...(Platform.OS==='web'&&view==='day'?swipe.panHandlers:{})}><TodoGestureScroll><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} ref={scroll} accessibilityElementsHidden={!!overlay} importantForAccessibility={overlay?'no-hide-descendants':'auto'} aria-hidden={!!overlay} testID="calendar-scroll" scrollEnabled={view!=='month'} bounces={false} alwaysBounceVertical={false} overScrollMode="never" style={{flex:1,minHeight:0}} onScroll={e=>{savedScroll.current=e.nativeEvent.contentOffset.y;}} scrollEventThrottle={32} nestedScrollEnabled keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:gridView&&duo?0:bottom,...(view==='month'?{height:'100%'}:{})}}>
+  <CalendarPeriodGesture reduced={reduced} width={size.width} showPreview={gridView||view==='day'} enabled={active&&!overlay&&!yearOpen} onDrag={dx=>periodMotion.current?.drag(dx)} onEnd={dx=>{if(Math.abs(dx)>55&&!calendarDrag.session.current)move(dx<0?1:-1);else periodMotion.current?.cancel();}}><View ref={viewport} collapsable={false} style={{flex:1,minHeight:0}}><CalendarViewTransition view={view}>
+  {view==='week'?<View accessibilityElementsHidden={!!overlay} importantForAccessibility={overlay?'no-hide-descendants':'auto'} aria-hidden={!!overlay} testID="calendar-week-swipe-surface" style={[{flex:1,minHeight:0},webCalendarSwipe]}><CalendarWeekMotion identity={days[0]} enabled={active&&!overlay&&!yearOpen&&!reduced}><CalendarWeekWorkspace days={days} events={events} todos={store.todos} selected={selected} zone={zone} active={active&&!overlay&&!yearOpen} resetRequest={weekScrollReset} focusMinute={focusMinute} bottomInset={duo?8:bottom} color={sourceColor} onDay={day=>{if(!calendarDrag.session.current)choose(day);}} onAdd={day=>{if(!calendarDrag.session.current)beginEvent(day);}} onEvent={openEvent} onTodo={onEdit} onCreate={(day,time)=>{setSelected(day);beginEvent(day,time,undefined,true);}}/></CalendarWeekMotion></View>:<View testID="calendar-period-swipe-surface" style={[{flex:1,minHeight:0},webCalendarSwipe]}><TodoGestureScroll><ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} ref={scroll} accessibilityElementsHidden={!!overlay} importantForAccessibility={overlay?'no-hide-descendants':'auto'} aria-hidden={!!overlay} testID="calendar-scroll" scrollEnabled={view!=='month'} bounces={false} alwaysBounceVertical={false} overScrollMode="never" style={{flex:1,minHeight:0}} onScroll={e=>{savedScroll.current=e.nativeEvent.contentOffset.y;}} scrollEventThrottle={32} nestedScrollEnabled keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:gridView&&duo?0:bottom,...(view==='month'?{height:'100%'}:{})}}>
    {view!=='list'&&<View testID="calendar-weekdays" onLayout={e=>setWeekdaysHeight(e.nativeEvent.layout.height)} style={[s.weekdays,{borderBottomWidth:gridView?0:StyleSheet.hairlineWidth}]}>{(view==='day'?weekDays(selected,startDay):days.slice(0,7)).map(day=><Text key={day} style={[s.weekday,{color:new Date(day+'T12:00:00Z').getUTCDay()===0?colors.danger:new Date(day+'T12:00:00Z').getUTCDay()===6?colors.blueText:colors.muted}]}>{['일','월','화','수','목','금','토'][new Date(day+'T12:00:00Z').getUTCDay()]}</Text>)}</View>}
    <CalendarPeriodMotion presentation={()=>view==='day'?<>{dateGrid(days,month,selected,events,false)}{agenda(selected,events,false)}</>:dateGrid(days,month,selected,events,false)} preview={adjacentGrid} ref={periodMotion} identity={JSON.stringify([view,days[0],days.length,zone])} sequence={periodSequence} direction={gridView||view==='day'?periodDirection:0} width={size.width} enabled={active&&!overlay&&!yearOpen}>
    {view!=='list'&&<View>
@@ -292,7 +360,6 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
   {!!overlay&&active&&<CalendarSheet stableContent={overlay==='day'||overlay==='event'} fill={overlay==='editor'} bottomInset={bottom} title={title} headerContent={creation?creationTabs:undefined} expanded={overlay==='event'} headerAction={overlay==='event'&&event&&!event.saveState&&((event.canWrite&&event.etag)||event.provider!=='docen'&&data.detailsSupported)?<Pressable style={s.editButton} accessibilityRole="button" accessibilityLabel={event.canWrite?'이 일정 수정':'docen 정보 편집'} onPress={()=>beginEvent(selected,'09:00',event)}><Text style={s.eventTitle}>편집</Text></Pressable>:undefined} animateDismiss={overlay!=='editor'&&!(overlay==='event'&&eventParent.current==='day')} onClose={()=>void close()} busy={editorBusy}>
    {!!localError&&<Text accessibilityRole="alert" style={s.error}>{localError}</Text>}
 
-   {overlay==='move-event'&&moveTarget&&<CalendarMonthPickerGrid month={moveTarget.month} today={today} selected={new Set([moveTarget.anchor])} onMonth={month=>setMoveTarget({...moveTarget,month})} onDay={day=>{setOverlay(null);setMoveTarget(null);calendarDrag.setSelectedId(null);moveEventDate(moveTarget.event,moveTarget.anchor,day);}}/>}
    {overlay==='day'&&<TodoGestureScroll><ScrollView key={'day:'+selected} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} testID="calendar-day-detail" keyboardShouldPersistTaps="handled">{agenda()}<Button title="이 날에 일정 추가" onPress={()=>beginEvent()}/></ScrollView></TodoGestureScroll>}
    {overlay==='event'&&event&&<ScrollView key={'event:'+event.id} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} testID="calendar-event-detail" contentContainerStyle={{gap:16,paddingBottom:12}}>
     <View style={s.detailHeading}><View style={[s.accent,{backgroundColor:sourceColor(event)}]}/><View style={{flex:1,gap:10}}><Text style={s.detailTitle}>{event.title}</Text><Text style={s.eventTitle}>{new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(new Date((event.dueDate??selected)+'T12:00:00'))}</Text><Text style={s.eventTitle}>{event.allDay?'하루 종일':eventTime(event,zone)}{event.allDay&&event.endDate&&shiftDay(event.endDate,-1)!==event.dueDate?' · '+shiftDay(event.endDate,-1)+'까지':''}</Text></View></View>

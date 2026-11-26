@@ -55,35 +55,40 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
    const ids=v===2?(capabilities.current?.docen?[...new Set([...selected,docenCalendarId])]:selected.filter(id=>id!==docenCalendarId)):['primary'];if(!ids.length){snapshot.current=[];setEvents([]);setPhase('ready');cursorRef.current={};setCursors({});remember();return;}
    const next:Record<string,string>={...(more?cursorRef.current:{})},readTimes:string[]=[],ok:Page[]=[];
    const pages=await Promise.allSettled(ids.filter(id=>!more||cursorRef.current[id]).map(async id=>{
-    const query=new URLSearchParams({month,...(v===2?{v:'2',calendarId:id,timeZone,start,end}:{}),...(more&&cursorRef.current[id]?{cursor:cursorRef.current[id]}:{})});
-    const result=await request('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
-    if(id===docenCalendarId){
-     const mirrors=Array.isArray(result.hiddenMirrors)&&result.hiddenMirrors.length?result.hiddenMirrors:noHiddenMirrors;
-     const appleCreates=Array.isArray(result.appleCreates)&&result.appleCreates.length?result.appleCreates:noAppleCreates;
-     setHidden(old=>old?.owner===owner&&JSON.stringify(old.mirrors)===JSON.stringify(mirrors)&&JSON.stringify(old.appleCreates)===JSON.stringify(appleCreates)?old:{owner,mirrors,appleCreates});
+    let cursor=more?cursorRef.current[id]:undefined;
+    for(let page=0;page<(v===2&&id!==docenCalendarId&&!more?4:1);page++){
+     const query=new URLSearchParams({month,...(v===2?{v:'2',calendarId:id,timeZone,start,end}:{}),...(cursor?{cursor}:{})});
+     const result=await request('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
+     if(id===docenCalendarId){
+      const mirrors=Array.isArray(result.hiddenMirrors)&&result.hiddenMirrors.length?result.hiddenMirrors:noHiddenMirrors;
+      const appleCreates=Array.isArray(result.appleCreates)&&result.appleCreates.length?result.appleCreates:noAppleCreates;
+      setHidden(old=>old?.owner===owner&&JSON.stringify(old.mirrors)===JSON.stringify(mirrors)&&JSON.stringify(old.appleCreates)===JSON.stringify(appleCreates)?old:{owner,mirrors,appleCreates});
+     }
+     arrivedIds.add(id);
+     // A replaced account is not a slow page of the former account. Token rotation keeps connectionId.
+     const replaced=new Set(snapshot.current.filter(e=>(e.calendarId??'primary')===id&&e.connectionId&&result.connectionId&&e.connectionId!==result.connectionId).map(e=>e.connectionId!));
+     if(replaced.size){revision=invalidateCalendarSnapshotReads(owner);readRevision.current=revision;snapshot.current=snapshot.current.filter(e=>!replaced.has(e.connectionId??''));for(const cached of periods.current.values())cached.items=cached.items.filter(e=>!replaced.has(e.connectionId??''));}
+     // Publish each source when it arrives, while slower sources keep their cached items.
+     if(result.nextCursor)next[id]=result.nextCursor;else delete next[id];
+     if(result.connectionState==='unconnected'){snapshot.current=snapshot.current.filter(e=>(e.calendarId??'primary')!==id);for(const cached of periods.current.values())cached.items=cached.items.filter(e=>(e.calendarId??'primary')!==id);}
+     const chainKey=key+'|'+id,prior=cursor?pageChains.current.get(chainKey):undefined,chain={key,items:[...new Map([...(prior?.key===key?prior.items:[]),...result.items].map(e=>[eventKey(e),e])).values()]};pageChains.current.set(chainKey,chain);while(pageChains.current.size>120)pageChains.current.delete(pageChains.current.keys().next().value!);
+     const complete=!result.nextCursor;
+     const updated=[...new Map([...(complete?snapshot.current.filter(e=>(e.calendarId??'primary')!==id):snapshot.current),...chain.items].map(e=>[eventKey(e),e])).values()];
+     if(JSON.stringify(snapshot.current)!==JSON.stringify(updated))snapshot.current=updated;
+     // Update overlapping cached periods too, including deletions after the final page.
+     // A 2-week refresh must not resurrect old titles when returning to month view.
+     for(const cached of periods.current.values())if(cached.family===family){
+      cached.items=[...new Map([...cached.items.filter(e=>!complete||(e.calendarId??'primary')!==id||!inPeriod(e)),...chain.items.filter(e=>inPeriod(e,cached.start,cached.end))].map(e=>[eventKey(e),e])).values()];
+     }
+     setEvents(snapshot.current);cursorRef.current={...next};setCursors(cursorRef.current);
+     if(result.readAt)readTimes.push(result.readAt);if(readTimes.length){readAtRef.current=readTimes.sort().at(-1)!;setReadAt(readAtRef.current);}
+     setSources(old=>{
+      const source=old.find(value=>value.id===id),canWrite=result.canWrite===true,connectionId=result.connectionId??source?.connectionId;
+      return !source||source.canWrite===canWrite&&source.connectionId===connectionId?old:old.map(value=>value===source?{...value,canWrite,connectionId}:value);
+     });ok.push(result);remember();
+     if(!result.nextCursor||result.nextCursor===cursor)break;
+     cursor=result.nextCursor;
     }
-    arrivedIds.add(id);
-    // A replaced account is not a slow page of the former account. Token rotation keeps connectionId.
-    const replaced=new Set(snapshot.current.filter(e=>(e.calendarId??'primary')===id&&e.connectionId&&result.connectionId&&e.connectionId!==result.connectionId).map(e=>e.connectionId!));
-    if(replaced.size){revision=invalidateCalendarSnapshotReads(owner);readRevision.current=revision;snapshot.current=snapshot.current.filter(e=>!replaced.has(e.connectionId??''));for(const cached of periods.current.values())cached.items=cached.items.filter(e=>!replaced.has(e.connectionId??''));}
-    // Publish each source when it arrives, while slower sources keep their cached items.
-    if(result.nextCursor)next[id]=result.nextCursor;else delete next[id];
-    if(result.connectionState==='unconnected'){snapshot.current=snapshot.current.filter(e=>(e.calendarId??'primary')!==id);for(const cached of periods.current.values())cached.items=cached.items.filter(e=>(e.calendarId??'primary')!==id);}
-    const chainKey=key+'|'+id,prior=more?pageChains.current.get(chainKey):undefined,chain={key,items:[...new Map([...(prior?.key===key?prior.items:[]),...result.items].map(e=>[eventKey(e),e])).values()]};pageChains.current.set(chainKey,chain);while(pageChains.current.size>120)pageChains.current.delete(pageChains.current.keys().next().value!);
-    const complete=!result.nextCursor;
-    const updated=[...new Map([...(complete?snapshot.current.filter(e=>(e.calendarId??'primary')!==id):snapshot.current),...chain.items].map(e=>[eventKey(e),e])).values()];
-    if(JSON.stringify(snapshot.current)!==JSON.stringify(updated))snapshot.current=updated;
-    // Update overlapping cached periods too, including deletions after the final page.
-    // A 2-week refresh must not resurrect old titles when returning to month view.
-    for(const cached of periods.current.values())if(cached.family===family){
-     cached.items=[...new Map([...cached.items.filter(e=>!complete||(e.calendarId??'primary')!==id||!inPeriod(e)),...chain.items.filter(e=>inPeriod(e,cached.start,cached.end))].map(e=>[eventKey(e),e])).values()];
-    }
-    setEvents(snapshot.current);cursorRef.current={...next};setCursors(cursorRef.current);
-    if(result.readAt)readTimes.push(result.readAt);if(readTimes.length){readAtRef.current=readTimes.sort().at(-1)!;setReadAt(readAtRef.current);}
-    setSources(old=>{
-     const source=old.find(value=>value.id===id),canWrite=result.canWrite===true,connectionId=result.connectionId??source?.connectionId;
-     return !source||source.canWrite===canWrite&&source.connectionId===connectionId?old:old.map(value=>value===source?{...value,canWrite,connectionId}:value);
-    });ok.push(result);remember();
    }));if(!fresh())return;
    const failed=pages.filter(p=>p.status==='rejected');
    if(!ok.length&&failed.length)throw (failed[0] as PromiseRejectedResult).reason;

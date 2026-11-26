@@ -10,6 +10,7 @@ import {isAppleCalendar} from './apple-calendar-model';
 import type {CalendarCreateQueue} from './calendar-create-queue';
 import type {AppleCalendarDevice} from './apple-calendar-model';
 import {docenCalendarId} from './calendar-model';
+import {mergeCalendarCopies} from './calendar-copies';
 import type {CalendarEvent,CalendarMirror,CalendarSource} from './calendar-model';
 import type {TodoStore} from './useTodos';
 const appleDeletesInFlight=new Set<string>();
@@ -44,7 +45,7 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
    let external:CalendarEvent;
    try{external=await context.apple.save(draft);}
    catch{if(current())await context.store.featureRequest(path,'POST',{state:'checking'});return;}
-   const acknowledge=()=>context.store.featureRequest(path,'POST',{state:'synced',externalEventId:external.eventId});
+   const acknowledge=()=>context.store.featureRequest(path,'POST',{state:'synced',externalEventId:external.eventId,externalUid:external.externalUid});
    if(current())try{await acknowledge();}catch(error){
     if(!current()||!retryableDocenCalendarCreate(error))throw error;
     await acknowledge();
@@ -82,17 +83,18 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
  }
  const events=useMemo(()=>{
  const owned=shown.filter(event=>event.mirror);
- return shown.flatMap(event=>{
+ return mergeCalendarCopies(shown.flatMap(event=>{
   if(!event.mirror&&owned.some(row=>matchesCalendarMirror(event,row.mirror!,row.dueDate)))return [];
   const original=originalFor(event);
   if(original){
    const {id,eventId,calendarId,calendarName,provider,etag,duckDetails,mirror}=event;
    return [{...event,...original,id,eventId,calendarId,calendarName,provider,etag,duckDetails,mirror}];
   }
-  if(event.mirror?.provider==='apple-calendar'&&event.mirror.state==='synced'&&apple.covered.includes(event.mirror.calendarId))return [];
+  if(event.mirror?.provider==='apple-calendar'&&event.mirror.state==='synced'&&event.mirror.externalUid
+   &&apple.covered.includes(event.mirror.calendarId))return [];
   const remote=event.mirror?shown.find(row=>matchesCalendarMirror(row,event.mirror!,event.dueDate)):null;
-  return [remote?{...event,color:remote.color??event.mirror?.color??event.color}:event];
- });
+  return [remote?{...event,externalUid:remote.externalUid,color:remote.color??event.mirror?.color??event.color}:event];
+ }));
  },[shown,apple.covered]);
- return {...google,enqueueCreate:creates.enqueue,originalFor,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>[...google.cachedEvents(),...apple.cached],load:async(more=false)=>{await Promise.allSettled([google.load(more),apple.load()]);},loadSources:async(more=false)=>{await Promise.allSettled([google.loadSources(more),apple.load()]);},upsertEvent:(e:CalendarEvent)=>{if(e.provider!=='apple-calendar')google.upsertEvent(e);},nativeError:apple.error};
+ return {...google,enqueueCreate:creates.enqueue,originalFor,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>mergeCalendarCopies([...google.cachedEvents(),...apple.cached].filter(event=>{const id=event.mirror?.calendarId??event.calendarId??'primary';return id===docenCalendarId||options.selected.includes(id);})),load:async(more=false)=>{await Promise.allSettled([google.load(more),apple.load()]);},loadSources:async(more=false)=>{await Promise.allSettled([google.loadSources(more),apple.load()]);},upsertEvent:(e:CalendarEvent)=>{if(e.provider!=='apple-calendar')google.upsertEvent(e);},nativeError:apple.error};
 }
