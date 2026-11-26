@@ -27,8 +27,8 @@ export function CalendarPeriodGesture({children,enabled,reduced=false,width,show
   .onTouchesDown((e,state)=>{
    'worklet';
    const point=e.allTouches[0];
-   active.value=false;distance.value=0;previousDirection.value=0;
    if(e.numberOfTouches!==1||!point){state.fail();return;}
+   active.value=false;distance.value=0;previousDirection.value=0;
    touchStart.value={x:point.absoluteX,y:point.absoluteY};
    state.begin();
   })
