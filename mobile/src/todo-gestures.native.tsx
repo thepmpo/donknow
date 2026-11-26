@@ -7,20 +7,39 @@ import type {LiftPreviewProps, RowGestureProps, RowPoint} from './todo-gesture-t
 
 const ScrollGesture = createContext<ReturnType<typeof Gesture.Native>|null>(null);
 const CalendarPeriodContext=createContext<ReturnType<typeof Gesture.Pan>|null>(null);
+const CalendarTranslation=createContext<SharedValue<number>|null>(null);
+export function useCalendarTranslation(){return useContext(CalendarTranslation);}
 const LiftCoordinates = createContext<SharedValue<RowPoint>|null>(null);
 const easeOut = Easing.out(Easing.cubic);
 
 export function TodoGestureRoot({children}:{children:React.ReactNode}) {
   return <GestureHandlerRootView style={{flex:1}}>{children}</GestureHandlerRootView>;
 }
-export function CalendarPeriodGesture({children,enabled,onDrag,onEnd}:{children:React.ReactElement;enabled:boolean;onDrag:(distance:number)=>void;onEnd:(distance:number)=>void}){
+export function CalendarPeriodGesture({children,enabled,reduced=false,width,showPreview,onDrag,onEnd}:{children:React.ReactElement;enabled:boolean;reduced?:boolean;width?:number;showPreview?:boolean;onDrag:(distance:number)=>void;onEnd:(distance:number)=>void}){
  const callbacks=useRef({onDrag,onEnd});callbacks.current={onDrag,onEnd};
- const drag=useCallback((distance:number)=>callbacks.current.onDrag(distance),[]);
+ const peek=useCallback((distance:number)=>callbacks.current.onDrag(distance),[]);
  const end=useCallback((distance:number)=>callbacks.current.onEnd(distance),[]);
+ const translation=useSharedValue(0),previousDirection=useSharedValue(0),origin=useSharedValue(0),active=useSharedValue(false);
  const gesture=useMemo(()=>Gesture.Pan().enabled(enabled).maxPointers(1).activeOffsetX([-20,20]).failOffsetY([-16,16])
-  .onUpdate(e=>{'worklet';scheduleOnRN(drag,e.translationX);})
-  .onEnd((e,successful)=>{'worklet';scheduleOnRN(end,successful?e.translationX:0);}),[enabled,drag,end]);
- return <CalendarPeriodContext.Provider value={gesture}><GestureDetector gesture={gesture}>{children}</GestureDetector></CalendarPeriodContext.Provider>;
+  .onStart(()=>{'worklet';cancelAnimation(translation);origin.value=translation.value;active.value=true;previousDirection.value=0;})
+  .onUpdate(e=>{
+   'worklet';
+   if(reduced)return;
+   const limit=width??400;
+   const position=Math.max(-limit,Math.min(limit,origin.value+e.translationX));
+   translation.value=position;
+   const direction=position<0?1:-1;
+   if(showPreview&&previousDirection.value!==direction){previousDirection.value=direction;scheduleOnRN(peek,position);}
+  })
+  .onFinalize((e,successful)=>{
+   'worklet';
+   if(!active.value)return;
+   active.value=false;
+   const distance=successful?e.translationX:0;
+   if(!showPreview&&Math.abs(distance)<=55)translation.value=reduced?0:withTiming(0,{duration:220,easing:easeOut});
+   scheduleOnRN(end,distance);
+  }),[enabled,reduced,width,showPreview,translation,active,origin,previousDirection,peek,end]);
+ return <CalendarPeriodContext.Provider value={gesture}><CalendarTranslation.Provider value={translation}><GestureDetector gesture={gesture}>{children}</GestureDetector></CalendarTranslation.Provider></CalendarPeriodContext.Provider>;
 }
 export function TodoGestureScroll({children}:{children:React.ReactElement}) {
   const scroll=useMemo(()=>Gesture.Native(),[]);

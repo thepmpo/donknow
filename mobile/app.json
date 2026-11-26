@@ -11,6 +11,7 @@
       "bundleIdentifier": "com.sjfieni.duckduck",
       "buildNumber": "1",
       "infoPlist": {
+        "CADisableMinimumFrameDurationOnPhone": true,
         "ITSAppUsesNonExemptEncryption": false,
         "NSMicrophoneUsageDescription": "docen과 음성으로 대화하기 위해 마이크를 사용해요. 녹음 파일을 보관하지 않아요."
       }

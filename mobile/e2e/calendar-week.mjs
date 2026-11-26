@@ -10,14 +10,14 @@ let events=[all('span','2026-11-24','2026-11-26'),all('review','2026-11-24','202
 const todos=[{id:'task',title:'자료 보내기',category:'업무',done:false,dueDate:'2026-11-25',dueTime:'14:00'},{id:'plain',title:'시간 없는 할 일',category:'업무',done:false,dueDate:'2026-11-25'},{id:'weekend',title:'주말 준비',category:'업무',done:false,dueDate:'2026-11-28',dueTime:'13:00'}];
 try{
  for(const [mode,width,height] of [['duo',430,844],['standard',390,844],['web',1360,960]].filter(([mode])=>!process.env.CALENDAR_WEEK_SURFACE||process.env.CALENDAR_WEEK_SURFACE===mode)){
-  const page=await browser.newPage({viewport:{width,height},timezoneId:'Asia/Seoul',hasTouch:true,isMobile:mode!=='web'}),errors=[],reads=[];const originalEvents=events;let failCalendar=false,moveArgs=null,moveWrites=0,failMove=false;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install({time:new Date('2026-11-25T10:29:00+09:00')});await page.clock.pauseAt(new Date('2026-11-25T10:30:00+09:00'));
+  const page=await browser.newPage({viewport:{width,height},timezoneId:'Asia/Seoul',hasTouch:true,isMobile:mode!=='web'}),errors=[],reads=[];const originalEvents=events;let failCalendar=false,moveArgs=null,moveWrites=0,failMove=false,heldRead;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install({time:new Date('2026-11-25T10:29:00+09:00')});await page.clock.pauseAt(new Date('2026-11-25T10:30:00+09:00'));
   await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
   await page.route(origin+'/**',async route=>{const u=new URL(route.request().url()),p=u.pathname;
    if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'week-user',email:'week@example.test',emailVerified:true}}});
    if(p==='/api/todos')return route.fulfill({json:todos});
    if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1}});
    if(p==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:'primary',primary:true,name:'테스트 일정',canWrite:true,color:'#2366e8'}]}});
-   if(p==='/api/calendar/events'){if(failCalendar)return route.fulfill({status:503,json:{error:'fixture unavailable'}});reads.push(Object.fromEntries(u.searchParams));return route.fulfill({json:{items:events,calendarId:'primary',calendarName:'테스트 일정',canWrite:true,connectionState:'connected',nextCursor:null,readAt:'2026-11-25T01:30:00Z'}});}
+   if(p==='/api/calendar/events'){if(heldRead)await heldRead;if(failCalendar)return route.fulfill({status:503,json:{error:'fixture unavailable'}});reads.push(Object.fromEntries(u.searchParams));return route.fulfill({json:{items:events,calendarId:'primary',calendarName:'테스트 일정',canWrite:true,connectionState:'connected',nextCursor:null,readAt:'2026-11-25T01:30:00Z'}});}
    if(p==='/api/assistant/actions'&&route.request().method()==='POST'){moveArgs=route.request().postDataJSON();return route.fulfill({json:{id:'drag-fixture',status:'pending'}});}
    if(p==='/api/assistant/actions/drag-fixture/confirm'){
     moveWrites++;
@@ -89,6 +89,70 @@ try{
     assert.equal(moveWrites,2);
    }
    events=originalEvents;
+  }
+  if(mode==='duo'){
+   const populated=Array.from({length:155},(_,i)=>{
+    const day=String(i%25+1).padStart(2,'0'),date='2026-11-'+day;
+    return timed('팽팽한 일정 '+i,'12:00','12:30',date);
+   });
+   events=[...originalEvents,...populated];
+   await page.evaluate(()=>window.weekFixture.refreshCalendar());
+   await page.getByTestId('week-timed-팽팽한 일정 24').first().waitFor();
+   await page.emulateMedia({reducedMotion:'no-preference'});
+   await page.clock.runFor(50);
+   const toggle=page.getByTestId('DuoCalendarViewButton');
+   const pane=page.getByTestId('calendar-view-transition');
+   await toggle.click();await page.getByTestId('calendar-day-strip').waitFor();
+   await page.clock.runFor(45);
+   const intermediate=await pane.evaluate(e=>Number(getComputedStyle(e).opacity));
+   assert.ok(intermediate>.79&&intermediate<.999,'the next view fades in without going blank');
+   await page.clock.runFor(180);
+   assert.equal(await pane.evaluate(e=>Number(getComputedStyle(e).opacity)),1);
+   await toggle.click();await page.getByTestId('calendar-date-grid').waitFor();
+   await page.clock.runFor(220);
+   const marker=timed('갱신된 일정','16:00','17:00');
+   let release;
+   heldRead=new Promise(resolve=>{release=resolve;});
+   events=[...events,marker];
+   const beganRead=page.waitForRequest(request=>request.url().includes('/api/calendar/events?'));
+   await page.evaluate(()=>window.weekFixture.refreshCalendar());
+   await beganRead;
+   const day=page.getByTestId('calendar-day-2026-11-25');
+   await day.click({position:{x:10,y:9}});
+   const sheet=page.getByTestId('calendar-sheet'),card=sheet.getByTestId('calendar-sheet-surface');
+   await card.waitFor();
+   const synced=page.waitForResponse(response=>response.url().includes('/api/calendar/events?'));
+   release();heldRead=undefined;
+   await synced;
+   await page.clock.runFor(65);
+   assert.equal(await card.getByText('갱신된 일정',{exact:true}).count(),0,'a refresh cannot rearrange rows during the entrance');
+   await page.clock.runFor(350);
+   await card.getByText('갱신된 일정',{exact:true}).waitFor();
+   await card.getByRole('button',{name:'갱신된 일정 일정 상세',exact:true}).click();
+   await sheet.getByText('일정 상세',{exact:true}).waitFor();
+   await page.getByTestId('DuoBackButton').click();
+   await page.getByTestId('calendar-day-detail').waitFor();
+   assert.equal(await sheet.evaluate(e=>new DOMMatrix(getComputedStyle(e.lastElementChild).transform).m42),0,'return keeps the parent sheet on screen');
+   const grip=card.getByRole('button',{name:'아래로 내려 닫기',exact:true});
+   const gripBox=await grip.boundingBox(),originalY=(await card.boundingBox()).y;
+   await page.mouse.move(gripBox.x+gripBox.width/2,gripBox.y+gripBox.height/2);
+   await page.mouse.down();
+   await page.mouse.move(gripBox.x+gripBox.width/2,gripBox.y+gripBox.height/2+88,{steps:12});
+   const heldY=(await card.boundingBox()).y;
+   assert.ok(heldY-originalY>55,'the sheet follows the grip instead of jumping after release');
+   await page.mouse.up();
+   await page.clock.runFor(36);
+   const firstReleaseY=(await card.boundingBox()).y;
+   assert.ok(firstReleaseY>=heldY-1&&firstReleaseY-heldY<45,'release continues smoothly from the held position');
+   await page.clock.runFor(240);
+   await sheet.waitFor({state:'detached'});
+   await page.emulateMedia({reducedMotion:'reduce'});
+   await page.clock.runFor(50);
+   await toggle.click();
+   await page.getByTestId('calendar-week-workspace').waitFor();
+   assert.equal(await pane.evaluate(e=>Number(getComputedStyle(e).opacity)),1);
+   events=originalEvents;
+   console.log('PASS dense view transition, in-flight refresh, Duo detail back, grip release and reduced motion');
   }
   await page.evaluate(()=>window.weekFixture.logout());await page.getByTestId('week-span-span').waitFor({state:'detached'});assert.equal(await page.getByTestId('week-timed-meeting').count(),0,'sign-out clears former account events');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.deepEqual(errors,[]);await page.close();console.log('PASS actual week integration '+mode);

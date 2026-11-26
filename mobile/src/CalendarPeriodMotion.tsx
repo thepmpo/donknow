@@ -1,11 +1,11 @@
-import React,{forwardRef,useImperativeHandle,useLayoutEffect,useRef,useState} from 'react';
+import React,{forwardRef,useMemo,useImperativeHandle,useLayoutEffect,useRef,useState} from 'react';
 import {Animated,Easing,Platform,StyleSheet,View} from 'react-native';
 import {useReducedMotion} from './motion';
 export type CalendarPeriodMotionHandle={drag:(x:number)=>void;cancel:()=>void};
 // A presentation-only outgoing grid cannot duplicate test IDs or interactive targets.
 function snapshot(node:React.ReactNode):React.ReactNode{return React.Children.map(node,child=>React.isValidElement(child)?React.cloneElement(child as React.ReactElement<any>,{testID:undefined,focusable:false,tabIndex:-1},snapshot((child.props as {children?:React.ReactNode}).children)):child);}
 /** Keep the old grid on screen until the adjacent period has slid into its place. */
-export const CalendarPeriodMotion=forwardRef<CalendarPeriodMotionHandle,{identity:string;sequence:number;direction:number;width:number;enabled:boolean;preview?:(direction:number)=>React.ReactNode;children:React.ReactNode}>(function CalendarPeriodMotion({identity,sequence,direction,width,enabled,preview,children},ref){
+export const CalendarPeriodMotion=forwardRef<CalendarPeriodMotionHandle,{identity:string;sequence:number;direction:number;width:number;enabled:boolean;preview?:(direction:number)=>React.ReactNode;presentation?:()=>React.ReactNode;children:React.ReactNode}>(function CalendarPeriodMotion({identity,sequence,direction,width,enabled,preview,children},ref){
  const reduced=useReducedMotion(),incoming=useRef(new Animated.Value(0)).current;
  const [peek,setPeek]=useState(0);
  const [old,setOld]=useState<{node:React.ReactNode;offset:number}|null>(null),token=useRef(0),dragX=useRef(0),dragging=useRef(false),seen=useRef({identity,sequence,node:children}),pending=useRef<{node:React.ReactNode;directional:boolean}|null>(null);
@@ -22,10 +22,13 @@ export const CalendarPeriodMotion=forwardRef<CalendarPeriodMotionHandle,{identit
   else {setOld(null);incoming.setValue(0);}
   dragX.current=0;return stop;
  },[identity,sequence,width,enabled,reduced]);
+ const previewNode=useMemo(()=>peek!==0&&preview?snapshot(preview(peek)):null,[peek,preview]);
  return <View testID="calendar-period-motion" style={s.root}>
-  {peek!==0&&preview&&<Animated.View testID="calendar-period-preview" pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={[s.old,{width,transform:[{translateX:Animated.add(incoming,peek*width)}]}]}>{snapshot(preview(peek))}</Animated.View>}
+  {previewNode&&<Animated.View testID="calendar-period-preview" pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={[s.old,{width,transform:[{translateX:Animated.add(incoming,peek*width)}]}]}>{previewNode}</Animated.View>}
   {old&&<Animated.View testID="calendar-period-outgoing" pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={[s.old,{width,transform:[{translateX:Animated.subtract(incoming,old.offset)}]}]}>{old.node}</Animated.View>}
   <Animated.View testID="calendar-period-current" style={{transform:[{translateX:incoming}]}}>{children}</Animated.View>
  </View>;
 });
 const s=StyleSheet.create({root:{overflow:'hidden'},old:{position:'absolute',left:0,top:0}});
+
+export function CalendarWeekMotion({children}:{identity:string;enabled:boolean;children:React.ReactNode}){return children;}
