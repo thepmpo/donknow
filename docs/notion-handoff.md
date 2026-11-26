@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 bdbe400 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-27 · 한국 시간 · 기능 코드 bdbe400 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -2259,6 +2259,84 @@ Mac11번·Windows11번 업데이트는 유휴/해시 검사·백업·검증된 �
 ### 매일 개발 정리
 
 
+##### 2026-11-27 — 당일 저장된 작업
+
+실제 정리: 04:28 KST. 새 저장 작업 36개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [d89595d](https://github.com/sjfieni/donknow/commit/d89595daed3663e2b3a1bbc1c6d3baca527fb73b) · 11-26 08:10 · Align Friday and Saturday in the weekly calendar
+
+- [c9c8818](https://github.com/sjfieni/donknow/commit/c9c881841bf4cb413f1cb644bbb85aa550c92ce7) · 11-26 08:19 · Move tasks between source lists and refine calendar creation
+
+- [985faaf](https://github.com/sjfieni/donknow/commit/985faaf6a02dad56fa228737dd777d0ff8b65b1b) · 11-26 08:19 · Record membership and grouped calendar verification
+
+- [23eda18](https://github.com/sjfieni/donknow/commit/23eda18da8ece826b74c5d03a7fafc3583a87934) · 11-26 08:20 · Reserve close button space from the first frame
+
+- [c3d5eea](https://github.com/sjfieni/donknow/commit/c3d5eea8b98dc73b7d450ceaa7bf8d5569e0eb43) · 11-26 09:12 · Clean up task controls and drag calendar events to another date
+
+- [1f3d318](https://github.com/sjfieni/donknow/commit/1f3d318670efcb1b1c3d7540cbd2043f5ae4875f) · 11-26 09:13 · Verify a dragged iPhone calendar date through the device adapter
+
+- [8c68978](https://github.com/sjfieni/donknow/commit/8c68978dc21c5485a00524d4b579b5943dd0807c) · 11-26 10:44 · Show saved calendar events in Docen and preserve source colors
+
+- [c93acd7](https://github.com/sjfieni/donknow/commit/c93acd7e625722d3c4048583d6e1af8298cddb6b) · 11-26 10:46 · Restore calendar drag permission when a timed refresh arrives
+
+- [609128a](https://github.com/sjfieni/donknow/commit/609128a7a688727a63683f282edc4628f9ae8edb) · 11-26 10:48 · Record live Render calendar deployment
+
+- [aff10f4](https://github.com/sjfieni/donknow/commit/aff10f4487f1beb50bd05bea2e47246d1c560d88) · 11-26 11:56 · Keep Docen calendar writable and prioritize held date drags
+
+- [cf23805](https://github.com/sjfieni/donknow/commit/cf2380561e92fbd0e81bc727064860ad0724e73b) · 11-26 11:58 · Record calendar verification and Render rollout
+
+- [5f007ef](https://github.com/sjfieni/donknow/commit/5f007ef29a0b367f3640a8e353c9db4133d1030e) · 11-26 12:13 · Document the shared design system and save calendar creations in Docen first
+
+- [3711948](https://github.com/sjfieni/donknow/commit/3711948791027a8393850d4771c5cd2e0f13e817) · 11-26 12:13 · Publish the design system and local-first calendar handoff
+
+- [3212f4b](https://github.com/sjfieni/donknow/commit/3212f4b892a8831546b98b4b30696de30ac88214) · 11-26 12:15 · Record design system verification and calendar rollout
+
+- [d4e7172](https://github.com/sjfieni/donknow/commit/d4e7172306d566895fa41b80e41132ed8d2f7fde) · 11-26 12:22 · Set the product-wide Docen synchronization contract
+
+- [47cd28e](https://github.com/sjfieni/donknow/commit/47cd28eced0817b78642e5f580a769fc2f0ce480) · 11-26 12:31 · Retry temporary calendar save and delivery failures automatically
+
+- [d451dd2](https://github.com/sjfieni/donknow/commit/d451dd2e19188617672b67ff09218428cd5b8a71) · 11-26 12:34 · Record calendar delivery test deployment
+
+- [b2c32be](https://github.com/sjfieni/donknow/commit/b2c32be60eb1e844be75f7568b103a8944e8da1a) · 11-26 16:27 · Keep calendar deletion responsive and refresh iPhone originals on change
+
+- [68b234c](https://github.com/sjfieni/donknow/commit/68b234cea09cf8bbb761768cbc35a974c281b7a9) · 11-26 16:30 · Record calendar synchronization verification and deployment
+
+- [e5f988d](https://github.com/sjfieni/donknow/commit/e5f988df56ef1bfb98766c6919604d2080c6da38) · 11-26 17:40 · Keep new calendar events on device and smooth view changes
+
+- [836af1a](https://github.com/sjfieni/donknow/commit/836af1a40bbb1dd31d29ae530d148f770da52980) · 11-26 17:42 · Record device-first calendar tests and deploy
+
+- [4498076](https://github.com/sjfieni/donknow/commit/44980762cf67400104b181cfeab6680c1844aa9c) · 11-26 17:49 · Keep calendar swipes and sheet motion continuous on iPhone
+
+- [3c55016](https://github.com/sjfieni/donknow/commit/3c5501636ba2f0a29f6c4fc127b7f8a463fa3bba) · 11-26 18:05 · Add calendar visibility controls to the calendar header
+
+- [aee4668](https://github.com/sjfieni/donknow/commit/aee46687a02509b3e3674801f95c85f0ce5c4394) · 11-26 18:06 · Target the date header in calendar creation verification
+
+- [3074199](https://github.com/sjfieni/donknow/commit/3074199856a89a3bd19c6a557ad110bbdeacf007) · 11-26 18:24 · Replace the calendar eye control with a labeled list filter
+
+- [5afedb4](https://github.com/sjfieni/donknow/commit/5afedb480ad0015709b242da4ba38f829c3b8e89) · 11-26 18:26 · Record calendar button verification and deployment
+
+- [537f771](https://github.com/sjfieni/donknow/commit/537f7712a63a4eade36f57e3dac59859e87ff69a) · 11-26 19:02 · Repair calendar source reconciliation and period gestures
+
+- [cd045a5](https://github.com/sjfieni/donknow/commit/cd045a565340ecb9cf28c5a2b51024f974290ed0) · 11-26 19:03 · Publish calendar repair verification and handoff
+
+- [8654c6c](https://github.com/sjfieni/donknow/commit/8654c6c3163e40319681b8f781c12adcc2813f60) · 11-26 19:05 · Record calendar test deployment and TestFlight status
+
+- [f1e63fe](https://github.com/sjfieni/donknow/commit/f1e63feb6bae3935676752535b31fccadbb80041) · 11-26 20:22 · Fix iPhone calendar gesture arbitration and provider refresh
+
+- [1997379](https://github.com/sjfieni/donknow/commit/1997379c4b2695cfd3e0b62d99979e44416b72e7) · 11-26 20:22 · Keep calendar swipe cancellation on a second touch
+
+- [f6fd905](https://github.com/sjfieni/donknow/commit/f6fd905d6f58b9d18277344fb69e7494f0f31f5c) · 11-26 21:03 · Persist new schedules and tasks before network sync
+
+- [e9ac8cb](https://github.com/sjfieni/donknow/commit/e9ac8cb0278511279b858acfbadb6f01b18cd1c2) · 11-26 21:11 · Create tasks in selected Google and Apple lists after local save
+
+- [d30b34b](https://github.com/sjfieni/donknow/commit/d30b34b1895e89ae158b2b6a7827c149079beea4) · 11-26 22:07 · Verify provider connections and repair iPhone calendar touch and reads
+
+- [bdbe400](https://github.com/sjfieni/donknow/commit/bdbe40030a5b7c09792a29f45a763f85f2174fb8) · 11-26 22:08 · Cover provider-level Google connection results in browser tests
+
+- [649569a](https://github.com/sjfieni/donknow/commit/649569a63ef8ef0d6a40e98ae9f2c2c637e3394d) · 11-26 22:08 · Record calendar integration repair and validation
+
+
+
 ##### 2026-11-26 — 당일 저장된 작업
 
 실제 정리: 04:51 KST. 새 저장 작업 37개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
@@ -4100,6 +4178,7 @@ e9ac8cb Create tasks in selected Google and Apple lists after local save
 25cd83d Update handoff for external task destinations
 d30b34b Verify provider connections and repair iPhone calendar touch and reads
 bdbe400 Cover provider-level Google connection results in browser tests
+649569a Record calendar integration repair and validation
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
