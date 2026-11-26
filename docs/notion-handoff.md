@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-27 · 한국 시간 · 기능 코드 bdbe400 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-27 · 한국 시간 · 기능 코드 d012490 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-27 — 월간 기본 화면과 캘린더 연결 복구
+
+- 캘린더 첫 진입은 현재 월부터 표시하고 탭 진입·앱 복귀에서 조회를 다시 시작한다. 도슨에 저장한 일정의 읽기·쓰기는 외부 서비스와 별도의 서버 처리 경로를 사용한다. 이전 앱의 15초 제한보다 느린 저장 요청도 응답을 기다릴 수 있으며 같은 요청 번호의 저장 결과를 다시 조회한다.
+- Google 전송은 권한·연결 오류가 나도 재시도를 예약한다. 취소된 승인으로 요청이 몰리지 않도록 간격을 두고, 같은 계정을 다시 승인하면 즉시 시작한다. Apple은 기기에서 전송 작업 번호와 원본 일정을 저장한 결과를 보관한다. 원본 식별자가 동기화 과정에서 변경되면 같은 캘린더의 고유 외부 식별자로 다시 찾는다.
+- 연결된 일반 일정을 새로고침할 때 공유 필드의 변경 이력과 직전 동기화 내용을 비교하고 필요하면 원본이나 도슨을 갱신한다. 사용자가 도슨 일정을 수정하면 도슨에 먼저 저장한다. Google 버전과 EventKit 수정 시각을 확인한 다음 원본을 변경한다. 직접 변경하지 않은 참석자·위치·알림 등은 원본에 둔다. 검증 범위는 모의 API와 기기 어댑터, 브라우저 및 iOS 번들이다. 실제 26일 데이터와 iPhone 설치 결과는 별도 확인이 필요하다.
 
 #### 2026-11-26 — Google 연동 확인 및 iPhone 캘린더 회귀 수정
 
@@ -4179,10 +4185,12 @@ e9ac8cb Create tasks in selected Google and Apple lists after local save
 d30b34b Verify provider connections and repair iPhone calendar touch and reads
 bdbe400 Cover provider-level Google connection results in browser tests
 649569a Record calendar integration repair and validation
+99c8ca9 docs: daily project update [skip ci]
+d012490 Recover calendar connections and reconcile linked schedule edits
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: bdbe400에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: d012490에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13451,7 +13459,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/bdbe40030a5b7c09792a29f45a763f85f2174fb8
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/d012490bbc4dac0f52bedecc224012415dd97592
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -14542,6 +14550,13 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 - 사용자가 허용한 계정과 범위 안에서 신규·수정·삭제를 도슨 화면에서도 갱신한다. 변경 신호를 제공하는 연결은 신호를 받으면 관련 항목을 다시 읽는다. 신호를 사용할 수 없는 연결은 화면 진입, 앱 복귀, 합리적인 간격의 갱신과 수동 새로고침을 사용한다. 공급자 지연이나 기기 권한으로 인한 제약은 연결별로 기록한다.
 - 최신 조회를 기다리는 동안 이전 목록을 유지한다. 한 계정의 지연이 다른 계정이나 도슨에 직접 저장한 항목의 표시를 막지 않게 한다. 실패하거나 일부만 받은 응답 때문에 직전 목록을 비우지 않는다.
 - 계정과 원본 ID를 함께 사용해 같은 항목을 하나로 표시한다. 화면에 반영된 최신 변경을 늦게 도착한 이전 응답으로 되돌리지 않는다. 읽기가 잠시 실패한 경우와 원본에서 실제로 삭제된 경우를 구분한다.
+
+#### 연결 일정의 변경 비교
+
+- 캘린더에 처음 들어가면 현재 월을 표시하고 도슨과 연결된 원본을 갱신한다. 이미 읽어 둔 일정은 새 응답을 기다리는 동안 표시한다.
+- 도슨에서 생성해 Google이나 Apple 원본과 연결된 일반 일정은 제목·메모·종일 여부와 시작·종료를 비교한다. 이전에 양쪽에 반영된 내용에서 한쪽만 바뀌었으면 그쪽을 반영한다. 양쪽이 바뀌었거나 이전 내용이 없을 때는 비교 가능한 마지막 수정 시각을 사용하고, 승자를 판단할 수 없으면 도슨을 사용한다.
+- Google 전송 요청은 안정된 원본 ID를 계속 사용한다. 연결 오류는 재시도를 예약하고 같은 계정이 다시 승인되면 바로 깨운다. Apple 전송은 같은 기기의 작업 번호와 원본 ID 응답을 보관하고 앱 복귀 시 이어서 처리한다. 과거 앱이 원본 ID를 남기기 전에 중단한 생성은 확인 상태로 표시한다.
+- 반복 일정의 회차 및 전체 시리즈 변경과 원본의 참석자·알림·장소 필드는 이 일반 일정의 자동 비교 범위에 포함되지 않는다.
 
 #### 기능 완료를 판단하는 검사
 
