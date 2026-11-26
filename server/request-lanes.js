@@ -4,8 +4,10 @@ import {Worker} from 'node:worker_threads';
 import {randomBytes} from 'node:crypto';
 import {isIP} from 'node:net';
 
-export function requestLane(path){
+export function requestLane(path,query){
  if(!path.startsWith('/api/'))return 'core';
+ if(/^\/api\/calendar\/docen\/event-[a-z0-9-]+(?:\/apple-delivery)?$/.test(path)||
+    path==='/api/calendar/events'&&query?.get('calendarId')==='@docen')return 'core';
  if(/^\/api\/todos\/[^/]+\/source-link$/.test(path))return 'integration';
  return /^\/api\/(?:auth(?:\/|$)|todos(?:\/|$)|todo-writes\/|todo-order$|capabilities$|account(?:\/|$))/.test(path)?'core':'integration';
 }
@@ -21,7 +23,8 @@ export async function startRequestLanes({workerUrl=new URL('../server-runtime.js
   workers[role]={worker,port:null,agent:new http.Agent({keepAlive:true,maxSockets:8})};
   return new Promise((resolve,reject)=>{
    worker.once('error',()=>reject(new Error('Request lane failed to start: '+role)));
-   worker.on('message',message=>{if(message.type==='ready'){workers[role].port=message.port;resolve();}});
+   worker.on('message',message=>{if(message.type==='ready'){workers[role].port=message.port;resolve();}
+    if(role==='core'&&message.type==='wake-calendar')workers.integration?.worker.postMessage(message);});
    worker.on('exit',code=>{if(closing)return;ready=false;reject(new Error('Request lane exited: '+role));logger(JSON.stringify({event:'request-lane-exit',lane:role,code}));void close().then(()=>{process.exitCode=1;});});
   });
  }
@@ -36,7 +39,8 @@ export async function startRequestLanes({workerUrl=new URL('../server-runtime.js
  let server;
  try{await boot('core');await boot('integration');}catch(error){await close();throw error;}
  server=http.createServer((req,res)=>{
-  let path;try{path=new URL(req.url,'http://localhost').pathname;}catch{res.writeHead(400);res.end();return;}
+  let url;try{url=new URL(req.url,'http://localhost');}catch{res.writeHead(400);res.end();return;}
+  const path=url.pathname;
   res.setHeader('X-Content-Type-Options','nosniff');
   const launchRestriction=publicLaunchRestriction(req,path);if(launchRestriction)return sendPublicLaunchRestriction(res,launchRestriction,req.method);
   if(path.startsWith('/api/')){
@@ -45,7 +49,7 @@ export async function startRequestLanes({workerUrl=new URL('../server-runtime.js
    if(req.headers.origin&&(env.PUBLIC_ORIGIN||env.RENDER_EXTERNAL_URL)){res.setHeader('Access-Control-Allow-Origin',allowed);res.setHeader('Access-Control-Allow-Credentials','true');res.setHeader('Vary','Origin');}
   }
   if(path==='/api/health'&&req.method==='GET'){res.writeHead(ready?200:503,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({ok:ready,authentication:'session',version:1,calendarWorkspace:2,requestLanes:2,release:/^[a-f0-9]{40}$/.test(env.RENDER_GIT_COMMIT??'')?env.RENDER_GIT_COMMIT:null}));return;}
-  const role=requestLane(path),lane=workers[role];
+  const role=requestLane(path,url.searchParams),lane=workers[role];
   if(!ready||pending[role]>=64){res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({error:'요청이 밀려 있어요. 잠시 뒤 저장 결과를 확인해주세요.'}));return;}
   pending[role]++;const started=performance.now();let ended=false;
   const finish=()=>{if(ended)return;ended=true;pending[role]--;const elapsed=Math.round(performance.now()-started);if(elapsed>=1000)logger(JSON.stringify({event:'request-timing',lane:role,route:category(path),method:req.method,status:res.statusCode,totalMs:elapsed}));};

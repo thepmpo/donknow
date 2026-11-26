@@ -49,3 +49,12 @@ test('only transient calendar create errors are safe to retry with the same requ
  assert.equal(retryableDocenCalendarCreate(new HttpResponseError(409,'conflict')),false);
  assert.equal(retryableDocenCalendarCreate(new Error('account changed')),false);
 });
+
+test('Docen calendar saves, Apple delivery and reconciliation wait for the server',async()=>{
+ const {connectionWrite}=await import('./http-response.ts');
+ const path='/api/calendar/docen/event-date-random-suffix';
+ assert.equal(connectionWrite(path,'PUT'),true);
+ assert.equal(connectionWrite(path+'/apple-delivery','POST'),true);
+ assert.equal(connectionWrite(path+'/reconcile','POST'),true);
+ assert.equal(connectionRead(path,'GET'),true);
+});

@@ -1,3 +1,4 @@
+import {calendarSyncFields} from './docen-calendar-reconcile.js';
 import {assistantNotice} from './assistant-notices.js';
 import {measureExternal} from './request-metrics.js';
 import {createAgentSync} from './agent-sync.js';
@@ -72,13 +73,13 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     if(store.accountActive&&!store.accountActive(userId))throw fail(403,'이 계정은 이용이 정지되어 있어요.');
     let record = provider==='google'?googleConnection(store,userId,connectionId):store.connection(userId,provider); if (!record) throw fail(409, '서비스를 먼저 연결해주세요.');
     const key = `${userId}:${provider}:${record.connectionId??'legacy'}`,fingerprint=credentialVersion(record),failed=refreshFailures.get(key);
-    if(failed===fingerprint)throw reauthorizationRequired();
+    if(failed?.fingerprint===fingerprint&&failed.until>Date.now())throw reauthorizationRequired();
     if(failed)refreshFailures.delete(key);
     if (record.accessToken!==rejectedAccessToken&&(!record.expiresAt || record.expiresAt > Date.now() + 60000)) return record;
     if (!record.refreshToken) throw reauthorizationRequired();
     if (!locks.has(key)) locks.set(key, (async () => {
       const current = store.connection(userId, provider,record.connectionId); if (!current) throw fail(409, '서비스 연결이 해제됐어요.');
-      let value;try{value=await exchange(provider, { grant_type: 'refresh_token', refresh_token: current.refreshToken });}catch(error){if(error.code==='integration-reauthorization'){refreshFailures.set(key,credentialVersion(current));try{assistantNotice(store,userId,{code:'connection-reauthorization',provider,title:'서비스 연결'});}catch{}while(refreshFailures.size>1000)refreshFailures.delete(refreshFailures.keys().next().value);}throw error;}
+      let value;try{value=await exchange(provider, { grant_type: 'refresh_token', refresh_token: current.refreshToken });}catch(error){if(error.code==='integration-reauthorization'){refreshFailures.set(key,{fingerprint:credentialVersion(current),until:Date.now()+15*60*1000});try{assistantNotice(store,userId,{code:'connection-reauthorization',provider,title:'서비스 연결'});}catch{}while(refreshFailures.size>1000)refreshFailures.delete(refreshFailures.keys().next().value);}throw error;}
       if (typeof value.access_token !== 'string') throw fail(502, '외부 서비스 인증 응답을 확인해주세요.');
       const updated = { ...current, accessToken: value.access_token, refreshToken: value.refresh_token ?? current.refreshToken, expiresAt: expiresAt(value.expires_in) };
       // A disconnect during refresh must not recreate a deleted connection.
@@ -386,6 +387,38 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       return { revoked };
     },
     async calendarDetails(userId,input){return createCalendarWorkspace({store,token,read:googleRead}).saveDetails(userId,input);},
+    async reconcileDocenGoogleCalendar(user,id,revision){
+      const {local,target}=store.linkedDocenCalendar(user,id,revision);
+      const selected=calendarAccount(store,user,target.calendarId,target.connectionId);
+      const record=await token(user,'google',selected.connectionId);
+      if(record.connectionId!==target.connectionId||!record.features.includes('calendarWrite'))throw fail(403,'Google 캘린더 쓰기 권한이 필요해요.');
+      const path='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(selected.calendarId)+'/events/'+encodeURIComponent(target.externalEventId);
+      const fingerprint=fields=>createHash('sha256').update(JSON.stringify(calendarSyncFields(fields))).digest('hex');
+      const snapshot=value=>{
+        if(value.id!==target.externalEventId||value.status==='cancelled'||value.extendedProperties?.private?.docenEvent!==target.externalEventId
+          ||value.recurringEventId||value.recurrence?.length||!value.etag||value.locked)throw fail(409,'연결된 Google 원본을 확인해주세요.');
+        const fields={title:value.summary??'제목 없음',notes:value.description??'',allDay:!!value.start?.date,
+          startDate:value.start?.date,endDate:value.end?.date,start:value.start?.dateTime,end:value.end?.dateTime};
+        const tags=value.extendedProperties.private;
+        const echoRevision=tags.docenSyncDigest===fingerprint(fields)?Number(tags.docenSyncRevision):undefined;
+        return {id:value.id,version:value.etag,updatedAt:value.updated,fields,echoRevision,extendedProperties:value.extendedProperties};
+      };
+      const original=snapshot(await googleRead(user,record,path));
+      const result=store.reconcileDocenCalendar(user,id,revision,original,'google');
+      if(result.action!=='push')return result;
+      const {args}=local,current=await token(user,'google',selected.connectionId);
+      if(current.accountId!==record.accountId||!current.features.includes('calendarWrite'))throw fail(409,'Google 연결이 바뀌었어요.');
+      store.linkedDocenCalendar(user,id,revision);
+      const value=await providerRequest(path+'?sendUpdates=none',{method:'PATCH',headers:{
+        Authorization:'Bearer '+current.accessToken,'Content-Type':'application/json','If-Match':original.version,
+      },body:JSON.stringify({summary:args.title,description:args.notes??'',
+        extendedProperties:{...original.extendedProperties,private:{...original.extendedProperties.private,
+          docenSyncRevision:String(revision),docenSyncDigest:fingerprint(args)}},
+        start:args.allDay?{date:args.startDate}:{dateTime:args.start,timeZone:args.timeZone},
+        end:args.allDay?{date:args.endDate}:{dateTime:args.end,timeZone:args.timeZone},
+      })});
+      return store.reconcileDocenCalendar(user,id,revision,snapshot(value),'google',true);
+    },
     async deliverDocenCalendar(job,retryAuth=true){
       const {user,id,target,args}=job,selected=calendarAccount(store,user,target.calendarId,target.connectionId);
       const record=await token(user,'google',selected.connectionId);
@@ -425,6 +458,10 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       let result;
       try{result=await providerRequest(collection+'?sendUpdates='+(args.attendees?.length?'all':'none'),{method:'POST',headers:{Authorization:'Bearer '+current.accessToken,'Content-Type':'application/json'},body:JSON.stringify(body)});}
       catch(error){
+       if(error.status===409){
+        const saved=await lookup();
+        if(saved?.status!=='cancelled'&&saved?.extendedProperties?.private?.docenEvent===remoteId)return remoteId;
+       }
        if(!retryAuth||error.code!=='integration-reauthorization')throw error;
        await token(user,'google',target.connectionId,current.accessToken);
        return this.deliverDocenCalendar(job,false);

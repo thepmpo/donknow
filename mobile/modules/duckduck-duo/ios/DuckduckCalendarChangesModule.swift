@@ -52,6 +52,17 @@ public final class DuckduckCalendarChangesModule: Module {
       return snapshot
     }.runOnQueue(queue)
 
+    AsyncFunction("readLinkedEvent") { (externalUID: String, calendarID: String) throws -> [String: Any] in
+      try self.requireFullAccess()
+      let matches = self.store.calendarItems(withExternalIdentifier: externalUID).compactMap { item -> EKEvent? in
+        guard let event = item as? EKEvent, event.calendar.calendarIdentifier == calendarID,
+          event.status != .canceled, !event.hasRecurrenceRules else { return nil }
+        return event
+      }
+      guard matches.count == 1, let event = matches.first, let value = self.snapshot(event) else { throw EventUnavailable() }
+      return value
+    }.runOnQueue(queue)
+
     AsyncFunction("createEvent") { (calendarID: String, patch: EventPatch) throws -> [String: Any] in
       try self.requireFullAccess()
       guard let calendar = self.store.calendar(withIdentifier: calendarID),
@@ -70,6 +81,10 @@ public final class DuckduckCalendarChangesModule: Module {
     AsyncFunction("updateEvent") { (id: String, start: Double?, calendarID: String?, patch: EventPatch) throws -> [String: Any] in
       try self.requireFullAccess()
       let event = try self.occurrence(id, start: start, calendarID: calendarID)
+      if let expected = patch.expectedModified {
+        guard let modified = event.lastModifiedDate,
+          abs(modified.timeIntervalSince1970 * 1000 - expected) < 1 else { throw EventChanged() }
+      }
       try self.apply(patch, to: event)
       try self.store.save(event, span: .thisEvent)
       guard let snapshot = self.snapshot(event) else { throw EventUnavailable() }
@@ -222,6 +237,7 @@ private struct EventPatch: Record {
   @Field var timeZone: String?
   @Field var alarms: [CalendarAlarm]?
   @Field var repeatFrequency: RepeatFrequency?
+  @Field var expectedModified: Double?
 }
 
 private enum RepeatFrequency: String, Enumerable {
@@ -247,4 +263,8 @@ private final class EventUnavailable: Exception {
 
 private final class AccessRequired: Exception {
   override var reason: String { "ME에서 아이폰 캘린더 전체 접근을 허용해주세요." }
+}
+
+private final class EventChanged: Exception {
+  override var reason: String { "원본 일정이 바뀌었어요. 다시 확인해주세요." }
 }

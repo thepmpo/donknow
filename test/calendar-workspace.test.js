@@ -202,3 +202,58 @@ test('Docen calendar delete supersedes an in-flight Google creation without resu
   assert.deepEqual(h.store.readDocenCalendar(h.user,'2026-11-26','2026-11-28','Asia/Seoul').hiddenMirrors,[]);
  }finally{await h.close();}
 });
+
+test('Google reconciliation reads the bound original, uses conditional writes, and preserves provider fields',async()=>{
+ const h=await setup();
+ try{
+  const id='event-google-reconcile-case',target={provider:'google',calendarId:'primary',connectionId:'calendar-connection'};
+  const args={title:'도슨 일정',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'};
+  h.store.saveDocenCalendarEvent(h.user,id,{args,target,revision:0});
+  const create=h.store.claimDocenGoogleDelivery(),remoteId=create.target.externalEventId;
+  h.store.finishDocenGoogleDelivery(create,'synced',remoteId);
+  let remote={id:remoteId,etag:'g1',summary:args.title,start:{date:args.startDate},end:{date:args.endDate},
+   location:'원본에만 있는 위치',extendedProperties:{private:{docenEvent:remoteId,other:'keep'}}};
+  let writes=0;
+  const api=createIntegrations(h.store,env,async (url,options={})=>{
+   assert.equal(new URL(url).pathname.endsWith('/events/'+remoteId),true);
+   if(options.method!=='PATCH')return response(remote);
+   assert.equal(options.headers['If-Match'],remote.etag);
+   assert.equal(new URL(url).searchParams.get('sendUpdates'),'none');
+   const change=JSON.parse(options.body);
+   assert.equal(change.extendedProperties.private.other,'keep');assert.equal(change.location,undefined);
+   writes++;remote={...remote,...change,etag:'g'+(writes+2)};
+   return response(remote);
+  });
+  remote={...remote,etag:'g2',summary:'Google에서 수정',start:{date:'2026-11-27'},end:{date:'2026-11-28'}};
+  const inbound=await api.reconcileDocenGoogleCalendar(h.user,id,1);
+  assert.equal(inbound.event.title,'Google에서 수정');assert.equal(inbound.event.dueDate,'2026-11-27');assert.equal(writes,0);
+  h.store.saveDocenCalendarEvent(h.user,id,{revision:2,args:{...args,title:'도슨에서 다시 수정'}});
+  const outbound=await api.reconcileDocenGoogleCalendar(h.user,id,3);
+  assert.equal(outbound.action,'done');assert.equal(remote.summary,'도슨에서 다시 수정');assert.equal(writes,1);
+  assert.equal(remote.location,'원본에만 있는 위치');
+  await api.reconcileDocenGoogleCalendar(h.user,id,3);
+  assert.equal(writes,1);
+ }finally{await h.close();}
+});
+
+test('a disconnected Google delivery remains scheduled and reapproval wakes the same bound event',async()=>{
+ const h=await setup();
+ try{
+  const id='event-retry-after-reauth';
+  h.store.saveDocenCalendarEvent(h.user,id,{revision:0,
+   args:{title:'연결 복구 후 전송',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'},
+   target:{provider:'google',calendarId:'primary',connectionId:'calendar-connection'},
+  });
+  const first=h.store.claimDocenGoogleDelivery(),wait=15*60*1000;
+  h.store.finishDocenGoogleDelivery(first,'blocked',undefined,wait);
+  const retryAt=h.store.nextDocenGoogleDeliveryAt();
+  assert.ok(retryAt>Date.now());
+  assert.equal(h.store.claimDocenGoogleDelivery(retryAt-1),null);
+  h.store.wakeDocenGoogleDelivery(h.user,'another-connection');
+  assert.equal(h.store.nextDocenGoogleDeliveryAt(),retryAt);
+  h.store.wakeDocenGoogleDelivery(h.user,'calendar-connection');
+  const retry=h.store.claimDocenGoogleDelivery();
+  assert.equal(retry.id,id);
+  assert.equal(retry.target.externalEventId,first.target.externalEventId);
+ }finally{await h.close();}
+});

@@ -1,6 +1,6 @@
 import type {CalendarEvent,CalendarMirrorTarget} from './calendar-model.ts';
 export type CalendarCreatePayload={revision:0;args:Record<string,unknown>;fields:NonNullable<CalendarEvent['duckDetails']>['fields'];target?:CalendarMirrorTarget};
-export type QueuedCalendarCreate={id:string;event:CalendarEvent;payload:CalendarCreatePayload;blocked?:boolean};
+export type QueuedCalendarCreate={id:string;event:CalendarEvent;payload:CalendarCreatePayload;blocked?:boolean;failure?:string};
 import {createDeviceCreateQueue} from './device-create-queue.ts';
 
 export function createCalendarCreateQueue(disk:Parameters<typeof createDeviceCreateQueue<QueuedCalendarCreate>>[0]){

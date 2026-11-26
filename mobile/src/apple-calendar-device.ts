@@ -11,6 +11,7 @@ type CalendarModule={
  readCalendarSnapshot?:(hidden:string[],start:number,end:number)=>Promise<{calendars:DeviceCalendar[];events:NativeSnapshot[]}>;
  calendarList:()=>Promise<DeviceCalendar[]>;
  readEvents:(ids:string[],start:number,end:number)=>Promise<NativeSnapshot[]>;
+ readLinkedEvent?:(externalUid:string,calendarId:string)=>Promise<NativeSnapshot>;
  readEvent:(id:string,start:number|null,calendarId:string|null)=>Promise<NativeSnapshot>;
  createEvent:(calendarId:string,patch:NativePatch)=>Promise<NativeSnapshot>;
  updateEvent:(id:string,start:number|null,calendarId:string|null,patch:NativePatch)=>Promise<NativeSnapshot>;
@@ -54,6 +55,11 @@ export const appleCalendarDevice:AppleCalendarDevice={
  async events(ids,start,end){
   const snapshots=await requireBridge().readEvents(ids,Date.parse(start+'T00:00:00'),Date.parse(end+'T00:00:00'));
   return snapshots.map(fromNative);
+ },
+ async readLinked(externalUid,calendarId){
+  const bridge=requireBridge();
+  if(!bridge.readLinkedEvent)throw Error('아이폰 캘린더를 사용하려면 도슨을 업데이트해주세요.');
+  return fromNative(await bridge.readLinkedEvent(externalUid,calendarId));
  },
  async read(id,start,calendarId){return fromNative(await requireBridge().readEvent(id,occurrenceStart(start),calendarId??null));},
  async create(calendarId,patch){return fromNative(await requireBridge().createEvent(calendarId,fields(patch)));},

@@ -47,7 +47,7 @@ try{
    if(p==='/api/assistant/actions')return route.fulfill({json:{actions:[]}});if(p==='/api/assistant/notices')return route.fulfill({json:{id:'notice'}});
    return route.fulfill({status:404,json:{error:'fixture unavailable '+method+' '+p}});
   });
-  await page.goto('http://127.0.0.1:'+server.address().port+'/?reminderError=1&mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();await page.waitForTimeout(250);
+  await page.goto('http://127.0.0.1:'+server.address().port+'/?reminderError=1&initialWeek=1&mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();await page.waitForTimeout(250);
   const date=page.getByTestId('week-date-2026-11-25');await date.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();
   const sheet=page.getByTestId('calendar-sheet');
   const closeSheet=async()=>{

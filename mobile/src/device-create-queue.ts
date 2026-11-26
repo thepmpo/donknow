@@ -25,6 +25,7 @@ export function createDeviceCreateQueue<Job extends {id:string;blocked?:boolean}
  return {
   read:(owner:string)=>serial(owner,()=>read(owner)),
   add:(owner:string,job:Job)=>update(owner,old=>old.some(entry=>entry.id===job.id)?old:[...old,job]),
+  put:(owner:string,job:Job)=>update(owner,old=>[...old.filter(entry=>entry.id!==job.id),job]),
   remove:(owner:string,id:string)=>update(owner,old=>old.some(job=>job.id===id)?old.filter(job=>job.id!==id):old),
   block:(owner:string,id:string,blocked:boolean)=>update(owner,old=>old.map(job=>job.id===id?{...job,blocked}:job)),
   clear:(owner:string)=>serial(owner,async()=>{await disk.clear(owner);publish(owner,[]);}),

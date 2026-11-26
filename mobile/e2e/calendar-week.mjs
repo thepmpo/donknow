@@ -41,7 +41,7 @@ try{
    if(p==='/api/auth/logout')return route.fulfill({json:{ok:true}});
    return route.fulfill({status:404,json:{error:'fixture endpoint unavailable'}});
   });
-  await page.goto('http://127.0.0.1:'+server.address().port+'/?mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();await page.getByTestId('week-span-span').waitFor();await page.waitForTimeout(100);
+  await page.goto('http://127.0.0.1:'+server.address().port+'/?mode='+mode);await page.getByTestId('calendar-date-grid').waitFor();await page.evaluate(()=>window.weekFixture.week());await page.getByTestId('calendar-week-workspace').waitFor();await page.getByTestId('week-span-span').waitFor();await page.waitForTimeout(100);
   await page.getByText('둘째 페이지 일정',{exact:true}).waitFor();assert.ok(reads.some(r=>r.cursor==='later-events'));
   assert.ok(reads.some(r=>r.start==='2026-11-23'&&r.end==='2026-11-30'),'query is one Mon-Sun week, not fourteen days');assert.equal(await page.getByTestId('calendar-date-grid').count(),0);assert.equal(await page.getByTestId('DuoCalendarViewButton').count(),mode==='duo'?1:0);
   const month=await page.getByTestId('calendar-year-trigger').boundingBox();if(mode==='web'){const toggle=await page.getByTestId('calendar-view-toggle').boundingBox();assert.ok(toggle.x>=month.x+month.width);}else{assert.equal(await page.getByTestId('calendar-view-toggle').count(),0);const bar=await page.getByTestId('calendar-date-controls').boundingBox();assert.ok(month.x+month.width>bar.x+bar.width-2);}
@@ -222,6 +222,8 @@ try{
   await page.getByTestId('week-span-도슨 테스트 일정').waitFor({state:'detached'});
   await page.getByTestId('week-span-team-mirrored').waitFor();
   await page.reload();
+  await page.getByTestId('calendar-date-grid').waitFor();
+  await page.evaluate(()=>window.weekFixture.week());
   await page.getByTestId('week-span-팀 테스트 일정').waitFor();
   assert.equal(await page.getByTestId('week-span-도슨 테스트 일정').count(),0);
   await visibilityButton.click();

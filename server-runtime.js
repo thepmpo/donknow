@@ -41,7 +41,7 @@ const integrations = createIntegrations(store);
 const todoMembership=createTodoMembership(store,integrations);
 const taskSync=createTaskSync(store,integrations,{background});
 const todoDelivery=createTodoDelivery(store,integrations,{background});
-const features = featureRoutes(store, mailer, worker, integrations, limited, clientAddress,{background});
+const features = featureRoutes(store, mailer, worker, integrations, limited, clientAddress,{background,onCalendarQueued:()=>{if(lane==='core')parentPort.postMessage({type:'wake-calendar'});}});
 const secureCookie = process.env.COOKIE_SECURE === '1' || process.env.NODE_ENV === 'production';
 const allowedOrigin = process.env.PUBLIC_ORIGIN || '';
 const attempts = new Map();
@@ -244,7 +244,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     const files = { '/app': ['index.html', 'text/html; charset=utf-8'], '/app/': ['index.html', 'text/html; charset=utf-8'], '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };
     if (!files[path] || req.method !== 'GET') return send(404, { error: '페이지를 찾을 수 없어요.' });
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
-  } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.' }); else res.end(); }
+  } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.',...(error.code==='calendar-event-deleted'?{code:error.code}:{}) }); else res.end(); }
 })).listen(Number(process.env.PORT || 3000), lane?'127.0.0.1':'0.0.0.0', () => {if(lane)parentPort.postMessage({type:'ready',port:server.address().port});else console.log('Donknow listening on port ' + server.address().port);if(background&&process.env.NODE_ENV!=='test'){void probeAiConnection();void probeMailConfiguration();}});
-if(lane)parentPort.on('message',message=>{if(message.type==='wake'){features.wakeSource();todoDelivery.wake();}if(message.type==='close'){features.close();taskSync.stop();todoDelivery.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
+if(lane)parentPort.on('message',message=>{if(message.type==='wake'){features.wakeSource();todoDelivery.wake();}if(message.type==='wake-calendar')features.wakeCalendarDelivery();if(message.type==='close'){features.close();taskSync.stop();todoDelivery.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
 

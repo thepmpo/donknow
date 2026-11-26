@@ -1,7 +1,7 @@
 import {useEffect,useRef,useSyncExternalStore} from 'react';
 import {AppState,Platform} from 'react-native';
 import {deviceCalendarQueue} from './calendar-device-queue';
-import {retryableDocenCalendarCreate} from './http-response';
+import {HttpResponseError,retryableDocenCalendarCreate} from './http-response';
 import type {CalendarEvent} from './calendar-model';
 import type {TodoStore} from './useTodos';
 import type {CalendarCreateQueue,QueuedCalendarCreate} from './calendar-create-queue';
@@ -13,6 +13,18 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
  const enabled=(Platform.OS==='ios'||!!injectedQueue)&&!!store.user?.emailVerified&&store.connection?.mode==='cloud';
  const jobs=useSyncExternalStore(fn=>enabled?queue.watch(owner,fn):()=>{},()=>enabled?queue.snapshot(owner)??empty:empty);
  const latest=useRef({store,owner,onSaved});latest.current={store,owner,onSaved};
+ const reactivated=useRef<string|null>(null);
+ useEffect(()=>{
+  if(!enabled||!store.user)return;
+  const retryInterrupted=()=>{for(const job of queue.snapshot(owner)??[]){
+   if(job.blocked&&!job.failure){void queue.block(owner,job.id,false).catch(()=>{});}
+  }};
+  if(reactivated.current!==owner){
+   reactivated.current=owner;
+   void queue.read(owner).then(retryInterrupted).catch(()=>{});
+  }
+  return ()=>{if(reactivated.current===owner)reactivated.current=null;};
+ },[enabled,owner,queue]);
  const retries=useRef(new Map<string,{attempt:number;at:number}>());
  useEffect(()=>{if(enabled)void queue.read(owner).catch(()=>{});},[enabled,owner,queue]);
  useEffect(()=>{
@@ -28,16 +40,29 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
    try{
     let saved:CalendarEvent;
     try{
-     saved=await context.store.featureRequest('/api/calendar/docen/'+encodeURIComponent(job.id),'PUT',job.payload) as CalendarEvent;
-     if(saved?.id!==job.event.id)throw Object.assign(Error('Calendar create receipt unavailable'),{retry:true});
+     const path='/api/calendar/docen/'+encodeURIComponent(job.id);
+     try{saved=await context.store.featureRequest(path,'PUT',job.payload) as CalendarEvent;}
+     catch(error){
+      if(!(error instanceof HttpResponseError&&error.status===409)||error.code==='calendar-event-deleted')throw error;
+      try{
+       saved=await context.store.featureRequest(path) as CalendarEvent;
+       if(saved.mirror?.provider!==job.payload.target?.provider||saved.mirror?.calendarId!==job.payload.target?.calendarId||
+          (saved.mirror?.connectionId??null)!==(job.payload.target?.connectionId??null))throw error;
+      }catch(receiptError){
+       if(retryableDocenCalendarCreate(receiptError))throw receiptError;
+       throw error;
+      }
+     }
+     if(saved?.id!==job.event.id)throw Error('Calendar create receipt unavailable');
     }catch(error){
      if(!current())return;
-     if(retryableDocenCalendarCreate(error)||(error as {retry?:boolean})?.retry)throw error;
-     await queue.block(owner,job.id,true);
+     const invalid=error instanceof HttpResponseError&&([400,422].includes(error.status)||error.code==='calendar-event-deleted');
+     if(!invalid)throw error;
+     const reason=error instanceof HttpResponseError?error.message:'저장 결과를 확인하지 못했어요.';
+     await queue.put(owner,{...job,blocked:true,failure:reason});
      if(current()){
-      const message='기기에 저장한 일정을 동기화하지 못했어요. 연결을 확인한 뒤 다시 시도해주세요.';
+      const message=reason;
       context.store.reportWrite(job.id,message,()=>queue.block(owner,job.id,false));
-      context.store.setNotice(message);
      }
      return;
     }
@@ -53,7 +78,9 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
    }finally{sending.delete(owner);}
   };
   const timer=setInterval(()=>void process(),1000);
-  const subscription=AppState.addEventListener('change',state=>{if(state==='active')void process();});
+  const subscription=AppState.addEventListener('change',state=>{
+   if(state==='active'){retries.current.clear();void process();}
+  });
   // Start after the tap has painted the device copy.
   const start=setTimeout(()=>void process(),32);
   return()=>{disposed=true;clearInterval(timer);clearTimeout(start);subscription.remove();};

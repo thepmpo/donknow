@@ -24,7 +24,7 @@ import {createAssistant} from './assistant.js';
 import { fail } from './secrets.js';
 const validEmail = value => typeof value === 'string' && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
-export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress,{background=true,deferredSources=process.env.NODE_ENV!=='test'||process.env.SOURCE_QUEUE==='1'}={}) {
+export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress,{background=true,onCalendarQueued=()=>{},deferredSources=process.env.NODE_ENV!=='test'||process.env.SOURCE_QUEUE==='1'}={}) {
   let sourceEdits;
   const assistant=createAssistant(store,integrations,process.env,fetch,{updateTodo:(...args)=>sourceEdits.save(...args)});
   let sourceTimer;const wakeSource=()=>{if(!background||!deferredSources||sourceTimer)return;sourceTimer=setTimeout(()=>{sourceTimer=null;void sourceEdits.tick().catch(()=>{});},20);sourceTimer.unref();};
@@ -71,7 +71,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   }
   return {
     updateTodo:(user,id,patch)=>sourceEdits.save(user,id,patch),
-    wakeSource,close(){channels.close();agent.close();clearTimeout(sourceTimer);calendarDelivery?.close();if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
+    wakeSource,wakeCalendarDelivery,close(){channels.close();agent.close();clearTimeout(sourceTimer);calendarDelivery?.close();if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
     async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
@@ -97,7 +97,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await drain();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1,todoCreateTargets:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1,todoCreateTargets:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1,docenCalendarReconcile:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -222,14 +222,25 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         const remote=await integrations.calendarReminders(user.id);
         send(200,{...remote,items:[...remote.items,...store.docenCalendarReminders(user.id)]});return true;
       }
+      const reconcile=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})\/reconcile$/.exec(path);
+      if(reconcile&&req.method==='POST'){
+        if(limited('docen-reconcile:'+user.id))throw fail(429,'잠시 후 일정을 다시 확인해주세요.');
+        const input=await json(req),id=reconcile[1];
+        const {target}=store.linkedDocenCalendar(user.id,id,input?.revision);
+        const result=target.provider==='google'
+          ?await integrations.reconcileDocenGoogleCalendar(user.id,id,input.revision)
+          :store.reconcileDocenCalendar(user.id,id,input.revision,input.original,'apple-calendar',input.ack===true);
+        send(200,result);return true;
+      }
       const appleDelivery=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})\/apple-delivery$/.exec(path);
       if(appleDelivery&&req.method==='POST'){const input=await json(req);if(input?.state==='deleted'){store.finishDocenAppleDelete(user.id,appleDelivery[1],input.externalEventId);send(200,{ok:true});}else send(200,store.recordDocenAppleDelivery(user.id,appleDelivery[1],input));return true;}
       const docenEvent=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})$/.exec(path);
+      if(docenEvent&&req.method==='GET'){send(200,store.docenCalendarReceipt(user.id,docenEvent[1]));return true;}
       if(docenEvent&&['PUT','DELETE'].includes(req.method)){
         if(limited('docen-calendar:'+user.id))throw fail(429,'잠시 후 다시 저장해주세요.');
         const body=await json(req);
-        if(req.method==='PUT'){send(200,store.saveDocenCalendarEvent(user.id,docenEvent[1],body));if(body?.target?.provider==='google')wakeCalendarDelivery();}
-        else {store.deleteDocenCalendarEvent(user.id,docenEvent[1],body?.revision);send(200,{ok:true});wakeCalendarDelivery();}
+        if(req.method==='PUT'){send(200,store.saveDocenCalendarEvent(user.id,docenEvent[1],body));if(body?.target?.provider==='google'){wakeCalendarDelivery();onCalendarQueued();}}
+        else {store.deleteDocenCalendarEvent(user.id,docenEvent[1],body?.revision);send(200,{ok:true});wakeCalendarDelivery();onCalendarQueued();}
         return true;
       }
       if(path==='/api/calendar/events'&&req.method==='GET'&&url.searchParams.get('calendarId')===docenCalendarId){

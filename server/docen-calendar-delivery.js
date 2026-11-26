@@ -36,8 +36,11 @@ export function createDocenCalendarDelivery(store,deliver){
   try{
    externalId=await deliver(job);
   }catch(error){
-   if(error?.code==='integration-reauthorization'||[403,404,409].includes(error?.status))state='blocked';
-   else if([400,410].includes(error?.status))state='failed';
+   if(error?.code==='integration-reauthorization'||[401,403,404,409,410].includes(error?.status)){
+    state='blocked';
+    retryAfterMs=15*60*1000;
+   }
+   else if(error?.status===400)state='failed';
    else{
     state='queued';
     retryAfterMs=error?.retryAfterMs;

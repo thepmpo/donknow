@@ -17,6 +17,9 @@ test('real synchronous remote database waits in integration lane do not stall he
   let done=false;const remote=fetch(base+'/api/calendar/events').then(async response=>{await response.json();done=true;});await reading;
   const start=performance.now();assert.equal((await fetch(base+'/api/health')).status,200);const healthMs=performance.now()-start;
   const writeStart=performance.now();assert.equal((await fetch(base+'/api/todos',{method:'POST',body:'{}'})).status,200);const writeMs=performance.now()-writeStart;
+  const calendarStart=performance.now();
+  assert.equal((await fetch(base+'/api/calendar/docen/event-calendar-lane-test',{method:'PUT',body:'{}'})).status,200);
+  assert.ok(performance.now()-calendarStart<1000,'Docen calendar saves stay on the core lane during provider work');
   assert.equal(done,false,'8-query remote request is still blocked in its worker');assert.ok(healthMs<500,'health stays outside synchronous DB waits');assert.ok(writeMs<1000,'core write uses independent lane');await remote;
   t.diagnostic(JSON.stringify({injectedHttpLatencyMs:100,healthMs:Math.round(healthMs),coreWriteMs:Math.round(writeMs),productionMeasurement:false}));
   assert.ok(logs.some(line=>line.includes('request-timing')&&line.includes('integration')));assert.ok(!logs.some(line=>line.includes('fixture-token')||line.includes('calendar/events')));
@@ -24,5 +27,9 @@ test('real synchronous remote database waits in integration lane do not stall he
 });
 test('provider/action work stays in one lane while local writes, authentication and receipts use core',()=>{
  for(const path of ['/api/todos','/api/todos/abc/source-result','/api/todo-writes/key','/api/auth/session','/api/capabilities'])assert.equal(requestLane(path),'core');
+ assert.equal(requestLane('/api/calendar/docen/event-date-random-suffix'),'core');
+ assert.equal(requestLane('/api/calendar/docen/event-date-random-suffix/apple-delivery'),'core');
+ assert.equal(requestLane('/api/calendar/events',new URLSearchParams({calendarId:'@docen'})),'core');
+ assert.equal(requestLane('/api/calendar/docen/event-date-random-suffix/reconcile'),'integration');
  for(const path of ['/api/assistant/chat','/api/assistant/actions/id/confirm','/api/calendar/events','/api/integrations/google/authorize','/api/webhooks/slack','/api/agent/chat/id'])assert.equal(requestLane(path),'integration');
 });
