@@ -22,7 +22,7 @@ const appleDeletesInFlight=new Set<string>();
 const docenSource:CalendarSource={id:docenCalendarId,name:'도슨 캘린더',provider:'docen',accountLabel:'도슨',canWrite:true,color:'#2366e8'};
 export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof useCalendarData>[1]&{hidden?:string[]},device?:AppleCalendarDevice,deviceCreateQueue?:CalendarCreateQueue){
  const google=useCalendarData(store,{...options,selected:options.selected.filter(id=>!isAppleCalendar(id))}),owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo',apple=useAppleCalendarData({owner,...options,enabled:!!store.user&&options.selectionReady!==false,device});
- const creates=useDeviceCalendarCreates(store,owner,async event=>{google.upsertEvent(event);await flushCalendarSnapshots(owner).catch(()=>{});void google.load();},deviceCreateQueue);
+ const creates=useDeviceCalendarCreates(store,owner,async event=>{google.upsertEvent(event);await flushCalendarSnapshots(owner).catch(()=>{});void google.load();},deviceCreateQueue,options.active);
  const visible=useMemo(()=>{
   const known=new Set(google.baseEvents.map(event=>event.id));
   const deviceEvents=creates.jobs.filter(job=>!known.has(job.event.id)).map(job=>job.event);

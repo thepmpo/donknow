@@ -23,6 +23,9 @@ export function useCalendarLinkedSync(options:Options){
  const attempted=useRef(new Map<string,{version:string;retryAt:number;done:boolean;attempts:number}>());
  useEffect(()=>{attempted.current.clear();},[owner]);
  useEffect(()=>{
+  if(active)for(const attempt of attempted.current.values())if(!attempt.done)attempt.retryAt=0;
+ },[active]);
+ useEffect(()=>{
   if(!active||!supported||!readAt)return;
   const scope=owner;
   let disposed=false;

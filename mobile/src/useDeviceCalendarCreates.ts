@@ -8,25 +8,22 @@ import type {CalendarCreateQueue,QueuedCalendarCreate} from './calendar-create-q
 
 const empty:readonly QueuedCalendarCreate[]=[];
 const sending=new Set<string>();
-export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(event:CalendarEvent)=>Promise<void>,injectedQueue?:CalendarCreateQueue){
+export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(event:CalendarEvent)=>Promise<void>,injectedQueue?:CalendarCreateQueue,active=true){
  const queue=injectedQueue??deviceCalendarQueue;
  const enabled=(Platform.OS==='ios'||!!injectedQueue)&&!!store.user?.emailVerified&&store.connection?.mode==='cloud';
  const jobs=useSyncExternalStore(fn=>enabled?queue.watch(owner,fn):()=>{},()=>enabled?queue.snapshot(owner)??empty:empty);
  const latest=useRef({store,owner,onSaved});latest.current={store,owner,onSaved};
- const reactivated=useRef<string|null>(null);
  useEffect(()=>{
-  if(!enabled||!store.user)return;
-  const retryInterrupted=()=>{for(const job of queue.snapshot(owner)??[]){
-   if(job.blocked&&!job.failure){void queue.block(owner,job.id,false).catch(()=>{});}
-  }};
-  if(reactivated.current!==owner){
-   reactivated.current=owner;
-   void queue.read(owner).then(retryInterrupted).catch(()=>{});
-  }
-  return ()=>{if(reactivated.current===owner)reactivated.current=null;};
+  if(!enabled)return;
+  let disposed=false;
+  void queue.read(owner).then(entries=>{
+   if(disposed)return;
+   for(const job of entries)if(job.blocked&&!job.failure)void queue.block(owner,job.id,false).catch(()=>{});
+  }).catch(()=>{});
+  return ()=>{disposed=true;};
  },[enabled,owner,queue]);
  const retries=useRef(new Map<string,{attempt:number;at:number}>());
- useEffect(()=>{if(enabled)void queue.read(owner).catch(()=>{});},[enabled,owner,queue]);
+ useEffect(()=>{if(active)retries.current.clear();},[active,owner]);
  useEffect(()=>{
   if(!enabled||!jobs.some(job=>!job.blocked))return;
   let disposed=false;
@@ -84,6 +81,6 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
   // Start after the tap has painted the device copy.
   const start=setTimeout(()=>void process(),32);
   return()=>{disposed=true;clearInterval(timer);clearTimeout(start);subscription.remove();};
- },[enabled,owner,jobs,queue]);
+ },[enabled,owner,jobs,queue,active]);
  return {jobs,enqueue:enabled?(job:QueuedCalendarCreate)=>queue.add(owner,job):undefined};
 }
