@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 e9ac8cb · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 bdbe400 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — Google 연동 확인 및 iPhone 캘린더 회귀 수정
+
+- ME의 Google 연결 점검은 연결된 계정의 Calendar와 Tasks 목록을 각각 읽는다. 거절된 액세스 토큰은 서버에서 한 번 갱신하고 같은 읽기를 다시 시도한다. 명시적으로 재승인이 필요해 중단된 새 할 일 전송은 같은 Google 계정을 다시 승인하면 재개한다. 원본 생성 결과가 불확실한 작업은 중복 생성을 방지하기 위해 자동 재전송하지 않는다.
+- iPhone은 EventKit에서 캘린더 목록과 일정 범위를 한 번에 읽는다. 사용자가 숨긴 캘린더를 제외하고 새로 읽은 원본을 바로 표시하며, 원본 ID가 확인된 같은 일정만 병합한다. ME의 다시 확인 버튼도 캘린더 화면을 새로 읽는다. 미리알림은 날짜 없는 항목을 포함한 목록을 읽은 다음 완료 여부로 필터링한다.
+- iOS 월·주·일 가로 이동과 일정·할 일 카드의 길게 누르기 및 드래그를 UIKit에서 인식한다. 웹과 할 일 탭의 독립 제스처 경로는 기존 구현을 사용한다.
+- 모의 Google API와 Chromium의 Duo·일반 iPhone·웹 동작을 확인했다. iOS JS 번들과 prebuild를 확인했다. 실제 Apple 계정의 EventKit, iPhone 터치, TestFlight 설치 검수는 새 iPhone 빌드에서 진행해야 한다.
 
 #### 2026-11-26 — 새 할 일의 Google Tasks·Apple 미리알림 저장 목록
 
@@ -4090,10 +4097,13 @@ e5af67b Update calendar handoff after build 68 feedback
 f6fd905 Persist new schedules and tasks before network sync
 7dd3d37 Update handoff with local-first calendar verification
 e9ac8cb Create tasks in selected Google and Apple lists after local save
+25cd83d Update handoff for external task destinations
+d30b34b Verify provider connections and repair iPhone calendar touch and reads
+bdbe400 Cover provider-level Google connection results in browser tests
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: e9ac8cb에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: bdbe400에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13362,7 +13372,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/e9ac8cb0278511279b858acfbadb6f01b18cd1c2
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/bdbe40030a5b7c09792a29f45a763f85f2174fb8
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
