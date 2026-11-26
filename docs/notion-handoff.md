@@ -875,6 +875,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - 할 일의 다중 선택 바와 이동 팝업에서 소속 변경을 제거했다. 할 일과 로그 행에는 로컬 분류인 ‘일상’ 등을 보조 라벨로 표시하지 않는다. 실제 원본 목록 이름과 내부 분류 데이터는 보존한다.
 - 관련 화면 점검에서 AI 실행 및 브리핑에서 제안한 일정의 확인, 일정 삭제 확인, ME의 Google Tasks 및 아이폰 미리 알림 동기화 안내, 실제 쓰기 오류의 복구 안내를 확인했다.
 - 듀오·일반폰·웹 Chromium의 수동 일정 저장 및 미표시 Google 캘린더 표시, 아이폰 캘린더 모의 EventKit의 선택·날짜 이동·수정·삭제, 원본 색 전달, iOS JS export를 확인했다. 주간 뷰의 연속 드래그는 첫 원본 요청의 응답을 기다려 검사했고, 두 번째 쓰기가 거부되면 이전 날짜로 돌아오는 것을 확인했다. 실제 원본 계정과 실기기·TestFlight는 별도 검증이다.
+- GitHub main의 `2d06229`를 Render `duckduck-test`에 수동 배포했다. `dep-dc3ov2h7lnhs73ed3cvg`가 2026년 11월 26일 10:48 KST에 live가 됐고 서버 기동 로그를 확인했다. 최종 자동 테스트 493개가 통과했고 1개는 기존에 제외됐다. iOS JS 번들을 생성했으며 설치용 새 TestFlight 빌드는 이 작업에 포함되지 않았다.
 
 #### 2026-11-26 — 할 일·로그 간결화와 일정 날짜 끌어 옮기기
 
@@ -3961,6 +3962,7 @@ e68029e Update handoff for the calendar drag interaction
 8c68978 Show saved calendar events in Docen and preserve source colors
 6e484a5 Refresh handoff for one-tap calendar saves and source colors
 c93acd7 Restore calendar drag permission when a timed refresh arrives
+2d06229 Update handoff after calendar drag regression checks
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
