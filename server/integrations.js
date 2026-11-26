@@ -4,7 +4,7 @@ import {createAgentSync} from './agent-sync.js';
 import {createIntegrationAgentTools} from './integration-agent-tools.js';
 import {createProviderWatches} from './provider-watches.js';
 import {readNotionDocument} from './notion-document.js';
-import {googleAccounts,googleConnection} from './google-accounts.js';
+import {calendarAccount,googleAccounts,googleConnection} from './google-accounts.js';
 import {calendarEventColor,createCalendarWorkspace} from './calendar-workspace.js';
 import {createNaverMail} from './naver-mail.js';
 import {createProviderActions,mailText} from './provider-actions.js';
@@ -195,6 +195,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(store.accountActive&&!store.accountActive(state.userId))throw fail(403,'이 계정은 이용이 정지되어 있어요.');
       const save=provider==='google'&&state.mode&&store.saveGoogleAccount?(payload,label)=>store.saveGoogleAccount(state.userId,payload,label):(payload,label)=>store.saveConnection(state.userId,provider,payload,label);
       save({ accessToken: value.access_token, refreshToken: value.refresh_token ?? (accountId && previous?.accountId===accountId ? previous.refreshToken : null) ?? null, expiresAt: expiresAt(value.expires_in), features, taskSyncEnabled: !!(features.includes('tasksWrite') && previous?.accountId===accountId && previous?.taskSyncEnabled), accountId:accountId??null,connectionId,...(provider==='slack'?{slackUserId:value.slackUserId??value.authed_user?.id??null,tokenType:value.tokenType??'bot',botUserId:value.bot_user_id??null,botAccessToken:value.botAccessToken??null,botRefreshToken:value.botRefreshToken??null,botExpiresAt:value.botExpiresAt??null}:{}) }, label);
+      if(provider==='google'&&features.includes('calendarWrite'))store.wakeDocenGoogleDelivery?.(state.userId,connectionId);
       return { native: state.native };
     },
     async resources(userId, provider, feature, channel, cursor, taskStatus = 'incomplete', month, connectionId) {
@@ -337,6 +338,36 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       return { revoked };
     },
     async calendarDetails(userId,input){return createCalendarWorkspace({store,token,read:googleRead}).saveDetails(userId,input);},
+    async deliverDocenCalendar(job,retryAuth=true){
+      const {user,id,target,args}=job,selected=calendarAccount(store,user,target.calendarId,target.connectionId);
+      const record=await token(user,'google',selected.connectionId);
+      if(record.connectionId!==target.connectionId||!record.features.includes('calendarWrite'))throw fail(403,'Google 캘린더 쓰기 권한이 필요해요.');
+      const remoteId=createHash('sha256').update(user+':'+id).digest('hex');
+      const collection='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(selected.calendarId)+'/events';
+      const lookup=async()=>{
+       try{return await googleRead(user,record,collection+'/'+remoteId);}
+       catch(error){if(error.status===404)return null;throw error;}
+      };
+      const existing=job.attempt>1||!retryAuth?await lookup():null;
+      if(existing){
+       if(existing.status==='cancelled'||existing.extendedProperties?.private?.docenEvent!==remoteId)throw fail(409,'기존 원본 일정을 확인해주세요.');
+       return existing.id;
+      }
+      const current=await token(user,'google',target.connectionId);
+      if(current.connectionId!==target.connectionId||!current.features.includes('calendarWrite'))throw fail(403,'Google 캘린더 쓰기 권한이 필요해요.');
+      const body={id:remoteId,summary:args.title,description:args.notes??'',extendedProperties:{private:{docenEvent:remoteId}},
+       start:args.allDay?{date:args.startDate}:{dateTime:args.start,timeZone:args.timeZone},end:args.allDay?{date:args.endDate}:{dateTime:args.end,timeZone:args.timeZone},
+       ...(args.recurrence?{recurrence:args.recurrence}:{}),...(args.attendees?{attendees:args.attendees.map(email=>({email}))}:{})};
+      let result;
+      try{result=await providerRequest(collection+'?sendUpdates='+(args.attendees?.length?'all':'none'),{method:'POST',headers:{Authorization:'Bearer '+current.accessToken,'Content-Type':'application/json'},body:JSON.stringify(body)});}
+      catch(error){
+       if(!retryAuth||error.code!=='integration-reauthorization')throw error;
+       await token(user,'google',target.connectionId,current.accessToken);
+       return this.deliverDocenCalendar(job,false);
+      }
+      if(result.id!==remoteId)throw fail(502,'원본 일정 번호를 확인하지 못했어요.');
+      return remoteId;
+    },
     async calendarReminders(userId){return createCalendarWorkspace({store,token,read:googleRead}).reminders(userId);},
     async calendarList(userId,cursor){return createCalendarWorkspace({store,token,read:googleRead}).calendars(userId,cursor);},
     async calendar(userId,month,cursor,options) { if(options)return createCalendarWorkspace({store,token,read:googleRead}).events(userId,month,cursor,options); const record=store.connection(userId,'google');if(!record?.features.includes('calendar'))return month?{items:[],nextCursor:null}:[];const result=await this.resources(userId,'google','calendar',null,cursor,'incomplete',month);return month?result:result.items; },

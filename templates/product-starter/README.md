@@ -1,0 +1,35 @@
+# 새 서비스 스타터
+
+도슨의 색·글자·여백·모션과 웹·iPhone 일반·Duo 화면 골격을 복사한 Expo 시작 프로젝트입니다. 예제는 항목 추가, 완료, 기록에서 되돌리기를 실행합니다. 예제 데이터는 실행 중 메모리에 있습니다.
+
+## 받기
+
+도슨 저장소에서 `python3 scripts/create-product-starter.py --zip deliverables/docen-product-starter.zip`을 실행하면 ZIP을 만들 수 있습니다. 폴더로 받으려면 `--directory /새/경로`를 사용합니다.
+
+## 시작
+
+1. Node.js 24 환경에서 압축을 풀고 `npm ci`를 실행합니다.
+2. `npm run web`으로 웹 작업공간을 엽니다. 760px 미만에서 위쪽 메뉴, 1100px 이상에서 오른쪽 보조 공간을 볼 수 있습니다.
+3. 브라우저에서 일반폰·Duo를 확인하려면 `EXPO_PUBLIC_STARTER_LAYOUT_PREVIEW=1 npm run web`을 실행한 후 주소 뒤에 각각 `?layout=standard`, `?layout=duo`를 붙입니다.
+4. Mac의 Xcode에서 사용할 새 iOS Bundle ID를 `app.json`에 설정하고 `npm run ios`를 실행합니다. 포함된 Expo 모듈은 UIKit이 시야 제한 영역과 힌지 상태를 실제로 제공할 때만 Duo를 활성화합니다. iOS 27.1 SDK가 없는 빌드와 네이티브 모듈이 없는 Expo Go에서는 일반 레이아웃을 사용합니다. 브라우저 프리뷰는 합성 좌표를 사용합니다.
+
+## 제품 코드 넣기
+
+| 바꿀 곳 | 작업 |
+| --- | --- |
+| `app.json` | 제품명, slug, iOS Bundle ID, Android package, URL scheme를 새 서비스 값으로 설정 |
+| `src/product.ts` | 메뉴 ID·이름·아이콘과 제품 표기 교체 |
+| `src/CoreScreen.tsx` | 예제 목록을 실제 목록·상세·편집 화면과 저장소로 교체 |
+| `App.tsx` | 보조 영역에 새 서비스의 컨텍스트 연결. 고정 헤더, 스크롤 본문, 내비게이션 순서 유지 |
+| `system/` | 공통 색·여백·모션과 웹 골격, 안전 영역 및 Duo 배치. 변경 결정과 이유를 기록 |
+| `new-app-project-contract.md` | 계정, 접근 권한, 데이터, 브랜딩, 배포를 새 서비스 기준으로 확정 |
+| `new-app-ai-handoff.md` | 다음 개발자가 현재 구현과 확인 범위를 이어받기 위한 양식 |
+
+앱의 예제를 실제 데이터로 연결할 때 앱 계정 저장과 외부 서비스 동기화를 각각 상태로 표현합니다. 먼저 앱 저장 결과를 반환하고, 연결 서비스에는 중복을 막는 전송 키로 보냅니다. 권한이 살아 있으면 서버에서 갱신하고, 권한 철회 때만 사용자의 재동의가 필요합니다.
+
+## 검사와 배포
+
+- `npm run typecheck`, `npm run build:web`, `npm run build:ios-js`
+- 웹 390·760·1100px, iPhone 일반, Duo 접힘·펼침·회전에서 폼/스크롤/뒤로가기 확인
+- 어두운 화면, 큰 글자, 동작 줄이기, 키보드로 버튼 이동, 화면 읽기 레이블 확인
+- 사용자·API·계정 저장·운영자 권한·결제·알림·연동·AI·서명과 배포는 새 서비스에서 연결합니다. 서버 키, 사용자 데이터, 도슨 브랜드 자산은 패키지에 들어 있지 않습니다.

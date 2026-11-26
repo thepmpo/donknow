@@ -300,4 +300,50 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await local.mouse.move(destination.x+destination.width/2,destination.y+destination.height/2,{steps:12});await local.mouse.up();
  await updated;assert.equal(dayTasks[0].dueDate,'2026-11-26');
  console.log('PASS phone: Docen calendar saves with disconnected Google, reloads and moves after long press; day Todo swipes to select and drags to another date');await local.close();
+
+ const linked=await browser.newPage({viewport:{width:430,height:844},hasTouch:true,isMobile:true});
+ linked.setDefaultTimeout(12000);
+ const linkedOrigin='https://docen-first.test',selectedCalendar='source-calendar',connectedId='connected-google';
+ let docenSaved,googleWrites=0,mirrorReady=false;
+ await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
+ await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
+ await linked.route(linkedOrigin+'/**',route=>{
+  const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
+  if(path==='/api/auth/session')return route.fulfill({json:{user:{id:'linked-user',email:'linked@example.test',emailVerified:true}}});
+  if(path==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1}});
+  if(path==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:selectedCalendar,name:'원본 팀 일정',canWrite:true,color:'#22aa44',connectionId:connectedId}]}});
+  if(path==='/api/calendar/events'){
+   const calendarId=url.searchParams.get('calendarId');
+   const items=calendarId==='@docen'&&docenSaved?[docenSaved]:calendarId===selectedCalendar&&mirrorReady?[{...docenSaved,id:'original',eventId:'provider-id',calendarId:selectedCalendar,connectionId:connectedId,mirror:undefined,color:'#ab063d'}]:[];
+   return route.fulfill({json:{calendarId,items,connectionState:'connected',nextCursor:null}});
+  }
+  if(path.startsWith('/api/calendar/docen/')&&method==='PUT'){
+   const {target,args,fields}=route.request().postDataJSON();
+   assert.equal(target.calendarId,selectedCalendar);assert.equal(target.connectionId,connectedId);
+   docenSaved={id:'docen:confirmed',eventId:path.split('/').at(-1),calendarId:'@docen',provider:'docen',canWrite:true,etag:'1',title:args.title,allDay:args.allDay,dueDate:args.startDate,endDate:args.endDate,color:target.color,duckDetails:{revision:1,fields},mirror:{...target,state:'queued',externalEventId:'provider-id'}};
+   return route.fulfill({json:docenSaved});
+  }
+  if(path.startsWith('/api/assistant/actions')&&method==='POST')googleWrites++;
+  if(path==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});
+  return route.fulfill({json:[]});
+ });
+ await linked.addInitScript(([base,calendar])=>localStorage.setItem('duck.calendar.selection.'+base+':linked-user',JSON.stringify(['primary',calendar])),[linkedOrigin,selectedCalendar]);
+ await linked.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard');
+ const linkedDay=linked.getByTestId('week-date-2026-11-25');
+ await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
+ const linkedSheet=linked.getByTestId('calendar-sheet');
+ await linkedSheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('도슨에 먼저 저장');
+ await linkedSheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).getByText('원본 팀 일정',{exact:true}).waitFor();
+ await linkedSheet.getByRole('button',{name:'일정 저장',exact:true}).click();
+ const written=linked.getByRole('button',{name:'도슨에 먼저 저장 종일 일정 상세',exact:true});
+ await written.waitFor();
+ assert.equal(googleWrites,0);
+ await linked.reload();
+ await written.waitFor();
+ docenSaved.mirror.state='synced';mirrorReady=true;
+ await linked.reload();
+ await written.waitFor();
+ assert.equal(await written.count(),1);
+ assert.equal(await linked.getByTestId('week-span-original').count(),0);
+ console.log('PASS phone: Docen commits before Google, survives reload, and renders one event after delivery');await linked.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

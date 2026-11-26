@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "새 서비스",
+    "slug": "new-service-starter",
+    "version": "0.1.0",
+    "userInterfaceStyle": "automatic",
+    "ios": {"supportsTablet": true},
+    "web": {"bundler": "metro"}
+  }
+}

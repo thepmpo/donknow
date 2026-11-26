@@ -29,6 +29,20 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   let sourceTimer;const wakeSource=()=>{if(!background||!deferredSources||sourceTimer)return;sourceTimer=setTimeout(()=>{sourceTimer=null;void sourceEdits.tick().catch(()=>{});},20);sourceTimer.unref();};
   sourceEdits=createSourceEdits({store,assistant,integrations,deferred:deferredSources,onEnqueue:wakeSource});
   const sourceInterval=background&&deferredSources?setInterval(wakeSource,15000):null;sourceInterval?.unref();if(background&&deferredSources)wakeSource();
+  let calendarDeliveryRunning=false;
+  async function deliverCalendarQueue(){
+    if(!background||calendarDeliveryRunning)return;
+    calendarDeliveryRunning=true;
+    try{
+      for(let i=0;i<10;i++){
+        const job=store.claimDocenGoogleDelivery();if(!job)break;
+        try{store.finishDocenGoogleDelivery(job,'synced',await integrations.deliverDocenCalendar(job));}
+        catch(error){const state=error.code==='integration-reauthorization'||[403,409].includes(error.status)?'blocked':error.status===400||error.status===410?'failed':'queued';store.finishDocenGoogleDelivery(job,state);}
+      }
+    }finally{calendarDeliveryRunning=false;}
+  }
+  function wakeCalendarDelivery(){void deliverCalendarQueue().catch(()=>{});}
+  const deliveryInterval=background?setInterval(wakeCalendarDelivery,15000):null;deliveryInterval?.unref();
   const defaultedUsers=new Set();
   const memory=createAgentMemory(store),computer=createAgentComputer(store);
   const agent=createAgentEngine({store,assistant,integrations,memory,computer,autoWake:background&&process.env.NODE_ENV!=='test'});
@@ -67,13 +81,14 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   }
   return {
     updateTodo:(user,id,patch)=>sourceEdits.save(user,id,patch),
-    wakeSource,close(){channels.close();agent.close();clearTimeout(sourceTimer);if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
+    wakeSource,close(){channels.close();agent.close();clearTimeout(sourceTimer);if(deliveryInterval)clearInterval(deliveryInterval);if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
     async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
       if (!match || req.method !== 'GET') return false;
       try {
         const result = await integrations.callback(match[1], url.searchParams);
+        if(match[1]==='google')wakeCalendarDelivery();
         if (result.native) { res.writeHead(303, { Location: `duckduck://integrations/complete?provider=${match[1]}&status=connected`, 'Cache-Control': 'no-store' }); res.end(); }
         else { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'" }); res.end('<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>docen 연결 완료</title><body style="font-family:sans-serif;padding:40px;color:#263346"><h1>연결했어요.</h1><p>앱으로 돌아가 새로고침하면 연결한 자료를 확인할 수 있어요.</p><a href="/app">docen 열기</a></body></html>'); }
       } catch (error) { res.writeHead(error.status || 502, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'" }); res.end('<!doctype html><html lang="ko"><meta charset="utf-8"><title>연결 다시 시도</title><body style="font-family:sans-serif;padding:40px"><h1>연결하지 못했어요.</h1><p>승인이 취소되었거나 요청이 만료됐어요. 앱에서 다시 시작해주세요.</p><a href="duckduck://integrations/complete?status=failed">앱으로 돌아가기</a></body></html>'); }
@@ -92,7 +107,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await drain();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -217,11 +232,13 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         const remote=await integrations.calendarReminders(user.id);
         send(200,{...remote,items:[...remote.items,...store.docenCalendarReminders(user.id)]});return true;
       }
+      const appleDelivery=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})\/apple-delivery$/.exec(path);
+      if(appleDelivery&&req.method==='POST'){send(200,store.recordDocenAppleDelivery(user.id,appleDelivery[1],await json(req)));return true;}
       const docenEvent=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})$/.exec(path);
       if(docenEvent&&['PUT','DELETE'].includes(req.method)){
         if(limited('docen-calendar:'+user.id))throw fail(429,'잠시 후 다시 저장해주세요.');
         const body=await json(req);
-        if(req.method==='PUT')send(200,store.saveDocenCalendarEvent(user.id,docenEvent[1],body));
+        if(req.method==='PUT'){send(200,store.saveDocenCalendarEvent(user.id,docenEvent[1],body));if(body?.target?.provider==='google')wakeCalendarDelivery();}
         else {store.deleteDocenCalendarEvent(user.id,docenEvent[1],body?.revision);send(200,{ok:true});}
         return true;
       }

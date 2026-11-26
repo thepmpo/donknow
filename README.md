@@ -31,6 +31,7 @@ ME의 공급자 설정은 목록→소개/상태→권한/자료/동기화/문�
 
 ## 구성
 
+- [도슨 디자인 시스템](docs/docen-design-system.md) · [새 서비스 웹·iPhone 스타터](templates/product-starter/README.md).
 - `mobile/`: React Native·Expo SDK 58 기반 iPhone 앱. [실행 안내](mobile/README.md).
 - `server.js`, `server/`: 회원가입·로그인·계정별 Todo API. Node.js 24 이상. 먼저 루트에서 `npm ci`로 서버 의존성을 설치합니다.
 - `public/`: 같은 서버에서 실행하는 웹 화면. HttpOnly 쿠키로 로그인합니다.

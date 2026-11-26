@@ -113,3 +113,37 @@ test('a temporary Google refresh network failure is retried exactly once',async(
   assert.equal(refreshes,2);
  }finally{await h.close();}
 });
+
+test('a Google-targeted calendar create is committed before delivery and recovers a lost provider response without duplicates',async()=>{
+ const h=await setup();
+ try{
+  const args={title:'도슨 우선 저장',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'};
+  const target={provider:'google',calendarId:'primary',connectionId:'calendar-connection',name:'Google',color:'#aa2244'};
+  const id='event-docen-first-delivery';
+  let remote,posts=0;
+  const api=createIntegrations(h.store,env,async(_input,options={})=>{
+   if(options.method==='POST'){
+    posts++;remote=JSON.parse(options.body);throw Error('response lost after Google stored the event');
+   }
+   return response(remote);
+  });
+  const body={args,fields:{},target,revision:0};
+  const saved=h.store.saveDocenCalendarEvent(h.user,id,body);
+  assert.equal(saved.mirror.state,'queued');
+  assert.equal(posts,0);
+  assert.equal(h.store.readDocenCalendar(h.user,'2026-11-26','2026-11-28','Asia/Seoul').items[0].title,args.title);
+  const first=h.store.claimDocenGoogleDelivery();
+  await assert.rejects(api.deliverDocenCalendar(first),e=>e.status===502);
+  h.store.finishDocenGoogleDelivery(first,'queued');
+  assert.equal(h.store.saveDocenCalendarEvent(h.user,id,body).id,saved.id);
+  const second=h.store.claimDocenGoogleDelivery(Date.now()+600000);
+  const externalId=await api.deliverDocenCalendar(second);
+  h.store.finishDocenGoogleDelivery(second,'synced',externalId);
+  assert.equal(posts,1);
+  const [local]=h.store.readDocenCalendar(h.user,'2026-11-26','2026-11-28','Asia/Seoul').items;
+  assert.equal(local.id,saved.id);
+  assert.equal(local.mirror.externalEventId,remote.id);
+  assert.equal(local.mirror.state,'synced');
+  assert.equal(local.color,target.color);
+ }finally{await h.close();}
+});

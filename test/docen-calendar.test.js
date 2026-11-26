@@ -31,3 +31,24 @@ test('Docen events can be created, read, moved and deleted without a provider co
   assert.deepEqual((await h.request(range,'GET',undefined,owner.token)).data.items,[]);
  }finally{await h.close();}
 });
+
+test('Apple delivery has one owner-bound device claim and keeps an uncertain local event',async()=>{
+ const h=await apiHarness({GOOGLE_CLIENT_ID:'',GOOGLE_CLIENT_SECRET:''});
+ try{
+  const owner=await h.verified('docen-apple-owner@example.test'),other=await h.verified('docen-apple-other@example.test');
+  const path='/api/calendar/docen/event-apple-safe-claim';
+  const body={revision:0,args:{title:'아이폰에 보낼 일정',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'},fields:{},target:{provider:'apple-calendar',calendarId:'@apple/private',name:'개인',color:'#123456'}};
+  const save=await h.request(path,'PUT',body,owner.token);
+  assert.equal(save.status,200);
+  assert.equal(save.data.mirror.state,'queued');
+  const delivery=path+'/apple-delivery';
+  assert.equal((await h.request(delivery,'POST',{state:'sending'},other.token)).status,404);
+  assert.equal((await h.request(delivery,'POST',{state:'sending'},owner.token)).status,200);
+  assert.equal((await h.request(delivery,'POST',{state:'sending'},owner.token)).status,409);
+  assert.equal((await h.request(delivery,'POST',{state:'checking'},owner.token)).status,200);
+  const range='/api/calendar/events?v=2&calendarId=%40docen&start=2026-11-23&end=2026-11-30&timeZone=Asia%2FSeoul';
+  const [event]=(await h.request(range,'GET',undefined,owner.token)).data.items;
+  assert.equal(event.id,save.data.id);
+  assert.equal(event.mirror.state,'checking');
+ }finally{await h.close();}
+});

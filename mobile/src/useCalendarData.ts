@@ -12,7 +12,7 @@ import {readCalendarOnce} from './calendar-snapshot-cache';
 type Page={calendarId?:string;items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
 export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active,selectionReady=true}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean;selectionReady?:boolean}){
  const [sourceLoading,setSourceLoading]=useState(false),[sourceLoaded,setSourceLoaded]=useState(false);
- const [docenSupported,setDocenSupported]=useState(false);
+ const [docenSupported,setDocenSupported]=useState(false),[localFirst,setLocalFirst]=useState(false);
  const [detailsSupported,setDetailsSupported]=useState(false),[createOptionsSupported,setCreateOptionsSupported]=useState(false);
  const [,writeChanged]=useState(0);
  const [events,setEvents]=useState<CalendarEvent[]>([]),[sources,setSources]=useState<CalendarSource[]>([]);
@@ -22,7 +22,7 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  const owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
  const readSelected=docenSupported?[...new Set([...selected,docenCalendarId])]:selected;
  const family=JSON.stringify([owner,timeZone]),key=JSON.stringify([family,[...selected].sort(),start,end]),latest=useRef({key,owner,active});latest.current={key,owner,active};
- const periods=useRef(calendarSnapshots(owner)),cacheOwner=useRef(owner),capabilities=useRef<{version:1|2;at:number;details:boolean;createOptions:boolean;docen:boolean}|null>(null),pageChains=useRef(new Map<string,{key:string;items:CalendarEvent[]}>());
+ const periods=useRef(calendarSnapshots(owner)),cacheOwner=useRef(owner),capabilities=useRef<{version:1|2;at:number;details:boolean;createOptions:boolean;docen:boolean;localFirst:boolean}|null>(null),pageChains=useRef(new Map<string,{key:string;items:CalendarEvent[]}>());
  const eventKey=(e:CalendarEvent)=>JSON.stringify([e.connectionId??'',e.calendarId??'primary',e.eventId??e.id]);
  function inPeriod(e:CalendarEvent,rangeStart=start,rangeEnd=end,rangeZone=timeZone){const first=e.allDay?e.dueDate:e.startAt?zonedDay(e.startAt,rangeZone):e.dueDate,last=e.allDay?e.endDate:e.endAt?zonedDay(Math.max(Date.parse(e.startAt??e.endAt),Date.parse(e.endAt)-1),rangeZone):first;return !!first&&first<rangeEnd&&(e.allDay&&e.endDate?e.endDate>rangeStart:(last??first)>=rangeStart);}
  function periodZone(entry:CachedPeriod){try{return JSON.parse(entry.family)[1]??timeZone;}catch{return timeZone;}}
@@ -46,8 +46,8 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
   setPhase('loading');setError('');
   try{
    let v=capabilities.current?.version;
-   if(!v||Date.now()-capabilities.current!.at>300000){const caps=await request('/api/capabilities') as {calendarWorkspace?:number;calendarDetails?:number;calendarCreateOptions?:number;docenCalendar?:number};if(!fresh())return;if(!latest.current.active&&caps.calendarWorkspace!==2){setPhase('ready');return;}v=caps.calendarWorkspace===2?2:1;capabilities.current={version:v,at:Date.now(),details:caps.calendarDetails===1,createOptions:caps.calendarCreateOptions===1,docen:caps.docenCalendar===1};}
-   setVersion(v);setDocenSupported(capabilities.current?.docen===true);setDetailsSupported(capabilities.current?.details===true);setCreateOptionsSupported(capabilities.current?.createOptions===true);
+   if(!v||Date.now()-capabilities.current!.at>300000){const caps=await request('/api/capabilities') as {calendarWorkspace?:number;calendarDetails?:number;calendarCreateOptions?:number;docenCalendar?:number;docenCalendarFirst?:number};if(!fresh())return;if(!latest.current.active&&caps.calendarWorkspace!==2){setPhase('ready');return;}v=caps.calendarWorkspace===2?2:1;capabilities.current={version:v,at:Date.now(),details:caps.calendarDetails===1,createOptions:caps.calendarCreateOptions===1,docen:caps.docenCalendar===1,localFirst:caps.docenCalendarFirst===1};}
+   setVersion(v);setDocenSupported(capabilities.current?.docen===true);setLocalFirst(capabilities.current?.localFirst===true);setDetailsSupported(capabilities.current?.details===true);setCreateOptionsSupported(capabilities.current?.createOptions===true);
    const ids=v===2?(capabilities.current?.docen?[...new Set([...selected,docenCalendarId])]:selected.filter(id=>id!==docenCalendarId)):['primary'];if(!ids.length){snapshot.current=[];setEvents([]);setPhase('ready');cursorRef.current={};setCursors({});remember();return;}
    const next:Record<string,string>={...(more?cursorRef.current:{})},readTimes:string[]=[],ok:Page[]=[];
    const pages=await Promise.allSettled(ids.filter(id=>!more||cursorRef.current[id]).map(async id=>{
@@ -95,5 +95,5 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  function upsertEvent(event:CalendarEvent){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);for(const entry of periods.current.values())if(inPeriod(event,entry.start,entry.end,periodZone(entry)))entry.items=[...entry.items.filter(e=>e.id!==event.id),event];if(inPeriod(event))snapshot.current=[...snapshot.current.filter(e=>e.id!==event.id),event];setEvents(snapshot.current);remember();}
  function cachedEvents(){return [...new Map([...periods.current.values()].filter(p=>p.family===family).flatMap(p=>p.items).concat(snapshot.current).map(e=>[eventKey(e),e])).values()];}
  useEffect(()=>watchCalendarWrites(owner,()=>writeChanged(v=>v+1)),[owner]);
- return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,docenSupported,baseEvents:events,events:overlayCalendarWrites(owner,events,start,end,timeZone,readSelected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceLoaded,sourceError,sourceCursor,load,loadSources};
+ return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,docenSupported,localFirst,baseEvents:events,events:overlayCalendarWrites(owner,events,start,end,timeZone,readSelected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceLoaded,sourceError,sourceCursor,load,loadSources};
 }
