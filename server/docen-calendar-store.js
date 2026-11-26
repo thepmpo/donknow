@@ -75,6 +75,9 @@ export function docenCalendarStore(db,box){
    const removed=db.prepare("DELETE FROM docen_calendar_events WHERE user_id=? AND id=? AND revision=? AND NOT EXISTS (SELECT 1 FROM docen_calendar_delivery WHERE user_id=? AND event_id=? AND state='sending')").run(user,id,revision,user,id);
    if(!removed.changes)throw fail(409,'일정이 바뀌었거나 원본에 전송 중이에요. 잠시 뒤 다시 확인해주세요.');
   },
+  nextDocenGoogleDeliveryAt(){
+   return db.prepare("SELECT MIN(available_at) AS due FROM docen_calendar_delivery WHERE provider='google' AND state IN ('queued','sending')").get()?.due??null;
+  },
   claimDocenGoogleDelivery(now=Date.now()){
    const row=db.prepare(`SELECT * FROM docen_calendar_delivery WHERE provider='google' AND state IN ('queued','sending') AND available_at<=? ORDER BY available_at LIMIT 1`).get(now);
    if(!row)return null;
@@ -83,9 +86,10 @@ export function docenCalendarStore(db,box){
    const saved=get(row.user_id,row.event_id);
    return saved?{user:row.user_id,id:row.event_id,attempt,target:box.open(row.data),args:decode(saved).args}:null;
   },
-  finishDocenGoogleDelivery(job,state,externalEventId){
+  finishDocenGoogleDelivery(job,state,externalEventId,retryAfterMs){
+   const delay=Math.max(Math.min(60000,500*2**Math.min(Math.max(0,job.attempt-1),7)),Number.isFinite(retryAfterMs)?retryAfterMs:0);
    db.prepare("UPDATE docen_calendar_delivery SET state=?,available_at=?,data=? WHERE user_id=? AND event_id=? AND state='sending' AND attempt=?")
-    .run(state,Date.now()+Math.min(300000,2000*2**Math.min(job.attempt,7)),box.seal({...job.target,...(externalEventId?{externalEventId}:{})}),job.user,job.id,job.attempt);
+    .run(state,Date.now()+delay,box.seal({...job.target,...(externalEventId?{externalEventId}:{})}),job.user,job.id,job.attempt);
   },
   wakeDocenGoogleDelivery(user,connectionId){
    const pending=db.prepare("SELECT event_id,data FROM docen_calendar_delivery WHERE user_id=? AND provider='google' AND state='blocked'").all(user);

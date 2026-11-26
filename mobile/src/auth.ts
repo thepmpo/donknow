@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import {readJsonResponse,InvalidJsonResponseError,connectionRead,connectionWrite,cancelledTransport} from './http-response';
+import {readJsonResponse,InvalidJsonResponseError,TransportResponseError,connectionRead,connectionWrite,cancelledTransport} from './http-response';
 import * as SecureStore from 'expo-secure-store';
 import {createServerReadiness} from './server-readiness';
 const readiness=createServerReadiness({probe:async base=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(base+'/api/health',{signal:controller.signal});const data=await readJsonResponse(response) as {ok?:boolean};if(data?.ok!==true)throw new InvalidJsonResponseError(response.status);}finally{clearTimeout(timer);}}});
@@ -34,9 +34,9 @@ export async function request(baseUrl: string, path: string, method = 'GET', bod
       }
     }
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') throw new Error('서버 응답 시간이 초과됐어요. 무료 서버가 준비 중이거나 네트워크가 불안정할 수 있어요. 잠시 뒤 다시 시도해주세요.');
-    if (cancelledTransport(error)) throw new Error('통신이 잠시 중단됐어요. 연결과 로그인 정보는 유지했어요. 다시 확인해주세요.');
-    if (error instanceof TypeError || (error instanceof Error && /failed to fetch|network request failed|load failed/i.test(error.message))) throw new Error('서버에 연결하지 못했어요. 주소와 네트워크를 확인해주세요.');
+    if (error instanceof Error && error.name === 'AbortError') throw new TransportResponseError('서버 응답 시간이 초과됐어요. 무료 서버가 준비 중이거나 네트워크가 불안정할 수 있어요. 잠시 뒤 다시 시도해주세요.');
+    if (cancelledTransport(error)) throw new TransportResponseError('통신이 잠시 중단됐어요. 연결과 로그인 정보는 유지했어요. 다시 확인해주세요.');
+    if (error instanceof TypeError || (error instanceof Error && /failed to fetch|network request failed|load failed/i.test(error.message))) throw new TransportResponseError('서버에 연결하지 못했어요. 주소와 네트워크를 확인해주세요.');
     throw error;
   } finally { clearTimeout(timer); }
 }

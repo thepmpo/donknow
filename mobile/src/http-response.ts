@@ -3,6 +3,7 @@ export class InvalidJsonResponseError extends Error {
  status:number;
  constructor(status:number){super(status===502||status===503||status===504?'서버가 준비 중이에요. 잠시 뒤 다시 시도해주세요.':'서버에서 올바른 응답을 받지 못했어요. 다시 확인해주세요.');this.status=status;}
 }
+export class TransportResponseError extends Error {}
 export class HttpResponseError extends Error {status:number;constructor(status:number,message:string){super(message);this.status=status;}}
 export async function readJsonResponse(response:Response):Promise<unknown>{
  let value:unknown;
@@ -26,3 +27,10 @@ export function cancelledTransport(error:unknown){return error instanceof Error&
 
 /** Warm only before explicitly requested app writes, never replay OAuth or imports. */
 export function connectionWrite(path:string,method:string){return method!=='GET'&&(/^\/api\/todos(?:\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?)?(?:\?|$)/.test(path)||/^\/api\/integrations\/(?:google|slack|notion)\/(?:authorize|import|diagnose|task-sync(?:\/(?:pull|retry))?)(?:\?|$)/.test(path)||/^\/api\/integrations\/(?:apple-reminders\/import|naver)(?:\?|$)/.test(path)||method==='DELETE'&&/^\/api\/integrations\/(?:google|slack|notion)(?:\?|$)/.test(path));}
+
+/** The create endpoint deduplicates the same event ID and unchanged request body. */
+export function retryableDocenCalendarCreate(error:unknown){
+ if(error instanceof InvalidJsonResponseError)return error.status===200||error.status>=500;
+ if(error instanceof HttpResponseError)return error.status===408||error.status===429||error.status>=500;
+ return error instanceof TransportResponseError;
+}

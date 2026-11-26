@@ -147,3 +147,25 @@ test('a Google-targeted calendar create is committed before delivery and recover
   assert.equal(local.color,target.color);
  }finally{await h.close();}
 });
+
+test('Google Calendar quota responses remain retryable with the provider delay',async()=>{
+ const h=await setup();
+ try{
+  const localId='event-google-limit-retry';
+  h.store.saveDocenCalendarEvent(h.user,localId,{
+   revision:0,fields:{},target:{provider:'google',calendarId:'primary',connectionId:'calendar-connection'},
+   args:{title:'일시 제한',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'},
+  });
+  const job=h.store.claimDocenGoogleDelivery();
+  const started=Date.now();
+  const api=createIntegrations(h.store,env,async()=>new Response(JSON.stringify({error:{errors:[{reason:'userRateLimitExceeded'}]}}),{status:403,headers:{'Retry-After':'3'}}));
+  await assert.rejects(api.deliverDocenCalendar(job),error=>{
+   assert.equal(error.status,429);assert.equal(error.retryAfterMs,3000);
+   h.store.finishDocenGoogleDelivery(job,'queued',undefined,error.retryAfterMs);return true;
+  });
+  const due=h.store.nextDocenGoogleDeliveryAt();
+  assert.ok(due>=started+3000);
+  assert.equal(h.store.claimDocenGoogleDelivery(due-1),null);
+  assert.equal(h.store.claimDocenGoogleDelivery(due).attempt,2);
+ }finally{await h.close();}
+});

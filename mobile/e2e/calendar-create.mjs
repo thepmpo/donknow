@@ -305,6 +305,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  linked.setDefaultTimeout(12000);
  const linkedOrigin='https://docen-first.test',selectedCalendar='source-calendar',connectedId='connected-google';
  let docenSaved,googleWrites=0,mirrorReady=false;
+ const docenWrites=[];
  await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
  await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
  await linked.route(linkedOrigin+'/**',route=>{
@@ -319,8 +320,11 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
   }
   if(path.startsWith('/api/calendar/docen/')&&method==='PUT'){
    const {target,args,fields}=route.request().postDataJSON();
+   docenWrites.push({path,body:route.request().postDataJSON()});
    assert.equal(target.calendarId,selectedCalendar);assert.equal(target.connectionId,connectedId);
    docenSaved={id:'docen:confirmed',eventId:path.split('/').at(-1),calendarId:'@docen',provider:'docen',canWrite:true,etag:'1',title:args.title,allDay:args.allDay,dueDate:args.startDate,endDate:args.endDate,color:target.color,duckDetails:{revision:1,fields},mirror:{...target,state:'queued',externalEventId:'provider-id'}};
+   // The first write commits, but the transport loses its response.
+   if(docenWrites.length===1)return route.abort('failed');
    return route.fulfill({json:docenSaved});
   }
   if(path.startsWith('/api/assistant/actions')&&method==='POST')googleWrites++;
@@ -337,6 +341,8 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await linkedSheet.getByRole('button',{name:'일정 저장',exact:true}).click();
  const written=linked.getByRole('button',{name:'도슨에 먼저 저장 종일 일정 상세',exact:true});
  await written.waitFor();
+ assert.equal(docenWrites.length,2);
+ assert.deepEqual(docenWrites[0],docenWrites[1]);
  assert.equal(googleWrites,0);
  await linked.reload();
  await written.waitFor();

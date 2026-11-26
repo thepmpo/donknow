@@ -1,3 +1,4 @@
+import {retryableDocenCalendarCreate} from './http-response';
 import {appleEventPatch,isAppleCalendar} from './apple-calendar-model';
 import {useKeyboardUX} from './KeyboardUX';
 import {ScrollRevealContext,ScrollRevealRegion,useFocusedField} from './useFocusedField';
@@ -22,7 +23,14 @@ export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDra
  const {calendarId,...args}=calendarWriteArgs({...draft,location:'',...(!target?{repeat:'none',guests:''}:{})})!;
  delete args.location;
  const fields={...event?.duckDetails?.fields,...calendarDuckPatch(draft,event)};
- const saved=await store.featureRequest('/api/calendar/docen/'+encodeURIComponent(id),'PUT',{args,fields,revision:event?.duckDetails?.revision??0,...(target?{target}:{})}) as CalendarEvent;
+ const path='/api/calendar/docen/'+encodeURIComponent(id);
+ const payload={args,fields,revision:event?.duckDetails?.revision??0,...(target?{target}:{})};
+ let saved:CalendarEvent;
+ try{saved=await store.featureRequest(path,'PUT',payload) as CalendarEvent;}
+ catch(error){
+  if(event||!store.isCurrentSession()||!retryableDocenCalendarCreate(error))throw error;
+  saved=await store.featureRequest(path,'PUT',payload) as CalendarEvent;
+ }
  store.reminders.retry();
  return saved;
 }

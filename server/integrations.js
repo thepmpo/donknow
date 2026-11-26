@@ -41,7 +41,15 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
     if(response.ok&&response.status===204)return {};
     let value; try { value = await response.json(); } catch { reportFailure(url,response.status,'invalid-response',options.method??'GET');throw fail(502, '외부 서비스 응답을 읽을 수 없어요.'); }
     if (!response.ok || (slack && value.ok === false)) {
-      reportFailure(url,response.status,response.status===401||['invalid_auth','token_revoked','invalid_grant'].includes(value.error)?'reauthorization':response.status===403?'permission':response.status===429||value.error==='ratelimited'?'rate-limit':response.status>=500?'upstream-unavailable':'provider-rejected',options.method??'GET');
+      const reasons=value?.error?.errors;
+      const rateLimited=response.status===429||value.error==='ratelimited'||response.status===403&&Array.isArray(reasons)&&reasons.some(item=>['rateLimitExceeded','userRateLimitExceeded','quotaExceeded'].includes(item?.reason));
+      reportFailure(url,response.status,response.status===401||['invalid_auth','token_revoked','invalid_grant'].includes(value.error)?'reauthorization':rateLimited?'rate-limit':response.status===403?'permission':response.status>=500?'upstream-unavailable':'provider-rejected',options.method??'GET');
+      if(rateLimited){
+       const retry=response.headers.get('retry-after'),delay=retry&&/^\d+$/.test(retry)?Number(retry)*1000:Date.parse(retry??'')-Date.now();
+       const error=fail(429,'외부 서비스 요청이 많아요. 잠시 후 다시 시도해주세요.');
+       if(Number.isFinite(delay)&&delay>=0)error.retryAfterMs=delay;
+       throw error;
+      }
       if (response.status === 401 || value.error === 'invalid_auth' || value.error === 'token_revoked' || value.error === 'invalid_grant') throw reauthorizationRequired();
       if(response.status===412)throw fail(409,'원본이 동시에 바뀌었어요. 새 초안에서 다시 확인해주세요.');
       if(response.status===403)throw fail(403,'이 작업의 외부 서비스 권한을 확인해주세요.');
@@ -49,7 +57,6 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(response.status===404)throw fail(404,'외부 서비스에서 대상을 찾지 못했어요.');
       if(response.status===400)throw fail(400,'외부 서비스가 작업 내용을 거절했어요.');
       if (value.error === 'not_in_channel') throw fail(409, 'Slack 채널에 연결한 앱을 먼저 초대해주세요.');
-      if (response.status === 429 || value.error === 'ratelimited') throw fail(429, '외부 서비스 요청이 많아요. 잠시 후 다시 시도해주세요.');
       throw fail(502, '외부 서비스 요청을 완료하지 못했어요. 권한과 연결 설정을 확인해주세요.');
     }
     if(value&&typeof value==='object'&&response.headers.get('etag'))Object.defineProperty(value,'__etag',{value:response.headers.get('etag')});

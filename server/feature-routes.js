@@ -1,3 +1,4 @@
+import {createDocenCalendarDelivery} from './docen-calendar-delivery.js';
 import {docenCalendarId} from './docen-calendar-store.js';
 import {requireNewPassword} from './password-policy.js';
 import {safeTodoSourceLink} from './todo-source-link.js';
@@ -29,20 +30,9 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   let sourceTimer;const wakeSource=()=>{if(!background||!deferredSources||sourceTimer)return;sourceTimer=setTimeout(()=>{sourceTimer=null;void sourceEdits.tick().catch(()=>{});},20);sourceTimer.unref();};
   sourceEdits=createSourceEdits({store,assistant,integrations,deferred:deferredSources,onEnqueue:wakeSource});
   const sourceInterval=background&&deferredSources?setInterval(wakeSource,15000):null;sourceInterval?.unref();if(background&&deferredSources)wakeSource();
-  let calendarDeliveryRunning=false;
-  async function deliverCalendarQueue(){
-    if(!background||calendarDeliveryRunning)return;
-    calendarDeliveryRunning=true;
-    try{
-      for(let i=0;i<10;i++){
-        const job=store.claimDocenGoogleDelivery();if(!job)break;
-        try{store.finishDocenGoogleDelivery(job,'synced',await integrations.deliverDocenCalendar(job));}
-        catch(error){const state=error.code==='integration-reauthorization'||[403,409].includes(error.status)?'blocked':error.status===400||error.status===410?'failed':'queued';store.finishDocenGoogleDelivery(job,state);}
-      }
-    }finally{calendarDeliveryRunning=false;}
-  }
-  function wakeCalendarDelivery(){void deliverCalendarQueue().catch(()=>{});}
-  const deliveryInterval=background?setInterval(wakeCalendarDelivery,15000):null;deliveryInterval?.unref();
+  const calendarDelivery=background?createDocenCalendarDelivery(store,job=>integrations.deliverDocenCalendar(job)):null;
+  const wakeCalendarDelivery=()=>calendarDelivery?.wake();
+  wakeCalendarDelivery();
   const defaultedUsers=new Set();
   const memory=createAgentMemory(store),computer=createAgentComputer(store);
   const agent=createAgentEngine({store,assistant,integrations,memory,computer,autoWake:background&&process.env.NODE_ENV!=='test'});
@@ -81,7 +71,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
   }
   return {
     updateTodo:(user,id,patch)=>sourceEdits.save(user,id,patch),
-    wakeSource,close(){channels.close();agent.close();clearTimeout(sourceTimer);if(deliveryInterval)clearInterval(deliveryInterval);if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
+    wakeSource,close(){channels.close();agent.close();clearTimeout(sourceTimer);calendarDelivery?.close();if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
     async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
       const match = /^\/api\/integrations\/(google|slack|notion)\/callback$/.exec(path);
