@@ -872,6 +872,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - 새 Google 일정 전송은 도슨 저장 직후 시작한다. 한 원본 응답이 느려도 다른 항목을 처리하며, 일시 실패는 재시도 시각에 자동으로 다시 처리한다. Google의 요청 제한 응답이 403으로 온 경우도 재시도 대상과 실제 쓰기 권한 부족을 구분한다. 공급자가 지정한 대기 시간은 유지한다.
 - 도슨 일정 생성 응답이 끊기면 진행 중인 생성의 요청 ID와 내용으로 한 번 자동 재시도한다. 도슨 및 Google의 동일 ID를 재사용해 이미 저장한 경우에도 중복을 만들지 않는다. 실제 권한 철회나 원본 접근 제한은 연결 확인 상태로 남긴다.
 - 느린 원본과 독립적인 전송, 요청 제한 후 재시도, 승인과 한도 응답 구분 및 저장 응답 유실 후 한 건 표시를 검사했다. [저장·동기화 공통 규칙](docen-sync-contract.md)
+- Render 웹 테스트의 `004c4f2` 배포 `dep-dc3qgbd9el5s739b3i6g`는 2026년 11월 26일 12:33 KST에 live가 됐다. 자동 검사 500개가 통과했고 기존 제외는 1개다. iOS JS 번들 생성을 확인했다. 설치용 iPhone 빌드는 제출하지 않았다.
 
 #### 2026-11-26 — 도슨 전체 저장·동기화 공통 규칙
 
@@ -4000,6 +4001,7 @@ cf23805 Record calendar verification and Render rollout
 d4e7172 Set the product-wide Docen synchronization contract
 f4da8ad Refresh the project documentation with the sync contract
 47cd28e Retry temporary calendar save and delivery failures automatically
+004c4f2 Refresh the project record for calendar save recovery
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
