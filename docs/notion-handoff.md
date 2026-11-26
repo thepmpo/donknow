@@ -867,6 +867,11 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 ## 3. 최근 변경과 매일 기록
 
+#### 2026-11-26 — 도슨 전체 저장·동기화 공통 규칙
+
+- 도슨에서 작성한 항목은 즉시 화면에 보여주고 도슨에 먼저 저장한 뒤 원본으로 빠르게 보낸다. 원본에서 작성한 항목도 허용 범위 안에서 최대한 빨리 갱신한다. 웹·일반 iPhone·Duo와 AI에 공통 적용한다.
+- [저장·동기화 공통 계약](docen-sync-contract.md)을 기준 문서, 디자인 시스템과 새 서비스 스타터에 연결했다. 일정·할 일·AI의 구현 범위와 남은 지연 경로를 코드로 확인했다. 이번 반영은 규칙과 검수 기준 문서 작업이다.
+
 #### 2026-11-26 — 도슨 디자인 시스템, 새 서비스 스타터, 도슨 우선 일정 저장
 
 - 웹 소개·작업공간·어드민, 일반 iPhone과 Duo의 구현 기준을 [디자인 시스템](docen-design-system.md)에 정리했다. 대표 컴포넌트, 토큰, 접근성, 기기별 검수 기준, 새 서비스에서 교체할 항목을 포함한다. 실제 공통 기반과 별도 제품 로직을 구분했다.
@@ -3985,6 +3990,8 @@ aff10f4 Keep Docen calendar writable and prioritize held date drags
 cf23805 Record calendar verification and Render rollout
 5f007ef Document the shared design system and save calendar creations in Docen first
 3711948 Publish the design system and local-first calendar handoff
+3212f4b Record design system verification and calendar rollout
+d4e7172 Set the product-wide Docen synchronization contract
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
@@ -13416,6 +13423,12 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 
 ### 원문 / AGENTS.md
 
+#### 2026-11-26 — 도슨 전체 저장·동기화 규칙
+
+- 웹, 일반 iPhone, Duo 및 docen.ai에서 도슨에 작성하거나 생성한 항목은 저장 조작 직후 화면에 표시한다. 도슨에 먼저 저장하고, 연결된 원본 전송은 저장 이후 지체 없이 처리한다. 도슨 저장과 원본 전송의 성공·대기·실패는 각각 실제 상태로 표시한다.
+- 원본에서 작성한 항목은 허용된 자료 범위에서 도슨에 최대한 빨리 반영한다. 원본 변경 신호가 있으면 사용하고, 없으면 활성 시점과 적절한 간격에 갱신한다. 지연 동안 기존 목록을 유지하고, 같은 원본은 하나로 병합한다.
+- 새 기능과 기존 경로의 완료 여부는 [저장·동기화 공통 계약](https://github.com/thepmpo/donknow/blob/main/docs/docen-sync-contract.md)의 양방향 검수표로 확인한다.
+
 #### 2026-11-25 — 할 일·로그 모션 안정화와 채팅 하단 정리
 
 도슨 영상과 참고 영상을 확인했다. iOS의 스와이프 위치와 끌어 올린 행 위치는 Reanimated/Worklets로 UI 스레드에서 갱신한다. JavaScript는 약 32ms 간격으로 삽입 위치와 자동 스크롤을 확인한다. 웹에서는 마우스 포인터를 잡아 행 밖으로 이동해도 진행 중인 조작을 유지하고, 모바일 웹 터치는 별도 세로/가로 판별을 유지한다. 세 플랫폼의 움직임은 175ms 감속 복귀, 115ms 들어 올리기, 14pt 둥근 파란 선택 음영을 공유한다. 동작 줄이기에서는 확대와 복귀 효과를 생략한다.
@@ -14292,6 +14305,10 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 | 연동과 저장 상태 | 화면에서 확정할 대상은 도슨 저장과 원본 전송이다. 도슨 저장은 즉시 목록에 반영하고, 원본 전송의 대기·완료·권한 필요·결과 확인을 따로 처리한다. 정상 토큰 갱신과 일시 장애는 서버에서 처리한다. 제공자 권한 철회는 명시적인 재동의가 필요하다. | [도슨 저장소](https://github.com/thepmpo/donknow/blob/main/server/docen-calendar-store.js), [전송 워커](https://github.com/thepmpo/donknow/blob/main/server/feature-routes.js), [Google 연동](https://github.com/thepmpo/donknow/blob/main/server/integrations.js) |
 | ME·계정 | 계정·설정·연결된 서비스는 ME에서 관리한다. 버튼은 실제 OS 권한과 서비스 쓰기 범위를 반영한다. 연결된 계정이나 원본 색을 임의 생성하지 않는다. | [ME 설정 구성 요소](https://github.com/thepmpo/donknow/blob/main/mobile/src/MeSettings.tsx), [Google 연결 화면](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/IntegrationsScreen.tsx) |
 
+#### 저장과 동기화
+
+모든 표면의 도슨 저장·원본 전송과 원본에서 도슨으로 갱신하는 방식은 [저장·동기화 공통 계약](https://github.com/thepmpo/donknow/blob/main/docs/docen-sync-contract.md)을 따른다.
+
 #### docen.ai에서 일정 만들기
 
 일정 생성 의사가 확정되면 화면의 저장과 같은 도슨 저장 명령을 호출한다. 명령은 시작·종료·시간대, 선택한 캘린더, 재시도에 재사용할 요청 ID를 받는다. 성공 기준은 도슨 일정 ID가 반환되고 도슨 목록에 나타나는 것이다. Google 전송 결과는 그 일정에 별도로 붙이고, iPhone 전송은 해당 캘린더 접근이 허용된 기기가 수행한다. AI가 제안만 한 일정과 사용자가 생성에 동의한 일정을 구분한다. 사용자에게 외부 전송 완료를 알릴 때는 실제 원본 ID가 확인된 상태를 사용한다. 기존 AI 제안 화면을 이 저장 명령으로 연결하는 작업은 별도로 진행한다.
@@ -14315,6 +14332,42 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 | 외부 저장 | 느린 원본 범위 조회, 토큰 정상 갱신, 권한 철회, 앱 재실행, 동일 요청 재시도, 중복 방지, 실제 색 표시 |
 
 Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, 실기기 동작은 각각 따로 기록한다. 새 디자인을 승인할 때 현재 구현 사실과 바꾸려는 결정을 함께 명시한다.
+
+### 원문 / docs/docen-sync-contract.md
+
+### 도슨 전체 저장·동기화 규칙
+
+2026년 11월 26일 사용자 확정. 웹 작업공간, 일반 iPhone, Duo에서 공통으로 적용한다. 일정·할 일·docen.ai처럼 도슨에서 연결 자료를 쓰는 기능도 같은 순서를 따른다.
+
+#### 1. 도슨에서 작성하면 화면에 바로 표시하고 원본으로 빠르게 보낸다
+
+- 사용자가 저장을 확정한 즉시 새 항목이나 변경 결과를 해당 목록·달력·상세 화면에 보여준다. 도슨 저장 요청이 진행 중이면 그 상태를 표시하고, 도슨에 저장됐다는 표시는 실제 저장 응답 이후에 확정한다.
+- 도슨 저장을 먼저 완료한다. 연결 서비스의 조회·승인 확인·전송 응답을 기다리느라 도슨의 화면 반영이나 저장 완료를 늦추지 않는다. 도슨에 기록한 다음 전송을 바로 시작한다. 작업 큐를 사용하는 경로에서는 저장과 전송 작업 등록을 함께 확정해 재시작 사이에 작업이 빠지지 않게 한다.
+- 원본이 느리거나 권한이 만료돼도 이미 도슨에 저장된 항목은 유지한다. 권한 범위 안에서 자동 갱신하고 일시 장애는 다시 처리한다. 도슨 저장 실패와 원본 전송 실패는 별도의 상태로 처리한다. 원본 쓰기 결과가 불확실하면 같은 요청 ID나 원본 항목을 조회해 확인한다.
+- docen.ai에서 실행이 승인된 생성·작성 작업도 도슨 저장 경로를 공유한다. 대화에 성공을 알릴 때는 도슨에 저장됐는지, 원본에도 전송됐는지 실제 결과에 맞춰 말한다.
+
+#### 2. 원본에서 작성하면 도슨에 최대한 빨리 표시한다
+
+- 사용자가 허용한 계정과 범위 안에서 신규·수정·삭제를 도슨 화면에서도 갱신한다. 변경 신호를 제공하는 연결은 신호를 받으면 관련 항목을 다시 읽는다. 신호를 사용할 수 없는 연결은 화면 진입, 앱 복귀, 합리적인 간격의 갱신과 수동 새로고침을 사용한다. 공급자 지연이나 기기 권한으로 인한 제약은 연결별로 기록한다.
+- 최신 조회를 기다리는 동안 이전 목록을 유지한다. 한 계정의 지연이 다른 계정이나 도슨에 직접 저장한 항목의 표시를 막지 않게 한다. 실패하거나 일부만 받은 응답 때문에 직전 목록을 비우지 않는다.
+- 계정과 원본 ID를 함께 사용해 같은 항목을 하나로 표시한다. 화면에 반영된 최신 변경을 늦게 도착한 이전 응답으로 되돌리지 않는다. 읽기가 잠시 실패한 경우와 원본에서 실제로 삭제된 경우를 구분한다.
+
+#### 기능 완료를 판단하는 검사
+
+| 조건 | 확인할 결과 |
+| --- | --- |
+| 원본 응답을 지연하거나 실패시킨 뒤 도슨에서 새로 작성 | 원본 응답이 오기 전에 항목이 보이고, 도슨 저장 완료 뒤 새로 열어도 남는다. 원본 전송 상태는 별도로 판단한다. |
+| 도슨 저장 자체를 실패시킴 | 저장 중 표시가 실패로 바뀌고 초안은 복구할 수 있다. |
+| 같은 저장을 재시도하거나 원본 응답이 유실됨 | 도슨과 원본에 새 복제본이 생기지 않는다. |
+| 원본에서 직접 항목을 작성한 채 도슨 화면을 열어 둠 | 앱을 재시작하지 않고 최신 항목을 읽어 표시한다. 원본 저장부터 도슨에 나타날 때까지 걸린 시간을 실제 계정과 기기별로 기록한다. |
+| 계정 하나가 늦거나 응답 순서가 바뀜 | 응답한 계정과 도슨 항목은 먼저 보이며, 이전 응답이 최신 항목을 덮지 않는다. |
+
+#### 2026년 11월 26일 코드 확인
+
+- **일정 생성**은 도슨 서버에 먼저 기록하고 응답을 받으면 표시한다. Google 전송은 서버 워커에서 처리하고 Apple 전송은 권한이 있는 기기에서 처리한다. 도슨 서버 응답 전 화면 표시와 연결된 기존 일정의 수정·삭제는 별도 개선 대상으로 남아 있다. [일정 편집기](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarEventEditor.tsx) · [도슨 일정 저장소](https://github.com/thepmpo/donknow/blob/main/server/docen-calendar-store.js) · [전송 워커](https://github.com/thepmpo/donknow/blob/main/server/feature-routes.js)
+- **할 일 작성·일부 수정**은 로컬 상태를 먼저 갱신한다. 연결된 원본에 전송하는 범위는 공급자와 작업에 따라 다르다. [할 일 저장](https://github.com/thepmpo/donknow/blob/main/mobile/src/useTodos.ts) · [원본 반영 경로](https://github.com/thepmpo/donknow/blob/main/server/source-edits.js)
+- **원본 → 도슨**의 캘린더 조회는 화면 진입·앱 복귀와 활성 화면의 30초 주기 읽기를 사용한다. 이는 조회 주기이며 반영 시간 보장이 아니다. 기존 Google 변경 알림은 중요 알림용으로 등록되고 현재 캘린더 화면에 변경을 즉시 전달하지 않는다. 도슨에서 생성해 연결한 일정이 나중에 원본에서 수정될 때 제목·날짜의 반영도 추가 확인이 필요하다. [Google 조회](https://github.com/thepmpo/donknow/blob/main/mobile/src/useCalendarData.ts) · [Apple 조회](https://github.com/thepmpo/donknow/blob/main/mobile/src/useAppleCalendarData.ts) · [Google 변경 감시](https://github.com/thepmpo/donknow/blob/main/server/provider-watches.js) · [캘린더 목록 병합](https://github.com/thepmpo/donknow/blob/main/mobile/src/useUnifiedCalendarData.ts)
+- **docen.ai의 일정 생성**은 기존 승인 경로에서 원본 실행 응답을 기다린다. 공통 도슨 저장 경로로 연결하는 작업이 남아 있다. [AI 실행 경로](https://github.com/thepmpo/donknow/blob/main/server/assistant.js)
 
 ### 원문 / templates/product-starter/README.md
 
@@ -14345,7 +14398,7 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 | `new-app-project-contract.md` | 계정, 접근 권한, 데이터, 브랜딩, 배포를 새 서비스 기준으로 확정 |
 | `new-app-ai-handoff.md` | 다음 개발자가 현재 구현과 확인 범위를 이어받기 위한 양식 |
 
-앱의 예제를 실제 데이터로 연결할 때 앱 계정 저장과 외부 서비스 동기화를 각각 상태로 표현합니다. 먼저 앱 저장 결과를 반환하고, 연결 서비스에는 중복을 막는 전송 키로 보냅니다. 권한이 살아 있으면 서버에서 갱신하고, 권한 철회 때만 사용자의 재동의가 필요합니다.
+앱의 예제를 실제 데이터로 연결할 때 앱 계정 저장과 외부 서비스 동기화를 각각 상태로 표현합니다. 먼저 앱 저장 결과를 반환하고, 연결 서비스에는 중복을 막는 전송 키로 보냅니다. 권한이 살아 있으면 서버에서 갱신하고, 권한 철회 때만 사용자의 재동의가 필요합니다. 원본에서 추가된 항목은 가능한 경우 변경 신호를 받아 빠르게 다시 읽고, 신호가 없는 연결은 화면 진입·앱 복귀와 주기 갱신을 사용합니다. 이전 목록을 보여주는 동안 새 결과를 병합하고, 같은 원본 ID가 두 번 표시되지 않는지 확인합니다.
 
 #### 검사와 배포
 
