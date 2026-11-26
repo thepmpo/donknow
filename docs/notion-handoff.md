@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 3c55016 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 3074199 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 캘린더 목록 버튼
+
+- 승인된 시안에 맞춰 상단 오른쪽 버튼에 파란 목록 필터 아이콘과 라벨을 적용했다. Duo·일반 iPhone은 ‘목록’, 웹은 ‘캘린더 목록’을 표시한다. 기존 캘린더 표시 패널을 열며 본문 위계를 유지한다.
+- 세 브라우저 화면에서 라벨, 44px 이상 터치 영역, 표시 패널 열기, 선택 및 재진입을 검증했다. 닫힌 화면 상단을 시안과 비교했다.
+- iOS 번들과 사전 검사에 통과했다. Render 웹 테스트는 18:26 KST에 `3074199`가 live가 됐다. GitHub가 설치용 TestFlight 빌드 실행 요청을 403으로 거부했다.
 
 #### 2026-11-26 — 캘린더 표시 목록
 
@@ -4038,10 +4044,13 @@ e5f988d Keep new calendar events on device and smooth view changes
 4498076 Keep calendar swipes and sheet motion continuous on iPhone
 037d1e4 Refresh the calendar motion verification record
 3c55016 Add calendar visibility controls to the calendar header
+eeeaa63 Update the calendar visibility project record
+aee4668 Target the date header in calendar creation verification
+3074199 Replace the calendar eye control with a labeled list filter
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 3c55016에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 3074199에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13310,7 +13319,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/3c5501636ba2f0a29f6c4fc127b7f8a463fa3bba
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/3074199856a89a3bd19c6a557ad110bbdeacf007
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
