@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 e5f988d · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 4498076 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 캘린더 보기 전환과 상세 시트 모션
+
+- 아이폰에서 월간·일간의 가로 이동과 상세 시트 손잡이 끌기를 UI 스레드에서 처리한다. 화면 전환에 필요한 방향과 완료만 JavaScript에 전달한다. 주간은 가로 제스처에 짧게 따라 움직이고, 월간·주간·일간 보기 전환은 화면이 비지 않게 짧게 이어준다.
+- 상세 시트가 올라오거나 내려가는 동안 목록 갱신이 시트 높이와 행 위치를 바꾸지 않도록 한다. 손잡이를 놓으면 끌었던 위치에서부터 닫기 애니메이션을 이어간다. 일정 상세에서 날짜 상세로 돌아갈 때는 바깥 시트를 유지한다. 동작 줄이기 설정을 따른다.
+- 고주사율을 지원하는 아이폰에서 iOS가 적응형 주사율을 사용할 수 있게 한다. 실제 프레임 측정은 설치 빌드에서 한다.
+- 일정 155개를 추가한 Duo 브라우저 모형에서 전환 중 빈 화면, 지연 응답 중 상세 진입, 손잡이 놓기와 날짜 상세 돌아가기, 동작 줄이기를 검사했다. 일반폰·웹 주간의 동작도 검증했다. 자동 검사 505개 통과, 1개 기존 제외다. iOS 번들과 생성된 Info.plist를 검사했다.
 
 #### 2026-11-26 — 캘린더 기기 우선 저장과 전환
 
@@ -4021,10 +4028,12 @@ b2c32be Keep calendar deletion responsive and refresh iPhone originals on change
 68b234c Record calendar synchronization verification and deployment
 c276aac Refresh project documentation for calendar synchronization
 e5f988d Keep new calendar events on device and smooth view changes
+836af1a Record device-first calendar tests and deploy
+4498076 Keep calendar swipes and sheet motion continuous on iPhone
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: e5f988d에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 4498076에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13293,7 +13302,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/e5f988df56ef1bfb98766c6919604d2080c6da38
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/44980762cf67400104b181cfeab6680c1844aa9c
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
