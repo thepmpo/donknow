@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 aff10f4 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 5f007ef · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 도슨 디자인 시스템, 새 서비스 스타터, 도슨 우선 일정 저장
+
+- 웹 소개·작업공간·어드민, 일반 iPhone과 Duo의 구현 기준을 [디자인 시스템](docen-design-system.md)에 정리했다. 대표 컴포넌트, 토큰, 접근성, 기기별 검수 기준, 새 서비스에서 교체할 항목을 포함한다. 실제 공통 기반과 별도 제품 로직을 구분했다.
+- Expo [제품 스타터](../templates/product-starter/README.md)는 현재 앱의 공통 테마와 모션, 웹 레이아웃 수치, Duo 좌표 계산 및 iOS 감지 모듈을 가져온다. 브라우저에서 넓은 웹·좁은 웹·일반폰·합성 Duo의 예제 추가·완료·되돌리기를 확인했다.
+- 앱에서 새 일정을 생성하면 도슨 저장과 원본 전송 정보를 함께 기록하고, 원본 응답을 기다리지 않고 도슨에 표시한다. Google은 서버 큐가 같은 원본 ID로 전송을 확인하고, 일시 실패를 다시 처리한다. 권한이 유효하면 서버가 토큰을 갱신하고, 실제 승인 복구 후에는 대기 중인 같은 계정의 전송을 다시 처리한다. iPhone 원본은 전체 캘린더 접근 권한이 있는 기기가 처리하고, 기록이 불확실한 쓰기 요청은 자동으로 복제하지 않는다. 복구한 DB는 예전 전송을 자동 실행하지 않는다.
+- 브라우저와 공급자 응답 모형에서 로컬 우선 저장, 다시 열기, 중복 억제와 날짜 이동을 검사했다. 새 생성 경로가 이번 변경 범위이며, 생성과 연결된 수정·삭제 전송 및 기존 AI 제안 화면의 연결은 별도다. iOS JS와 실제 iPhone 제스처는 각각 확인한다.
 
 #### 2026-11-26 — 도슨 캘린더 직접 저장과 일간 할 일 제스처
 
@@ -3974,10 +3981,12 @@ c93acd7 Restore calendar drag permission when a timed refresh arrives
 609128a Record live Render calendar deployment
 aff10f4 Keep Docen calendar writable and prioritize held date drags
 2977b06 Update the handoff for calendar drag and local saves
+cf23805 Record calendar verification and Render rollout
+5f007ef Document the shared design system and save calendar creations in Docen first
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: aff10f4에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 5f007ef에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13246,7 +13255,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/aff10f4487f1beb50bd05bea2e47246d1c560d88
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/5f007ef29a0b367f3640a8e353c9db4133d1030e
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -14231,6 +14240,117 @@ Calendar body timeout 원인 보존·GET60초/비JSON 최대1회 복구·잘못�
 ## 18. 전체 참고 문서
 
 아래는 분실 없이 다른 AI에게 넘기기 위한 문서 원문 묶음입니다. 예전 단계의 설명은 최신 상태 표와 실제 코드에 비추어 해석합니다. 링크를 열지 않아도 기본 지침과 절차를 읽을 수 있도록 이 한 페이지에 포함했습니다.
+
+### 원문 / docs/docen-design-system.md
+
+### 도슨 디자인 시스템
+
+2026년 11월 26일 기준. 기존 화면을 고치거나 새 화면을 추가할 때 이 문서에서 공통 요소와 화면 유형을 고른다. 예전 시안과 검토 이력은 [디자인 기록](https://github.com/thepmpo/donknow/blob/main/docs/design-guide.md), 새 서비스에서 바로 실행할 코드는 [제품 스타터](https://github.com/thepmpo/donknow/blob/main/templates/product-starter/README.md)를 참고한다.
+
+#### 화면마다 유지할 골격
+
+| 화면 | 골격 | 구현 기준 |
+| --- | --- | --- |
+| 공개 소개 | 헤더, 메인 제목과 로고 모션, 기능 시연, FAQ, 사업자·법적 링크. 제품 시연의 창 높이는 선택, 완료, 탭 전환 중 유지한다. 모바일은 정보 순서와 조작을 보존하면서 배치를 좁힌다. | [소개 컴포넌트](https://github.com/thepmpo/donknow/blob/main/website/src/App.jsx), [소개 스타일](https://github.com/thepmpo/donknow/blob/main/website/src/styles.css), [사업자 원문](https://github.com/thepmpo/donknow/blob/main/content/legal/2026-11-23/docen-footer.html) |
+| 로그인 후 웹 `/app` | 최대 1128px 프레임, 바깥 여백 24px, 모서리 16px. 상단 54px, 왼쪽 메뉴 171px, 본문, 오른쪽 보조 영역 245px. 1100px 미만에서는 보조 영역을 접고 760px 미만에서는 메뉴를 상단 가로로 이동하며 프레임 여백을 8px로 줄인다. | [웹 작업공간](https://github.com/thepmpo/donknow/blob/main/mobile/src/DesktopWorkspace.tsx), [공유 프레임 수치](https://github.com/thepmpo/donknow/blob/main/mobile/src/workspace-geometry.ts) |
+| iPhone 일반 | 기기 safe area 안에서 고정 헤더, 스크롤 본문, 하단 내비게이션으로 구성한다. 헤더에서 왼쪽 브랜드와 가운데 페이지 제목을 유지한다. 할 일의 날짜별·출처별 행과 기록 안내는 본문만 스크롤한다. | [앱 쉘](https://github.com/thepmpo/donknow/blob/main/mobile/App.tsx), [헤더](https://github.com/thepmpo/donknow/blob/main/mobile/src/ScreenHeading.tsx), [탭](https://github.com/thepmpo/donknow/blob/main/mobile/src/AppNavigation.tsx) |
+| iPhone Duo | 위계와 탭을 유지하고 탭을 오른쪽 카메라 열로 옮긴다. UIKit이 제공한 힌지와 예약·가림 영역으로 실제 콘텐츠, 탭, 뒤로가기, 키보드 닫기 위치를 계산한다. 카메라 열은 너비 64pt, 각 탭 기본 52pt, 아이콘 28pt, 열 사이 여백 8pt. 펼침·접힘과 키보드 전환에서 초안·선택·탭을 유지한다. | [네이티브 정보 감지](https://github.com/thepmpo/donknow/blob/main/mobile/src/DuoLayout.tsx), [좌표 계산](https://github.com/thepmpo/donknow/blob/main/mobile/src/duo-layout.ts), [오른쪽 조작](https://github.com/thepmpo/donknow/blob/main/mobile/src/DuoChrome.tsx), [뒤로가기](https://github.com/thepmpo/donknow/blob/main/mobile/src/DuoBackNavigation.tsx) |
+| 어드민 | 별도 로그인, 탐색 메뉴, 검색/필터, 목록, 상세와 상태 변경. 계정 상세에서 이용권 같은 변경을 수행하고 서버 응답 후 결과를 보여준다. 좁은 화면에서는 주요 필드와 작업을 먼저 노출한다. 어드민 스타일과 작업공간 스타일은 각각의 원본을 기준으로 운영한다. | [어드민 화면](https://github.com/thepmpo/donknow/blob/main/public/admin.html), [어드민 스타일](https://github.com/thepmpo/donknow/blob/main/public/admin.css), [어드민 동작](https://github.com/thepmpo/donknow/blob/main/public/admin.js) |
+
+브라우저 폭은 웹 레이아웃 전환에만 사용한다. Duo는 `hasDuoCapability`의 네이티브 조건으로 결정한다. 실제 힌지 정보가 없는 기기와 Expo Go는 일반 레이아웃을 사용한다.
+
+#### 색·글자·여백·모션
+
+[앱 토큰 원본](https://github.com/thepmpo/donknow/blob/main/mobile/src/theme.ts)에서 역할 이름을 사용한다. CSS와 앱 화면마다 색을 새로 복제하면 테마와 대비가 서로 달라진다. [웹 작업공간 테마](https://github.com/thepmpo/donknow/blob/main/mobile/src/desktop-theme.ts)는 상단·사이드바 배경만 별도 조정한다.
+
+| 역할 | 밝은 화면 | 어두운 화면 |
+| --- | --- | --- |
+| 본문 배경 `bg` | `#ffffff` | `#000000` |
+| 카드 `surface` | `#f9fafb` | `#1c1c1e` |
+| 그룹·입력 `grouped` | `#f2f4f6` | `#2c2c2e` |
+| 시트 `sheet` / 팝업 `popup` | `#ffffff` / `#ffffff` | `#1c1c1e` / `#323234` |
+| 본문 `text` / 보조 `secondary` | `#191f28` / `#4e5968` | `#f5f5f7` / `#d1d1d6` |
+| 주요 버튼 `action` / 파란 글자 `blueText` | `#1b64da` / `#1b64da` | `#1b64da` / `#64a8ff` |
+| 선택 배경 `todoSelection` | `#deedff` | `#173655` |
+| 구분선 `line` / 위험 `danger` | `#e5e8eb` / `#d92d40` | `#38383a` / `#ff626c` |
+
+- 시스템 글꼴과 글자 크기 조절을 사용한다. 제목 30/40, 헤더 26/35, 섹션 20/29, 본문 17/25.5, 목록 16/24, 보조 15/22.5, 캡션 13/19.5가 기본 크기/줄 높이다. 좁은 제품 웹의 행 밀도는 웹 작업공간 스타일을 따른다.
+- 공간 토큰은 4·8·12·16·24·32, 기본 화면 좌우는 24, 헤더는 48, 일반 앱의 하단 탭은 72다. 버튼·카드·시트 반경의 기본은 16·24·28이다. 터치 조작은 최소 44pt를 확보한다.
+- `MotionPressable`은 누름/놓기 90/140ms, 일반 화면 전환은 200ms, 탭 전환은 180ms, 목록 재배치는 145ms다. OS의 동작 줄이기와 투명도 줄이기, 웹 키보드 초점을 보존한다. [모션 원본](https://github.com/thepmpo/donknow/blob/main/mobile/src/motion.tsx), [내비게이션 소재](https://github.com/thepmpo/donknow/blob/main/mobile/src/NavigationGlass.tsx)
+- 브랜드에는 `docen.`과 파란 점, 승인된 로고 파일을 사용한다. 소개 메인 오른쪽의 공 모션과 실제 로딩용 모션은 목적별로 적용한다. [브랜드 적용 기록](https://github.com/thepmpo/donknow/blob/main/docs/docen-brand-polish-2026-11-23.md)
+
+#### 컴포넌트와 사용 계약
+
+| 요소 | 공통 사용 방식 | 구현 기준 |
+| --- | --- | --- |
+| 버튼·페이지 | 고정 영역과 스크롤 영역을 나눈다. 기본 동작은 주요 버튼, 되돌리거나 위험한 동작은 관련된 위치에 둔다. 진행 중 중복 누름을 막고 실제 성공 상태를 사용한다. | [공통 UI](https://github.com/thepmpo/donknow/blob/main/mobile/src/ui.tsx), [스크롤](https://github.com/thepmpo/donknow/blob/main/mobile/src/ScrollArea.tsx) |
+| 목록 행·선택 | 제목 한 줄과 말줄임, 오른쪽 출처, 원형 선택 표시와 라운드 선택 배경. 할 일 오른쪽 방향 스와이프는 선택/해제, 왼쪽 방향은 완료. 접근성 조작을 함께 제공한다. | [공통 행](https://github.com/thepmpo/donknow/blob/main/mobile/src/ui.tsx), [선택 도구](https://github.com/thepmpo/donknow/blob/main/mobile/src/TodoSelectionToolbar.tsx), [일간 할 일](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarDayTodos.tsx) |
+| 시트·입력 | 일정/할 일 탭을 시트 중앙에 둔다. 수정 화면에서 입력을 직접 눌렀을 때 키보드를 연다. 시트 닫기, 키보드 닫기, 저장의 의미를 분리하고 가려진 입력을 본문에서 드러낸다. | [일정 시트](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarSheet.tsx), [입력 도달 처리](https://github.com/thepmpo/donknow/blob/main/mobile/src/useFocusedField.ts) |
+| 캘린더 | 월간·주간·일간에서 같은 일정과 할 일을 읽는다. 주간은 토·일을 오른쪽 위아래에 배치하고 여러 날 일정을 시간표 위에 고정한다. 시간표는 세로 스크롤, 현재 시각은 가로 표시선이다. 일정 길게 누르기 후 날짜 드롭과 날짜 선택 버튼을 제공한다. 연결 일정의 개별 색 또는 캘린더 색을 유지한다. | [캘린더](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/CalendarScreen.tsx), [주간](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarWeekWorkspace.tsx), [일정 드래그](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarEventDrag.tsx) |
+| 연동과 저장 상태 | 화면에서 확정할 대상은 도슨 저장과 원본 전송이다. 도슨 저장은 즉시 목록에 반영하고, 원본 전송의 대기·완료·권한 필요·결과 확인을 따로 처리한다. 정상 토큰 갱신과 일시 장애는 서버에서 처리한다. 제공자 권한 철회는 명시적인 재동의가 필요하다. | [도슨 저장소](https://github.com/thepmpo/donknow/blob/main/server/docen-calendar-store.js), [전송 워커](https://github.com/thepmpo/donknow/blob/main/server/feature-routes.js), [Google 연동](https://github.com/thepmpo/donknow/blob/main/server/integrations.js) |
+| ME·계정 | 계정·설정·연결된 서비스는 ME에서 관리한다. 버튼은 실제 OS 권한과 서비스 쓰기 범위를 반영한다. 연결된 계정이나 원본 색을 임의 생성하지 않는다. | [ME 설정 구성 요소](https://github.com/thepmpo/donknow/blob/main/mobile/src/MeSettings.tsx), [Google 연결 화면](https://github.com/thepmpo/donknow/blob/main/mobile/src/screens/IntegrationsScreen.tsx) |
+
+#### docen.ai에서 일정 만들기
+
+일정 생성 의사가 확정되면 화면의 저장과 같은 도슨 저장 명령을 호출한다. 명령은 시작·종료·시간대, 선택한 캘린더, 재시도에 재사용할 요청 ID를 받는다. 성공 기준은 도슨 일정 ID가 반환되고 도슨 목록에 나타나는 것이다. Google 전송 결과는 그 일정에 별도로 붙이고, iPhone 전송은 해당 캘린더 접근이 허용된 기기가 수행한다. AI가 제안만 한 일정과 사용자가 생성에 동의한 일정을 구분한다. 사용자에게 외부 전송 완료를 알릴 때는 실제 원본 ID가 확인된 상태를 사용한다. 기존 AI 제안 화면을 이 저장 명령으로 연결하는 작업은 별도로 진행한다.
+
+#### 새 서비스에 적용하는 순서
+
+1. [스타터 README](https://github.com/thepmpo/donknow/blob/main/templates/product-starter/README.md)대로 웹·iPhone 골격을 띄운다. 메뉴 이름과 아이콘, 첫 성공 흐름, 브랜드를 정한다.
+2. 핵심 객체를 하나 고르고 [프로젝트 계약](https://github.com/thepmpo/donknow/blob/main/docs/templates/new-app-project-contract.md)에 입력, 저장, 편집, 취소, 완료, 실패 상태를 적는다. 예제 `CoreScreen`을 실제 객체와 저장소로 바꾼다.
+3. [공통 기반 모듈](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-module-map.md)에서 필요한 계정·인증·연동·운영 모듈을 고른다. 새 제품의 도메인, Bundle ID, 저장 키 이름, 인증 앱, 운영자 역할, 정책 문구를 준비한다.
+4. 필요할 때 공개 소개와 어드민을 추가한다. 소개는 핵심 가치 → 동작하는 시연 → 기능 → 문의/법적 링크 순으로 구성한다. 어드민은 인증 → 검색/목록 → 상세 → 변경 확인 → 실제 저장 상태를 한 흐름으로 검수한다.
+5. [릴리스 체크리스트](https://github.com/thepmpo/donknow/blob/main/docs/app-foundation-release-checklist.md)로 검증한다. 이어받을 개발자에게 변경 위치, 확인한 표면, 남은 권한·배포와 복구 경로를 남긴다.
+
+#### 검수표
+
+| 표면 | 확인할 사항 |
+| --- | --- |
+| 웹 390px / 759–760px / 1099–1100px / 1440px | 가로 넘침, 메뉴 전환, 오른쪽 영역 전환, 탭 클릭/키보드 초점, 화면 전환 후 초안 유지 |
+| 일반 iPhone | 하단 안전 영역과 홈 인디케이터, 키보드 중 저장/닫기, Dynamic Type, VoiceOver, 길게 누르기와 세로 스크롤이 서로 방해하는지 확인 |
+| Duo 접힘·펼침·회전 | 카메라/힌지에 버튼이 가리지 않는지, 오른쪽 탭·뒤로가기·키보드 닫기의 위치, 패널별 스크롤과 초안 보존 |
+| 공개 소개·어드민 | 시연 높이·글줄; 터치 타깃·모션 줄이기; 좁은 상세와 표; 계정 권한·저장·실패가 UI에 정확히 반영되는지 |
+| 외부 저장 | 느린 원본 범위 조회, 토큰 정상 갱신, 권한 철회, 앱 재실행, 동일 요청 재시도, 중복 방지, 실제 색 표시 |
+
+Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, 실기기 동작은 각각 따로 기록한다. 새 디자인을 승인할 때 현재 구현 사실과 바꾸려는 결정을 함께 명시한다.
+
+### 원문 / templates/product-starter/README.md
+
+### 새 서비스 스타터
+
+도슨의 색·글자·여백·모션과 웹·iPhone 일반·Duo 화면 골격을 복사한 Expo 시작 프로젝트입니다. 예제는 항목 추가, 완료, 기록에서 되돌리기를 실행합니다. 예제 데이터는 실행 중 메모리에 있습니다.
+
+#### 받기
+
+도슨 저장소에서 `python3 scripts/create-product-starter.py --zip deliverables/docen-product-starter.zip`을 실행하면 ZIP을 만들 수 있습니다. 폴더로 받으려면 `--directory /새/경로`를 사용합니다.
+
+#### 시작
+
+1. Node.js 24 환경에서 압축을 풀고 `npm ci`를 실행합니다.
+2. `npm run web`으로 웹 작업공간을 엽니다. 760px 미만에서 위쪽 메뉴, 1100px 이상에서 오른쪽 보조 공간을 볼 수 있습니다.
+3. 브라우저에서 일반폰·Duo를 확인하려면 `EXPO_PUBLIC_STARTER_LAYOUT_PREVIEW=1 npm run web`을 실행한 후 주소 뒤에 각각 `?layout=standard`, `?layout=duo`를 붙입니다.
+4. Mac의 Xcode에서 사용할 새 iOS Bundle ID를 `app.json`에 설정하고 `npm run ios`를 실행합니다. 포함된 Expo 모듈은 UIKit이 시야 제한 영역과 힌지 상태를 실제로 제공할 때만 Duo를 활성화합니다. iOS 27.1 SDK가 없는 빌드와 네이티브 모듈이 없는 Expo Go에서는 일반 레이아웃을 사용합니다. 브라우저 프리뷰는 합성 좌표를 사용합니다.
+
+#### 제품 코드 넣기
+
+| 바꿀 곳 | 작업 |
+| --- | --- |
+| `app.json` | 제품명, slug, iOS Bundle ID, Android package, URL scheme를 새 서비스 값으로 설정 |
+| `src/product.ts` | 메뉴 ID·이름·아이콘과 제품 표기 교체 |
+| `src/CoreScreen.tsx` | 예제 목록을 실제 목록·상세·편집 화면과 저장소로 교체 |
+| `App.tsx` | 보조 영역에 새 서비스의 컨텍스트 연결. 고정 헤더, 스크롤 본문, 내비게이션 순서 유지 |
+| `system/` | 공통 색·여백·모션과 웹 골격, 안전 영역 및 Duo 배치. 변경 결정과 이유를 기록 |
+| `new-app-project-contract.md` | 계정, 접근 권한, 데이터, 브랜딩, 배포를 새 서비스 기준으로 확정 |
+| `new-app-ai-handoff.md` | 다음 개발자가 현재 구현과 확인 범위를 이어받기 위한 양식 |
+
+앱의 예제를 실제 데이터로 연결할 때 앱 계정 저장과 외부 서비스 동기화를 각각 상태로 표현합니다. 먼저 앱 저장 결과를 반환하고, 연결 서비스에는 중복을 막는 전송 키로 보냅니다. 권한이 살아 있으면 서버에서 갱신하고, 권한 철회 때만 사용자의 재동의가 필요합니다.
+
+#### 검사와 배포
+
+- `npm run typecheck`, `npm run build:web`, `npm run build:ios-js`
+- 웹 390·760·1100px, iPhone 일반, Duo 접힘·펼침·회전에서 폼/스크롤/뒤로가기 확인
+- 어두운 화면, 큰 글자, 동작 줄이기, 키보드로 버튼 이동, 화면 읽기 레이블 확인
+- 사용자·API·계정 저장·운영자 권한·결제·알림·연동·AI·서명과 배포는 새 서비스에서 연결합니다. 서버 키, 사용자 데이터, 도슨 브랜드 자산은 패키지에 들어 있지 않습니다.
 
 ### 원문 / docs/calendar-connections-me-2026-11-25.md
 
