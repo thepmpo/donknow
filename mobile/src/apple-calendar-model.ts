@@ -25,7 +25,7 @@ export function appleEventPatch(draft:CalendarDraft,event?:CalendarEvent):Device
  if(event&&draft.calendarId!==event.calendarId)throw Error('아이폰 일정의 캘린더 이동은 원본에서 진행해주세요.');
  return patch;
 }
-export type AppleCalendarDevice={available:boolean;granted:()=>Promise<boolean>;authorize:()=>Promise<boolean>;calendars:()=>Promise<DeviceCalendar[]>;events:(ids:string[],start:string,end:string)=>Promise<DeviceEvent[]>;read:(id:string,start?:string)=>Promise<DeviceEvent>;create:(calendarId:string,patch:DeviceEventPatch)=>Promise<DeviceEvent>;update:(id:string,start:string|undefined,patch:DeviceEventPatch)=>Promise<DeviceEvent>;remove:(id:string,start?:string)=>Promise<void>};
+export type AppleCalendarDevice={available:boolean;subscribe?:(listener:()=>void)=>()=>void;granted:()=>Promise<boolean>;authorize:()=>Promise<boolean>;calendars:()=>Promise<DeviceCalendar[]>;events:(ids:string[],start:string,end:string)=>Promise<DeviceEvent[]>;read:(id:string,start?:string)=>Promise<DeviceEvent>;create:(calendarId:string,patch:DeviceEventPatch)=>Promise<DeviceEvent>;update:(id:string,start:string|undefined,patch:DeviceEventPatch)=>Promise<DeviceEvent>;remove:(id:string,start?:string)=>Promise<void>};
 export async function saveAppleCalendar(device:AppleCalendarDevice,draft:CalendarDraft,event:CalendarEvent|undefined,current:()=>boolean){
  if(!device.available||!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 허용해주세요.');if(!current())throw Error('계정이 바뀌었어요.');
  const rawId=decodeURIComponent(draft.calendarId.slice(appleCalendarPrefix.length)),calendars=await device.calendars(),calendar=calendars.find(c=>c.id===rawId);if(!isAppleCalendar(draft.calendarId)||!calendar?.writable)throw Error('쓰기 가능한 아이폰 캘린더를 선택해주세요.');

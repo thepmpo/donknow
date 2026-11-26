@@ -14,11 +14,27 @@ export function removeCalendarEventWrites(owner:string,event:CalendarEvent){
  if(!entries.size)writes.delete(owner);
  notify(owner);
 }
+const deletions=new Map<string,Map<string,CalendarEvent>>();
+export function hideCalendarDeletion(owner:string,event:CalendarEvent){
+ let pending=deletions.get(owner);
+ if(!pending){pending=new Map();deletions.set(owner,pending);}
+ pending.set(event.id,event);notify(owner);
+ return (committed:boolean)=>{
+  const release=()=>{if(pending.get(event.id)===event){pending.delete(event.id);if(!pending.size&&deletions.get(owner)===pending)deletions.delete(owner);notify(owner);}};
+  if(committed)setTimeout(release,90_000);else release();
+ };
+}
+export function matchesCalendarMirror(event:CalendarEvent,mirror:Omit<NonNullable<CalendarEvent['mirror']>,'state'>,day?:string|null){
+ return mirror.calendarId===event.calendarId
+  &&(mirror.connectionId??null)===(event.connectionId??null)&&!!mirror.externalEventId
+  &&(event.eventId===mirror.externalEventId||event.seriesId===mirror.externalEventId)
+  &&(day===undefined||event.dueDate===day||!event.recurring&&event.eventId===mirror.externalEventId);
+}
 function notify(owner:string){listeners.get(owner)?.forEach(fn=>fn());}
 export function putCalendarWrite(owner:string,key:string,event:CalendarEvent,replaces?:string,confirmed=false){let entries=writes.get(owner);if(!entries){entries=new Map();writes.set(owner,entries);}const entry={event,replaces,confirmedUntil:confirmed?Date.now()+90_000:undefined};entries.set(key,entry);notify(owner);
  if(confirmed)setTimeout(()=>{if(writes.get(owner)?.get(key)===entry)removeCalendarWrite(owner,key);},90_000);}
 export function removeCalendarWrite(owner:string,key:string){writes.get(owner)?.delete(key);if(!writes.get(owner)?.size)writes.delete(owner);notify(owner);}
-export function clearCalendarWrites(owner:string){writes.delete(owner);notify(owner);}
+export function clearCalendarWrites(owner:string){writes.delete(owner);deletions.delete(owner);notify(owner);}
 export function watchCalendarWrites(owner:string,fn:()=>void){const set=listeners.get(owner)??new Set();set.add(fn);listeners.set(owner,set);return()=>{set.delete(fn);if(!set.size)listeners.delete(owner);};}
 /** Optimism lives only in memory, outside persisted provider snapshots and their
  * permission/ETag authority. Both Duo panes and Todo consume the same overlay. */
@@ -35,5 +51,6 @@ export function overlayCalendarWrites(owner:string,events:CalendarEvent[],start:
   if(!selected.includes(event.calendarId??'primary'))continue;
   for(let day=start;day<end;day=shiftDay(day,1))if(eventOccurs(event,day,zone)){result.push(event);break;}
  }
+ for(const removed of deletions.get(owner)?.values()??[])result=result.filter(e=>!matchesEvent(e,removed)&&(!removed.mirror||!matchesCalendarMirror(e,removed.mirror)));
  return result;
 }

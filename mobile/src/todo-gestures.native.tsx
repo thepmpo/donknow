@@ -57,6 +57,7 @@ export function TodoGestureRow(props:RowGestureProps) {
   const liftCoordinates=useContext(LiftCoordinates);
   const swipeOffset=useSharedValue(0);
   const lastHover=useSharedValue(0);
+  const liftStarted=useSharedValue(false);
   const callbacks=useRef(props);
   callbacks.current=props;
   const startSwipe=useCallback(()=>callbacks.current.onSwipeStart(),[]);
@@ -98,6 +99,7 @@ export function TodoGestureRow(props:RowGestureProps) {
         'worklet';
         const point={x:e.absoluteX,y:e.absoluteY};
         if(liftCoordinates)liftCoordinates.value=point;
+        liftStarted.value=true;
         lastHover.value=0;
         scheduleOnRN(startLift,point);
       })
@@ -111,17 +113,20 @@ export function TodoGestureRow(props:RowGestureProps) {
           scheduleOnRN(dragHover,point);
         }
       })
-      .onEnd((e,success)=>{
+      .onFinalize((e,success)=>{
         'worklet';
-        scheduleOnRN(finishLift,liftCoordinates?.value??{x:e.absoluteX,y:e.absoluteY},success);
+        if(!liftStarted.value)return;
+        liftStarted.value=false;
+        scheduleOnRN(finishLift,{x:e.absoluteX,y:e.absoluteY},success);
       });
     if(scroll){
       swipe.blocksExternalGesture(scroll);
       lift.blocksExternalGesture(scroll);
     }
     if(period){swipe.blocksExternalGesture(period);lift.blocksExternalGesture(period);}
-    return Gesture.Race(swipe,lift);
-  },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,period,liftCoordinates,swipeOffset,lastHover,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
+    if(!canSwipeLeft&&!canSwipeRight)return lift;
+    return canLift?Gesture.Race(swipe,lift):swipe;
+  },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,period,liftCoordinates,swipeOffset,lastHover,liftStarted,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
   const movement=useAnimatedStyle(()=>({transform:[{translateX:swipeOffset.value}]}));
   return <GestureDetector gesture={gesture}>
     <Animated.View collapsable={false} style={[props.fill&&{flex:1},movement]}>{props.children}</Animated.View>

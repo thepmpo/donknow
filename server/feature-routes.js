@@ -223,13 +223,13 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         send(200,{...remote,items:[...remote.items,...store.docenCalendarReminders(user.id)]});return true;
       }
       const appleDelivery=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})\/apple-delivery$/.exec(path);
-      if(appleDelivery&&req.method==='POST'){send(200,store.recordDocenAppleDelivery(user.id,appleDelivery[1],await json(req)));return true;}
+      if(appleDelivery&&req.method==='POST'){const input=await json(req);if(input?.state==='deleted'){store.finishDocenAppleDelete(user.id,appleDelivery[1],input.externalEventId);send(200,{ok:true});}else send(200,store.recordDocenAppleDelivery(user.id,appleDelivery[1],input));return true;}
       const docenEvent=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})$/.exec(path);
       if(docenEvent&&['PUT','DELETE'].includes(req.method)){
         if(limited('docen-calendar:'+user.id))throw fail(429,'잠시 후 다시 저장해주세요.');
         const body=await json(req);
         if(req.method==='PUT'){send(200,store.saveDocenCalendarEvent(user.id,docenEvent[1],body));if(body?.target?.provider==='google')wakeCalendarDelivery();}
-        else {store.deleteDocenCalendarEvent(user.id,docenEvent[1],body?.revision);send(200,{ok:true});}
+        else {store.deleteDocenCalendarEvent(user.id,docenEvent[1],body?.revision);send(200,{ok:true});wakeCalendarDelivery();}
         return true;
       }
       if(path==='/api/calendar/events'&&req.method==='GET'&&url.searchParams.get('calendarId')===docenCalendarId){

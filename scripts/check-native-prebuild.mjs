@@ -22,6 +22,7 @@ try{
  const provider=join(directory,'ExpoModulesProvider.swift');
  await run([join(mobile,'node_modules/expo-modules-autolinking/bin/expo-modules-autolinking.js'),'generate-modules-provider','--platform','apple','--project-root',directory,'--app-root',directory,'--target-platform','ios','--target',provider,'--packages',...packages]);
  const generated=await readFile(provider,'utf8'),levels=new Map(imports(generated).filter(i=>i.level).map(i=>[i.module,i.level]));
+ assert.ok(generated.includes('DuckduckCalendarChangesModule.self'),'The EventKit change listener must be included by Expo autolinking');
  assert.ok(generated.includes('DuckduckAssistantModule.self'),'The assistant native bridge must be included by Expo autolinking');
  for(const file of ['DuckShortcuts.swift','AppDelegate.swift']){
   const source=await readFile(join(directory,'ios',appName,file),'utf8');

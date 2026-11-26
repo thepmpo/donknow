@@ -353,8 +353,24 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const collection='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(selected.calendarId)+'/events';
       const lookup=async()=>{
        try{return await googleRead(user,record,collection+'/'+remoteId);}
-       catch(error){if(error.status===404)return null;throw error;}
+       catch(error){if(error.status===404||job.removing&&error.status===410)return null;throw error;}
       };
+      if(job.removing){
+       const existing=await lookup();
+       if(!existing||existing.status==='cancelled')return remoteId;
+       if(existing.extendedProperties?.private?.docenEvent!==remoteId||!existing.etag)throw fail(409,'기존 원본 일정을 확인해주세요.');
+       const current=await token(user,'google',target.connectionId);
+       try{
+        await providerRequest(collection+'/'+remoteId+'?sendUpdates='+(existing.attendees?.length?'all':'none'),{method:'DELETE',headers:{Authorization:'Bearer '+current.accessToken,'If-Match':existing.etag}});
+       }catch(error){
+        if(error.status===404||error.status===410)return remoteId;
+        if(error.status===409)throw fail(502,'원본이 갱신되어 삭제를 다시 시도해요.');
+        if(!retryAuth||error.code!=='integration-reauthorization')throw error;
+        await token(user,'google',target.connectionId,current.accessToken);
+        return this.deliverDocenCalendar(job,false);
+       }
+       return remoteId;
+      }
       const existing=job.attempt>1||!retryAuth?await lookup():null;
       if(existing){
        if(existing.status==='cancelled'||existing.extendedProperties?.private?.docenEvent!==remoteId)throw fail(409,'기존 원본 일정을 확인해주세요.');

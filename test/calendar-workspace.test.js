@@ -169,3 +169,36 @@ test('Google Calendar quota responses remain retryable with the provider delay',
   assert.equal(h.store.claimDocenGoogleDelivery(due).attempt,2);
  }finally{await h.close();}
 });
+
+test('Docen calendar delete supersedes an in-flight Google creation without resurrecting the event',async()=>{
+ const h=await setup();
+ try{
+  const id='event-delete-inflight-google';
+  h.store.saveDocenCalendarEvent(h.user,id,{
+   revision:0,target:{provider:'google',calendarId:'primary',connectionId:'calendar-connection'},
+   args:{title:'삭제할 일정',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'},
+  });
+  const creating=h.store.claimDocenGoogleDelivery(),externalId=creating.target.externalEventId;
+  h.store.deleteDocenCalendarEvent(h.user,id,1);
+  assert.deepEqual(h.store.readDocenCalendar(h.user,'2026-11-26','2026-11-28','Asia/Seoul').items,[]);
+  assert.equal(h.store.claimDocenGoogleDelivery(),null,'wait for the running request before deleting its original');
+  h.store.finishDocenGoogleDelivery(creating,'synced',externalId);
+  const removing=h.store.claimDocenGoogleDelivery();
+  assert.equal(removing.removing,true);
+  let deleted=false;
+  const api=createIntegrations(h.store,env,async(url,options={})=>{
+   assert.ok(String(url).includes('/events/'+externalId));
+   if(options.method==='DELETE'){
+    assert.equal(options.headers['If-Match'],'test-etag');
+    deleted=true;
+    return new Response(null,{status:204});
+   }
+   return deleted?new Response(JSON.stringify({error:{message:'not found'}}),{status:404}):response({id:externalId,etag:'test-etag',extendedProperties:{private:{docenEvent:externalId}}});
+  });
+  assert.equal(await api.deliverDocenCalendar(removing),externalId);
+  assert.equal(await api.deliverDocenCalendar(removing),externalId,'retrying a lost delete response succeeds idempotently');
+  h.store.finishDocenGoogleDelivery(removing,'synced',externalId);
+  assert.equal(deleted,true);
+  assert.deepEqual(h.store.readDocenCalendar(h.user,'2026-11-26','2026-11-28','Asia/Seoul').hiddenMirrors,[]);
+ }finally{await h.close();}
+});

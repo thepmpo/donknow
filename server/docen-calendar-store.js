@@ -20,13 +20,23 @@ export function docenCalendarStore(db,box){
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   id TEXT NOT NULL, revision INTEGER NOT NULL, data TEXT NOT NULL,
   PRIMARY KEY(user_id,id)
+ ); CREATE TABLE IF NOT EXISTS docen_calendar_deleted (
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, event_id TEXT NOT NULL,
+  PRIMARY KEY(user_id,event_id)
  );`);
  const rows=user=>db.prepare(`SELECT e.id,e.revision,e.data,d.state AS delivery_state,d.available_at AS delivery_due,d.data AS delivery_data
    FROM docen_calendar_events e LEFT JOIN docen_calendar_delivery d ON d.user_id=e.user_id AND d.event_id=e.id
-   WHERE e.user_id=?`).all(user);
+   WHERE e.user_id=? AND NOT EXISTS (SELECT 1 FROM docen_calendar_deleted x WHERE x.user_id=e.user_id AND x.event_id=e.id)`).all(user);
  const get=(user,id)=>db.prepare('SELECT id,revision,data FROM docen_calendar_events WHERE user_id=? AND id=?').get(user,id);
  const decode=row=>({...box.open(row.data),id:row.id,revision:row.revision});
  function delivery(user,id){return db.prepare('SELECT * FROM docen_calendar_delivery WHERE user_id=? AND event_id=?').get(user,id);}
+ const deleted=(user,id)=>!!db.prepare('SELECT 1 FROM docen_calendar_deleted WHERE user_id=? AND event_id=?').get(user,id);
+ const purge=(user,id)=>db.prepare('DELETE FROM docen_calendar_events WHERE user_id=? AND id=?').run(user,id);
+ function pendingDeletes(user){
+  return db.prepare(`SELECT d.event_id,d.state,d.data FROM docen_calendar_deleted x
+    JOIN docen_calendar_delivery d ON d.user_id=x.user_id AND d.event_id=x.event_id WHERE x.user_id=?`).all(user)
+   .map(row=>({id:row.event_id,state:row.state,...box.open(row.data)}));
+ }
  function mirror(row){
   if(!row)return;
   const payload=box.open(row.data);
@@ -43,7 +53,7 @@ export function docenCalendarStore(db,box){
    if(!start||!end||!validDate(start)||!validDate(end)||end<=start||Date.parse(end)-Date.parse(start)>370*86400000)throw fail(400,'조회할 날짜 범위를 확인해주세요.');
    zone=calendarZone(zone);
    const items=rows(user).map(row=>event(decode(row),zone,mirror(row.delivery_state?{state:row.delivery_state,data:row.delivery_data,available_at:row.delivery_due}:null))).filter(e=>e.dueDate<end&&(e.allDay?e.endDate>start:calendarDay(Date.parse(e.endAt)-1,zone)>=start));
-   return {items,nextCursor:null,connectionState:'connected',readAt:new Date().toISOString(),calendarId:docenCalendarId,canWrite:true};
+   return {items,nextCursor:null,connectionState:'connected',readAt:new Date().toISOString(),calendarId:docenCalendarId,canWrite:true,hiddenMirrors:pendingDeletes(user)};
   },
   saveDocenCalendarEvent(user,id,body){
    let target;
@@ -53,6 +63,7 @@ export function docenCalendarStore(db,box){
     target={provider,calendarId,...(connectionId?{connectionId}:{}),name:typeof name==='string'?name.slice(0,200):'',color:typeof color==='string'&&/^#[a-f\d]{6}$/i.test(color)?color:null};
    }
    if(!validId(id)||!body||!Number.isInteger(body.revision)||body.revision<0||!body.args||Object.keys(body.args).some(k=>!['title','notes','allDay','startDate','endDate','start','end','timeZone','recurrence','attendees'].includes(k)))throw fail(400,'저장할 일정을 확인해주세요.');
+   if(deleted(user,id))throw fail(409,'이미 삭제된 일정이에요.');
    const current=get(user,id),before=current&&body.revision>0?decode(current).args:null;
    const args=validateAction('calendar.create',body.args),fields=body.fields&&Object.keys(body.fields).length?calendarDetailsPatch(body.fields):{};
    const value={args:{...(before?.recurrence?{recurrence:before.recurrence}: {}),...(before?.attendees?{attendees:before.attendees}: {}),...args},fields};
@@ -72,39 +83,62 @@ export function docenCalendarStore(db,box){
   },
   deleteDocenCalendarEvent(user,id,revision){
    if(!validId(id)||!Number.isInteger(revision)||revision<1)throw fail(400,'삭제할 일정을 확인해주세요.');
-   const removed=db.prepare("DELETE FROM docen_calendar_events WHERE user_id=? AND id=? AND revision=? AND NOT EXISTS (SELECT 1 FROM docen_calendar_delivery WHERE user_id=? AND event_id=? AND state='sending')").run(user,id,revision,user,id);
-   if(!removed.changes)throw fail(409,'일정이 바뀌었거나 원본에 전송 중이에요. 잠시 뒤 다시 확인해주세요.');
+   if(deleted(user,id))return;
+   const current=get(user,id);
+   if(current?.revision!==revision)throw fail(409,'일정이 바뀌었어요. 다시 확인해주세요.');
+   db.exec('BEGIN IMMEDIATE');
+   try {
+    db.prepare('INSERT INTO docen_calendar_deleted VALUES (?,?)').run(user,id);
+    const row=delivery(user,id);
+    if(!row||row.state==='queued'&&row.attempt===0||row.state==='failed')purge(user,id);
+    else if(row.state!=='sending'){
+     const target=box.open(row.data);
+     if(row.provider==='google'||target.externalEventId)
+      db.prepare("UPDATE docen_calendar_delivery SET state='delete-queued',available_at=? WHERE user_id=? AND event_id=?").run(Date.now(),user,id);
+    }
+    db.exec('COMMIT');
+   }catch(error){db.exec('ROLLBACK');throw error;}
   },
   nextDocenGoogleDeliveryAt(){
-   return db.prepare("SELECT MIN(available_at) AS due FROM docen_calendar_delivery WHERE provider='google' AND state IN ('queued','sending')").get()?.due??null;
+   return db.prepare("SELECT MIN(available_at) AS due FROM docen_calendar_delivery WHERE provider='google' AND state IN ('queued','sending','delete-queued','deleting')").get()?.due??null;
   },
   claimDocenGoogleDelivery(now=Date.now()){
-   const row=db.prepare(`SELECT * FROM docen_calendar_delivery WHERE provider='google' AND state IN ('queued','sending') AND available_at<=? ORDER BY available_at LIMIT 1`).get(now);
+   const row=db.prepare(`SELECT * FROM docen_calendar_delivery WHERE provider='google' AND state IN ('queued','sending','delete-queued','deleting') AND available_at<=? ORDER BY available_at LIMIT 1`).get(now);
    if(!row)return null;
-   const attempt=row.attempt+1;
-   if(!db.prepare("UPDATE docen_calendar_delivery SET state='sending',attempt=?,available_at=? WHERE user_id=? AND event_id=? AND attempt=?").run(attempt,now+120000,row.user_id,row.event_id,row.attempt).changes)return null;
+   const attempt=row.attempt+1, removing=deleted(row.user_id,row.event_id);
+   if(!db.prepare("UPDATE docen_calendar_delivery SET state=?,attempt=?,available_at=? WHERE user_id=? AND event_id=? AND attempt=?").run(removing?'deleting':'sending',attempt,now+120000,row.user_id,row.event_id,row.attempt).changes)return null;
    const saved=get(row.user_id,row.event_id);
-   return saved?{user:row.user_id,id:row.event_id,attempt,target:box.open(row.data),args:decode(saved).args}:null;
+   return saved?{user:row.user_id,id:row.event_id,attempt,removing,target:box.open(row.data),args:decode(saved).args}:null;
   },
   finishDocenGoogleDelivery(job,state,externalEventId,retryAfterMs){
    const delay=Math.max(Math.min(60000,500*2**Math.min(Math.max(0,job.attempt-1),7)),Number.isFinite(retryAfterMs)?retryAfterMs:0);
-   db.prepare("UPDATE docen_calendar_delivery SET state=?,available_at=?,data=? WHERE user_id=? AND event_id=? AND state='sending' AND attempt=?")
-    .run(state,Date.now()+delay,box.seal({...job.target,...(externalEventId?{externalEventId}:{})}),job.user,job.id,job.attempt);
+   const row=delivery(job.user,job.id);
+   if(!row||row.attempt!==job.attempt||row.state!==(job.removing?'deleting':'sending'))return;
+   if(job.removing&&state==='synced'){purge(job.user,job.id);return;}
+   const removed=deleted(job.user,job.id);
+   const next=removed&&(!job.removing||state==='queued')?'delete-queued':state;
+   db.prepare("UPDATE docen_calendar_delivery SET state=?,available_at=?,data=? WHERE user_id=? AND event_id=? AND attempt=?")
+    .run(next,Date.now()+(removed&&!job.removing?0:delay),box.seal({...job.target,...(externalEventId?{externalEventId}:{})}),job.user,job.id,job.attempt);
   },
   wakeDocenGoogleDelivery(user,connectionId){
    const pending=db.prepare("SELECT event_id,data FROM docen_calendar_delivery WHERE user_id=? AND provider='google' AND state='blocked'").all(user);
-   for(const row of pending)if(box.open(row.data).connectionId===connectionId)db.prepare("UPDATE docen_calendar_delivery SET state='queued',available_at=? WHERE user_id=? AND event_id=? AND state='blocked'").run(Date.now(),user,row.event_id);
+   for(const row of pending)if(box.open(row.data).connectionId===connectionId)db.prepare("UPDATE docen_calendar_delivery SET state=?,available_at=? WHERE user_id=? AND event_id=? AND state='blocked'").run(deleted(user,row.event_id)?'delete-queued':'queued',Date.now(),user,row.event_id);
+  },
+  finishDocenAppleDelete(user,id,externalEventId){
+   const row=delivery(user,id);
+   if(deleted(user,id)&&row?.provider==='apple-calendar'&&row.state==='delete-queued'&&box.open(row.data).externalEventId===externalEventId)purge(user,id);
   },
   recordDocenAppleDelivery(user,id,input){
    const row=delivery(user,id);
    if(row?.provider!=='apple-calendar')throw fail(404,'동기화할 일정을 찾지 못했어요.');
    const target=box.open(row.data);
+   if(input?.state==='synced'&&['synced','delete-queued'].includes(row.state)&&target.externalEventId===input.externalEventId)return mirror(row);
    if(input?.state==='sending'){
     if(!db.prepare("UPDATE docen_calendar_delivery SET state='sending',available_at=? WHERE user_id=? AND event_id=? AND state='queued'").run(Date.now()+120000,user,id).changes)throw fail(409,'이 일정은 이미 처리 중이에요.');
    }else if(['synced','checking','blocked'].includes(input?.state)&&row.state==='sending'){
     const externalEventId=input.externalEventId;
     if(input.state==='synced'&&(typeof externalEventId!=='string'||!externalEventId||externalEventId.length>1500))throw fail(400,'원본 일정 번호를 확인해주세요.');
-    db.prepare("UPDATE docen_calendar_delivery SET state=?,data=? WHERE user_id=? AND event_id=? AND state='sending'").run(input.state,box.seal({...target,...(input.state==='synced'?{externalEventId}:{})}),user,id);
+    db.prepare("UPDATE docen_calendar_delivery SET state=?,data=? WHERE user_id=? AND event_id=? AND state='sending'").run(input.state==='synced'&&deleted(user,id)?'delete-queued':input.state,box.seal({...target,...(input.state==='synced'?{externalEventId}:{})}),user,id);
    }else throw fail(409,'동기화 상태가 바뀌었어요.');
    return mirror(delivery(user,id));
   },

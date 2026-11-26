@@ -299,7 +299,30 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  const updated=local.waitForResponse(r=>new URL(r.url()).pathname==='/api/todos/first'&&r.request().method()==='PATCH');
  await local.mouse.move(destination.x+destination.width/2,destination.y+destination.height/2,{steps:12});await local.mouse.up();
  await updated;assert.equal(dayTasks[0].dueDate,'2026-11-26');
- console.log('PASS phone: Docen calendar saves with disconnected Google, reloads and moves after long press; day Todo swipes to select and drags to another date');await local.close();
+ await year.hover();await local.mouse.down();await local.waitForTimeout(600);await local.mouse.up();
+ await sheet.getByRole('button',{name:'캘린더 보기 전환',exact:true}).click();await sheet.getByRole('tab',{name:'월 보기',exact:true}).click();
+ const monthCell=local.getByTestId('calendar-drop-2026-11-26');
+ const calendarCard=monthCell.getByRole('button',{name:'연결 없이 저장 일정 상세',exact:true});
+ const taskCard=monthCell.getByRole('button',{name:'일간 first 할 일 수정',exact:true});
+ await calendarCard.waitFor();await taskCard.waitFor();
+ const badge=await monthCell.getByText('26',{exact:true}).boundingBox(),card=await calendarCard.boundingBox();
+ assert.ok(badge.y+badge.height<card.y,'date circle and the first event have separate space');
+ async function dragMonthCard(item,day){
+  const start=await item.boundingBox(),end=await local.getByTestId('calendar-drop-'+day).boundingBox();
+  await local.mouse.move(start.x+start.width/2,start.y+start.height/2);await local.mouse.down();
+  await local.getByTestId('calendar-drag-preview').waitFor();
+  await local.mouse.move(end.x+end.width/2,end.y+end.height/2,{steps:12});await local.mouse.up();
+ }
+ const monthTaskResponse=local.waitForResponse(r=>new URL(r.url()).pathname==='/api/todos/first'&&r.request().method()==='PATCH');
+ await dragMonthCard(taskCard,'2026-11-27');await monthTaskResponse;
+ await local.getByTestId('calendar-drop-2026-11-27').getByRole('button',{name:'일간 first 할 일 수정',exact:true}).waitFor();
+ assert.equal(dayTasks[0].dueDate,'2026-11-27');
+ const monthEventResponse=local.waitForResponse(r=>r.url().startsWith(localOrigin+'/api/calendar/docen/')&&r.request().method()==='PUT');
+ await dragMonthCard(calendarCard,'2026-11-27');await monthEventResponse;
+ await local.getByTestId('calendar-drop-2026-11-27').getByRole('button',{name:'연결 없이 저장 일정 상세',exact:true}).waitFor();
+ assert.equal([...items.values()][0].dueDate,'2026-11-27');
+
+ console.log('PASS phone: Docen calendar saves with disconnected Google, reloads and moves after long press; day Todo and month events/tasks drag to another date without date badge overlap');await local.close();
 
  const linked=await browser.newPage({viewport:{width:430,height:844},hasTouch:true,isMobile:true});
  linked.setDefaultTimeout(12000);
@@ -308,7 +331,8 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  const docenWrites=[];
  await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
  await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
- await linked.route(linkedOrigin+'/**',route=>{
+ let finishDelete;
+ await linked.route(linkedOrigin+'/**',async route=>{
   const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
   if(path==='/api/auth/session')return route.fulfill({json:{user:{id:'linked-user',email:'linked@example.test',emailVerified:true}}});
   if(path==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1}});
@@ -317,6 +341,11 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    const calendarId=url.searchParams.get('calendarId');
    const items=calendarId==='@docen'&&docenSaved?[docenSaved]:calendarId===selectedCalendar&&mirrorReady?[{...docenSaved,id:'original',eventId:'provider-id',calendarId:selectedCalendar,connectionId:connectedId,mirror:undefined,color:'#ab063d'}]:[];
    return route.fulfill({json:{calendarId,items,connectionState:'connected',nextCursor:null}});
+  }
+  if(path.startsWith('/api/calendar/docen/')&&method==='DELETE'){
+   await new Promise(resolve=>{finishDelete=resolve;});
+   docenSaved=null;mirrorReady=false;
+   return route.fulfill({json:{ok:true}});
   }
   if(path.startsWith('/api/calendar/docen/')&&method==='PUT'){
    const {target,args,fields}=route.request().postDataJSON();
@@ -351,5 +380,14 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await written.waitFor();
  assert.equal(await written.count(),1);
  assert.equal(await linked.getByTestId('week-span-original').count(),0);
- console.log('PASS phone: Docen commits before Google, survives reload, and renders one event after delivery');await linked.close();
+ await written.click();
+ await linkedSheet.getByRole('button',{name:'일정 삭제',exact:true}).click();
+ await linked.getByRole('button',{name:'원본에서도 일정 삭제',exact:true}).click();
+ await linkedSheet.waitFor({state:'detached'});
+ await written.waitFor({state:'detached'});
+ assert.ok(docenSaved,'row is hidden while the server delete has not answered');
+ assert.equal(await linked.getByTestId('week-span-original').count(),0);
+ while(!finishDelete)await new Promise(resolve=>setTimeout(resolve,10));
+ finishDelete();
+ console.log('PASS phone: Docen commits before Google, survives reload, deduplicates, and hides both cards before DELETE answers');await linked.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

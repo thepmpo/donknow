@@ -52,3 +52,27 @@ test('Apple delivery has one owner-bound device claim and keeps an uncertain loc
   assert.equal(event.mirror.state,'checking');
  }finally{await h.close();}
 });
+
+test('deleting a Docen event during Apple delivery hides it immediately, then queues removal of the delivered original',async()=>{
+ const h=await apiHarness();
+ try{
+  const owner=await h.verified('docen-apple-delete@example.test');
+  const path='/api/calendar/docen/event-apple-delete-pending',delivery=path+'/apple-delivery';
+  const range='/api/calendar/events?v=2&calendarId=%40docen&start=2026-11-23&end=2026-11-30&timeZone=Asia%2FSeoul';
+  const body={revision:0,args:{title:'삭제할 일정',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'},target:{provider:'apple-calendar',calendarId:'@apple/test'}};
+  const request=(url,method,body)=>h.request(url,method,body,owner.token);
+  assert.equal((await request(path,'PUT',body)).status,200);
+  assert.equal((await request(delivery,'POST',{state:'sending'})).status,200);
+  for(let attempt=0;attempt<2;attempt++)assert.equal((await request(path,'DELETE',{revision:1})).status,200);
+  assert.deepEqual((await request(range)).data.items,[]);
+  assert.equal((await request(path,'PUT',body)).status,409);
+  const original={externalEventId:'apple-provider-record'};
+  assert.equal((await request(delivery,'POST',{state:'synced',...original})).status,200);
+  const pending=(await request(range)).data.hiddenMirrors;
+  assert.equal(pending[0].state,'delete-queued');
+  assert.equal(pending[0].externalEventId,original.externalEventId);
+  assert.equal((await request(delivery,'POST',{state:'deleted',...original})).status,200);
+  assert.deepEqual((await request(range)).data.hiddenMirrors,[]);
+  assert.deepEqual((await request(range)).data.items,[]);
+ }finally{await h.close();}
+});

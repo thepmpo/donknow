@@ -5,16 +5,17 @@ import {AppState} from 'react-native';
 import {validCalendarPage} from './http-response';
 import {docenCalendarId,zonedDay} from './calendar-model';
 import type {TodoStore} from './useTodos';
-import type {CalendarEvent,CalendarSource} from './calendar-model';
+import type {CalendarEvent,CalendarMirror,CalendarSource} from './calendar-model';
 import type {CalendarSnapshot as CachedPeriod} from './calendar-snapshot-store';
 import {savedCalendarRange} from './calendar-snapshot-range';
 import {readCalendarOnce} from './calendar-snapshot-cache';
-type Page={calendarId?:string;items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
+type Page={hiddenMirrors?:(Omit<CalendarMirror,'state'>&{id:string;state:string})[];calendarId?:string;items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
 export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active,selectionReady=true}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean;selectionReady?:boolean}){
  const [sourceLoading,setSourceLoading]=useState(false),[sourceLoaded,setSourceLoaded]=useState(false);
  const [docenSupported,setDocenSupported]=useState(false),[localFirst,setLocalFirst]=useState(false);
  const [detailsSupported,setDetailsSupported]=useState(false),[createOptionsSupported,setCreateOptionsSupported]=useState(false);
  const [,writeChanged]=useState(0);
+ const [hidden,setHidden]=useState<{owner:string;mirrors:NonNullable<Page['hiddenMirrors']>}|null>(null);
  const [events,setEvents]=useState<CalendarEvent[]>([]),[sources,setSources]=useState<CalendarSource[]>([]);
  const [phase,setPhase]=useState<'unconnected'|'loading'|'ready'|'partial'|'error'>(store.user?'loading':'unconnected'),[error,setError]=useState(''),[readAt,setReadAt]=useState<string|null>(null),[cursors,setCursors]=useState<Record<string,string>>({}),[version,setVersion]=useState<2|1|0>(0),[sourceError,setSourceError]=useState(''),[sourceCursor,setSourceCursor]=useState<string|null>(null);
  const readRevision=useRef(0);
@@ -53,6 +54,7 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
    const pages=await Promise.allSettled(ids.filter(id=>!more||cursorRef.current[id]).map(async id=>{
     const query=new URLSearchParams({month,...(v===2?{v:'2',calendarId:id,timeZone,start,end}:{}),...(more&&cursorRef.current[id]?{cursor:cursorRef.current[id]}:{})});
     const result=await request('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
+    if(id===docenCalendarId)setHidden({owner,mirrors:Array.isArray(result.hiddenMirrors)?result.hiddenMirrors:[]});
     arrivedIds.add(id);
     // A replaced account is not a slow page of the former account. Token rotation keeps connectionId.
     const replaced=new Set(snapshot.current.filter(e=>(e.calendarId??'primary')===id&&e.connectionId&&result.connectionId&&e.connectionId!==result.connectionId).map(e=>e.connectionId!));
@@ -95,5 +97,5 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  function upsertEvent(event:CalendarEvent){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);for(const entry of periods.current.values())if(inPeriod(event,entry.start,entry.end,periodZone(entry)))entry.items=[...entry.items.filter(e=>e.id!==event.id),event];if(inPeriod(event))snapshot.current=[...snapshot.current.filter(e=>e.id!==event.id),event];setEvents(snapshot.current);remember();}
  function cachedEvents(){return [...new Map([...periods.current.values()].filter(p=>p.family===family).flatMap(p=>p.items).concat(snapshot.current).map(e=>[eventKey(e),e])).values()];}
  useEffect(()=>watchCalendarWrites(owner,()=>writeChanged(v=>v+1)),[owner]);
- return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,docenSupported,localFirst,baseEvents:events,events:overlayCalendarWrites(owner,events,start,end,timeZone,readSelected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceLoaded,sourceError,sourceCursor,load,loadSources};
+ return {hiddenMirrors:hidden?.owner===owner?hidden.mirrors:[],cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,docenSupported,localFirst,baseEvents:events,events:overlayCalendarWrites(owner,events,start,end,timeZone,readSelected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceLoaded,sourceError,sourceCursor,load,loadSources};
 }
