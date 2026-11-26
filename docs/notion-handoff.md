@@ -873,6 +873,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - iPhone에서 월·주·일 기간 넘기기는 일정의 길게 누르기와 행 제스처가 먼저 동작하도록 네이티브 제스처를 연결했다. 월간 날짜 버튼과 일정 카드의 터치 영역을 분리했다. 일정을 길게 눌러 날짜로 끌거나, 길게 눌러 선택 표시를 남긴 뒤 ‘날짜 이동’으로 날짜를 지정할 수 있다.
 - 일간 뷰의 할 일에도 할 일 탭과 같은 행 스와이프로 선택과 완료를 적용한다. 선택한 행을 길게 눌러 순서를 바꾸거나 위 날짜 칸으로 끌어 예정일을 바꿀 수 있다. 아이폰 일정은 기기 캘린더 조회 범위를 보완하고 화면 시간대에 맞춰 표시한다.
 - 자동 테스트와 듀오·일반폰·웹 주간 화면, Google 연결 없이 일정 생성·다시 열기·날짜 이동, 일간 할 일 좌우 제스처와 위 날짜 칸 드롭을 검사했다. 아이폰 캘린더 흐름 검사는 모의 EventKit을 사용했다. 실기기 제스처와 새 TestFlight 서명 빌드는 별도로 확인한다.
+- Render 테스트 서버 배포 `dep-dc3pvnvf3r2c739bj56g`(`2977b06`)는 2026년 11월 26일 11:57 KST에 live가 됐다. 최종 자동 테스트 494개 통과, 기존 1개 제외, iOS JS 번들 생성 성공을 확인했다. iPhone TestFlight 실행 요청은 GitHub Forbidden으로 거부됐다.
 
 #### 2026-11-26 — 일정 한 번 저장, 도슨 표시와 원본 색상
 
@@ -3972,6 +3973,7 @@ c93acd7 Restore calendar drag permission when a timed refresh arrives
 2d06229 Update handoff after calendar drag regression checks
 609128a Record live Render calendar deployment
 aff10f4 Keep Docen calendar writable and prioritize held date drags
+2977b06 Update the handoff for calendar drag and local saves
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
