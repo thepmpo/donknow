@@ -36,5 +36,18 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
   window.appleCalendarFixture.writeOutside({id:'beyond-ten',calendarId:'calendar-11',title:'열 개 밖 아이폰 일정',notes:'',startDate:'2026-11-25T01:00:00Z',endDate:'2026-11-25T02:00:00Z',timeZone:'UTC',allDay:false});
  });
  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({timeout:4000});
+ await page.getByTestId('calendar-visibility-button').click();
+ const list=page.getByTestId('calendar-visibility-list');
+ const appleGroup=list.getByRole('button',{name:'iCloud 캘린더',exact:true});
+ const extraCalendar=list.getByRole('checkbox',{name:'추가 달력 11 표시',exact:true});
+ await appleGroup.waitFor();
+ await extraCalendar.scrollIntoViewIfNeeded();
+ assert.equal(await extraCalendar.getAttribute('aria-checked'),'true');
+ await extraCalendar.click();
+ assert.equal(await extraCalendar.getAttribute('aria-checked'),'false');
+ if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
+ await sheet.waitFor({state:'detached'});
+ await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
+ assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).events.some(event=>event.id==='beyond-ten'),true,'visibility never deletes the source event');
  assert.deepEqual(errors,[]);console.log('PASS '+mode+': ME-only required connections, native calendar create/edit/delete, actual-body AI export, live original changes and calendars beyond ten, no Google write');await page.close();
 }}finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

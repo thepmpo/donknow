@@ -10,14 +10,23 @@ let events=[all('span','2026-11-24','2026-11-26'),all('review','2026-11-24','202
 const todos=[{id:'task',title:'자료 보내기',category:'업무',done:false,dueDate:'2026-11-25',dueTime:'14:00'},{id:'plain',title:'시간 없는 할 일',category:'업무',done:false,dueDate:'2026-11-25'},{id:'weekend',title:'주말 준비',category:'업무',done:false,dueDate:'2026-11-28',dueTime:'13:00'}];
 try{
  for(const [mode,width,height] of [['duo',430,844],['standard',390,844],['web',1360,960]].filter(([mode])=>!process.env.CALENDAR_WEEK_SURFACE||process.env.CALENDAR_WEEK_SURFACE===mode)){
-  const page=await browser.newPage({viewport:{width,height},timezoneId:'Asia/Seoul',hasTouch:true,isMobile:mode!=='web'}),errors=[],reads=[];const originalEvents=events;let failCalendar=false,moveArgs=null,moveWrites=0,failMove=false,heldRead;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install({time:new Date('2026-11-25T10:29:00+09:00')});await page.clock.pauseAt(new Date('2026-11-25T10:30:00+09:00'));
+  const page=await browser.newPage({viewport:{width,height},timezoneId:'Asia/Seoul',hasTouch:true,isMobile:mode!=='web'}),errors=[],reads=[];const originalEvents=events;let failCalendar=false,moveArgs=null,moveWrites=0,failMove=false,heldRead;
+  const localEvent={...all('도슨 테스트 일정','2026-11-25','2026-11-26'),calendarId:'@docen',provider:'docen'};
+  const mirroredEvent={...localEvent,id:'team-mirrored',eventId:'team-mirrored',title:'팀에 만든 도슨 일정',mirror:{provider:'google',calendarId:'team-calendar',state:'queued'}};
+  const teamEvent={...all('팀 테스트 일정','2026-11-25','2026-11-26'),calendarId:'team-calendar'};page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(15000);await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install({time:new Date('2026-11-25T10:29:00+09:00')});await page.clock.pauseAt(new Date('2026-11-25T10:30:00+09:00'));
   await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
   await page.route(origin+'/**',async route=>{const u=new URL(route.request().url()),p=u.pathname;
    if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'week-user',email:'week@example.test',emailVerified:true}}});
    if(p==='/api/todos')return route.fulfill({json:todos});
-   if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1}});
-   if(p==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:'primary',primary:true,name:'테스트 일정',canWrite:true,color:'#2366e8'}]}});
-   if(p==='/api/calendar/events'){if(heldRead)await heldRead;if(failCalendar)return route.fulfill({status:503,json:{error:'fixture unavailable'}});reads.push(Object.fromEntries(u.searchParams));return route.fulfill({json:{items:events,calendarId:'primary',calendarName:'테스트 일정',canWrite:true,connectionState:'connected',nextCursor:null,readAt:'2026-11-25T01:30:00Z'}});}
+   if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,docenCalendar:1}});
+   if(p==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:'primary',primary:true,name:'테스트 일정',canWrite:true,color:'#2366e8'},{id:'team-calendar',name:'팀 공유',canWrite:false,color:'#e5bf30'}]}});
+   if(p==='/api/calendar/events'){
+    if(heldRead)await heldRead;if(failCalendar)return route.fulfill({status:503,json:{error:'fixture unavailable'}});
+    reads.push(Object.fromEntries(u.searchParams));
+    const calendarId=u.searchParams.get('calendarId');
+    const items=calendarId==='@docen'?[localEvent,mirroredEvent]:calendarId==='team-calendar'?[teamEvent]:events;
+    return route.fulfill({json:{items,calendarId,calendarName:'테스트 일정',canWrite:calendarId!=='team-calendar',connectionState:'connected',nextCursor:null,readAt:'2026-11-25T01:30:00Z'}});
+   }
    if(p==='/api/assistant/actions'&&route.request().method()==='POST'){moveArgs=route.request().postDataJSON();return route.fulfill({json:{id:'drag-fixture',status:'pending'}});}
    if(p==='/api/assistant/actions/drag-fixture/confirm'){
     moveWrites++;
@@ -154,6 +163,33 @@ try{
    events=originalEvents;
    console.log('PASS dense view transition, in-flight refresh, Duo detail back, grip release and reduced motion');
   }
+  const eye=page.getByTestId('calendar-visibility-button');
+  await eye.click();
+  const visibilityPanel=page.getByTestId('calendar-visibility-list');
+  const googleGroup=visibilityPanel.getByRole('button',{name:'Google 캘린더',exact:true});
+  const teamVisibility=visibilityPanel.getByRole('checkbox',{name:'팀 공유 표시',exact:true});
+  const docenVisibility=visibilityPanel.getByRole('checkbox',{name:'도슨 캘린더 표시',exact:true});
+  await teamVisibility.waitFor();
+  assert.equal(await teamVisibility.getAttribute('aria-checked'),'false');
+  assert.equal(await docenVisibility.getAttribute('aria-checked'),'true');
+  await googleGroup.click();await teamVisibility.waitFor({state:'detached'});
+  await googleGroup.click();await teamVisibility.click();
+  await docenVisibility.click();
+  assert.equal(await teamVisibility.getAttribute('aria-checked'),'true','read-only calendars can be shown');
+  assert.equal(await docenVisibility.getAttribute('aria-checked'),'false');
+  await page.getByTestId('calendar-sheet-backdrop').click({position:{x:4,y:2}});
+  await page.clock.runFor(250);
+  await page.getByTestId('week-span-팀 테스트 일정').waitFor();
+  await page.getByTestId('week-span-도슨 테스트 일정').waitFor({state:'detached'});
+  await page.getByTestId('week-span-team-mirrored').waitFor();
+  await page.reload();
+  await page.getByTestId('week-span-팀 테스트 일정').waitFor();
+  assert.equal(await page.getByTestId('week-span-도슨 테스트 일정').count(),0);
+  await eye.click();
+  assert.equal(await docenVisibility.getAttribute('aria-checked'),'false','visibility persists across reload');
+  await page.emulateMedia({colorScheme:mode==='duo'?'dark':'light'});
+  await page.clock.runFor(350);
+  await page.screenshot({path:resolve(out,mode+'-calendar-visibility.png')});
   await page.evaluate(()=>window.weekFixture.logout());await page.getByTestId('week-span-span').waitFor({state:'detached'});assert.equal(await page.getByTestId('week-timed-meeting').count(),0,'sign-out clears former account events');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.deepEqual(errors,[]);await page.close();console.log('PASS actual week integration '+mode);
  }
