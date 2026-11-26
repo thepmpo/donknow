@@ -8,3 +8,13 @@ test('another account or server cannot read or clear the original snapshot',asyn
 test('failed chunk update retains the preceding complete manifest',async()=>{const f=fixture(),cache=createCalendarSnapshotStore(f.storage);await cache.write('o',[period()]);const old=new Map(f.data);let fail=true;const bad=createCalendarSnapshotStore({...f.storage,set:async(k,v)=>{if(fail&&k.split('.').length>3)throw Error('device storage unavailable');await f.storage.set(k,v);}});await assert.rejects(bad.write('o',[{...period(),items:[]}]),/unavailable/);assert.equal((await cache.read('o'))[0].items.length,1);assert.deepEqual(f.data,old);});
 test('logout invalidates queued writes and removes all owned chunks',async()=>{const f=fixture(),cache=createCalendarSnapshotStore(f.storage);await cache.write('o',[period()]);const writing=cache.write('o',[period('new')]);const clearing=cache.clear('o');await Promise.all([writing,clearing]);assert.deepEqual(await cache.read('o'),[]);assert.equal(f.data.size,0);});
 test('bounded snapshot history and missing chunks cannot masquerade as a complete cache',async()=>{const f=fixture(),cache=createCalendarSnapshotStore(f.storage);await cache.write('o',Array.from({length:14},(_,i)=>period(String(i))));assert.equal((await cache.read('o')).length,12);const key=[...f.data.keys()].find(k=>k.split('.').length>3)!;f.data.delete(key);assert.deepEqual(await cache.read('o'),[]);});
+
+test('identical display data does not rewrite keychain chunks on every refresh',async()=>{
+ const f=fixture();
+ let writes=0;
+ const cache=createCalendarSnapshotStore({...f.storage,set:async(key,value)=>{writes++;await f.storage.set(key,value);}});
+ await cache.write('owner',[period()]);
+ const count=writes;
+ await cache.write('owner',[{...period(),readAt:'2026-11-16T01:00:00Z'}]);
+ assert.equal(writes,count);
+});

@@ -1,4 +1,4 @@
-import {eventOccurs,shiftDay} from './calendar-model.ts';
+import {eventOverlaps} from './calendar-model.ts';
 import type {CalendarEvent} from './calendar-model.ts';
 type Entry={event:CalendarEvent;replaces?:string;confirmedUntil?:number};
 const writes=new Map<string,Map<string,Entry>>(),listeners=new Map<string,Set<()=>void>>();
@@ -38,8 +38,8 @@ export function clearCalendarWrites(owner:string){writes.delete(owner);deletions
 export function watchCalendarWrites(owner:string,fn:()=>void){const set=listeners.get(owner)??new Set();set.add(fn);listeners.set(owner,set);return()=>{set.delete(fn);if(!set.size)listeners.delete(owner);};}
 /** Optimism lives only in memory, outside persisted provider snapshots and their
  * permission/ETag authority. Both Duo panes and Todo consume the same overlay. */
-export function overlayCalendarWrites(owner:string,events:CalendarEvent[],start:string,end:string,zone:string,selected:string[]){
- let result=[...events];
+export function overlayCalendarWrites(owner:string,events:CalendarEvent[],start:string,end:string,zone:string,selected:string[],deviceEvents:CalendarEvent[]=[]){
+ let result=[...events,...deviceEvents.filter(event=>eventOverlaps(event,start,end,zone))];
  for(const {event,replaces,confirmedUntil} of writes.get(owner)?.values()??[]){
   if(confirmedUntil&&confirmedUntil<=Date.now())continue;
   const same=(e:CalendarEvent)=>matchesEvent(e,event);
@@ -49,7 +49,7 @@ export function overlayCalendarWrites(owner:string,events:CalendarEvent[],start:
   result=result.filter(e=>current?same(e)||e.id!==replaces:e.id!==replaces&&!same(e));
   if(current)continue;
   if(!selected.includes(event.calendarId??'primary'))continue;
-  for(let day=start;day<end;day=shiftDay(day,1))if(eventOccurs(event,day,zone)){result.push(event);break;}
+  if(eventOverlaps(event,start,end,zone))result.push(event);
  }
  for(const removed of deletions.get(owner)?.values()??[])result=result.filter(e=>!matchesEvent(e,removed)&&(!removed.mirror||!matchesCalendarMirror(e,removed.mirror)));
  return result;

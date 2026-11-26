@@ -331,7 +331,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  const docenWrites=[];
  await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
  await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
- let finishDelete;
+ let finishDelete,acceptWrites=false;
  await linked.route(linkedOrigin+'/**',async route=>{
   const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
   if(path==='/api/auth/session')return route.fulfill({json:{user:{id:'linked-user',email:'linked@example.test',emailVerified:true}}});
@@ -351,9 +351,8 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    const {target,args,fields}=route.request().postDataJSON();
    docenWrites.push({path,body:route.request().postDataJSON()});
    assert.equal(target.calendarId,selectedCalendar);assert.equal(target.connectionId,connectedId);
-   docenSaved={id:'docen:confirmed',eventId:path.split('/').at(-1),calendarId:'@docen',provider:'docen',canWrite:true,etag:'1',title:args.title,allDay:args.allDay,dueDate:args.startDate,endDate:args.endDate,color:target.color,duckDetails:{revision:1,fields},mirror:{...target,state:'queued',externalEventId:'provider-id'}};
-   // The first write commits, but the transport loses its response.
-   if(docenWrites.length===1)return route.abort('failed');
+   if(!acceptWrites)return route.abort('failed');
+   docenSaved={id:'docen:'+path.split('/').at(-1),eventId:path.split('/').at(-1),calendarId:'@docen',provider:'docen',canWrite:true,etag:'1',title:args.title,allDay:args.allDay,dueDate:args.startDate,endDate:args.endDate,color:target.color,duckDetails:{revision:1,fields},mirror:{...target,state:'queued',externalEventId:'provider-id'}};
    return route.fulfill({json:docenSaved});
   }
   if(path.startsWith('/api/assistant/actions')&&method==='POST')googleWrites++;
@@ -361,7 +360,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
   return route.fulfill({json:[]});
  });
  await linked.addInitScript(([base,calendar])=>localStorage.setItem('duck.calendar.selection.'+base+':linked-user',JSON.stringify(['primary',calendar])),[linkedOrigin,selectedCalendar]);
- await linked.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard');
+ await linked.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard&deviceQueue=1');
  const linkedDay=linked.getByTestId('week-date-2026-11-25');
  await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
  const linkedSheet=linked.getByTestId('calendar-sheet');
@@ -370,11 +369,18 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await linkedSheet.getByRole('button',{name:'일정 저장',exact:true}).click();
  const written=linked.getByRole('button',{name:'도슨에 먼저 저장 종일 일정 상세',exact:true});
  await written.waitFor();
- assert.equal(docenWrites.length,2);
- assert.deepEqual(docenWrites[0],docenWrites[1]);
- assert.equal(googleWrites,0);
+ assert.ok(!docenSaved);
+ await written.click();
+ await linkedSheet.getByTestId('calendar-source-name').filter({hasText:'원본 팀 일정'}).waitFor();
+ assert.equal(await linkedSheet.getByText('원본 캘린더로 전송 중',{exact:true}).count(),0);
  await linked.reload();
  await written.waitFor();
+ assert.ok(!docenSaved,'pending item is displayed from the device journal after reload');
+ acceptWrites=true;
+ await linked.waitForResponse(r=>r.request().method()==='PUT'&&r.url().startsWith(linkedOrigin+'/api/calendar/docen/'));
+ assert.ok(docenWrites.length>=2);
+ assert.ok(docenWrites.every(write=>JSON.stringify(write)===JSON.stringify(docenWrites[0])));
+ assert.equal(googleWrites,0);
  docenSaved.mirror.state='synced';mirrorReady=true;
  await linked.reload();
  await written.waitFor();
@@ -389,5 +395,5 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  assert.equal(await linked.getByTestId('week-span-original').count(),0);
  while(!finishDelete)await new Promise(resolve=>setTimeout(resolve,10));
  finishDelete();
- console.log('PASS phone: Docen commits before Google, survives reload, deduplicates, and hides both cards before DELETE answers');await linked.close();
+ console.log('PASS phone: device schedule and chosen destination survive an offline reload, retransmission deduplicates, and hides both cards before DELETE answers');await linked.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

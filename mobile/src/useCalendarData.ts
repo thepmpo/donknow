@@ -1,6 +1,6 @@
 import {overlayCalendarWrites,watchCalendarWrites} from './calendar-write-overlay';
 import {calendarSnapshotRevision,invalidateCalendarSnapshotReads,calendarSnapshots,restoreCalendarSnapshots,persistCalendarSnapshots,forgetCalendarSnapshots,watchCalendarSnapshots,broadcastCalendarSnapshots} from './calendar-snapshot-cache';
-import {useCallback,useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {AppState} from 'react-native';
 import {validCalendarPage} from './http-response';
 import {docenCalendarId,zonedDay} from './calendar-model';
@@ -9,25 +9,28 @@ import type {CalendarEvent,CalendarMirror,CalendarSource} from './calendar-model
 import type {CalendarSnapshot as CachedPeriod} from './calendar-snapshot-store';
 import {savedCalendarRange} from './calendar-snapshot-range';
 import {readCalendarOnce} from './calendar-snapshot-cache';
-type Page={hiddenMirrors?:(Omit<CalendarMirror,'state'>&{id:string;state:string})[];calendarId?:string;items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
+const noHiddenMirrors:NonNullable<Page['hiddenMirrors']>=[];
+const noAppleCreates:CalendarEvent[]=[];
+type Page={appleCreates?:CalendarEvent[];hiddenMirrors?:(Omit<CalendarMirror,'state'>&{id:string;state:string})[];calendarId?:string;items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
 export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active,selectionReady=true}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean;selectionReady?:boolean}){
  const [sourceLoading,setSourceLoading]=useState(false),[sourceLoaded,setSourceLoaded]=useState(false);
  const [docenSupported,setDocenSupported]=useState(false),[localFirst,setLocalFirst]=useState(false);
  const [detailsSupported,setDetailsSupported]=useState(false),[createOptionsSupported,setCreateOptionsSupported]=useState(false);
- const [,writeChanged]=useState(0);
- const [hidden,setHidden]=useState<{owner:string;mirrors:NonNullable<Page['hiddenMirrors']>}|null>(null);
+ const [writeRevision,writeChanged]=useState(0);
+ const [hidden,setHidden]=useState<{owner:string;mirrors:NonNullable<Page['hiddenMirrors']>;appleCreates:CalendarEvent[]}|null>(null);
  const [events,setEvents]=useState<CalendarEvent[]>([]),[sources,setSources]=useState<CalendarSource[]>([]);
  const [phase,setPhase]=useState<'unconnected'|'loading'|'ready'|'partial'|'error'>(store.user?'loading':'unconnected'),[error,setError]=useState(''),[readAt,setReadAt]=useState<string|null>(null),[cursors,setCursors]=useState<Record<string,string>>({}),[version,setVersion]=useState<2|1|0>(0),[sourceError,setSourceError]=useState(''),[sourceCursor,setSourceCursor]=useState<string|null>(null);
  const readRevision=useRef(0);
  const generation=useRef(0),sourceGeneration=useRef(0),lastKey=useRef(''),snapshot=useRef<CalendarEvent[]>([]),cursorRef=useRef(cursors);cursorRef.current=cursors;
  const owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
- const readSelected=docenSupported?[...new Set([...selected,docenCalendarId])]:selected;
+ const readSelected=[...new Set([...selected,docenCalendarId])];
  const family=JSON.stringify([owner,timeZone]),key=JSON.stringify([family,[...selected].sort(),start,end]),latest=useRef({key,owner,active});latest.current={key,owner,active};
  const periods=useRef(calendarSnapshots(owner)),cacheOwner=useRef(owner),capabilities=useRef<{version:1|2;at:number;details:boolean;createOptions:boolean;docen:boolean;localFirst:boolean}|null>(null),pageChains=useRef(new Map<string,{key:string;items:CalendarEvent[]}>());
+ const display=useMemo(()=>cacheOwner.current!==owner?[]:lastKey.current===key?events:savedCalendarRange(periods.current.values(),key,family,readSelected,start,end,timeZone).items,[owner,key,events]);
  const eventKey=(e:CalendarEvent)=>JSON.stringify([e.connectionId??'',e.calendarId??'primary',e.eventId??e.id]);
  function inPeriod(e:CalendarEvent,rangeStart=start,rangeEnd=end,rangeZone=timeZone){const first=e.allDay?e.dueDate:e.startAt?zonedDay(e.startAt,rangeZone):e.dueDate,last=e.allDay?e.endDate:e.endAt?zonedDay(Math.max(Date.parse(e.startAt??e.endAt),Date.parse(e.endAt)-1),rangeZone):first;return !!first&&first<rangeEnd&&(e.allDay&&e.endDate?e.endDate>rangeStart:(last??first)>=rangeStart);}
  function periodZone(entry:CachedPeriod){try{return JSON.parse(entry.family)[1]??timeZone;}catch{return timeZone;}}
- function remember(){periods.current.delete(key);periods.current.set(key,{key,family,start,end,items:[...snapshot.current],readAt:readAtRef.current,cursors:{...cursorRef.current}});while(periods.current.size>12)periods.current.delete(periods.current.keys().next().value!);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);}
+ function remember(){periods.current.delete(key);periods.current.set(key,{key,family,start,end,items:[...snapshot.current],readAt:readAtRef.current,cursors:{...cursorRef.current}});while(periods.current.size>12)periods.current.delete(periods.current.keys().next().value!);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner,snapshot.current);}
  const readAtRef=useRef(readAt);readAtRef.current=readAt;
  const featureRequest=store.featureRequest;
  const request=useCallback((path:string)=>readCalendarOnce(owner,path,featureRequest),[owner,featureRequest]);
@@ -54,7 +57,11 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
    const pages=await Promise.allSettled(ids.filter(id=>!more||cursorRef.current[id]).map(async id=>{
     const query=new URLSearchParams({month,...(v===2?{v:'2',calendarId:id,timeZone,start,end}:{}),...(more&&cursorRef.current[id]?{cursor:cursorRef.current[id]}:{})});
     const result=await request('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
-    if(id===docenCalendarId)setHidden({owner,mirrors:Array.isArray(result.hiddenMirrors)?result.hiddenMirrors:[]});
+    if(id===docenCalendarId){
+     const mirrors=Array.isArray(result.hiddenMirrors)&&result.hiddenMirrors.length?result.hiddenMirrors:noHiddenMirrors;
+     const appleCreates=Array.isArray(result.appleCreates)&&result.appleCreates.length?result.appleCreates:noAppleCreates;
+     setHidden(old=>old?.owner===owner&&JSON.stringify(old.mirrors)===JSON.stringify(mirrors)&&JSON.stringify(old.appleCreates)===JSON.stringify(appleCreates)?old:{owner,mirrors,appleCreates});
+    }
     arrivedIds.add(id);
     // A replaced account is not a slow page of the former account. Token rotation keeps connectionId.
     const replaced=new Set(snapshot.current.filter(e=>(e.calendarId??'primary')===id&&e.connectionId&&result.connectionId&&e.connectionId!==result.connectionId).map(e=>e.connectionId!));
@@ -64,7 +71,8 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
     if(result.connectionState==='unconnected'){snapshot.current=snapshot.current.filter(e=>(e.calendarId??'primary')!==id);for(const cached of periods.current.values())cached.items=cached.items.filter(e=>(e.calendarId??'primary')!==id);}
     const chainKey=key+'|'+id,prior=more?pageChains.current.get(chainKey):undefined,chain={key,items:[...new Map([...(prior?.key===key?prior.items:[]),...result.items].map(e=>[eventKey(e),e])).values()]};pageChains.current.set(chainKey,chain);while(pageChains.current.size>120)pageChains.current.delete(pageChains.current.keys().next().value!);
     const complete=!result.nextCursor;
-    snapshot.current=[...new Map([...(complete?snapshot.current.filter(e=>(e.calendarId??'primary')!==id):snapshot.current),...chain.items].map(e=>[eventKey(e),e])).values()];
+    const updated=[...new Map([...(complete?snapshot.current.filter(e=>(e.calendarId??'primary')!==id):snapshot.current),...chain.items].map(e=>[eventKey(e),e])).values()];
+    if(JSON.stringify(snapshot.current)!==JSON.stringify(updated))snapshot.current=updated;
     // Update overlapping cached periods too, including deletions after the final page.
     // A 2-week refresh must not resurrect old titles when returning to month view.
     for(const cached of periods.current.values())if(cached.family===family){
@@ -72,7 +80,10 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
     }
     setEvents(snapshot.current);cursorRef.current={...next};setCursors(cursorRef.current);
     if(result.readAt)readTimes.push(result.readAt);if(readTimes.length){readAtRef.current=readTimes.sort().at(-1)!;setReadAt(readAtRef.current);}
-    setSources(old=>old.map(s=>s.id===id?{...s,canWrite:result.canWrite===true,connectionId:result.connectionId??s.connectionId}:s));ok.push(result);remember();
+    setSources(old=>{
+     const source=old.find(value=>value.id===id),canWrite=result.canWrite===true,connectionId=result.connectionId??source?.connectionId;
+     return !source||source.canWrite===canWrite&&source.connectionId===connectionId?old:old.map(value=>value===source?{...value,canWrite,connectionId}:value);
+    });ok.push(result);remember();
    }));if(!fresh())return;
    const failed=pages.filter(p=>p.status==='rejected');
    if(!ok.length&&failed.length)throw (failed[0] as PromiseRejectedResult).reason;
@@ -86,16 +97,16 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  // Warm the retained calendar once after login; hiding the tab does not throw away its read.
  useEffect(()=>{void load();return()=>{generation.current++;};},[load]);
  useEffect(()=>{if(active&&!wasActive.current&&phaseRef.current!=='loading')void load();wasActive.current=active;},[active]);
- useEffect(()=>watchCalendarSnapshots(owner,signal=>{if(latest.current.owner!==owner||latest.current.key!==key)return;if(signal==='clear'){generation.current++;snapshot.current=[];setEvents([]);cursorRef.current={};setCursors({});setPhase('unconnected');return;}if(signal==='refresh'){void load();void loadSources();return;}const cached=savedCalendarRange(calendarSnapshots(owner).values(),key,family,readSelected,start,end,timeZone);snapshot.current=cached.items;setEvents(snapshot.current);if(readRevision.current!==calendarSnapshotRevision(owner))void load();}),[owner,key,load]);
+ useEffect(()=>watchCalendarSnapshots(owner,(signal,published)=>{if(latest.current.owner!==owner||latest.current.key!==key)return;if(signal==='clear'){generation.current++;snapshot.current=[];setEvents([]);cursorRef.current={};setCursors({});setPhase('unconnected');return;}if(signal==='refresh'){void load();void loadSources();return;}if(published===snapshot.current)return;const cached=savedCalendarRange(calendarSnapshots(owner).values(),key,family,readSelected,start,end,timeZone);snapshot.current=cached.items;setEvents(snapshot.current);if(readRevision.current!==calendarSnapshotRevision(owner))void load();}),[owner,key,load]);
  useEffect(()=>{const subscription=AppState.addEventListener('change',state=>{if(state==='active'&&latest.current.active)void load();});return()=>subscription.remove();},[load]);
  useEffect(()=>{if(!active||!store.user||!selectionReady)return;const timer=setInterval(()=>{if(AppState.currentState==='active'&&phaseRef.current!=='loading')void load();},30000);return()=>clearInterval(timer);},[active,store.user?.id,selectionReady,load]);
  useEffect(()=>{sourceGeneration.current++;setSources([]);setSourceLoading(false);setSourceLoaded(false);setSourceCursor(null);setSourceError('');},[owner]);
  useEffect(()=>()=>{sourceGeneration.current++;},[]);
  async function loadSources(more=false){const run=++sourceGeneration.current,own=owner;setSourceLoading(true);setSourceError('');try{const result=await request('/api/calendar/calendars'+(more&&sourceCursor?'?cursor='+encodeURIComponent(sourceCursor):'')) as {items:CalendarSource[];nextCursor:string|null;failedConnectionIds?:string[]};if(run!==sourceGeneration.current||latest.current.owner!==own)return;setSources(previous=>[...new Map([...(more?previous:previous.filter(p=>!!p.connectionId&&result.failedConnectionIds?.includes(p.connectionId))),...result.items.map(c=>{const id=c.primary?'primary':c.id,prior=previous.find(p=>p.connectionId===c.connectionId&&p.id==='@g/'+c.connectionId+'/'+id);return {...c,id:prior?.id??id,...(prior?{primary:false}: {})};})].map(s=>[s.id,s])).values()]);setSourceCursor(result.nextCursor??null);if(result.failedConnectionIds?.length)setSourceError('일부 계정의 목록을 확인하지 못했어요. 이전 목록은 유지돼요.');}catch(e){if(run===sourceGeneration.current&&latest.current.owner===own)setSourceError(e instanceof Error?e.message:'캘린더 목록을 읽지 못했어요.');}finally{if(run===sourceGeneration.current&&latest.current.owner===own){setSourceLoading(false);setSourceLoaded(true);}}}
- function removeEvent(id:string){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);snapshot.current=snapshot.current.filter(e=>e.id!==id);for(const entry of periods.current.values())entry.items=entry.items.filter(e=>e.id!==id);pageChains.current.clear();setEvents(snapshot.current);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);}
- function applyEvent(id:string,patch:Partial<CalendarEvent>){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);const old=snapshot.current.find(e=>e.id===id)??[...periods.current.values()].flatMap(p=>p.items).find(e=>e.id===id);if(!old){broadcastCalendarSnapshots(owner);return;}const updated={...old,...patch};snapshot.current=[...snapshot.current.filter(e=>e.id!==id),...(inPeriod(updated)?[updated]:[])];for(const entry of periods.current.values()){entry.items=entry.items.filter(e=>e.id!==id);if(inPeriod(updated,entry.start,entry.end,periodZone(entry)))entry.items.push(updated);}setEvents(snapshot.current);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner);}
+ function removeEvent(id:string){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);snapshot.current=snapshot.current.filter(e=>e.id!==id);for(const entry of periods.current.values())entry.items=entry.items.filter(e=>e.id!==id);pageChains.current.clear();setEvents(snapshot.current);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner,snapshot.current);}
+ function applyEvent(id:string,patch:Partial<CalendarEvent>){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);const old=snapshot.current.find(e=>e.id===id)??[...periods.current.values()].flatMap(p=>p.items).find(e=>e.id===id);if(!old){broadcastCalendarSnapshots(owner);return;}const updated={...old,...patch};snapshot.current=[...snapshot.current.filter(e=>e.id!==id),...(inPeriod(updated)?[updated]:[])];for(const entry of periods.current.values()){entry.items=entry.items.filter(e=>e.id!==id);if(inPeriod(updated,entry.start,entry.end,periodZone(entry)))entry.items.push(updated);}setEvents(snapshot.current);persistCalendarSnapshots(owner);broadcastCalendarSnapshots(owner,snapshot.current);}
  function upsertEvent(event:CalendarEvent){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);for(const entry of periods.current.values())if(inPeriod(event,entry.start,entry.end,periodZone(entry)))entry.items=[...entry.items.filter(e=>e.id!==event.id),event];if(inPeriod(event))snapshot.current=[...snapshot.current.filter(e=>e.id!==event.id),event];setEvents(snapshot.current);remember();}
  function cachedEvents(){return [...new Map([...periods.current.values()].filter(p=>p.family===family).flatMap(p=>p.items).concat(snapshot.current).map(e=>[eventKey(e),e])).values()];}
  useEffect(()=>watchCalendarWrites(owner,()=>writeChanged(v=>v+1)),[owner]);
- return {hiddenMirrors:hidden?.owner===owner?hidden.mirrors:[],cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,docenSupported,localFirst,baseEvents:events,events:overlayCalendarWrites(owner,events,start,end,timeZone,readSelected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceLoaded,sourceError,sourceCursor,load,loadSources};
+ return {appleCreates:hidden?.owner===owner?hidden.appleCreates:noAppleCreates,writeRevision,hiddenMirrors:hidden?.owner===owner?hidden.mirrors:noHiddenMirrors,cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,docenSupported,localFirst,baseEvents:display,events:overlayCalendarWrites(owner,display,start,end,timeZone,readSelected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceLoaded,sourceError,sourceCursor,load,loadSources};
 }

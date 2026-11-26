@@ -13,18 +13,21 @@ import {Button,Label} from './ui';
 import {colors,typography} from './theme';
 import {docenCalendarId,groupCalendarSources,validZone,safeCalendarLink} from './calendar-model';
 import type {CalendarEvent,CalendarMirrorTarget,CalendarSource} from './calendar-model';
+import type {QueuedCalendarCreate} from './calendar-create-queue';
 import type {TodoStore} from './useTodos';
 export {eventDraft} from './calendar-edit-model';
 export type {CalendarDraft} from './calendar-edit-model';
 import {calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './calendar-edit-model';
 import type {CalendarDraft} from './calendar-edit-model';
 export function CalendarDateField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} onChange={v=>v&&onChange(v)} stacked/>;}
-export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDraft,event?:CalendarEvent,target?:CalendarMirrorTarget){
+function docenEventPayload(draft:CalendarDraft,event?:CalendarEvent,target?:CalendarMirrorTarget){
  const {calendarId,...args}=calendarWriteArgs({...draft,location:'',...(!target?{repeat:'none',guests:''}:{})})!;
  delete args.location;
  const fields={...event?.duckDetails?.fields,...calendarDuckPatch(draft,event)};
- const path='/api/calendar/docen/'+encodeURIComponent(id);
- const payload={args,fields,revision:event?.duckDetails?.revision??0,...(target?{target}:{})};
+ return {args,fields,revision:event?.duckDetails?.revision??0,...(target?{target}:{})};
+}
+export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDraft,event?:CalendarEvent,target?:CalendarMirrorTarget){
+ const path='/api/calendar/docen/'+encodeURIComponent(id),payload=docenEventPayload(draft,event,target);
  let saved:CalendarEvent;
  try{saved=await store.featureRequest(path,'PUT',payload) as CalendarEvent;}
  catch(error){
@@ -37,19 +40,20 @@ export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDra
 function TimeField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} mode="time" onChange={v=>v&&onChange(v)} stacked/>;}
 export type CalendarPending={args?:Record<string,unknown>;id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null;etag?:string}};
 export type CalendarActionState={pending:CalendarPending;locked:boolean;remoteDone?:boolean;savedEventId?:string};
-export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,createOptionsAvailable=false,localFirst=false,sourceLoading=false,onSaveNative,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission,onBackgroundSave}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;createOptionsAvailable?:boolean;localFirst?:boolean;sourceLoading?:boolean;onSaveNative?:(draft:CalendarDraft,event?:CalendarEvent)=>Promise<CalendarEvent>;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void;onBackgroundSave?:(job:{optimistic:CalendarEvent;run:()=>Promise<Partial<CalendarEvent>>;check:()=>Promise<Partial<CalendarEvent>>})=>void}){
+export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,createOptionsAvailable=false,localFirst=false,sourceLoading=false,onSaveNative,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission,onBackgroundSave,onDeviceCreate}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;createOptionsAvailable?:boolean;localFirst?:boolean;sourceLoading?:boolean;onSaveNative?:(draft:CalendarDraft,event?:CalendarEvent)=>Promise<CalendarEvent>;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void;onDeviceCreate?:(job:QueuedCalendarCreate)=>Promise<void>;onBackgroundSave?:(job:{optimistic:CalendarEvent;run:()=>Promise<Partial<CalendarEvent>>;check:()=>Promise<Partial<CalendarEvent>>})=>void}){
  const keyboard=useKeyboardUX();
  const scrollRef=useRef<React.ComponentRef<typeof ScrollView>|null>(null);
  const titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),notesRef=useRef<React.ComponentRef<typeof TextInput>>(null),localField=useFocusedField(scrollRef),parentReveal=useContext(ScrollRevealContext),inlineFocused=useRef<React.ComponentRef<typeof TextInput>|null>(null);
  const field=inline?{...localField,show:parentReveal,focus:(input:React.ComponentRef<typeof TextInput>|null)=>{inlineFocused.current=input;parentReveal(input);},reveal:()=>parentReveal(inlineFocused.current)}:localField;
  const pending=actionState?.pending??null,locked=actionState?.locked??false;
+ const destinationChosen=useRef<CalendarSource|null>(null);
  const [picker,setPicker]=useState<{row:'시작'|'종료';mode:'date'|'time'}|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[calendarOpen,setCalendarOpen]=useState(false),[reminderOpen,setReminderOpen]=useState(false),[repeatOpen,setRepeatOpen]=useState(false);
  const update=(patch:Partial<CalendarDraft>)=>onDraft({...draft,...patch});
  const source=sources.find(c=>c.id===draft.calendarId),canWrite=event?event.canWrite===true:source?.canWrite===true;
  const writableDestination=sources.find(calendar=>calendar.canWrite&&(!sourceError||isAppleCalendar(calendar.id)||calendar.id===docenCalendarId));
  useEffect(()=>{
-  if(!event&&!pending&&!sourceLoading&&!canWrite&&writableDestination){
+  if(!event&&!pending&&!destinationChosen.current&&!sourceLoading&&!canWrite&&writableDestination){
    onDraft({...draft,calendarId:writableDestination.id});
   }
  },[event,pending,sourceLoading,canWrite,writableDestination?.id,draft,onDraft]);
@@ -82,6 +86,13 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    if(!canWrite)throw Error('일정을 저장할 수 없어요.');
    const id=docenId.current??=event?.eventId??('event-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2));
    const target=docen?undefined:{provider:native?'apple-calendar' as const:'google' as const,calendarId:draft.calendarId,connectionId:source?.connectionId,name:source?.name,color:source?.color};
+   if(onDeviceCreate&&!event){
+    const payload={...docenEventPayload(draft,undefined,target),revision:0 as const};
+    const local:CalendarEvent={...confirmedCalendarPatch(draft),id:'docen:'+id,eventId:id,provider:'docen',calendarId:docenCalendarId,
+     calendarName:target?.name??source?.name??'도슨 캘린더',title:draft.title.trim(),dueDate:draft.startDay,color:source?.color,canWrite:false,
+     duckDetails:{revision:0,fields:payload.fields},...(target?{mirror:{...target,state:'queued' as const}}:{})};
+    await onDeviceCreate({id,event:local,payload});return;
+   }
    onSaved(await saveDocenEvent(store,id,draft,event,target));
    return;
   }
@@ -173,13 +184,13 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    </View>
    {!event&&!docen&&!native&&createOptionsAvailable&&<View style={s.group}><Text style={s.help}>초대받는 사람</Text><TextInput accessibilityLabel="일정 초대 이메일" placeholder="이메일 주소 · 여러 명은 쉼표로 구분" placeholderTextColor={colors.muted} value={draft.guests??''} onChangeText={guests=>update({guests})} autoCapitalize="none" keyboardType="email-address" maxLength={5100} style={s.input}/></View>}
 
-   <View style={[s.group,{gap:0}]}><Pressable accessibilityRole="button" accessibilityLabel="저장할 캘린더 선택" accessibilityState={{expanded:calendarOpen,busy:sourceLoading}} disabled={readonly} onPress={()=>{setPicker(null);setReminderOpen(false);setCalendarOpen(v=>!v);}} style={s.row}><Text style={s.title}>캘린더</Text><View style={s.trailing}><Text numberOfLines={1} style={[s.help,{flexShrink:1,color:colors.text}]}>{source?.name??event?.calendarName??(sourceLoading?'확인 중':sourceError?'연결 확인':'선택')}</Text>{!readonly&&<Ionicons name={calendarOpen?'chevron-up':'chevron-down'} size={17} color={colors.muted}/>}</View></Pressable>
+   <View style={[s.group,{gap:0}]}><Pressable accessibilityRole="button" accessibilityLabel="저장할 캘린더 선택" accessibilityState={{expanded:calendarOpen,busy:sourceLoading}} disabled={readonly} onPress={()=>{setPicker(null);setReminderOpen(false);setCalendarOpen(v=>!v);}} style={s.row}><Text style={s.title}>캘린더</Text><View style={s.trailing}><Text numberOfLines={1} style={[s.help,{flexShrink:1,color:colors.text}]}>{source?.name??destinationChosen.current?.name??event?.mirror?.name??event?.calendarName??(sourceLoading?'확인 중':sourceError?'연결 확인':'선택')}</Text>{!readonly&&<Ionicons name={calendarOpen?'chevron-up':'chevron-down'} size={17} color={colors.muted}/>}</View></Pressable>
     {calendarOpen&&<View testID="calendar-destination-menu" style={s.popup}>
     {groupCalendarSources(sources).map((group,index)=><View key={group.id} testID="calendar-destination-account" accessibilityRole="radiogroup" accessibilityLabel={group.label} style={[s.calendarGroup,index>0&&s.choiceDivider]}>
      <Text numberOfLines={1} style={s.calendarAccount}>{group.label}</Text>
      {group.items.map(c=>{
       const disabled=!c.canWrite||!!event&&(event.provider==='apple-calendar'||event.provider==='docen'?c.id!==event.calendarId:c.id===docenCalendarId||!!event.connectionId&&c.connectionId!==event.connectionId);
-      return <Pressable key={c.id} accessibilityRole="radio" accessibilityLabel={'캘린더 '+c.name} accessibilityState={{checked:c.id===draft.calendarId,disabled}} disabled={disabled} onPress={()=>{update({calendarId:c.id,...(c.id===docenCalendarId?{repeat:'none',guests:''}:{})});setCalendarOpen(false);}} style={s.calendarChoice}>
+      return <Pressable key={c.id} accessibilityRole="radio" accessibilityLabel={'캘린더 '+c.name} accessibilityState={{checked:c.id===draft.calendarId,disabled}} disabled={disabled} onPress={()=>{destinationChosen.current=c;update({calendarId:c.id,...(c.id===docenCalendarId?{repeat:'none',guests:''}:{})});setCalendarOpen(false);}} style={s.calendarChoice}>
        <View style={[s.calendarDot,{backgroundColor:c.color??colors.blue},disabled&&{opacity:.5}]}/>
        <Text numberOfLines={2} style={[s.help,{flex:1,minWidth:0,color:disabled?colors.muted:colors.text}]}>{c.name}</Text>
        <View style={s.checkSlot}>{c.id===draft.calendarId&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</View>

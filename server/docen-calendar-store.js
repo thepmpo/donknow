@@ -52,8 +52,9 @@ export function docenCalendarStore(db,box){
   readDocenCalendar(user,start,end,zone){
    if(!start||!end||!validDate(start)||!validDate(end)||end<=start||Date.parse(end)-Date.parse(start)>370*86400000)throw fail(400,'조회할 날짜 범위를 확인해주세요.');
    zone=calendarZone(zone);
-   const items=rows(user).map(row=>event(decode(row),zone,mirror(row.delivery_state?{state:row.delivery_state,data:row.delivery_data,available_at:row.delivery_due}:null))).filter(e=>e.dueDate<end&&(e.allDay?e.endDate>start:calendarDay(Date.parse(e.endAt)-1,zone)>=start));
-   return {items,nextCursor:null,connectionState:'connected',readAt:new Date().toISOString(),calendarId:docenCalendarId,canWrite:true,hiddenMirrors:pendingDeletes(user)};
+   const events=rows(user).map(row=>event(decode(row),zone,mirror(row.delivery_state?{state:row.delivery_state,data:row.delivery_data,available_at:row.delivery_due}:null)));
+   const items=events.filter(e=>e.dueDate<end&&(e.allDay?e.endDate>start:calendarDay(Date.parse(e.endAt)-1,zone)>=start));
+   return {items,nextCursor:null,connectionState:'connected',readAt:new Date().toISOString(),calendarId:docenCalendarId,canWrite:true,hiddenMirrors:pendingDeletes(user),appleCreates:events.filter(e=>e.mirror?.provider==='apple-calendar'&&e.mirror.state==='queued').slice(0,100)};
   },
   saveDocenCalendarEvent(user,id,body){
    let target;

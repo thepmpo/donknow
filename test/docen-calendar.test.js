@@ -41,6 +41,9 @@ test('Apple delivery has one owner-bound device claim and keeps an uncertain loc
   const save=await h.request(path,'PUT',body,owner.token);
   assert.equal(save.status,200);
   assert.equal(save.data.mirror.state,'queued');
+  const outsideRange=await h.request('/api/calendar/events?calendarId=%40docen&start=2026-12-01&end=2026-12-08&timeZone=Asia%2FSeoul', 'GET',undefined,owner.token);
+  assert.deepEqual(outsideRange.data.items,[]);
+  assert.equal(outsideRange.data.appleCreates[0].id,save.data.id);
   const delivery=path+'/apple-delivery';
   assert.equal((await h.request(delivery,'POST',{state:'sending'},other.token)).status,404);
   assert.equal((await h.request(delivery,'POST',{state:'sending'},owner.token)).status,200);

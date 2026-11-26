@@ -18,7 +18,14 @@ export function groupCalendarSources(sources:CalendarSource[]){
 export type CalendarView='month'|'fortnight'|'week'|'day'|'list';
 export function deviceZone(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Seoul';}catch{return 'Asia/Seoul';}}
 export function validZone(zone:string){try{new Intl.DateTimeFormat('en',{timeZone:zone});return !!zone;}catch{return false;}}
-export function zonedDay(value:string|number|Date,zone:string){return new Intl.DateTimeFormat('sv-SE',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}
+const dateFormats=new Map<string,Intl.DateTimeFormat>(),timeFormats=new Map<string,Intl.DateTimeFormat>();
+function zoneFormat(cache:Map<string,Intl.DateTimeFormat>,zone:string,locale:string,options:Intl.DateTimeFormatOptions){
+ let format=cache.get(zone);
+ if(!format){format=new Intl.DateTimeFormat(locale,{timeZone:zone,...options});if(cache.size>=16)cache.delete(cache.keys().next().value!);cache.set(zone,format);}
+ return format;
+}
+export function zonedDay(value:string|number|Date,zone:string){return zoneFormat(dateFormats,zone,'sv-SE',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}
+const timeFormat=(zone:string)=>zoneFormat(timeFormats,zone,'ko-KR',{hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
 export function shiftDay(day:string,amount:number){const d=new Date(day+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+amount);return d.toISOString().slice(0,10);}
 export function weekDays(day:string,startDay=0){const d=new Date(day+'T12:00:00Z');const first=shiftDay(day,-((d.getUTCDay()-startDay+7)%7));return Array.from({length:7},(_,i)=>shiftDay(first,i));}
 export function visibleDays(month:string,selected:string,view:CalendarView,startDay=0){
@@ -29,13 +36,32 @@ export function visibleDays(month:string,selected:string,view:CalendarView,start
  const count=Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(first+'T12:00:00Z'))/86400000)+1;
  return Array.from({length:count},(_,i)=>shiftDay(first,i));
 }
-export function eventOccurs(event:CalendarEvent,day:string,zone:string){
- const start=event.allDay?event.dueDate:event.startAt?zonedDay(event.startAt,zone):event.dueDate;
- const last=event.allDay?(event.endDate?shiftDay(event.endDate,-1):start):event.endAt?zonedDay(Date.parse(event.endAt)-1,zone):event.endDate??start;
- return !!start&&day>=start&&day<=(last??start);
+function eventDateSpan(event:CalendarEvent,zone:string){
+ const first=event.allDay?event.dueDate:event.startAt?zonedDay(event.startAt,zone):event.dueDate;
+ const last=event.allDay?(event.endDate?shiftDay(event.endDate,-1):first):event.endAt?zonedDay(Date.parse(event.endAt)-1,zone):event.endDate??first;
+ return {first,last:last??first};
 }
-export function eventTime(event:CalendarEvent,zone:string){if(event.allDay)return '종일';if(!event.startAt)return '시간 미정';const f=new Intl.DateTimeFormat('ko-KR',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'});return f.format(new Date(event.startAt))+(event.endAt?' – '+f.format(new Date(event.endAt)):'');}
-export function minutesAt(instant:string,zone:string){const p=Object.fromEntries(new Intl.DateTimeFormat('en',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(instant)).map(x=>[x.type,x.value]));return +p.hour*60 + +p.minute;}
+export function eventOverlaps(event:CalendarEvent,start:string,end:string,zone:string){
+ const {first,last}=eventDateSpan(event,zone);
+ return !!first&&!!last&&first<end&&last>=start;
+}
+export function eventOccurs(event:CalendarEvent,day:string,zone:string){
+ const {first,last}=eventDateSpan(event,zone);
+ return !!first&&!!last&&day>=first&&day<=last;
+}
+export function calendarEventsByDay(events:CalendarEvent[],days:string[],zone:string){
+ const byDay=new Map<string,CalendarEvent[]>(days.map(day=>[day,[]]));
+ if(!days.length)return byDay;
+ const start=days[0],end=days[days.length-1];
+ for(const event of events){
+  const {first,last}=eventDateSpan(event,zone);
+  if(!first||!last||first>end||last<start)continue;
+  for(let day=first<start?start:first;day<=last&&day<=end;day=shiftDay(day,1))byDay.get(day)?.push(event);
+ }
+ return byDay;
+}
+export function eventTime(event:CalendarEvent,zone:string){if(event.allDay)return '종일';if(!event.startAt)return '시간 미정';const f=timeFormat(zone);return f.format(new Date(event.startAt))+(event.endAt?' – '+f.format(new Date(event.endAt)):'');}
+export function minutesAt(instant:string,zone:string){const p=Object.fromEntries(timeFormat(zone).formatToParts(new Date(instant)).map(x=>[x.type,x.value]));return +p.hour*60 + +p.minute;}
 export function localTime(instant:string,zone:string){const minutes=minutesAt(instant,zone);return String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');}
 export function wallTime(day:string,time:string,zone:string){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)||!validZone(zone))throw Error('날짜와 시간을 확인해주세요.');
