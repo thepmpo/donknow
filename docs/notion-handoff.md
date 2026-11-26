@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 5f007ef · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 47cd28e · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 연결된 Google 일정 전송 대기와 저장 복구
+
+- 새 Google 일정 전송은 도슨 저장 직후 시작한다. 한 원본 응답이 느려도 다른 항목을 처리하며, 일시 실패는 재시도 시각에 자동으로 다시 처리한다. Google의 요청 제한 응답이 403으로 온 경우도 재시도 대상과 실제 쓰기 권한 부족을 구분한다. 공급자가 지정한 대기 시간은 유지한다.
+- 도슨 일정 생성 응답이 끊기면 진행 중인 생성의 요청 ID와 내용으로 한 번 자동 재시도한다. 도슨 및 Google의 동일 ID를 재사용해 이미 저장한 경우에도 중복을 만들지 않는다. 실제 권한 철회나 원본 접근 제한은 연결 확인 상태로 남긴다.
+- 느린 원본과 독립적인 전송, 요청 제한 후 재시도, 승인과 한도 응답 구분 및 저장 응답 유실 후 한 건 표시를 검사했다. [저장·동기화 공통 규칙](docen-sync-contract.md)
 
 #### 2026-11-26 — 도슨 전체 저장·동기화 공통 규칙
 
@@ -3992,10 +3998,12 @@ cf23805 Record calendar verification and Render rollout
 3711948 Publish the design system and local-first calendar handoff
 3212f4b Record design system verification and calendar rollout
 d4e7172 Set the product-wide Docen synchronization contract
+f4da8ad Refresh the project documentation with the sync contract
+47cd28e Retry temporary calendar save and delivery failures automatically
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 5f007ef에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 47cd28e에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13264,7 +13272,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/5f007ef29a0b367f3640a8e353c9db4133d1030e
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/47cd28eced0817b78642e5f580a769fc2f0ce480
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -13426,6 +13434,7 @@ iOS의 `.hbc` 번들은 IPA/서명된 앱/실기기 테스트가 아닙니다. �
 #### 2026-11-26 — 도슨 전체 저장·동기화 규칙
 
 - 웹, 일반 iPhone, Duo 및 docen.ai에서 도슨에 작성하거나 생성한 항목은 저장 조작 직후 화면에 표시한다. 도슨에 먼저 저장하고, 연결된 원본 전송은 저장 이후 지체 없이 처리한다. 도슨 저장과 원본 전송의 성공·대기·실패는 각각 실제 상태로 표시한다.
+- 연결이 유효할 때의 일시적인 네트워크 장애와 공급자 요청 제한은 가능한 한 자동 재시도로 처리한다. 안정된 요청 ID로 중복을 막고, 전송 큐는 처리할 수 있는 시점에 즉시 깨어난다.
 - 원본에서 작성한 항목은 허용된 자료 범위에서 도슨에 최대한 빨리 반영한다. 원본 변경 신호가 있으면 사용하고, 없으면 활성 시점과 적절한 간격에 갱신한다. 지연 동안 기존 목록을 유지하고, 같은 원본은 하나로 병합한다.
 - 새 기능과 기존 경로의 완료 여부는 [저장·동기화 공통 계약](https://github.com/thepmpo/donknow/blob/main/docs/docen-sync-contract.md)의 양방향 검수표로 확인한다.
 
@@ -14344,6 +14353,7 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 - 사용자가 저장을 확정한 즉시 새 항목이나 변경 결과를 해당 목록·달력·상세 화면에 보여준다. 도슨 저장 요청이 진행 중이면 그 상태를 표시하고, 도슨에 저장됐다는 표시는 실제 저장 응답 이후에 확정한다.
 - 도슨 저장을 먼저 완료한다. 연결 서비스의 조회·승인 확인·전송 응답을 기다리느라 도슨의 화면 반영이나 저장 완료를 늦추지 않는다. 도슨에 기록한 다음 전송을 바로 시작한다. 작업 큐를 사용하는 경로에서는 저장과 전송 작업 등록을 함께 확정해 재시작 사이에 작업이 빠지지 않게 한다.
 - 원본이 느리거나 권한이 만료돼도 이미 도슨에 저장된 항목은 유지한다. 권한 범위 안에서 자동 갱신하고 일시 장애는 다시 처리한다. 도슨 저장 실패와 원본 전송 실패는 별도의 상태로 처리한다. 원본 쓰기 결과가 불확실하면 같은 요청 ID나 원본 항목을 조회해 확인한다.
+- 유효한 연결에서는 일시적인 타임아웃·요청 제한을 최종 저장 실패로 처리하지 않는다. 원본 전송을 대기열에서 바로 시작하고, 재시도가 가능해지는 시점에 자동으로 다시 보낸다. 원본이 지정한 대기 시간이 있으면 따른다. 도슨 저장 응답이 끊긴 경우에도 멱등성이 확인된 생성은 같은 요청 ID로 자동 복구한다.
 - docen.ai에서 실행이 승인된 생성·작성 작업도 도슨 저장 경로를 공유한다. 대화에 성공을 알릴 때는 도슨에 저장됐는지, 원본에도 전송됐는지 실제 결과에 맞춰 말한다.
 
 #### 2. 원본에서 작성하면 도슨에 최대한 빨리 표시한다
