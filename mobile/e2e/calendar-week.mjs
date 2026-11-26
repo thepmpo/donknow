@@ -163,8 +163,11 @@ try{
    events=originalEvents;
    console.log('PASS dense view transition, in-flight refresh, Duo detail back, grip release and reduced motion');
   }
-  const eye=page.getByTestId('calendar-visibility-button');
-  await eye.click();
+  const visibilityButton=page.getByTestId('calendar-visibility-button');
+  assert.ok(await visibilityButton.getByText(mode==='web'?'캘린더 목록':'목록',{exact:true}).isVisible());
+  const hitTarget=await visibilityButton.boundingBox();
+  assert.ok(hitTarget.height>=44&&hitTarget.width>=44);
+  await visibilityButton.click();
   const visibilityPanel=page.getByTestId('calendar-visibility-list');
   const googleGroup=visibilityPanel.getByRole('button',{name:'Google 캘린더',exact:true});
   const teamVisibility=visibilityPanel.getByRole('checkbox',{name:'팀 공유 표시',exact:true});
@@ -185,7 +188,7 @@ try{
   await page.reload();
   await page.getByTestId('week-span-팀 테스트 일정').waitFor();
   assert.equal(await page.getByTestId('week-span-도슨 테스트 일정').count(),0);
-  await eye.click();
+  await visibilityButton.click();
   assert.equal(await docenVisibility.getAttribute('aria-checked'),'false','visibility persists across reload');
   await page.emulateMedia({colorScheme:mode==='duo'?'dark':'light'});
   await page.clock.runFor(350);
