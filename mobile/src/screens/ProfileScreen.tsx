@@ -33,11 +33,11 @@ type Backup={storageDriver?:string;enabled:boolean;offsite:boolean;lastLocalSucc
 export function ProfileScreen({store,onConnection,onOpenTodos=()=>{},request,appleDevice}:{request?:{id:number;kind:'services'|'briefing'|'overview'}|null;store:TodoStore;onConnection:()=>void;onOpenTodos?:()=>void;appleDevice?:AppleCalendarDevice}){
  const [stack,setStack]=useState<Route[]>([]),route=stack.at(-1);
  const handledRequest=useRef<number|null>(null);
- const pendingReturn=useRef<{origin:string|null;root:boolean}|null>(null);
+ const pendingReturn=useRef<{origin:string|null;scrollY?:number}|null>(null);
  const mainScroll=useRef<React.ComponentRef<typeof ScrollArea>>(null),scrollOffset=useRef(0),origins=useRef<(string|null)[]>([]);
  function go(next:Route){origins.current.push(Platform.OS==='web'?document.activeElement?.getAttribute('aria-label')??null:null);setStack(old=>[...old,next]);}
- function back(){pendingReturn.current={origin:origins.current.pop()??null,root:stack.length===1};setStack(old=>old.slice(0,-1));}
- useEffect(()=>{const pending=pendingReturn.current;if(!pending)return;pendingReturn.current=null;const frame=requestAnimationFrame(()=>{if(pending.root)mainScroll.current?.scrollTo({y:scrollOffset.current,animated:false});if(Platform.OS==='web'&&pending.origin){const target=[...document.querySelectorAll<HTMLElement>('[role=button]')].find(el=>el.getAttribute('aria-label')===pending.origin&&!el.closest('[aria-hidden=true]')&&el.getBoundingClientRect().height>0);target?.focus({preventScroll:true});}});return()=>cancelAnimationFrame(frame);},[stack]);
+ function back(){pendingReturn.current={origin:origins.current.pop()??null,scrollY:stack.length===1?scrollOffset.current:undefined};setStack(old=>old.slice(0,-1));}
+ useEffect(()=>{const pending=pendingReturn.current;if(!pending)return;pendingReturn.current=null;const frame=requestAnimationFrame(()=>{if(pending.scrollY!==undefined)mainScroll.current?.scrollTo({y:pending.scrollY,animated:false});if(Platform.OS==='web'&&pending.origin){const target=[...document.querySelectorAll<HTMLElement>('[role=button]')].find(el=>el.getAttribute('aria-label')===pending.origin&&!el.closest('[aria-hidden=true]')&&el.getBoundingClientRect().height>0);target?.focus({preventScroll:true});}});return()=>cancelAnimationFrame(frame);},[stack]);
  const [services,setServices]=useState<Partial<Record<Provider,IntegrationStatus>>>({}),[servicesError,setServicesError]=useState(false),[reading,setReading]=useState(false);
  const alive=useRef(true),serviceRead=useRef(0),owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
  const currentOwner=useRef(owner);currentOwner.current=owner;
@@ -56,7 +56,7 @@ export function ProfileScreen({store,onConnection,onOpenTodos=()=>{},request,app
   if(request.kind==='overview'){
    origins.current=[];
    scrollOffset.current=0;
-   pendingReturn.current={origin:null,root:true};
+   pendingReturn.current={origin:null,scrollY:0};
    setStack([]);
    return;
   }
