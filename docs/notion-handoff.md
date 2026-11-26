@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 23eda18 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 c3d5eea · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 할 일·로그 간결화와 일정 날짜 끌어 옮기기
+
+- 할 일과 로그에서 직접 작성 출처 문구를 숨겼다. 로그의 되돌리기 문구와 선택 메뉴의 되돌리기 버튼을 제거했다. 기존 체크박스와 스와이프는 완료 상태를 변경할 수 있다. 할 일 편집의 원본 저장 설명과 반복 안내를 뺐고, 삭제를 취소·저장 행의 왼쪽에 배치했다.
+- 할 일 편집과 선택 도구에 기존 전환 모션을 적용했다. iOS에서는 인라인 편집을 열고 닫을 때 목록 높이도 부드럽게 조정한다. 동작 줄이기 설정을 따른다.
+- 주말 일정 목록 위의 시간순 문구를 없앴다. 일정 편집의 제목에는 한 겹의 배경만 사용한다. 캘린더 선택 목록에는 새로 확인과 ME 연결 관리 행 대신 캘린더 자체를 표시한다. 서비스 연결은 ME에서 관리한다.
+- 편집 가능한 일정을 길게 눌러 보이는 다른 날짜로 끌면 원본 캘린더의 날짜가 바뀐다. 시작·종료 시각과 여러 날에 걸친 간격을 유지한다. 드래그하는 동안 일정 미리보기와 날짜 강조가 보인다. Google 원본 수정은 확인된 일정 버전을 사용하고, 아이폰 캘린더는 기존 EventKit 쓰기 경로를 사용한다. 확인된 저장 실패는 이전 날짜로 되돌린다.
+- 주간 뷰를 듀오·일반폰·웹 Chromium에서 확인했다. 앱 화면을 실행하는 브라우저 테스트에서 일반폰 터치와 웹 마우스의 날짜 이동, 원본 요청 1회, 시각 유지, 거절 시 복원을 확인했다. iOS JS 번들과 실제 iPhone 동작은 별도다.
 
 #### 2026-11-25 — 할 일 소속 이동, 로그 선택 바 및 일정 추가 레이아웃
 
@@ -3937,10 +3945,12 @@ d89595d Align Friday and Saturday in the weekly calendar
 c9c8818 Move tasks between source lists and refine calendar creation
 985faaf Record membership and grouped calendar verification
 23eda18 Reserve close button space from the first frame
+2223784 Refresh handoff after the compact header check
+c3d5eea Clean up task controls and drag calendar events to another date
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 23eda18에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: c3d5eea에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13209,7 +13219,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/23eda18da8ece826b74c5d03a7fafc3583a87934
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/c3d5eea8b98dc73b7d450ceaa7bf8d5569e0eb43
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
