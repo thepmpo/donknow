@@ -6,6 +6,7 @@ import {CalendarEventDelete} from '../CalendarEventDelete';
 import {ScrollArea as ScrollView} from '../ScrollArea';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {AccessibilityInfo,findNodeHandle,Linking,Platform,Pressable as NativePressable,StyleSheet,Text,TextInput,View,useWindowDimensions} from 'react-native';
+import type {ViewStyle} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Ionicons} from '@expo/vector-icons';
 import {duoCalendarViewFrame} from '../duo-layout';
@@ -42,7 +43,7 @@ import type {CalendarEvent,CalendarView} from '../calendar-model';
 import type {Todo} from '../domain';
 import type {TodoStore} from '../useTodos';
 export type CalendarNavigationRequest={id:number;action:'today'|'week'|'fortnight'|'cycle';resetToToday?:boolean;scope:string};
-const webCalendarSwipe=Platform.OS==='web'?{touchAction:'pan-y' as const}:undefined;
+const webCalendarSwipe=Platform.OS==='web'?({touchAction:'pan-y'} as unknown as ViewStyle):undefined;
 type Overlay='day'|'event'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|null;
 export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,navigationRequest,onManageConnections,appleDevice,deviceCreateQueue}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest;onManageConnections?:()=>void;appleDevice?:AppleCalendarDevice;deviceCreateQueue?:CalendarCreateQueue}){
  const keyboard=useKeyboardUX(),desktop=useDesktopPresentation();

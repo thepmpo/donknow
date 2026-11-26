@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 3074199 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 537f771 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 캘린더 중복·누락과 날짜 제스처 복구
+
+- Google 직접 연결과 Apple 기기에서 같은 원본 일정이 들어오면 원본 UID와 발생 시간이 동일한 일정을 한 번만 표시한다. 모호한 복사본과 제목만 같은 별도 일정은 보존한다. 원본에서 일정 정보를 받기 전에도 도슨에 저장한 일정을 표시한다.
+- 아이폰에서 직접 숨긴 캘린더는 계속 숨긴다. 이전 선택 저장 방식으로 빠진 캘린더는 다시 조회하고, 종일 일정의 날짜는 기기의 달력 날짜를 사용한다. EventKit으로 조회할 때 쓴 일정·캘린더 식별자와 시작 시각으로 정확한 반복 회차를 찾아 수정한다. 원본 변경을 감지하면 기존 기기 목록을 보여주면서 갱신한다.
+- 선택한 Google 캘린더의 첫 페이지를 표시한 뒤 이어지는 페이지를 자동으로 조회한다. 갱신 중에는 이전 데이터를 유지한다. 기존 뒤쪽 페이지 불러오기를 유지한다.
+- 상단 ‘날짜 이동’ 버튼을 제거했다. 월간·주간·일간의 가로 스와이프와 일정 길게 누르기를 분리했다. 선택된 일정은 손을 떼지 않고 끌어 날짜 칸에 놓는다. Apple과 Google 실제 계정, iPhone/Duo의 EventKit과 제스처 검수는 설치 빌드에서 진행한다.
+- Duo·일반폰·웹 브라우저 모형에서 다음 페이지 자동 조회와 일정 끌어 놓기를 검사했다. Duo·일반폰에서 월·주·일 스와이프, 모의 Apple 원본의 생성·수정·삭제 및 캘린더 숨김을 확인했다. iOS JS 번들과 prebuild 검사를 통과했다.
 
 #### 2026-11-26 — 캘린더 목록 버튼
 
@@ -4047,10 +4055,12 @@ e5f988d Keep new calendar events on device and smooth view changes
 eeeaa63 Update the calendar visibility project record
 aee4668 Target the date header in calendar creation verification
 3074199 Replace the calendar eye control with a labeled list filter
+5afedb4 Record calendar button verification and deployment
+537f771 Repair calendar source reconciliation and period gestures
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 3074199에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 537f771에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13319,7 +13329,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/3074199856a89a3bd19c6a557ad110bbdeacf007
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/537f7712a63a4eade36f57e3dac59859e87ff69a
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
