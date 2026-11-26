@@ -191,7 +191,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         const items = body.items.map(item => {
           if (!item || item.completed !== false || typeof item.id !== 'string' || !item.id || item.id.length > 200 || typeof item.title !== 'string' || !item.title.trim() || item.title.length > 120 || (item.dueDate != null && (typeof item.dueDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(item.dueDate) || !Number.isFinite(Date.parse(item.dueDate)) || new Date(item.dueDate).toISOString().slice(0,10) !== item.dueDate))) throw fail(400, '할 일과 날짜를 확인해주세요.');
           if(item.notes!==undefined&&(typeof item.notes!=='string'||item.notes.length>4000)||item.dueTime!=null&&(!item.dueDate||typeof item.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(item.dueTime))||item.modifiedAt!==undefined&&(typeof item.modifiedAt!=='string'||!Number.isFinite(Date.parse(item.modifiedAt))))throw fail(400,'원본 메모와 예정 시간을 확인해주세요.');
-          return { id: item.id, title: item.title.trim(), dueDate: item.dueDate ?? null,notes:item.notes??'',dueTime:item.dueTime??null,...(item.modifiedAt?{modifiedAt:item.modifiedAt}:{}), kind: 'task', completed: false };
+          return { id: item.id, title: item.title.trim(), dueDate: item.dueDate ?? null,notes:item.notes??'',dueTime:item.dueTime??null,...(typeof item.color==='string'&&/^#[a-f\d]{6}$/i.test(item.color)?{color:item.color}:{}),...(item.modifiedAt?{modifiedAt:item.modifiedAt}:{}), kind: 'task', completed: false };
         });
         store.cacheResources(user.id, 'apple-reminders', items);
         send(200, { results: store.importResources(user.id, 'apple-reminders', [...new Set(items.map(item => item.id))]) }); return true;

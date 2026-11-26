@@ -5,7 +5,7 @@ import {createIntegrationAgentTools} from './integration-agent-tools.js';
 import {createProviderWatches} from './provider-watches.js';
 import {readNotionDocument} from './notion-document.js';
 import {googleAccounts,googleConnection} from './google-accounts.js';
-import {createCalendarWorkspace} from './calendar-workspace.js';
+import {calendarEventColor,createCalendarWorkspace} from './calendar-workspace.js';
 import {createNaverMail} from './naver-mail.js';
 import {createProviderActions,mailText} from './provider-actions.js';
 import { randomBytes, createHash, randomUUID } from 'node:crypto';
@@ -209,7 +209,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         const start=month?month+'-01':today;const end=month?new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5)),1)).toISOString().slice(0,10):new Date(Date.parse(today+'T00:00:00Z')+30*86400000).toISOString().slice(0,10);
         const query = new URLSearchParams({ timeMin:start+'T00:00:00+09:00',timeMax:end+'T00:00:00+09:00',timeZone:'Asia/Seoul',singleEvents:'true',orderBy:'startTime',maxResults:'50',...(cursor?{pageToken:cursor}:{}) });
         const value = await googleRead(userId,record,'https://www.googleapis.com/calendar/v3/calendars/primary/events?' + query);
-        items = (value.items ?? []).filter(item => item.status !== 'cancelled').map(item => ({ id: 'calendar:' + item.id, title: title(item.summary), url:item.htmlLink, dueDate: item.start?.date ?? (item.start?.dateTime ? new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.start.dateTime)) : null), kind: 'event',startAt:item.start?.dateTime??null,endAt:item.end?.dateTime??null,allDay:!!item.start?.date,endDate:item.end?.date??(item.end?.dateTime?new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.end.dateTime)):null) })); nextCursor = value.nextPageToken ?? null;
+        items = (value.items ?? []).filter(item => item.status !== 'cancelled').map(item => ({ id: 'calendar:' + item.id, color:calendarEventColor(item.colorId), title: title(item.summary), url:item.htmlLink, dueDate: item.start?.date ?? (item.start?.dateTime ? new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.start.dateTime)) : null), kind: 'event',startAt:item.start?.dateTime??null,endAt:item.end?.dateTime??null,allDay:!!item.start?.date,endDate:item.end?.date??(item.end?.dateTime?new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.end.dateTime)):null) })); nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'tasks') {
         if (channel && (typeof channel !== 'string' || channel.length > 1024)) throw fail(400, '목록을 다시 선택해주세요.');

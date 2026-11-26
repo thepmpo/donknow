@@ -141,8 +141,16 @@ export async function featureStore(db, directory, env = process.env) {
         }
         for(const id of keys){const item=resources.get(id);if(!item)throw fail(400,'자료를 새로고침한 뒤 다시 선택해주세요.');if(item.completed===true)throw fail(400,'완료된 기록은 참고만 할 수 있어요. 미완료 할 일만 가져와주세요.');}
         const created=[],result=ids.map(id=>{
-          const old=previous.get(id);if(old)return {todo:old,created:false};
-          const item=resources.get(id),todo={id:randomUUID(),title:item.title.slice(0,120),category:'업무',done:false,dueDate:item.dueDate??null,reminderAt:null,createdAt:new Date().toISOString(),source:{provider,externalId:item.id,...Object.fromEntries(['url','calendarId','eventId','connectionId','modifiedAt','timeZone'].filter(k=>typeof item[k]==='string').map(k=>[k,item[k]])),...(typeof item.dueTimeZone==='string'?{timeZone:item.dueTimeZone}: {})},...(typeof item.notes==='string'?{notes:item.notes.slice(0,4000)}:{}),...(item.dueTime!==undefined?{dueTime:item.dueTime}:{})};
+          const item=resources.get(id),old=previous.get(id);
+          const color=typeof item.color==='string'&&/^#[a-f\d]{6}$/i.test(item.color)?item.color:undefined;
+          if(old){
+            if(color&&old.source&&old.source.color!==color){
+              old.source={...old.source,color};
+              db.prepare('UPDATE todos SET data=? WHERE id=? AND user_id=?').run(JSON.stringify(old),old.id,userId);
+            }
+            return {todo:old,created:false};
+          }
+          const todo={id:randomUUID(),title:item.title.slice(0,120),category:'업무',done:false,dueDate:item.dueDate??null,reminderAt:null,createdAt:new Date().toISOString(),source:{provider,externalId:item.id,...(color?{color}:{}),...Object.fromEntries(['url','calendarId','eventId','connectionId','modifiedAt','timeZone'].filter(k=>typeof item[k]==='string').map(k=>[k,item[k]])),...(typeof item.dueTimeZone==='string'?{timeZone:item.dueTimeZone}: {})},...(typeof item.notes==='string'?{notes:item.notes.slice(0,4000)}:{}),...(item.dueTime!==undefined?{dueTime:item.dueTime}:{})};
           created.push({id,todo});previous.set(id,todo);return {todo,created:true};
         });
         for(let i=0;i<created.length;i+=100){const page=created.slice(i,i+100);

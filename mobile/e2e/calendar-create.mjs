@@ -9,6 +9,7 @@ try{
   const page=await browser.newPage({viewport:{width,height},hasTouch:true,isMobile:mode!=='web'}),errors=[],actions=[],todos=[],saved=[],details=[];let writes=0,sourceFailure=false,authorization=null,completionGate=null,waitingCompletion=0;
   page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));await page.emulateMedia({reducedMotion:'reduce',colorScheme:process.env.CREATE_COLOR_SCHEME||'dark'});await page.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
   await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
+  let revealProviderEvent=false;
   await page.route(origin+'/**',async route=>{const r=route.request(),p=new URL(r.url()).pathname,method=r.method(),body=()=>r.postDataJSON();
    if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'view-user',email:'view@example.test',emailVerified:true}}});
    if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,todoNotes:true,todoOrdering:1}});
@@ -34,12 +35,15 @@ try{
    if(p==='/api/integrations')return route.fulfill({json:[{provider:'google',name:'Google',connected:true,configured:true,label:'테스트 계정',features:['calendar','calendarWrite'],accounts:[{connectionId:'connection-google',label:'테스트 계정',features:['calendar','calendarWrite']}]}]});
    if(p==='/api/integrations/google/authorize'){authorization=body();return route.fulfill({json:{url:'https://accounts.google.com/o/oauth2/v2/auth?fixture=docen'}});}
    if(p==='/api/calendar/calendars'&&sourceFailure)return route.fulfill({status:409,json:{error:'서비스 연결을 다시 승인해주세요.'}});
-   if(p==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:'primary',primary:true,name:'내 일정',canWrite:true,connectionId:'connection-google'}]}});
-   if(p==='/api/calendar/events')return route.fulfill({json:{items:saved,calendarId:'primary',connectionState:'connected',readAt:new Date().toISOString(),nextCursor:null}});
+   if(p==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:'primary',primary:true,name:'내 일정',canWrite:true,connectionId:'connection-google'},{id:'team-calendar',name:'팀 캘린더',color:'#ab063d',canWrite:true,connectionId:'connection-google'}]}});
+   if(p==='/api/calendar/events'){
+    const calendarId=new URL(route.request().url()).searchParams.get('calendarId')??'primary';
+    return route.fulfill({json:{items:saved.filter(e=>e.calendarId===calendarId&&revealProviderEvent),calendarId,connectionState:'connected',readAt:new Date().toISOString(),nextCursor:null}});
+   }
    if(p==='/api/calendar/event-details'){details.push(body());return route.fulfill({json:{revision:1,fields:body().patch}});}
    if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});
    if(p==='/api/assistant/actions'&&method==='POST'){const action={...body(),id:'action-'+actions.length,status:'pending',accountLabel:'테스트 Google 계정',calendarName:'내 일정'};actions.push(action);return route.fulfill({json:action});}
-   const match=p.match(/^\/api\/assistant\/actions\/([^/]+)(\/confirm)?$/);if(match){const action=actions.find(a=>a.id===match[1]);if(method==='DELETE')action.status='cancelled';if(match[2]&&action.status==='pending'){writes++;action.status='succeeded';action.result={id:'saved-event'};saved.push({id:'confirmed:connection-google:primary:saved-event',eventId:'saved-event',title:action.args.title,calendarId:'primary',connectionId:'connection-google',dueDate:action.args.startDate,endDate:action.args.endDate,allDay:true,etag:'v1',canWrite:true});}return route.fulfill({json:action});}
+   const match=p.match(/^\/api\/assistant\/actions\/([^/]+)(\/confirm)?$/);if(match){const action=actions.find(a=>a.id===match[1]);if(method==='DELETE')action.status='cancelled';if(match[2]&&action.status==='pending'){writes++;action.status='succeeded';action.result={id:'saved-event'};saved.push({id:'google-authoritative:saved-event',eventId:'saved-event',title:action.args.title,calendarId:action.args.calendarId,color:'#45af67',connectionId:'connection-google',dueDate:action.args.startDate,endDate:action.args.endDate,allDay:true,etag:'v1',canWrite:true});}return route.fulfill({json:action});}
    if(p==='/api/assistant/actions')return route.fulfill({json:{actions:[]}});if(p==='/api/assistant/notices')return route.fulfill({json:{id:'notice'}});
    return route.fulfill({status:404,json:{error:'fixture unavailable '+method+' '+p}});
   });
@@ -72,8 +76,19 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
 
   await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('주간 디자인 리뷰');await todo.click();await sheet.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('할 일 초안');await event.click();assert.equal(await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).inputValue(),'주간 디자인 리뷰');await todo.click();assert.equal(await sheet.getByRole('textbox',{name:'할 일 제목',exact:true}).inputValue(),'할 일 초안');await page.screenshot({path:out+'/'+mode+'-todo.png'});await event.click();
   await sheet.getByLabel('일정 종료일',{exact:true}).fill('2026-11-27');await sheet.getByRole('button',{name:'일정 반복 선택',exact:true}).click();await sheet.getByRole('radio',{name:'반복 매주',exact:true}).click();await sheet.getByRole('textbox',{name:'일정 초대 이메일',exact:true}).fill('guest@example.test');await sheet.getByRole('textbox',{name:'일정 메모',exact:true}).fill('검토 자료를 준비해주세요.');await sheet.getByRole('textbox',{name:'일정 링크',exact:true}).fill('https://example.test/review');
-  await sheet.getByRole('button',{name:'일정 저장 내용 미리보기',exact:true}).click();await sheet.getByText('저장 전 확인',{exact:true}).waitFor();assert.equal(writes,0);assert.equal(actions.length,1);assert.equal(actions[0].args.startDate,'2026-11-25');assert.equal(actions[0].args.endDate,'2026-11-28');assert.deepEqual(actions[0].args.recurrence,['RRULE:FREQ=WEEKLY']);assert.deepEqual(actions[0].args.attendees,['guest@example.test']);assert.equal(actions[0].args.location,'');assert.equal(actions[0].args.notes,'검토 자료를 준비해주세요.');assert.equal(await todo.getAttribute('aria-disabled'),'true');await page.screenshot({path:out+'/'+mode+'-confirmation.png'});
-  await sheet.getByRole('button',{name:'확인하고 일정 추가',exact:true}).click();await sheet.waitFor({state:'detached'});await page.waitForFunction(()=>document.querySelector('[data-testid="calendar-week-workspace"]'));
+  await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();
+  await sheet.getByRole('radio',{name:'캘린더 팀 캘린더',exact:true}).click();
+  await sheet.getByRole('button',{name:'일정 저장',exact:true}).click();
+  await sheet.waitFor({state:'detached'});
+  await page.waitForFunction(()=>document.querySelector('[data-testid="calendar-week-workspace"]'));
+  assert.equal(actions.length,1);
+  assert.equal(actions[0].args.calendarId,'team-calendar');
+  assert.equal(actions[0].args.startDate,'2026-11-25');assert.equal(actions[0].args.endDate,'2026-11-28');assert.deepEqual(actions[0].args.recurrence,['RRULE:FREQ=WEEKLY']);assert.deepEqual(actions[0].args.attendees,['guest@example.test']);assert.equal(actions[0].args.location,'');assert.equal(actions[0].args.notes,'검토 자료를 준비해주세요.');
+  const savedEvent=page.getByRole('button',{name:'주간 디자인 리뷰 종일 일정 상세',exact:true});
+  await savedEvent.waitFor();
+  await page.getByTestId('week-span-confirmed:connection-google:team-calendar:saved-event').waitFor();
+  assert.equal(writes,1);
+  revealProviderEvent=true;
   await openAdd();await sheet.waitFor();await todo.click();await sheet.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('리뷰 할 일 저장');await sheet.getByRole('textbox',{name:'메모',exact:true}).fill('다음 검토 자료');await sheet.getByRole('button',{name:'저장',exact:true}).click();await sheet.waitFor({state:'detached'});await page.waitForTimeout(300);assert.equal(writes,1);assert.equal(todos.length,1);assert.equal(todos[0].dueDate,'2026-11-25');assert.equal(todos[0].title,'리뷰 할 일 저장');assert.equal(todos[0].notes,'다음 검토 자료');assert.equal(details.length,1);assert.equal(details[0].patch.url,'https://example.test/review');assert.equal(details[0].patch.attachments,undefined);assert.deepEqual(errors,[]);
   await openAdd();await sheet.waitFor();if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});
   await page.getByRole('button',{name:'2026-11-26 13시 일정 추가',exact:true}).click();await sheet.waitFor();assert.equal(await sheet.getByLabel('일정 시작일',{exact:true}).inputValue(),'2026-11-26');assert.equal(await sheet.getByLabel('일정 시작 시간',{exact:true}).inputValue(),'13:00');assert.equal(await sheet.getByLabel('일정 종료 시간',{exact:true}).inputValue(),'14:00');if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});
@@ -154,11 +169,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    assert.equal(await selection.getAttribute('aria-checked'),'true');
    await page.screenshot({path:out+'/'+mode+'-todo-batch-date.png'});
    await closeSheet();
-   await page.getByRole('button',{name:'선택한 할 일 이동',exact:true}).click();
-   await page.getByRole('dialog',{name:'이동'}).getByRole('button',{name:'업무로 이동',exact:true}).click();await sheet.waitFor({state:'detached'});
-   assert.equal(todos[0].category,'업무');
-   assert.equal(todos[0].dueDate,'2026-11-25','moving membership never changes the due date');
-   await swipe(row,1);await selection.waitFor();
+   assert.equal(await page.getByRole('button',{name:'선택한 할 일 이동',exact:true}).count(),0);
    await page.getByRole('button',{name:'선택한 할 일 삭제',exact:true}).click();
    await page.getByRole('dialog',{name:'할 일 삭제'}).waitFor();await closeSheet();
    assert.equal(todos[0].done,false);

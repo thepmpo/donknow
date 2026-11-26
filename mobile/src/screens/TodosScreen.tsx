@@ -24,7 +24,6 @@ import type {TodoView} from '../todo-organization';
 import {safeCalendarLink} from '../calendar-model';
 import {CalendarSheet} from '../CalendarSheet';
 import {CalendarMonthPickerGrid} from '../CalendarMonthPickerGrid';
-import {TodoMoveMenu} from '../TodoMoveMenu';
 import {TodoSelectionToolbar,useTodoSelectionInset} from '../TodoSelectionToolbar';
 type Editor={id:number;todo?:Todo;date:string|null;group:string};
 type Target={key:string;before:string|null;day:string;group:string;y:number;height:number};
@@ -42,7 +41,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  const reduced=useReducedMotion();
  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
  const [editor,setEditor]=useState<Editor|null>(null),sequence=useRef(0),[editingBusy,setEditingBusy]=useState(false);
- const [selecting,setSelecting]=useState(false),[selected,setSelected]=useState<string[]>([]),[batchBusy,setBatchBusy]=useState(false),[batchPanel,setBatchPanel]=useState<'date'|'move'|'delete'|null>(null),[batchMonth,setBatchMonth]=useState(today.slice(0,7)),[batchMessage,setBatchMessage]=useState('');
+ const [selecting,setSelecting]=useState(false),[selected,setSelected]=useState<string[]>([]),[batchBusy,setBatchBusy]=useState(false),[batchPanel,setBatchPanel]=useState<'date'|'delete'|null>(null),[batchMonth,setBatchMonth]=useState(today.slice(0,7)),[batchMessage,setBatchMessage]=useState('');
  const [drag,setDrag]=useState<Drag|null>(null),[hover,setHover]=useState<Target|null>(null),dragRef=useRef<DragSession|null>(null),hoverRef=useRef<Target|null>(null);
  const scrollY=useRef(0),pane=useRef({x:0,y:0,width:0,height:0}),scrollBox=useRef({y:0,height:0});
  const liftScale=useRef(new Animated.Value(1)).current;
@@ -214,10 +213,9 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  {!!batchMessage&&!drag&&<View pointerEvents="none" style={[styles.batchNotice,{bottom:toolbarInset+(selecting?100:12)}]}><Text accessibilityLiveRegion="polite" style={styles.hint}>{batchMessage}</Text></View>}
  {selecting&&!drag&&<TodoSelectionToolbar count={selected.length} inset={toolbarInset} busy={!selected.length||busy||!!batchPanel} testID="todo-selection-toolbar" actions={[
   {icon:'calendar-outline',label:'날짜 변경',description:'선택한 할 일 예정일 변경',onPress:()=>{setBatchMonth((store.findTodo(selected[0])?.dueDate??today).slice(0,7));setBatchPanel('date');}},
-  {icon:'folder-outline',label:'이동',description:'선택한 할 일 이동',onPress:()=>setBatchPanel('move')},
   {icon:'trash-outline',label:'삭제',description:'선택한 할 일 삭제',destructive:true,onPress:()=>setBatchPanel('delete')},
  ]}/>}
- {!!batchPanel&&active&&<CalendarSheet centered bottomInset={toolbarInset} title={batchPanel==='date'?'날짜 변경':batchPanel==='move'?'이동':'할 일 삭제'} onClose={()=>setBatchPanel(null)} busy={busy}>
+ {!!batchPanel&&active&&<CalendarSheet centered bottomInset={toolbarInset} title={batchPanel==='date'?'날짜 변경':'할 일 삭제'} onClose={()=>setBatchPanel(null)} busy={busy}>
   <OverlayBack onClose={()=>setBatchPanel(null)} busy={busy}/>
   <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.batchPanel}>
    {batchPanel==='date'&&<>
@@ -225,7 +223,6 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
     <CalendarMonthPickerGrid month={batchMonth} onMonth={setBatchMonth} today={today} selected={selectedDates} disabled={busy} onDay={day=>void applyBatch(id=>store.update(id,{dueDate:day}))}/>
     <Button title="날짜 없음" quiet disabled={busy} onPress={()=>void applyBatch(id=>store.update(id,{dueDate:null}))}/>
    </>}
-   {batchPanel==='move'&&<TodoMoveMenu store={store} ids={selected} busy={busy} onMove={(target,page)=>void applyBatch(id=>store.moveMembership(id,target.id,page))}/>}
    {batchPanel==='delete'&&<>
     <Text style={styles.monthLabel}>선택한 할 일 {selected.length}개를 도슨에서 삭제할까요?</Text>
     <Pressable accessibilityRole="button" accessibilityLabel="도슨에서 선택한 할 일 삭제 확인" disabled={busy} onPress={()=>void applyBatch(store.remove)} style={styles.confirmDelete}><Text style={[styles.addText,styles.destructive]}>삭제</Text></Pressable>

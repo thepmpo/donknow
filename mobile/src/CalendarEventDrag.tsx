@@ -16,7 +16,7 @@ const noop=()=>{};
 
 export function useCalendarEventDrag(enabled:boolean,onMove:(event:CalendarEvent,anchor:string,day:string)=>void){
  const root=useRef<React.ComponentRef<typeof View>>(null),targets=useRef(new Set<Target>()),session=useRef<Session|null>(null);
- const [lifted,setLifted]=useState<{id:string;title:string;geometry:LiftPreviewProps['geometry'];width:number}|null>(null),[hover,setHover]=useState('');
+ const [lifted,setLifted]=useState<{id:string;title:string;geometry:LiftPreviewProps['geometry'];width:number}|null>(null),[hover,setHover]=useState(''),[selectedId,setSelectedId]=useState<string|null>(null);
  const position=useRef(new Animated.ValueXY()).current,scale=useRef(new Animated.Value(1)).current;
  const reduced=useReducedMotion(),availability=useRef(enabled);availability.current=enabled;
  function finish(completed:boolean){
@@ -37,6 +37,7 @@ export function useCalendarEventDrag(enabled:boolean,onMove:(event:CalendarEvent
  }
  function start(event:CalendarEvent,anchor:string,point:RowPoint){
   if(!availability.current||session.current)return;
+  setSelectedId(event.id);
   const current:Session={event,anchor,origin:point,point,boxes:[]};session.current=current;
   for(const target of targets.current)target.node.measureInWindow((x,y,width,height)=>{
    if(session.current===current&&width>0&&height>0)current.boxes.push({x,y,width,height,day:target.day});
@@ -49,7 +50,7 @@ export function useCalendarEventDrag(enabled:boolean,onMove:(event:CalendarEvent
    setLifted({id:event.id,title:event.title,geometry,width:cardWidth});
   });
  }
- return {root,targets,session,start,move,finish,lifted,hover,enabled,reduced,position,scale};
+ return {selectedId,setSelectedId,root,targets,session,start,move,finish,lifted,hover,enabled,reduced,position,scale};
 }
 
 export function CalendarDragSurface({drag,children,testID,style,onLayout}:{drag:ReturnType<typeof useCalendarEventDrag>;children:React.ReactNode;testID?:string;style?:StyleProp<ViewStyle>;onLayout?:React.ComponentProps<typeof View>['onLayout']}){
@@ -72,18 +73,21 @@ export function CalendarDropDate({day,children,style,enabled=true}:{day:string;c
 
 export function CalendarDraggableEvent({event,day,style,contentStyle,fill=false,dragEnabled=true,...props}:Omit<PressableProps,'style'>&{event:CalendarEvent;day:string;style?:StyleProp<ViewStyle>;contentStyle?:StyleProp<ViewStyle>;fill?:boolean;dragEnabled?:boolean}){
  const drag=useContext(Context),reduced=useReducedMotion(),blockPress=useRef(false);
- const canLift=!!(drag?.enabled&&dragEnabled&&event.canWrite&&event.eventId&&event.etag&&!event.saveState);
+ const canSelect=!!(drag?.enabled&&dragEnabled&&!event.saveState);
+ const selected=drag?.selectedId===event.id;
+ const canLift=!!(canSelect&&event.canWrite&&event.eventId&&event.etag);
  const pointer=useRef<{id:number;origin:RowPoint;timer:ReturnType<typeof setTimeout>;held:boolean;releaseScroll?:()=>void}|null>(null);
  function clear(){if(pointer.current){clearTimeout(pointer.current.timer);pointer.current.releaseScroll?.();}pointer.current=null;}
- useEffect(()=>{if(!canLift)clear();return clear;},[canLift]);
- const web=Platform.OS==='web'&&canLift?{
+ useEffect(()=>{if(!canSelect)clear();return clear;},[canSelect,canLift]);
+ const web=Platform.OS==='web'&&canSelect?{
   onContextMenu:(e:MouseEvent)=>e.preventDefault(),
   onPointerDown:(pointerEvent:React.PointerEvent<HTMLElement>)=>{
    const e=pointerEvent.nativeEvent;
    if(e.button!==0||!e.isPrimary)return;clear();blockPress.current=false;
    const node=pointerEvent.currentTarget,origin={x:e.clientX,y:e.clientY},id=e.pointerId;
    const pending:NonNullable<typeof pointer.current>={id,origin,held:false,timer:setTimeout(()=>{
-    pending.held=true;blockPress.current=true;
+    pending.held=true;blockPress.current=true;drag?.setSelectedId(event.id);
+    if(!canLift)return;
     if(e.pointerType==='touch'){
      const stopScrolling=(touch:TouchEvent)=>{if(touch.cancelable)touch.preventDefault();};
      node.addEventListener('touchmove',stopScrolling,{passive:false});
@@ -96,26 +100,27 @@ export function CalendarDraggableEvent({event,day,style,contentStyle,fill=false,
   },
   onPointerMove:(pointerEvent:React.PointerEvent<HTMLElement>)=>{
    const e=pointerEvent.nativeEvent,pending=pointer.current;if(!pending||pending.id!==e.pointerId)return;
-   if(pending.held)drag?.move({x:e.clientX,y:e.clientY});
+   if(pending.held&&canLift)drag?.move({x:e.clientX,y:e.clientY});
    else if(Math.hypot(e.clientX-pending.origin.x,e.clientY-pending.origin.y)>9)clear();
   },
   onPointerUp:(pointerEvent:React.PointerEvent<HTMLElement>)=>{
    const e=pointerEvent.nativeEvent;
-   if(pointer.current?.held){drag?.move({x:e.clientX,y:e.clientY});drag?.finish(true);}
+   if(pointer.current?.held&&canLift){drag?.move({x:e.clientX,y:e.clientY});drag?.finish(true);}
    clear();
   },
-  onPointerCancel:()=>{if(pointer.current?.held)drag?.finish(false);clear();},
+  onPointerCancel:()=>{if(pointer.current?.held&&canLift)drag?.finish(false);clear();},
  }:undefined;
  return <View {...(web as unknown as React.ComponentProps<typeof View>)} style={[style,drag?.lifted?.id===event.id&&styles.lifted,Platform.OS==='web'&&({userSelect:'none'} as ViewStyle)]}>
   <TodoGestureRow fill={fill} canSwipeLeft={false} canSwipeRight={false} canLift={canLift} reduced={reduced} onSwipeStart={noop} onSwipeEnd={noop}
    onLift={point=>{blockPress.current=true;drag?.start(event,day,point);}} onDrag={point=>drag?.move(point)} onDrop={completed=>drag?.finish(completed)}>
-   <MotionPressable {...props} onPressIn={e=>{blockPress.current=false;props.onPressIn?.(e);}} onPress={e=>{e.stopPropagation();if(!blockPress.current)props.onPress?.(e);}} style={[fill&&{flex:1},contentStyle]}/>
+   <MotionPressable {...props} accessibilityState={{...props.accessibilityState,selected}} accessibilityActions={canSelect?[{name:'longpress',label:'일정 선택'}]:props.accessibilityActions} onAccessibilityAction={e=>{if(canSelect&&e.nativeEvent.actionName==='longpress')drag?.setSelectedId(event.id);else props.onAccessibilityAction?.(e);}} onLongPress={canSelect&&Platform.OS!=='web'?()=>{blockPress.current=true;drag?.setSelectedId(event.id);}:undefined} delayLongPress={330} onPressIn={e=>{blockPress.current=false;props.onPressIn?.(e);}} onPress={e=>{e.stopPropagation();if(!blockPress.current){drag?.setSelectedId(null);props.onPress?.(e);}}} style={[fill&&{flex:1},contentStyle,selected&&styles.selected]}/>
   </TodoGestureRow>
  </View>;
 }
 const styles=StyleSheet.create({
  target:{backgroundColor:colors.todoSelection},
  lifted:{opacity:.5},
+ selected:{backgroundColor:colors.todoSelection,borderRadius:8},
  preview:{position:'absolute',top:0,left:0,zIndex:20,minHeight:44,justifyContent:'center',paddingHorizontal:12,borderRadius:12,backgroundColor:colors.todoSelection,shadowColor:'#101828',shadowOpacity:.18,shadowRadius:11,shadowOffset:{width:0,height:4},elevation:9},
  previewText:{...typography.detail,color:colors.text,fontWeight:'600'},
 });

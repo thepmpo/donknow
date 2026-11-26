@@ -13,7 +13,7 @@ import type { TodoStore } from '../useTodos';
 import { Button, s } from '../ui';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme';
-type Item = { id: string; title: string; dueDate: string | null;dueTime?:string|null;notes?:string;modifiedAt?:string; completed: boolean;listTitle?:string };
+type Item = { id: string; title: string; dueDate: string | null;dueTime?:string|null;notes?:string;modifiedAt?:string; completed: boolean;listTitle?:string;color?:string };
 export function AppleRemindersScreen({ store, onClose,device=appleReminderDevice }: { store: TodoStore; onClose: () => void;device?:ReminderDevice }) {
   const [page,setPage]=useState<'overview'|'lists'|'items'|'sync'>('overview');
   const [lists, setLists] = useState<{ id: string; title: string }[]>([]), [items, setItems] = useState<Item[]>([]), [selected, setSelected] = useState<string[]>([]);

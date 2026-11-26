@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {putCalendarWrite,removeCalendarWrite,clearCalendarWrites,overlayCalendarWrites} from './calendar-write-overlay.ts';
+import {putCalendarWrite,removeCalendarWrite,removeCalendarEventWrites,clearCalendarWrites,overlayCalendarWrites} from './calendar-write-overlay.ts';
 import type {CalendarEvent} from './calendar-model.ts';
 test('an in-memory calendar write survives stale reads and period changes without changing source authority or another owner',()=>{
  const owner='overlay-owner',other='overlay-other',original:CalendarEvent={id:'event',title:'old',dueDate:'2026-11-16',endDate:'2026-11-17',allDay:true,calendarId:'primary',canWrite:true,etag:'source-version'};
@@ -12,4 +12,22 @@ test('an in-memory calendar write survives stale reads and period changes withou
  assert.deepEqual(overlayCalendarWrites(other,[original],'2026-11-01','2026-12-01','Asia/Seoul',['primary']),[original]);assert.equal(original.title,'old');
  removeCalendarWrite(owner,'write');assert.deepEqual(overlayCalendarWrites(owner,[original],'2026-11-01','2026-12-01','Asia/Seoul',['primary']),[original]);
  putCalendarWrite(owner,'unknown',{...pending,saveState:'checking'},original.id);clearCalendarWrites(owner);assert.equal(overlayCalendarWrites(owner,[],'2026-11-01','2026-12-01','Asia/Seoul',['primary']).length,0);
+});
+
+
+test('a confirmed Google receipt fills a stale read, prefers the event instance and clears on removal',t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date']});
+ const owner='confirmed-overlay',event:CalendarEvent={id:'receipt',calendarId:'team',eventId:'series',connectionId:'google',title:'새 일정',dueDate:'2026-11-26',endDate:'2026-11-27',allDay:true,canWrite:false};
+ const provider={...event,id:'instance',eventId:'series_20261126',seriesId:'series',canWrite:true,etag:'current',color:'#dc2127'};
+ const later={...provider,id:'later-instance',eventId:'series_20261127',dueDate:'2026-11-27',endDate:'2026-11-28'};
+ const read=(items:CalendarEvent[])=>overlayCalendarWrites(owner,items,'2026-11-25','2026-11-28','UTC',['team']);
+ putCalendarWrite(owner,'create',event,undefined,true);
+ assert.deepEqual(read([]),[event]);
+ assert.deepEqual(read([provider,later]),[provider,later]);
+ assert.deepEqual(read([later]),[later,event]);
+ removeCalendarEventWrites(owner,provider);
+ assert.deepEqual(read([]),[]);
+ putCalendarWrite(owner,'another-create',event,undefined,true);
+ t.mock.timers.tick(90_000);
+ assert.deepEqual(read([]),[]);
 });

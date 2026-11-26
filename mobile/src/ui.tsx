@@ -210,7 +210,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const canLift=!!onLift&&!busy;
   const date = log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : '';
   const provenance=todoSource(todo);
-  const membership=todo.source?.listTitle??(!todo.source?todo.category:null);
+  const membership=todo.source?.listTitle;
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View pointerEvents="none" aria-hidden style={s.swipeBack}><Text style={s.swipeBackText}>{onSelect ? selected ? '선택 취소' : '선택' : ''}</Text><Text style={s.swipeBackText}>{log ? '' : todo.done ? '되돌리기' : '완료'}</Text></View>
     <TodoGestureRow canSwipeLeft={!busy||canToggleWhileBusy} canSwipeRight={!!onSelect&&!selectionBlocked.current} canLift={canLift} reduced={reduced}
@@ -226,7 +226,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
         {!!todo.saveState&&<Text accessibilityLiveRegion="polite" style={s.todoDate}>{todo.saveState==='saving'?'저장 중':'저장 결과 확인 중'}</Text>}
       </Pressable>
       {todo.source&&<View testID={`todo-source-${todo.id}`} style={s.todoProvenance}>
-        {!!todo.source&&<Ionicons name={provenance.icon} size={13} color={provenance.color}/>}
+        {todo.source.color?<View testID={`todo-source-color-${todo.id}`} style={{width:9,height:9,borderRadius:5,backgroundColor:todo.source.color}}/>:<Ionicons name={provenance.icon} size={13} color={provenance.color}/>}
         <Text numberOfLines={1} style={[s.todoDate,{flexShrink:1,textAlign:'right',marginTop:0},desktop&&s.desktopTodoDate]}>{provenance.label}</Text>
       </View>}
       {selected!==undefined?<Pressable accessibilityRole="checkbox" accessibilityLabel={`${todo.title} 선택`} accessibilityState={{checked:selected,disabled:selectionBlocked.current}} disabled={selectionBlocked.current} onPressIn={beginPress} onPress={()=>press(onSelect,'select')} style={s.rowAccessory}>

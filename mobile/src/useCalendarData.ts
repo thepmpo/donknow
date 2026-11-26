@@ -92,5 +92,5 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  function upsertEvent(event:CalendarEvent){generation.current++;readRevision.current=invalidateCalendarSnapshotReads(owner);for(const entry of periods.current.values())if(inPeriod(event,entry.start,entry.end,periodZone(entry)))entry.items=[...entry.items.filter(e=>e.id!==event.id),event];if(inPeriod(event))snapshot.current=[...snapshot.current.filter(e=>e.id!==event.id),event];setEvents(snapshot.current);remember();}
  function cachedEvents(){return [...new Map([...periods.current.values()].filter(p=>p.family===family).flatMap(p=>p.items).concat(snapshot.current).map(e=>[eventKey(e),e])).values()];}
  useEffect(()=>watchCalendarWrites(owner,()=>writeChanged(v=>v+1)),[owner]);
- return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,events:overlayCalendarWrites(owner,events,start,end,timeZone,selected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceError,sourceCursor,load,loadSources};
+ return {cachedEvents,upsertEvent,removeEvent,applyEvent,detailsSupported,createOptionsSupported,baseEvents:events,events:overlayCalendarWrites(owner,events,start,end,timeZone,selected),sources,phase,error,readAt,version,cursors,sourceLoading,sourceError,sourceCursor,load,loadSources};
 }
