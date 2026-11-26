@@ -263,7 +263,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
   if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});
   return route.fulfill({json:[]});
  });
- await local.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard');
+ await local.goto('http://127.0.0.1:'+server.address().port+'/?initialWeek=1&mode=standard');
  const date=local.getByTestId('week-date-2026-11-25');
  await date.hover();await local.mouse.down();await local.waitForTimeout(600);await local.mouse.up();
  const sheet=local.getByTestId('calendar-sheet');
@@ -376,7 +376,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  });
  await linked.addInitScript(([base,calendar])=>localStorage.setItem('duck.calendar.selection.'+base+':linked-user',JSON.stringify(['primary',calendar])),[linkedOrigin,selectedCalendar]);
  await linked.addInitScript(origin=>sessionStorage.setItem('fixture.offline-user.'+origin,JSON.stringify({id:'linked-user',email:'linked@example.test',emailVerified:true})),linkedOrigin);
- await linked.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard&deviceQueue=1&deviceTodos=1');
+ await linked.goto('http://127.0.0.1:'+server.address().port+'/?initialWeek=1&mode=standard&deviceQueue=1&deviceTodos=1');
  const linkedDay=linked.getByTestId('week-date-2026-11-25');
  await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
  const linkedSheet=linked.getByTestId('calendar-sheet');
