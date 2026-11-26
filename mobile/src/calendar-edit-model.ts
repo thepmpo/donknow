@@ -5,6 +5,12 @@ export function eventDraft(day:string,zone:string,calendarId:string,event?:Calen
  const first=event?.dueDate??day,local=event?.duckDetails?.fields;
  return {title:event?.title??'',startDay:event?.allDay?first:event?.startAt?zonedDay(event.startAt,zone):day,endDay:event?.allDay?shiftDay(event.endDate??shiftDay(first,1),-1):event?.endAt?zonedDay(event.endAt,zone):day,startTime:event?.startAt?localTime(event.startAt,zone):'09:00',endTime:event?.endAt?localTime(event.endAt,zone):'10:00',allDay:event?!!event.allDay:true,notes:event?.notes??'',location:event?.location??'',calendarId:event?.calendarId??calendarId,timeZone:zone,reminderMinutes:local?.reminderMinutes??null,localNotes:local?.localNotes??'',duckUrl:local?.url??'',attachments:local?.attachments??[]};
 }
+/** A date drop keeps the event's displayed clock times and span. */
+export function eventDraftForDateMove(event:CalendarEvent,anchor:string,target:string,zone:string){
+ const days=Math.round((Date.parse(target+'T12:00:00Z')-Date.parse(anchor+'T12:00:00Z'))/86400000);
+ const draft=eventDraft(anchor,zone,event.calendarId??'primary',event);
+ return {...draft,startDay:shiftDay(draft.startDay,days),endDay:shiftDay(draft.endDay,days)};
+}
 /** Omitted provider properties stay omitted: title-only edits never rewrite times/guests. */
 export function calendarWriteArgs(draft:CalendarDraft,event?:CalendarEvent,legacy=false):Record<string,unknown>|null{
  const original=event?eventDraft(event.dueDate??draft.startDay,draft.timeZone,draft.calendarId,event):null;

@@ -1,5 +1,5 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {eventDraft,calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './calendar-edit-model.ts';
+import {eventDraft,eventDraftForDateMove,calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './calendar-edit-model.ts';
 import type {CalendarEvent} from './calendar-model.ts';
 const event:CalendarEvent={id:'scoped',eventId:'event',calendarId:'primary',title:'회의',dueDate:'2026-11-01',startAt:'2026-11-01T01:30:00-05:00',endAt:'2026-11-01T02:30:00-05:00',timeZone:'America/New_York',etag:'v1',location:'서울',notes:'원본',duckDetails:{revision:2,fields:{localNotes:'docen 메모',reminderMinutes:30,url:'https://example.test',attachments:[]}}};
 test('unchanged and docen-only edits never rewrite source times at a DST overlap',()=>{
@@ -21,4 +21,10 @@ test('new events validate invitation addresses, preserve repeat options and reje
  const args=calendarWriteArgs(d)!;assert.deepEqual(args.recurrence,['RRULE:FREQ=WEEKLY']);assert.deepEqual(args.attendees,['person@example.test','other@example.test']);
  assert.throws(()=>calendarWriteArgs({...d,guests:'잘못된 주소'}),/이메일/);assert.throws(()=>calendarWriteArgs({...d,allDay:false,startTime:'12:00',endTime:'11:00'}),/종료 시간/);
  const edit=calendarWriteArgs({...eventDraft('2026-11-25','Asia/Seoul','primary',event),title:'제목만 변경',repeat:'daily',guests:'new@example.test'},event)!;assert.equal(edit.recurrence,undefined);assert.equal(edit.attendees,undefined);
+});
+
+test('dragging the second day of a multi-day event shifts all dates by the same amount',()=>{
+ const source={id:'span',eventId:'original',calendarId:'primary',title:'여러 날',dueDate:'2026-11-24',endDate:'2026-11-27',allDay:true,etag:'v2'};
+ const draft=eventDraftForDateMove(source,'2026-11-25','2026-11-28','Asia/Seoul');
+ assert.deepEqual(calendarWriteArgs(draft,source),{allDay:true,startDate:'2026-11-27',endDate:'2026-11-30',timeZone:'Asia/Seoul',calendarId:'primary',id:'original',expectedETag:'v2'});
 });

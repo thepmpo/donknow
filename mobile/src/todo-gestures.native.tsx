@@ -22,7 +22,7 @@ export function TodoLiftScope({children}:{children:React.ReactNode}) {
   const coordinates=useSharedValue<RowPoint>({x:0,y:0});
   return <LiftCoordinates.Provider value={coordinates}>{children}</LiftCoordinates.Provider>;
 }
-export function TodoLiftPreview({geometry,reduced,style,children}:LiftPreviewProps) {
+export function TodoLiftPreview({testID='todo-drag-preview',geometry,reduced,style,children}:LiftPreviewProps) {
   const coordinates=useContext(LiftCoordinates);
   const scale=useSharedValue(1);
   useEffect(()=>{
@@ -37,7 +37,7 @@ export function TodoLiftPreview({geometry,reduced,style,children}:LiftPreviewPro
       {scale:scale.value},
     ]};
   },[coordinates,x,y,maxX,maxY,initial]);
-  return <Animated.View pointerEvents="none" aria-hidden importantForAccessibility="no-hide-descendants" testID="todo-drag-preview" style={[style,movement]}>
+  return <Animated.View pointerEvents="none" aria-hidden importantForAccessibility="no-hide-descendants" testID={testID} style={[style,movement]}>
     {children}
   </Animated.View>;
 }
@@ -112,6 +112,6 @@ export function TodoGestureRow(props:RowGestureProps) {
   },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,liftCoordinates,swipeOffset,lastHover,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
   const movement=useAnimatedStyle(()=>({transform:[{translateX:swipeOffset.value}]}));
   return <GestureDetector gesture={gesture}>
-    <Animated.View collapsable={false} style={movement}>{props.children}</Animated.View>
+    <Animated.View collapsable={false} style={[props.fill&&{flex:1},movement]}>{props.children}</Animated.View>
   </GestureDetector>;
 }

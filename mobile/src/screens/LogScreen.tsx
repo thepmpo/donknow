@@ -36,14 +36,14 @@ export function LogScreen({store}: {store: TodoStore}) {
     finally { setPulling(false); }
   }
 
-  async function apply(remove:boolean){
+  async function deleteSelected(){
     if(working)return;
     setWorking(true);setFailure('');
     const failed:string[]=[];
     try{
       for(const id of selected){
         if(!store.isCurrentSession())return;
-        try{if(!await (remove?store.remove(id):store.update(id,{done:false})))failed.push(id);}catch{failed.push(id);}
+        try{if(!await store.remove(id))failed.push(id);}catch{failed.push(id);}
       }
       if(!store.isCurrentSession())return;
       setSelected(failed);setConfirmDelete(false);
@@ -70,14 +70,13 @@ export function LogScreen({store}: {store: TodoStore}) {
       onToggle={() => {void store.update(todo.id, {done:!todo.done});}}/>)}
   </Page>
   {selected.length>0&&<TodoSelectionToolbar count={selected.length} inset={inset} busy={working||confirmDelete} testID="log-selection-toolbar" actions={[
-    {icon:'arrow-undo-outline',label:'되돌리기',description:'선택한 로그 되돌리기',onPress:()=>void apply(false)},
     {icon:'trash-outline',label:'삭제',description:'선택한 로그 삭제',destructive:true,onPress:()=>setConfirmDelete(true)},
   ]}/>}
   {!!failure&&<View style={{position:'absolute',alignSelf:'center',bottom:inset+96,zIndex:11}}><Text style={s.error} accessibilityRole="alert">{failure}</Text></View>}
   {confirmDelete&&selected.length>0&&<CalendarSheet centered bottomInset={inset} title="로그 삭제" busy={working} onClose={()=>setConfirmDelete(false)}>
     <LogDeleteBack close={()=>setConfirmDelete(false)} busy={working}/>
     <Text style={s.subtitle}>선택한 기록 {selected.length}개를 도슨에서 삭제할까요?</Text>
-    <Button title="도슨에서 선택한 로그 삭제 확인" disabled={working} loading={working} onPress={()=>void apply(true)}/>
+    <Button title="도슨에서 선택한 로그 삭제 확인" disabled={working} loading={working} onPress={()=>void deleteSelected()}/>
   </CalendarSheet>}
   </View>;
 }

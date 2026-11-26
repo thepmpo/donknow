@@ -2,7 +2,7 @@ import type {Todo} from './domain.ts';
 export type TodoView='date'|'source';
 export function todoSource(todo:Todo){
  const s=todo.source;
- if(!s)return {key:'local',label:'직접 작성',icon:'create-outline' as const,color:'#788391'};
+ if(!s)return {key:'local',label:'도슨',icon:'create-outline' as const,color:'#788391'};
  if(s.provider==='google')return s.externalId.includes(':tasks:')?{key:'google-tasks',label:'Google Tasks',icon:'checkmark-circle-outline' as const,color:'#4285F4'}:s.externalId.includes(':calendar')?{key:'google-calendar',label:'Google Calendar',icon:'calendar-outline' as const,color:'#4285F4'}:s.externalId.includes(':gmail:')?{key:'gmail',label:'Gmail',icon:'mail-outline' as const,color:'#D64B40'}:{key:'google',label:'Google',icon:'logo-google' as const,color:'#4285F4'};
  const values:Record<string,{key:string;label:string;icon:'logo-slack'|'checkbox-outline'|'document-text-outline'|'mail-outline';color:string}>={slack:{key:'slack',label:'Slack',icon:'logo-slack',color:'#B96ED8'},'apple-reminders':{key:'apple-reminders',label:'미리알림',icon:'checkbox-outline',color:'#E59337'},notion:{key:'notion',label:'Notion',icon:'document-text-outline',color:'#788391'},naver:{key:'naver',label:'네이버 메일',icon:'mail-outline',color:'#19A363'}};
  return values[s.provider]??{key:s.provider,label:'연결된 자료',icon:'document-text-outline' as const,color:'#788391'};

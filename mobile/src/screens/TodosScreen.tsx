@@ -3,9 +3,9 @@ import type {LiftPreviewProps} from '../todo-gesture-types';
 import type {RowPoint} from '../todo-gesture-types';
 import {useDesktopPresentation} from '../DesktopPresentation';
 import {ScreenHeading} from '../ScreenHeading';
-import {MotionPressable as Pressable,ReorderItem,useReducedMotion} from '../motion';
+import {MotionPressable as Pressable,MotionView,ReorderItem,useReducedMotion} from '../motion';
 import React,{useEffect,useRef,useState} from 'react';
-import {Animated,Easing,Keyboard,Linking,Platform,RefreshControl,ScrollView,StyleSheet,Text,View} from 'react-native';
+import {Animated,Easing,Keyboard,LayoutAnimation,Linking,Platform,RefreshControl,ScrollView,StyleSheet,Text,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {dateKey} from '../domain';
 import type {Todo} from '../domain';
@@ -66,8 +66,9 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  const draft:Todo={id:'inline-draft',title:'',done:false,dueDate:editor?.date??null,category:'일상'};
  const input=editor&&!editor.todo?[...stableTodos,draft]:stableTodos;
  const groups=(view==='date'?todoAgenda(input,calendar.events,today,zone):sourceAgenda(input)).map(g=>({...g,todos:g.todos.filter(t=>t.id!=='inline-draft')}));
- function closeEditor(){Keyboard.dismiss();focus.show(null);setEditingBusy(false);setEditor(null);}
- function edit(group:string,date:string|null,todo?:Todo){if(editor||busy)return;if(todo)Keyboard.dismiss();setBatchMessage('');setEditor({id:++sequence.current,group,date,todo});}
+ function animateEditorLayout(){if(!reduced&&Platform.OS==='ios')LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);}
+ function closeEditor(){animateEditorLayout();Keyboard.dismiss();focus.show(null);setEditingBusy(false);setEditor(null);}
+ function edit(group:string,date:string|null,todo?:Todo){if(editor||busy)return;animateEditorLayout();if(todo)Keyboard.dismiss();setBatchMessage('');setEditor({id:++sequence.current,group,date,todo});}
  function select(id:string){setSelecting(true);setSelected(old=>old.includes(id)?old.filter(v=>v!==id):[...old,id]);}
  async function applyBatch(operation:(id:string)=>Promise<boolean>){
   if(!selected.length||busy)return;
@@ -188,7 +189,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  }
  function register(key:string,node:React.ComponentRef<typeof View>|null,before:string|null,day:string,group:string){if(node)nodes.current.set(key,{node,before,day,group});else nodes.current.delete(key);}
  const selectedDates=new Set(selected.map(id=>store.findTodo(id)?.dueDate??null));
- const inline=(group:string)=>editor?.group===group?<ScrollRevealRegion key={editor.id} testID="todo-inline-region">{active&&<OverlayBack onClose={closeEditor} busy={editingBusy}/>}<TodoEditorForm presentation="inline" todo={editor.todo} dueDate={editor.date} store={store} onClose={closeEditor} onBusy={setEditingBusy}/></ScrollRevealRegion>:null;
+ const inline=(group:string)=>editor?.group===group?<ScrollRevealRegion key={editor.id} testID="todo-inline-region">{active&&<OverlayBack onClose={closeEditor} busy={editingBusy}/>}<MotionView distance={6}><TodoEditorForm presentation="inline" todo={editor.todo} dueDate={editor.date} store={store} onClose={closeEditor} onBusy={setEditingBusy}/></MotionView></ScrollRevealRegion>:null;
  return <ScrollRevealContext.Provider value={focus.show}><View ref={surface} collapsable={false} onLayout={keyboardInset.measure} style={{flex:1,minHeight:0}}><View onLayout={focus.reveal} style={{flex:1,minHeight:0,marginBottom:keyboardInset.inset}}>
  <Page todoGestures testID="todos-list-scroll" scrollRef={scroll} scrollEnabled={!drag} bottomSpace={selecting?112:0} onScroll={e=>{scrollY.current=e.nativeEvent.contentOffset.y;focus.onScroll(e);}} compact refreshControl={<RefreshControl refreshing={pulling} onRefresh={()=>void pull()} enabled={!drag} tintColor={colors.blue}/>}>
   <ScreenHeading embedded title="할 일">{selecting&&!drag&&<Pressable accessibilityRole="button" accessibilityLabel="할 일 선택 마치기" disabled={busy} onPress={()=>{cancelDrag();setSelecting(false);setSelected([]);setBatchPanel(null);}} style={styles.headingAction}><Text style={styles.count}>완료</Text></Pressable>}</ScreenHeading>
@@ -238,7 +239,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.dragTitle}>{drag.todo.title}</Text>
     <View style={styles.dragMeta}>
      <Text numberOfLines={1} style={styles.hint}>{drag.todo.dueDate?.slice(5).replace('-',' / ')}</Text>
-     <Text numberOfLines={1} style={styles.hint}>{todoSource(drag.todo).label}</Text>
+     <Text numberOfLines={1} style={styles.hint}>{drag.todo.source?todoSource(drag.todo).label:null}</Text>
     </View>
    </View>
    {drag.ids.length>1&&<Text style={styles.dragCount}>{drag.ids.length}</Text>}

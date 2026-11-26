@@ -7,6 +7,7 @@ export type RowGestureProps = {
   canSwipeRight: boolean;
   canSwipeLeft: boolean;
   canLift: boolean;
+  fill?:boolean;
   reduced: boolean;
   onSwipeStart: () => void;
   onSwipeEnd: (distance:number, completed:boolean) => void;
@@ -17,6 +18,7 @@ export type RowGestureProps = {
 
 
 export type LiftPreviewProps = {
+  testID?:string;
   children: ReactNode;
   style: StyleProp<ViewStyle>;
   geometry: {x:number;y:number;maxX:number;maxY:number;initial:RowPoint};

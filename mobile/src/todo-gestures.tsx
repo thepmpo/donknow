@@ -9,8 +9,8 @@ export function TodoGestureScroll({children}:{children:React.ReactElement}) {ret
 export function TodoGestureRow({children}:RowGestureProps) {return children;}
 
 export function TodoLiftScope({children}:{children:React.ReactNode}) {return <>{children}</>;}
-export function TodoLiftPreview({style,children,fallbackPosition,fallbackScale}:LiftPreviewProps) {
-  return <Animated.View pointerEvents="none" aria-hidden importantForAccessibility="no-hide-descendants" testID="todo-drag-preview" style={[style,{transform:[{translateX:fallbackPosition.x},{translateY:fallbackPosition.y},{scale:fallbackScale}]}]}>
+export function TodoLiftPreview({testID='todo-drag-preview',style,children,fallbackPosition,fallbackScale}:LiftPreviewProps) {
+  return <Animated.View pointerEvents="none" aria-hidden importantForAccessibility="no-hide-descendants" testID={testID} style={[style,{transform:[{translateX:fallbackPosition.x},{translateY:fallbackPosition.y},{scale:fallbackScale}]}]}>
     {children}
   </Animated.View>;
 }

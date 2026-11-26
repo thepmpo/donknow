@@ -98,8 +98,8 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    await diagnostic.click();await sheet.getByText('서비스 연결을 다시 승인해주세요.',{exact:true}).waitFor();
    assert.equal(await page.getByText(/빈 시간으로 판단/).count(),0);
    await sheet.getByRole('button',{name:'닫기',exact:true}).click();
-   await openAdd();await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('재연결 후 유지할 초안');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).waitFor();assert.equal(await sheet.getByText('기본 캘린더',{exact:true}).count(),0);assert.equal(await sheet.getByRole('radio',{name:'캘린더 기본 캘린더',exact:true}).count(),0);await page.screenshot({path:out+'/standard-connection-required.png'});
-   await page.context().route('https://accounts.google.com/**',r=>r.fulfill({contentType:'text/html',body:'<p>연결 확인 테스트</p>'}));await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).click();await sheet.waitFor({state:'detached'});await page.getByRole('button',{name:'Google 캘린더 연결 관리',exact:true}).click();await page.getByRole('button',{name:'연결 권한 관리',exact:true}).click();const permission=page.getByRole('button',{name:'연결 권한 다시 선택',exact:true});await permission.waitFor();const popupPromise=page.waitForEvent('popup');await permission.click();const popup=await popupPromise;await popup.waitForURL('https://accounts.google.com/**');assert.equal(authorization.mode,'reauthorize');assert.equal(authorization.connectionId,'connection-google');assert.ok(authorization.features.includes('calendarWrite'));sourceFailure=false;await popup.close();await page.bringToFront();await page.getByRole('tab',{name:'캘린더',exact:true}).click();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).waitFor();assert.equal(await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).inputValue(),'재연결 후 유지할 초안');await page.waitForFunction(()=>document.querySelector('[aria-label="저장할 캘린더 선택"]')?.textContent.includes('내 일정'));assert.equal(writes,1);await page.screenshot({path:out+'/standard-connection-restored.png'});await sheet.getByRole('button',{name:'닫기',exact:true}).click();
+   await openAdd();await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('재연결 후 유지할 초안');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();await sheet.getByTestId('calendar-destination-menu').waitFor();assert.equal(await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).count(),0);assert.equal(await sheet.getByRole('button',{name:'캘린더 목록 다시 확인',exact:true}).count(),0);assert.equal(await sheet.getByText('기본 캘린더',{exact:true}).count(),0);assert.equal(await sheet.getByRole('radio',{name:'캘린더 기본 캘린더',exact:true}).count(),0);await page.screenshot({path:out+'/standard-connection-required.png'});
+   await page.context().route('https://accounts.google.com/**',r=>r.fulfill({contentType:'text/html',body:'<p>연결 확인 테스트</p>'}));await closeSheet();await page.getByRole('tab',{name:'ME',exact:true}).click();await page.getByRole('button',{name:'연결된 서비스 관리',exact:true}).click();await page.getByRole('button',{name:'Google 캘린더 연결 관리',exact:true}).click();await page.getByRole('button',{name:'연결 권한 관리',exact:true}).click();const permission=page.getByRole('button',{name:'연결 권한 다시 선택',exact:true});await permission.waitFor();const popupPromise=page.waitForEvent('popup');await permission.click();const popup=await popupPromise;await popup.waitForURL('https://accounts.google.com/**');assert.equal(authorization.mode,'reauthorize');assert.equal(authorization.connectionId,'connection-google');assert.ok(authorization.features.includes('calendarWrite'));sourceFailure=false;await popup.close();await page.bringToFront();await page.getByRole('tab',{name:'캘린더',exact:true}).click();await openAdd();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).waitFor();assert.equal(await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).inputValue(),'');await page.waitForFunction(()=>document.querySelector('[aria-label="저장할 캘린더 선택"]')?.textContent.includes('내 일정'));assert.equal(writes,1);await page.screenshot({path:out+'/standard-connection-restored.png'});await sheet.getByRole('button',{name:'닫기',exact:true}).click();
   }
   {
    await page.setViewportSize({width,height});
@@ -125,10 +125,12 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
      await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
     }finally{await session.detach();}
    }
-   await row.getByTestId('todo-source-todo-0').getByText('직접 작성').waitFor();
+   await row.waitFor();assert.equal(await row.getByText('직접 작성',{exact:true}).count(),0);
    await row.getByRole('button',{name:'리뷰 할 일 저장 수정',exact:true}).click();
    const title=page.getByRole('textbox',{name:'할 일 제목',exact:true});
    await title.waitFor();
+   const trash=await page.getByRole('button',{name:'할 일 삭제',exact:true}).boundingBox(),cancel=await page.getByRole('button',{name:'할 일 편집 취소',exact:true}).boundingBox();
+   assert.ok(trash.x<cancel.x&&Math.abs(trash.y-cancel.y)<2);
    assert.equal(await title.evaluate(el=>el===document.activeElement),false);
    await title.click();
    assert.equal(await title.evaluate(el=>el===document.activeElement),true);
@@ -196,7 +198,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    const logSelection=logged.getByRole('checkbox',{name:'리뷰 할 일 저장 선택',exact:true});
    await swipe(logged,1);await logSelection.waitFor();assert.equal(await logSelection.getAttribute('aria-checked'),'true');
    const logToolbar=page.getByTestId('log-selection-toolbar');
-   await logToolbar.getByRole('button',{name:'선택한 로그 되돌리기',exact:true}).waitFor();
+   await logToolbar.waitFor();assert.equal(await logToolbar.getByText('되돌리기',{exact:true}).count(),0);
    const logListBounds=await page.getByTestId('log-list-scroll').boundingBox(),logBarBounds=await logToolbar.boundingBox();
    assert.ok(Math.abs((logListBounds.x+logListBounds.width/2)-(logBarBounds.x+logBarBounds.width/2))<2,'the log toolbar is centered within its own pane');
    await logToolbar.getByRole('button',{name:'선택한 로그 삭제',exact:true}).click();
