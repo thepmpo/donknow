@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 47cd28e · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 b2c32be · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 일정 즉시 삭제와 아이폰 캘린더 반영
+
+- 도슨 일정 삭제를 확인하면 시트를 닫고 일정과 연결된 원본 카드를 화면에서 바로 숨긴다. 도슨에서 삭제를 먼저 기록한다. 생성 전송 중인 일정은 그 전송 결과를 받은 뒤 원본 삭제를 이어서 처리한다. Google은 서버에서, 아이폰 캘린더는 접근 권한이 있는 앱에서 처리한다. 같은 삭제 요청은 재시도해도 결과가 유지되며 삭제 후에 도착한 생성 요청은 일정을 되살리지 않는다.
+- 아이폰 캘린더 변경 알림을 구독하고 앱 복귀 시에도 다시 읽는다. Google 캘린더 표시 한도와 아이폰 캘린더 선택을 분리한다. 동기화된 아이폰 일정은 원본에서 수정하거나 옮긴 결과를 표시한다.
+- 월간·주간 할 일 카드에 길게 누른 채 보이는 날짜로 옮기는 동작을 연결했다. 월간 날짜 원을 줄이고 카드 위에 간격을 둔다. 자동 검사와 브라우저에서 모의 아이폰 캘린더의 반영을 검증하며, 새 네이티브 모듈과 제스처의 실제 iPhone 검수는 설치용 빌드에서 진행한다.
+- 자동 검사 502개 통과, 기존 제외 1개. 브라우저에서 월간 일정·할 일 끌기와 날짜 원 간격, 서버 응답 전 삭제, 일반폰·Duo의 모의 아이폰 원본 변경과 10개 초과 캘린더 표시를 확인했다. iOS 번들과 네이티브 모듈 등록 검사를 통과했다. Render 테스트 서버의 `b2c32be` 배포는 16:29 KST에 live가 됐고 서버 기동 로그를 확인했다. GitHub가 TestFlight 실행 요청을 403으로 거부했다.
 
 #### 2026-11-26 — 연결된 Google 일정 전송 대기와 저장 복구
 
@@ -4002,10 +4009,13 @@ d4e7172 Set the product-wide Docen synchronization contract
 f4da8ad Refresh the project documentation with the sync contract
 47cd28e Retry temporary calendar save and delivery failures automatically
 004c4f2 Refresh the project record for calendar save recovery
+d451dd2 Record calendar delivery test deployment
+b2c32be Keep calendar deletion responsive and refresh iPhone originals on change
+68b234c Record calendar synchronization verification and deployment
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 47cd28e에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: b2c32be에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13274,7 +13284,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/47cd28eced0817b78642e5f580a769fc2f0ce480
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/b2c32be60eb1e844be75f7568b103a8944e8da1a
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -14356,6 +14366,7 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 - 도슨 저장을 먼저 완료한다. 연결 서비스의 조회·승인 확인·전송 응답을 기다리느라 도슨의 화면 반영이나 저장 완료를 늦추지 않는다. 도슨에 기록한 다음 전송을 바로 시작한다. 작업 큐를 사용하는 경로에서는 저장과 전송 작업 등록을 함께 확정해 재시작 사이에 작업이 빠지지 않게 한다.
 - 원본이 느리거나 권한이 만료돼도 이미 도슨에 저장된 항목은 유지한다. 권한 범위 안에서 자동 갱신하고 일시 장애는 다시 처리한다. 도슨 저장 실패와 원본 전송 실패는 별도의 상태로 처리한다. 원본 쓰기 결과가 불확실하면 같은 요청 ID나 원본 항목을 조회해 확인한다.
 - 유효한 연결에서는 일시적인 타임아웃·요청 제한을 최종 저장 실패로 처리하지 않는다. 원본 전송을 대기열에서 바로 시작하고, 재시도가 가능해지는 시점에 자동으로 다시 보낸다. 원본이 지정한 대기 시간이 있으면 따른다. 도슨 저장 응답이 끊긴 경우에도 멱등성이 확인된 생성은 같은 요청 ID로 자동 복구한다.
+- 삭제를 확정하면 화면에서 해당 항목을 즉시 숨긴다. 도슨 삭제와 원본 삭제 작업을 함께 기록한다. 원본 생성이 진행 중이면 도슨 삭제부터 기록하고 생성 응답을 받은 뒤 원본 삭제를 처리한다. 도슨 자체의 확정 실패는 화면을 복구한다.
 - docen.ai에서 실행이 승인된 생성·작성 작업도 도슨 저장 경로를 공유한다. 대화에 성공을 알릴 때는 도슨에 저장됐는지, 원본에도 전송됐는지 실제 결과에 맞춰 말한다.
 
 #### 2. 원본에서 작성하면 도슨에 최대한 빨리 표시한다
@@ -14376,9 +14387,9 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 
 #### 2026년 11월 26일 코드 확인
 
-- **일정 생성**은 도슨 서버에 먼저 기록하고 응답을 받으면 표시한다. Google 전송은 서버 워커에서 처리하고 Apple 전송은 권한이 있는 기기에서 처리한다. 도슨 서버 응답 전 화면 표시와 연결된 기존 일정의 수정·삭제는 별도 개선 대상으로 남아 있다. [일정 편집기](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarEventEditor.tsx) · [도슨 일정 저장소](https://github.com/thepmpo/donknow/blob/main/server/docen-calendar-store.js) · [전송 워커](https://github.com/thepmpo/donknow/blob/main/server/feature-routes.js)
+- **일정 생성**은 도슨 서버에 먼저 기록하고 응답을 받으면 표시한다. Google 전송은 서버 워커에서 처리하고 Apple 전송은 권한이 있는 기기에서 처리한다. 도슨에서 등록한 일정의 삭제는 원본과 독립적으로 먼저 완료하며, 연결된 원본 삭제는 같은 작업의 다음 단계로 처리한다. [일정 편집기](https://github.com/thepmpo/donknow/blob/main/mobile/src/CalendarEventEditor.tsx) · [도슨 일정 저장소](https://github.com/thepmpo/donknow/blob/main/server/docen-calendar-store.js) · [전송 워커](https://github.com/thepmpo/donknow/blob/main/server/feature-routes.js)
 - **할 일 작성·일부 수정**은 로컬 상태를 먼저 갱신한다. 연결된 원본에 전송하는 범위는 공급자와 작업에 따라 다르다. [할 일 저장](https://github.com/thepmpo/donknow/blob/main/mobile/src/useTodos.ts) · [원본 반영 경로](https://github.com/thepmpo/donknow/blob/main/server/source-edits.js)
-- **원본 → 도슨**의 캘린더 조회는 화면 진입·앱 복귀와 활성 화면의 30초 주기 읽기를 사용한다. 이는 조회 주기이며 반영 시간 보장이 아니다. 기존 Google 변경 알림은 중요 알림용으로 등록되고 현재 캘린더 화면에 변경을 즉시 전달하지 않는다. 도슨에서 생성해 연결한 일정이 나중에 원본에서 수정될 때 제목·날짜의 반영도 추가 확인이 필요하다. [Google 조회](https://github.com/thepmpo/donknow/blob/main/mobile/src/useCalendarData.ts) · [Apple 조회](https://github.com/thepmpo/donknow/blob/main/mobile/src/useAppleCalendarData.ts) · [Google 변경 감시](https://github.com/thepmpo/donknow/blob/main/server/provider-watches.js) · [캘린더 목록 병합](https://github.com/thepmpo/donknow/blob/main/mobile/src/useUnifiedCalendarData.ts)
+- **원본 → 도슨**의 아이폰 캘린더 조회는 EventKit 변경 알림, 화면 진입, 앱 복귀와 활성 화면의 15초 주기 읽기를 사용한다. 사용자가 명시한 표시 설정은 유지하고 Google의 10개 선택 한도를 아이폰 캘린더에 적용하지 않는다. Google 조회는 활성 화면에서 30초 주기로 다시 읽는다. [Google 조회](https://github.com/thepmpo/donknow/blob/main/mobile/src/useCalendarData.ts) · [Apple 조회](https://github.com/thepmpo/donknow/blob/main/mobile/src/useAppleCalendarData.ts) · [캘린더 목록 병합](https://github.com/thepmpo/donknow/blob/main/mobile/src/useUnifiedCalendarData.ts)
 - **docen.ai의 일정 생성**은 기존 승인 경로에서 원본 실행 응답을 기다린다. 공통 도슨 저장 경로로 연결하는 작업이 남아 있다. [AI 실행 경로](https://github.com/thepmpo/donknow/blob/main/server/assistant.js)
 
 ### 원문 / templates/product-starter/README.md
