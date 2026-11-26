@@ -12,6 +12,8 @@ import {createSiteRoutes} from './server/site.js';
 import {originalTodoLink} from './server/todo-source-link.js';
 import {sendJson} from './server/http-json.js';
 import {probeAiConnection} from './server/ai-transport.js';
+import {createTodoDelivery} from './server/todo-delivery.js';
+import {todoTarget} from './server/todo-delivery-store.js';
 import { createTaskSync } from './server/task-sync.js';
 import {createTodoMembership} from './server/todo-membership.js';
 import { backupScheduler } from './server/backups.js';
@@ -38,6 +40,7 @@ const worker = startMailWorker(store, mailer, background?(process.env.NODE_ENV =
 const integrations = createIntegrations(store);
 const todoMembership=createTodoMembership(store,integrations);
 const taskSync=createTaskSync(store,integrations,{background});
+const todoDelivery=createTodoDelivery(store,integrations,{background});
 const features = featureRoutes(store, mailer, worker, integrations, limited, clientAddress,{background});
 const secureCookie = process.env.COOKIE_SECURE === '1' || process.env.NODE_ENV === 'production';
 const allowedOrigin = process.env.PUBLIC_ORIGIN || '';
@@ -156,9 +159,27 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       if(path==='/api/account/agreements'&&req.method==='GET')return send(200,{accepted:store.signupAgreements(session.user.id),current:publicLegal()});
       if (path === '/api/auth/session' && req.method === 'GET') return send(200, session);
       if (path === '/api/auth/logout' && req.method === 'POST') { store.logout(token); return send(200, { ok: true }, { 'Set-Cookie': cookie('', 0) }); }
-      if (path === '/api/todos' && req.method === 'GET') return send(200, store.list(session.user.id));
+      if (path === '/api/todos' && req.method === 'GET') return send(200,store.todoDelivery.list(session.user.id));
+      if(path==='/api/todo-destinations'&&req.method==='GET'){
+       return send(200,await todoDelivery.options(session.user.id,url.searchParams.get('connectionId'),url.searchParams.get('cursor')));
+      }
+      const deliveryRoute=/^\/api\/todos\/([a-f0-9-]{36})\/delivery\/(claim|receipt|retry)$/.exec(path);
+      if(deliveryRoute&&req.method==='POST'){
+       const [,id,action]=deliveryRoute,user=session.user.id;
+       if(!store.get(user,id))return send(404,{error:'할 일을 찾을 수 없어요.'});
+       const body=await json(req);
+       if(action==='receipt')return send(200,store.todoDelivery.appleReceipt(user,id,body));
+       if(action==='retry'){
+        const todo=store.todoDelivery.retry(user,id);todoDelivery.wake();return send(200,todo);
+       }
+       const target=store.todoDelivery.status(user,id);
+       if(target?.provider!=='apple-reminders'||target.listId!==body.listId)return send(409,{error:'미리 알림 목록을 다시 확인해주세요.'});
+       const attempt=store.todoDelivery.claim(user,id,'apple-reminders');
+       if(!attempt)return send(409,{error:'이미 전송 중이거나 결과를 확인 중이에요.'});
+       return send(200,{attempt,todo:store.todoDelivery.decorate(user,store.get(user,id))});
+      }
       if(path==='/api/todo-order'&&req.method==='PUT'){if(limited('todo-order:'+session.user.id))return send(429,{error:'잠시 뒤 다시 옮겨주세요.'});return send(200,store.reorder(session.user.id,(await json(req)).ids));}
-      const writeReceipt=/^\/api\/todo-writes\/([A-Za-z0-9_-]{20,120})$/.exec(path);if(writeReceipt&&req.method==='GET')return send(200,{todo:store.todoWriteReceipt(session.user.id,writeReceipt[1])});
+      const writeReceipt=/^\/api\/todo-writes\/([A-Za-z0-9_-]{20,120})$/.exec(path);if(writeReceipt&&req.method==='GET')return send(200,{todo:store.todoDelivery.decorate(session.user.id,store.todoWriteReceipt(session.user.id,writeReceipt[1]))});
       if(path==='/api/todo-membership/options'&&req.method==='POST'){
         const body=await json(req);
         return send(200,await todoMembership.options(session.user.id,body.ids,body.cursor));
@@ -169,16 +190,27 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         const body = await json(req);
         if (!validNotes(body.notes ?? '')) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' });
         if (!validTitle(body.title) || !validDate(body.dueDate ?? null) || !validReminder(body.reminderAt ?? null)) return send(400, { error: '할 일 제목과 날짜를 확인해주세요.' });
-        const todo = store.create(session.user.id, { title: body.title.trim(), category: ['일상', '업무', '건강'].includes(body.category) ? body.category : '일상', dueDate: body.dueDate ?? null, reminderAt: body.reminderAt ?? null, notes: body.notes ?? '' },{requestKey:body.clientRequestKey});
-        return send(201, todo);
+        if(body.dueTime!=null&&(!body.dueDate||typeof body.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(body.dueTime)))return send(400,{error:'예정 시간을 확인해주세요.'});
+        const target=todoTarget(body.deliveryTarget);
+        if(target&&!body.clientRequestKey)return send(400,{error:'저장 요청 번호를 확인해주세요.'});
+        const todo=store.create(session.user.id,{
+         title:body.title.trim(),category:['일상','업무','건강'].includes(body.category)?body.category:'일상',
+         dueDate:body.dueDate??null,...(body.dueTime!=null?{dueTime:body.dueTime}:{}),reminderAt:body.reminderAt??null,notes:body.notes??'',
+        },{requestKey:body.clientRequestKey,target});
+        if(target)todoDelivery.wake();
+        return send(201,store.todoDelivery.decorate(session.user.id,todo));
       }
       const sourceLink=/^\/api\/todos\/([^/]+)\/source-link$/.exec(path);if(sourceLink&&req.method==='GET')return send(200,await originalTodoLink(store,integrations,session.user.id,sourceLink[1]));
       if (path.startsWith('/api/todos/')) {
         const id = path.slice('/api/todos/'.length), userId = session.user.id;
         if (!store.get(userId, id)) return send(404, { error: '할 일을 찾을 수 없어요.' });
-        if(req.method==='GET')return send(200,store.get(userId,id));
+        if(req.method==='GET')return send(200,store.todoDelivery.decorate(userId,store.get(userId,id)));
         if(todoMembership.isMoving(userId,id))return send(409,{error:'할 일의 원본 목록을 옮기고 있어요.'});
-        if (req.method === 'DELETE') { store.remove(userId, id); return send(200, { ok: true }); }
+        if(store.todoDelivery.status(userId,id)?.state==='sending')return send(409,{error:'선택한 목록에 저장 중이에요. 잠시 뒤 다시 시도해주세요.'});
+        if (req.method === 'DELETE') {
+         if(!store.remove(userId,id))return send(409,{error:'저장 중인 할 일을 잠시 뒤 다시 확인해주세요.'});
+         return send(200,{ok:true});
+        }
         if (req.method === 'PATCH') {
           const body = await json(req), patch = {};
           if ('title' in body) { if (!validTitle(body.title)) return send(400, { error: '할 일을 120자 이내로 적어주세요.' }); patch.title = body.title.trim(); }
@@ -188,7 +220,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
           if('dueTime' in body){if(body.dueTime!==null&&(typeof body.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(body.dueTime)))return send(400,{error:'예정 시간을 확인해주세요.'});patch.dueTime=body.dueTime;}
           if ('done' in body) { if (typeof body.done !== 'boolean') return send(400, { error: '완료 상태가 올바르지 않아요.' }); patch.done = body.done; }
           if (!Object.keys(patch).length) return send(400, { error: '변경할 내용이 없어요.' });
-          const saved=await features.updateTodo(userId,id,patch);taskSync.wake();return send(200,saved);
+          const saved=await features.updateTodo(userId,id,patch);taskSync.wake();return send(200,store.todoDelivery.decorate(userId,saved));
         }
       }
       return send(405, { error: '지원하지 않는 요청이에요.' });
@@ -214,5 +246,5 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
   } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.' }); else res.end(); }
 })).listen(Number(process.env.PORT || 3000), lane?'127.0.0.1':'0.0.0.0', () => {if(lane)parentPort.postMessage({type:'ready',port:server.address().port});else console.log('Donknow listening on port ' + server.address().port);if(background&&process.env.NODE_ENV!=='test'){void probeAiConnection();void probeMailConfiguration();}});
-if(lane)parentPort.on('message',message=>{if(message.type==='wake')features.wakeSource();if(message.type==='close'){features.close();taskSync.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
+if(lane)parentPort.on('message',message=>{if(message.type==='wake'){features.wakeSource();todoDelivery.wake();}if(message.type==='close'){features.close();taskSync.stop();todoDelivery.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
 

@@ -337,16 +337,20 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  let finishDelete,acceptWrites=false;
  await linked.route(linkedOrigin+'/**',async route=>{
   const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
+  if(path==='/api/todo-destinations'){
+   const account=url.searchParams.get('connectionId');
+   return route.fulfill({json:account?{items:[{id:'task-list',title:'팀 할 일'}]}:{accounts:[{id:connectedId,title:'업무 계정'}]}});
+  }
   if(path==='/api/auth/session')return offlineSession?route.fulfill({status:503,json:{error:'offline'}}):route.fulfill({json:{user:{id:'linked-user',email:'linked@example.test',emailVerified:true}}});
   if(path==='/api/todos'){
    if(method==='GET')return offlineSession?route.fulfill({status:503,json:{error:'offline'}}):route.fulfill({json:todoSaved?[todoSaved]:[]});
    const body=route.request().postDataJSON();todoWrites.push(body);
    if(!acceptWrites)return route.abort('failed');
-   todoSaved??={...body,id:'confirmed-device-todo',done:false};
+   todoSaved??={...body,id:'confirmed-device-todo',done:false,delivery:{...body.deliveryTarget,state:'queued'}};
    return route.fulfill({json:todoSaved});
   }
   if(offlineSession&&method==='GET'&&(path==='/api/capabilities'||path.startsWith('/api/calendar/')))return route.fulfill({status:503,json:{error:'offline'}});
-  if(path==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1,todoNotes:true}});
+  if(path==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1,todoNotes:true,todoCreateTargets:1}});
   if(path==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:selectedCalendar,name:'원본 팀 일정',canWrite:true,color:'#22aa44',connectionId:connectedId}]}});
   if(path==='/api/calendar/events'){
    const calendarId=url.searchParams.get('calendarId');
@@ -395,6 +399,10 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await linkedSheet.getByRole('tab',{name:'할 일',exact:true}).click();
  await linkedSheet.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('오프라인 할 일');
  await linkedSheet.getByRole('textbox',{name:'메모',exact:true}).fill('기기에서 먼저 저장');
+ await linkedSheet.getByRole('button',{name:'할 일 저장 목록 선택',exact:true}).click();
+ await linkedSheet.getByRole('button',{name:'Google Tasks · 업무 계정',exact:true}).click();
+ await linkedSheet.getByRole('button',{name:'팀 할 일',exact:true}).click();
+ await linkedSheet.getByRole('button',{name:'할 일 저장 목록 선택',exact:true}).getByText('팀 할 일',{exact:true}).waitFor();
  await linkedSheet.getByRole('button',{name:'저장',exact:true}).click();
  await linkedDay.getByText('할 일 1',{exact:true}).waitFor();
  offlineSession=true;
@@ -410,9 +418,12 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  assert.ok(!docenSaved,'pending item is displayed from the device journal after reload');
  const delivered=linked.waitForResponse(r=>r.request().method()==='PUT'&&r.ok()&&r.url().startsWith(linkedOrigin+'/api/calendar/docen/'));
  const todoDelivered=linked.waitForResponse(r=>r.request().method()==='POST'&&r.ok()&&new URL(r.url()).pathname==='/api/todos');
- acceptWrites=true;await Promise.all([delivered,todoDelivered]);
+ acceptWrites=true;
+ await linked.clock.setFixedTime(new Date('2026-11-25T10:02:00Z'));
+ await Promise.all([delivered,todoDelivered]);
  assert.ok(todoWrites.every(write=>write.clientRequestKey&&write.clientRequestKey===todoWrites[0].clientRequestKey));
  assert.equal(todoSaved.dueDate,'2026-11-25');
+ assert.deepEqual(todoSaved.deliveryTarget,{provider:'google',connectionId:connectedId,listId:'task-list'});
  await linkedDay.click();
  await linkedSheet.getByTestId('todo-confirmed-device-todo').waitFor();
  assert.equal(await linkedSheet.getByText('오프라인 할 일',{exact:true}).count(),1);

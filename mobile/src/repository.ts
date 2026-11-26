@@ -1,3 +1,4 @@
+import {HttpResponseError} from './http-response';
 import { request } from './auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { parseTodos, sampleTodos, validateDraft } from './domain';
@@ -31,7 +32,12 @@ export function createRepository(connection: Connection): Repository {
       list: async () => parseTodos(await call()),
       receipt:async key=>{const r=await request(baseUrl,'/api/todo-writes/'+encodeURIComponent(key)) as {todo:unknown};return r.todo?parseTodos([r.todo])[0]:null;},
       get:async id=>parseTodos([await call('/'+encodeURIComponent(id))])[0],
-      create: async (draft,requestKey) => { if (draft.notes) await requireNotes(); return parseTodos([await call('', 'POST', {...validateDraft(draft),...(requestKey?{clientRequestKey:requestKey}:{})})])[0]; },
+      create: async (draft,requestKey) => {
+        if(draft.deliveryTarget){
+          const capability=await request(baseUrl,'/api/capabilities') as {todoCreateTargets?:number};
+          if(capability.todoCreateTargets!==1)throw new HttpResponseError(409,'선택한 목록에 저장하려면 최신 서버가 필요해요.');
+        }
+        if (draft.notes) await requireNotes(); return parseTodos([await call('', 'POST', {...validateDraft(draft),...(requestKey?{clientRequestKey:requestKey}:{})})])[0]; },
       update: async (id, patch) => { if (patch.notes !== undefined) await requireNotes(); return parseTodos([await call('/' + encodeURIComponent(id), 'PATCH', patch)])[0]; },
       remove: async id => { await call('/' + encodeURIComponent(id), 'DELETE'); },
       reorder:async ids=>{const c=await request(baseUrl,'/api/capabilities') as {todoOrdering?:number};if(!c.todoOrdering)throw Error('순서 저장을 지원하는 최신 서버가 필요해요. 기존 순서는 유지했어요.');return parseTodos(await request(baseUrl,'/api/todo-order','PUT',{ids}));},

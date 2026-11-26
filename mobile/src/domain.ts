@@ -1,10 +1,13 @@
 import {MAX_NOTES_LENGTH} from './notes.ts';
 export type Category = '일상' | '업무' | '건강';
+export type TodoDestination={provider:'google';connectionId:string;listId:string}|{provider:'apple-reminders';listId:string};
+export type TodoDelivery=TodoDestination&{state:'queued'|'sending'|'blocked'|'checking'|'synced'};
 export type Todo = {
+  delivery?:TodoDelivery;
   id: string; title: string; category: Category; done: boolean; order?:number;saveState?:'saving'|'checking';
   dueDate: string | null; dueTime?:string|null; reminderAt?: string | null; notes?: string; source?: { provider: string; externalId: string;url?:string;modifiedAt?:string;listId?:string;listTitle?:string;color?:string;calendarId?:string;connectionId?:string;eventId?:string;timeZone?:string };sourceSync?:{state:'succeeded'|'failed'|'unknown'|'device-required'|'queued';revision:number;at?:number;patch?:Record<string,unknown>;reason?:'completion-unsupported'}; createdAt?: string; completedAt?: string | null;
 };
-export type Draft = { title: string; dueDate: string | null;dueTime?:string|null; category: Category; reminderAt?: string | null; notes?: string };
+export type Draft = { title: string; dueDate: string | null;dueTime?:string|null; category: Category; reminderAt?: string | null; notes?: string;deliveryTarget?:TodoDestination };
 export type Connection = { mode: 'demo' } | { mode: 'cloud'; baseUrl: string };
 export const COMPLETION_DELAY = 3000;
 export const COMPLETION_FADE_DURATION = 350;

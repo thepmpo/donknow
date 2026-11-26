@@ -1,5 +1,6 @@
 import {signupAgreementsStore,validateSignupAgreements} from './legal-policy.js';
 import {adminStore} from './admin-store.js';
+import {todoDeliveryStore} from './todo-delivery-store.js';
 import { featureStore } from './features-store.js';
 import {accountPolicySchema,accountActive,memberAccess} from './account-policy.js';
 import {fail} from './secrets.js';
@@ -40,7 +41,9 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
   }
   function list(userId) { return db.prepare('SELECT data FROM todos WHERE user_id = ? ORDER BY rowid').all(userId).map(row => JSON.parse(row.data)); }
   function get(userId, id) { const row = db.prepare('SELECT data FROM todos WHERE user_id = ? AND id = ?').get(userId, id); return row ? JSON.parse(row.data) : null; }
+  const todoDelivery=todoDeliveryStore(db,get);
   return {
+    todoDelivery,
     ...features,
     ...agreementsStore,
     ...adminStore(db),
@@ -80,11 +83,17 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
       }catch(error){db.exec('ROLLBACK');throw error;}
     },
     todoWriteReceipt(userId,key){return get(userId,writeId(userId,key));},
-    create(userId, draft, { done = false, requestKey } = {}) {
+    create(userId, draft, { done = false, requestKey,target } = {}) {
       const id=requestKey!==undefined?writeId(userId,requestKey):randomUUID(),existing=requestKey!==undefined?get(userId,id):null;
       if(existing)return existing;
       const now=new Date().toISOString(),todo={...draft,id,done:done===true,createdAt:now,...(done===true?{completedAt:now}:{})};
-      db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo));
+      if(target){
+       db.exec('BEGIN IMMEDIATE');
+       try{
+        if(db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo)).changes)todoDelivery.enqueue(userId,id,target);
+        db.exec('COMMIT');
+       }catch(error){db.exec('ROLLBACK');throw error;}
+      }else db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo));
       return requestKey!==undefined?get(userId,id):todo;
     },
     update(userId, id, patch, { remote = false, skipTaskSync = false } = {}) {
@@ -118,7 +127,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
         db.exec('COMMIT');return updated;
       }catch(error){db.exec('ROLLBACK');throw error;}
     },
-    remove(userId, id) { return db.prepare('DELETE FROM todos WHERE id = ? AND user_id = ?').run(id, userId).changes > 0; },
+    remove(userId, id) { return db.prepare('DELETE FROM todos WHERE id = ? AND user_id = ? AND NOT EXISTS (SELECT 1 FROM todo_delivery WHERE todo_id=todos.id AND state=\'sending\' AND next_at>?)').run(id,userId,Date.now()).changes > 0; },
     importLegacy(email, items) {
       const user = findUser(email); if (!user) throw new Error('가져올 계정을 먼저 만들어주세요.');
       if (db.prepare('SELECT name FROM migrations WHERE name = ?').get('legacy-todos-v1')) return { imported: 0, alreadyImported: true };

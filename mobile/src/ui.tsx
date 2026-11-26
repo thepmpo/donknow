@@ -1,3 +1,4 @@
+import {TodoDestinationPicker} from './TodoDestinationPicker';
 import type {PointerEvent,ViewStyle} from 'react-native';
 import {TodoGestureRow,TodoGestureScroll} from './todo-gestures';
 import type {RowPoint} from './todo-gesture-types';
@@ -246,13 +247,14 @@ export function TodoEditor(props:TodoEditorProps){
 export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,presentation='sheet'}:{todo?:Todo;dueDate:string|null;store:TodoStore;onClose:()=>void;visible?:boolean;onBusy?:(busy:boolean)=>void;presentation?:'sheet'|'inline'}){
   const parentReveal=useContext(ScrollRevealContext),inline=presentation==='inline',focusedInline=useRef<React.ComponentRef<typeof TextInput>|null>(null);
   const [tools,setTools]=useState<'date'|'alarm'|'more'|null>(null);
+  const [destination,setDestination]=useState<React.ComponentProps<typeof TodoDestinationPicker>['value']>(null);
   function focusInput(input:React.ComponentRef<typeof TextInput>|null){focusedInline.current=input;if(inline)parentReveal(input);else field.focus(input);}
   function revealInput(){if(inline){if(focusedInline.current)parentReveal(focusedInline.current);}else field.reveal();}
   const keyboard=useKeyboardUX(),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
   const [notes,setNotes] = useState(todo?.notes ?? '');
-  const sourceTimeEditable=todo?.source?.provider==='apple-reminders'||todo?.source?.provider==='google'&&todo.source.externalId.includes(':calendar');
+  const sourceTimeEditable=destination?.target.provider==='apple-reminders'||todo?.source?.provider==='apple-reminders'||todo?.source?.provider==='google'&&todo.source.externalId.includes(':calendar');
   const [dueTime,setDueTime]=useState<string|null>(todo?.dueTime??null);
   const [alarm, setAlarm] = useState(!!todo?.reminderAt),[alarmConfigured,setAlarmConfigured]=useState(!!todo?.reminderAt);
   const originalTime = todo?.reminderAt ? new Date(todo.reminderAt) : null;
@@ -266,7 +268,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
     try {
       let reminderAt: string | null = null;
       if (alarm) { if (!alarmDay || !/^([01]\d|2[0-3]):[0-5]\d$/.test(alarmTime)) throw new Error('예정일과 알림 시간을 확인해주세요.'); reminderAt = todoReminderInstant(alarmDay,alarmTime,deviceZone(),todo?.reminderAt); if (Date.parse(reminderAt) <= Date.now() && reminderAt !== todo?.reminderAt) throw new Error('알림은 미래 시간으로 정해주세요.'); }
-      const draft: Draft = validateDraft({ title, notes, dueDate: date,...(sourceTimeEditable?{dueTime:date?dueTime:null}:{}), reminderAt, category: todo?.category ?? '일상' });
+      const draft: Draft = validateDraft({ title, notes, dueDate: date,...(sourceTimeEditable?{dueTime:date?dueTime:null}:{}), reminderAt, category: todo?.category ?? '일상',...(!todo&&destination?{deliveryTarget:destination.target}:{}) });
       if(draft.notes&&(todo||!store.deviceCreatesEnabled))await store.prepareSave(draft);
       const ok = await store.beginSave(draft,todo?.id);
       if (ok) onClose(); else setError('저장하지 못했어요. 연결을 확인하고 다시 시도해주세요.');
@@ -289,6 +291,12 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
     }
   }
   async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
+  const delivery=todo?.delivery;
+  const destinationControl=!todo?<TodoDestinationPicker store={store} value={destination} onChange={setDestination} disabled={saving}/>:
+   delivery?.state==='blocked'?<Button title="선택한 목록에 다시 보내기" quiet disabled={saving}
+    onPress={()=>void store.retryDelivery(todo.id).catch(e=>setError(e instanceof Error?e.message:'다시 보내지 못했어요.'))}/>:
+   delivery?.state==='checking'?<Text style={s.muted}>선택한 목록에서 저장 결과를 확인해주세요.</Text>:
+   delivery?.state==='queued'&&delivery.provider==='apple-reminders'?<Text style={s.muted}>아이폰 미리알림 전송 대기</Text>:null;
   const footer=<View style={{flexDirection:'row',alignItems:'center',gap:8}}>
     {!!todo&&<Pressable accessibilityRole="button" accessibilityLabel="할 일 삭제" disabled={saving} onPress={()=>void remove()} style={[s.more,{paddingHorizontal:8}]}><Text style={s.deleteText}>삭제</Text></Pressable>}
     <View style={{flex:1}}/>
@@ -297,6 +305,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
   </View>;
   if(inline)return <View testID="todo-inline-editor" style={{backgroundColor:colors.surface,borderRadius:20,padding:16,gap:8,marginVertical:6}}>
     <TextInput ref={titleRef} autoFocus={visible&&!todo} accessibilityLabel="할 일 제목" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} placeholder="새 할 일" placeholderTextColor={colors.muted} onFocus={()=>{setActivePicker(null);focusInput(titleRef.current);}} style={[s.editorInput,{backgroundColor:'transparent',padding:0,minHeight:44}]}/>
+    {destinationControl}
     <NotesField compact value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);focusInput(input);}} onResize={revealInput}/>
     <View style={{flexDirection:'row',alignItems:'center',gap:4,flexWrap:'wrap'}}>
      <Pressable accessibilityRole="button" accessibilityLabel="예정일 편집" accessibilityState={{expanded:tools==='date'}} disabled={saving} onPress={()=>{Keyboard.dismiss();setActivePicker(null);setTools(v=>v==='date'?null:'date');}} style={[s.more,{flexDirection:'row',gap:6,paddingHorizontal:8}]}><Ionicons name="calendar-outline" size={20} color={colors.blueText}/><Text style={s.subtitle}>{date?formatDueDate(date):'날짜 없음'}</Text></Pressable>
@@ -312,6 +321,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
   return <ScrollRevealContext.Provider value={field.show}><View ref={surface} onLayout={keyboardInset.measure} style={s.modalBackdrop}>
       <DraggableSheet testID="todo-editor-surface" visible={visible} presentation="none" style={[s.sheet,{height:'90%',maxHeight:'90%',paddingBottom:16,overflow:'hidden'}]} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? '할 일 수정' : '새로운 할 일'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><View style={{flex:1,minHeight:0,paddingBottom:Math.max(0,keyboardInset.inset-16)}}><ScrollView ref={scroll} onLayout={field.reveal} onContentSizeChange={field.reveal} onScroll={field.onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flex:1,minHeight:0}} automaticallyAdjustKeyboardInsets={false} contentInsetAdjustmentBehavior="never" contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
         <TextInput ref={titleRef} onFocus={()=>{setActivePicker(null);focusInput(titleRef.current);}} accessibilityLabel="할 일 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
+        {destinationControl}
         <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/>{sourceTimeEditable&&<DateTimeField label="예정 시간" inputLabel="예정 시간" mode="time" value={date?dueTime:null} onChange={setDueTime} disabled={saving||!date} clearable activePicker={activePicker} onPickerChange={setActivePicker}/>}<NotesField value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);focusInput(input);}} onResize={field.reveal}/>
         <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="할 일 알림" value={alarm} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} disabled={saving} trackColor={{ true: colors.blue }} /></View>
         {alarm&&<View style={{gap:12,backgroundColor:colors.grouped,padding:12,borderRadius:18}}><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 날짜" value={alarmDay} disabled={saving} onChange={value=>value&&setAlarmDay(value)}/><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 시간" value={alarmTime} mode="time" disabled={saving} onChange={value=>value&&setAlarmTime(value)}/></View>}

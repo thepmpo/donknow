@@ -114,6 +114,22 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const data=await googleRead(userId,record,'https://tasks.googleapis.com/tasks/v1/users/@me/lists?'+query);
       return {items:data.items?.map(list=>({id:list.id,title:title(list.title,'할 일 목록')}))??[],nextCursor:data.nextPageToken??null};
     },
+    async createGoogleTask(userId,target,claim){
+      const record=await taskMoveAccess(userId,target.connectionId);
+      const origin='https://tasks.googleapis.com/tasks/v1';
+      const list=await googleRead(userId,record,origin+'/users/@me/lists/'+encodeURIComponent(target.listId));
+      if(list.id!==target.listId)throw fail(409,'선택한 Google 할 일 목록을 찾을 수 없어요.');
+      const latest=await taskMoveAccess(userId,target.connectionId);
+      if(latest.accountId!==record.accountId)throw fail(409,'Google 계정 연결이 바뀌었어요.');
+      const todo=claim();if(!todo)return null;
+      const body={title:todo.title,notes:todo.notes??'',status:todo.done?'completed':'needsAction',
+        ...(todo.dueDate?{due:todo.dueDate+'T00:00:00.000Z'}:{})};
+      const added=await providerRequest(origin+'/lists/'+encodeURIComponent(target.listId)+'/tasks',{
+        method:'POST',headers:{Authorization:'Bearer '+latest.accessToken,'Content-Type':'application/json'},body:JSON.stringify(body),
+      });
+      if(typeof added.id!=='string'||!added.id||added.id.length>512||added.id.includes(':'))throw fail(502,'Google 할 일 저장 결과를 확인해주세요.');
+      return {provider:'google',externalId:record.connectionId+':tasks:'+target.listId+':'+added.id,connectionId:record.connectionId,listId:target.listId,listTitle:title(list.title,'Google Tasks')};
+    },
     async moveTaskBetweenLists(userId,{connectionId,listId,taskId},destination){
       const record=await taskMoveAccess(userId,connectionId);
       const origin='https://tasks.googleapis.com/tasks/v1';

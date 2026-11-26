@@ -9,7 +9,8 @@ export type QueuedTodoCreate={id:string;draft:Draft;createdAt:string;blocked?:bo
 const prefix='device-todo:';
 export const isDeviceTodo=(id:string)=>id.startsWith(prefix);
 export function queuedTodo(job:QueuedTodoCreate):Todo{
- return {...job.draft,id:prefix+job.id,done:false,createdAt:job.createdAt,saveState:job.blocked?'checking':'saving'};
+ const {deliveryTarget,...draft}=job.draft;
+ return {...draft,...(deliveryTarget?{delivery:{...deliveryTarget,state:'queued' as const}}:{}),id:prefix+job.id,done:false,createdAt:job.createdAt,saveState:job.blocked?'checking':'saving'};
 }
 
 export function createDeviceTodos(storage:Parameters<typeof createCalendarDeviceStore>[0],readOfflineUser:typeof offlineUser){
