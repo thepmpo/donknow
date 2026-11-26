@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 c93acd7 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 aff10f4 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 도슨 캘린더 직접 저장과 일간 할 일 제스처
+
+- 쓰기 가능한 연결 캘린더가 없어도 계정의 도슨 캘린더에 일정을 저장하고 새로 열어 조회할 수 있다. 일정 데이터는 소유자별로 암호화해 저장하며, 수정·이동·삭제는 저장된 버전을 확인한다. 연결된 캘린더를 선택한 경우 기존 원본 저장 경로를 사용한다. 시간 지정 일정을 만든 뒤 주간 표는 저장 시간으로 스크롤한다.
+- iPhone에서 월·주·일 기간 넘기기는 일정의 길게 누르기와 행 제스처가 먼저 동작하도록 네이티브 제스처를 연결했다. 월간 날짜 버튼과 일정 카드의 터치 영역을 분리했다. 일정을 길게 눌러 날짜로 끌거나, 길게 눌러 선택 표시를 남긴 뒤 ‘날짜 이동’으로 날짜를 지정할 수 있다.
+- 일간 뷰의 할 일에도 할 일 탭과 같은 행 스와이프로 선택과 완료를 적용한다. 선택한 행을 길게 눌러 순서를 바꾸거나 위 날짜 칸으로 끌어 예정일을 바꿀 수 있다. 아이폰 일정은 기기 캘린더 조회 범위를 보완하고 화면 시간대에 맞춰 표시한다.
+- 자동 테스트와 듀오·일반폰·웹 주간 화면, Google 연결 없이 일정 생성·다시 열기·날짜 이동, 일간 할 일 좌우 제스처와 위 날짜 칸 드롭을 검사했다. 아이폰 캘린더 흐름 검사는 모의 EventKit을 사용했다. 실기기 제스처와 새 TestFlight 서명 빌드는 별도로 확인한다.
 
 #### 2026-11-26 — 일정 한 번 저장, 도슨 표시와 원본 색상
 
@@ -3963,10 +3970,12 @@ e68029e Update handoff for the calendar drag interaction
 6e484a5 Refresh handoff for one-tap calendar saves and source colors
 c93acd7 Restore calendar drag permission when a timed refresh arrives
 2d06229 Update handoff after calendar drag regression checks
+609128a Record live Render calendar deployment
+aff10f4 Keep Docen calendar writable and prioritize held date drags
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: c93acd7에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: aff10f4에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13235,7 +13244,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/c93acd7e625722d3c4048583d6e1af8298cddb6b
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/aff10f4487f1beb50bd05bea2e47246d1c560d88
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
