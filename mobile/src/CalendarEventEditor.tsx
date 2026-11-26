@@ -81,8 +81,8 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(locked)return;
   if(!validZone(draft.timeZone))throw Error('시간대를 확인해주세요.');
   if(draft.duckUrl&&!safeCalendarLink(draft.duckUrl)||draft.attachments.some(a=>!a.name.trim()||!safeCalendarLink(a.url)))throw Error('링크와 첨부 파일에는 이름과 https 주소를 입력해주세요.');
-  if(!event&&!native&&!createOptionsAvailable&&((draft.repeat&&draft.repeat!=='none')||draft.guests?.trim()))throw Error('연결을 새로 확인한 뒤 반복·초대를 설정해주세요.');
-  if(docen||localFirst&&!event&&!inline&&source&&(native||!!source.connectionId)){
+  if(!event&&!docen&&!native&&!onDeviceCreate&&!createOptionsAvailable&&((draft.repeat&&draft.repeat!=='none')||draft.guests?.trim()))throw Error('연결을 새로 확인한 뒤 반복·초대를 설정해주세요.');
+  if(docen||(localFirst||onDeviceCreate)&&!event&&!inline&&source&&(native||!!source.connectionId)){
    if(!canWrite)throw Error('일정을 저장할 수 없어요.');
    const id=docenId.current??=event?.eventId??('event-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2));
    const target=docen?undefined:{provider:native?'apple-calendar' as const:'google' as const,calendarId:draft.calendarId,connectionId:source?.connectionId,name:source?.name,color:source?.color};

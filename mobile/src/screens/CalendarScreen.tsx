@@ -38,7 +38,7 @@ import {isAppleCalendar} from '../apple-calendar-model';
 import type {CalendarCreateQueue} from '../calendar-create-queue';
 import type {AppleCalendarDevice} from '../apple-calendar-model';
 import {useCalendarSelection} from '../useCalendarSelection';
-import {docenCalendarId,deviceZone,calendarEventsByDay,eventOccurs,eventTime,localTime,minutesAt,monthCellHeight,nextLongPressCalendarView,periodShift,safeCalendarLink,shiftDay,validZone,visibleDays,weekDays,zonedDay} from '../calendar-model';
+import {docenCalendarId,deviceZone,calendarEventsByDay,calendarTodosByDay,eventOccurs,eventTime,localTime,minutesAt,monthCellHeight,nextLongPressCalendarView,periodShift,safeCalendarLink,shiftDay,validZone,visibleDays,weekDays,zonedDay} from '../calendar-model';
 import type {CalendarEvent,CalendarView} from '../calendar-model';
 import type {Todo} from '../domain';
 import type {TodoStore} from '../useTodos';
@@ -62,6 +62,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  const navigationScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
  const sourceIds=selection.ids,shownSources=useMemo(()=>new Set(sourceIds),[sourceIds]);
  const isVisible=(event:CalendarEvent)=>{
+  if(event.calendarId===docenCalendarId&&event.mirror)return !selection.hiddenIds.includes(event.mirror.calendarId);
   const id=event.mirror?.calendarId??event.calendarId??'primary';
   return id===docenCalendarId?selection.showDocen:shownSources.has(id);
  };
@@ -84,13 +85,9 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  // Load source colors once on activation; the request has its own owner/generation guard.
  useEffect(()=>{if(active&&data.version===2&&store.user)void data.loadSources();},[active,data.version,store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo']);
  useEffect(()=>{if(active&&data.readAt)store.reminders.retry();},[active,data.readAt]);
- const events=useMemo(()=>data.events.filter(isVisible),[data.events,shownSources,selection.showDocen]);
+ const events=useMemo(()=>data.events.filter(isVisible),[data.events,shownSources,selection.showDocen,selection.hiddenIds]);
  const eventsByDay=useMemo(()=>calendarEventsByDay(events,days,zone),[events,days,zone]);
- const todosByDay=useMemo(()=>{
-  const map=new Map<string,Todo[]>();
-  for(const todo of store.todos)if(todo.dueDate){const list=map.get(todo.dueDate);if(list)list.push(todo);else map.set(todo.dueDate,[todo]);}
-  return map;
- },[store.todos]);
+ const todosByDay=useMemo(()=>calendarTodosByDay(store.todos),[store.todos]);
  const dayEvents=(day:string)=>eventsByDay.get(day)??[];
  const dayTasks=(day:string)=>todosByDay.get(day)??[],daily=dayEvents(selected),tasks=dayTasks(selected),unfinished=tasks.filter(t=>!t.done),completed=tasks.filter(t=>t.done);
  const extension=duo&&!(keyboard.occluding&&overlay==='editor')?(scene?.calendarBottomExtension??0):0;
@@ -230,7 +227,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
   if(existing&&(!existing.etag||!existing.canWrite))void data.load();
   const detail=existing;
   if(existing)existing=data.originalFor(existing)??existing;
-  const key=existing?existing.id+'@'+(existing.etag??'unknown'):'new:'+day;setAddKind('event');setSelected(day);setMonth(day.slice(0,7));setYearOpen(false);setEvent(detail);setEditorKey(key);setDrafts(old=>({...old,[key]:old[key]??{...eventDraft(day,zone,sourceIds[0]??'primary',existing),...(!existing?{...(forceTimed?{allDay:false}:{}),startTime:time,endTime:(+time.slice(0,2)<23?String(+time.slice(0,2)+1).padStart(2,'0'): '23')+':'+(time.startsWith('23')?'59':time.slice(3))}: {})}}));setOverlay('editor');setLocalError('');
+  const key=existing?existing.id+'@'+(existing.etag??'unknown'):'new:'+day;setAddKind('event');setSelected(day);setMonth(day.slice(0,7));setYearOpen(false);setEvent(detail);setEditorKey(key);setDrafts(old=>({...old,[key]:old[key]??{...eventDraft(day,zone,(data.enqueueCreate&&sourceIds.find(id=>data.sources.some(source=>source.id===id&&source.canWrite)))||(data.enqueueCreate?docenCalendarId:sourceIds[0]??'primary'),existing),...(!existing?{...(forceTimed?{allDay:false}:{}),startTime:time,endTime:(+time.slice(0,2)<23?String(+time.slice(0,2)+1).padStart(2,'0'): '23')+':'+(time.startsWith('23')?'59':time.slice(3))}: {})}}));setOverlay('editor');setLocalError('');
  }
  async function importEvent(e:CalendarEvent){if(importing)return;setImporting(true);setLocalError('');try{await store.featureRequest('/api/integrations/google/import','POST',{ids:[e.id]});await store.refresh();}catch(error){setLocalError(error instanceof Error?error.message:'가져오지 못했어요.');}finally{setImporting(false);}}
  async function external(value?:string|null){const url=safeCalendarLink(value);if(!url){setLocalError('열 수 있는 안전한 링크가 없어요.');return;}try{await Linking.openURL(url);}catch{setLocalError('링크를 열지 못했어요.');}}
@@ -242,7 +239,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
   <View style={{width:3,minHeight:28,alignSelf:'stretch',borderRadius:2,backgroundColor:sourceColor(e)}}/>
   <View style={{flex:1,gap:3}}><Text style={s.eventTitle}>{e.title}</Text><Text style={s.meta}>{e.mirror?.name||e.calendarName||'Google 캘린더'}{e.allDay&&e.endDate&&e.dueDate!==shiftDay(e.endDate,-1)?' · 여러 날 일정':''}</Text>{!!e.location&&<Text numberOfLines={1} style={s.meta}>{e.location}</Text>}</View>
  </CalendarDraggableEvent>;}
- function agenda(day=selected,periodEvents=events,interactive=true){const agendaEvents=periodEvents===events?[...dayEvents(day)]:periodEvents.filter(e=>eventOccurs(e,day,zone)),agendaTodos=store.todos.filter(t=>t.dueDate===day),agendaUnfinished=agendaTodos.filter(t=>!t.done),agendaCompleted=agendaTodos.filter(t=>t.done);return <View testID="calendar-agenda" onLayout={interactive?e=>{agendaY.current=e.nativeEvent.layout.y;}:undefined} style={[s.agenda,view==='day'&&s.dayAgenda]}>
+ function agenda(day=selected,periodEvents=events,interactive=true){const agendaEvents=periodEvents===events?[...dayEvents(day)]:periodEvents.filter(e=>eventOccurs(e,day,zone)),agendaTodos=dayTasks(day),agendaUnfinished=agendaTodos.filter(t=>!t.done),agendaCompleted=agendaTodos.filter(t=>t.done);return <View testID="calendar-agenda" onLayout={interactive?e=>{agendaY.current=e.nativeEvent.layout.y;}:undefined} style={[s.agenda,view==='day'&&s.dayAgenda]}>
   <View style={s.agendaHeading}><Text style={s.section}>{new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'short'}).format(new Date(day+'T12:00:00'))}{day===today?' · 오늘':''}</Text><Pressable accessibilityRole="button" accessibilityLabel="일정 또는 할 일 추가" style={s.control} onPress={()=>beginEvent(day)}><Text style={s.link}>추가 ＋</Text></Pressable></View>
   <View style={s.agendaHeading}><Text style={s.section}>일정</Text></View>
   {agendaEvents.length?agendaEvents.sort((a,b)=>Number(!!b.allDay)-Number(!!a.allDay)||(a.startAt??'').localeCompare(b.startAt??'')).map(e=>eventRow(e,day,interactive)):<Text style={s.empty}>{data.phase==='loading'?'일정을 확인하고 있어요.':data.phase==='error'?'연결이 복구되면 이 날의 일정을 확인할 수 있어요.':data.phase==='unconnected'?'Google 캘린더를 연결하면 일정을 표시해요.':data.phase==='partial'?'아직 읽지 않은 일정이 있을 수 있어요.':'이 날은 일정이 없어요.'}</Text>}

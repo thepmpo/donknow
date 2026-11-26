@@ -60,6 +60,15 @@ export function calendarEventsByDay(events:CalendarEvent[],days:string[],zone:st
  }
  return byDay;
 }
+export function calendarTodosByDay<T extends {dueDate:string|null}>(todos:readonly T[]){
+ const days=new Map<string,T[]>();
+ for(const todo of todos){
+  if(!todo.dueDate)continue;
+  const entries=days.get(todo.dueDate);
+  if(entries)entries.push(todo);else days.set(todo.dueDate,[todo]);
+ }
+ return days;
+}
 export function eventTime(event:CalendarEvent,zone:string){if(event.allDay)return '종일';if(!event.startAt)return '시간 미정';const f=timeFormat(zone);return f.format(new Date(event.startAt))+(event.endAt?' – '+f.format(new Date(event.endAt)):'');}
 export function minutesAt(instant:string,zone:string){const p=Object.fromEntries(timeFormat(zone).formatToParts(new Date(instant)).map(x=>[x.type,x.value]));return +p.hour*60 + +p.minute;}
 export function localTime(instant:string,zone:string){const minutes=minutesAt(instant,zone);return String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');}

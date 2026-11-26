@@ -1,3 +1,4 @@
+import {createDeviceTodos} from '../../src/todo-device-queue';
 import {createCalendarCreateQueue} from '../../src/calendar-create-queue';
 import {TodosScreen} from '../../src/screens/TodosScreen';
 import {LogScreen} from '../../src/screens/LogScreen';
@@ -11,8 +12,13 @@ const deviceQueue=createCalendarCreateQueue({
  write:async(owner,value)=>{sessionStorage.setItem('fixture.calendar.outbox.'+owner,value);},
  clear:async owner=>{sessionStorage.removeItem('fixture.calendar.outbox.'+owner);},
 });
+const testDeviceTodos=createDeviceTodos({
+ get:async key=>sessionStorage.getItem(key),
+ set:async(key,value)=>{sessionStorage.setItem(key,value);},
+ remove:async key=>{sessionStorage.removeItem(key);},
+},async origin=>JSON.parse(sessionStorage.getItem('fixture.offline-user.'+origin)??'null'));
 const {createRoot}=require('react-dom/client');
-function Work({mode}:{mode:string}){const store=useTodos(),sequence=useRef(0),[tab,setTab]=useState<AppTab>('calendar'),[request,setRequest]=useState<any>(),[cycles,setCycles]=useState(0),[keyboard,setKeyboard]=useState(false),[profileRequest,setProfileRequest]=useState<any>();
+function Work({mode}:{mode:string}){const store=useTodos(new URLSearchParams(location.search).has('deviceTodos')?testDeviceTodos:undefined),sequence=useRef(0),[tab,setTab]=useState<AppTab>('calendar'),[request,setRequest]=useState<any>(),[cycles,setCycles]=useState(0),[keyboard,setKeyboard]=useState(false),[profileRequest,setProfileRequest]=useState<any>();
  useEffect(()=>{if(!new URLSearchParams(location.search).has('nativeCalendar'))return;return listenAssistantEntry(entry=>{((globalThis as any).exportedAppleEntries??=[]).push(entry);});},[]);
  const appleDevice=new URLSearchParams(location.search).has('nativeCalendar')?fakeAppleCalendar:undefined;
  const calendarStore=new URLSearchParams(location.search).has('reminderError')?{...store,reminders:{...store.reminders,error:'일정 알림을 모두 갱신하지 못했어요. 이전 예약은 유지해요.'}}:store;

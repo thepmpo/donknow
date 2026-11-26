@@ -277,9 +277,11 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await event.waitFor();
  await event.hover();await local.mouse.down();await local.getByTestId('calendar-drag-preview').waitFor();await local.mouse.up();
  assert.equal(await event.getAttribute('aria-selected'),'true');
- await local.getByRole('button',{name:'선택한 일정 날짜 이동',exact:true}).click();
+ assert.equal(await local.getByRole('button',{name:'선택한 일정 날짜 이동',exact:true}).count(),0);
+ const eventTarget=await local.getByTestId('calendar-drop-2026-11-26').boundingBox();
  const moved=local.waitForResponse(r=>r.url().startsWith(localOrigin+'/api/calendar/docen/')&&r.request().method()==='PUT');
- await sheet.getByRole('button',{name:'2026-11-26로 변경',exact:true}).click();await moved;
+ await event.hover();await local.mouse.down();await local.getByTestId('calendar-drag-preview').waitFor();
+ await local.mouse.move(eventTarget.x+eventTarget.width/2,eventTarget.y+eventTarget.height/2,{steps:10});await local.mouse.up();await moved;
  assert.equal([...items.values()][0].dueDate,'2026-11-26');
  const year=local.getByTestId('calendar-year-trigger');
  await year.hover();await local.mouse.down();await local.waitForTimeout(600);await local.mouse.up();
@@ -326,16 +328,25 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
 
  const linked=await browser.newPage({viewport:{width:430,height:844},hasTouch:true,isMobile:true});
  linked.setDefaultTimeout(12000);
+ await linked.emulateMedia({reducedMotion:'reduce'});
  const linkedOrigin='https://docen-first.test',selectedCalendar='source-calendar',connectedId='connected-google';
- let docenSaved,googleWrites=0,mirrorReady=false;
- const docenWrites=[];
+ let docenSaved,googleWrites=0,mirrorReady=false,todoSaved,offlineSession=false;
+ const docenWrites=[],todoWrites=[];
  await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
  await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
  let finishDelete,acceptWrites=false;
  await linked.route(linkedOrigin+'/**',async route=>{
   const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
-  if(path==='/api/auth/session')return route.fulfill({json:{user:{id:'linked-user',email:'linked@example.test',emailVerified:true}}});
-  if(path==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1}});
+  if(path==='/api/auth/session')return offlineSession?route.fulfill({status:503,json:{error:'offline'}}):route.fulfill({json:{user:{id:'linked-user',email:'linked@example.test',emailVerified:true}}});
+  if(path==='/api/todos'){
+   if(method==='GET')return offlineSession?route.fulfill({status:503,json:{error:'offline'}}):route.fulfill({json:todoSaved?[todoSaved]:[]});
+   const body=route.request().postDataJSON();todoWrites.push(body);
+   if(!acceptWrites)return route.abort('failed');
+   todoSaved??={...body,id:'confirmed-device-todo',done:false};
+   return route.fulfill({json:todoSaved});
+  }
+  if(offlineSession&&method==='GET'&&(path==='/api/capabilities'||path.startsWith('/api/calendar/')))return route.fulfill({status:503,json:{error:'offline'}});
+  if(path==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1,todoNotes:true}});
   if(path==='/api/calendar/calendars')return route.fulfill({json:{items:[{id:selectedCalendar,name:'원본 팀 일정',canWrite:true,color:'#22aa44',connectionId:connectedId}]}});
   if(path==='/api/calendar/events'){
    const calendarId=url.searchParams.get('calendarId');
@@ -360,12 +371,17 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
   return route.fulfill({json:[]});
  });
  await linked.addInitScript(([base,calendar])=>localStorage.setItem('duck.calendar.selection.'+base+':linked-user',JSON.stringify(['primary',calendar])),[linkedOrigin,selectedCalendar]);
- await linked.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard&deviceQueue=1');
+ await linked.addInitScript(origin=>sessionStorage.setItem('fixture.offline-user.'+origin,JSON.stringify({id:'linked-user',email:'linked@example.test',emailVerified:true})),linkedOrigin);
+ await linked.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard&deviceQueue=1&deviceTodos=1');
  const linkedDay=linked.getByTestId('week-date-2026-11-25');
  await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
  const linkedSheet=linked.getByTestId('calendar-sheet');
  await linkedSheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('도슨에 먼저 저장');
- await linkedSheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).getByText('원본 팀 일정',{exact:true}).waitFor();
+ const linkedDestination=linkedSheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true});
+ if(!await linkedDestination.getByText('원본 팀 일정',{exact:true}).count()){
+  await linkedDestination.click();
+  await linkedSheet.getByRole('radio',{name:'캘린더 원본 팀 일정',exact:true}).click();
+ }
  await linkedSheet.getByRole('button',{name:'일정 저장',exact:true}).click();
  const written=linked.getByRole('button',{name:'도슨에 먼저 저장 종일 일정 상세',exact:true});
  await written.waitFor();
@@ -373,11 +389,38 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await written.click();
  await linkedSheet.getByTestId('calendar-source-name').filter({hasText:'원본 팀 일정'}).waitFor();
  assert.equal(await linkedSheet.getByText('원본 캘린더로 전송 중',{exact:true}).count(),0);
+ await linkedSheet.getByRole('button',{name:'닫기',exact:true}).click();
+ await linkedSheet.waitFor({state:'detached'});
+ await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
+ await linkedSheet.getByRole('tab',{name:'할 일',exact:true}).click();
+ await linkedSheet.getByRole('textbox',{name:'할 일 제목',exact:true}).fill('오프라인 할 일');
+ await linkedSheet.getByRole('textbox',{name:'메모',exact:true}).fill('기기에서 먼저 저장');
+ await linkedSheet.getByRole('button',{name:'저장',exact:true}).click();
+ await linkedDay.getByText('할 일 1',{exact:true}).waitFor();
+ offlineSession=true;
+ await linked.reload();
+ await linkedDay.getByText('할 일 1',{exact:true}).waitFor();
+ assert.equal(todoSaved,undefined);
+ await linkedDay.click();
+ await linkedSheet.getByText('오프라인 할 일',{exact:true}).waitFor();
+ await linkedSheet.getByRole('button',{name:'닫기',exact:true}).click();
+ await linkedSheet.waitFor({state:'detached'});
+ await written.waitFor();
+ offlineSession=false;
+ assert.ok(!docenSaved,'pending item is displayed from the device journal after reload');
+ const delivered=linked.waitForResponse(r=>r.request().method()==='PUT'&&r.ok()&&r.url().startsWith(linkedOrigin+'/api/calendar/docen/'));
+ const todoDelivered=linked.waitForResponse(r=>r.request().method()==='POST'&&r.ok()&&new URL(r.url()).pathname==='/api/todos');
+ acceptWrites=true;await Promise.all([delivered,todoDelivered]);
+ assert.ok(todoWrites.every(write=>write.clientRequestKey&&write.clientRequestKey===todoWrites[0].clientRequestKey));
+ assert.equal(todoSaved.dueDate,'2026-11-25');
+ await linkedDay.click();
+ await linkedSheet.getByTestId('todo-confirmed-device-todo').waitFor();
+ assert.equal(await linkedSheet.getByText('오프라인 할 일',{exact:true}).count(),1);
+ offlineSession=true;
  await linked.reload();
  await written.waitFor();
- assert.ok(!docenSaved,'pending item is displayed from the device journal after reload');
- acceptWrites=true;
- await linked.waitForResponse(r=>r.request().method()==='PUT'&&r.url().startsWith(linkedOrigin+'/api/calendar/docen/'));
+ await linkedDay.getByText('할 일 1',{exact:true}).waitFor();
+ offlineSession=false;
  assert.ok(docenWrites.length>=2);
  assert.ok(docenWrites.every(write=>JSON.stringify(write)===JSON.stringify(docenWrites[0])));
  assert.equal(googleWrites,0);
@@ -395,5 +438,5 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  assert.equal(await linked.getByTestId('week-span-original').count(),0);
  while(!finishDelete)await new Promise(resolve=>setTimeout(resolve,10));
  finishDelete();
- console.log('PASS phone: device schedule and chosen destination survive an offline reload, retransmission deduplicates, and hides both cards before DELETE answers');await linked.close();
+ console.log('PASS phone: schedule and dated task survive offline session restart and provider failures, requests keep the same IDs, confirmed copies survive offline restart, and delete hides linked cards before acknowledgement');await linked.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

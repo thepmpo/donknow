@@ -1,3 +1,4 @@
+import {deviceTodos,isDeviceTodo,queuedTodo} from './todo-device-queue';
 import {deviceCalendarQueue} from './calendar-device-queue';
 import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
 import {moveAppleReminder} from './todo-membership';
@@ -10,28 +11,32 @@ import { useReminders } from './useReminders';
 import * as auth from './auth';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
-import {HttpResponseError} from './http-response';
+import {HttpResponseError,retryableDocenCalendarCreate} from './http-response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos, completedTodos } from './domain';
+import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos, completedTodos, validateDraft } from './domain';
 import type { Connection, Draft, Todo } from './domain';
 import { CONNECTION_KEY, createRepository } from './repository';
 import type { Patch, Repository } from './repository';
 const message = (error: unknown) => error instanceof Error ? error.message : '저장하지 못했어요. 다시 시도해주세요.';
-export function useTodos() {
+export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   const [user, setUser] = useState<auth.User | null>(null);
   const [sessionStatus,setSessionStatus]=useState<'restoring'|'ready'|'unavailable'>('restoring');
   const [connection, setConnection] = useState<Connection | null>(null);
   const [todos, commitTodos] = useState<Todo[]>([]);
   const todosRef = useRef<Todo[]>([]);
+  const calendarOwner=useRef<string|null>(null);
   const setTodos = useCallback((value: Todo[] | ((current: Todo[]) => Todo[])) => {
-    const next = typeof value === 'function' ? value(todosRef.current) : value;
-    todosRef.current = next; commitTodos(next);
-  }, []);
+    const base = typeof value === 'function' ? value(todosRef.current) : value;
+    const owner=calendarOwner.current;
+    const jobs=device&&owner?device.queue.snapshot(owner):undefined;
+    const next=device?[...base.filter(todo=>!isDeviceTodo(todo.id)),...(jobs??[]).map(queuedTodo)]:base;
+    todosRef.current=next;commitTodos(next);
+  }, [device]);
   const [pending, setPending] = useState<Record<string, number>>({});
   const pendingOrder=useRef<Record<string,string>>({});
   const [completionOrigins,setCompletionOrigins]=useState<Record<string,boolean>>({});const originsRef=useRef<Record<string,boolean>>({});
   const reminderOwner = connection?.mode === 'demo' ? 'demo' : user && connection?.mode === 'cloud' ? connection.baseUrl + ':' + user.id : null;
-  const calendarOwner=useRef<string|null>(null);calendarOwner.current=reminderOwner==='demo'?null:reminderOwner;
+  calendarOwner.current=reminderOwner==='demo'?null:reminderOwner;
   const [notice, setNotice] = useState('');
   const [writeReports,setWriteReports]=useState<{id:string;text:string;canCheck?:boolean}[]>([]);
   const writeChecks=useRef(new Map<string,()=>Promise<void>>()),reminderBaselines=useRef(new Map<string,Todo>());
@@ -62,15 +67,29 @@ export function useTodos() {
     let authenticated=saved.mode==='demo';
     try{
       if(saved.mode==='cloud'){
-        const account=await auth.session(saved.baseUrl);if(!current())return;
-        setUser(account);authenticated=true;
+        let account:auth.User;
+        try{account=await auth.session(saved.baseUrl);}
+        catch(error){
+          const cached=auth.canRestoreOffline(error)&&device?await device.readOfflineUser(saved.baseUrl):null;
+          if(!cached)throw error;
+          account=cached;
+        }
+        if(!current())return;
+        calendarOwner.current=saved.baseUrl+':'+account.id;setUser(account);authenticated=true;
         if(!account.emailVerified){repo.current=null;setTodos([]);setSessionStatus('ready');return;}
       }
       if(!current())return;
       const next=createRepository(saved);repo.current=next;
+      if(device&&calendarOwner.current){
+        const owner=calendarOwner.current;
+        const [cached]=await Promise.all([device.cache.read(owner).catch(()=>[]),device.queue.read(owner).catch(()=>[])]);
+        if(!current())return;
+        setTodos(cached);snapshotReady.current=true;
+      }
       // Mount the authenticated shell immediately; list loading is separate.
       setSessionStatus('ready');
-      const data=await next.list();if(current()){snapshotReady.current=true;setTodos(data);}
+      const readRevision=writes.current;
+      const data=await next.list();if(current()&&readRevision===writes.current){snapshotReady.current=true;setTodos(data);persistDeviceTodos(data);}
     }catch(e){if(current()){
       if(e instanceof auth.AuthRequiredError){expireSession();}
       else {setSessionStatus(authenticated?'ready':'unavailable');setError(message(e));}
@@ -128,7 +147,7 @@ export function useTodos() {
   async function refresh() {
     if (!repo.current || connectingRef.current || busy.current.size || refreshing.current) return;
     refreshing.current=true;const version = generation.current, readRevision = writes.current; setLoading(true);
-    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { snapshotReady.current=true;for(const todo of data){const previous=todosRef.current.find(t=>t.id===todo.id);if(previous?.sourceSync?.state==='queued'&&todo.sourceSync?.revision===previous.sourceSync.revision&&todo.sourceSync.state!=='queued')reflectOriginal(todo,previous.sourceSync.patch??{});}const pending=todosRef.current.filter(t=>t.saveState==='checking'&&writeChecks.current.has(t.id));setTodos([...data.filter(t=>!pending.some(p=>p.id===t.id)),...pending]);setError(''); } }
+    try { const data = await repo.current.list(); if (version === generation.current && readRevision === writes.current && !busy.current.size) { snapshotReady.current=true;for(const todo of data){const previous=todosRef.current.find(t=>t.id===todo.id);if(previous?.sourceSync?.state==='queued'&&todo.sourceSync?.revision===previous.sourceSync.revision&&todo.sourceSync.state!=='queued')reflectOriginal(todo,previous.sourceSync.patch??{});}const pending=todosRef.current.filter(t=>t.saveState==='checking'&&writeChecks.current.has(t.id));setTodos([...data.filter(t=>!pending.some(p=>p.id===t.id)),...pending]);persistDeviceTodos(data);setError(''); } }
     catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) {expireSession();setError(message(e));}else if(readRevision===writes.current)setError(message(e)); } }
     finally { if (version === generation.current) {refreshing.current=false;setLoading(false);} }
   }
@@ -139,7 +158,75 @@ export function useTodos() {
     catch (e) { if (version === generation.current) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); } return null; }
     finally { if (version === generation.current) { busy.current.delete(key); setBusyIds([...busy.current]); } }
   }
+  function persistDeviceTodos(items:Todo[]){
+    const owner=calendarOwner.current;
+    if(device&&owner)void device.cache.write(owner,items).catch(()=>{});
+  }
+  const deviceCreateOwner=device&&user?.emailVerified&&connection?.mode==='cloud'?reminderOwner:null;
+  const deviceSaving=useRef(false);
+  useEffect(()=>{
+    if(!deviceCreateOwner||!device)return;
+    const owner=deviceCreateOwner,version=generation.current,{queue,cache}=device;
+    const current=()=>generation.current===version&&calendarOwner.current===owner;
+    let sending=false,disposed=false;
+    const retryAt=new Map<string,{attempt:number;at:number}>();
+    function publish(){
+      if(!current())return;
+      setTodos(old=>old);
+      for(const job of queue.snapshot(owner)??[]){
+        const id=queuedTodo(job).id;
+        if(job.blocked&&!writeChecks.current.has(id))reportWrite(id,'기기에 저장한 할 일의 동기화를 확인해주세요.',()=>queue.block(owner,job.id,false));
+      }
+    }
+    const unsubscribe=queue.watch(owner,publish);
+    void queue.read(owner).then(publish).catch(()=>{});
+    async function flush(){
+      if(disposed||!current()||sending||AppState.currentState!=='active'||!repo.current)return;
+      const repository=repo.current;
+      const job=queue.snapshot(owner)?.find(item=>!item.blocked&&(retryAt.get(item.id)?.at??0)<=Date.now());
+      if(!job)return;
+      sending=true;
+      try{
+        const saved=await repository.create(job.draft,job.id);
+        if(!current())return;
+        writes.current++;
+        const next=[...todosRef.current.filter(todo=>todo.id!==saved.id),saved];
+        await cache.write(owner,next);
+        if(!current())return;
+        await queue.remove(owner,job.id);
+        if(!current())return;
+        setTodos(old=>[...old.filter(todo=>todo.id!==saved.id),saved]);
+        writeResolved(queuedTodo(job).id);
+        retryAt.delete(job.id);
+      }catch(error){
+        if(!current())return;
+        if(error instanceof auth.AuthRequiredError){expireSession();return;}
+        if(error instanceof HttpResponseError&&!retryableDocenCalendarCreate(error)){
+          try{await queue.block(owner,job.id,true);}catch{}
+        }else{
+          const attempt=(retryAt.get(job.id)?.attempt??0)+1;
+          retryAt.set(job.id,{attempt,at:Date.now()+Math.min(60000,1000*2**Math.min(attempt-1,6))});
+        }
+      }finally{sending=false;}
+    }
+    const timer=setInterval(()=>void flush(),1000);
+    const app=AppState.addEventListener('change',state=>{if(state==='active')void flush();});
+    return ()=>{disposed=true;unsubscribe();app.remove();clearInterval(timer);};
+  },[deviceCreateOwner,renderGeneration,setTodos,device]);
+  async function createTodoOnDevice(owner:string,draft:Draft){
+    if(!device||deviceSaving.current||connectingRef.current||calendarOwner.current!==owner||!repo.current)return null;
+    const version=generation.current,id='todo-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
+    const job={id,draft:validateDraft(draft),createdAt:new Date().toISOString()};
+    deviceSaving.current=true;
+    try{
+      await device.queue.add(owner,job);
+      if(version!==generation.current||calendarOwner.current!==owner)return null;
+      setTodos(old=>old);
+      return queuedTodo(job);
+    }finally{deviceSaving.current=false;}
+  }
   async function add(draft: Draft): Promise<Todo | null> {
+    if(deviceCreateOwner){try{return await createTodoOnDevice(deviceCreateOwner,draft);}catch(e){setError(message(e));return null;}}
     const repository=repo.current,version=generation.current;
     if(!repository||busy.current.has('create')||connectingRef.current||loading&&!snapshotReady.current)return null;
     const key='todo-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2),id='pending:'+key;
@@ -158,7 +245,8 @@ export function useTodos() {
   /** The editor closes after accepting the local change; the store, rather than
    * the unmounted form, owns reconciliation and failure messages. */
   async function prepareSave(draft:Draft){const repository=repo.current,version=generation.current;if(!repository)throw Error('연결을 먼저 확인해주세요.');await repository.prepare?.(draft);if(version!==generation.current)throw Error('계정이나 연결이 바뀌었어요. 다시 확인해주세요.');}
-  function beginSave(draft:Draft,id?:string){
+  async function beginSave(draft:Draft,id?:string){
+    if(!id&&deviceCreateOwner)return !!await createTodoOnDevice(deviceCreateOwner,draft);
     if(!repo.current||connectingRef.current||loading&&!snapshotReady.current||busy.current.has(id??'create')||id&&todosRef.current.find(t=>t.id===id)?.saveState==='checking')return false;
     if(id&&!todosRef.current.some(t=>t.id===id))return false;
     if(id)void update(id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})});
@@ -373,12 +461,12 @@ export function useTodos() {
   async function deleteAccount(password: string) {
     if (connection?.mode !== 'cloud' || busy.current.size || connectingRef.current) return false;
     connectingRef.current = true; setConnecting(true);
-    try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);if(Platform.OS==='ios'&&reminderOwner)await deviceCalendarQueue.clear(reminderOwner);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner,'duckduck.ai-consent.v1.'+connection.baseUrl+':'+(user?.id??'')]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
+    try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);if(Platform.OS==='ios'&&reminderOwner)await deviceCalendarQueue.clear(reminderOwner);if(device&&reminderOwner)await Promise.all([device.queue.clear(reminderOwner),device.cache.clear(reminderOwner)]);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner,'duckduck.ai-consent.v1.'+connection.baseUrl+':'+(user?.id??'')]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
     catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

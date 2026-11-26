@@ -17,7 +17,13 @@ export function readCalendarOnce(owner:string,path:string,request:(path:string)=
 export function calendarSnapshots(owner:string){let value=owners.get(owner);if(!value){value=new Map();owners.set(owner,value);}return value;}
 const restored=new Set<string>();
 export function restoreCalendarSnapshots(owner:string){if(restored.has(owner))return Promise.resolve([] as CalendarSnapshot[]);let task=restores.get(owner);if(!task){const target=calendarSnapshots(owner),revision=calendarSnapshotRevision(owner);task=disk.read(owner).then(rows=>{if(owners.get(owner)!==target||revision!==calendarSnapshotRevision(owner))return [];for(const row of rows)if(!target.has(row.key))target.set(row.key,row);restored.add(owner);return rows;}).finally(()=>{if(restores.get(owner)===task)restores.delete(owner);});restores.set(owner,task);}return task;}
-export function persistCalendarSnapshots(owner:string){clearTimeout(timers.get(owner));timers.set(owner,setTimeout(()=>{timers.delete(owner);void disk.write(owner,[...calendarSnapshots(owner).values()]).catch(()=>{});},250));}
+export function flushCalendarSnapshots(owner:string){
+ clearTimeout(timers.get(owner));timers.delete(owner);
+ return disk.write(owner,[...calendarSnapshots(owner).values()]);
+}
+export function persistCalendarSnapshots(owner:string){
+ clearTimeout(timers.get(owner));timers.set(owner,setTimeout(()=>void flushCalendarSnapshots(owner).catch(()=>{}),250));
+}
 export function forgetCalendarSnapshots(owner:string){clearCalendarWrites(owner);capabilities.delete(owner);invalidateCalendarSnapshotReads(owner);clearTimeout(timers.get(owner));timers.delete(owner);owners.get(owner)?.clear();restores.delete(owner);restored.delete(owner);listeners.get(owner)?.forEach(fn=>fn('clear'));void AsyncStorage.removeItem('duck.calendar.selection.'+owner).catch(()=>{});void disk.clear(owner).catch(()=>{});}
 export function watchCalendarSnapshots(owner:string,fn:(signal:Signal,items?:CalendarEvent[])=>void){const set=listeners.get(owner)??new Set();listeners.set(owner,set);set.add(fn);return()=>{set.delete(fn);};}
 export function broadcastCalendarSnapshots(owner:string,items?:CalendarEvent[]){listeners.get(owner)?.forEach(fn=>fn('update',items));}

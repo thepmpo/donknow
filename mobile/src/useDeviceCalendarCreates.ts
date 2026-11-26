@@ -8,7 +8,7 @@ import type {CalendarCreateQueue,QueuedCalendarCreate} from './calendar-create-q
 
 const empty:readonly QueuedCalendarCreate[]=[];
 const sending=new Set<string>();
-export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(event:CalendarEvent)=>void,injectedQueue?:CalendarCreateQueue){
+export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(event:CalendarEvent)=>Promise<void>,injectedQueue?:CalendarCreateQueue){
  const queue=injectedQueue??deviceCalendarQueue;
  const enabled=(Platform.OS==='ios'||!!injectedQueue)&&!!store.user?.emailVerified&&store.connection?.mode==='cloud';
  const jobs=useSyncExternalStore(fn=>enabled?queue.watch(owner,fn):()=>{},()=>enabled?queue.snapshot(owner)??empty:empty);
@@ -42,7 +42,8 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
      return;
     }
     if(!current())return;
-    latest.current.onSaved(saved);
+    await latest.current.onSaved(saved);
+    if(!current())return;
     await queue.remove(owner,job.id);
     retries.current.delete(job.id);
     if(current()){context.store.writeResolved(job.id);context.store.reminders.retry();}
