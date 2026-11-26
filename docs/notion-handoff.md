@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 f6fd905 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 e9ac8cb · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 새 할 일의 Google Tasks·Apple 미리알림 저장 목록
+
+- 새 할 일에서 도슨, Google Tasks의 연결 계정별 목록, iPhone의 쓰기 가능한 미리알림 목록을 선택할 수 있다. 외부 선택도 기존 기기 우선 저장을 따른다. 연결과 권한 관리는 ME에서 한다.
+- 서버에서 할 일과 외부 전송 요청을 한 트랜잭션으로 저장한다. Google Tasks는 선택한 계정 및 목록 권한을 확인한 뒤 API에서 생성한다. 마감일은 날짜로 보내고, 서버가 기기 입력 시간은 별도로 보존한다. Apple은 권한이 있는 iPhone의 EventKit에서 생성하며, 응답받은 원본 ID를 저장한 서버 확인 요청은 다시 보내도 같은 도슨 할 일에 연결된다.
+- 서버는 전송을 한 곳에서 시작하도록 잠근다. 생성 응답이 불확실한 경우 같은 원본을 또 만들지 않도록 확인 상태에 머문다. 확실한 권한·목록 오류는 연결을 확인한 다음 할 일 상세에서 재시도할 수 있다. 기존 할 일의 수정·완료와 전체 원본 변경 및 삭제 정책은 기존 경로를 이용한다.
+- Google 모의 API에서 선택 계정·목록과 날짜 전송, 요청 재사용, 불확실한 응답 뒤 중복 생성 차단을 확인했다. Apple 모의 전송에서 사용자·목록 검증, 동시 전송 차단과 확인 응답 재전송을 검증했다. 실제 Google 계정과 EventKit은 설치 빌드로 확인해야 한다.
 
 #### 2026-11-26 — 일정·할 일 기기 우선 저장
 
@@ -4081,10 +4088,12 @@ e5af67b Update calendar handoff after build 68 feedback
 1997379 Keep calendar swipe cancellation on a second touch
 18a77d0 Record iPhone calendar regression verification
 f6fd905 Persist new schedules and tasks before network sync
+7dd3d37 Update handoff with local-first calendar verification
+e9ac8cb Create tasks in selected Google and Apple lists after local save
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: f6fd905에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: e9ac8cb에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13353,7 +13362,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/f6fd905d6f58b9d18277344fb69e7494f0f31f5c
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/e9ac8cb0278511279b858acfbadb6f01b18cd1c2
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
