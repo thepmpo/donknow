@@ -48,13 +48,14 @@ function ShellContent() {
   const [tab, setTab] = useState<AppTab>(desktop?'duck':'todos'),[unread,setUnread]=useState(0),[todoTopRequest,setTodoTopRequest]=useState(0);
   const [settings, setSettings] = useState(false);
   const [desktopChatRequest,setDesktopChatRequest]=useState(0);
+  const profileSequence=useRef(0);
   const [profileRequest,setProfileRequest]=useState<{id:number;kind:'services'|'briefing'|'overview'}|null>(null);
-  const manageConnections=()=>{Keyboard.dismiss();setProfileRequest({id:Date.now(),kind:'services'});setTab('profile');};
+  const manageConnections=()=>{Keyboard.dismiss();setProfileRequest({id:++profileSequence.current,kind:'services'});setTab('profile');};
   const openDesktopChat=()=>{setTab('duck');setDesktopChatRequest(v=>v+1);};
   const calendarSequence=useRef(0),[calendarNavigation,setCalendarNavigation]=useState<{target:'active'|'fixed';request:CalendarNavigationRequest}|null>(null);
   const calendarScope=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo';
   const requestCalendar=useCallback((action:'today'|'fortnight'|'cycle',target:'active'|'fixed'='active',resetToToday=false)=>setCalendarNavigation({target,request:{id:++calendarSequence.current,action,resetToToday,scope:calendarScope}}),[calendarScope]);
-  const selectTab=useCallback((next:AppTab)=>{keyboard.dismiss();if(next==='profile')setProfileRequest(desktop?{id:Date.now(),kind:'overview'}:null);if(next==='calendar')requestCalendar('today');if(next==='todos'&&tab==='todos')setTodoTopRequest(v=>v+1);setTab(next);},[duo,tab,requestCalendar,desktop]);
+  const selectTab=useCallback((next:AppTab)=>{keyboard.dismiss();if(next==='profile')setProfileRequest({id:++profileSequence.current,kind:'overview'});if(next==='calendar')requestCalendar('today');if(next==='todos'&&tab==='todos')setTodoTopRequest(v=>v+1);setTab(next);},[tab,requestCalendar]);
   const longPressCalendar=useCallback(()=>{
    const target=duo&&split&&tab!=='calendar'?'fixed':'active';
    requestCalendar('cycle',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');

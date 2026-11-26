@@ -46,7 +46,23 @@ export function ProfileScreen({store,onConnection,onOpenTodos=()=>{},request,app
  async function refreshServices(){if(!store.user)return;const run=++serviceRead.current,captured=owner;setReading(true);try{const result=readIntegrationStatuses(await store.featureRequest('/api/integrations'));if(!alive.current||run!==serviceRead.current||currentOwner.current!==captured)return;setServices(Object.fromEntries(result.map(v=>[v.provider,v])));setServicesError(false);}catch{if(alive.current&&run===serviceRead.current&&currentOwner.current===captured)setServicesError(true);}finally{if(alive.current&&run===serviceRead.current&&currentOwner.current===captured)setReading(false);}}
  useEffect(()=>{alive.current=true;setServices({});setServicesError(false);setStack([]);scrollOffset.current=0;origins.current=[];setDraft('');setSaving(false);setNameError('');setName('나의 공간');void refreshServices();AsyncStorage.getItem(nameKey).then(value=>{if(alive.current&&currentOwner.current===owner&&value)setName(value);}).catch(()=>{});return()=>{alive.current=false;serviceRead.current++;};},[owner]);
  useEffect(()=>{const listener=AppState.addEventListener('change',state=>{if(state==='active')void refreshServices();});return()=>listener.remove();},[owner]);
- useEffect(()=>{if(!request){if(handledRequest.current!==null){handledRequest.current=null;origins.current=[];setStack([]);}return;}handledRequest.current=request.id;origins.current=[null];setStack(request.kind==='overview'?[]:[{kind:request.kind}]);},[request?.id,owner]);
+ useEffect(()=>{
+  if(!request){
+   if(handledRequest.current!==null){handledRequest.current=null;origins.current=[];setStack([]);}
+   return;
+  }
+  handledRequest.current=request.id;
+  pendingReturn.current=null;
+  if(request.kind==='overview'){
+   origins.current=[];
+   scrollOffset.current=0;
+   pendingReturn.current={origin:null,root:true};
+   setStack([]);
+   return;
+  }
+  origins.current=[null];
+  setStack([{kind:request.kind}]);
+ },[request?.id,owner]);
  async function saveName(){const value=draft.trim();if(!value||saving)return;const captured=owner;setSaving(true);setNameError('');try{await AsyncStorage.setItem(nameKey,value);if(alive.current&&currentOwner.current===captured){setName(value);back();}}catch{if(alive.current&&currentOwner.current===captured)setNameError('이름을 저장하지 못했어요. 다시 시도해주세요.');}finally{if(alive.current&&currentOwner.current===captured)setSaving(false);}}
  function providerRow(provider:Provider){const status=services[provider],state=!store.user?'로그인 필요':integrationState(status,servicesError),summary=status?.connected&&!servicesError&&(status.accounts?.length??0)>1?status.accounts!.length+'개 계정':state;return <MeRow key={provider} title={providerNames[provider]} status={summary} icon={icons[provider]} label={`${providerNames[provider]} 연결 안내`} onPress={()=>store.user?go({kind:'service',provider}):onConnection()}/>;}
  const notificationStatus=!store.reminders.supported?'아이폰에서 사용할 수 있어요':store.reminders.permission==='denied'?'기기에서 허용 필요':store.reminders.error?'상태 확인 필요':store.reminders.enabled&&store.reminders.permission!=='allowed'?'기기 권한 확인 중':store.reminders.enabled?'켜짐':'꺼짐';
