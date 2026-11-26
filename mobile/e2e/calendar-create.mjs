@@ -5,7 +5,7 @@ execFileSync(process.execPath,[resolve(project,'node_modules/expo/bin/cli'),'exp
 const server=http.createServer(async(req,res)=>{const path=new URL(req.url,'http://x').pathname;try{if(path==='/'){res.setHeader('Content-Type','text/html');res.end('<meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body,#root{margin:0;width:100%;height:100%;display:flex;flex-direction:column}</style><div id="root"></div><script src="/fixture.js"></script>');return;}const file=resolve(root,'.'+path);res.setHeader('Content-Type',({'.js':'application/javascript','.ttf':'font/ttf','.png':'image/png','.mp4':'video/mp4'})[extname(file)]||'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
 const origin='https://view-welcome.test';
 try{
- for(const [mode,width,height] of [['duo',430,844],['standard',390,844],['web',1100,860]].filter(([mode])=>!process.env.CREATE_SURFACE||process.env.CREATE_SURFACE===mode)){
+ if(!process.env.CALENDAR_CREATE_LOCAL_ONLY)for(const [mode,width,height] of [['duo',430,844],['standard',390,844],['web',1100,860]].filter(([mode])=>!process.env.CREATE_SURFACE||process.env.CREATE_SURFACE===mode)){
   const page=await browser.newPage({viewport:{width,height},hasTouch:true,isMobile:mode!=='web'}),errors=[],actions=[],todos=[],saved=[],details=[];let writes=0,sourceFailure=false,authorization=null,completionGate=null,waitingCompletion=0;
   page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.message));await page.emulateMedia({reducedMotion:'reduce',colorScheme:process.env.CREATE_COLOR_SCHEME||'dark'});await page.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
   await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
@@ -235,4 +235,69 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
   }
   console.log('PASS '+mode+': calendar creation, selected shape, rapid select during pending completion and log swipe');await page.close();
  }
+
+ const local=await browser.newPage({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+ local.setDefaultTimeout(12000);
+ const localOrigin='https://local-calendar.test',items=new Map(),dayTasks=['first','second'].map(id=>({id,title:'일간 '+id,dueDate:'2026-11-25',done:false,category:'업무'}));
+ await local.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
+ await local.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),localOrigin);
+ await local.route(localOrigin+'/**',route=>{
+  const u=new URL(route.request().url()),p=u.pathname,method=route.request().method();
+  if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'local-user',email:'local@example.test',emailVerified:true}}});
+  if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1}});
+  if(p==='/api/calendar/calendars')return route.fulfill({status:409,json:{error:'서비스 연결을 다시 승인해주세요.'}});
+  if(p==='/api/calendar/events'){
+   const calendarId=u.searchParams.get('calendarId');
+   return route.fulfill({json:{items:calendarId==='@docen'?[...items.values()]:[],calendarId,connectionState:calendarId==='@docen'?'connected':'unconnected',nextCursor:null}});
+  }
+  if(p==='/api/todos')return route.fulfill({json:dayTasks});
+  if(p.startsWith('/api/todos/')&&method==='PATCH'){
+   const task=dayTasks.find(t=>t.id===p.split('/').at(-1));
+   Object.assign(task,route.request().postDataJSON());return route.fulfill({json:task});
+  }
+  if(p.startsWith('/api/calendar/docen/')&&method==='PUT'){
+   const {args,fields,revision}=route.request().postDataJSON(),eventId=p.split('/').at(-1);
+   const event={id:'docen:'+eventId,eventId,calendarId:'@docen',calendarName:'도슨 캘린더',provider:'docen',canWrite:true,etag:String(revision+1),title:args.title,allDay:args.allDay,dueDate:args.startDate,endDate:args.endDate,duckDetails:{revision:revision+1,fields}};
+   items.set(eventId,event);return route.fulfill({json:event});
+  }
+  if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});
+  return route.fulfill({json:[]});
+ });
+ await local.goto('http://127.0.0.1:'+server.address().port+'/?mode=standard');
+ const date=local.getByTestId('week-date-2026-11-25');
+ await date.hover();await local.mouse.down();await local.waitForTimeout(600);await local.mouse.up();
+ const sheet=local.getByTestId('calendar-sheet');
+ await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('연결 없이 저장');
+ await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).getByText('도슨 캘린더',{exact:true}).waitFor();
+ await sheet.getByRole('button',{name:'일정 저장',exact:true}).click();
+ const event=local.getByRole('button',{name:'연결 없이 저장 종일 일정 상세',exact:true});
+ await event.waitFor();
+ assert.equal(items.size,1);
+ await local.reload();
+ await event.waitFor();
+ await event.hover();await local.mouse.down();await local.getByTestId('calendar-drag-preview').waitFor();await local.mouse.up();
+ assert.equal(await event.getAttribute('aria-selected'),'true');
+ await local.getByRole('button',{name:'선택한 일정 날짜 이동',exact:true}).click();
+ const moved=local.waitForResponse(r=>r.url().startsWith(localOrigin+'/api/calendar/docen/')&&r.request().method()==='PUT');
+ await sheet.getByRole('button',{name:'2026-11-26로 변경',exact:true}).click();await moved;
+ assert.equal([...items.values()][0].dueDate,'2026-11-26');
+ const year=local.getByTestId('calendar-year-trigger');
+ await year.hover();await local.mouse.down();await local.waitForTimeout(600);await local.mouse.up();
+ await sheet.getByRole('button',{name:'캘린더 보기 전환',exact:true}).click();await sheet.getByRole('tab',{name:'일 보기',exact:true}).click();
+ const row=local.getByTestId('calendar-day-todos').getByTestId('todo-first');
+ await row.waitFor();
+ const bounds=await row.boundingBox(),x=bounds.x+bounds.width/2,y=bounds.y+bounds.height/2;
+ const touch=await local.context().newCDPSession(local);
+ await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+ for(let step=1;step<=8;step++)await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+step*10,y:y+step*2}]});
+ await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await touch.detach();
+ const chosen=row.getByRole('checkbox',{name:'일간 first 선택',exact:true});
+ await chosen.waitFor();assert.equal(await chosen.getAttribute('aria-checked'),'true');
+ const destination=await local.getByTestId('calendar-drop-2026-11-26').boundingBox();
+ const dragBox=await row.getByRole('button',{name:'일간 first 수정',exact:true}).boundingBox();
+ await local.mouse.move(dragBox.x+dragBox.width/2,dragBox.y+dragBox.height/2);await local.mouse.down();await local.getByTestId('calendar-day-todo-drag').waitFor();
+ const updated=local.waitForResponse(r=>new URL(r.url()).pathname==='/api/todos/first'&&r.request().method()==='PATCH');
+ await local.mouse.move(destination.x+destination.width/2,destination.y+destination.height/2,{steps:12});await local.mouse.up();
+ await updated;assert.equal(dayTasks[0].dueDate,'2026-11-26');
+ console.log('PASS phone: Docen calendar saves with disconnected Google, reloads and moves after long press; day Todo swipes to select and drags to another date');await local.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

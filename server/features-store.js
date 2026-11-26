@@ -14,6 +14,7 @@ import {briefingStore} from './briefing-store.js';
 import {urgentStore} from './urgent-store.js';
 import {assistantMemoryStore} from './assistant-memory-store.js';
 import {assistantRealtimeStore} from './assistant-realtime-store.js';
+import {docenCalendarStore} from './docen-calendar-store.js';
 import {calendarDetailsStore} from './calendar-details-store.js';
 import {connectionStore} from './google-accounts.js';
 import {pushStore} from './push.js';
@@ -58,6 +59,7 @@ export async function featureStore(db, directory, env = process.env) {
     ...(await adminAuthStore(db,box,env)),
     ...aiBudgetStore(db),
     ...calendarDetailsStore(db,box),
+    ...docenCalendarStore(db,box),
     ...connectionStore(db,box,transaction),
     ...automationStore(db,box),
     ...briefingStore(db,box),

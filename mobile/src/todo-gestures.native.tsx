@@ -6,11 +6,21 @@ import {scheduleOnRN} from 'react-native-worklets';
 import type {LiftPreviewProps, RowGestureProps, RowPoint} from './todo-gesture-types';
 
 const ScrollGesture = createContext<ReturnType<typeof Gesture.Native>|null>(null);
+const CalendarPeriodContext=createContext<ReturnType<typeof Gesture.Pan>|null>(null);
 const LiftCoordinates = createContext<SharedValue<RowPoint>|null>(null);
 const easeOut = Easing.out(Easing.cubic);
 
 export function TodoGestureRoot({children}:{children:React.ReactNode}) {
   return <GestureHandlerRootView style={{flex:1}}>{children}</GestureHandlerRootView>;
+}
+export function CalendarPeriodGesture({children,enabled,onDrag,onEnd}:{children:React.ReactElement;enabled:boolean;onDrag:(distance:number)=>void;onEnd:(distance:number)=>void}){
+ const callbacks=useRef({onDrag,onEnd});callbacks.current={onDrag,onEnd};
+ const drag=useCallback((distance:number)=>callbacks.current.onDrag(distance),[]);
+ const end=useCallback((distance:number)=>callbacks.current.onEnd(distance),[]);
+ const gesture=useMemo(()=>Gesture.Pan().enabled(enabled).maxPointers(1).activeOffsetX([-20,20]).failOffsetY([-16,16])
+  .onUpdate(e=>{'worklet';scheduleOnRN(drag,e.translationX);})
+  .onEnd((e,successful)=>{'worklet';scheduleOnRN(end,successful?e.translationX:0);}),[enabled,drag,end]);
+ return <CalendarPeriodContext.Provider value={gesture}><GestureDetector gesture={gesture}>{children}</GestureDetector></CalendarPeriodContext.Provider>;
 }
 export function TodoGestureScroll({children}:{children:React.ReactElement}) {
   const scroll=useMemo(()=>Gesture.Native(),[]);
@@ -43,7 +53,7 @@ export function TodoLiftPreview({testID='todo-drag-preview',geometry,reduced,sty
 }
 
 export function TodoGestureRow(props:RowGestureProps) {
-  const scroll=useContext(ScrollGesture);
+  const scroll=useContext(ScrollGesture),period=useContext(CalendarPeriodContext);
   const liftCoordinates=useContext(LiftCoordinates);
   const swipeOffset=useSharedValue(0);
   const lastHover=useSharedValue(0);
@@ -82,6 +92,7 @@ export function TodoGestureRow(props:RowGestureProps) {
     const lift=Gesture.Pan()
       .enabled(canLift)
       .maxPointers(1)
+      .minDistance(0)
       .activateAfterLongPress(320)
       .onStart(e=>{
         'worklet';
@@ -108,8 +119,9 @@ export function TodoGestureRow(props:RowGestureProps) {
       swipe.blocksExternalGesture(scroll);
       lift.blocksExternalGesture(scroll);
     }
+    if(period){swipe.blocksExternalGesture(period);lift.blocksExternalGesture(period);}
     return Gesture.Race(swipe,lift);
-  },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,liftCoordinates,swipeOffset,lastHover,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
+  },[canSwipeLeft,canSwipeRight,canLift,reduced,scroll,period,liftCoordinates,swipeOffset,lastHover,startSwipe,finishSwipe,startLift,dragHover,finishLift]);
   const movement=useAnimatedStyle(()=>({transform:[{translateX:swipeOffset.value}]}));
   return <GestureDetector gesture={gesture}>
     <Animated.View collapsable={false} style={[props.fill&&{flex:1},movement]}>{props.children}</Animated.View>

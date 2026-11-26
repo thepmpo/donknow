@@ -10,7 +10,7 @@ import {reminderChoices,reminderOffsetLabel} from './calendar-display';
 import {MotionPressable as Pressable} from './motion';
 import {Button,Label} from './ui';
 import {colors,typography} from './theme';
-import {groupCalendarSources,validZone,safeCalendarLink} from './calendar-model';
+import {docenCalendarId,groupCalendarSources,validZone,safeCalendarLink} from './calendar-model';
 import type {CalendarEvent,CalendarSource} from './calendar-model';
 import type {TodoStore} from './useTodos';
 export {eventDraft} from './calendar-edit-model';
@@ -18,8 +18,16 @@ export type {CalendarDraft} from './calendar-edit-model';
 import {calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './calendar-edit-model';
 import type {CalendarDraft} from './calendar-edit-model';
 export function CalendarDateField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} onChange={v=>v&&onChange(v)} stacked/>;}
+export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDraft,event?:CalendarEvent){
+ const {calendarId,...args}=calendarWriteArgs({...draft,location:'',repeat:'none',guests:''})!;
+ delete args.location;
+ const fields={...event?.duckDetails?.fields,...calendarDuckPatch(draft,event)};
+ const saved=await store.featureRequest('/api/calendar/docen/'+encodeURIComponent(id),'PUT',{args,fields,revision:event?.duckDetails?.revision??0}) as CalendarEvent;
+ store.reminders.retry();
+ return saved;
+}
 function TimeField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} mode="time" onChange={v=>v&&onChange(v)} stacked/>;}
-export type CalendarPending={args?:Record<string,unknown>;id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null}};
+export type CalendarPending={args?:Record<string,unknown>;id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null;etag?:string}};
 export type CalendarActionState={pending:CalendarPending;locked:boolean;remoteDone?:boolean;savedEventId?:string};
 export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,createOptionsAvailable=false,sourceLoading=false,onSaveNative,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission,onBackgroundSave}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;createOptionsAvailable?:boolean;sourceLoading?:boolean;onSaveNative?:(draft:CalendarDraft,event?:CalendarEvent)=>Promise<CalendarEvent>;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void;onBackgroundSave?:(job:{optimistic:CalendarEvent;run:()=>Promise<Partial<CalendarEvent>>;check:()=>Promise<Partial<CalendarEvent>>})=>void}){
  const keyboard=useKeyboardUX();
@@ -31,19 +39,20 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[calendarOpen,setCalendarOpen]=useState(false),[reminderOpen,setReminderOpen]=useState(false),[repeatOpen,setRepeatOpen]=useState(false);
  const update=(patch:Partial<CalendarDraft>)=>onDraft({...draft,...patch});
  const source=sources.find(c=>c.id===draft.calendarId),canWrite=event?event.canWrite===true:source?.canWrite===true;
- const writableDestination=sources.find(calendar=>calendar.canWrite&&(!sourceError||isAppleCalendar(calendar.id)));
+ const writableDestination=sources.find(calendar=>calendar.canWrite&&(!sourceError||isAppleCalendar(calendar.id)||calendar.id===docenCalendarId));
  useEffect(()=>{
   if(!event&&!pending&&!sourceLoading&&!canWrite&&writableDestination){
    onDraft({...draft,calendarId:writableDestination.id});
   }
  },[event,pending,sourceLoading,canWrite,writableDestination?.id,draft,onDraft]);
  const localPatch=metadataAvailable?calendarDuckPatch(draft,event):{},hasLocal=Object.keys(localPatch).length>0;
+ const docen=draft.calendarId===docenCalendarId;
  const native=isAppleCalendar(draft.calendarId)||event?.provider==='apple-calendar';
  const connectionId=event?.connectionId??source?.connectionId;
  function notify(unknown:boolean){void store.featureRequest('/api/assistant/notices','POST',{code:unknown?'calendar-unknown':'calendar-failed',provider:native?'apple-calendar':'google',title:draft.title}).catch(()=>{});}
- const savingRef=useRef(false);
+ const savingRef=useRef(false),docenId=useRef<string|null>(null);
  async function work(fn:()=>Promise<void>){if(savingRef.current)return;savingRef.current=true;setBusy(true);onBusy(true);setError('');try{await fn();}catch(e){setError(e instanceof Error?e.message:'일정을 저장하지 못했어요.');if(locked||pending||e instanceof Error&&/권한|연결|버전/.test(e.message))notify(locked||!!(e&&typeof e==='object'&&'writeState' in e&&e.writeState==='unknown'));}finally{savingRef.current=false;setBusy(false);onBusy(false);}}
- async function finish(savedEventId:string,remote:boolean,deliver=true){
+ async function finish(savedEventId:string,remote:boolean,deliver=true,etag?:string){
   if(remote&&!savedEventId)throw Error('저장한 원본 일정 번호를 확인하지 못했어요. 같은 실행의 결과를 다시 확인해주세요.');
   let patch:Partial<CalendarEvent>=remote?confirmedCalendarPatch(draft,event):{};
   if(hasLocal){
@@ -51,7 +60,8 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    const details=await store.featureRequest('/api/calendar/event-details','PATCH',{connectionId,calendarId:draft.calendarId,eventId:savedEventId,expectedRevision:event&&draft.calendarId!==(event.calendarId??'primary')?0:event?.duckDetails?.revision??0,patch:localPatch,timeZone:draft.timeZone}) as {revision:number;fields:NonNullable<CalendarEvent['duckDetails']>['fields']};
    patch={...patch,duckDetails:{revision:details.revision,fields:details.fields}};
    }
-  if(remote&&!event)patch={...patch,id:'confirmed:'+connectionId+':'+draft.calendarId+':'+savedEventId,eventId:savedEventId,connectionId,calendarId:draft.calendarId,calendarName:source?.name,title:draft.title.trim(),dueDate:draft.startDay,canWrite:false,color:source?.color};
+  if(remote&&etag)patch={...patch,etag,canWrite:true};
+  if(remote&&!event)patch={...patch,id:'confirmed:'+connectionId+':'+draft.calendarId+':'+savedEventId,eventId:savedEventId,connectionId,calendarId:draft.calendarId,calendarName:source?.name,title:draft.title.trim(),dueDate:draft.startDay,canWrite:!!etag&&(!draft.repeat||draft.repeat==='none'),color:source?.color};
   store.reminders.retry();
   if(deliver)onSaved(patch);return patch;
  }
@@ -60,6 +70,12 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(!validZone(draft.timeZone))throw Error('시간대를 확인해주세요.');
   if(draft.duckUrl&&!safeCalendarLink(draft.duckUrl)||draft.attachments.some(a=>!a.name.trim()||!safeCalendarLink(a.url)))throw Error('링크와 첨부 파일에는 이름과 https 주소를 입력해주세요.');
   if(!event&&!native&&!createOptionsAvailable&&((draft.repeat&&draft.repeat!=='none')||draft.guests?.trim()))throw Error('연결을 새로 확인한 뒤 반복·초대를 설정해주세요.');
+  if(docen){
+   if(!canWrite)throw Error('일정을 저장할 수 없어요.');
+   const id=docenId.current??=event?.eventId??('event-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2));
+   onSaved(await saveDocenEvent(store,id,draft,event));
+   return;
+  }
   if(native){
    if(!canWrite||!onSaveNative)throw Error('저장할 캘린더의 권한을 확인해주세요.');
    appleEventPatch(draft,event);
@@ -95,13 +111,13 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    const attempt=async(readOnly=false)=>{
     const result=await execute(readOnly);
     if(result.status!=='succeeded')throw Object.assign(Error('일정을 저장하지 못했어요.'),{writeState:['failed','cancelled','expired'].includes(result.status)?'failed':'unknown'});
-    return finish(result.result?.id??event?.eventId??'',true,false);
+    return finish(result.result?.id??event?.eventId??'',true,false,result.result?.etag);
    };
    onBackgroundSave({optimistic,run:()=>attempt(),check:()=>attempt(true)});return;
   }
   const result=await execute();
   if(result.status==='succeeded'){
-   const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true);
+   const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true,true,result.result?.etag);
   }else if(['failed','cancelled','expired'].includes(result.status)){
    onActionState(null);throw Error('일정을 저장하지 못했어요. 다시 시도해주세요.');
   }else{setError('일정이 저장됐는지 확인해주세요.');notify(true);}
@@ -111,7 +127,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(pending.id==='apple-local'){onRefreshPermission?.();setError('아이폰 캘린더에서 저장 결과를 확인해주세요.');return;}
   if(actionState?.remoteDone){await finish(actionState.savedEventId??event?.eventId??'',true);return;}
   const result=await store.featureRequest('/api/assistant/actions/'+pending.id) as CalendarPending;
-  if(result.status==='succeeded'){const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true);}
+  if(result.status==='succeeded'){const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true,true,result.result?.etag);}
   else if(['failed','cancelled','expired'].includes(result.status)||(result.status==='pending'&&result.expiresAt!==undefined&&result.expiresAt<Date.now())){if(result.status==='pending')await store.featureRequest('/api/assistant/actions/'+pending.id,'DELETE');onActionState(null);setError('이 저장은 실행되지 않았어요. 다시 저장해주세요.');}
   else {if(result.status==='unknown')notify(true);setError(result.status==='unknown'?'저장 결과가 불확실해요. Google 원본을 확인해주세요. 다시 저장하지 마세요.':'현재 상태: '+result.status+'. docen의 실행 기록에서도 확인할 수 있어요.');}
  });}
@@ -142,19 +158,19 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
     <CalendarDateTimeRow kind="종료" day={draft.endDay} time={draft.endTime} allDay={draft.allDay} disabled={readonly} open={picker?.row==='종료'?picker.mode:null} onOpen={mode=>setPicker(mode?{row:'종료',mode}:null)} onDay={endDay=>update({endDay})} onTime={endTime=>update({endTime})}/>
     <View style={s.row}><Text style={s.title}>하루 종일</Text><Switch accessibilityLabel="종일 일정" value={draft.allDay} disabled={readonly} onValueChange={allDay=>{setPicker(null);update({allDay});}}/></View>
 
-    {!event&&(createOptionsAvailable||native)&&<><Pressable accessibilityRole="button" accessibilityLabel="일정 반복 선택" accessibilityState={{expanded:repeatOpen}} onPress={()=>{setPicker(null);setRepeatOpen(v=>!v);}} style={s.row}><Text style={s.title}>반복</Text><Text style={s.help}>{repeatLabels[draft.repeat??'none']}</Text><Ionicons name="chevron-down" size={16} color={colors.muted}/></Pressable>{repeatOpen&&<View>{(Object.keys(repeatLabels) as Array<keyof typeof repeatLabels>).map(repeat=><Pressable key={repeat} accessibilityRole="radio" accessibilityLabel={'반복 '+repeatLabels[repeat]} accessibilityState={{checked:(draft.repeat??'none')===repeat}} onPress={()=>{update({repeat});setRepeatOpen(false);}} style={s.choice}><Text style={s.title}>{repeatLabels[repeat]}</Text>{(draft.repeat??'none')===repeat&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</Pressable>)}</View>}</>}
+    {!event&&!docen&&(createOptionsAvailable||native)&&<><Pressable accessibilityRole="button" accessibilityLabel="일정 반복 선택" accessibilityState={{expanded:repeatOpen}} onPress={()=>{setPicker(null);setRepeatOpen(v=>!v);}} style={s.row}><Text style={s.title}>반복</Text><Text style={s.help}>{repeatLabels[draft.repeat??'none']}</Text><Ionicons name="chevron-down" size={16} color={colors.muted}/></Pressable>{repeatOpen&&<View>{(Object.keys(repeatLabels) as Array<keyof typeof repeatLabels>).map(repeat=><Pressable key={repeat} accessibilityRole="radio" accessibilityLabel={'반복 '+repeatLabels[repeat]} accessibilityState={{checked:(draft.repeat??'none')===repeat}} onPress={()=>{update({repeat});setRepeatOpen(false);}} style={s.choice}><Text style={s.title}>{repeatLabels[repeat]}</Text>{(draft.repeat??'none')===repeat&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</Pressable>)}</View>}</>}
 
 
    </View>
-   {!event&&!native&&createOptionsAvailable&&<View style={s.group}><Text style={s.help}>초대받는 사람</Text><TextInput accessibilityLabel="일정 초대 이메일" placeholder="이메일 주소 · 여러 명은 쉼표로 구분" placeholderTextColor={colors.muted} value={draft.guests??''} onChangeText={guests=>update({guests})} autoCapitalize="none" keyboardType="email-address" maxLength={5100} style={s.input}/></View>}
+   {!event&&!docen&&!native&&createOptionsAvailable&&<View style={s.group}><Text style={s.help}>초대받는 사람</Text><TextInput accessibilityLabel="일정 초대 이메일" placeholder="이메일 주소 · 여러 명은 쉼표로 구분" placeholderTextColor={colors.muted} value={draft.guests??''} onChangeText={guests=>update({guests})} autoCapitalize="none" keyboardType="email-address" maxLength={5100} style={s.input}/></View>}
 
    <View style={[s.group,{gap:0}]}><Pressable accessibilityRole="button" accessibilityLabel="저장할 캘린더 선택" accessibilityState={{expanded:calendarOpen,busy:sourceLoading}} disabled={readonly} onPress={()=>{setPicker(null);setReminderOpen(false);setCalendarOpen(v=>!v);}} style={s.row}><Text style={s.title}>캘린더</Text><View style={s.trailing}><Text numberOfLines={1} style={[s.help,{flexShrink:1,color:colors.text}]}>{source?.name??event?.calendarName??(sourceLoading?'확인 중':sourceError?'연결 확인':'선택')}</Text>{!readonly&&<Ionicons name={calendarOpen?'chevron-up':'chevron-down'} size={17} color={colors.muted}/>}</View></Pressable>
     {calendarOpen&&<View testID="calendar-destination-menu" style={s.popup}>
     {groupCalendarSources(sources).map((group,index)=><View key={group.id} testID="calendar-destination-account" accessibilityRole="radiogroup" accessibilityLabel={group.label} style={[s.calendarGroup,index>0&&s.choiceDivider]}>
      <Text numberOfLines={1} style={s.calendarAccount}>{group.label}</Text>
      {group.items.map(c=>{
-      const disabled=!c.canWrite||!!event&&(event.provider==='apple-calendar'?c.id!==event.calendarId:!!event.connectionId&&c.connectionId!==event.connectionId);
-      return <Pressable key={c.id} accessibilityRole="radio" accessibilityLabel={'캘린더 '+c.name} accessibilityState={{checked:c.id===draft.calendarId,disabled}} disabled={disabled} onPress={()=>{update({calendarId:c.id});setCalendarOpen(false);}} style={s.calendarChoice}>
+      const disabled=!c.canWrite||!!event&&(event.provider==='apple-calendar'||event.provider==='docen'?c.id!==event.calendarId:c.id===docenCalendarId||!!event.connectionId&&c.connectionId!==event.connectionId);
+      return <Pressable key={c.id} accessibilityRole="radio" accessibilityLabel={'캘린더 '+c.name} accessibilityState={{checked:c.id===draft.calendarId,disabled}} disabled={disabled} onPress={()=>{update({calendarId:c.id,...(c.id===docenCalendarId?{repeat:'none',guests:''}:{})});setCalendarOpen(false);}} style={s.calendarChoice}>
        <View style={[s.calendarDot,{backgroundColor:c.color??colors.blue},disabled&&{opacity:.5}]}/>
        <Text numberOfLines={2} style={[s.help,{flex:1,minWidth:0,color:disabled?colors.muted:colors.text}]}>{c.name}</Text>
        <View style={s.checkSlot}>{c.id===draft.calendarId&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</View>

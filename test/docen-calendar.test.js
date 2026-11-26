@@ -1,0 +1,33 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {apiHarness} from '../test-support/api.js';
+
+test('Docen events can be created, read, moved and deleted without a provider connection',async()=>{
+ const h=await apiHarness({GOOGLE_CLIENT_ID:'',GOOGLE_CLIENT_SECRET:''});
+ try{
+  const owner=await h.verified('docen-calendar-owner@example.test'),other=await h.verified('docen-calendar-other@example.test');
+  const path='/api/calendar/docen/event-calendar-test-create';
+  const range='/api/calendar/events?v=2&calendarId=%40docen&start=2026-11-23&end=2026-11-30&timeZone=Asia%2FSeoul';
+  const args={title:'도슨 일정',allDay:false,start:'2026-11-26T09:00:00.000Z',end:'2026-11-26T10:00:00.000Z',timeZone:'Asia/Seoul',notes:'보관할 메모'};
+  const body={args,fields:{url:'https://example.test/meet'},revision:0};
+  assert.equal((await h.request('/api/capabilities')).data.docenCalendar,1);
+  assert.equal((await h.request(range)).status,401);
+  const created=await h.request(path,'PUT',body,owner.token);
+  assert.equal(created.status,200,JSON.stringify(created.data));
+  assert.equal(created.data.calendarId,'@docen');
+  assert.equal(created.data.etag,'1');
+  assert.deepEqual((await h.request(path,'PUT',body,owner.token)).data,created.data);
+  const listed=await h.request(range,'GET',undefined,owner.token);
+  assert.deepEqual(listed.data.items,[created.data]);
+  assert.deepEqual((await h.request(range,'GET',undefined,other.token)).data.items,[]);
+  assert.equal((await h.request(path,'DELETE',{revision:1},other.token)).status,409);
+  const updated={...body,revision:1,args:{...args,start:'2026-11-27T09:00:00.000Z',end:'2026-11-27T10:00:00.000Z'}};
+  const move=await h.request(path,'PUT',updated,owner.token);
+  assert.equal(move.status,200);
+  assert.equal(move.data.dueDate,'2026-11-27');
+  assert.equal(move.data.etag,'2');
+  assert.equal((await h.request(path,'PUT',updated,owner.token)).status,409);
+  assert.equal((await h.request(path,'DELETE',{revision:2},owner.token)).status,200);
+  assert.deepEqual((await h.request(range,'GET',undefined,owner.token)).data.items,[]);
+ }finally{await h.close();}
+});

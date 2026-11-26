@@ -118,7 +118,7 @@ export function createProviderActions({store,token,request,googleRead}) {
     return {id:moved.id??args.id,calendarId:args.destinationCalendarId};
    }
    const result=await write(url,opts(record,method,body,['calendar.update','calendar.delete','tasks.update','drive.rename'].includes(operation)?current.version:null,notion),operation.startsWith('slack.'));
-   return {id:result.id??result.ts??(operation==='calendar.delete'?args.id:null)};
+   return {id:result.id??result.ts??(operation==='calendar.delete'?args.id:null),...(['calendar.create','calendar.update'].includes(operation)&&typeof result.etag==='string'?{etag:result.etag}:{})};
   },
  };
 }

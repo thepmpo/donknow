@@ -1,3 +1,4 @@
+import {docenCalendarId} from './docen-calendar-store.js';
 import {requireNewPassword} from './password-policy.js';
 import {safeTodoSourceLink} from './todo-source-link.js';
 import {readComputerBody} from './agent-computer-routes.js';
@@ -91,7 +92,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await drain();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -196,7 +197,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         store.cacheResources(user.id, 'apple-reminders', items);
         send(200, { results: store.importResources(user.id, 'apple-reminders', [...new Set(items.map(item => item.id))]) }); return true;
       }
-      if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),signupAgreements:store.signupAgreements(user.id),todos:store.list(user.id),calendarDetails:store.exportCalendarDetails(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id),agent:store.exportAgentData(user.id),assistantMemory:store.exportAssistantMemory(user.id),assistantMessages:store.exportAssistantMessages(user.id),checklistStates:store.exportChecklistStates(user.id),automationSchedules:store.automationSettings(user.id)});return true;}
+      if(path==='/api/account/export'&&req.method==='GET'){send(200,{format:'duckduck-personal-v1',exportedAt:new Date().toISOString(),account:store.account(user.id),signupAgreements:store.signupAgreements(user.id),todos:store.list(user.id),calendarDetails:store.exportCalendarDetails(user.id),docenCalendar:store.exportDocenCalendar(user.id),comments:store.exportProjectComments(user.id),assistantActions:store.exportAssistantActions(user.id),agent:store.exportAgentData(user.id),assistantMemory:store.exportAssistantMemory(user.id),assistantMessages:store.exportAssistantMessages(user.id),checklistStates:store.exportChecklistStates(user.id),automationSchedules:store.automationSettings(user.id)});return true;}
       if (path === '/api/account' && req.method === 'DELETE') {
         if (limited('delete:' + user.id)) throw fail(429, '잠시 후 다시 시도해주세요.');
         const body = await json(req); if (body.confirmation !== 'DELETE' || !(await store.passwordMatches(user.id, body.password))) throw fail(400, '삭제 확인과 현재 비밀번호를 확인해주세요.');
@@ -212,7 +213,21 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         send(200, await integrations.searchTasks(user.id, url.searchParams.get('q'),url.searchParams.get('connectionId')??undefined)); return true;
       }
       if(path==='/api/calendar/event-details'&&req.method==='PATCH'){if(limited('calendar-details:'+user.id))throw fail(429,'잠시 후 다시 저장해주세요.');send(200,await integrations.calendarDetails(user.id,await json(req)));return true;}
-      if(path==='/api/calendar/reminders'&&req.method==='GET'){send(200,await integrations.calendarReminders(user.id));return true;}
+      if(path==='/api/calendar/reminders'&&req.method==='GET'){
+        const remote=await integrations.calendarReminders(user.id);
+        send(200,{...remote,items:[...remote.items,...store.docenCalendarReminders(user.id)]});return true;
+      }
+      const docenEvent=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})$/.exec(path);
+      if(docenEvent&&['PUT','DELETE'].includes(req.method)){
+        if(limited('docen-calendar:'+user.id))throw fail(429,'잠시 후 다시 저장해주세요.');
+        const body=await json(req);
+        if(req.method==='PUT')send(200,store.saveDocenCalendarEvent(user.id,docenEvent[1],body));
+        else {store.deleteDocenCalendarEvent(user.id,docenEvent[1],body?.revision);send(200,{ok:true});}
+        return true;
+      }
+      if(path==='/api/calendar/events'&&req.method==='GET'&&url.searchParams.get('calendarId')===docenCalendarId){
+        send(200,store.readDocenCalendar(user.id,url.searchParams.get('start'),url.searchParams.get('end'),url.searchParams.get('timeZone')));return true;
+      }
       if(path==='/api/calendar/calendars'&&req.method==='GET'){send(200,await integrations.calendarList(user.id,url.searchParams.get('cursor')));return true;}
       if (path === '/api/calendar/events' && req.method === 'GET') { send(200, await integrations.calendar(user.id,url.searchParams.get('month'),url.searchParams.get('cursor'),url.searchParams.get('v')==='2'?{calendarId:url.searchParams.get('calendarId')??'primary',connectionId:url.searchParams.get('connectionId')??undefined,timeZone:url.searchParams.get('timeZone')??'Asia/Seoul',start:url.searchParams.get('start')??undefined,end:url.searchParams.get('end')??undefined}:undefined)); return true; }
       const match = /^\/api\/integrations\/(google|slack|notion)(?:\/(authorize|resources|import))?$/.exec(path); if (!match) return false;
