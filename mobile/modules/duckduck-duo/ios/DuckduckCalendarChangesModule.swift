@@ -1,6 +1,7 @@
 import EventKit
 import ExpoModulesCore
 import Foundation
+import UIKit
 
 public final class DuckduckCalendarChangesModule: Module {
   private var observer: NSObjectProtocol?
@@ -10,6 +11,22 @@ public final class DuckduckCalendarChangesModule: Module {
   public func definition() -> ModuleDefinition {
     Name("DuckduckCalendarChanges")
     Events("onStoreChange")
+
+    AsyncFunction("calendarList") { () throws -> [[String: Any]] in
+      try self.requireFullAccess()
+      // Refresh EventKit's local view before reading calendars and events from this store.
+      self.store.reset()
+      return self.store.calendars(for: .event).map { calendar in
+        var value: [String: Any] = [
+          "id": calendar.calendarIdentifier, "title": calendar.title,
+          "writable": calendar.allowsContentModifications,
+        ]
+        value["account"] = calendar.source?.title
+        value["accountId"] = calendar.source?.sourceIdentifier
+        if let color = calendar.cgColor { value["color"] = self.calendarColor(color) }
+        return value
+      }
+    }.runOnQueue(queue)
 
     AsyncFunction("readEvents") { (ids: [String], start: Double, end: Double) throws -> [[String: Any]] in
       try self.requireFullAccess()
@@ -87,9 +104,10 @@ public final class DuckduckCalendarChangesModule: Module {
       if let base, calendarID == nil || base.calendar.calendarIdentifier == calendarID { return base }
       throw EventUnavailable()
     }
-    guard let calendar = calendarID.flatMap({ store.calendar(withIdentifier: $0) }) ?? base?.calendar else {
-      throw EventUnavailable()
-    }
+    let destination: EKCalendar?
+    if let calendarID { destination = store.calendar(withIdentifier: calendarID) }
+    else { destination = base?.calendar }
+    guard let calendar = destination else { throw EventUnavailable() }
     let date = Date(timeIntervalSince1970: start / 1000)
     let predicate = store.predicateForEvents(
       withStart: date.addingTimeInterval(-1), end: date.addingTimeInterval(1), calendars: [calendar]
@@ -152,6 +170,13 @@ public final class DuckduckCalendarChangesModule: Module {
       value["allDayEnd"] = formatter.string(from: end)
     }
     return value
+  }
+
+  private func calendarColor(_ color: CGColor) -> String? {
+    var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+    guard UIColor(cgColor: color).getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return nil }
+    return String(format: "#%02x%02x%02x", Int((min(1, max(0, red)) * 255).rounded()),
+      Int((min(1, max(0, green)) * 255).rounded()), Int((min(1, max(0, blue)) * 255).rounded()))
   }
 
   private func stop() {

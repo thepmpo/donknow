@@ -18,3 +18,8 @@ test('keep separate same-title entries and calendars that share an ambiguous UID
  assert.equal(mergeCalendarCopies([apple,google,{...apple,id:'other-calendar',calendarId:'@apple/second'}]).length,3);
  assert.deepEqual(mergeCalendarCopies([apple,{...apple,id:'apple-new-id'}]).map(e=>e.id),['apple-new-id']);
 });
+
+test('same original stays merged while one provider still has the previous duration',()=>{
+ const staleCopy={...apple,endAt:'2026-11-12T00:30:00Z'};
+ assert.deepEqual(mergeCalendarCopies([staleCopy,google]).map(e=>e.id),[google.id]);
+});

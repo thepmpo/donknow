@@ -2,9 +2,9 @@ import type {CalendarEvent} from './calendar-model.ts';
 
 function occurrenceKey(event:CalendarEvent){
  if(!event.externalUid)return null;
- if(event.allDay)return JSON.stringify([event.externalUid,event.dueDate,event.endDate]);
- const start=Date.parse(event.startAt??''),end=Date.parse(event.endAt??'');
- return Number.isFinite(start)&&Number.isFinite(end)?JSON.stringify([event.externalUid,start,end]):null;
+ if(event.allDay)return event.dueDate?JSON.stringify([event.externalUid,event.dueDate]):null;
+ const start=Date.parse(event.startAt??'');
+ return Number.isFinite(start)?JSON.stringify([event.externalUid,start]):null;
 }
 
 /** EventKit can expose the same Google calendar that an account also connects directly. */

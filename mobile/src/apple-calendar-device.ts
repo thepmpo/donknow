@@ -1,6 +1,6 @@
 import {requireOptionalNativeModule} from 'expo';
 import {Platform} from 'react-native';
-import type {AppleCalendarDevice,DeviceEvent,DeviceEventPatch} from './apple-calendar-model';
+import type {AppleCalendarDevice,DeviceCalendar,DeviceEvent,DeviceEventPatch} from './apple-calendar-model';
 
 type NativePatch=Omit<DeviceEventPatch,'repeat'>&{repeatFrequency?:string};
 type NativeSnapshot=Omit<DeviceEvent,'startDate'|'endDate'|'modified'|'alarms'>&{
@@ -8,6 +8,7 @@ type NativeSnapshot=Omit<DeviceEvent,'startDate'|'endDate'|'modified'|'alarms'>&
 };
 type CalendarModule={
  addListener:(name:string,listener:()=>void)=>{remove:()=>void};
+ calendarList:()=>Promise<DeviceCalendar[]>;
  readEvents:(ids:string[],start:number,end:number)=>Promise<NativeSnapshot[]>;
  readEvent:(id:string,start:number|null,calendarId:string|null)=>Promise<NativeSnapshot>;
  createEvent:(calendarId:string,patch:NativePatch)=>Promise<NativeSnapshot>;
@@ -38,9 +39,7 @@ export const appleCalendarDevice:AppleCalendarDevice={
  async granted(){const C=await import('expo-calendar');return (await C.getCalendarPermissions(false)).granted;},
  async authorize(){const C=await import('expo-calendar');return (await C.requestCalendarPermissions(false)).granted;},
  async calendars(){
-  const C=await import('expo-calendar');
-  return (await C.getCalendars(C.EntityTypes.EVENT)).map(c=>({id:c.id,title:c.title,writable:c.allowsModifications,
-   color:c.color,account:c.source?.name,accountId:c.source?.id}));
+  return requireBridge().calendarList();
  },
  async events(ids,start,end){
   const snapshots=await requireBridge().readEvents(ids,Date.parse(start+'T00:00:00'),Date.parse(end+'T00:00:00'));

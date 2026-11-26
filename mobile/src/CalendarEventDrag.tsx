@@ -31,9 +31,13 @@ export function useCalendarEventDrag(enabled:boolean,onMove:(event:CalendarEvent
    if(day&&day!==anchor){if(current.item.todo)onTodoMove(current.item.todo,day);else onMove(current.item.event,anchor,day);}
   }
   if(current.boxes.some(box=>within(current.point,box))){apply(current.boxes);return;}
-  void Promise.all([...targets.current].map(target=>new Promise<Bounds>(resolve=>{
-   target.node.measureInWindow((x,y,width,height)=>resolve({x,y,width,height,day:target.day}));
-  }))).then(apply);
+  const pending=[...targets.current];
+  const boxes:Bounds[]=[];
+  for(const target of pending) target.node.measureInWindow((x,y,width,height)=>{
+   if(width>0&&height>0)boxes.push({x,y,width,height,day:target.day});
+  });
+  // An unmounted offscreen drop target may never return a measurement.
+  requestAnimationFrame(()=>apply([...boxes,...current.boxes]));
  }
  useEffect(()=>{if(!enabled&&session.current)finish(false);},[enabled]);
  function move(point:RowPoint){

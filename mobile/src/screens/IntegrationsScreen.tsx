@@ -9,7 +9,7 @@ import { AppState, Platform, StyleSheet, Text, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { Button, colors, s } from '../ui';
 import type { TodoStore } from '../useTodos';
-import {refreshCalendarSnapshots} from '../calendar-snapshot-cache';
+import {calendarConnectionChanged} from '../calendar-snapshot-cache';
 export type Provider = 'google' | 'slack' | 'notion';
 type Status=IntegrationStatus;
 type Item = { id: string; title: string; dueDate?: string | null; kind: string; completed?: boolean; completedAt?: string | null };
@@ -30,7 +30,7 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
   const rootStatus=statuses.find(item=>item.provider===provider),account=rootStatus?.accounts?.find(a=>a.connectionId===accountId)??rootStatus?.accounts?.[0];const current=rootStatus&&account?{...rootStatus,label:account.label,features:account.features}:rootStatus;const connectionId=provider==='google'?account?.connectionId:undefined;
   function chooseAccount(value:GoogleAccount){version.current++;setProviderReadError('');setAccountId(value.connectionId);setFeatures(value.features);setItems([]);setSelected([]);setChannel(null);setNext(null);setDisconnecting(false);setReadAttempted(false);setError('');setMessage('');setAddingAccount(false);setPage('overview');}
   useEffect(()=>{if(account&&!addingAccount)setFeatures(account.features);},[connectionId,addingAccount]);
-  async function loadStatus() { if (!store.user) return; const run=++statusRead.current; try { const result=readIntegrationStatuses(await store.featureRequest('/api/integrations')); if (active.current&&run===statusRead.current) {const google=result.find(item=>item.provider==='google'),signature=JSON.stringify([google?.connected,google?.features,google?.accounts?.map(a=>[a.connectionId,a.features])]);if(googleCalendarStatus.current!==null&&googleCalendarStatus.current!==signature&&store.connection?.mode==='cloud')refreshCalendarSnapshots(store.connection.baseUrl+':'+store.user?.id);googleCalendarStatus.current=signature;setStatuses(result);setStatusStale(false);setStatusError('');setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if(active.current&&run===statusRead.current){setStatusStale(true);setStatusError(e instanceof Error?e.message:'연결 상태를 확인하지 못했어요.');} } }
+  async function loadStatus() { if (!store.user) return; const run=++statusRead.current; try { const result=readIntegrationStatuses(await store.featureRequest('/api/integrations')); if (active.current&&run===statusRead.current) {const google=result.find(item=>item.provider==='google'),signature=JSON.stringify([google?.connected,google?.features,google?.accounts?.map(a=>[a.connectionId,a.features])]);if(googleCalendarStatus.current!==null&&googleCalendarStatus.current!==signature&&store.connection?.mode==='cloud')calendarConnectionChanged(store.connection.baseUrl+':'+store.user?.id);googleCalendarStatus.current=signature;setStatuses(result);setStatusStale(false);setStatusError('');setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if(active.current&&run===statusRead.current){setStatusStale(true);setStatusError(e instanceof Error?e.message:'연결 상태를 확인하지 못했어요.');} } }
   useEffect(() => { active.current = true; void loadStatus(); const listener = AppState.addEventListener('change', state => { if (state === 'active') void loadStatus(); }); return () => { active.current = false;stopWebAuthorization.current?.();stopWebAuthorization.current=null; version.current++;statusRead.current++; listener.remove(); }; }, []);
 
   async function authorize(requestedFeatures = features,mode=addingAccount||!current?.connected?'add':'reauthorize') {
@@ -44,12 +44,12 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
       if (Platform.OS === 'web') { if (!popup) throw new Error('브라우저에서 팝업을 허용한 뒤 다시 눌러주세요.'); popup.location.href = value.url;stopWebAuthorization.current?.();
         const authWindow=popup;let stopped=false,observedClosed=false;
         const stop=()=>{if(stopped)return;stopped=true;clearInterval(timer);clearTimeout(expiry);window.removeEventListener('focus',returned);document.removeEventListener('visibilitychange',visible);};
-        const returned=()=>{if(!active.current||stopped)return;void loadStatus();if(store.connection?.mode==='cloud'&&store.user)refreshCalendarSnapshots(store.connection.baseUrl+':'+store.user.id);};
+        const returned=()=>{if(!active.current||stopped)return;void loadStatus();if(provider==='google'&&store.connection?.mode==='cloud'&&store.user)calendarConnectionChanged(store.connection.baseUrl+':'+store.user.id);};
         const visible=()=>{if(document.visibilityState==='visible')returned();};
         const timer=setInterval(()=>{if(authWindow.closed&&!observedClosed){observedClosed=true;returned();}},500),expiry=setTimeout(stop,10*60*1000);
         window.addEventListener('focus',returned);document.addEventListener('visibilitychange',visible);stopWebAuthorization.current=stop;
         setMessage('승인 후 돌아오면 연결 상태를 다시 확인해요. 반영이 늦으면 연결 상태 새로고침을 눌러주세요.'); }
-      else { const result = await WebBrowser.openAuthSessionAsync(value.url, 'duckduck://integrations/complete'); if (result.type !== 'success') setMessage('연결 창을 닫았어요. 다시 연결할 수 있어요.');else if(store.connection?.mode==='cloud'&&store.user)refreshCalendarSnapshots(store.connection.baseUrl+':'+store.user.id); }
+      else { const result = await WebBrowser.openAuthSessionAsync(value.url, 'duckduck://integrations/complete'); if (result.type !== 'success') setMessage('연결 창을 닫았어요. 다시 연결할 수 있어요.');else if(provider==='google'&&store.connection?.mode==='cloud'&&store.user)calendarConnectionChanged(store.connection.baseUrl+':'+store.user.id); }
       setAddingAccount(false);await loadStatus();
     } catch (e) { popup?.close(); setError(e instanceof Error ? e.message : '연결을 시작하지 못했어요.'); }
     finally { if (active.current) setBusy(false); }

@@ -3,10 +3,11 @@ import {Gesture, GestureDetector, GestureHandlerRootView} from 'react-native-ges
 import Animated, {cancelAnimation, Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import type {SharedValue} from 'react-native-reanimated';
 import {scheduleOnRN} from 'react-native-worklets';
+import {calendarGestureAxis} from './calendar-gesture-axis';
 import type {LiftPreviewProps, RowGestureProps, RowPoint} from './todo-gesture-types';
 
 const ScrollGesture = createContext<ReturnType<typeof Gesture.Native>|null>(null);
-const CalendarPeriodContext=createContext<ReturnType<typeof Gesture.Pan>|null>(null);
+const CalendarPeriodContext=createContext<ReturnType<typeof Gesture.Manual>|null>(null);
 const CalendarLiftActive=createContext<SharedValue<boolean>|null>(null);
 const CalendarTranslation=createContext<SharedValue<number>|null>(null);
 export function useCalendarTranslation(){return useContext(CalendarTranslation);}
@@ -21,25 +22,51 @@ export function CalendarPeriodGesture({children,enabled,reduced=false,width,show
  const peek=useCallback((distance:number)=>callbacks.current.onDrag(distance),[]);
  const end=useCallback((distance:number)=>callbacks.current.onEnd(distance),[]);
  const translation=useSharedValue(0),previousDirection=useSharedValue(0),origin=useSharedValue(0),active=useSharedValue(false),liftActive=useSharedValue(false);
- const gesture=useMemo(()=>Gesture.Pan().enabled(enabled).maxPointers(1).activeOffsetX([-20,20]).failOffsetY([-16,16])
-  .onStart(()=>{'worklet';if(liftActive.value)return;cancelAnimation(translation);origin.value=translation.value;active.value=true;previousDirection.value=0;})
-  .onUpdate(e=>{
+ const touchStart=useSharedValue<RowPoint>({x:0,y:0}),distance=useSharedValue(0);
+ const gesture=useMemo(()=>Gesture.Manual().enabled(enabled).shouldCancelWhenOutside(false)
+  .onTouchesDown((e,state)=>{
    'worklet';
-   if(reduced||!active.value||liftActive.value)return;
+   const point=e.allTouches[0];
+   active.value=false;distance.value=0;previousDirection.value=0;
+   if(e.numberOfTouches!==1||!point){state.fail();return;}
+   touchStart.value={x:point.absoluteX,y:point.absoluteY};
+   state.begin();
+  })
+  .onTouchesMove((e,state)=>{
+   'worklet';
+   const point=e.allTouches[0];
+   if(liftActive.value||e.numberOfTouches!==1||!point){state.fail();return;}
+   const next={x:point.absoluteX,y:point.absoluteY};
+   if(!active.value){
+    const axis=calendarGestureAxis(touchStart.value,next);
+    if(axis==='vertical'){state.fail();return;}
+    if(axis==='undecided')return;
+    cancelAnimation(translation);origin.value=translation.value;active.value=true;state.activate();
+   }
+   distance.value=next.x-touchStart.value.x;
+   if(reduced)return;
    const limit=width??400;
-   const position=Math.max(-limit,Math.min(limit,origin.value+e.translationX));
+   const position=Math.max(-limit,Math.min(limit,origin.value+distance.value));
    translation.value=position;
    const direction=position<0?1:-1;
    if(showPreview&&previousDirection.value!==direction){previousDirection.value=direction;scheduleOnRN(peek,position);}
   })
-  .onFinalize((e,successful)=>{
+  .onTouchesUp((e,state)=>{
+   'worklet';
+   if(!active.value||liftActive.value){state.fail();return;}
+   const point=e.changedTouches[0];
+   if(point)distance.value=point.absoluteX-touchStart.value.x;
+   state.end();
+  })
+  .onTouchesCancelled((_,state)=>{'worklet';state.fail();})
+  .onFinalize((_,successful)=>{
    'worklet';
    if(!active.value)return;
    active.value=false;
-   const distance=successful&&!liftActive.value?e.translationX:0;
-   if(!showPreview&&Math.abs(distance)<=55)translation.value=reduced?0:withTiming(0,{duration:220,easing:easeOut});
-   scheduleOnRN(end,distance);
-  }),[enabled,reduced,width,showPreview,translation,active,liftActive,origin,previousDirection,peek,end]);
+   const dx=successful&&!liftActive.value?distance.value:0;
+   if(!showPreview&&Math.abs(dx)<=55)translation.value=reduced?0:withTiming(0,{duration:220,easing:easeOut});
+   scheduleOnRN(end,dx);
+  }),[enabled,reduced,width,showPreview,translation,active,liftActive,origin,previousDirection,touchStart,distance,peek,end]);
  return <CalendarPeriodContext.Provider value={gesture}><CalendarLiftActive.Provider value={liftActive}><CalendarTranslation.Provider value={translation}><GestureDetector gesture={gesture}>{children}</GestureDetector></CalendarTranslation.Provider></CalendarLiftActive.Provider></CalendarPeriodContext.Provider>;
 }
 export function TodoGestureScroll({children}:{children:React.ReactElement}) {

@@ -6,6 +6,7 @@ import type {TodoStore} from './useTodos';
 export const calendarSelectionKey=(owner:string)=>'duck.calendar.selection.'+owner;
 type Selection={ids:string[];knownAppleIds?:string[];hideDocen?:boolean;hiddenIds?:string[]};
 const selectionListeners=new Map<string,Set<(value:Selection)=>void>>();
+const noHiddenCalendars:string[]=[];
 const defaultSelection:Selection={ids:['primary']};
 function parseSelection(raw:string|null):Selection {
  try{
@@ -62,5 +63,5 @@ export function useCalendarSelection(store:TodoStore){
   if(known&&available.every(id=>known.includes(id))&&!additions.length)return;
   save({...value,ids:[...new Set([...value.ids,...additions])],knownAppleIds:[...new Set([...(known??[]),...available])]});
  }
- return {ids:value.ids,showDocen:!value.hideDocen,ready,setIds,toggle,reveal,reconcileApple};
+ return {ids:value.ids,hiddenIds:value.hiddenIds??noHiddenCalendars,showDocen:!value.hideDocen,ready,setIds,toggle,reveal,reconcileApple};
 }
