@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 b2c32be · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 e5f988d · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 캘린더 기기 우선 저장과 전환
+
+- 일정 상세에 원본 전송 상태 문구를 표시하지 않는다. 캘린더 이름과 색은 저장할 때 선택한 원본을 표시한다. 사용자가 명시적으로 고른 캘린더를 연결 상태가 바뀌었다는 이유로 다른 캘린더로 자동 변경하지 않는다.
+- iPhone에서 새 일정은 로그인된 계정의 기기 전송 대기열에 먼저 저장한다. 화면을 닫아도 일정과 선택한 캘린더가 유지되고, 일시적인 통신 실패는 같은 요청 ID로 다시 전송한다. Apple 원본 전송은 받은 기기의 캘린더 권한을 확인하며 현재 보고 있는 날짜와 독립적으로 처리한다.
+- 월간·주간 일정 날짜를 한 번에 계산하고, 좁은 기간으로 전환할 때 이미 읽은 기기 자료를 재사용한다. 목록 내용이 같은 주기 갱신은 Keychain 캐시를 다시 쓰지 않는다. 영상은 제품 동작 확인에만 사용한다.
+- 최종 자동 검사 505개 통과, 기존 제외 1개. 네트워크 실패 모형에서 기기 저장과 화면 재진입, 선택한 원본 이름 유지와 중복 없는 전송을 확인했다. 브라우저의 Duo·일반폰·웹 주간과 모의 아이폰 원본 동기화, iOS 번들 생성도 통과했다. Render 테스트 서버의 `e5f988d` 배포는 17:41 KST에 live가 됐다. 설치용 iPhone 빌드와 실기기 성능은 별도다.
 
 #### 2026-11-26 — 일정 즉시 삭제와 아이폰 캘린더 반영
 
@@ -4012,10 +4019,12 @@ f4da8ad Refresh the project documentation with the sync contract
 d451dd2 Record calendar delivery test deployment
 b2c32be Keep calendar deletion responsive and refresh iPhone originals on change
 68b234c Record calendar synchronization verification and deployment
+c276aac Refresh project documentation for calendar synchronization
+e5f988d Keep new calendar events on device and smooth view changes
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: b2c32be에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: e5f988d에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13284,7 +13293,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/b2c32be60eb1e844be75f7568b103a8944e8da1a
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/e5f988df56ef1bfb98766c6919604d2080c6da38
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -14362,6 +14371,7 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 
 #### 1. 도슨에서 작성하면 화면에 바로 표시하고 원본으로 빠르게 보낸다
 
+- 로그인된 iPhone에서 새 일정을 저장하면 같은 계정의 기기 전송 대기열에 먼저 기록한다. 화면은 기기 기록 완료 뒤 갱신한다. 앱을 다시 열어 같은 계정이 확인되면 화면에 기기 기록을 복원하고 같은 생성 ID로 전송을 이어간다. 캘린더 이름은 사용자가 선택한 저장 대상을 표시한다.
 - 사용자가 저장을 확정한 즉시 새 항목이나 변경 결과를 해당 목록·달력·상세 화면에 보여준다. 도슨 저장 요청이 진행 중이면 그 상태를 표시하고, 도슨에 저장됐다는 표시는 실제 저장 응답 이후에 확정한다.
 - 도슨 저장을 먼저 완료한다. 연결 서비스의 조회·승인 확인·전송 응답을 기다리느라 도슨의 화면 반영이나 저장 완료를 늦추지 않는다. 도슨에 기록한 다음 전송을 바로 시작한다. 작업 큐를 사용하는 경로에서는 저장과 전송 작업 등록을 함께 확정해 재시작 사이에 작업이 빠지지 않게 한다.
 - 원본이 느리거나 권한이 만료돼도 이미 도슨에 저장된 항목은 유지한다. 권한 범위 안에서 자동 갱신하고 일시 장애는 다시 처리한다. 도슨 저장 실패와 원본 전송 실패는 별도의 상태로 처리한다. 원본 쓰기 결과가 불확실하면 같은 요청 ID나 원본 항목을 조회해 확인한다.
