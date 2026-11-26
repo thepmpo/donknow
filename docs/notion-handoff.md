@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 1997379 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 f6fd905 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-26 — 일정·할 일 기기 우선 저장
+
+- 기존 일정 전송 큐의 기기 저장과 계정별 원자적 기록 방식을 새 할 일 생성에도 사용한다. 저장 후 표시하고, 로컬 기록에 사용한 같은 요청 번호를 서버 저장에 재사용한다. 메모가 있는 새 할 일도 서버 기능 확인을 기다리기 전에 기기에 저장한다.
+- 이전에 인증된 iPhone에서 일시적인 통신 장애가 있을 때 Keychain의 해당 로그인 정보를 사용해 기기 기록을 다시 연다. 서버가 세션을 거부하거나 사용자가 로그아웃하면 로컬 세션은 닫힌다. 저장된 항목은 계정·서버별로 분리한다.
+- 외부 목록을 읽을 수 없을 때도 도슨 캘린더를 선택해 일정을 추가할 수 있다. 먼저 저장한 일정에 연결된 원본이 조회에 일치하지 않더라도 도슨 항목을 표시하며, 사용자가 직접 숨긴 캘린더의 표시 설정은 적용한다. 월·주·일은 할 일의 같은 날짜 값을 읽고, 마감일 없는 할 일은 목록에 남긴다.
+- 단계 범위는 iPhone의 새 일정·새 할 일과 표시 안정화다. Google Tasks와 Apple 미리알림을 새 할 일의 저장 대상으로 추가하는 작업, 공급자별 변경·삭제 정책의 통합은 별도 단계다.
+- 모의 네트워크에서 로그인·일정·할 일 조회에 503을 적용하고, 기기에서 만든 일정과 할 일이 재시작 뒤에도 표시되는지 확인했다. 통신 복구 후 같은 요청 번호로 전송하고, 서버 수신 뒤에도 다시 연결을 끊어 표시를 검증했다. 실제 iPhone 검수에는 새 설치 빌드가 필요하다.
 
 #### 2026-11-26 — TestFlight 68 피드백에 따른 iPhone 캘린더 수정
 
@@ -4071,10 +4079,12 @@ cd045a5 Publish calendar repair verification and handoff
 f1e63fe Fix iPhone calendar gesture arbitration and provider refresh
 e5af67b Update calendar handoff after build 68 feedback
 1997379 Keep calendar swipe cancellation on a second touch
+18a77d0 Record iPhone calendar regression verification
+f6fd905 Persist new schedules and tasks before network sync
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 1997379에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: f6fd905에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13343,7 +13353,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/1997379c4b2695cfd3e0b62d99979e44416b72e7
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/f6fd905d6f58b9d18277344fb69e7494f0f31f5c
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
