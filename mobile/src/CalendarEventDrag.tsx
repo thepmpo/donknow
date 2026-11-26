@@ -126,7 +126,7 @@ export function CalendarDraggableEvent({event,todo,day,style,contentStyle,fill=f
   onPointerCancel:()=>{if(pointer.current?.held&&canLift)drag?.finish(false);clear();},
  }:undefined;
  return <View {...(web as unknown as React.ComponentProps<typeof View>)} style={[style,drag?.lifted?.id===id&&styles.lifted,Platform.OS==='web'&&({userSelect:'none'} as ViewStyle)]}>
-  <TodoGestureRow fill={fill} canSwipeLeft={false} canSwipeRight={false} canLift={canLift} reduced={reduced} onSwipeStart={noop} onSwipeEnd={noop}
+  <TodoGestureRow calendarItem fill={fill} canSwipeLeft={false} canSwipeRight={false} canLift={canLift} reduced={reduced} onSwipeStart={noop} onSwipeEnd={noop}
    onLift={point=>{blockPress.current=true;drag?.start(item,day,point);}} onDrag={point=>drag?.move(point)} onDrop={completed=>drag?.finish(completed)}>
    <MotionPressable {...props} accessibilityState={{...props.accessibilityState,selected}} accessibilityActions={canSelect?[{name:'longpress',label:todo?'할 일 선택':'일정 선택'}]:props.accessibilityActions} onAccessibilityAction={e=>{if(canSelect&&e.nativeEvent.actionName==='longpress')drag?.setSelectedId(id);else props.onAccessibilityAction?.(e);}} onLongPress={canSelect&&!canLift&&Platform.OS!=='web'?()=>{blockPress.current=true;drag?.setSelectedId(id);}:undefined} delayLongPress={330} onPressIn={e=>{blockPress.current=false;props.onPressIn?.(e);}} onPress={e=>{e.stopPropagation();if(!blockPress.current){drag?.setSelectedId(null);props.onPress?.(e);}}} style={[fill&&{flex:1},contentStyle,selected&&styles.selected]}/>
   </TodoGestureRow>

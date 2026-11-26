@@ -11,8 +11,8 @@ function occurrenceKey(event:CalendarEvent){
 export function mergeCalendarCopies(events:CalendarEvent[]):CalendarEvent[]{
  const sameCalendar=new Map<string,CalendarEvent>();
  for(const event of events){
-  const occurrence=event.provider==='apple-calendar'&&occurrenceKey(event);
-  const key=occurrence?JSON.stringify([event.calendarId,occurrence]):event.id;
+  const occurrence=(event.provider==='apple-calendar'||event.provider==='google')&&occurrenceKey(event);
+  const key=occurrence?JSON.stringify([event.provider,event.connectionId,event.calendarId,occurrence]):event.id;
   sameCalendar.set(key,event);
  }
  const unique=[...sameCalendar.values()];

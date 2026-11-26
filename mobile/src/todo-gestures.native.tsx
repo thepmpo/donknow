@@ -1,4 +1,7 @@
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import {requireNativeViewManager,requireOptionalNativeModule} from 'expo-modules-core';
+import {Platform} from 'react-native';
+import type {NativeSyntheticEvent, StyleProp, ViewStyle} from 'react-native';
 import {Gesture, GestureDetector, GestureHandlerRootView} from 'react-native-gesture-handler';
 import Animated, {cancelAnimation, Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import type {SharedValue} from 'react-native-reanimated';
@@ -17,7 +20,41 @@ const easeOut = Easing.out(Easing.cubic);
 export function TodoGestureRoot({children}:{children:React.ReactNode}) {
   return <GestureHandlerRootView style={{flex:1}}>{children}</GestureHandlerRootView>;
 }
-export function CalendarPeriodGesture({children,enabled,reduced=false,width,showPreview,onDrag,onEnd}:{children:React.ReactElement;enabled:boolean;reduced?:boolean;width?:number;showPreview?:boolean;onDrag:(distance:number)=>void;onEnd:(distance:number)=>void}){
+type CalendarTouch={phase:'start'|'move'|'end'|'cancel';dx:number;x:number;y:number};
+type CalendarTouchProps={
+ gestureMode:'period'|'item';gestureEnabled:boolean;style?:StyleProp<ViewStyle>;
+ children:React.ReactElement;onCalendarTouch:(event:NativeSyntheticEvent<CalendarTouch>)=>void;
+};
+const CalendarTouchView=(()=>{
+ if(Platform.OS!=='ios'||!requireOptionalNativeModule<{readCalendarSnapshot?:unknown}>('DuckduckCalendarChanges')?.readCalendarSnapshot)return null;
+ try{return requireNativeViewManager<CalendarTouchProps>('DuckduckCalendarChanges');}catch{return null;}
+})();
+type PeriodProps={children:React.ReactElement;enabled:boolean;reduced?:boolean;width?:number;showPreview?:boolean;onDrag:(distance:number)=>void;onEnd:(distance:number)=>void};
+export function CalendarPeriodGesture(props:PeriodProps){
+ return CalendarTouchView?<NativeCalendarPeriod {...props}/>:<GestureCalendarPeriod {...props}/>;
+}
+function NativeCalendarPeriod({children,enabled,reduced=false,width=400,showPreview,onDrag,onEnd}:PeriodProps){
+ const translation=useSharedValue(0),origin=useRef(0),direction=useRef(0);
+ if(!CalendarTouchView)return children;
+ return <CalendarTranslation.Provider value={translation}><CalendarTouchView
+  gestureMode="period" gestureEnabled={enabled} style={{flex:1,minHeight:0}}
+  onCalendarTouch={({nativeEvent:{phase,dx}})=>{
+   if(phase==='start'){
+    cancelAnimation(translation);origin.current=translation.value;direction.current=0;
+   }
+   if(phase==='cancel'||phase==='end'){
+    const distance=phase==='cancel'?0:dx;
+    if(!showPreview&&Math.abs(distance)<=55)translation.value=reduced?0:withTiming(0,{duration:220,easing:easeOut});
+    onEnd(distance);return;
+   }
+   if(reduced)return;
+   const position=Math.max(-width,Math.min(width,origin.current+dx));
+   translation.value=position;
+   const nextDirection=Math.sign(position);
+   if(showPreview&&nextDirection&&direction.current!==nextDirection){direction.current=nextDirection;onDrag(position);}
+  }}>{children}</CalendarTouchView></CalendarTranslation.Provider>;
+}
+function GestureCalendarPeriod({children,enabled,reduced=false,width,showPreview,onDrag,onEnd}:PeriodProps){
  const callbacks=useRef({onDrag,onEnd});callbacks.current={onDrag,onEnd};
  const peek=useCallback((distance:number)=>callbacks.current.onDrag(distance),[]);
  const end=useCallback((distance:number)=>callbacks.current.onEnd(distance),[]);
@@ -100,7 +137,27 @@ export function TodoLiftPreview({testID='todo-drag-preview',geometry,reduced,sty
   </Animated.View>;
 }
 
-export function TodoGestureRow(props:RowGestureProps) {
+export function TodoGestureRow(props:RowGestureProps){
+ return CalendarTouchView&&props.calendarItem?<NativeCalendarItem {...props}/>:<GestureTodoRow {...props}/>;
+}
+function NativeCalendarItem({children,fill,canLift,onLift,onDrag,onDrop}:RowGestureProps){
+ const liftCoordinates=useContext(LiftCoordinates),lastHover=useRef(0);
+ if(!CalendarTouchView)return children;
+ return <CalendarTouchView gestureMode="item" gestureEnabled={canLift} style={fill?{flex:1}:undefined}
+  onCalendarTouch={({nativeEvent:{phase,x,y}})=>{
+   const point={x,y};
+   if(liftCoordinates)liftCoordinates.value=point;
+   if(phase==='start'){lastHover.current=0;onLift(point);}
+   else if(phase==='move'){
+    const now=Date.now();
+    if(now-lastHover.current>=32){lastHover.current=now;onDrag(point);}
+   }else{
+    if(phase==='end')onDrag(point);
+    onDrop(phase==='end');
+   }
+  }}>{children}</CalendarTouchView>;
+}
+function GestureTodoRow(props:RowGestureProps) {
   const scroll=useContext(ScrollGesture),period=useContext(CalendarPeriodContext);
   const liftCoordinates=useContext(LiftCoordinates),calendarLift=useContext(CalendarLiftActive);
   const swipeOffset=useSharedValue(0);

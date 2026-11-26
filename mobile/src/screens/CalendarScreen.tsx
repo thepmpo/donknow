@@ -64,6 +64,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  const isVisible=(event:CalendarEvent)=>{
   if(event.calendarId===docenCalendarId&&event.mirror)return !selection.hiddenIds.includes(event.mirror.calendarId);
   const id=event.mirror?.calendarId??event.calendarId??'primary';
+  if(isAppleCalendar(id))return !selection.hiddenIds.includes(id);
   return id===docenCalendarId?selection.showDocen:shownSources.has(id);
  };
  function revealSavedEvent(saved:CalendarEvent){

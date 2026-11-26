@@ -11,32 +11,38 @@ public final class DuckduckCalendarChangesModule: Module {
   public func definition() -> ModuleDefinition {
     Name("DuckduckCalendarChanges")
     Events("onStoreChange")
+    View(DocenCalendarTouchView.self) {
+      Events("onCalendarTouch")
+      Prop("gestureMode") { (view: DocenCalendarTouchView, mode: String) in
+        view.gestureMode = mode
+      }
+      Prop("gestureEnabled") { (view: DocenCalendarTouchView, enabled: Bool) in
+        view.gestureEnabled = enabled
+      }
+    }
 
     AsyncFunction("calendarList") { () throws -> [[String: Any]] in
       try self.requireFullAccess()
-      // Refresh EventKit's local view before reading calendars and events from this store.
-      self.store.reset()
-      return self.store.calendars(for: .event).map { calendar in
-        var value: [String: Any] = [
-          "id": calendar.calendarIdentifier, "title": calendar.title,
-          "writable": calendar.allowsContentModifications,
-        ]
-        value["account"] = calendar.source?.title
-        value["accountId"] = calendar.source?.sourceIdentifier
-        if let color = calendar.cgColor { value["color"] = self.calendarColor(color) }
-        return value
-      }
+      return self.store.calendars(for: .event).map(self.calendarSnapshot)
     }.runOnQueue(queue)
 
     AsyncFunction("readEvents") { (ids: [String], start: Double, end: Double) throws -> [[String: Any]] in
       try self.requireFullAccess()
-      let calendars = self.store.calendars(for: .event).filter { ids.contains($0.calendarIdentifier) }
-      guard !calendars.isEmpty, end > start else { return [] }
-      let predicate = self.store.predicateForEvents(
-        withStart: Date(timeIntervalSince1970: start / 1000),
-        end: Date(timeIntervalSince1970: end / 1000), calendars: calendars
-      )
-      return self.store.events(matching: predicate).compactMap { self.snapshot($0) }
+      let selected = Set(ids)
+      let calendars = self.store.calendars(for: .event).filter { selected.contains($0.calendarIdentifier) }
+      return self.events(in: calendars, start: start, end: end)
+    }.runOnQueue(queue)
+
+    AsyncFunction("readCalendarSnapshot") { (hiddenIDs: [String], start: Double, end: Double) throws -> [String: Any] in
+      try self.requireFullAccess()
+      self.store.reset()
+      let calendars = self.store.calendars(for: .event)
+      let hidden = Set(hiddenIDs)
+      let visible = calendars.filter { !hidden.contains($0.calendarIdentifier) }
+      return [
+        "calendars": calendars.map(self.calendarSnapshot),
+        "events": self.events(in: visible, start: start, end: end),
+      ]
     }.runOnQueue(queue)
 
     AsyncFunction("readEvent") { (id: String, start: Double?, calendarID: String?) throws -> [String: Any] in
@@ -96,6 +102,26 @@ public final class DuckduckCalendarChangesModule: Module {
     } else {
       guard status == .authorized else { throw AccessRequired() }
     }
+  }
+
+  private func calendarSnapshot(_ calendar: EKCalendar) -> [String: Any] {
+    var value: [String: Any] = [
+      "id": calendar.calendarIdentifier, "title": calendar.title,
+      "writable": calendar.allowsContentModifications,
+    ]
+    value["account"] = calendar.source?.title
+    value["accountId"] = calendar.source?.sourceIdentifier
+    if let color = calendar.cgColor { value["color"] = calendarColor(color) }
+    return value
+  }
+
+  private func events(in calendars: [EKCalendar], start: Double, end: Double) -> [[String: Any]] {
+    guard !calendars.isEmpty, end > start else { return [] }
+    let predicate = store.predicateForEvents(
+      withStart: Date(timeIntervalSince1970: start / 1000),
+      end: Date(timeIntervalSince1970: end / 1000), calendars: calendars
+    )
+    return store.events(matching: predicate).compactMap(snapshot)
   }
 
   private func occurrence(_ id: String, start: Double?, calendarID: String?) throws -> EKEvent {

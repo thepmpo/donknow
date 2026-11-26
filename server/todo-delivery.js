@@ -26,9 +26,10 @@ export function createTodoDelivery(store,integrations,{background=true}={}){
     }catch(error){
      const code=error?.status,delay=Math.max(5000,Math.min(error?.retryAfterMs??30000,3600000));
      const blocked=code>=400&&code<500&&code!==408&&code!==429;
-     // Google Tasks assigns its own ID. A lost response leaves the result uncertain.
-     if(attempt)delivery.settle(user,id,attempt,blocked?'blocked':code===429?'queued':'checking',code===429?delay:0);
-     else delivery.block(job,blocked?'blocked':'queued',blocked?0:delay);
+     // An explicit rejection can be retried after reapproval. A lost response remains uncertain.
+     const rejected=error?.code==='integration-reauthorization'?'reauthorize':blocked?'blocked':null;
+     if(attempt)delivery.settle(user,id,attempt,rejected??(code===429?'queued':'checking'),code===429?delay:0);
+     else delivery.block(job,rejected??'queued',rejected?0:delay);
     }
    }
   }finally{running=false;}

@@ -12,8 +12,9 @@ export async function readReminderItems(id:string,readLists:()=>Promise<{id:stri
   if(!current())return null;
   const lists=await readLists();if(!current())return null;
   const list=lists.find(l=>l.id===id);if(!list)throw Error('이 미리 알림 목록을 찾지 못했어요. 목록을 다시 확인해주세요.');
-  const raw=await list.listReminders(null,null,status);if(!current())return null;
-  const color=list.color;items=copyReminders(raw);if(items.length)return color&&/^#[a-f\d]{6}$/i.test(color)?items.map(item=>({...item,color})):items;
+  // Read the unbounded list and filter locally so an undated reminder remains eligible.
+  const raw=await list.listReminders(null,null,null);if(!current())return null;
+  const color=list.color;items=copyReminders(raw).filter(item=>status===null||item.completed===(status==='completed'));if(items.length)return color&&/^#[a-f\d]{6}$/i.test(color)?items.map(item=>({...item,color})):items;
   if(!attempt)await wait();
  }
  return items;

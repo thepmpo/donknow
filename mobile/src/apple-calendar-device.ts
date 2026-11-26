@@ -8,6 +8,7 @@ type NativeSnapshot=Omit<DeviceEvent,'startDate'|'endDate'|'modified'|'alarms'>&
 };
 type CalendarModule={
  addListener:(name:string,listener:()=>void)=>{remove:()=>void};
+ readCalendarSnapshot?:(hidden:string[],start:number,end:number)=>Promise<{calendars:DeviceCalendar[];events:NativeSnapshot[]}>;
  calendarList:()=>Promise<DeviceCalendar[]>;
  readEvents:(ids:string[],start:number,end:number)=>Promise<NativeSnapshot[]>;
  readEvent:(id:string,start:number|null,calendarId:string|null)=>Promise<NativeSnapshot>;
@@ -40,6 +41,15 @@ export const appleCalendarDevice:AppleCalendarDevice={
  async authorize(){const C=await import('expo-calendar');return (await C.requestCalendarPermissions(false)).granted;},
  async calendars(){
   return requireBridge().calendarList();
+ },
+ async snapshot(hidden,start,end){
+  const bridge=requireBridge(),from=Date.parse(start+'T00:00:00'),to=Date.parse(end+'T00:00:00');
+  if(bridge.readCalendarSnapshot){
+   const snapshot=await bridge.readCalendarSnapshot(hidden,from,to);
+   return {...snapshot,events:snapshot.events.map(fromNative)};
+  }
+  const calendars=await bridge.calendarList(),ids=calendars.filter(calendar=>!hidden.includes(calendar.id)).map(calendar=>calendar.id);
+  return {calendars,events:ids.length?(await bridge.readEvents(ids,from,to)).map(fromNative):[]};
  },
  async events(ids,start,end){
   const snapshots=await requireBridge().readEvents(ids,Date.parse(start+'T00:00:00'),Date.parse(end+'T00:00:00'));

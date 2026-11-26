@@ -19,7 +19,7 @@ export function todoDeliveryStore(db,get){
  ); CREATE INDEX IF NOT EXISTS todo_delivery_pending ON todo_delivery(provider,state,next_at);
  CREATE INDEX IF NOT EXISTS todo_delivery_owner ON todo_delivery(user_id);`);
  const row=(user,id)=>db.prepare('SELECT * FROM todo_delivery WHERE user_id=? AND todo_id=?').get(user,id);
- const view=r=>r?{...JSON.parse(r.target),state:r.state==='sending'&&r.next_at<Date.now()?'checking':r.state}:undefined;
+ const view=r=>r?{...JSON.parse(r.target),state:r.state==='sending'&&r.next_at<Date.now()?'checking':r.state==='reauthorize'?'blocked':r.state}:undefined;
  const current=(user,id)=>get(user,id);
  function decorate(user,todo){
   const delivery=todo&&view(row(user,todo.id));
@@ -57,8 +57,12 @@ export function todoDeliveryStore(db,get){
   settle(user,id,attempt,status,delay=0){
    return state(user,id,status,'sending',attempt,Date.now()+delay);
   },
+  resumeGoogle(user,connectionId){
+   db.prepare(`UPDATE todo_delivery SET state='queued',next_at=? WHERE user_id=? AND provider='google'
+    AND state='reauthorize' AND json_extract(target,'$.connectionId')=?`).run(Date.now(),user,connectionId);
+  },
   retry(user,id){
-   const result=db.prepare("UPDATE todo_delivery SET state='queued',next_at=? WHERE user_id=? AND todo_id=? AND state='blocked'").run(Date.now(),user,id);
+   const result=db.prepare("UPDATE todo_delivery SET state='queued',next_at=? WHERE user_id=? AND todo_id=? AND state IN ('blocked','reauthorize')").run(Date.now(),user,id);
    if(!result.changes)throw fail(409,'다시 보낼 수 있는 할 일이 없어요.');
    return decorate(user,current(user,id));
   },

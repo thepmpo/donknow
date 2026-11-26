@@ -15,3 +15,11 @@ test('empty EventKit read retries once on a fresh list, retains explicit empty, 
 test('a reminder result arriving after account exit is discarded',async()=>{let current=true;const result=await readReminderItems('list',async()=>[{id:'list',listReminders:async()=>{current=false;return [{id:'old-account'}];}}],()=>current);assert.equal(result,null);});
 
 test('whole-library read covers every list and undated reminder; a failed list preserves other results',async()=>{const {readAllReminderItems}=await import('./apple-reminder-read.ts');const lists=[{id:'one',title:'개인'},{id:'bad',title:'접근 불가'},{id:'two',title:'업무'}],all=lists.map(l=>({...l,listReminders:async()=>{if(l.id==='bad')throw Error('permission');return [{id:l.id,title:l.title,completed:false},{id:'done-'+l.id,title:'완료',completed:true}];}}));const result=await readAllReminderItems(lists,async()=>all,()=>true);assert.equal(result?.items.length,2);assert.equal(result?.items[1].listTitle,'업무');assert.deepEqual(result?.failedLists,[lists[1]]);});
+
+test('incomplete reminder reads include undated items and exclude completed rows',async()=>{
+ const rows=await readReminderItems('list',async()=>[{id:'list',listReminders:async(start,end,status)=>{
+  assert.deepEqual([start,end,status],[null,null,null]);
+  return [{id:'undated',completed:false},{id:'completed',completed:true}];
+ }}],()=>true,undefined,'incomplete');
+ assert.deepEqual(rows?.map(item=>item.id),['undated']);
+});

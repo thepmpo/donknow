@@ -219,6 +219,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const save=provider==='google'&&state.mode&&store.saveGoogleAccount?(payload,label)=>store.saveGoogleAccount(state.userId,payload,label):(payload,label)=>store.saveConnection(state.userId,provider,payload,label);
       save({ accessToken: value.access_token, refreshToken: value.refresh_token ?? (accountId && previous?.accountId===accountId ? previous.refreshToken : null) ?? null, expiresAt: expiresAt(value.expires_in), features, taskSyncEnabled: !!(features.includes('tasksWrite') && previous?.accountId===accountId && previous?.taskSyncEnabled), accountId:accountId??null,connectionId,...(provider==='slack'?{slackUserId:value.slackUserId??value.authed_user?.id??null,tokenType:value.tokenType??'bot',botUserId:value.bot_user_id??null,botAccessToken:value.botAccessToken??null,botRefreshToken:value.botRefreshToken??null,botExpiresAt:value.botExpiresAt??null}:{}) }, label);
       if(provider==='google'&&features.includes('calendarWrite'))store.wakeDocenGoogleDelivery?.(state.userId,connectionId);
+      if(provider==='google'&&features.includes('tasksWrite'))store.todoDelivery?.resumeGoogle(state.userId,connectionId);
       return { native: state.native };
     },
     async resources(userId, provider, feature, channel, cursor, taskStatus = 'incomplete', month, connectionId) {
@@ -239,7 +240,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         if (channel && (typeof channel !== 'string' || channel.length > 1024)) throw fail(400, '목록을 다시 선택해주세요.');
         const path = channel ? `lists/${encodeURIComponent(channel)}/tasks` : 'users/@me/lists';
         const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus === 'completed' ? 'true' : 'false', showHidden: taskStatus === 'completed' ? 'true' : 'false', showDeleted: 'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
-        const value = await googleRead(userId,record,'https://www.googleapis.com/tasks/v1/' + path + '?' + query);
+        const value = await googleRead(userId,record,'https://tasks.googleapis.com/tasks/v1/' + path + '?' + query);
         items = (value.items ?? []).filter(item => !item.deleted && (!channel || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null } : { id: item.id, title: title(item.title), kind: 'tasklist' });
         nextCursor = value.nextPageToken ?? null;
       }
@@ -310,10 +311,12 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       const parts=todo.source.externalId.slice(prefix.length).split(':');
       if(parts.length!==2||parts.some(value=>!value))throw fail(409,'원본 할 일 식별자를 확인할 수 없어요.');
       const url='https://www.googleapis.com/tasks/v1/lists/'+encodeURIComponent(parts[0])+'/tasks/'+encodeURIComponent(parts[1]);
-      const headers={Authorization:'Bearer '+record.accessToken};
-      const current=await providerRequest(url,{headers});
+      const current=await googleRead(userId,record,url);
+      const renewed=await token(userId,'google',record.connectionId);
+      if(renewed.accountId!==record.accountId)throw fail(409,'Google 계정 연결이 바뀌었어요.');
+      const headers={Authorization:'Bearer '+renewed.accessToken};
       if(current.deleted)throw fail(409,'Google에서 삭제된 할 일이에요.');
-      const stillConnected=()=>{if(store.accountActive&&!store.accountActive(userId))return false;const latest=store.connection(userId,'google',record.connectionId);return latest?.taskSyncEnabled&&latest.connectionId===record.connectionId&&latest.accessToken===record.accessToken;};
+      const stillConnected=()=>{if(store.accountActive&&!store.accountActive(userId))return false;const latest=store.connection(userId,'google',record.connectionId);return latest?.taskSyncEnabled&&latest.connectionId===record.connectionId&&latest.accessToken===renewed.accessToken;};
       if(!guard())throw fail(409,'더 최신 변경이 있어 이전 동기화를 멈췄어요.');
       if(!stillConnected())throw fail(409,'서비스 연결 또는 동기화 설정이 바뀌었어요.');
       if(desired===undefined||!!(current.status==='completed')===desired)return current;
@@ -325,12 +328,34 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       return await response.json();
     },
     async diagnose(userId,provider,connectionId) {
-      const record=await token(userId,provider,connectionId);const headers={Authorization:'Bearer '+record.accessToken};
-      if(provider==='google')await providerRequest('https://openidconnect.googleapis.com/v1/userinfo',{headers});
+      const record=await token(userId,provider,connectionId);
+      const headers={Authorization:'Bearer '+record.accessToken};
+      let checks;
+      if(provider==='google'){
+        const probes = [
+          {key:'calendar', label:'Google Calendar', enabled:record.features.some(feature=>['calendar','calendarWrite'].includes(feature)),
+            url:'https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=1'},
+          {key:'tasks', label:'Google Tasks', enabled:record.features.some(feature=>['tasks','tasksWrite'].includes(feature)),
+            url:'https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=1'},
+        ];
+        if(!probes.some(probe=>probe.enabled)){
+          await googleRead(userId,record,'https://openidconnect.googleapis.com/v1/userinfo');
+        }
+        checks=Object.fromEntries(await Promise.all(probes.map(async ({key,label,enabled,url})=>{
+          if(!enabled)return [key,'not-authorized'];
+          try{await googleRead(userId,record,url);return [key,'ready'];}
+          catch(error){
+            if(error.code==='integration-reauthorization')throw error;
+            throw fail(error.status??502,label+' · '+error.message);
+          }
+        })));
+      }
       if(provider==='slack')await providerRequest('https://slack.com/api/auth.test',{headers},true);
       if(provider==='notion')await providerRequest('https://api.notion.com/v1/users/me',{headers:{...headers,'Notion-Version':'2025-09-03'}});
-      if(store.connection(userId,provider,record.connectionId)?.accessToken!==record.accessToken)throw fail(409,'서비스 연결이 바뀌었어요. 다시 확인해주세요.');
-      return {ok:true,checkedAt:new Date().toISOString()};
+      const latest=store.connection(userId,provider,record.connectionId);
+      if(!latest||latest.accountId!==record.accountId||JSON.stringify(latest.features)!==JSON.stringify(record.features)
+        ||provider!=='google'&&latest.accessToken!==record.accessToken)throw fail(409,'서비스 연결이 바뀌었어요. 다시 확인해주세요.');
+      return {ok:true,checkedAt:new Date().toISOString(),...(checks?{checks}:{})};
     },
     async searchTasks(userId, query, connectionId) {
       if (typeof query !== 'string' || !query.trim() || query.length > 120) throw fail(400, '검색어를 120자 이내로 입력해주세요.');

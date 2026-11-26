@@ -16,17 +16,23 @@ const cache=new Map<string,Snapshot>(),listeners=new Map<string,Set<()=>void>>()
 export function refreshAppleCalendar(owner:string){listeners.get(owner)?.forEach(fn=>fn());}
 export function useAppleCalendarData({owner,start,end,timeZone,selected,hidden=[],active,enabled,device=appleCalendarDevice}:{owner:string;start:string;end:string;timeZone:string;selected:string[];hidden?:string[];active:boolean;enabled:boolean;device?:AppleCalendarDevice}){
  const key='docen.apple-calendar.snapshot.'+owner,[state,setState]=useState<Snapshot>(()=>cache.get(owner)??{sources:[],events:[],readAt:null}),[error,setError]=useState(''),[loading,setLoading]=useState(false),generation=useRef(0),current=useRef({owner,start,end,selected,active,enabled});current.current={owner,start,end,selected,active,enabled};
- const selectedKey=JSON.stringify(selected.filter(isAppleCalendar).sort());
  const hiddenKey=JSON.stringify(hidden.filter(isAppleCalendar).sort());
  const windowStart=shiftDay(start,-1),windowEnd=shiftDay(end,1);
  const covers=(snapshot:Snapshot|undefined)=>snapshot?.owner===owner&&snapshot.selection===hiddenKey&&!!snapshot.start&&!!snapshot.end&&snapshot.start<=start&&snapshot.end>=end;
  const load=useCallback(async()=>{if(!device.available||!enabled)return;const run=++generation.current,captured=owner,fresh=()=>run===generation.current&&current.current.owner===captured&&current.current.enabled;setLoading(true);setError('');try{
   if(!await device.granted()){if(fresh()){const empty={owner,sources:[],events:[],readAt:null};cache.set(owner,empty);setState(empty);if(current.current.selected.some(isAppleCalendar))setError('아이폰 캘린더 접근이 해제됐어요. ME에서 접근 권한을 확인해주세요.');await AsyncStorage.removeItem(key);}return;}
-  const calendars=await device.calendars();if(!fresh())return;
-  const hiddenIds=new Set(JSON.parse(hiddenKey) as string[]);
-  const ids=calendars.filter(calendar=>!hiddenIds.has(appleCalendarSource(calendar).id)).map(calendar=>calendar.id);
+  const hiddenIds=new Set<string>(JSON.parse(hiddenKey));
   const first=shiftDay(windowStart,-14),last=shiftDay(windowEnd,14);
-  const items=ids.length?await device.events(ids,first,last):[];if(!fresh())return;
+  const readIds=(calendars:Awaited<ReturnType<AppleCalendarDevice['calendars']>>)=>
+   calendars.map(calendar=>calendar.id).filter(id=>!hiddenIds.has(appleCalendarPrefix+encodeURIComponent(id)));
+  const snapshot=device.snapshot?await device.snapshot(
+   [...hiddenIds].map(id=>decodeURIComponent(id.slice(appleCalendarPrefix.length))),first,last
+  ):null;
+  if(!fresh())return;
+  const calendars=snapshot?.calendars??await device.calendars(),ids=readIds(calendars);
+  if(!fresh())return;
+  const items=snapshot?.events??(ids.length?await device.events(ids,first,last):[]);
+  if(!fresh())return;
   const byId=new Map(calendars.map(calendar=>[calendar.id,calendar]));
   const events=items.flatMap(item=>{
    const calendar=byId.get(item.calendarId);
@@ -63,9 +69,9 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,hidden=[
  },[owner,active,enabled,device,load]);
  const visible=useMemo(()=>{
   if(!enabled||state.owner!==owner)return emptyEvents;
-  const ids=new Set(JSON.parse(selectedKey) as string[]);
-  return state.events.filter(event=>ids.has(event.calendarId??'')&&eventOverlaps(event,start,end,timeZone));
- },[enabled,state.owner,state.events,owner,start,end,selectedKey,timeZone]);
+  const hiddenIds=new Set<string>(JSON.parse(hiddenKey));
+  return state.events.filter(event=>!hiddenIds.has(event.calendarId??'')&&eventOverlaps(event,start,end,timeZone));
+ },[enabled,state.owner,state.events,owner,start,end,hiddenKey,timeZone]);
  async function save(draft:CalendarDraft,event?:CalendarEvent){const captured=owner,result=await saveAppleCalendar(device,draft,event,()=>current.current.owner===captured&&current.current.enabled);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');setState(old=>{const next={...old,events:[...old.events.filter(e=>e.id!==event?.id&&e.id!==result.id),result]};cache.set(owner,next);return next;});refreshAppleCalendar(owner);return result;}
  async function remove(event:CalendarEvent){const captured=owner;if(!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 확인해주세요.');const rawId=decodeURIComponent(event.calendarId!.slice(appleCalendarPrefix.length));const fresh=await device.read(event.eventId!,event.nativeStart,rawId);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');if(appleEventVersion(fresh)!==event.etag)throw Error('원본이 바뀌었어요. 다시 확인해주세요.');await device.remove(event.eventId!,event.nativeStart,rawId);if(current.current.owner===captured){setState(old=>({...old,events:old.events.filter(e=>e.id!==event.id)}));refreshAppleCalendar(owner);}}
  return {available:device.available,sources:enabled&&state.owner===owner?state.sources:emptySources,events:visible,readAt:state.readAt,error,loading,load,save,remove,cached:state.owner===owner?state.events:emptyEvents,covered:enabled&&covers(state)?state.calendarIds??emptyIds:emptyIds};

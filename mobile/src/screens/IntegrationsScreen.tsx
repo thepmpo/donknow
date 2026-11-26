@@ -13,6 +13,8 @@ import {calendarConnectionChanged} from '../calendar-snapshot-cache';
 export type Provider = 'google' | 'slack' | 'notion';
 type Status=IntegrationStatus;
 type Item = { id: string; title: string; dueDate?: string | null; kind: string; completed?: boolean; completedAt?: string | null };
+const googleSections=['calendar','tasks'] as const;
+const googleWriteForRead:Record<string,string[]>={calendar:['calendarWrite'],tasks:['tasksWrite'],gmail:['gmailModify','gmailSend'],drive:['driveContent','driveWrite']};
 const names: Record<string, string> = { gmailModify:'메일 읽음·상태 수정',gmailSend:'메일 발송',calendarWrite:'일정 작성·수정',driveContent:'Drive 파일 내용 읽기',driveWrite:'docen이 만들거나 허용한 Drive 파일 수정',assistantContact:'Slack에서 docen과 대화',messagesWrite:'Slack 메시지 보내기·docen 메시지 수정',pagesWrite:'Notion 페이지 작성·수정', google: 'Google', slack: 'Slack', notion: 'Notion', calendar: '기본 캘린더', gmail: '메일', drive: '드라이브', tasks: 'Google Tasks', channels: '채널', messages: '메시지', pages: '페이지' };
 export function IntegrationsScreen({ store, initialProvider, initialConnectionId, initialPage, onClose }: { store: TodoStore; initialProvider: Provider; initialConnectionId?:string; initialPage?:'overview'|'permissions'; onClose: () => void }) {
   const [accountId,setAccountId]=useState<string|null>(initialConnectionId??null),[addingAccount,setAddingAccount]=useState(false);
@@ -49,7 +51,15 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
         const timer=setInterval(()=>{if(authWindow.closed&&!observedClosed){observedClosed=true;returned();}},500),expiry=setTimeout(stop,10*60*1000);
         window.addEventListener('focus',returned);document.addEventListener('visibilitychange',visible);stopWebAuthorization.current=stop;
         setMessage('승인 후 돌아오면 연결 상태를 다시 확인해요. 반영이 늦으면 연결 상태 새로고침을 눌러주세요.'); }
-      else { const result = await WebBrowser.openAuthSessionAsync(value.url, 'duckduck://integrations/complete'); if (result.type !== 'success') setMessage('연결 창을 닫았어요. 다시 연결할 수 있어요.');else if(provider==='google'&&store.connection?.mode==='cloud'&&store.user)calendarConnectionChanged(store.connection.baseUrl+':'+store.user.id); }
+      else {
+        const result=await WebBrowser.openAuthSessionAsync(value.url,'duckduck://integrations/complete');
+        if(result.type!=='success')setMessage('연결 창을 닫았어요. 다시 연결할 수 있어요.');
+        else if(new URL(result.url).searchParams.get('status')==='failed')setError('승인을 완료하지 못했어요. 선택한 계정으로 다시 시도해주세요.');
+        else if(provider==='google'&&store.connection?.mode==='cloud'&&store.user){
+          calendarConnectionChanged(store.connection.baseUrl+':'+store.user.id);
+          void store.refresh();
+        }
+      }
       setAddingAccount(false);await loadStatus();
     } catch (e) { popup?.close(); setError(e instanceof Error ? e.message : '연결을 시작하지 못했어요.'); }
     finally { if (active.current) setBusy(false); }
@@ -76,10 +86,32 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
     try { const result = await store.featureRequest(`/api/integrations/${provider}`+(connectionId?'?connectionId='+encodeURIComponent(connectionId):''), 'DELETE') as { revoked: boolean }; setItems([]);setPage('overview');setSelected([]);setNext(null);setDisconnecting(false);await loadStatus(); setMessage(result.revoked ? '연결을 해제했어요. 가져온 할 일은 유지돼요.' : '앱 연결을 해제했어요. 서비스 설정에서도 접근 권한 해제를 확인해주세요.'); }
     catch (e) { setError(e instanceof Error ? e.message : '연결을 해제하지 못했어요.'); } finally { setBusy(false); }
   }
-  async function diagnose(){const run=++version.current;setBusy(true);setError('');try{await store.featureRequest(`/api/integrations/${provider}/diagnose`,'POST',{connectionId});if(active.current&&run===version.current){setProviderReadError('');setMessage('연결된 계정의 읽기 접근을 확인했어요.');}}catch(e){if(active.current&&run===version.current){const message=e instanceof Error?e.message:'연결을 점검하지 못했어요.';setError(message);setProviderReadError(message);}}finally{if(active.current&&run===version.current)setBusy(false);}}
+  async function diagnose(){
+    const run=++version.current;setBusy(true);setError('');setMessage('');
+    try{
+      const result=await store.featureRequest(`/api/integrations/${provider}/diagnose`,'POST',{connectionId}) as {checks?:Record<'calendar'|'tasks','ready'|'not-authorized'>};
+      if(!active.current||run!==version.current)return;
+      setProviderReadError('');
+      setMessage(result.checks
+        ? googleSections.map(key=>{
+          const name=key==='calendar'?'Google Calendar':'Google Tasks';
+          return name+' · '+(result.checks?.[key]==='ready'?'읽기 확인':'권한 필요');
+        }).join('\n')
+        : '연결된 계정의 읽기 접근을 확인했어요.');
+      if(provider==='google'&&store.connection?.mode==='cloud'&&store.user){
+        calendarConnectionChanged(store.connection.baseUrl+':'+store.user.id);
+        void store.refresh();
+      }
+    }catch(e){
+      if(active.current&&run===version.current){
+        const message=e instanceof Error?e.message:'연결을 점검하지 못했어요.';
+        setError(message);setProviderReadError(message);
+      }
+    }finally{if(active.current&&run===version.current)setBusy(false);}
+  }
   const permissionControls=<>
     <Text style={s.subtitle}>사용할 자료를 선택하세요. 원본 변경 권한은 필요할 때만 추가해요.</Text>
-    {provider==='google'&&['calendar','gmail','drive','tasks'].map(value=><Pressable key={value} accessibilityRole="checkbox" accessibilityState={{checked:features.includes(value)}} accessibilityLabel={`${names[value]} 읽기 권한`} disabled={busy} onPress={()=>setFeatures(previous=>previous.includes(value)?previous.filter(item=>item!==value&&!(value==='tasks'&&item==='tasksWrite')):[...previous,value])} style={styles.scope}><Ionicons name={features.includes(value)?'checkbox':'square-outline'} size={23} color={features.includes(value)?colors.blueText:colors.muted}/><Text style={[s.subtitle,{flex:1}]}>{names[value]} 읽기</Text></Pressable>)}
+    {provider==='google'&&['calendar','gmail','drive','tasks'].map(value=><Pressable key={value} accessibilityRole="checkbox" accessibilityState={{checked:features.includes(value)}} accessibilityLabel={`${names[value]} 읽기 권한`} disabled={busy} onPress={()=>setFeatures(previous=>previous.includes(value)?previous.filter(item=>item!==value&&!googleWriteForRead[value]?.includes(item)):[...previous,value])} style={styles.scope}><Ionicons name={features.includes(value)?'checkbox':'square-outline'} size={23} color={features.includes(value)?colors.blueText:colors.muted}/><Text style={[s.subtitle,{flex:1}]}>{names[value]} 읽기</Text></Pressable>)}
     {provider==='google'&&<><Pressable accessibilityRole="checkbox" accessibilityLabel="Google Tasks 완료 상태 수정 권한" accessibilityState={{checked:features.includes('tasksWrite')}} disabled={busy} onPress={()=>setFeatures(previous=>previous.includes('tasksWrite')?previous.filter(value=>value!=='tasksWrite'):[...new Set([...previous,'tasks','tasksWrite'])])} style={styles.scope}><Ionicons name={features.includes('tasksWrite')?'checkbox':'square-outline'} size={23} color={features.includes('tasksWrite')?colors.blueText:colors.muted}/><Text style={[s.subtitle,{flex:1}]}>Google Tasks 수정 권한 (선택)</Text></Pressable>{features.includes('tasksWrite')&&<Text style={s.muted}>Google의 수정 권한은 할 일 생성·수정·삭제를 포함해요. 완료 동기화는 따로 켜야 하고, 비서의 원본 변경은 초안을 확인한 뒤 실행해요.</Text>}</>}
     <Button title={writeOptionsOpen?'추가 권한 접기':`추가 읽기·쓰기 권한${features.some(v=>['gmailModify','gmailSend','calendarWrite','driveContent','driveWrite','messagesWrite','pagesWrite'].includes(v))?' · 선택됨':' (선택)'}`} accessibilityLabel="추가 권한 선택" expanded={writeOptionsOpen} quiet disabled={busy} onPress={()=>setWriteOptionsOpen(v=>!v)}/>
     {writeOptionsOpen&&<View style={{gap:8}}>{(provider==='google'?['gmailModify','gmailSend','calendarWrite','driveContent','driveWrite']:provider==='slack'?['assistantContact','messagesWrite']:['pagesWrite']).map(value=><Pressable key={value} accessibilityRole="checkbox" accessibilityLabel={names[value]+' 권한'} accessibilityState={{checked:features.includes(value)}} disabled={busy} onPress={()=>setFeatures(old=>old.includes(value)?old.filter(x=>x!==value):[...old,value])} style={styles.scope}><Ionicons name={features.includes(value)?'checkbox':'square-outline'} size={23} color={features.includes(value)?colors.blueText:colors.muted}/><Text style={[s.subtitle,{flex:1}]}>{names[value]}</Text></Pressable>)}<Text style={s.muted}>선택 후 연결 버튼을 눌러 승인해주세요. Notion은 연결 관리에서 콘텐츠 추가·수정도 허용해야 해요.</Text></View>}

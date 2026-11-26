@@ -23,3 +23,9 @@ test('same original stays merged while one provider still has the previous durat
  const staleCopy={...apple,endAt:'2026-11-12T00:30:00Z'};
  assert.deepEqual(mergeCalendarCopies([staleCopy,google]).map(e=>e.id),[google.id]);
 });
+
+test('same Google calendar duplicates collapse but a second account is independent',()=>{
+ const first={...google,connectionId:'one'};
+ assert.deepEqual(mergeCalendarCopies([first,{...first,id:'duplicate'}]).map(e=>e.id),['duplicate']);
+ assert.equal(mergeCalendarCopies([first,{...first,id:'independent',connectionId:'two'}]).length,2);
+});

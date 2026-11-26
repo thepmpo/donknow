@@ -123,3 +123,29 @@ test('revoked refresh credentials stop repeated token requests until that accoun
   const old=h.store.connection(h.userId,'google');h.store.saveConnection(h.userId,'google',{...old,refreshToken:'repaired'},'Google');await integration.calendarList(h.userId);assert.equal(refreshes,2,'a new consent credential can recover');assert.equal(h.store.connection(h.userId,'google').accessToken,'new-access');
  }finally{await h.close();}
 });
+
+test('Google diagnosis probes both services and refreshes a rejected token only once',async()=>{
+ const h=await setup();
+ try{
+  h.store.saveConnection(h.userId,'google',{
+   accessToken:'old',refreshToken:'fixture-refresh',expiresAt:Date.now()+3600000,features:['calendar','tasks'],
+  },'Google');
+  const endpoints=[];
+  let refreshes=0,denyTasks=false;
+  const integration=createIntegrations(h.store,env,async(input,options)=>{
+   const url=new URL(input);
+   if(url.pathname==='/token'){refreshes++;return response({access_token:'new',expires_in:3600});}
+   endpoints.push(url.pathname);
+   if(options.headers.Authorization==='Bearer old')return new Response('{}',{status:401});
+   if(denyTasks&&url.hostname==='tasks.googleapis.com')return new Response('{}',{status:403});
+   return response({items:[]});
+  });
+  const result=await integration.diagnose(h.userId,'google');
+  assert.deepEqual(result.checks,{calendar:'ready',tasks:'ready'});
+  assert.equal(refreshes,1);
+  assert.ok(endpoints.includes('/calendar/v3/users/me/calendarList'));
+  assert.ok(endpoints.includes('/tasks/v1/users/@me/lists'));
+  denyTasks=true;
+  await assert.rejects(integration.diagnose(h.userId,'google'),error=>error.status===403&&error.message.includes('Google Tasks'));
+ }finally{await h.close();}
+});

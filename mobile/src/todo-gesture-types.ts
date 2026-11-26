@@ -8,6 +8,7 @@ export type RowGestureProps = {
   canSwipeLeft: boolean;
   canLift: boolean;
   fill?:boolean;
+  calendarItem?:boolean;
   reduced: boolean;
   onSwipeStart: () => void;
   onSwipeEnd: (distance:number, completed:boolean) => void;

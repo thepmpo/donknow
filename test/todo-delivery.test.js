@@ -80,3 +80,31 @@ test('Apple delivery is claimed once for exactly one owner and list; receipts ca
   assert.equal(list.length,1);assert.equal(list[0].id,data.id);
  }finally{await h.close();}
 });
+
+test('new Google approval resumes rejected task creates only for that connection',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'docen-todo-reauthorize-')),store=await openStore(dir);
+ try{
+  const {user}=await store.register('resume@example.test','fixture-password-123');
+  const draft={title:'할 일',notes:'',dueDate:null,category:'일상'};
+  const add=connectionId=>store.create(user.id,draft,{requestKey:'stable-request-'+connectionId,target:{provider:'google',connectionId,listId:'list'}});
+  const first=add('first'),second=add('second');
+  const calls=[];
+  const worker=createTodoDelivery(store,{async createGoogleTask(userId,target,claim){
+   if(!calls.length||target.connectionId==='second'){
+    calls.push('rejected');
+    throw Object.assign(Error('expired'),{status:409,code:'integration-reauthorization'});
+   }
+   assert.ok(claim());
+   calls.push(target.connectionId);
+   return {provider:'google',externalId:'first:tasks:list:created'};
+  }},{background:false});
+  await worker.tick();
+  assert.equal(store.todoDelivery.status(user.id,first.id).state,'blocked');
+  assert.equal(store.todoDelivery.status(user.id,second.id).state,'blocked');
+  store.todoDelivery.resumeGoogle(user.id,'first');
+  await worker.tick();
+  assert.deepEqual(calls,['rejected','rejected','first']);
+  assert.equal(store.todoDelivery.status(user.id,first.id).state,'synced');
+  assert.equal(store.todoDelivery.status(user.id,second.id).state,'blocked');
+ }finally{store.close();await rm(dir,{recursive:true,force:true});}
+});
