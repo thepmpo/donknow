@@ -70,7 +70,8 @@ try{
      }else{await page.mouse.move(targetX,y,{steps:8});await page.mouse.up();}
     }finally{await client?.detach();}
    }
-   await dragMeeting('2026-11-26');
+   const committed=page.waitForResponse(response=>response.url().endsWith('/api/assistant/actions/drag-fixture/confirm'));
+   await dragMeeting('2026-11-26');await committed;
    await page.getByTestId('week-column-2026-11-26').getByTestId('week-timed-meeting').waitFor();
    await page.waitForFunction(()=>!document.querySelector('[data-testid="calendar-drag-preview"]'));
    assert.equal(moveWrites,1);

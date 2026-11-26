@@ -27,7 +27,7 @@ export function overlayCalendarWrites(owner:string,events:CalendarEvent[],start:
  for(const {event,replaces,confirmedUntil} of writes.get(owner)?.values()??[]){
   if(confirmedUntil&&confirmedUntil<=Date.now())continue;
   const same=(e:CalendarEvent)=>matchesEvent(e,event);
-  const current=confirmedUntil&&result.some(e=>same(e)&&e.title===event.title&&e.allDay===event.allDay&&(event.allDay
+  const current=confirmedUntil&&result.some(e=>same(e)&&e.title===event.title&&!!e.allDay===!!event.allDay&&(event.allDay
    ?e.dueDate===event.dueDate&&e.endDate===event.endDate
    :Date.parse(e.startAt??'')===Date.parse(event.startAt??'')&&Date.parse(e.endAt??'')===Date.parse(event.endAt??'')));
   result=result.filter(e=>current?same(e)||e.id!==replaces:e.id!==replaces&&!same(e));

@@ -31,3 +31,13 @@ test('a confirmed Google receipt fills a stale read, prefers the event instance 
  t.mock.timers.tick(90_000);
  assert.deepEqual(read([]),[]);
 });
+
+
+test('legacy timed events without an allDay flag regain drag permission after refresh',t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date']});
+ const owner='timed-confirmed',receipt:CalendarEvent={id:'timed',title:'일정',dueDate:'2026-11-26',allDay:false,startAt:'2026-11-26T10:00:00+09:00',endAt:'2026-11-26T11:00:00+09:00',canWrite:false};
+ const original={...receipt,allDay:undefined,canWrite:true,etag:'after-move'};
+ putCalendarWrite(owner,'move',receipt,receipt.id,true);
+ assert.deepEqual(overlayCalendarWrites(owner,[original],'2026-11-26','2026-11-27','Asia/Seoul',['primary']),[original]);
+ clearCalendarWrites(owner);
+});
