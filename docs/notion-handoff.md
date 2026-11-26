@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-26 · 한국 시간 · 기능 코드 537f771 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-26 · 한국 시간 · 기능 코드 cd045a5 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -874,6 +874,7 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 - 선택한 Google 캘린더의 첫 페이지를 표시한 뒤 이어지는 페이지를 자동으로 조회한다. 갱신 중에는 이전 데이터를 유지한다. 기존 뒤쪽 페이지 불러오기를 유지한다.
 - 상단 ‘날짜 이동’ 버튼을 제거했다. 월간·주간·일간의 가로 스와이프와 일정 길게 누르기를 분리했다. 선택된 일정은 손을 떼지 않고 끌어 날짜 칸에 놓는다. Apple과 Google 실제 계정, iPhone/Duo의 EventKit과 제스처 검수는 설치 빌드에서 진행한다.
 - Duo·일반폰·웹 브라우저 모형에서 다음 페이지 자동 조회와 일정 끌어 놓기를 검사했다. Duo·일반폰에서 월·주·일 스와이프, 모의 Apple 원본의 생성·수정·삭제 및 캘린더 숨김을 확인했다. iOS JS 번들과 prebuild 검사를 통과했다.
+- 최종 자동 검사 508개 통과, 기존 제외 1개. Render 웹 테스트는 19:05 KST에 `cd045a5` 배포가 live가 됐다. GitHub Actions 실행 요청은 403으로 거부돼 iPhone 설치용 TestFlight와 실계정 검수는 진행하지 못했다.
 
 #### 2026-11-26 — 캘린더 목록 버튼
 
@@ -4057,10 +4058,11 @@ aee4668 Target the date header in calendar creation verification
 3074199 Replace the calendar eye control with a labeled list filter
 5afedb4 Record calendar button verification and deployment
 537f771 Repair calendar source reconciliation and period gestures
+cd045a5 Publish calendar repair verification and handoff
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 537f771에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: cd045a5에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13329,7 +13331,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/537f7712a63a4eade36f57e3dac59859e87ff69a
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/cd045a565340ecb9cf28c5a2b51024f974290ed0
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
