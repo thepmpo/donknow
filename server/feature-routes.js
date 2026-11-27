@@ -226,6 +226,9 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(reconcile&&req.method==='POST'){
         if(limited('docen-reconcile:'+user.id))throw fail(429,'잠시 후 일정을 다시 확인해주세요.');
         const input=await json(req),id=reconcile[1];
+        if(input?.missingAppleOriginal){
+          send(200,store.reconcileMissingAppleOriginal(user.id,id,input.revision,input.missingAppleOriginal));return true;
+        }
         const {target}=store.linkedDocenCalendar(user.id,id,input?.revision);
         const result=target.provider==='google'
           ?await integrations.reconcileDocenGoogleCalendar(user.id,id,input.revision)

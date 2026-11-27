@@ -6,7 +6,7 @@ export const appleCalendarPrefix='@apple/';
 export const isAppleCalendar=(id?:string|null)=>!!id?.startsWith(appleCalendarPrefix);
 export type DeviceCalendar={id:string;title:string;color?:string|null;writable:boolean;account?:string;accountId?:string};
 export type DeviceEvent={id:string;calendarId:string;externalUid?:string;allDayStart?:string;allDayEnd?:string;title:string;notes:string;location?:string|null;url?:string|null;startDate:string;endDate:string;allDay:boolean;timeZone?:string;modified?:string;alarms?:{relativeOffset?:number;absoluteDate?:string}[];recurrence?:unknown};
-export type DeviceEventPatch={title?:string;notes?:string;location?:string;url?:string;startDate?:string;endDate?:string;allDay?:boolean;timeZone?:string;alarms?:{relativeOffset:number}[];repeat?:string;expectedModified?:number};
+export type DeviceEventPatch={title?:string;notes?:string;location?:string;url?:string;startDate?:string;endDate?:string;allDay?:boolean;allDayStart?:string;allDayEnd?:string;timeZone?:string;alarms?:{relativeOffset:number}[];repeat?:string;expectedModified?:number};
 export function appleEventVersion(e:DeviceEvent){return JSON.stringify([e.id,e.calendarId,e.modified,e.title,e.notes,e.location,e.url,e.startDate,e.endDate,e.allDay,e.timeZone,e.alarms,!!e.recurrence]);}
 export function appleCalendarSource(c:DeviceCalendar):CalendarSource{return {id:appleCalendarPrefix+encodeURIComponent(c.id),name:c.title,accountLabel:c.account,accountId:c.accountId,canWrite:c.writable,provider:'apple-calendar',color:c.color};}
 export function normalizeAppleEvent(e:DeviceEvent,calendar:DeviceCalendar):CalendarEvent{
@@ -17,7 +17,7 @@ export function normalizeAppleEvent(e:DeviceEvent,calendar:DeviceCalendar):Calen
 export function appleEventPatch(draft:CalendarDraft,event?:CalendarEvent):DeviceEventPatch{
  calendarWriteArgs(draft,event);const old=event?eventDraft(event.dueDate??draft.startDay,draft.timeZone,draft.calendarId,event):null,patch:DeviceEventPatch={};
  if(!old||old.title!==draft.title)patch.title=draft.title.trim();if(!event?.notesPartial&&(!old||old.notes!==draft.notes))patch.notes=draft.notes;
- if(!old||['startDay','endDay','startTime','endTime','allDay'].some(key=>draft[key as keyof CalendarDraft]!==old[key as keyof CalendarDraft]))Object.assign(patch,{allDay:draft.allDay,startDate:draft.allDay?wallTime(draft.startDay,'00:00',draft.timeZone):wallTime(draft.startDay,draft.startTime,draft.timeZone),endDate:draft.allDay?wallTime(shiftDay(draft.endDay,1),'00:00',draft.timeZone):wallTime(draft.endDay,draft.endTime,draft.timeZone),timeZone:draft.timeZone});
+ if(!old||['startDay','endDay','startTime','endTime','allDay'].some(key=>draft[key as keyof CalendarDraft]!==old[key as keyof CalendarDraft]))Object.assign(patch,{allDay:draft.allDay,startDate:draft.allDay?wallTime(draft.startDay,'00:00',draft.timeZone):wallTime(draft.startDay,draft.startTime,draft.timeZone),endDate:draft.allDay?wallTime(shiftDay(draft.endDay,1),'00:00',draft.timeZone):wallTime(draft.endDay,draft.endTime,draft.timeZone),timeZone:draft.timeZone,...(draft.allDay?{allDayStart:draft.startDay,allDayEnd:shiftDay(draft.endDay,1)}:{})});
  if(!old||old.duckUrl!==draft.duckUrl)patch.url=draft.duckUrl;
  if(!old||old.reminderMinutes!==draft.reminderMinutes)patch.alarms=draft.reminderMinutes===null?[]:[{relativeOffset:-draft.reminderMinutes}];
  if(!event&&draft.repeat&&draft.repeat!=='none')patch.repeat=draft.repeat;
@@ -25,7 +25,7 @@ export function appleEventPatch(draft:CalendarDraft,event?:CalendarEvent):Device
  if(event&&draft.calendarId!==event.calendarId)throw Error('아이폰 일정의 캘린더 이동은 원본에서 진행해주세요.');
  return patch;
 }
-export type AppleCalendarDevice={available:boolean;snapshot?:(hidden:string[],start:string,end:string)=>Promise<{calendars:DeviceCalendar[];events:DeviceEvent[]}>;subscribe?:(listener:()=>void)=>()=>void;granted:()=>Promise<boolean>;authorize:()=>Promise<boolean>;calendars:()=>Promise<DeviceCalendar[]>;events:(ids:string[],start:string,end:string)=>Promise<DeviceEvent[]>;readLinked?:(externalUid:string,calendarId:string)=>Promise<DeviceEvent>;read:(id:string,start?:string,calendarId?:string)=>Promise<DeviceEvent>;create:(calendarId:string,patch:DeviceEventPatch)=>Promise<DeviceEvent>;update:(id:string,start:string|undefined,patch:DeviceEventPatch,calendarId?:string)=>Promise<DeviceEvent>;remove:(id:string,start?:string,calendarId?:string)=>Promise<void>};
+export type AppleCalendarDevice={available:boolean;snapshot?:(hidden:string[],start:string,end:string)=>Promise<{calendars:DeviceCalendar[];events:DeviceEvent[]}>;subscribe?:(listener:()=>void)=>()=>void;granted:()=>Promise<boolean>;authorize:()=>Promise<boolean>;calendars:()=>Promise<DeviceCalendar[]>;events:(ids:string[],start:string,end:string)=>Promise<DeviceEvent[]>;isLinkedEventMissing?:(id:string,externalUid:string,calendarId:string)=>Promise<boolean>;readLinked?:(externalUid:string,calendarId:string)=>Promise<DeviceEvent>;read:(id:string,start?:string,calendarId?:string)=>Promise<DeviceEvent>;create:(calendarId:string,patch:DeviceEventPatch)=>Promise<DeviceEvent>;update:(id:string,start:string|undefined,patch:DeviceEventPatch,calendarId?:string)=>Promise<DeviceEvent>;remove:(id:string,start?:string,calendarId?:string)=>Promise<void>};
 export async function saveAppleCalendar(device:AppleCalendarDevice,draft:CalendarDraft,event:CalendarEvent|undefined,current:()=>boolean){
  if(!device.available||!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 허용해주세요.');if(!current())throw Error('계정이 바뀌었어요.');
  const rawId=decodeURIComponent(draft.calendarId.slice(appleCalendarPrefix.length)),calendars=await device.calendars(),calendar=calendars.find(c=>c.id===rawId);if(!isAppleCalendar(draft.calendarId)||!calendar?.writable)throw Error('쓰기 가능한 아이폰 캘린더를 선택해주세요.');
@@ -36,5 +36,10 @@ export async function saveAppleCalendar(device:AppleCalendarDevice,draft:Calenda
  if(!current())throw Error('계정이 바뀌었어요.');let saved:DeviceEvent;
  try{saved=event?await device.update(event.eventId!,event.nativeStart,patch,rawId):await device.create(rawId,patch);}catch{throw Object.assign(Error('아이폰 캘린더에서 저장 결과를 확인해주세요.'),{writeState:'unknown'});}
  if(!current())throw Object.assign(Error('계정이 바뀌어 저장 결과를 표시하지 않았어요.'),{writeState:'unknown'});
- return normalizeAppleEvent(saved,calendar);
+ const normalized=normalizeAppleEvent(saved,calendar);
+ if(patch.allDay!==undefined&&(normalized.allDay!==patch.allDay||patch.allDay&&
+   (normalized.dueDate!==patch.allDayStart||normalized.endDate!==patch.allDayEnd))){
+  throw Object.assign(Error('아이폰 캘린더에서 저장된 날짜와 하루 종일 설정을 확인해주세요.'),{writeState:'unknown'});
+ }
+ return normalized;
 }

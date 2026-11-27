@@ -52,5 +52,18 @@ test('Apple claim and receipt survive a repeated request; remote edits and moves
   assert.equal((await request('/reconcile',{revision:3,original:{...rebound,id:'another',externalUid:'unrelated'}})).status,409);
   assert.equal((await h.request(path,'GET',undefined,owner.token)).data.etag,'3');
   assert.equal((await h.request(path,'GET',undefined,other.token)).status,404);
+  const missingAppleOriginal={id:'eventkit-rebuilt',calendarId:target.calendarId,externalUid:'shared-id'};
+  const missing=(revision,original=missingAppleOriginal,token=owner.token)=>request('/reconcile',{revision,missingAppleOriginal:original},token);
+  assert.equal((await missing(3,missingAppleOriginal,other.token)).status,409);
+  assert.equal((await missing(2)).status,409);
+  assert.equal((await missing(3,{...missingAppleOriginal,calendarId:'@apple/other'})).status,409);
+  assert.equal((await create(3,{...edited,title:'아직 전송되지 않은 도슨 수정'})).status,200);
+  assert.equal((await missing(4)).status,409);
+  const updatedOriginal={...rebound,version:'remote-v5',fields:{...edited,title:'아직 전송되지 않은 도슨 수정'}};
+  assert.equal((await request('/reconcile',{revision:4,original:updatedOriginal,ack:true})).status,200);
+  assert.equal((await missing(4)).data.action,'deleted');
+  assert.equal((await h.request(path,'GET',undefined,owner.token)).status,404);
+  assert.equal((await missing(4)).data.action,'deleted');
+  assert.equal((await create(0)).status,409);
  }finally{await h.close();}
 });

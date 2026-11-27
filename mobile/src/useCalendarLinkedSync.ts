@@ -13,12 +13,12 @@ function originalSnapshot(event:CalendarEvent,linkedId:string){
  }};
 }
 type Options={
- owner:string;active:boolean;supported:boolean;observed:CalendarEvent[];readAt:string|null;
+ owner:string;active:boolean;supported:boolean;observed:CalendarEvent[];readAt:string|null;appleObserved:CalendarEvent[];appleReadAt:string|null;
  store:TodoStore;device:AppleCalendarDevice;saveApple:(draft:ReturnType<typeof eventDraft>,event:CalendarEvent)=>Promise<CalendarEvent>;
- changed:(events:CalendarEvent[])=>void;
+ changed:(events:CalendarEvent[],removed:CalendarEvent[])=>void;
 };
 export function useCalendarLinkedSync(options:Options){
- const {owner,active,supported,observed,readAt}=options;
+ const {owner,active,supported,observed,readAt,appleObserved,appleReadAt}=options;
  const latest=useRef(options);latest.current=options;
  const attempted=useRef(new Map<string,{version:string;retryAt:number;done:boolean;attempts:number}>());
  useEffect(()=>{attempted.current.clear();},[owner]);
@@ -42,15 +42,17 @@ export function useCalendarLinkedSync(options:Options){
     for(const id of attempted.current.keys())if(!liveIds.has(id))attempted.current.delete(id);
     const ready=events.flatMap(event=>{
      const target=event.mirror!;
-     const other=context.observed.find(e=>e.provider===target.provider&&e.calendarId===target.calendarId&&
+     const originals=target.provider==='apple-calendar'?context.appleObserved:context.observed;
+     const other=originals.find(e=>e.provider===target.provider&&e.calendarId===target.calendarId&&
       (e.connectionId??null)===(target.connectionId??null)&&e.eventId===target.externalEventId);
-     const version=[event.etag,other?.etag??'outside-range'].join('|');
+     const originalVersion=other?.etag??(target.provider==='apple-calendar'?context.appleReadAt:'outside-range');
+     const version=[event.etag,originalVersion].join('|');
      const previous=attempted.current.get(event.id);
      if(other?.recurring||other?.notesPartial||other?.etag&&other.etag===target.syncVersion&&event.duckDetails?.revision===target.syncRevision)return [];
      if(previous?.version===version&&Date.now()<previous.retryAt)return [];
      return [{event,other,version}];
     }).slice(0,3);
-    const changed:CalendarEvent[]=[];
+    const changed:CalendarEvent[]=[],removed:CalendarEvent[]=[];
     await Promise.all(ready.map(async ({event,other,version})=>{
      const target=event.mirror!,revision=event.duckDetails!.revision;
      const previous=attempted.current.get(event.id);
@@ -62,14 +64,23 @@ export function useCalendarLinkedSync(options:Options){
      try{
       let original=other;
       if(target.provider==='apple-calendar'){
-       if(!context.device.available||!await context.device.granted()||!current())return;
+       if(!context.device.available||!context.appleReadAt||!current())return;
        // Re-read the bound EventKit ID, including an original moved outside the rendered dates.
        const calendarId=decodeURIComponent(target.calendarId.slice(appleCalendarPrefix.length));
        const linkedId=target.externalEventId!;
-       const raw=await context.device.read(linkedId,undefined,calendarId).catch(error=>{
-        if(!target.externalUid||!context.device.readLinked)throw error;
-        return context.device.readLinked(target.externalUid,calendarId);
-       });
+       let raw;
+       try{
+        raw=await context.device.read(linkedId,undefined,calendarId).catch(error=>{
+         if(!target.externalUid||!context.device.readLinked)throw error;
+         return context.device.readLinked(target.externalUid,calendarId);
+        });
+       }catch(error){
+        if(other||!context.appleReadAt||!target.externalUid||!context.device.isLinkedEventMissing||
+         !await context.device.isLinkedEventMissing(linkedId,target.externalUid,calendarId)||!current())throw error;
+        const result=await context.store.featureRequest(path,'POST',{revision,missingAppleOriginal:{id:linkedId,calendarId:target.calendarId,externalUid:target.externalUid}}) as {action:string};
+        if(current()&&result.action==='deleted')removed.push(event);
+        return;
+       }
        if(raw.calendarId!==calendarId||raw.id!==linkedId&&(!target.externalUid||raw.externalUid!==target.externalUid)
         ||raw.recurrence||raw.notes.length>4000)return;
        original=normalizeAppleEvent(raw,{id:calendarId,title:target.name??'',writable:true});
@@ -92,7 +103,7 @@ export function useCalendarLinkedSync(options:Options){
       // Keep the last read visible. The next successful refresh checks the same binding again.
      }
     }));
-    if(changed.length&&current())latest.current.changed(changed);
+    if((changed.length||removed.length)&&current())latest.current.changed(changed,removed);
    }finally{running.delete(scope);}
   }
   void refresh();
@@ -103,5 +114,5 @@ export function useCalendarLinkedSync(options:Options){
    void refresh();
   });
   return ()=>{disposed=true;clearInterval(timer);foreground.remove();};
- },[active,supported,owner,observed,readAt]);
+ },[active,supported,owner,observed,readAt,appleObserved,appleReadAt]);
 }

@@ -12,7 +12,7 @@ import {readCalendarOnce} from './calendar-snapshot-cache';
 const noHiddenMirrors:NonNullable<Page['hiddenMirrors']>=[];
 const noAppleCreates:CalendarEvent[]=[];
 type Page={appleCreates?:CalendarEvent[];hiddenMirrors?:(Omit<CalendarMirror,'state'>&{id:string;state:string})[];calendarId?:string;items:CalendarEvent[];nextCursor?:string|null;connectionState?:string;canWrite?:boolean;readAt?:string;calendarName?:string;connectionId?:string};
-export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active,selectionReady=true}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean;selectionReady?:boolean}){
+export function useCalendarData(store:TodoStore,{start,end,month,timeZone,selected,active,refreshKey,selectionReady=true}:{start:string;end:string;month:string;timeZone:string;selected:string[];active:boolean;refreshKey?:number;selectionReady?:boolean}){
  const [sourceLoading,setSourceLoading]=useState(false),[sourceLoaded,setSourceLoaded]=useState(false);
  const [docenSupported,setDocenSupported]=useState(false),[localFirst,setLocalFirst]=useState(false);
  const [detailsSupported,setDetailsSupported]=useState(false),[createOptionsSupported,setCreateOptionsSupported]=useState(false);
@@ -34,7 +34,7 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
  const readAtRef=useRef(readAt);readAtRef.current=readAt;
  const featureRequest=store.featureRequest;
  const request=useCallback((path:string)=>readCalendarOnce(owner,path,featureRequest),[owner,featureRequest]);
- const load=useCallback(async(more=false)=>{
+ const load=useCallback(async(more=false,freshRequest=false)=>{
   if(!selectionReady)return;
   const run=++generation.current,requestKey=key;let revision=calendarSnapshotRevision(owner);readRevision.current=revision;
   if(cacheOwner.current!==owner){if(cacheOwner.current!=='demo')forgetCalendarSnapshots(cacheOwner.current);periods.current=calendarSnapshots(owner);pageChains.current.clear();capabilities.current=null;snapshot.current=[];lastKey.current='';cacheOwner.current=owner;}
@@ -58,7 +58,7 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
     let cursor=more?cursorRef.current[id]:undefined;
     for(let page=0;page<(v===2&&id!==docenCalendarId&&!more?4:1);page++){
      const query=new URLSearchParams({month,...(v===2?{v:'2',calendarId:id,timeZone,start,end}:{}),...(cursor?{cursor}:{})});
-     const result=await request('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
+     const result=await (freshRequest?featureRequest:request)('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
      if(id===docenCalendarId){
       const mirrors=Array.isArray(result.hiddenMirrors)&&result.hiddenMirrors.length?result.hiddenMirrors:noHiddenMirrors;
       const appleCreates=Array.isArray(result.appleCreates)&&result.appleCreates.length?result.appleCreates:noAppleCreates;
@@ -97,13 +97,12 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
    setPhase(unconnected?'unconnected':failed.length||Object.keys(next).length?'partial':'ready');
    if(failed.length)setError('일부 캘린더를 확인하지 못했어요. 표시되지 않은 일정이 있을 수 있어요.');
   }catch(e){if(fresh()){setError(e instanceof Error?e.message:'일정을 불러오지 못했어요.');setPhase('error');}}
- },[key,store.user?.id,request,selectionReady]);
- const wasActive=useRef(active),phaseRef=useRef(phase);phaseRef.current=phase;
- // Warm the retained calendar once after login; hiding the tab does not throw away its read.
- useEffect(()=>{void load();return()=>{generation.current++;};},[load]);
- useEffect(()=>{if(active&&!wasActive.current)void load();wasActive.current=active;},[active]);
+ },[key,store.user?.id,request,featureRequest,selectionReady]);
+ const phaseRef=useRef(phase);phaseRef.current=phase;
+ // Keep the cached period on screen and start a new read for each calendar entry.
+ useEffect(()=>{void load(false,active);return()=>{generation.current++;};},[load,active,refreshKey]);
  useEffect(()=>watchCalendarSnapshots(owner,(signal,published)=>{if(latest.current.owner!==owner||latest.current.key!==key)return;if(signal==='clear'){generation.current++;snapshot.current=[];setEvents([]);cursorRef.current={};setCursors({});setPhase('unconnected');return;}if(signal==='refresh'){void load();void loadSources();return;}if(published===snapshot.current)return;const cached=savedCalendarRange(calendarSnapshots(owner).values(),key,family,readSelected,start,end,timeZone);snapshot.current=cached.items;setEvents(snapshot.current);if(readRevision.current!==calendarSnapshotRevision(owner))void load();}),[owner,key,load]);
- useEffect(()=>{const subscription=AppState.addEventListener('change',state=>{if(state==='active'&&latest.current.active)void load();});return()=>subscription.remove();},[load]);
+ useEffect(()=>{const subscription=AppState.addEventListener('change',state=>{if(state==='active'&&latest.current.active)void load(false,true);});return()=>subscription.remove();},[load]);
  useEffect(()=>{if(!active||!store.user||!selectionReady)return;const timer=setInterval(()=>{if(AppState.currentState==='active'&&phaseRef.current!=='loading')void load();},30000);return()=>clearInterval(timer);},[active,store.user?.id,selectionReady,load]);
  useEffect(()=>{sourceGeneration.current++;setSources([]);setSourceLoading(false);setSourceLoaded(false);setSourceCursor(null);setSourceError('');},[owner]);
  useEffect(()=>()=>{sourceGeneration.current++;},[]);

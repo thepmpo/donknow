@@ -22,3 +22,16 @@ test('EventKit civil dates stay on the selected local day for all-day events',()
  assert.equal(event.endDate,'2026-11-27');
  assert.equal(event.externalUid,'eventkit-uid');
 });
+
+test('a timed response cannot acknowledge an all-day EventKit save',async()=>{
+ const {d}=device(),id=appleCalendarSource(calendar).id;
+ const draft={...eventDraft('2026-11-27','Asia/Seoul',id),title:'하루 종일'};
+ let calls=0;
+ await assert.rejects(saveAppleCalendar({...d,create:async(calendarId,patch)=>{
+  calls++;
+  assert.equal(patch.allDayStart,'2026-11-27');
+  assert.equal(patch.allDayEnd,'2026-11-28');
+  return {...native,calendarId,allDay:false};
+ }},draft,undefined,()=>true),{writeState:'unknown'});
+ assert.equal(calls,1);
+});

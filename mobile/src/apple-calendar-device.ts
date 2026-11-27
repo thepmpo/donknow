@@ -11,6 +11,7 @@ type CalendarModule={
  readCalendarSnapshot?:(hidden:string[],start:number,end:number)=>Promise<{calendars:DeviceCalendar[];events:NativeSnapshot[]}>;
  calendarList:()=>Promise<DeviceCalendar[]>;
  readEvents:(ids:string[],start:number,end:number)=>Promise<NativeSnapshot[]>;
+ isLinkedEventMissing?:(id:string,externalUid:string,calendarId:string)=>Promise<boolean>;
  readLinkedEvent?:(externalUid:string,calendarId:string)=>Promise<NativeSnapshot>;
  readEvent:(id:string,start:number|null,calendarId:string|null)=>Promise<NativeSnapshot>;
  createEvent:(calendarId:string,patch:NativePatch)=>Promise<NativeSnapshot>;
@@ -55,6 +56,9 @@ export const appleCalendarDevice:AppleCalendarDevice={
  async events(ids,start,end){
   const snapshots=await requireBridge().readEvents(ids,Date.parse(start+'T00:00:00'),Date.parse(end+'T00:00:00'));
   return snapshots.map(fromNative);
+ },
+ async isLinkedEventMissing(id,externalUid,calendarId){
+  return await requireBridge().isLinkedEventMissing?.(id,externalUid,calendarId)??false;
  },
  async readLinked(externalUid,calendarId){
   const bridge=requireBridge();

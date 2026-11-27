@@ -74,6 +74,19 @@ public final class DuckduckCalendarChangesModule: Module {
       return value
     }.runOnQueue(queue)
 
+    AsyncFunction("isLinkedEventMissing") { (id: String, externalUID: String, calendarID: String) throws -> Bool in
+      try self.requireFullAccess()
+      guard let calendar = self.store.calendar(withIdentifier: calendarID),
+        calendar.allowsContentModifications else { return false }
+      let byID = self.store.calendarItem(withIdentifier: id) as? EKEvent ?? self.store.event(withIdentifier: id)
+      if let byID, byID.status != .canceled { return false }
+      // A changed identifier or a move to another calendar must not look like a deletion.
+      return !self.store.calendarItems(withExternalIdentifier: externalUID).contains {
+        guard let event = $0 as? EKEvent else { return false }
+        return event.status != .canceled
+      }
+    }.runOnQueue(queue)
+
     AsyncFunction("createEvent") { (calendarID: String, patch: EventPatch) throws -> [String: Any] in
       try self.requireFullAccess()
       guard let calendar = self.store.calendar(withIdentifier: calendarID),
@@ -178,11 +191,29 @@ public final class DuckduckCalendarChangesModule: Module {
     if let notes = patch.notes { event.notes = notes }
     if let location = patch.location { event.location = location }
     if let url = patch.url { event.url = url.isEmpty ? nil : URL(string: url) }
+    if patch.allDay == true, let start = patch.allDayStart, let end = patch.allDayEnd {
+      event.timeZone = nil
+      event.startDate = try allDayDate(from: start)
+      event.endDate = try allDayDate(from: end)
+    } else {
+      if let zone = patch.timeZone { event.timeZone = TimeZone(identifier: zone) }
+      if let start = patch.startDate { event.startDate = try date(from: start) }
+      if let end = patch.endDate { event.endDate = try date(from: end) }
+    }
     if let allDay = patch.allDay { event.isAllDay = allDay }
-    if let zone = patch.timeZone { event.timeZone = TimeZone(identifier: zone) }
-    if let start = patch.startDate { event.startDate = try date(from: start) }
-    if let end = patch.endDate { event.endDate = try date(from: end) }
     if let alarms = patch.alarms { event.alarms = alarms.map { EKAlarm(relativeOffset: $0.relativeOffset * 60) } }
+  }
+
+  private func allDayDate(from value: String) throws -> Date {
+    let formatter = DateFormatter()
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = .current
+    formatter.dateFormat = "yyyy-MM-dd"
+    guard let date = formatter.date(from: value), formatter.string(from: date) == value else {
+      throw EventUnavailable()
+    }
+    return date
   }
 
   private func date(from value: String) throws -> Date {
@@ -245,6 +276,8 @@ private struct EventPatch: Record {
   @Field var startDate: String?
   @Field var endDate: String?
   @Field var allDay: Bool?
+  @Field var allDayStart: String?
+  @Field var allDayEnd: String?
   @Field var timeZone: String?
   @Field var alarms: [CalendarAlarm]?
   @Field var repeatFrequency: RepeatFrequency?

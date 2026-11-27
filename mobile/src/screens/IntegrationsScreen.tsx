@@ -16,11 +16,11 @@ type Item = { id: string; title: string; dueDate?: string | null; kind: string; 
 const googleSections=['calendar','tasks'] as const;
 const googleWriteForRead:Record<string,string[]>={calendar:['calendarWrite'],tasks:['tasksWrite'],gmail:['gmailModify','gmailSend'],drive:['driveContent','driveWrite']};
 const names: Record<string, string> = { gmailModify:'메일 읽음·상태 수정',gmailSend:'메일 발송',calendarWrite:'일정 작성·수정',driveContent:'Drive 파일 내용 읽기',driveWrite:'docen이 만들거나 허용한 Drive 파일 수정',assistantContact:'Slack에서 docen과 대화',messagesWrite:'Slack 메시지 보내기·docen 메시지 수정',pagesWrite:'Notion 페이지 작성·수정', google: 'Google', slack: 'Slack', notion: 'Notion', calendar: '기본 캘린더', gmail: '메일', drive: '드라이브', tasks: 'Google Tasks', channels: '채널', messages: '메시지', pages: '페이지' };
-export function IntegrationsScreen({ store, initialProvider, initialConnectionId, initialPage, onClose }: { store: TodoStore; initialProvider: Provider; initialConnectionId?:string; initialPage?:'overview'|'permissions'; onClose: () => void }) {
+export function IntegrationsScreen({ store, initialProvider, initialConnectionId, initialPage, initialFeature, initialStatus, onStatuses, onClose }: { store: TodoStore; initialProvider: Provider; initialConnectionId?:string; initialPage?:'overview'|'permissions'; initialFeature?:string; initialStatus?:Status; onStatuses?:(statuses:Status[])=>void; onClose: () => void }) {
   const [accountId,setAccountId]=useState<string|null>(initialConnectionId??null),[addingAccount,setAddingAccount]=useState(false);
   const [page,setPage]=useState<'overview'|'accounts'|'permissions'|'resources'|'sync'|'help'>(initialPage??'overview');
   const [writeOptionsOpen,setWriteOptionsOpen]=useState(false),[statusStale,setStatusStale]=useState(false),[statusError,setStatusError]=useState(''),[readAttempted,setReadAttempted]=useState(false);
-  const [statuses,setStatuses]=useState<Status[]>([]),provider=initialProvider,[feature,setFeature]=useState(initialProvider==='google'?'calendar':initialProvider==='slack'?'channels':'pages');
+  const [statuses,setStatuses]=useState<Status[]>(()=>initialStatus?[initialStatus]:[]),provider=initialProvider,[feature,setFeature]=useState(initialProvider==='google'?(initialFeature==='driveContent'?'drive':initialFeature??'calendar'):initialProvider==='slack'?'channels':'pages');
   const [features, setFeatures] = useState<string[]>(initialProvider==='google'?['calendar','calendarWrite','gmail','drive','driveContent','tasks','tasksWrite']:initialProvider==='slack'?['channels','messages']:['pages']), [items, setItems] = useState<Item[]>([]), [selected, setSelected] = useState<string[]>([]), [channel, setChannel] = useState<string | null>(null), [next, setNext] = useState<string | null>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState(''), [disconnecting, setDisconnecting] = useState(false);
   const [taskStatus, setTaskStatus] = useState<'incomplete' | 'completed'>('incomplete');
@@ -29,10 +29,58 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
   const [statusRevision,setStatusRevision]=useState(0),[providerReadError,setProviderReadError]=useState('');
   const stopWebAuthorization=useRef<(()=>void)|null>(null);
   const active = useRef(true), version = useRef(0), statusRead = useRef(0);
-  const rootStatus=statuses.find(item=>item.provider===provider),account=rootStatus?.accounts?.find(a=>a.connectionId===accountId)??rootStatus?.accounts?.[0];const current=rootStatus&&account?{...rootStatus,label:account.label,features:account.features}:rootStatus;const connectionId=provider==='google'?account?.connectionId:undefined;
+  const rootStatus=statuses.find(item=>item.provider===provider);
+  const accounts=rootStatus?.accounts??[];
+  const preferred=initialFeature&&accounts.find(value=>value.features.includes(initialFeature));
+  const account=accounts.find(value=>value.connectionId===accountId)||preferred||accounts[0];
+  const current=rootStatus&&account?{...rootStatus,label:account.label,features:account.features}:rootStatus;
+  const connectionId=provider==='google'?account?.connectionId:undefined;
   function chooseAccount(value:GoogleAccount){version.current++;setProviderReadError('');setAccountId(value.connectionId);setFeatures(value.features);setItems([]);setSelected([]);setChannel(null);setNext(null);setDisconnecting(false);setReadAttempted(false);setError('');setMessage('');setAddingAccount(false);setPage('overview');}
   useEffect(()=>{if(account&&!addingAccount)setFeatures(account.features);},[connectionId,addingAccount]);
-  async function loadStatus() { if (!store.user) return; const run=++statusRead.current; try { const result=readIntegrationStatuses(await store.featureRequest('/api/integrations')); if (active.current&&run===statusRead.current) {const google=result.find(item=>item.provider==='google'),signature=JSON.stringify([google?.connected,google?.features,google?.accounts?.map(a=>[a.connectionId,a.features])]);if(googleCalendarStatus.current!==null&&googleCalendarStatus.current!==signature&&store.connection?.mode==='cloud')calendarConnectionChanged(store.connection.baseUrl+':'+store.user?.id);googleCalendarStatus.current=signature;setStatuses(result);setStatusStale(false);setStatusError('');setStatusRevision(value=>value+1);const selected=result.find(item=>item.provider===provider);if(!initialScopesLoaded.current){initialScopesLoaded.current=true;if(selected?.connected&&selected.features.length)setFeatures(selected.features);}} } catch (e) { if(active.current&&run===statusRead.current){setStatusStale(true);setStatusError(e instanceof Error?e.message:'연결 상태를 확인하지 못했어요.');} } }
+  const [statusChecking,setStatusChecking]=useState(false),[statusMessage,setStatusMessage]=useState('');
+  const manualStatus=useRef(false);
+  async function loadStatus(manual=false) {
+    if(!store.user)return;
+    if(manual){
+      manualStatus.current=true;
+      setStatusChecking(true);
+      setStatusError('');
+      setStatusMessage('');
+    }
+    const run=++statusRead.current;
+    const isCurrent=()=>active.current&&run===statusRead.current;
+    try{
+      const result=readIntegrationStatuses(await store.featureRequest('/api/integrations'));
+      if(!isCurrent())return;
+      const selected=result.find(item=>item.provider===provider);
+      if(!selected)throw Error('이 서비스의 연결 상태를 확인하지 못했어요. 다시 시도해주세요.');
+      const google=result.find(item=>item.provider==='google');
+      const signature=JSON.stringify([google?.connected,google?.features,google?.accounts?.map(a=>[a.connectionId,a.features])]);
+      if(googleCalendarStatus.current!==null&&googleCalendarStatus.current!==signature&&store.connection?.mode==='cloud')calendarConnectionChanged(store.connection.baseUrl+':'+store.user.id);
+      googleCalendarStatus.current=signature;
+      setStatuses(result);
+      onStatuses?.(result);
+      setStatusStale(false);
+      setStatusError('');
+      setStatusRevision(value=>value+1);
+      if(manualStatus.current)setStatusMessage(selected.connected?'저장된 연결을 확인했어요.':selected.configured?'연결된 계정이 없어요.':'이 서비스는 연결 준비 중이에요.');
+      if(!initialScopesLoaded.current){
+        initialScopesLoaded.current=true;
+        if(selected.connected&&selected.features.length)setFeatures(selected.features);
+      }
+    }catch(e){
+      if(isCurrent()){
+        setStatusStale(true);
+        setStatusMessage('');
+        setStatusError(e instanceof Error?e.message:'연결 상태를 확인하지 못했어요.');
+      }
+    }finally{
+      if(isCurrent()){
+        manualStatus.current=false;
+        setStatusChecking(false);
+      }
+    }
+  }
   useEffect(() => { active.current = true; void loadStatus(); const listener = AppState.addEventListener('change', state => { if (state === 'active') void loadStatus(); }); return () => { active.current = false;stopWebAuthorization.current?.();stopWebAuthorization.current=null; version.current++;statusRead.current++; listener.remove(); }; }, []);
 
   async function authorize(requestedFeatures = features,mode=addingAccount||!current?.connected?'add':'reauthorize') {
@@ -121,18 +169,24 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
   const back=()=>{if(page==='overview')onClose();else{setDisconnecting(false);setPage('overview');if(addingAccount){setAddingAccount(false);setFeatures(current?.features??['calendar']);}}};
   const titles={overview:names[provider],accounts:'연결 계정',permissions:addingAccount?'Google 계정 추가':'연결 권한',resources:'자료 가져오기',sync:'완료 동기화',help:'연결 문제 해결'};
   const descriptions={google:'캘린더와 할 일, 메일과 파일을 연결해 필요한 자료를 찾아보세요.',slack:'승인한 채널의 대화를 확인하고 필요한 내용을 할 일로 정리해요.',notion:'공유한 페이지를 찾아보고 필요한 내용을 정리해요.'};
+  const refreshStatus=<View style={{gap:8}}>
+    {!!statusMessage&&<Text accessibilityLiveRegion="polite" style={s.subtitle}>{statusMessage}</Text>}
+    {!!statusError&&<Text accessibilityRole="alert" style={s.error}>{statusError}</Text>}
+    <Button title={statusChecking?'확인 중…':'연결 상태 새로고침'} quiet loading={statusChecking} disabled={busy} onPress={()=>void loadStatus(true)}/>
+  </View>;
   return <MePage key={page} title={titles[page]} onClose={back} disabled={busy}>
     {page==='overview'&&<MeServiceIntro title={names[provider]} icon={provider==='google'?'logo-google':provider==='slack'?'logo-slack':'document-text-outline'} description={descriptions[provider]}/>}
     {!store.user?<MeCopy title="로그인이 필요해요">클라우드 계정으로 로그인하면 외부 서비스를 연결할 수 있어요.</MeCopy>:<>
       {page==='overview'&&<>
-       <MeSection compact><MeCopy title={integrationState(current,statusStale||!!providerReadError)}>{current?.connected?(current.label||'승인한 계정이 연결되어 있어요.'):!current?'연결 상태를 확인하고 있어요.':current.configured?'사용할 자료와 권한을 먼저 확인한 뒤 연결해요.':'아직 연결이 준비되지 않았어요. 준비되면 여기에서 연결할 수 있어요.'}</MeCopy></MeSection>
+       <MeSection compact><MeCopy title={integrationState(current,statusStale||!!providerReadError)}>{current?.connected?(current.label||'승인한 계정이 연결되어 있어요.'):!current?(statusStale?'아래에서 다시 확인할 수 있어요.':'연결 상태를 확인하고 있어요.'):current.configured?'사용할 자료와 권한을 먼저 확인한 뒤 연결해요.':'아직 연결이 준비되지 않았어요. 준비되면 여기에서 연결할 수 있어요.'}</MeCopy></MeSection>
        {current?.connected?<MeSection compact>
         {provider==='google'&&<MeRow title="연결 계정" status={rootStatus?.accounts?.length?rootStatus.accounts.length+'개':'1개'} icon="person-circle-outline" onPress={()=>setPage('accounts')}/>}
         <MeRow title="자료 가져오기" icon="download-outline" onPress={()=>setPage('resources')}/>
         <MeRow title="연결 권한 관리" icon="key-outline" onPress={()=>setPage('permissions')}/>
         {provider==='google'&&<MeRow title="완료 동기화" icon="sync-outline" onPress={()=>setPage('sync')}/>}
         <MeRow title="연결 문제 해결" icon="help-circle-outline" onPress={()=>setPage('help')}/>
-       </MeSection>:<><MeSection compact><MeCopy title="사용할 수 있는 기능">{provider==='google'?'일정·할 일 조회와 선택 가져오기, 허용한 파일 내용 확인을 지원해요.':provider==='slack'?'승인한 채널의 메시지 조회와 선택 가져오기를 지원해요.':'연결에 공유한 페이지 조회와 선택 가져오기를 지원해요.'}</MeCopy><MeCopy title="변경은 확인한 뒤에">읽기와 쓰기 권한은 구분해요. 원본을 바꾸거나 메시지를 보내기 전에는 실행 내용을 확인해요.</MeCopy></MeSection><View style={{marginTop:16,gap:8}}><Button title="연결할 자료 선택" disabled={!current?.configured} onPress={()=>setPage('permissions')}/><Button title="연결 상태 새로고침" quiet disabled={busy} onPress={()=>void loadStatus()}/></View></>}
+       </MeSection>:<><MeSection compact><MeCopy title="사용할 수 있는 기능">{provider==='google'?'일정·할 일 조회와 선택 가져오기, 허용한 파일 내용 확인을 지원해요.':provider==='slack'?'승인한 채널의 메시지 조회와 선택 가져오기를 지원해요.':'연결에 공유한 페이지 조회와 선택 가져오기를 지원해요.'}</MeCopy><MeCopy title="변경은 확인한 뒤에">읽기와 쓰기 권한은 구분해요. 원본을 바꾸거나 메시지를 보내기 전에는 실행 내용을 확인해요.</MeCopy></MeSection><View style={{marginTop:16,gap:8}}><Button title="연결할 자료 선택" disabled={!current?.configured} onPress={()=>setPage('permissions')}/></View></>}
+       <View style={{marginTop:8}}>{refreshStatus}</View>
       </>}
       {page==='accounts'&&<><MeSection compact>{!rootStatus?.accounts?.length&&<MeCopy title={current?.label||'연결한 계정'}>{permissionSummary(current?.features)}</MeCopy>}{rootStatus?.accounts?.map(value=><MeRow key={value.connectionId} title={value.label} status={value.connectionId===connectionId?'선택됨':undefined} icon={value.connectionId===connectionId?'checkmark-circle-outline':'person-circle-outline'} label={'Google 계정 '+value.label+' 선택'} disabled={busy} onPress={()=>chooseAccount(value)}/>)}<MeRow title="Google 계정 추가" icon="add-circle-outline" disabled={busy||(rootStatus?.accounts?.length??0)>=10} onPress={()=>{setFeatures(['calendar','calendarWrite','gmail','drive','driveContent','tasks','tasksWrite']);setAddingAccount(true);setPage('permissions');}}/></MeSection><MeCopy title="계정별로 관리해요">자료 가져오기와 연결 권한은 선택한 계정을 기준으로 표시해요. 다른 계정의 연결은 유지해요.</MeCopy></>}
       {page==='permissions'&&<><MeSection compact><MeCopy title={addingAccount?'추가할 계정':current?.label||names[provider]}>{current?.connected&&!addingAccount?permissionSummary(current.features):'승인한 자료만 사용하며, 연결은 언제든 해제할 수 있어요.'}</MeCopy></MeSection><View style={{gap:12,marginTop:16}}>{permissionControls}</View>{current?.connected&&!addingAccount&&<MeSection compact><MeRow title="연결 해제" danger icon="unlink-outline" disabled={busy} onPress={()=>setDisconnecting(true)}/>{disconnecting&&<View style={{padding:16,gap:12}}><Text style={s.subtitle}>연결을 해제해도 이미 가져온 할 일은 남아 있어요.</Text><Button title="연결 해제 확인" disabled={busy} onPress={()=>void disconnect()}/><Button title="계속 연결" quiet onPress={()=>setDisconnecting(false)}/></View>}</MeSection>}</>}
@@ -147,9 +201,9 @@ export function IntegrationsScreen({ store, initialProvider, initialConnectionId
           {!!items.length&&<><Button title={`선택한 ${selected.length}개를 Todo에 추가`} disabled={busy||!selected.length} onPress={()=>{void importSelected();}}/><Text style={s.muted}>한 번에 최대 20개를 추가해요. 이미 가져온 자료는 중복 추가하지 않아요.</Text></>}
       </View>}
       {page==='sync'&&current?.connected&&<View style={{marginTop:16}}><TaskSyncPanel key={(connectionId??'default')+current.features.join(',')} connectionId={connectionId} store={store} refreshKey={statusRevision} onRequestPermission={()=>{const requested=[...new Set([...current.features,'tasks','tasksWrite'])];setFeatures(requested);void authorize(requested);}}/></View>}
-      {page==='help'&&<View style={{marginTop:16,gap:12}}><MeCopy title={integrationState(current,statusStale||!!providerReadError)}>{current?.label||'승인한 연결 상태를 확인해요.'}</MeCopy><MeCopy title="먼저 연결 상태를 확인해요">기존 자료는 유지돼요. 연결을 점검한 뒤 권한이 부족하면 다시 승인해주세요.</MeCopy><Button title="연결 상태 새로고침" quiet disabled={busy} onPress={()=>void loadStatus()}/><Button title="연결 점검" quiet disabled={busy||!current?.connected} onPress={()=>void diagnose()}/></View>}
+      {page==='help'&&<View style={{marginTop:16,gap:12}}><MeCopy title={integrationState(current,statusStale||!!providerReadError)}>{current?.label||'승인한 연결 상태를 확인해요.'}</MeCopy><MeCopy title="먼저 연결 상태를 확인해요">기존 자료는 유지돼요. 연결을 점검한 뒤 권한이 부족하면 다시 승인해주세요.</MeCopy>{refreshStatus}<Button title={busy?'점검 중…':'연결 점검'} quiet loading={busy} disabled={!current?.connected||statusChecking} onPress={()=>void diagnose()}/></View>}
     </>}
-    {!!statusError&&<Text accessibilityRole="alert" style={s.error}>{statusError}</Text>}{!!message&&<Text accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}{!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+    {!!message&&<Text accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}{!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </MePage>;
 }
 const styles=StyleSheet.create({tabs:{flexDirection:'row',flexWrap:'wrap',gap:8},scope:{minHeight:44,flexDirection:'row',alignItems:'center',gap:12},item:{flexDirection:'row',alignItems:'center',gap:12,paddingVertical:14,borderBottomWidth:StyleSheet.hairlineWidth,borderColor:colors.line},itemTitle:{color:colors.text,fontSize:16,lineHeight:24},message:{color:colors.secondary,fontSize:15,lineHeight:22.5,marginTop:16}});
