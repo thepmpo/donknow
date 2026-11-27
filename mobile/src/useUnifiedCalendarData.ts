@@ -22,11 +22,13 @@ const appleDeletesInFlight=new Set<string>();
 const docenSource:CalendarSource={id:docenCalendarId,name:'도슨 캘린더',provider:'docen',accountLabel:'도슨',canWrite:true,color:'#2366e8'};
 export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof useCalendarData>[1]&{hidden?:string[]},device?:AppleCalendarDevice,deviceCreateQueue?:CalendarCreateQueue){
  const google=useCalendarData(store,{...options,selected:options.selected.filter(id=>!isAppleCalendar(id))}),owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo',apple=useAppleCalendarData({owner,...options,enabled:!!store.user&&options.selectionReady!==false,device});
- const creates=useDeviceCalendarCreates(store,owner,async event=>{google.upsertEvent(event);await flushCalendarSnapshots(owner).catch(()=>{});void google.load();},deviceCreateQueue,options.active);
+ const creates=useDeviceCalendarCreates(store,owner,async event=>{google.upsertEvent(event);await flushCalendarSnapshots(owner).catch(()=>{});void google.load();},deviceCreateQueue,options.active,event=>{google.removeEvent(event.id);void google.load();});
+ const cancelled=new Set(creates.jobs.filter(job=>job.cancelled).map(job=>job.event.id));
+ const devicePending=(event:CalendarEvent)=>creates.jobs.some(job=>job.event.id===event.id&&!job.cancelled);
  const visible=useMemo(()=>{
   const known=new Set(google.baseEvents.map(event=>event.id));
-  const deviceEvents=creates.jobs.filter(job=>!known.has(job.event.id)).map(job=>job.event);
-  return overlayCalendarWrites(owner,[...google.baseEvents,...apple.events],options.start,options.end,options.timeZone,
+  const deviceEvents=creates.jobs.filter(job=>!job.cancelled&&!known.has(job.event.id)).map(job=>job.event);
+  return overlayCalendarWrites(owner,[...google.baseEvents.filter(event=>!cancelled.has(event.id)),...apple.events],options.start,options.end,options.timeZone,
    [...options.selected,docenCalendarId],deviceEvents);
  },[owner,google.baseEvents,google.writeRevision,apple.events,options.start,options.end,options.timeZone,options.selected,creates.jobs]);
  const native=useRef({store,apple,device:device??appleCalendarDevice,owner});
@@ -105,30 +107,49 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   observed:visible,readAt:google.readAt,store,device:device??appleCalendarDevice,saveApple:apple.save,
   changed:items=>{for(const event of items)google.upsertEvent(event);void google.load();},
  });
- const pendingDeletes=google.hiddenMirrors.filter(target=>target.provider==='apple-calendar'&&target.state==='delete-queued'
-  &&target.externalEventId&&apple.sources.some(source=>source.id===target.calendarId&&source.canWrite));
+ const pendingDeletes=google.hiddenMirrors.filter(target=>target.provider==='apple-calendar'&&target.state==='delete-queued'&&target.externalEventId);
  const pendingDeleteIds=JSON.stringify(pendingDeletes.map(target=>target.id));
+ const latestDeletes=useRef(pendingDeletes);latestDeletes.current=pendingDeletes;
  useEffect(()=>{
-  if(!apple.available)return;
+  if(!options.active||!apple.available||!latestDeletes.current.length)return;
   const context=native.current, current=()=>native.current.owner===context.owner&&context.store.isCurrentSession();
-  const available=pendingDeletes.filter(target=>!appleDeletesInFlight.has(owner+'|'+target.id)).slice(0,4);
-  for(const target of available){
-   const key=owner+'|'+target.id,externalEventId=target.externalEventId!;
-   appleDeletesInFlight.add(key);
-   void (async()=>{
-    if(!await context.device.granted()||!current())return;
+  const missing=(error:unknown)=>!!error&&typeof error==='object'&&'code' in error
+   &&['ERR_EVENT_UNAVAILABLE','ERR_EVENT_NOT_FOUND','ERR_ITEM_NO_LONGER_EXISTS'].includes(String(error.code));
+  async function process(){
+   if(AppState.currentState!=='active'||!current()||!await context.device.granted())return;
+   for(const target of latestDeletes.current){
+    if(!native.current.apple.sources.some(source=>source.id===target.calendarId&&source.canWrite))continue;
+    const key=owner+'|'+target.id,externalEventId=target.externalEventId!;
+    if(appleDeletesInFlight.has(key))continue;
+    appleDeletesInFlight.add(key);
     try{
-     const event=await context.device.read(externalEventId);
-     if('@apple/'+encodeURIComponent(event.calendarId)!==target.calendarId||!current())return;
-     await context.device.remove(externalEventId);
-    }catch(e){if(!e||typeof e!=='object'||!('code' in e)||!['ERR_EVENT_NOT_FOUND','ERR_ITEM_NO_LONGER_EXISTS'].includes(String(e.code)))return;}
-    if(!current())return;
-    await context.store.featureRequest('/api/calendar/docen/'+encodeURIComponent(target.id)+'/apple-delivery','POST',{state:'deleted',externalEventId});
-    await context.apple.load();
-    if(current())await google.load();
-   })().catch(()=>{}).finally(()=>appleDeletesInFlight.delete(key));
+     const rawId=decodeURIComponent(target.calendarId.slice('@apple/'.length));
+     let original;
+     try{original=await context.device.read(externalEventId,undefined,rawId);}
+     catch(error){
+      if(!missing(error)||!target.externalUid||!context.device.readLinked)throw error;
+      try{original=await context.device.readLinked(target.externalUid,rawId);}
+      catch(lookup){if(!missing(lookup))throw lookup;}
+     }
+     if(original){
+      if(original.calendarId!==rawId||!current())continue;
+      await context.device.remove(original.id,undefined,rawId);
+     }
+     if(!current())continue;
+     await context.store.featureRequest('/api/calendar/docen/'+encodeURIComponent(target.id)+'/apple-delivery','POST',{state:'deleted',externalEventId});
+     await context.apple.load();
+     if(current())void google.load();
+    }catch{
+     // A missing or changed identifier alone is insufficient to confirm an original deletion.
+    }finally{appleDeletesInFlight.delete(key);}
+   }
   }
- },[apple.available,pendingDeleteIds,google.readAt,owner]);
+  const retry=()=>void process().catch(()=>{});
+  retry();
+  const timer=setInterval(retry,10000);
+  const subscription=AppState.addEventListener('change',state=>{if(state==='active')retry();});
+  return ()=>{clearInterval(timer);subscription.remove();};
+ },[apple.available,pendingDeleteIds,owner,options.active]);
  const shown=useMemo(()=>visible.filter(event=>!google.hiddenMirrors.some(target=>matchesCalendarMirror(event,target))),[visible,google.hiddenMirrors]);
  function editingOriginal(event:CalendarEvent){
   if(event.mirror?.provider!=='apple-calendar'||event.mirror.state!=='synced'||!event.providerDetails?.recurrence?.length)return event;
@@ -142,5 +163,5 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   return [remote?{...event,externalUid:remote.externalUid,color:remote.color??event.mirror?.color??event.color}:event];
  }));
  },[shown]);
- return {...google,enqueueCreate:creates.enqueue,editingOriginal,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported||creates.enqueue?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>mergeCalendarCopies([...google.cachedEvents(),...apple.cached].filter(event=>{const id=event.mirror?.calendarId??event.calendarId??'primary';return id===docenCalendarId||options.selected.includes(id);})),load:async(more=false)=>{await Promise.allSettled([google.load(more),apple.load()]);},loadSources:async(more=false)=>{await Promise.allSettled([google.loadSources(more),apple.load()]);},upsertEvent:(e:CalendarEvent)=>{if(e.provider!=='apple-calendar')google.upsertEvent(e);},nativeError:apple.error};
+ return {...google,enqueueCreate:creates.enqueue,devicePending,cancelDeviceCreate:creates.cancel,editingOriginal,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported||creates.enqueue?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>mergeCalendarCopies([...google.cachedEvents(),...apple.cached].filter(event=>{const id=event.mirror?.calendarId??event.calendarId??'primary';return !cancelled.has(event.id)&&(id===docenCalendarId||options.selected.includes(id));})),load:async(more=false)=>{await Promise.allSettled([google.load(more),apple.load()]);},loadSources:async(more=false)=>{await Promise.allSettled([google.loadSources(more),apple.load()]);},upsertEvent:(e:CalendarEvent)=>{if(e.provider!=='apple-calendar')google.upsertEvent(e);},nativeError:apple.error};
 }

@@ -81,6 +81,7 @@ export function docenCalendarStore(db,box){
    if(body.revision===0){
     db.exec('BEGIN IMMEDIATE');
     try {
+     if(deleted(user,id))throw Object.assign(fail(409,'이미 삭제된 일정이에요.'),{code:'calendar-event-deleted'});
      const inserted=db.prepare('INSERT INTO docen_calendar_events (user_id,id,revision,data) VALUES (?,?,?,?) ON CONFLICT(user_id,id) DO NOTHING').run(user,id,revision,box.seal(value));
      if(inserted.changes&&target)db.prepare('INSERT INTO docen_calendar_delivery VALUES (?,?,?,?,?,?,?)').run(user,id,target.provider,'queued',0,Date.now(),box.seal({...target,...(target.provider==='google'?{externalEventId:createHash('sha256').update(user+':'+id).digest('hex')}: {})}));
      const committed=decode(get(user,id)),state=mirror(delivery(user,id));
@@ -92,12 +93,13 @@ export function docenCalendarStore(db,box){
    return event({...value,id,revision},args.timeZone,mirror(delivery(user,id)));
   },
   deleteDocenCalendarEvent(user,id,revision){
-   if(!validId(id)||!Number.isInteger(revision)||revision<1)throw fail(400,'삭제할 일정을 확인해주세요.');
-   if(deleted(user,id))return;
-   const current=get(user,id);
-   if(current?.revision!==revision)throw fail(409,'일정이 바뀌었어요. 다시 확인해주세요.');
+   if(!validId(id)||!Number.isInteger(revision)||revision<0)throw fail(400,'삭제할 일정을 확인해주세요.');
    db.exec('BEGIN IMMEDIATE');
    try {
+    if(deleted(user,id)){db.exec('COMMIT');return;}
+    const current=get(user,id);
+    const valid=revision===0?(!current||current.revision===1):current?.revision===revision;
+    if(!valid)throw fail(409,'일정이 바뀌었어요. 다시 확인해주세요.');
     db.prepare('INSERT INTO docen_calendar_deleted VALUES (?,?)').run(user,id);
     const row=delivery(user,id);
     if(!row||row.state==='queued'&&row.attempt===0||row.state==='failed')purge(user,id);

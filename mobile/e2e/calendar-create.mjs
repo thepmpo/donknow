@@ -335,6 +335,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
  await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
  let finishDelete,acceptWrites=false;
+ const cancelled=new Set();
  await linked.route(linkedOrigin+'/**',async route=>{
   const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
   if(path==='/api/todo-destinations'){
@@ -358,6 +359,11 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    return route.fulfill({json:{calendarId,items,connectionState:'connected',nextCursor:null}});
   }
   if(path.startsWith('/api/calendar/docen/')&&method==='DELETE'){
+   if(route.request().postDataJSON().revision===0){
+    if(!acceptWrites)return route.abort('failed');
+    cancelled.add(path);
+    return route.fulfill({json:{ok:true}});
+   }
    await new Promise(resolve=>{finishDelete=resolve;});
    docenSaved=null;mirrorReady=false;
    return route.fulfill({json:{ok:true}});
@@ -449,5 +455,26 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  assert.equal(await linked.getByTestId('week-span-original').count(),0);
  while(!finishDelete)await new Promise(resolve=>setTimeout(resolve,10));
  finishDelete();
+ acceptWrites=false;
+ await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
+ await linkedSheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('전송 전에 삭제할 일정');
+ if(!await linkedDestination.getByText('원본 팀 일정',{exact:true}).count()){
+  await linkedDestination.click();
+  await linkedSheet.getByRole('radio',{name:'캘린더 원본 팀 일정',exact:true}).click();
+ }
+ await linkedSheet.getByRole('button',{name:'일정 저장',exact:true}).click();
+ const draft=linked.getByRole('button',{name:'전송 전에 삭제할 일정 종일 일정 상세',exact:true});
+ await draft.click();
+ await linkedSheet.getByRole('button',{name:'일정 삭제',exact:true}).click();
+ await linked.getByRole('button',{name:'기기 일정 삭제 확인',exact:true}).click();
+ await draft.waitFor({state:'detached'});
+ acceptWrites=true;
+ await linked.reload();
+ await linked.getByTestId('calendar-week-workspace').waitFor();
+ assert.equal(await draft.count(),0,'the pending cancellation survives reload');
+ const deadline=Date.now()+10000;
+ while(!cancelled.size&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,100));
+ assert.equal(cancelled.size,1,'recovery sends the same ID as a cancellation');
+ assert.equal(docenSaved,null,'no cancelled draft was written back');
  console.log('PASS phone: schedule and dated task survive offline session restart and provider failures, requests keep the same IDs, confirmed copies survive offline restart, and delete hides linked cards before acknowledgement');await linked.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

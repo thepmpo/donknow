@@ -8,6 +8,15 @@ public final class DuckduckCalendarChangesModule: Module {
   private lazy var store = EKEventStore()
   private let queue = DispatchQueue(label: "today.docen.apple-calendar")
 
+  private var lastSourceRefresh: Date?
+
+  private func refreshSources() {
+    let now = Date()
+    if let lastSourceRefresh, now.timeIntervalSince(lastSourceRefresh) < 30 { return }
+    lastSourceRefresh = now
+    store.refreshSourcesIfNecessary()
+  }
+
   public func definition() -> ModuleDefinition {
     Name("DuckduckCalendarChanges")
     Events("onStoreChange")
@@ -36,6 +45,7 @@ public final class DuckduckCalendarChangesModule: Module {
     AsyncFunction("readCalendarSnapshot") { (hiddenIDs: [String], start: Double, end: Double) throws -> [String: Any] in
       try self.requireFullAccess()
       self.store.reset()
+      self.refreshSources()
       let calendars = self.store.calendars(for: .event)
       let hidden = Set(hiddenIDs)
       let visible = calendars.filter { !hidden.contains($0.calendarIdentifier) }
@@ -59,7 +69,8 @@ public final class DuckduckCalendarChangesModule: Module {
           event.status != .canceled, !event.hasRecurrenceRules else { return nil }
         return event
       }
-      guard matches.count == 1, let event = matches.first, let value = self.snapshot(event) else { throw EventUnavailable() }
+      guard matches.count <= 1 else { throw EventAmbiguous() }
+      guard let event = matches.first, let value = self.snapshot(event) else { throw EventUnavailable() }
       return value
     }.runOnQueue(queue)
 
@@ -267,4 +278,8 @@ private final class AccessRequired: Exception {
 
 private final class EventChanged: Exception {
   override var reason: String { "원본 일정이 바뀌었어요. 다시 확인해주세요." }
+}
+
+private final class EventAmbiguous: Exception {
+  override var reason: String { "같은 원본 식별자의 일정이 여러 개 있어요." }
 }

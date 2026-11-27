@@ -79,3 +79,22 @@ test('deleting a Docen event during Apple delivery hides it immediately, then qu
   assert.deepEqual((await request(range)).data.items,[]);
  }finally{await h.close();}
 });
+
+test('device cancellation is durable whether the delayed create arrives before or after it',async()=>{
+ const h=await apiHarness();
+ try{
+  const owner=await h.verified('calendar-device-cancel@example.test');
+  const other=await h.verified('calendar-device-other@example.test');
+  const body={revision:0,args:{title:'전송 전 삭제',allDay:true,startDate:'2026-11-26',endDate:'2026-11-27',timeZone:'Asia/Seoul'}};
+  for(const createdFirst of [false,true]){
+   const path='/api/calendar/docen/event-device-cancel-'+(createdFirst?'after':'before');
+   if(createdFirst)assert.equal((await h.request(path,'PUT',body,owner.token)).status,200);
+   for(let attempt=0;attempt<2;attempt++)assert.equal((await h.request(path,'DELETE',{revision:0},owner.token)).status,200);
+   const retried=await h.request(path,'PUT',body,owner.token);
+   assert.equal(retried.status,409);
+   assert.equal(retried.data.code,'calendar-event-deleted');
+   assert.equal((await h.request(path,'GET',undefined,owner.token)).status,404);
+   assert.equal((await h.request(path,'PUT',body,other.token)).status,200);
+  }
+ }finally{await h.close();}
+});
