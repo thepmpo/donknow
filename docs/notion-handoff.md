@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-27 · 한국 시간 · 기능 코드 cd8e7fc · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-28 · 한국 시간 · 기능 코드 06439e8 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-28 — 일정 한 건 삭제 확인과 원본 일정·미리알림 반영
+
+- 저장된 캘린더에서 연 일정의 삭제 가능 여부는 해당 일정과 원본 캘린더 접근 상태만 확인한다. 원본 삭제가 확인되면 목록과 상세를 갱신한다. Google에 연결된 도슨 사본은 해당 계정의 캘린더 접근이 확인되고 도슨에 미전송 편집이 없을 때 원본의 삭제를 반영한다.
+- Apple 원본에 연결된 일정의 최신 날짜는 도슨의 이전 동기화본에 가려지지 않게 표시한다. 같은 시각에 시작과 종료가 잡힌 일정도 시작일에 표시하고 기기 캐시의 날짜 범위 마지막 날까지 포함한다. 사진의 특정 미표시 일정은 실제 iPhone의 EventKit 결과와 도슨 표시 설정을 대조해야 한다.
+- 미리알림은 기기에서 바로 조회하고 Google이나 서버 기능 확인을 기다리지 않는다. 완료된 서버 반영을 배치마다 화면에 적용한다. 기기 변경 알림과 캘린더·할 일 진입에서도 갱신을 시도한다. Apple 미리알림 목록 화면에서 빈 목록도 기기 목록을 기준으로 갱신한다.
+- 확인된 원본 삭제, 접근 불가 및 미전송 편집의 보존, 계정별 단일 조회, 날짜 표시와 배치 응답을 모의 검증했다. 운영 서버 및 TestFlight 배포와 실제 iPhone 원본 확인은 아직 별도다.
 
 #### 2026-11-27 — 캘린더·할 일 백그라운드 동기화
 
@@ -4244,10 +4251,12 @@ c9e0041 Verify Apple calendar updates for past dates
 22d4d35 Persist iPhone edits and refresh linked task sources
 1fcd40f Document iPhone-first edits and task updates
 cd8e7fc Continue calendar and task synchronization in background
+97b27b2 Document background synchronization rollout and verification
+06439e8 Reconcile confirmed calendar deletions and speed up Apple source reads
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: cd8e7fc에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 06439e8에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13516,7 +13525,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/cd8e7fcef891521875968d9f4784be54765d141a
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/06439e82df9d4dbee5768df9029b74d406b9179a
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
