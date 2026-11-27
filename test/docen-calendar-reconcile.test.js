@@ -29,15 +29,15 @@ test('Apple claim and receipt survive a repeated request; remote edits and moves
   assert.equal((await request('/apple-delivery',{state:'sending',claimId})).status,200);
   assert.equal((await request('/apple-delivery',{state:'sending',claimId})).status,200);
   assert.equal((await request('/apple-delivery',{state:'sending',claimId:otherClaim})).status,409);
-  const receipt={state:'synced',claimId,externalEventId:'eventkit-uuid',externalUid:'shared-id'};
+  const receipt={state:'synced',claimId,externalEventId:'eventkit-uuid'};
   assert.equal((await request('/apple-delivery',receipt)).status,200);
   assert.equal((await request('/apple-delivery',receipt)).status,200);
-  const update={id:'eventkit-uuid',version:'remote-v2',fields:{...baseline,title:'아이폰에서 이동',startDate:'2026-11-27',endDate:'2026-11-28'}};
+  const update={id:'eventkit-uuid',externalUid:'shared-id',version:'remote-v2',fields:{...baseline,title:'아이폰에서 이동',startDate:'2026-11-27',endDate:'2026-11-28'}};
   assert.equal((await request('/reconcile',{revision:1,original:update},other.token)).status,409);
   const inbound=await request('/reconcile',{revision:1,original:update});
   assert.equal(inbound.status,200,JSON.stringify(inbound.data));
   assert.equal(inbound.data.action,'done');assert.equal(inbound.data.event.dueDate,'2026-11-27');
-  assert.equal(inbound.data.event.etag,'2');
+  assert.equal(inbound.data.event.etag,'2');assert.equal(inbound.data.event.mirror.externalUid,'shared-id');
   assert.equal((await request('/reconcile',{revision:1,original:update})).status,409);
   const edited={...update.fields,title:'도슨에서 편집',timeZone:args.timeZone};
   assert.equal((await create(2,edited)).status,200);
@@ -61,9 +61,11 @@ test('Apple claim and receipt survive a repeated request; remote edits and moves
   assert.equal((await missing(4)).status,409);
   const updatedOriginal={...rebound,version:'remote-v5',fields:{...edited,title:'아직 전송되지 않은 도슨 수정'}};
   assert.equal((await request('/reconcile',{revision:4,original:updatedOriginal,ack:true})).status,200);
-  assert.equal((await missing(4)).data.action,'deleted');
+  const metadataEdit=await h.request(path,'PUT',{revision:4,args:{...updatedOriginal.fields,timeZone:args.timeZone},fields:{url:'https://example.test'}},owner.token);
+  assert.equal(metadataEdit.status,200);
+  assert.equal((await missing(5)).data.action,'deleted');
   assert.equal((await h.request(path,'GET',undefined,owner.token)).status,404);
-  assert.equal((await missing(4)).data.action,'deleted');
+  assert.equal((await missing(5)).data.action,'deleted');
   assert.equal((await create(0)).status,409);
  }finally{await h.close();}
 });

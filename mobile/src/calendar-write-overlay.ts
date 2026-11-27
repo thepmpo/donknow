@@ -36,6 +36,23 @@ function notify(owner:string){listeners.get(owner)?.forEach(fn=>fn());}
 export function putCalendarWrite(owner:string,key:string,event:CalendarEvent,replaces?:string,confirmed=false){let entries=writes.get(owner);if(!entries){entries=new Map();writes.set(owner,entries);}const entry={event,replaces,confirmedUntil:confirmed?Date.now()+90_000:undefined};entries.set(key,entry);notify(owner);
  if(confirmed)setTimeout(()=>{if(writes.get(owner)?.get(key)===entry)removeCalendarWrite(owner,key);},90_000);}
 export function removeCalendarWrite(owner:string,key:string){writes.get(owner)?.delete(key);if(!writes.get(owner)?.size)writes.delete(owner);notify(owner);}
+// Capture only writes that finished before this read began. A newer write can
+// complete while the provider is still producing its snapshot.
+export function captureConfirmedCalendarWrites(owner:string,provider:'apple-calendar'|'docen'){
+ const captured=[...(writes.get(owner)??[])].filter(([,entry])=>entry.confirmedUntil&&entry.event.provider===provider);
+ return {hasWrites:captured.length>0,apply:(calendarIds:ReadonlySet<string>,start:string,end:string,zone:string)=>{
+  const entries=writes.get(owner);
+  if(!entries)return;
+  let changed=false;
+  for(const [key,entry] of captured){
+   if(entries.get(key)!==entry||!calendarIds.has(entry.event.calendarId??'')||!eventOverlaps(entry.event,start,end,zone))continue;
+   entries.delete(key);
+   changed=true;
+  }
+  if(!entries.size)writes.delete(owner);
+  if(changed)notify(owner);
+ }};
+}
 export function clearCalendarWrites(owner:string){writes.delete(owner);deletions.delete(owner);notify(owner);}
 export function watchCalendarWrites(owner:string,fn:()=>void){const set=listeners.get(owner)??new Set();set.add(fn);listeners.set(owner,set);return()=>{set.delete(fn);if(!set.size)listeners.delete(owner);};}
 /** Optimism lives only in memory, outside persisted provider snapshots and their

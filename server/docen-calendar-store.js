@@ -176,7 +176,6 @@ export function docenCalendarStore(db,box){
     if(target.provider!=='apple-calendar'||target.calendarId!==original.calendarId||
       !target.externalUid||target.externalUid!==original.externalUid||target.externalEventId!==original.id||
       local.args.recurrence?.length||!baseline||
-      (baseline.revision!==undefined&&baseline.revision!==revision)||
       JSON.stringify(calendarSyncFields(local.args))!==JSON.stringify(baseline.fields)){
      throw fail(409,'연결 또는 일정 내용이 바뀌었어요. 다시 확인해주세요.');
     }
@@ -205,7 +204,9 @@ export function docenCalendarStore(db,box){
      db.prepare('UPDATE docen_calendar_events SET revision=?,data=? WHERE user_id=? AND id=?').run(next.revision,box.seal({args:next.args,fields:next.fields,updatedAt:next.updatedAt}),user,id);
     }
     if(result!=='docen'){
-     db.prepare('UPDATE docen_calendar_delivery SET data=? WHERE user_id=? AND event_id=?').run(box.seal({...target,externalEventId:original.id,syncBaseline:{fields:shared,version:original.version,revision:next.revision}}),user,id);
+     const externalUid=provider==='apple-calendar'&&!target.externalUid&&typeof original.externalUid==='string'&&
+      original.externalUid.length>0&&original.externalUid.length<=1500?original.externalUid:target.externalUid;
+     db.prepare('UPDATE docen_calendar_delivery SET data=? WHERE user_id=? AND event_id=?').run(box.seal({...target,externalEventId:original.id,...(externalUid?{externalUid}:{}),syncBaseline:{fields:shared,version:original.version,revision:next.revision}}),user,id);
     }
     db.exec('COMMIT');
     return {action:result==='docen'?'push':'done',event:event(next,local.args.timeZone,mirror(delivery(user,id)))};

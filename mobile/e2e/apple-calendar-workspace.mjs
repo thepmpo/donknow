@@ -5,12 +5,22 @@ execFileSync(process.execPath,[resolve(project,'node_modules/expo/bin/cli'),'exp
 const server=http.createServer(async(req,res)=>{const path=new URL(req.url,'http://x').pathname;try{if(path==='/'){res.setHeader('Content-Type','text/html');res.end('<meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body,#root{margin:0;width:100%;height:100%;display:flex;flex-direction:column}</style><div id="root"></div><script src="/fixture.js"></script>');return;}const file=resolve(root,'.'+path);res.setHeader('Content-Type',({'.js':'application/javascript','.ttf':'font/ttf','.png':'image/png','.mp4':'video/mp4'})[extname(file)]||'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
 const origin='https://apple-calendar.test';
 try{for(const [mode,width] of [['duo',430],['standard',390]]){
- const page=await browser.newPage({viewport:{width,height:844},hasTouch:true,isMobile:true}),errors=[];let googleWrites=0,calendarReads=0,statusFailure=false,statusDelay=0,linked=null,remoteDeletes=0;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(10000);await page.emulateMedia({reducedMotion:'reduce',colorScheme:'dark'});await page.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
+ const page=await browser.newPage({viewport:{width,height:844},hasTouch:true,isMobile:true}),errors=[];let googleWrites=0,calendarReads=0,statusFailure=false,statusDelay=0,linked=null,pendingDelete=null,remoteDeletes=0,localDeletes=0;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(10000);await page.emulateMedia({reducedMotion:'reduce',colorScheme:'dark'});await page.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
  await page.route(origin+'/**',async route=>{const p=new URL(route.request().url()).pathname;if(p==='/api/calendar/docen/event-linked-apple-sync/reconcile'&&route.request().method()==='POST'){
  const body=route.request().postDataJSON();
  assert.deepEqual(body.missingAppleOriginal,{id:'linked-original',calendarId:'@apple/icloud',externalUid:'linked-uid'});
  linked=null;remoteDeletes++;return route.fulfill({json:{action:'deleted'}});
- }if(route.request().method()!=='GET'){googleWrites++;return route.fulfill({status:400,json:{error:'unexpected server write'}});}if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'apple-user',email:'apple@example.test',emailVerified:true}}});if(p==='/api/todos')return route.fulfill({json:[]});if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarReconcile:1}});if(p==='/api/calendar/calendars')return route.fulfill({status:409,json:{error:'서비스 연결을 다시 승인해주세요.'}});if(p==='/api/calendar/events'){calendarReads++;const calendarId=new URL(route.request().url()).searchParams.get('calendarId')??'primary';return route.fulfill({json:{items:calendarId==='@docen'&&linked?[linked]:[],calendarId,nextCursor:null,connectionState:'connected',readAt:new Date().toISOString()}});}if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});if(p==='/api/integrations'){if(statusDelay)await new Promise(resolve=>setTimeout(resolve,statusDelay));if(statusFailure)return route.fulfill({status:503,json:{error:'연결 조회 실패'}});return route.fulfill({json:[{provider:'google',connected:true,configured:true,features:['calendar','calendarWrite'],accounts:[{connectionId:'google-fixture',label:'예시',features:['calendar','calendarWrite']},{connectionId:'extra-fixture',label:'추가 계정',features:['tasks','tasksWrite','drive','driveContent']}]}]});}if(p==='/api/assistant/actions')return route.fulfill({json:{actions:[]}});return route.fulfill({status:404,json:{error:'fixture endpoint'}});});
+ }
+ if(p==='/api/calendar/docen/event-linked-apple-sync'&&route.request().method()==='DELETE'){
+  assert.equal(route.request().postDataJSON().revision,1);
+  pendingDelete={...linked.mirror,id:linked.eventId,state:'delete-queued'};linked=null;
+  return route.fulfill({json:{ok:true}});
+ }
+ if(p==='/api/calendar/docen/event-linked-apple-sync/apple-delivery'&&route.request().method()==='POST'){
+  assert.deepEqual(route.request().postDataJSON(),{state:'deleted',externalEventId:'linked-original'});
+  pendingDelete=null;localDeletes++;return route.fulfill({json:{ok:true}});
+ }
+ if(route.request().method()!=='GET'){googleWrites++;return route.fulfill({status:400,json:{error:'unexpected server write'}});}if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'apple-user',email:'apple@example.test',emailVerified:true}}});if(p==='/api/todos')return route.fulfill({json:[]});if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarReconcile:1}});if(p==='/api/calendar/calendars')return route.fulfill({status:409,json:{error:'서비스 연결을 다시 승인해주세요.'}});if(p==='/api/calendar/events'){calendarReads++;const calendarId=new URL(route.request().url()).searchParams.get('calendarId')??'primary';return route.fulfill({json:{items:calendarId==='@docen'&&linked?[linked]:[],calendarId,hiddenMirrors:calendarId==='@docen'&&pendingDelete?[pendingDelete]:[],nextCursor:null,connectionState:'connected',readAt:new Date().toISOString()}});}if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});if(p==='/api/integrations'){if(statusDelay)await new Promise(resolve=>setTimeout(resolve,statusDelay));if(statusFailure)return route.fulfill({status:503,json:{error:'연결 조회 실패'}});return route.fulfill({json:[{provider:'google',connected:true,configured:true,features:['calendar','calendarWrite'],accounts:[{connectionId:'google-fixture',label:'예시',features:['calendar','calendarWrite']},{connectionId:'extra-fixture',label:'추가 계정',features:['tasks','tasksWrite','drive','driveContent']}]}]});}if(p==='/api/assistant/actions')return route.fulfill({json:{actions:[]}});return route.fulfill({status:404,json:{error:'fixture endpoint'}});});
  await page.goto('http://127.0.0.1:'+server.address().port+'/?nativeCalendar=1&initialWeek=1&mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();const year=page.getByTestId('calendar-year-trigger');await year.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();const sheet=page.getByTestId('calendar-sheet');await sheet.getByRole('button',{name:'캘린더 항목 추가',exact:true}).click();await sheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill('아이폰 원본 일정');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();assert.equal(await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).count(),0);if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});await page.getByRole('tab',{name:'ME',exact:true}).click();await page.getByRole('button',{name:'연결된 서비스 관리',exact:true}).click();
  for(const label of ['Google 캘린더 연결 관리','Google 할 일 연결 관리','Google 문서·스프레드시트·드라이브 연결 관리','아이폰 캘린더 연결 관리','아이폰 미리 알림 가져오기','네이버 캘린더 연결 관리','네이버 메일 연결 관리'])assert.equal(await page.getByRole('button',{name:label,exact:true}).count(),1);
  for(const name of ['Google 캘린더','Google 할 일','Google 문서·스프레드시트·드라이브'])await page.getByRole('button',{name:name+' 연결 관리',exact:true}).getByText('연결됨',{exact:true}).waitFor();
@@ -75,14 +85,33 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await page.getByRole('tab',{name:'캘린더',exact:true}).click();
  const linkedCard=page.getByRole('button',{name:/연결된 도슨 일정.*일정 상세/});
  await linkedCard.waitFor();
+ const linkedFixture=linked;
+ await linkedCard.click();
+ await sheet.getByRole('button',{name:'일정 삭제',exact:true}).waitFor();
  await page.evaluate(()=>window.appleCalendarFixture.deleteOutside('linked-original'));
+ await sheet.waitFor({state:'detached',timeout:4500});
  await linkedCard.waitFor({state:'detached',timeout:4500});
  assert.equal(remoteDeletes,1);
+ linked=linkedFixture;
+ await page.evaluate(event=>window.appleCalendarFixture.writeOutside(event),original);
+ await page.getByRole('tab',{name:'캘린더',exact:true}).click();
+ await linkedCard.click();
+ await sheet.getByRole('button',{name:'일정 삭제',exact:true}).click();
+ await page.getByRole('button',{name:'원본에서도 일정 삭제',exact:true}).click();
+ await sheet.waitFor({state:'detached'});
+ await page.waitForFunction(()=>!window.appleCalendarFixture.state().events.some(event=>event.id==='linked-original'));
+ await linkedCard.waitFor({state:'detached'});
+ assert.equal(localDeletes,1);
+
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({id:'outside',calendarId:'icloud',title:'원본에서 바로 작성',notes:'',startDate:'2026-11-25T01:00:00Z',endDate:'2026-11-25T02:00:00Z',timeZone:'UTC',allDay:false}));
  await page.getByRole('button',{name:/원본에서 바로 작성.*일정 상세/}).waitFor({timeout:4000});
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({...window.appleCalendarFixture.state().events[0],title:'원본에서 바로 수정'}));
  await page.getByRole('button',{name:/원본에서 바로 수정.*일정 상세/}).waitFor({timeout:4000});
+ await page.getByRole('tab',{name:'ME',exact:true}).click();
+ const readsBeforeDelete=await page.evaluate(()=>window.appleCalendarFixture.state().eventReads);
  await page.evaluate(()=>window.appleCalendarFixture.deleteOutside('outside'));
+ await page.waitForFunction(reads=>window.appleCalendarFixture.state().eventReads>reads,readsBeforeDelete,{timeout:4000});
+ await page.getByRole('tab',{name:'캘린더',exact:true}).click();
  await page.getByRole('button',{name:/원본에서 바로 수정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
  await page.evaluate(()=>{
   history.replaceState(null,'',location.href+'&manyAppleCalendars=1');
@@ -102,5 +131,5 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await sheet.waitFor({state:'detached'});
  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
  assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).events.some(event=>event.id==='beyond-ten'),true,'visibility never deletes the source event');
- assert.deepEqual(errors,[]);console.log('PASS '+mode+': ME-only required connections, native calendar create/edit/delete, actual-body AI export, connection refresh feedback, reentry reads, read-only delete feedback, linked and standalone original deletion, calendars beyond ten, no Google write');await page.close();
+ assert.deepEqual(errors,[]);console.log('PASS '+mode+': ME-only required connections, native calendar create/edit/delete, actual-body AI export, connection refresh feedback, reentry reads, read-only delete feedback, linked deletes both ways, Apple refresh off-tab, calendars beyond ten, no Google write');await page.close();
 }}finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

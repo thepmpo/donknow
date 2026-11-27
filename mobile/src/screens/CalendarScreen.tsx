@@ -45,7 +45,7 @@ import type {TodoStore} from '../useTodos';
 export type CalendarNavigationRequest={id:number;action:'today'|'week'|'fortnight'|'cycle';resetToToday?:boolean;scope:string};
 const webCalendarSwipe=Platform.OS==='web'?({touchAction:'pan-y'} as unknown as ViewStyle):undefined;
 type Overlay='day'|'event'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|null;
-export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,navigationRequest,onManageConnections,appleDevice,deviceCreateQueue}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest;onManageConnections?:()=>void;appleDevice?:AppleCalendarDevice;deviceCreateQueue?:CalendarCreateQueue}){
+export function CalendarScreen({store,onAdd,onEdit,active=true,syncWhileHidden=false,fixedPane=false,navigationRequest,onManageConnections,appleDevice,deviceCreateQueue}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;syncWhileHidden?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest;onManageConnections?:()=>void;appleDevice?:AppleCalendarDevice;deviceCreateQueue?:CalendarCreateQueue}){
  const keyboard=useKeyboardUX(),desktop=useDesktopPresentation();
  const {scene}=useDuoScene(),backState=useDuoBackState();
  const insets=useSafeAreaInsets(),duo=useDuoTrailingNavigation(),reduced=useReducedMotion(),{fontScale}=useWindowDimensions();
@@ -79,7 +79,7 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  const latest=useRef({month,selected,view,active});latest.current={month,selected,view,active};
  const days=useMemo(()=>view==='week'?calendarWeekDays(selected):visibleDays(month,selected,view,startDay),[month,selected,view,startDay]);
  const refreshKey=navigationRequest?.scope===navigationScope&&navigationRequest.action==='today'?navigationRequest.id:undefined;
- const data=useUnifiedCalendarData(store,{start:days[0],end:shiftDay(days.at(-1)!,1),month,timeZone:zone,selected:sourceIds,hidden:selection.hiddenIds,active,refreshKey,selectionReady:selection.ready},appleDevice,deviceCreateQueue);
+ const data=useUnifiedCalendarData(store,{start:days[0],end:shiftDay(days.at(-1)!,1),month,timeZone:zone,selected:sourceIds,hidden:selection.hiddenIds,active,syncWhileHidden,refreshKey,selectionReady:selection.ready},appleDevice,deviceCreateQueue);
  const appleSourceIds=JSON.stringify(data.sources.filter(source=>isAppleCalendar(source.id)).map(source=>source.id));
  useEffect(()=>{
   if(active&&selection.ready)selection.reconcileApple(JSON.parse(appleSourceIds));
@@ -89,11 +89,6 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
  useEffect(()=>{if(active&&store.user)void store.refresh();},[active,refreshKey,store.user?.id]);
  useEffect(()=>{if(active&&data.readAt)store.reminders.retry();},[active,data.readAt]);
  const events=useMemo(()=>data.events.filter(isVisible),[data.events,shownSources,selection.showDocen,selection.hiddenIds]);
- useEffect(()=>{
-  if(overlay!=='event'||!event)return;
-  const fresh=data.events.find(item=>item.id===event.id);
-  if(fresh&&(fresh.etag!==event.etag||fresh.canWrite!==event.canWrite))setEvent(fresh);
- },[overlay,event,data.events]);
  const eventsByDay=useMemo(()=>calendarEventsByDay(events,days,zone),[events,days,zone]);
  const todosByDay=useMemo(()=>calendarTodosByDay(store.todos),[store.todos]);
  const dayEvents=(day:string)=>eventsByDay.get(day)??[];
@@ -226,8 +221,18 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,fixedPane=false,n
   if(store.user)void data.loadSources();
  }
  const [legacyDetailsOpen,setLegacyDetailsOpen]=useState(false);
- // Permission/ETag restored from the provider must reach an already-open editor.
- useEffect(()=>{setEvent(old=>{if(!old)return old;const fresh=data.events.find(e=>e.id===old.id||!!old.eventId&&e.eventId===old.eventId&&(e.connectionId??'')===(old.connectionId??'')&&(e.calendarId??'primary')===(old.calendarId??'primary'));return fresh??old;});},[data.events]);
+ useEffect(()=>{
+  if(!event||(overlay!=='event'&&overlay!=='editor'))return;
+  const fresh=data.events.find(item=>item.id===event.id||(!event.recurring&&!!event.eventId&&item.eventId===event.eventId
+   &&item.calendarId===event.calendarId&&item.connectionId===event.connectionId));
+  if(fresh){
+   if(fresh!==event)setEvent(fresh);
+  }else if(overlay==='event'&&!editorBusy&&data.confirmedAbsent(event)){
+   setEvent(undefined);
+   setLocalError('');
+   setOverlay(eventParent.current);
+  }
+ },[data.events,data.confirmedAbsent,event,overlay,editorBusy]);
  function openEvent(e:CalendarEvent){if(!e.etag&&!data.devicePending(e))void data.load();setLegacyDetailsOpen(false);eventParent.current=overlay==='day'?'day':null;const day=e.allDay?e.dueDate:e.startAt?zonedDay(e.startAt,zone):e.dueDate;if(day){setSelected(day);setMonth(day.slice(0,7));}setEvent(e);setOverlay('event');setLocalError('');}
  function discardDraft(key:string){delete drafts.current[key];}
  function beginEvent(day=selected,time='09:00',existing?:CalendarEvent,forceTimed=false){
