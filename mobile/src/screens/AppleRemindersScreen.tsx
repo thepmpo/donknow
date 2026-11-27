@@ -8,7 +8,7 @@ import {importReminderItems} from '../apple-reminder-import';
 import type {ReminderImportProgress} from '../apple-reminder-import';
 import {readAllReminderItems,readReminderItems} from '../apple-reminder-read';
 import React, { useEffect, useRef, useState } from 'react';
-import { Linking,Platform, Text, View } from 'react-native';
+import { AppState,Linking,Platform, Text, View } from 'react-native';
 import type { TodoStore } from '../useTodos';
 import { Button, s } from '../ui';
 import {Ionicons} from '@expo/vector-icons';
@@ -24,6 +24,21 @@ export function AppleRemindersScreen({ store, onClose,device=appleReminderDevice
   const reading=useRef(false);
   const [progress,setProgress]=useState<ReminderImportProgress|null>(null),[failedLists,setFailedLists]=useState<{id:string;title:string}[]>([]);
   const current = () => active.current && store.isCurrentSession();
+  useEffect(()=>{
+    if(page!=='lists'||!device.available||!store.user)return;
+    let disposed=false,timer:ReturnType<typeof setTimeout>|undefined;
+    async function refreshLists(){
+      try{
+        const latest=await device.lists();
+        if(!disposed&&current()&&!reading.current)setLists(latest);
+      }catch{
+        // Keep the previous catalog when the source is temporarily unavailable.
+      }
+    }
+    const subscription=AppState.addEventListener('change',state=>{if(state==='active')void refreshLists();});
+    const unsubscribe=device.subscribe?.(()=>{clearTimeout(timer);timer=setTimeout(()=>void refreshLists(),300);});
+    return()=>{disposed=true;clearTimeout(timer);subscription.remove();unsubscribe?.();};
+  },[page,device,store.user?.id]);
   async function load(targetListId?: string, showCompleted = false) {
     if (!current() || busy || reading.current) return;
     reading.current=true;setBusy(true); setError(''); setMessage('');

@@ -133,9 +133,10 @@ export async function featureStore(db, directory, env = process.env) {
       } });
     },
     importedSourceLocator(user,id){const row=db.prepare('SELECT r.payload FROM imported_resources i JOIN integration_resources r ON r.user_id=i.user_id AND r.provider=i.provider AND r.resource_key=i.resource_key WHERE i.user_id=? AND i.todo_id=?').get(user,id);if(!row)return null;const r=JSON.parse(row.payload);return {calendarId:r.calendarId,eventId:r.eventId,connectionId:r.connectionId};},
-    syncTaskResources(userId,provider,items){
+    syncTaskResources(userId,provider,items,{returnItems=false}={}){
       return transaction(()=>{
         let changed=0;
+        const updates=[];
         const lookup=db.prepare('SELECT i.todo_id,t.data FROM imported_resources i LEFT JOIN todos t ON t.id=i.todo_id AND t.user_id=i.user_id WHERE i.user_id=? AND i.provider=? AND i.resource_key=?');
         const update=db.prepare('UPDATE todos SET data=? WHERE id=? AND user_id=?');
         const insert=db.prepare('INSERT INTO todos VALUES (?,?,?)');
@@ -168,8 +169,9 @@ export async function featureStore(db, directory, env = process.env) {
           if(before)update.run(JSON.stringify(todo),todo.id,userId);
           else {insert.run(todo.id,userId,JSON.stringify(todo));link.run(userId,provider,item.id,todo.id);}
           changed++;
+          if(returnItems)updates.push(todo);
         }
-        return changed;
+        return returnItems?{changed,items:updates}:changed;
       });
     },
     importResources(userId, provider, ids) {

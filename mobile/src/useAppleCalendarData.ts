@@ -106,7 +106,25 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,hidden=[
    state.sources.some(source=>source.id===event.calendarId)&&eventOverlaps(event,state.start!,state.end!,deviceZone())&&
    !state.events.some(item=>item.id===event.id||(!event.recurring&&item.calendarId===event.calendarId&&item.eventId===event.eventId));
  }
+ async function checkEvent(event:CalendarEvent){
+  if(!event.eventId||!isAppleCalendar(event.calendarId)||!await device.granted())throw Error('아이폰 캘린더 접근을 확인해주세요.');
+  const rawId=decodeURIComponent(event.calendarId!.slice(appleCalendarPrefix.length));
+  const calendar=(await device.calendars()).find(item=>item.id===rawId);
+  if(!calendar)throw Error('원본 캘린더를 확인할 수 없어요. 목록을 다시 확인해주세요.');
+  let value;
+  try{value=await device.read(event.eventId,event.nativeStart??event.startAt??undefined,rawId);}
+  catch(error){
+   if(event.recurring||!event.externalUid||!device.readLinked)throw error;
+   try{value=await device.readLinked(event.externalUid,rawId);}
+   catch{
+    if(await device.isLinkedEventMissing?.(event.eventId,event.externalUid,rawId))return null;
+    throw error;
+   }
+  }
+  if(current.current.owner!==owner||!current.current.enabled)throw Error('계정이 바뀌었어요.');
+  return normalizeAppleEvent(value,calendar);
+ }
  async function save(draft:CalendarDraft,event?:CalendarEvent){const captured=owner,result=await saveAppleCalendar(device,draft,event,()=>current.current.owner===captured&&current.current.enabled);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');setState(old=>{const next={...old,events:[...old.events.filter(e=>e.id!==event?.id&&e.id!==result.id),result]};cache.set(owner,next);return next;});refreshAppleCalendar(owner);return result;}
  async function remove(event:CalendarEvent){const captured=owner;if(!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 확인해주세요.');const rawId=decodeURIComponent(event.calendarId!.slice(appleCalendarPrefix.length));const fresh=await device.read(event.eventId!,event.nativeStart,rawId);if(current.current.owner!==captured)throw Error('계정이 바뀌었어요.');if(appleEventVersion(fresh)!==event.etag)throw Error('원본이 바뀌었어요. 다시 확인해주세요.');await device.remove(event.eventId!,event.nativeStart,rawId);if(current.current.owner===captured){setState(old=>({...old,events:old.events.filter(e=>e.id!==event.id)}));refreshAppleCalendar(owner);}}
- return {available:device.available,sources:enabled&&state.owner===owner?state.sources:emptySources,events:visible,observed:enabled&&covers(state)?state.events:emptyEvents,readAt:enabled&&covers(state)?state.readAt:null,error,loading,load,save,remove,confirmedAbsent,cached:state.owner===owner?state.events:emptyEvents,covered:enabled&&covers(state)?state.calendarIds??emptyIds:emptyIds};
+ return {available:device.available,sources:enabled&&state.owner===owner?state.sources:emptySources,events:visible,observed:enabled&&covers(state)?state.events:emptyEvents,readAt:enabled&&covers(state)?state.readAt:null,error,loading,load,save,remove,checkEvent,confirmedAbsent,cached:state.owner===owner?state.events:emptyEvents,covered:enabled&&covers(state)?state.calendarIds??emptyIds:emptyIds};
 }

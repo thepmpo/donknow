@@ -1,5 +1,16 @@
 import type {CalendarEvent} from './calendar-model.ts';
 
+export function displayCalendarMirror(event:CalendarEvent,original:CalendarEvent){
+ const mirror=event.mirror;
+ const copy={...event,externalUid:original.externalUid,color:original.color??mirror?.color??event.color};
+ if(mirror?.state!=='synced'||mirror.provider!=='apple-calendar'||original.provider!=='apple-calendar'||
+   !original.etag||!event.duckDetails?.revision||mirror.syncRevision!==event.duckDetails.revision)return copy;
+ // The last sync already included this Docen revision. Show fresh EventKit data
+ // while the server reconciles, using the existing Docen ID and write revision.
+ return {...copy,title:original.title,notes:original.notes,allDay:original.allDay,dueDate:original.dueDate,
+  endDate:original.endDate,startAt:original.startAt,endAt:original.endAt,timeZone:original.timeZone};
+}
+
 function occurrenceKey(event:CalendarEvent){
  if(!event.externalUid)return null;
  if(event.allDay)return event.dueDate?JSON.stringify([event.externalUid,event.dueDate]):null;

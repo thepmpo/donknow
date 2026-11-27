@@ -17,7 +17,7 @@ function originalSnapshot(event:CalendarEvent,linkedId:string){
 export async function reconcileLinkedCalendar(event:CalendarEvent,other:CalendarEvent|undefined,context:Context,current:()=>boolean):Promise<{event?:CalendarEvent;removed?:CalendarEvent}|undefined>{
  const target=event.mirror!,revision=event.duckDetails!.revision;
  const path='/api/calendar/docen/'+encodeURIComponent(event.eventId!)+'/reconcile';
- type Result={action:'done'|'push';event:CalendarEvent};
+ type Result={action:'done'|'push';event:CalendarEvent}|{action:'deleted'};
  let original=other;
  if(target.provider==='apple-calendar'){
   if(!context.device.available||!context.appleRead||!current())return;
@@ -44,6 +44,7 @@ export async function reconcileLinkedCalendar(event:CalendarEvent,other:Calendar
  if(!current()||target.provider==='apple-calendar'&&!original)return;
  let result=await context.request(path,'POST',{revision,...(original&&target.provider==='apple-calendar'?{original:originalSnapshot(original,target.externalEventId!)}:{})}) as Result;
  if(!current())return;
+ if(result.action==='deleted')return {removed:event};
  if(result.action==='push'&&original?.provider==='apple-calendar'){
   const local=result.event,zone=local.timeZone??original.timeZone??'Asia/Seoul';
   const draft={...eventDraft(local.dueDate!,zone,target.calendarId,local),calendarId:target.calendarId,

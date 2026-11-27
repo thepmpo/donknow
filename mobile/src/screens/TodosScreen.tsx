@@ -59,7 +59,8 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
   if(!selected.length&&!drag){setSelecting(false);setBatchPanel(null);}
  },[selected.length,drag]);
  const calendar=useCalendarData(store,{start:today,end:shiftDay(today,14),month:today.slice(0,7),timeZone:zone,selected:selection.ids,active:active&&view==='date',selectionReady:selection.ready});
- async function pull(){if(pulling)return;setPulling(true);try{await Promise.allSettled([store.refresh(),...(view==='date'?[calendar.load()]:[])]);}finally{setPulling(false);}}
+ useEffect(()=>{if(active)store.refreshSources?.();},[active,store.refreshSources]);
+ async function pull(){if(pulling)return;store.refreshSources?.();setPulling(true);try{await Promise.allSettled([store.refresh(),...(view==='date'?[calendar.load()]:[])]);}finally{setPulling(false);}}
  const stableTodos=editor?.todo?store.visible.map(t=>t.id===editor.todo!.id?editor.todo!:t):[...store.visible];
  if(editor?.todo&&!stableTodos.some(t=>t.id===editor.todo!.id))stableTodos.push(editor.todo);
  const draft:Todo={id:'inline-draft',title:'',done:false,dueDate:editor?.date??null,category:'일상'};

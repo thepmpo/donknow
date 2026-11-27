@@ -204,7 +204,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
           typeof item.title!=='string'||!item.title.trim()||item.title.length>120||typeof item.completed!=='boolean'||
           typeof item.notes!=='string'||item.notes.length>4000||!validDate(item.dueDate??null)||
           item.dueTime!=null&&(!item.dueDate||typeof item.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(item.dueTime))))throw fail(400,'미리 알림 자료를 확인해주세요.');
-        send(200,{changed:store.syncTaskResources(user.id,'apple-reminders',body.items)});return true;
+        send(200,store.syncTaskResources(user.id,'apple-reminders',body.items,{returnItems:true}));return true;
       }
       if (path === '/api/integrations/apple-reminders/import' && req.method === 'POST') {
         const body = await readComputerBody(req,256*1024);
@@ -268,6 +268,10 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         send(200,store.readDocenCalendar(user.id,url.searchParams.get('start'),url.searchParams.get('end'),url.searchParams.get('timeZone')));return true;
       }
       if(path==='/api/calendar/calendars'&&req.method==='GET'){send(200,await integrations.calendarList(user.id,url.searchParams.get('cursor')));return true;}
+      if(path==='/api/calendar/event'&&req.method==='GET'){
+        if(limited('calendar-event-read:'+user.id))throw fail(429,'잠시 후 다시 확인해주세요.');
+        send(200,await integrations.calendarEvent(user.id,Object.fromEntries(['calendarId','connectionId','eventId','timeZone'].map(key=>[key,url.searchParams.get(key)]))));return true;
+      }
       if (path === '/api/calendar/events' && req.method === 'GET') { send(200, await integrations.calendar(user.id,url.searchParams.get('month'),url.searchParams.get('cursor'),url.searchParams.get('v')==='2'?{calendarId:url.searchParams.get('calendarId')??'primary',connectionId:url.searchParams.get('connectionId')??undefined,timeZone:url.searchParams.get('timeZone')??'Asia/Seoul',start:url.searchParams.get('start')??undefined,end:url.searchParams.get('end')??undefined}:undefined)); return true; }
       const match = /^\/api\/integrations\/(google|slack|notion)(?:\/(authorize|resources|import))?$/.exec(path); if (!match) return false;
       const [, provider, action] = match;

@@ -21,6 +21,26 @@ export function createCalendarWorkspace({store,token,read}){
  }
  async function readEvent(user,r,calendar,event){const result=await read(user,r,'https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(calendar)+'/events/'+encodeURIComponent(event));unchanged(user,r);return result;}
  return {
+  async event(user,{calendarId,connectionId,eventId,timeZone}){
+   const source=calendarId??'primary',selected=calendarAccount(store,user,source,connectionId??undefined);
+   const r=await access(user,selected.connectionId),id=validEventId(eventId),zone=calendarZone(timeZone??'Asia/Seoul');
+   const calendar=await read(user,r,'https://www.googleapis.com/calendar/v3/users/me/calendarList/'+encodeURIComponent(selected.calendarId));
+   unchanged(user,r);
+   if(!['owner','writer','reader','freeBusyReader'].includes(calendar.accessRole))throw fail(409,'원본 캘린더에 접근할 수 있는지 확인해주세요.');
+   let original;
+   try{original=await readEvent(user,r,selected.calendarId,id);}
+   catch(error){
+    if(['owner','writer','reader'].includes(calendar.accessRole)&&(error.status===404||error.status===410)){
+     unchanged(user,r);return {item:null};
+    }
+    throw error;
+   }
+   if(original.id!==id)throw fail(409,'원본 일정 번호가 일치하지 않아요.');
+   if(original.status==='cancelled')return {item:null};
+   const account=calendarAccountKey(r);
+   const saved=account?store.refreshCalendarSnapshots(user,account,selected.calendarId,[{eventId:id,snapshot:calendarSnapshot(original,zone)}]).get(id):undefined;
+   return {item:normalize(user,r,selected.calendarId,original,zone,r.features.includes('calendarWrite')&&writable(calendar.accessRole),calendar.summary,saved,source)};
+  },
   async calendars(user,cursor){
    const accounts=googleAccounts(store,user).filter(r=>r.features.includes('calendar'));let resume=null;
    if(cursor){try{if(typeof cursor!=='string'||cursor.length>5000||!cursor.startsWith('multi.'))throw Error();resume=JSON.parse(Buffer.from(cursor.slice(6),'base64url').toString());if(typeof resume.connectionId!=='string'||typeof resume.page!=='string'||resume.page.length>3000||!accounts.some(r=>r.connectionId===resume.connectionId)||JSON.stringify(resume.accounts)!==JSON.stringify(accounts.map(r=>r.connectionId)))throw Error();}catch{throw fail(400,'캘린더 목록을 다시 열어주세요.');}}

@@ -2,6 +2,8 @@ import {Platform} from 'react-native';
 import {readIntegrationStatuses} from './integration-settings';
 import {appleReminderDevice} from './apple-reminder-device';
 import {copyReminders} from './apple-reminder-read';
+import {parseTodos} from './domain';
+import type {Todo} from './domain';
 
 type Request=(path:string,method?:string,body?:unknown)=>Promise<unknown>;
 type Page<T>={items:T[];nextCursor?:string|null};
@@ -15,11 +17,11 @@ async function pages(current:()=>boolean,read:(cursor?:string)=>Promise<string|n
   seen.add(next);cursor=next;
  }
 }
-export async function refreshTodoSources(request:Request,current:()=>boolean,appleVersions:Map<string,string>,providers:{google?:boolean;apple?:boolean}={}){
- const capabilities=await request('/api/capabilities') as {todoSourceRefresh?:number};
- if(!current()||capabilities.todoSourceRefresh!==1)return false;
+export async function refreshTodoSources(request:Request,current:()=>boolean,appleVersions:Map<string,string>,providers:{google?:boolean;apple?:boolean;onChange?:(items?:Todo[])=>void}={}){
  let changed=false;
  async function google(){
+  const capabilities=await request('/api/capabilities') as {todoSourceRefresh?:number};
+  if(!current()||capabilities.todoSourceRefresh!==1)return;
   const status=readIntegrationStatuses(await request('/api/integrations')).find(row=>row.provider==='google'&&row.connected);
   if(!status||!current())return;
   const accounts=status.accounts?.length?status.accounts:status.features.includes('tasks')?[{connectionId:undefined,features:status.features}]:[];
@@ -34,6 +36,7 @@ export async function refreshTodoSources(request:Request,current:()=>boolean,app
      await pages(current,async taskCursor=>{
       const result=await request('/api/integrations/google/task-refresh','POST',{connectionId:account.connectionId,list:list.id,cursor:taskCursor}) as {changed:number;nextCursor?:string|null};
       changed=changed||result.changed>0;
+      if(result.changed&&current())providers.onChange?.();
       return result.nextCursor;
      }).catch(()=>{});
     }
@@ -46,19 +49,21 @@ export async function refreshTodoSources(request:Request,current:()=>boolean,app
   const Calendar=await import('expo-calendar');
   if(!(await Calendar.getRemindersPermissions()).granted||!current())return;
   const lists=await appleReminderDevice.lists();
-  for(const list of lists){
+  async function syncList(list:typeof lists[number]){
    if(!current())return;
    try{
     const rows=copyReminders(await list.listReminders(null,null,null)).map(row=>({...row,listId:list.id,listTitle:list.title,color:list.color}));
     const pending=rows.map(item=>({item,version:JSON.stringify(item)})).filter(({item,version})=>appleVersions.get(item.id)!==version);
     for(let i=0;current()&&i<pending.length;i+=12){
      const batch=pending.slice(i,i+12),items=batch.map(({item})=>item);
-     const result=await request('/api/integrations/apple-reminders/refresh','POST',{items}) as {changed:number};
+     const result=await request('/api/integrations/apple-reminders/refresh','POST',{items}) as {changed:number;items?:unknown};
      for(const {item,version} of batch)appleVersions.set(item.id,version);
      changed=changed||result.changed>0;
+     if(result.changed&&current())providers.onChange?.(Array.isArray(result.items)?parseTodos(result.items):undefined);
     }
    }catch{}
   }
+  for(let i=0;current()&&i<lists.length;i+=3)await Promise.all(lists.slice(i,i+3).map(syncList));
  }
  await Promise.allSettled([providers.google===false?undefined:google(),providers.apple===false?undefined:apple()]);
  return changed&&current();

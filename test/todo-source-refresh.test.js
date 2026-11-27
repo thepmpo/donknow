@@ -13,6 +13,8 @@ test('Apple list refresh imports once, applies edits and completion, and respect
   const inserted=await pull(original);
   assert.equal(inserted.status,200,JSON.stringify(inserted.data));
   assert.equal(inserted.data.changed,1);
+  assert.equal(inserted.data.items[0].source.listTitle,'Apple 목록');
+  assert.equal(inserted.data.items[0].title,original.title);
   assert.equal((await pull(original)).data.changed,0);
   const [{id}]=await list();
   assert.equal((await pull({...original,title:'Apple 수정',completed:true,modifiedAt:'2026-11-25T02:00:00Z'})).data.changed,1);

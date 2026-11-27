@@ -1,4 +1,5 @@
 import {refreshTodoSources} from './todo-source-refresh';
+import {appleCalendarDevice} from './apple-calendar-device';
 import {clearAppleTodoReceipts,useAppleTodoDelivery} from './useAppleTodoDelivery';
 import type {QueuedTodoEdit} from './todo-device-queue';
 import {deviceTodos,isDeviceTodo,queuedTodo,todoEditSending} from './todo-device-queue';
@@ -541,24 +542,43 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       throw e;
     }
   }, [connection, renderGeneration,user?.id]);
+  const sourceRefreshCallback=useRef<()=>void>(()=>{});
+  const refreshSources=useCallback(()=>sourceRefreshCallback.current(),[]);
   useEffect(()=>{
     if(!user?.emailVerified||connection?.mode!=='cloud'||sessionStatus!=='ready')return;
-    let disposed=false,running=false;
+    let disposed=false;
+    const running=new Set<'apple'|'google'>(),queued=new Set<'apple'|'google'>();
+    let debounce:ReturnType<typeof setTimeout>|undefined;
     const appleVersions=new Map<string,string>();
     const current=()=>!disposed&&generation.current===renderGeneration;
-    async function pull(){
-      if(running||!current()||AppState.currentState!=='active')return;
-      running=true;
-      try{if(await refreshTodoSources(featureRequest,current,appleVersions)&&current()){
-        // Allow a concurrent local save to finish before replacing the server snapshot.
-        pendingSourceRefresh.current=true;
-        void refresh();
-      }}catch{}finally{running=false;}
+    async function pull(provider:'apple'|'google'){
+      if(!current()||AppState.currentState!=='active')return;
+      if(running.has(provider)){queued.add(provider);return;}
+      running.add(provider);
+      let revision=writes.current;
+      try{await refreshTodoSources(featureRequest,current,appleVersions,{apple:provider==='apple',google:provider==='google',onChange:items=>{
+        if(!current())return;
+        if(!items?.length||busy.current.size||writes.current!==revision){pendingSourceRefresh.current=true;return;}
+        revision=++writes.current;
+        const next=new Map(todosRef.current.map(todo=>[todo.id,todo]));
+        for(const item of items)next.set(item.id,item);
+        const rows=[...next.values()];
+        setTodos(rows);persistDeviceTodos(rows);
+      }});}catch{}finally{
+        running.delete(provider);
+        if(queued.delete(provider))void pull(provider);
+      }
     }
-    void pull();
-    const subscription=AppState.addEventListener('change',state=>{if(state==='active')void pull();});
-    const timer=setInterval(()=>void pull(),60000);
-    return ()=>{disposed=true;subscription.remove();clearInterval(timer);};
+    const pullAll=()=>{void pull('apple');void pull('google');};
+    sourceRefreshCallback.current=pullAll;
+    pullAll();
+    const subscription=AppState.addEventListener('change',state=>{if(state==='active')pullAll();});
+    const unsubscribe=appleCalendarDevice.subscribe?.(()=>{
+      clearTimeout(debounce);
+      debounce=setTimeout(()=>void pull('apple'),300);
+    });
+    const timer=setInterval(pullAll,60000);
+    return ()=>{disposed=true;sourceRefreshCallback.current=()=>{};subscription.remove();unsubscribe?.();clearTimeout(debounce);clearInterval(timer);};
   },[featureRequest,sessionStatus,user?.id,user?.emailVerified]);
   const pendingSourceRefresh=useRef(false);
   useEffect(()=>{
@@ -606,6 +626,6 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { retryDelivery,deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, add, update, remove };
+  return { retryDelivery,deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, refreshSources, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

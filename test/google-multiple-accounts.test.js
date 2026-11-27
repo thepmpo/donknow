@@ -15,7 +15,7 @@ const features=['calendar','calendarWrite','tasks','tasksWrite'];
 async function fixture(){
  const dir=await mkdtemp(join(tmpdir(),'duck-multi-google-')),store=await openStore(dir),a=await store.register('multi@example.test','fixture-password-123'),b=await store.register('other@example.test','fixture-password-123');
  store.queueAccountMail(a.user.id,'verify');const mail=store.claimMail();store.verifyEmail(a.user.id,/인증번호: (\d{6})/.exec(mail.message.text)[1]);store.mailSucceeded(mail.id);
- const calls=[];let failAccount=null,pagination=false;
+ const calls=[];let failAccount=null,pagination=false,missingCalendar=false,remoteState=200;
  const fetcher=async(input,options={})=>{
   const url=new URL(input),method=options.method??'GET',authorization=options.headers?.Authorization??'',who=authorization.includes('two')?'two':'one';calls.push({path:url.pathname,method,who,body:options.body});
   if(url.pathname==='/token'){const body=new URLSearchParams(options.body),account=body.get('code')??(body.get('refresh_token')?.includes('two')?'two':'one');return json({access_token:'access-'+account,refresh_token:'refresh-'+account,expires_in:3600,scope:'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks'});}
@@ -24,16 +24,46 @@ async function fixture(){
   if(failAccount===who)throw Error('synthetic offline');
   if(url.pathname==='/calendar/v3/users/me/calendarList'&&pagination&&who==='one'&&url.searchParams.get('pageToken'))return json({items:[{id:'extra',summary:'추가 일정',accessRole:'owner'}]});
   if(url.pathname==='/calendar/v3/users/me/calendarList')return json({...((pagination&&who==='one')?{nextPageToken:'more-one'}:{}),items:[{id:who+'@example.test',summary:'개인 일정',primary:true,accessRole:'owner'}]});
-  if(url.pathname.includes('/calendarList/'))return json({summary:'개인 일정',accessRole:'owner'});
+  if(url.pathname.includes('/calendarList/'))return missingCalendar?json({},404):json({summary:'개인 일정',accessRole:'owner'});
   if(url.pathname.endsWith('/events'))return json({summary:'개인 일정',accessRole:'owner',items:[{id:'same-event',summary:who+' 일정',etag:'same-etag',start:{date:'2099-11-14'},end:{date:'2099-11-15'}}]});
-  if(url.pathname.endsWith('/same-event'))return method==='DELETE'?new Response(null,{status:204}):json({id:'same-event',summary:who+' 일정',etag:'same-etag',start:{date:'2099-11-14'},end:{date:'2099-11-15'}});
+  if(url.pathname.endsWith('/same-event'))return method==='DELETE'?new Response(null,{status:204}):remoteState==='cancelled'?json({id:'same-event',status:'cancelled'}):json({id:'same-event',summary:who+' 일정',etag:'same-etag',start:{date:'2099-11-14'},end:{date:'2099-11-15'}},remoteState);
   if(url.pathname.includes('/tasks/v1/'))return method==='PATCH'?json({status:JSON.parse(options.body).status}):url.pathname.endsWith('/lists')?json({items:[{id:'same-list',title:who+' 목록'}]}):url.pathname.endsWith('/same-task')?json({id:'same-task',title:who+' 할 일',status:'needsAction',etag:'task-etag'}):json({items:[{id:'same-task',title:who+' 할 일',status:'needsAction'}]});
   throw Error('Unexpected fixture path '+url.pathname);
  };
  const integrations=createIntegrations(store,env,fetcher),user=a.user.id;
  async function add(code,options={mode:'add'}){const {url}=integrations.start(user,'google',features,false,options);return integrations.callback('google',new URLSearchParams({state:new URL(url).searchParams.get('state'),code}));}
- return {dir,store,user,other:b.user.id,calls,integrations,add,fail:who=>{failAccount=who;},paginate:()=>{pagination=true;},close:async()=>{store.close();await rm(dir,{recursive:true,force:true});}};
+ return {dir,store,user,other:b.user.id,calls,integrations,add,fail:who=>{failAccount=who;},paginate:()=>{pagination=true;},missingCalendar:value=>{missingCalendar=value;},remoteState:value=>{remoteState=value;},close:async()=>{store.close();await rm(dir,{recursive:true,force:true});}};
 }
+test('Google event detail uses one calendar and event; confirmed original deletions remove only unchanged Docen copies',async()=>{
+ const h=await fixture();
+ try{
+  await h.add('one');await h.add('two');
+  const connectionId=h.store.connections(h.user,'google')[1].connectionId;
+  const calendarId='@g/'+connectionId+'/primary',eventId='same-event';
+  assert.equal((await h.integrations.calendarEvent(h.user,{calendarId,connectionId,eventId})).item.title,'two 일정');
+  assert.deepEqual(h.calls.slice(-2).map(call=>[call.path.split('/').at(-1),call.who]),[['primary','two'],[eventId,'two']]);
+  const args={title:'연결한 일정',allDay:true,startDate:'2099-11-14',endDate:'2099-11-15',timeZone:'Asia/Seoul'};
+  for(const [index,status] of [404,410,'cancelled'].entries()){
+   const id='event-sync-test-'+index,target={provider:'google',calendarId,connectionId};
+   h.store.saveDocenCalendarEvent(h.user,id,{revision:0,args,target});
+   h.store.finishDocenGoogleDelivery(h.store.claimDocenGoogleDelivery(),'synced',eventId);
+   h.remoteState(status);h.missingCalendar(true);
+   await assert.rejects(h.integrations.reconcileDocenGoogleCalendar(h.user,id,1),error=>error.status===404);
+   assert.equal(h.store.docenCalendarReceipt(h.user,id).title,args.title);
+   h.missingCalendar(false);
+   assert.deepEqual(await h.integrations.calendarEvent(h.user,{calendarId,connectionId,eventId}),{item:null});
+   assert.deepEqual(await h.integrations.reconcileDocenGoogleCalendar(h.user,id,1),{action:'deleted'});
+   assert.throws(()=>h.store.docenCalendarReceipt(h.user,id),error=>error.status===404);
+  }
+  const pending='event-sync-test-pending';
+  h.store.saveDocenCalendarEvent(h.user,pending,{revision:0,args,target:{provider:'google',calendarId,connectionId}});
+  h.store.finishDocenGoogleDelivery(h.store.claimDocenGoogleDelivery(),'synced',eventId);
+  h.store.saveDocenCalendarEvent(h.user,pending,{revision:1,args:{...args,title:'아직 전송하지 않은 변경'}});
+  await assert.rejects(h.integrations.reconcileDocenGoogleCalendar(h.user,pending,2),error=>error.status===409);
+  assert.equal(h.store.docenCalendarReceipt(h.user,pending).title,'아직 전송하지 않은 변경');
+  assert.equal(h.calls.filter(call=>call.method==='DELETE').length,0);
+ }finally{await h.close();}
+});
 test('Google background tick reads approved accounts, retries a failed account and preserves distinct task IDs',async()=>{
  const h=await fixture();
  const job=startGoogleBackgroundSync(h.store,h.integrations,{enabled:false});

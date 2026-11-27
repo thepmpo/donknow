@@ -387,6 +387,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       return { revoked };
     },
     async calendarDetails(userId,input){return createCalendarWorkspace({store,token,read:googleRead}).saveDetails(userId,input);},
+    async calendarEvent(userId,input){return createCalendarWorkspace({store,token,read:googleRead}).event(userId,input);},
     async reconcileDocenGoogleCalendar(user,id,revision){
       const {local,target}=store.linkedDocenCalendar(user,id,revision);
       const selected=calendarAccount(store,user,target.calendarId,target.connectionId);
@@ -403,13 +404,26 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         const echoRevision=tags.docenSyncDigest===fingerprint(fields)?Number(tags.docenSyncRevision):undefined;
         return {id:value.id,version:value.etag,updatedAt:value.updated,fields,echoRevision,extendedProperties:value.extendedProperties};
       };
-      const original=snapshot(await googleRead(user,record,path));
+      const confirmDeletion=async()=>{
+        // Google can return 404 when the whole calendar is inaccessible. Confirm the
+        // same connected account still has access before treating an event as absent.
+        const calendar=await googleRead(user,record,'https://www.googleapis.com/calendar/v3/users/me/calendarList/'+encodeURIComponent(selected.calendarId));
+        const current=store.connection(user,'google',record.connectionId);
+        if(!['owner','writer'].includes(calendar.accessRole)||current?.accountId!==record.accountId||
+          current?.connectionId!==record.connectionId||!current?.features.includes('calendarWrite'))throw fail(409,'연결된 Google 캘린더를 확인해주세요.');
+        return store.reconcileMissingCalendarOriginal(user,id,revision,'google',{id:target.externalEventId,calendarId:target.calendarId,connectionId:record.connectionId});
+      };
+      let value;
+      try{value=await googleRead(user,record,path);}
+      catch(error){if(error.status===404||error.status===410)return confirmDeletion();throw error;}
+      if(value.id===target.externalEventId&&value.status==='cancelled')return confirmDeletion();
+      const original=snapshot(value);
       const result=store.reconcileDocenCalendar(user,id,revision,original,'google');
       if(result.action!=='push')return result;
       const {args}=local,current=await token(user,'google',selected.connectionId);
       if(current.accountId!==record.accountId||!current.features.includes('calendarWrite'))throw fail(409,'Google 연결이 바뀌었어요.');
       store.linkedDocenCalendar(user,id,revision);
-      const value=await providerRequest(path+'?sendUpdates=none',{method:'PATCH',headers:{
+      const saved=await providerRequest(path+'?sendUpdates=none',{method:'PATCH',headers:{
         Authorization:'Bearer '+current.accessToken,'Content-Type':'application/json','If-Match':original.version,
       },body:JSON.stringify({summary:args.title,description:args.notes??'',
         extendedProperties:{...original.extendedProperties,private:{...original.extendedProperties.private,
@@ -417,7 +431,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
         start:args.allDay?{date:args.startDate}:{dateTime:args.start,timeZone:args.timeZone},
         end:args.allDay?{date:args.endDate}:{dateTime:args.end,timeZone:args.timeZone},
       })});
-      return store.reconcileDocenCalendar(user,id,revision,snapshot(value),'google',true);
+      return store.reconcileDocenCalendar(user,id,revision,snapshot(saved),'google',true);
     },
     async deliverDocenCalendar(job,retryAuth=true){
       const {user,id,target,args}=job,selected=calendarAccount(store,user,target.calendarId,target.connectionId);

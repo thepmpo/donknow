@@ -202,13 +202,17 @@ export function docenCalendarStore(db,box){
     ![original?.id,original?.calendarId,original?.externalUid].every(value=>typeof value==='string'&&value.length>0&&value.length<=1500)){
     throw fail(400,'삭제된 원본 일정을 확인해주세요.');
    }
+   return this.reconcileMissingCalendarOriginal(user,id,revision,'apple-calendar',original);
+  },
+  reconcileMissingCalendarOriginal(user,id,revision,provider,original){
    db.exec('BEGIN IMMEDIATE');
    try{
     if(deleted(user,id)){db.exec('COMMIT');return {action:'deleted'};}
     const {local,target}=this.linkedDocenCalendar(user,id,revision);
     const baseline=target.syncBaseline;
-    if(target.provider!=='apple-calendar'||target.calendarId!==original.calendarId||
-      !target.externalUid||target.externalUid!==original.externalUid||target.externalEventId!==original.id||
+    if(target.provider!==provider||target.calendarId!==original.calendarId||target.externalEventId!==original.id||
+      (provider==='apple-calendar'&&(!target.externalUid||target.externalUid!==original.externalUid))||
+      (provider==='google'&&target.connectionId!==original.connectionId)||
       local.args.recurrence?.length||!baseline||
       JSON.stringify(calendarSyncFields(local.args))!==JSON.stringify(baseline.fields)){
      throw fail(409,'연결 또는 일정 내용이 바뀌었어요. 다시 확인해주세요.');

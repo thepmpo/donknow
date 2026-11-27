@@ -2,7 +2,7 @@ import {clearCalendarWrites} from './calendar-write-overlay';
 import {Platform} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import {createCalendarSnapshotStore} from './calendar-snapshot-store';
-import {deviceZone,docenCalendarId,eventOverlaps,shiftDay} from './calendar-model';
+import {deviceZone,docenCalendarId,eventOverlaps} from './calendar-model';
 import type {CalendarEvent} from './calendar-model';
 import type {CalendarSnapshot} from './calendar-snapshot-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,7 +31,7 @@ export async function saveBackgroundCalendarResult(owner:string,id:string,event:
  for(const period of periods.values()){
   const [zone,selection]=[JSON.parse(period.family)[1],JSON.parse(period.key)[1]] as [string,string[]];
   const insert=event&&(event.calendarId===docenCalendarId||selection.includes(event.calendarId??'primary'))&&
-   eventOverlaps(event,period.start,shiftDay(period.end,-1),zone||deviceZone());
+   eventOverlaps(event,period.start,period.end,zone||deviceZone());
   period.items=period.items.filter(item=>item.id!==id&&item.id!==event?.id);
   if(insert){period.items.push(event);saved=true;}
  }

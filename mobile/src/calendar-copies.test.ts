@@ -1,12 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mergeCalendarCopies} from './calendar-copies.ts';
+import {displayCalendarMirror,mergeCalendarCopies} from './calendar-copies.ts';
 import type {CalendarEvent} from './calendar-model.ts';
 
 const apple:CalendarEvent={id:'apple-12',externalUid:'first',provider:'apple-calendar',calendarId:'@apple/test',
  title:'일정',dueDate:'2026-11-12',startAt:'2026-11-12T00:00:00.000Z',endAt:'2026-11-12T01:00:00.000Z',canWrite:true};
 const google:CalendarEvent={...apple,id:'google-12',provider:'google',calendarId:'primary',
  startAt:'2026-11-12T09:00:00+09:00',endAt:'2026-11-12T10:00:00+09:00'};
+test('a newer Apple date is visible before reconciliation while a local unsent edit stays visible',()=>{
+ const copy:CalendarEvent={...apple,id:'docen-copy',provider:'docen',etag:'4',duckDetails:{revision:4,fields:{}},
+  mirror:{state:'synced',provider:'apple-calendar',calendarId:'@apple/test',syncRevision:4}};
+ const moved={...apple,etag:'apple-current',dueDate:'2026-11-26',startAt:'2026-11-26T00:00:00.000Z',endAt:'2026-11-26T01:00:00.000Z'};
+ const displayed=displayCalendarMirror(copy,moved);
+ assert.equal(displayed.dueDate,'2026-11-26');
+ assert.equal(displayed.id,copy.id);
+ assert.equal(displayed.etag,'4');
+ assert.equal(displayCalendarMirror({...copy,duckDetails:{revision:5,fields:{}}},moved).dueDate,'2026-11-12');
+});
 
 test('merge the same calendar occurrence across Apple and Google and prefer a writable copy',()=>{
  const nextOccurrence={...apple,id:'apple-13',dueDate:'2026-11-13',startAt:'2026-11-13T00:00:00Z',endAt:'2026-11-13T01:00:00Z'};

@@ -39,7 +39,7 @@ export function visibleDays(month:string,selected:string,view:CalendarView,start
 function eventDateSpan(event:CalendarEvent,zone:string){
  const first=event.allDay?event.dueDate:event.startAt?zonedDay(event.startAt,zone):event.dueDate;
  const last=event.allDay?(event.endDate?shiftDay(event.endDate,-1):first):event.endAt?zonedDay(Date.parse(event.endAt)-1,zone):event.endDate??first;
- return {first,last:last??first};
+ return {first,last:first&&last&&last<first?first:last??first};
 }
 export function eventOverlaps(event:CalendarEvent,start:string,end:string,zone:string){
  const {first,last}=eventDateSpan(event,zone);
