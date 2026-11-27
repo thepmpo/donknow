@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-27 · 한국 시간 · 기능 코드 f2f76c7 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-27 · 한국 시간 · 기능 코드 8ae11b8 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,14 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-27 — 캘린더 진입 갱신, 연결 상태 피드백, 원본 삭제 반영
+
+- 캘린더 탭 진입과 재선택에서 저장된 일정을 먼저 표시하면서 도슨 서버와 선택한 Google 캘린더의 현재 날짜 범위를 다시 조회한다. iPhone에서는 EventKit에서 숨겨 둔 목록까지 포함해 캘린더와 일정 범위를 읽고 기존 표시 설정을 적용한다. 캘린더 데이터 갱신은 Google의 저장된 승인 및 서버 토큰 갱신을 이용하며, iPhone은 기존 권한으로 바로 EventKit을 읽는다.
+- ME의 Google 연결 행은 연결된 계정 전체의 승인 범위를 이용한다. 상세의 연결 상태 새로고침과 iPhone의 다시 확인은 진행 중과 결과를 해당 버튼 옆에 표시한다. 조회 실패 상태와 마지막으로 확인한 연결을 함께 보여준다. iPhone 권한이 꺼졌을 때는 시스템 설정을 열 수 있다.
+- Apple에 연결된 일반 일정은 EventKit에서 원래 ID와 외부 식별자를 확인한다. 원래 목록에 계속 접근할 수 있고 원본이 사라졌으며 도슨에 별도 변경이 없는 경우 도슨 사본도 삭제한다. 앱 화면에서 숨긴 목록은 동기화 대상으로 계속 읽는다. 일정 상세의 삭제 진입점은 항상 표시하며, 권한과 최신 원본 버전을 확인한 뒤에만 삭제를 실행한다.
+- iPhone 종일 일정은 시간대가 없는 날짜 범위로 EventKit에 전달한다. 저장 응답의 종일 여부와 시작일 및 종료일이 일치해야 전송 성공으로 처리한다.
+- Duo와 일반 화면의 Chromium 모의 어댑터에서 진입 갱신, 연결 확인 중 및 결과, 실제 삭제와 읽기 전용 안내를 재현했다. 단위·API 검사와 iOS prebuild를 통과했다. iPhone 실기기 계정 확인, 운영 서버 배포 및 새 TestFlight 빌드는 남아 있다.
 
 #### 2026-11-27 — 기기에서 전송 대기인 일정 삭제와 Apple 원본 갱신
 
@@ -4209,10 +4217,12 @@ ff2871c Select the weekly view explicitly in week-specific fixture paths
 e7f5731 Restore the requested settings scroll position after returning
 a7f621d Record and verify ME tab reselection
 f2f76c7 Delete queued calendar creates and refresh Apple calendar sources
+0259216 Record offline calendar cancellation and Apple source refresh
+8ae11b8 Refresh connected calendars and reconcile Apple deletions
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: f2f76c7에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 8ae11b8에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13481,7 +13491,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/f2f76c718c74c9f18b8d551e4c9c429ddcb82eb9
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/8ae11b89be20a87a8fe9efc1c8e3b544c322c33c
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
