@@ -39,7 +39,7 @@ export function sourceOutbox(db,box){
    const result=db.prepare("UPDATE source_edit_outbox SET status=?,lease=NULL,lease_until=0 WHERE id=? AND user_id=? AND lease=? AND status='running'").run(status,job.id,job.userId,job.lease);
    if(!result.changes)return null;
    const current=db.prepare('SELECT data FROM todos WHERE id=? AND user_id=?').get(job.todoId,job.userId);if(!current)return null;const todo=JSON.parse(current.data);
-   if(todo.sourceSync?.revision===job.revision)todo.sourceSync=status==='succeeded'&&!limited?{state:'succeeded',revision:job.revision}:limited?{state:'failed',revision:job.revision,at:Date.now(),patch:{done:job.payload.patch.done},reason:'completion-unsupported'}:{...todo.sourceSync,state:status==='unknown'?'unknown':'failed',at:Date.now()};
+   if(todo.sourceSync?.revision===job.revision)todo.sourceSync=status==='succeeded'&&!limited?{state:'succeeded',revision:job.revision,at:todo.sourceSync.at}:limited?{state:'failed',revision:job.revision,at:Date.now(),patch:{done:job.payload.patch.done},reason:'completion-unsupported'}:{...todo.sourceSync,state:status==='unknown'?'unknown':'failed',at:Date.now()};
    else if(status==='unknown'&&todo.sourceSync)todo.sourceSync={...todo.sourceSync,state:'unknown',at:Date.now()};
    db.prepare('UPDATE todos SET data=? WHERE id=? AND user_id=?').run(JSON.stringify(todo),job.todoId,job.userId);return todo;
   });}

@@ -89,6 +89,12 @@ export function docenCalendarStore(db,box){
      db.exec('COMMIT');return event(committed,args.timeZone,state);
     }catch(error){db.exec('ROLLBACK');throw error;}
    }
+   if(body.deviceReplay===true&&current?.revision===revision){
+    const committed=decode(current);
+    if(JSON.stringify(committed.args)===JSON.stringify(value.args)&&JSON.stringify(committed.fields)===JSON.stringify(value.fields)){
+     return event(committed,args.timeZone,mirror(delivery(user,id)));
+    }
+   }
    if(current?.revision!==body.revision||!db.prepare('UPDATE docen_calendar_events SET revision=?,data=? WHERE user_id=? AND id=? AND revision=?').run(revision,box.seal(value),user,id,body.revision).changes)throw fail(409,'일정이 바뀌었어요. 새로 확인한 뒤 저장해주세요.');
    return event({...value,id,revision},args.timeZone,mirror(delivery(user,id)));
   },

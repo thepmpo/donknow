@@ -332,9 +332,9 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  const linkedOrigin='https://docen-first.test',selectedCalendar='source-calendar',connectedId='connected-google';
  let docenSaved,googleWrites=0,mirrorReady=false,todoSaved,offlineSession=false;
  const docenWrites=[],todoWrites=[];
- await linked.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));
+ await linked.clock.install({time:new Date('2026-11-25T10:00:00Z')});
  await linked.addInitScript(baseUrl=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl})),linkedOrigin);
- let finishDelete,acceptWrites=false;
+ let finishDelete,acceptWrites=false,calendarEditWrites=0,todoEditWrites=0;
  const cancelled=new Set();
  await linked.route(linkedOrigin+'/**',async route=>{
   const url=new URL(route.request().url()),path=url.pathname,method=route.request().method();
@@ -348,6 +348,15 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    const body=route.request().postDataJSON();todoWrites.push(body);
    if(!acceptWrites)return route.abort('failed');
    todoSaved??={...body,id:'confirmed-device-todo',done:false,delivery:{...body.deliveryTarget,state:'queued'}};
+   return route.fulfill({json:todoSaved});
+  }
+  if(path==='/api/todos/confirmed-device-todo'){
+   if(offlineSession)return route.fulfill({status:503,json:{error:'offline'}});
+   if(method==='PATCH'){
+    const patch=route.request().postDataJSON();
+    assert.equal(patch.deviceEditBase.fields.done,false);
+    todoSaved={...todoSaved,done:patch.done};todoEditWrites++;
+   }
    return route.fulfill({json:todoSaved});
   }
   if(offlineSession&&method==='GET'&&(path==='/api/capabilities'||path.startsWith('/api/calendar/')))return route.fulfill({status:503,json:{error:'offline'}});
@@ -369,7 +378,12 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
    return route.fulfill({json:{ok:true}});
   }
   if(path.startsWith('/api/calendar/docen/')&&method==='PUT'){
-   const {target,args,fields}=route.request().postDataJSON();
+   const {target,args,fields,deviceReplay}=route.request().postDataJSON();
+   if(deviceReplay){
+    if(offlineSession)return route.fulfill({status:503,json:{error:'offline'}});
+    docenSaved={...docenSaved,title:args.title,duckDetails:{revision:2,fields},etag:'2'};calendarEditWrites++;
+    return route.fulfill({json:docenSaved});
+   }
    docenWrites.push({path,body:route.request().postDataJSON()});
    assert.equal(target.calendarId,selectedCalendar);assert.equal(target.connectionId,connectedId);
    if(!acceptWrites)return route.abort('failed');
@@ -382,7 +396,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  });
  await linked.addInitScript(([base,calendar])=>localStorage.setItem('duck.calendar.selection.'+base+':linked-user',JSON.stringify(['primary',calendar])),[linkedOrigin,selectedCalendar]);
  await linked.addInitScript(origin=>sessionStorage.setItem('fixture.offline-user.'+origin,JSON.stringify({id:'linked-user',email:'linked@example.test',emailVerified:true})),linkedOrigin);
- await linked.goto('http://127.0.0.1:'+server.address().port+'/?initialWeek=1&mode=standard&deviceQueue=1&deviceTodos=1');
+ await linked.goto('http://127.0.0.1:'+server.address().port+'/?initialWeek=1&mode=standard&deviceQueue=1&deviceTodos=1&deviceEdits=1');
  const linkedDay=linked.getByTestId('week-date-2026-11-25');
  await linkedDay.hover();await linked.mouse.down();await linked.waitForTimeout(600);await linked.mouse.up();
  const linkedSheet=linked.getByTestId('calendar-sheet');
@@ -425,7 +439,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  const delivered=linked.waitForResponse(r=>r.request().method()==='PUT'&&r.ok()&&r.url().startsWith(linkedOrigin+'/api/calendar/docen/'));
  const todoDelivered=linked.waitForResponse(r=>r.request().method()==='POST'&&r.ok()&&new URL(r.url()).pathname==='/api/todos');
  acceptWrites=true;
- await linked.clock.setFixedTime(new Date('2026-11-25T10:02:00Z'));
+ await linked.clock.setSystemTime(new Date('2026-11-25T10:02:00Z'));
  await Promise.all([delivered,todoDelivered]);
  assert.ok(todoWrites.every(write=>write.clientRequestKey&&write.clientRequestKey===todoWrites[0].clientRequestKey));
  assert.equal(todoSaved.dueDate,'2026-11-25');
@@ -447,10 +461,39 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  assert.equal(await written.count(),1);
  assert.equal(await linked.getByTestId('week-span-original').count(),0);
  await written.click();
+ await linkedSheet.getByRole('button',{name:'이 일정 수정',exact:true}).click();
+ offlineSession=true;
+ const editTitle='기존 오프라인 일정 수정';
+ await linkedSheet.getByRole('textbox',{name:'일정 제목',exact:true}).fill(editTitle);
+ await linkedSheet.getByRole('button',{name:'일정 저장',exact:true}).click();
+ const edited=linked.getByRole('button',{name:editTitle+' 종일 일정 상세',exact:true});
+ await edited.waitFor();
+ await linkedDay.click();
+ const todoRow=linkedSheet.getByTestId('todo-confirmed-device-todo');
+ await todoRow.getByRole('checkbox',{name:'오프라인 할 일 완료하기',exact:true}).click();
+ await linkedSheet.getByRole('button',{name:/완료한 할 일 펼치기/}).click();
+ assert.equal(await todoRow.getByRole('checkbox').getAttribute('aria-checked'),'true');
+ assert.equal(todoSaved.done,false);
+ assert.equal(calendarEditWrites,0);
+ await linked.reload();
+ await edited.waitFor();
+ await linkedDay.click();
+ await linkedSheet.getByRole('button',{name:/완료한 할 일 펼치기/}).click();
+ assert.equal(await linkedSheet.getByTestId('todo-confirmed-device-todo').getByRole('checkbox').getAttribute('aria-checked'),'true');
+ await linkedSheet.getByRole('button',{name:'닫기',exact:true}).click();
+ await linkedSheet.waitFor({state:'detached'});
+ offlineSession=false;
+ const recoveryDeadline=Date.now()+9000;
+ while((!calendarEditWrites||!todoEditWrites)&&Date.now()<recoveryDeadline)await new Promise(resolve=>setTimeout(resolve,100));
+ assert.equal(calendarEditWrites,1);
+ assert.equal(todoEditWrites,1);
+ assert.equal(docenSaved.title,editTitle);
+ assert.equal(todoSaved.done,true);
+ await edited.click();
  await linkedSheet.getByRole('button',{name:'일정 삭제',exact:true}).click();
  await linked.getByRole('button',{name:'원본에서도 일정 삭제',exact:true}).click();
  await linkedSheet.waitFor({state:'detached'});
- await written.waitFor({state:'detached'});
+ await edited.waitFor({state:'detached'});
  assert.ok(docenSaved,'row is hidden while the server delete has not answered');
  assert.equal(await linked.getByTestId('week-span-original').count(),0);
  while(!finishDelete)await new Promise(resolve=>setTimeout(resolve,10));
@@ -476,5 +519,5 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'일정 제목',exac
  while(!cancelled.size&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,100));
  assert.equal(cancelled.size,1,'recovery sends the same ID as a cancellation');
  assert.equal(docenSaved,null,'no cancelled draft was written back');
- console.log('PASS phone: schedule and dated task survive offline session restart and provider failures, requests keep the same IDs, confirmed copies survive offline restart, and delete hides linked cards before acknowledgement');await linked.close();
+ console.log('PASS phone: schedule and dated task survive offline session restart and provider failures, requests keep the same IDs, confirmed copies survive offline restart, existing edits survive offline reopen and send once, and delete hides linked cards before acknowledgement');await linked.close();
 }finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}

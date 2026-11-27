@@ -3,9 +3,12 @@ import {offlineUser} from './auth';
 import {createCalendarDeviceStore} from './calendar-snapshot-store';
 import {createDeviceCreateQueue} from './device-create-queue';
 import {parseTodos,validateDraft} from './domain';
+import type {Patch} from './repository';
 import type {Draft,Todo} from './domain';
 
 export type QueuedTodoCreate={id:string;draft:Draft;createdAt:string;blocked?:boolean};
+export type QueuedTodoEdit={id:string;before:Todo;patch:Patch;editedAt:string;blocked?:boolean;failure?:string};
+const editableFields=new Set(['title','notes','done','dueDate','dueTime','reminderAt']);
 const prefix='device-todo:';
 export const isDeviceTodo=(id:string)=>id.startsWith(prefix);
 export function queuedTodo(job:QueuedTodoCreate):Todo{
@@ -18,6 +21,11 @@ export function createDeviceTodos(storage:Parameters<typeof createCalendarDevice
   const job=entry as Partial<QueuedTodoCreate>|null;
   if(typeof job?.id!=='string'||!job.id||typeof job.createdAt!=='string'||!job.draft)return false;
   try{validateDraft(job.draft);return true;}catch{return false;}
+ });
+ const edits=createDeviceCreateQueue(createCalendarDeviceStore(storage,'docen.todo.edits.'),(entry):entry is QueuedTodoEdit=>{
+  const job=entry as Partial<QueuedTodoEdit>|null;
+  return typeof job?.id==='string'&&typeof job.before?.id==='string'&&typeof job.editedAt==='string'&&
+   !!job.patch&&Object.keys(job.patch).length>0&&Object.keys(job.patch).every(key=>editableFields.has(key));
  });
  const snapshots=createCalendarDeviceStore(storage,'docen.todo.snapshot.');
  const cache={
@@ -40,7 +48,7 @@ export function createDeviceTodos(storage:Parameters<typeof createCalendarDevice
   },
   clear:snapshots.clear,
  };
- return {queue,readOfflineUser,cache};
+ return {queue,edits,readOfflineUser,cache};
 }
 
 const secureStorage={

@@ -220,7 +220,12 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
           if('dueTime' in body){if(body.dueTime!==null&&(typeof body.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(body.dueTime)))return send(400,{error:'예정 시간을 확인해주세요.'});patch.dueTime=body.dueTime;}
           if ('done' in body) { if (typeof body.done !== 'boolean') return send(400, { error: '완료 상태가 올바르지 않아요.' }); patch.done = body.done; }
           if (!Object.keys(patch).length) return send(400, { error: '변경할 내용이 없어요.' });
-          const saved=await features.updateTodo(userId,id,patch);taskSync.wake();return send(200,store.todoDelivery.decorate(userId,saved));
+          const deviceEditBase=body.deviceEditBase;
+          if(deviceEditBase&&(!deviceEditBase.fields||typeof deviceEditBase.fields!=='object'||
+           !(deviceEditBase.sourceId===null||typeof deviceEditBase.sourceId==='string')||
+           typeof deviceEditBase.editedAt!=='string'||!Number.isFinite(Date.parse(deviceEditBase.editedAt))||
+           Object.keys(patch).some(key=>!Object.hasOwn(deviceEditBase.fields,key))))return send(400,{error:'기기에 저장한 할 일의 이전 내용을 확인해주세요.'});
+          const saved=await features.updateTodo(userId,id,patch,{deviceEditBase});taskSync.wake();return send(200,store.todoDelivery.decorate(userId,saved));
         }
       }
       return send(405, { error: '지원하지 않는 요청이에요.' });

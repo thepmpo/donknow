@@ -27,6 +27,8 @@ test('Docen events can be created, read, moved and deleted without a provider co
   assert.equal(move.data.dueDate,'2026-11-27');
   assert.equal(move.data.etag,'2');
   assert.equal((await h.request(path,'PUT',updated,owner.token)).status,409);
+  assert.deepEqual((await h.request(path,'PUT',{...updated,deviceReplay:true},owner.token)).data,move.data);
+  assert.equal((await h.request(path,'PUT',{...updated,deviceReplay:true,args:{...updated.args,title:'다른 편집'}},owner.token)).status,409);
   assert.equal((await h.request(path,'DELETE',{revision:2},owner.token)).status,200);
   assert.deepEqual((await h.request(range,'GET',undefined,owner.token)).data.items,[]);
  }finally{await h.close();}

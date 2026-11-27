@@ -224,7 +224,7 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       return { native: state.native };
     },
     async resources(userId, provider, feature, channel, cursor, taskStatus = 'incomplete', month, connectionId) {
-      if (!['incomplete', 'completed'].includes(taskStatus)) throw fail(400, '조회할 완료 상태를 확인해주세요.');
+      if (!['incomplete', 'completed','sync'].includes(taskStatus)) throw fail(400, '조회할 완료 상태를 확인해주세요.');
       if (cursor && (typeof cursor !== 'string' || cursor.length > 3000)) throw fail(400, '페이지 정보를 확인해주세요.');
       const config = settings(provider); if (!readFeatures.includes(feature) || !config.features.includes(feature)) throw fail(400, '지원하지 않는 자료 종류예요.');
       const record = await token(userId, provider,connectionId); if (!record.features.includes(feature)) throw fail(403, '이 기능의 읽기 권한을 추가로 승인해주세요.');
@@ -240,9 +240,9 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (provider === 'google' && feature === 'tasks') {
         if (channel && (typeof channel !== 'string' || channel.length > 1024)) throw fail(400, '목록을 다시 선택해주세요.');
         const path = channel ? `lists/${encodeURIComponent(channel)}/tasks` : 'users/@me/lists';
-        const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus === 'completed' ? 'true' : 'false', showHidden: taskStatus === 'completed' ? 'true' : 'false', showDeleted: 'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
+        const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus !== 'incomplete' ? 'true' : 'false', showHidden: taskStatus !== 'incomplete' ? 'true' : 'false', showDeleted: 'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
         const value = await googleRead(userId,record,'https://tasks.googleapis.com/tasks/v1/' + path + '?' + query);
-        items = (value.items ?? []).filter(item => !item.deleted && (!channel || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null } : { id: item.id, title: title(item.title), kind: 'tasklist' });
+        items = (value.items ?? []).filter(item => !item.deleted && (!channel || taskStatus==='sync' || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null,...(taskStatus==='sync'?{notes:(item.notes??'').slice(0,4000),modifiedAt:item.updated,listId:channel,connectionId:record.connectionId}: {}) } : { id: item.id, title: title(item.title), kind: 'tasklist' });
         nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'drive') {

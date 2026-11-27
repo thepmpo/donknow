@@ -1,5 +1,5 @@
 import {localTime,shiftDay,wallTime,zonedDay} from './calendar-model.ts';
-import type {CalendarDuckFields,CalendarEvent} from './calendar-model.ts';
+import type {CalendarDuckFields,CalendarEvent,CalendarMirrorTarget} from './calendar-model.ts';
 export type CalendarDraft={repeat?:'none'|'daily'|'weekly'|'monthly'|'yearly';guests?:string;title:string;startDay:string;endDay:string;startTime:string;endTime:string;allDay:boolean;notes:string;location:string;calendarId:string;timeZone:string;reminderMinutes:number|null;localNotes:string;duckUrl:string;attachments:{name:string;url:string}[]};
 export function eventDraft(day:string,zone:string,calendarId:string,event?:CalendarEvent):CalendarDraft{
  const first=event?.dueDate??day,local=event?.duckDetails?.fields;
@@ -47,4 +47,11 @@ export function confirmedCalendarPatch(draft:CalendarDraft,event?:CalendarEvent)
  if(a.title!==undefined)patch.title=String(a.title);if(a.notes!==undefined)patch.notes=String(a.notes);if(a.location!==undefined)patch.location=String(a.location);
  if(a.startDate||a.start){patch.allDay=draft.allDay;patch.dueDate=draft.startDay;patch.endDate=draft.allDay?String(a.endDate):draft.endDay;patch.startAt=draft.allDay?null:String(a.start);patch.endAt=draft.allDay?null:String(a.end);patch.timeZone=draft.timeZone;}
  return patch;
+}
+
+export function docenEventPayload(draft:CalendarDraft,event?:CalendarEvent,target?:CalendarMirrorTarget){
+ const {calendarId,...args}=calendarWriteArgs({...draft,location:'',...(!target?{repeat:'none',guests:''}:{})})!;
+ delete args.location;
+ const fields={...event?.duckDetails?.fields,...calendarDuckPatch(draft,event)};
+ return {args,fields,revision:event?.duckDetails?.revision??0,...(target?{target}:{})};
 }

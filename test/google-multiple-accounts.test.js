@@ -91,3 +91,18 @@ test('scheduled personalized briefings bind consent and request preferences; a n
 });
 
 test('calendar pagination stays on its account, continues to the next account and rejects a changed account set',async()=>{const h=await fixture();try{await h.add('one');await h.add('two');h.paginate();const first=await h.integrations.calendarList(h.user);assert.equal(first.items.length,1);assert.ok(first.nextCursor);const second=await h.integrations.calendarList(h.user,first.nextCursor);assert.equal(second.items.length,2);assert.deepEqual(second.items.map(item=>item.accountLabel),['one@example.test','two@example.test']);assert.ok(second.items.every(item=>!item.name.includes(item.accountLabel)));assert.equal(second.nextCursor,null);await h.integrations.disconnect(h.user,'google',h.store.connections(h.user,'google')[1].connectionId);await assert.rejects(h.integrations.calendarList(h.user,first.nextCursor),e=>e.status===400);}finally{await h.close();}});
+
+test('refresh imports Google task pages under the account that returned them',async()=>{
+ const h=await fixture();try{
+  await h.add('one');await h.add('two');
+  const accounts=h.store.connections(h.user,'google');
+  for(const account of accounts){
+   const result=await h.integrations.resources(h.user,'google','tasks','same-list',null,'sync',undefined,account.connectionId);
+   assert.equal(h.store.syncTaskResources(h.user,'google',result.items),1);
+   assert.equal(h.store.syncTaskResources(h.user,'google',result.items),0);
+  }
+  const tasks=h.store.list(h.user);
+  assert.deepEqual(tasks.map(task=>task.title),['one 할 일','two 할 일']);
+  assert.notEqual(tasks[0].source.externalId,tasks[1].source.externalId);
+ }finally{await h.close();}
+});

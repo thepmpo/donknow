@@ -1,3 +1,4 @@
+import type {CalendarEditQueue} from '../calendar-device-queue';
 import {ScrollRevealContext,useFocusedField} from '../useFocusedField';
 import {putCalendarWrite,removeCalendarWrite,removeCalendarEventWrites} from '../calendar-write-overlay';
 import {useKeyboardUX} from '../KeyboardUX';
@@ -45,7 +46,7 @@ import type {TodoStore} from '../useTodos';
 export type CalendarNavigationRequest={id:number;action:'today'|'week'|'fortnight'|'cycle';resetToToday?:boolean;scope:string};
 const webCalendarSwipe=Platform.OS==='web'?({touchAction:'pan-y'} as unknown as ViewStyle):undefined;
 type Overlay='day'|'event'|'editor'|'picker'|'sources'|'settings'|'search'|'views'|'connection'|null;
-export function CalendarScreen({store,onAdd,onEdit,active=true,syncWhileHidden=false,fixedPane=false,navigationRequest,onManageConnections,appleDevice,deviceCreateQueue}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;syncWhileHidden?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest;onManageConnections?:()=>void;appleDevice?:AppleCalendarDevice;deviceCreateQueue?:CalendarCreateQueue}){
+export function CalendarScreen({store,onAdd,onEdit,active=true,syncWhileHidden=false,fixedPane=false,navigationRequest,onManageConnections,appleDevice,deviceCreateQueue,deviceEditQueue}:{store:TodoStore;onAdd:(date:string)=>void;onEdit:(todo:Todo)=>void;active?:boolean;syncWhileHidden?:boolean;fixedPane?:boolean;navigationRequest?:CalendarNavigationRequest;onManageConnections?:()=>void;appleDevice?:AppleCalendarDevice;deviceCreateQueue?:CalendarCreateQueue;deviceEditQueue?:CalendarEditQueue}){
  const keyboard=useKeyboardUX(),desktop=useDesktopPresentation();
  const {scene}=useDuoScene(),backState=useDuoBackState();
  const insets=useSafeAreaInsets(),duo=useDuoTrailingNavigation(),reduced=useReducedMotion(),{fontScale}=useWindowDimensions();
@@ -79,13 +80,13 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,syncWhileHidden=f
  const latest=useRef({month,selected,view,active});latest.current={month,selected,view,active};
  const days=useMemo(()=>view==='week'?calendarWeekDays(selected):visibleDays(month,selected,view,startDay),[month,selected,view,startDay]);
  const refreshKey=navigationRequest?.scope===navigationScope&&navigationRequest.action==='today'?navigationRequest.id:undefined;
- const data=useUnifiedCalendarData(store,{start:days[0],end:shiftDay(days.at(-1)!,1),month,timeZone:zone,selected:sourceIds,hidden:selection.hiddenIds,active,syncWhileHidden,refreshKey,selectionReady:selection.ready},appleDevice,deviceCreateQueue);
+ const data=useUnifiedCalendarData(store,{start:days[0],end:shiftDay(days.at(-1)!,1),month,timeZone:zone,selected:sourceIds,hidden:selection.hiddenIds,active,syncWhileHidden,refreshKey,selectionReady:selection.ready},appleDevice,deviceCreateQueue,deviceEditQueue);
  const appleSourceIds=JSON.stringify(data.sources.filter(source=>isAppleCalendar(source.id)).map(source=>source.id));
  useEffect(()=>{
   if(active&&selection.ready)selection.reconcileApple(JSON.parse(appleSourceIds));
  },[active,selection.ready,navigationScope,appleSourceIds]);
  // Refresh source metadata as well as the visible period on each entry.
- useEffect(()=>{if(active&&data.version===2&&store.user)void data.loadSources();},[active,refreshKey,data.version,store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo']);
+ useEffect(()=>{if((active||syncWhileHidden)&&data.version===2&&store.user)void data.loadSources();},[active,syncWhileHidden,refreshKey,data.version,store.user?.id,store.connection?.mode==='cloud'?store.connection.baseUrl:'demo']);
  useEffect(()=>{if(active&&store.user)void store.refresh();},[active,refreshKey,store.user?.id]);
  useEffect(()=>{if(active&&data.readAt)store.reminders.retry();},[active,data.readAt]);
  const events=useMemo(()=>data.events.filter(isVisible),[data.events,shownSources,selection.showDocen,selection.hiddenIds]);
@@ -288,6 +289,10 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,syncWhileHidden=f
   try{
    const draft=eventDraftForDateMove(original,anchor,target,zone),args=calendarWriteArgs(draft,original);
    if(!args)return;
+   if(data.enqueueEdit){
+    void data.enqueueEdit(draft,original).catch(error=>{if(store.isCurrentSession())store.setNotice(error instanceof Error?error.message:'일정을 기기에 저장하지 못했어요.');});
+    return;
+   }
    const patch=confirmedCalendarPatch(draft,original);
    const optimistic:CalendarEvent={...original,...patch,saveState:'saving',canWrite:false};
    if(original.provider==='docen'){backgroundSave({optimistic,run:()=>saveDocenEvent(store,original.eventId!,draft,original)},original,false);return;}
@@ -381,7 +386,12 @@ export function CalendarScreen({store,onAdd,onEdit,active=true,syncWhileHidden=f
     {!!safeCalendarLink(event.meetingUrl)&&<Button title="회의 링크 열기" quiet onPress={()=>void external(event.meetingUrl)}/ >}
    </ScrollView>}
    {creation&&<CalendarTodoCreator key={editorKey} dueDate={selected} store={store} visible={addKind==='todo'} onBusy={setEditorBusy} onClose={()=>{discardDraft(editorKey);setEditorBusy(false);setOverlay(null);}}/>}
-   {overlay==='editor'&&drafts.current[editorKey]&&<View style={{flex:1,minHeight:0,...(creation&&addKind==='todo'?{display:'none'}:{})}}><RetainedCalendarEditor onDeviceCreate={data.enqueueCreate?async job=>{
+   {overlay==='editor'&&drafts.current[editorKey]&&<View style={{flex:1,minHeight:0,...(creation&&addKind==='todo'?{display:'none'}:{})}}><RetainedCalendarEditor onDeviceEdit={data.enqueueEdit?async(draft,original)=>{
+    await data.enqueueEdit!(draft,original);
+    if(!store.isCurrentSession())return;
+    revealSavedEvent({...original,...confirmedCalendarPatch(draft,original)});
+    discardDraft(editorKey);setOverlay(null);void feedback();
+   }:undefined} onDeviceCreate={data.enqueueCreate?async job=>{
     try{await data.enqueueCreate!(job);}catch{throw Error('아이폰에 일정을 저장하지 못했어요. 기기 저장 공간을 확인해주세요.');}
     if(!store.isCurrentSession())return;
     revealSavedEvent(job.event);discardDraft(editorKey);setOverlay(null);void feedback();

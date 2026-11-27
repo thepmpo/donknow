@@ -1,6 +1,8 @@
+import {refreshTodoSources} from './todo-source-refresh';
 import {clearAppleTodoReceipts,useAppleTodoDelivery} from './useAppleTodoDelivery';
+import type {QueuedTodoEdit} from './todo-device-queue';
 import {deviceTodos,isDeviceTodo,queuedTodo} from './todo-device-queue';
-import {appleCalendarReceipts,deviceCalendarQueue} from './calendar-device-queue';
+import {appleCalendarReceipts,deviceCalendarEdits,deviceCalendarQueue} from './calendar-device-queue';
 import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
 import {moveAppleReminder} from './todo-membership';
 import type {AppleMoveReceipt,MembershipPage} from './todo-membership';
@@ -30,7 +32,15 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     const base = typeof value === 'function' ? value(todosRef.current) : value;
     const owner=calendarOwner.current;
     const jobs=device&&owner?device.queue.snapshot(owner):undefined;
-    const next=device?[...base.filter(todo=>!isDeviceTodo(todo.id)),...(jobs??[]).map(queuedTodo)]:base;
+    const edits=device&&owner?device.edits.snapshot(owner):undefined;
+    const byId=new Map(base.map(todo=>[todo.id,todo]));
+    for(const edit of edits??[]){
+      const previous=byId.get(edit.before.id)??edit.before;
+      byId.set(previous.id,{...previous,...edit.patch,
+        ...(edit.patch.done===undefined?{}:{completedAt:edit.patch.done?previous.completedAt??edit.editedAt:null}),
+        ...(edit.blocked?{saveState:'checking' as const}: {})});
+    }
+    const next=device?[...Array.from(byId.values()).filter(todo=>!isDeviceTodo(todo.id)),...(jobs??[]).map(queuedTodo)]:base;
     todosRef.current=next;commitTodos(next);
   }, [device]);
   const [pending, setPending] = useState<Record<string, number>>({});
@@ -83,7 +93,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       const next=createRepository(saved);repo.current=next;
       if(device&&calendarOwner.current){
         const owner=calendarOwner.current;
-        const [cached]=await Promise.all([device.cache.read(owner).catch(()=>[]),device.queue.read(owner).catch(()=>[])]);
+        const [cached]=await Promise.all([device.cache.read(owner).catch(()=>[]),device.queue.read(owner).catch(()=>[]),device.edits.read(owner).catch(()=>[])]);
         if(!current())return;
         setTodos(cached);snapshotReady.current=true;
       }
@@ -219,6 +229,89 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     const app=AppState.addEventListener('change',state=>{if(state==='active')void flush();});
     return ()=>{disposed=true;unsubscribe();app.remove();clearInterval(timer);};
   },[deviceCreateOwner,renderGeneration,setTodos,device]);
+  const localEditWrites=useRef(new Set<string>());
+  useEffect(()=>{
+    if(!deviceCreateOwner||!device)return;
+    const owner=deviceCreateOwner,version=generation.current,{edits,cache}=device;
+    const current=()=>version===generation.current&&calendarOwner.current===owner;
+    let sending=false,disposed=false,retryAt=0;
+    const same=(todo:Todo,patch:Patch)=>Object.entries(patch).every(([key,value])=>JSON.stringify(todo[key as keyof Todo]??null)===JSON.stringify(value??null));
+    const replace=(todo:Todo)=>setTodos(rows=>[...rows.map(row=>row.id===todo.id?todo:row),...(!rows.some(row=>row.id===todo.id)?[todo]:[])]);
+    async function flush(){
+      if(disposed||!current()||sending||Date.now()<retryAt||AppState.currentState!=='active'||!repo.current?.get)return;
+      const jobs=edits.snapshot(owner)??[],job=jobs.find((candidate,index)=>!candidate.blocked&&!jobs.slice(0,index).some(earlier=>earlier.before.id===candidate.before.id));
+      if(!job)return;
+      const repository=repo.current,id=job.before.id;
+      sending=true;
+      try{
+        let saved=await repository.get!(id);
+        if(!current())return;
+        if(!same(saved,job.patch)){
+          const fields=Object.fromEntries(Object.keys(job.patch).map(key=>[key,job.before[key as keyof Todo]??null])) as Patch;
+          saved=await repository.update(id,job.patch,{fields,sourceId:job.before.source?.externalId??null,editedAt:job.editedAt});
+        }
+        if(!current())return;
+        if(saved.source?.provider==='apple-reminders'&&['device-required','unknown'].includes(saved.sourceSync?.state??'')){
+          saved=await updateAppleSource(saved,featureRequest,current,false);
+        }
+        if(!current())return;
+        if(saved.source?.provider==='apple-reminders'&&['device-required','unknown'].includes(saved.sourceSync?.state??'')){
+          retryAt=Date.now()+3000;return;
+        }
+        writes.current++;
+        await cache.write(owner,[...todosRef.current.filter(todo=>todo.id!==id),saved]);
+        if(!current())return;
+        await edits.remove(owner,job.id);
+        if(!current())return;
+        replace(saved);reflectOriginal(saved,job.patch);writeResolved(job.id);
+      }catch(error){
+        if(!current())return;
+        if(error instanceof auth.AuthRequiredError){expireSession();return;}
+        if(error instanceof HttpResponseError&&[400,404,409,422].includes(error.status)){
+          await edits.change(owner,job.id,item=>({...item,blocked:true,failure:message(error)})).catch(()=>{});
+          reportWrite(job.id,message(error),async()=>{await edits.block(owner,job.id,false);});
+        }else retryAt=Date.now()+3000;
+      }finally{sending=false;}
+    }
+    function changed(){
+      if(!current())return;
+      setTodos(rows=>rows);
+      for(const job of edits.snapshot(owner)??[]){
+        if(job.blocked&&!writeChecks.current.has(job.id))reportWrite(job.id,job.failure??'기기에 보관한 변경을 확인해주세요.',()=>edits.block(owner,job.id,false));
+      }
+      void flush();
+    }
+    const unsubscribe=edits.watch(owner,changed);
+    void edits.read(owner).then(changed).catch(()=>{});
+    const timer=setInterval(()=>void flush(),1000);
+    const listener=AppState.addEventListener('change',state=>{if(state==='active'){retryAt=0;void flush();}});
+    return ()=>{disposed=true;unsubscribe();clearInterval(timer);listener.remove();};
+  },[deviceCreateOwner,renderGeneration,device,setTodos]);
+  async function saveTodoEditOnDevice(owner:string,id:string,input:Patch){
+    if(!device||calendarOwner.current!==owner||localEditWrites.current.has(id)||busy.current.has(id))return false;
+    const before=todosRef.current.find(todo=>todo.id===id);
+    if(!before||before.saveState||before.delivery?.state==='sending'||isDeviceTodo(id))return false;
+    const patch={...input,...(input.dueDate===null?{dueTime:null}:{})};
+    let validated:Draft;
+    try{validated=validateDraft({...before,...patch});}catch(e){setError(message(e));return false;}
+    if(patch.title!==undefined)patch.title=validated.title;
+    const changed=Object.fromEntries(Object.entries(patch).filter(([key,value])=>JSON.stringify(before[key as keyof Todo]??null)!==JSON.stringify(value??null))) as Patch;
+    if(!Object.keys(changed).length)return true;
+    const job:QueuedTodoEdit={id:'edit-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),before,patch:changed,editedAt:new Date().toISOString()};
+    if(changed.done!==undefined&&originsRef.current[id]===undefined&&before.done)pendingOrder.current[id]=before.completedAt??'';
+    localEditWrites.current.add(id);
+    try{
+      await device.edits.add(owner,job);
+      if(calendarOwner.current!==owner)return false;
+      if(changed.done!==undefined){
+        const origin=originsRef.current[id]??before.done;
+        completionDeadline(id,changed.done!==origin?Date.now()+COMPLETION_DELAY+COMPLETION_FADE_DURATION:null,origin);
+      }
+      setTodos(rows=>rows);
+      return true;
+    }catch(e){if(calendarOwner.current===owner)setError(message(e));return false;}
+    finally{localEditWrites.current.delete(id);}
+  }
   async function createTodoOnDevice(owner:string,draft:Draft){
     if(!device||deviceSaving.current||connectingRef.current||calendarOwner.current!==owner||!repo.current)return null;
     const version=generation.current,id='todo-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
@@ -250,11 +343,12 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   /** The editor closes after accepting the local change; the store, rather than
    * the unmounted form, owns reconciliation and failure messages. */
-  async function prepareSave(draft:Draft){const repository=repo.current,version=generation.current;if(!repository)throw Error('연결을 먼저 확인해주세요.');await repository.prepare?.(draft);if(version!==generation.current)throw Error('계정이나 연결이 바뀌었어요. 다시 확인해주세요.');}
+  async function prepareSave(draft:Draft){if(deviceCreateOwner){validateDraft(draft);return;}const repository=repo.current,version=generation.current;if(!repository)throw Error('연결을 먼저 확인해주세요.');await repository.prepare?.(draft);if(version!==generation.current)throw Error('계정이나 연결이 바뀌었어요. 다시 확인해주세요.');}
   async function beginSave(draft:Draft,id?:string){
     if(!id&&deviceCreateOwner)return !!await createTodoOnDevice(deviceCreateOwner,draft);
     if(!repo.current||connectingRef.current||loading&&!snapshotReady.current||busy.current.has(id??'create')||id&&todosRef.current.find(t=>t.id===id)?.saveState==='checking')return false;
     if(id&&!todosRef.current.some(t=>t.id===id))return false;
+    if(id&&deviceCreateOwner)return saveTodoEditOnDevice(deviceCreateOwner,id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})});
     if(id)void update(id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})});
     else void add(draft);
     return true;
@@ -323,6 +417,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     return job.promise;
   }
   async function update(id: string, patch: Patch): Promise<boolean> {
+    if(deviceCreateOwner&&!('category' in patch))return saveTodoEditOnDevice(deviceCreateOwner,id,patch);
     if (typeof patch.done === 'boolean' && Object.keys(patch).length === 1) return updateCompletion(id, patch.done);
     const version=generation.current,before=todosRef.current.find(t=>t.id===id),fields={...before?.sourceSync?.patch,...Object.fromEntries(Object.entries(patch).filter(([k,v])=>JSON.stringify(v??null)!==JSON.stringify(before?.[k as keyof Todo]??null)))};
     if(!before||before.saveState==='checking'||!repo.current||busy.current.has(id)||connectingRef.current||loading&&!snapshotReady.current)return false;
@@ -446,6 +541,34 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       throw e;
     }
   }, [connection, renderGeneration,user?.id]);
+  useEffect(()=>{
+    if(!user?.emailVerified||connection?.mode!=='cloud'||sessionStatus!=='ready')return;
+    let disposed=false,running=false;
+    const appleVersions=new Map<string,string>();
+    const current=()=>!disposed&&generation.current===renderGeneration;
+    async function pull(){
+      if(running||!current()||AppState.currentState!=='active')return;
+      running=true;
+      try{if(await refreshTodoSources(featureRequest,current,appleVersions)&&current()){
+        // Allow a concurrent local save to finish before replacing the server snapshot.
+        pendingSourceRefresh.current=true;
+        void refresh();
+      }}catch{}finally{running=false;}
+    }
+    void pull();
+    const subscription=AppState.addEventListener('change',state=>{if(state==='active')void pull();});
+    const timer=setInterval(()=>void pull(),60000);
+    return ()=>{disposed=true;subscription.remove();clearInterval(timer);};
+  },[featureRequest,sessionStatus,user?.id,user?.emailVerified]);
+  const pendingSourceRefresh=useRef(false);
+  useEffect(()=>{
+    const timer=setInterval(()=>{
+      if(pendingSourceRefresh.current&&!refreshing.current&&!busy.current.size&&AppState.currentState==='active'){
+        pendingSourceRefresh.current=false;void refresh();
+      }
+    },1500);
+    return ()=>clearInterval(timer);
+  },[]);
   useAppleTodoDelivery(Platform.OS==='ios'&&user?.emailVerified?reminderOwner:null,todos,featureRequest,
    ()=>renderGeneration===generation.current,saved=>{
     writes.current++;
@@ -477,7 +600,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   async function deleteAccount(password: string) {
     if (connection?.mode !== 'cloud' || busy.current.size || connectingRef.current) return false;
     connectingRef.current = true; setConnecting(true);
-    try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);if(Platform.OS==='ios'&&reminderOwner)await Promise.all([deviceCalendarQueue.clear(reminderOwner),appleCalendarReceipts.clear(reminderOwner),clearAppleTodoReceipts(reminderOwner)]);if(device&&reminderOwner)await Promise.all([device.queue.clear(reminderOwner),device.cache.clear(reminderOwner)]);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner,'duckduck.ai-consent.v1.'+connection.baseUrl+':'+(user?.id??'')]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
+    try { const result = await featureRequest('/api/account', 'DELETE', { password, confirmation: 'DELETE' }) as { remoteRevocationComplete: boolean }; let localCleared=true;try{await auth.forgetSession(connection.baseUrl);if(Platform.OS==='ios'&&reminderOwner)await Promise.all([deviceCalendarQueue.clear(reminderOwner),deviceCalendarEdits.clear(reminderOwner),appleCalendarReceipts.clear(reminderOwner),clearAppleTodoReceipts(reminderOwner)]);if(device&&reminderOwner)await Promise.all([device.queue.clear(reminderOwner),device.edits.clear(reminderOwner),device.cache.clear(reminderOwner)]);await AsyncStorage.multiRemove(['duckduck.mobile.name.'+(user?.id??''),'duckduck.reminders.'+reminderOwner,'duckduck.ai-consent.v1.'+connection.baseUrl+':'+(user?.id??'')]);}catch{localCleared=false;} const cleared=await reminders.clear(); expireSession(); setNotice(!cleared||!localCleared?'계정을 삭제했어요. 아이폰의 알림 설정도 확인해주세요.':result.remoteRevocationComplete ? '계정을 삭제했어요.' : '계정을 삭제했어요. 일부 외부 서비스의 접근 권한은 해당 서비스 설정에서도 확인해주세요.'); return true; }
     catch (e) { setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }

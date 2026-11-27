@@ -96,13 +96,15 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
       }else db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo));
       return requestKey!==undefined?get(userId,id):todo;
     },
-    update(userId, id, patch, { remote = false, skipTaskSync = false } = {}) {
-      const todo = get(userId, id); if (!todo) return null;
-      const previousDone=todo.done;
-      if ('done' in patch) todo.completedAt = patch.done ? (todo.done && todo.completedAt ? todo.completedAt : new Date().toISOString()) : null;
-      Object.assign(todo, patch);
+    update(userId, id, patch, { remote = false, skipTaskSync = false, expected } = {}) {
       db.exec('BEGIN IMMEDIATE');
       try {
+        const todo=get(userId,id);
+        if(!todo){db.exec('COMMIT');return null;}
+        if(expected&&JSON.stringify(todo)!==JSON.stringify(expected))throw fail(409,'다른 변경이 있어 저장하지 않았어요. 목록을 새로 확인해주세요.');
+        const previousDone=todo.done;
+        if('done' in patch)todo.completedAt=patch.done?(todo.done&&todo.completedAt?todo.completedAt:new Date().toISOString()):null;
+        Object.assign(todo,patch);
         db.prepare('UPDATE todos SET data = ? WHERE id = ? AND user_id = ?').run(JSON.stringify(todo), id, userId);
         if (!remote && !skipTaskSync && 'done' in patch && todo.source?.provider==='google' && todo.source.externalId.includes(':tasks:') && features.connections(userId,'google').some(r=>r.taskSyncEnabled&&todo.source.externalId.startsWith((r.connectionId??'legacy')+':tasks:'))) features.queueTaskSync(userId,id,todo.done,previousDone);
         db.exec('COMMIT');return todo;

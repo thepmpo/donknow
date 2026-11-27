@@ -17,15 +17,9 @@ import type {QueuedCalendarCreate} from './calendar-create-queue';
 import type {TodoStore} from './useTodos';
 export {eventDraft} from './calendar-edit-model';
 export type {CalendarDraft} from './calendar-edit-model';
-import {calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch} from './calendar-edit-model';
+import {calendarWriteArgs,calendarDuckPatch,confirmedCalendarPatch,docenEventPayload} from './calendar-edit-model';
 import type {CalendarDraft} from './calendar-edit-model';
 export function CalendarDateField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} onChange={v=>v&&onChange(v)} stacked/>;}
-function docenEventPayload(draft:CalendarDraft,event?:CalendarEvent,target?:CalendarMirrorTarget){
- const {calendarId,...args}=calendarWriteArgs({...draft,location:'',...(!target?{repeat:'none',guests:''}:{})})!;
- delete args.location;
- const fields={...event?.duckDetails?.fields,...calendarDuckPatch(draft,event)};
- return {args,fields,revision:event?.duckDetails?.revision??0,...(target?{target}:{})};
-}
 export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDraft,event?:CalendarEvent,target?:CalendarMirrorTarget){
  const path='/api/calendar/docen/'+encodeURIComponent(id),payload=docenEventPayload(draft,event,target);
  let saved:CalendarEvent;
@@ -40,7 +34,7 @@ export async function saveDocenEvent(store:TodoStore,id:string,draft:CalendarDra
 function TimeField({label,value,onChange,disabled=false}:{label:string;value:string;onChange:(value:string)=>void;disabled?:boolean}){return <DateTimeField label={label} value={value} disabled={disabled} mode="time" onChange={v=>v&&onChange(v)} stacked/>;}
 export type CalendarPending={args?:Record<string,unknown>;id:string;status:string;expiresAt?:number;accountLabel?:string|null;targetTitle?:string|null;calendarName?:string|null;destinationCalendarName?:string|null;result?:{id?:string|null;etag?:string}};
 export type CalendarActionState={pending:CalendarPending;locked:boolean;remoteDone?:boolean;savedEventId?:string};
-export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,createOptionsAvailable=false,localFirst=false,sourceLoading=false,onSaveNative,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission,onBackgroundSave,onDeviceCreate}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;createOptionsAvailable?:boolean;localFirst?:boolean;sourceLoading?:boolean;onSaveNative?:(draft:CalendarDraft,event?:CalendarEvent)=>Promise<CalendarEvent>;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void;onDeviceCreate?:(job:QueuedCalendarCreate)=>Promise<void>;onBackgroundSave?:(job:{optimistic:CalendarEvent;run:()=>Promise<Partial<CalendarEvent>>;check:()=>Promise<Partial<CalendarEvent>>})=>void}){
+export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,onBusy,actionState,onActionState,metadataAvailable=false,createOptionsAvailable=false,localFirst=false,sourceLoading=false,onSaveNative,inline=false,prepareAction,sourceCursor,onMoreSources,sourceError,onRefreshPermission,onBackgroundSave,onDeviceCreate,onDeviceEdit}:{store:TodoStore;draft:CalendarDraft;onDraft:(v:CalendarDraft)=>void;event?:CalendarEvent;sources:CalendarSource[];onSaved:(patch?:Partial<CalendarEvent>)=>void;onBusy:(v:boolean)=>void;actionState?:CalendarActionState;onActionState:(value:CalendarActionState|null)=>void;inline?:boolean;prepareAction?:(args:Record<string,unknown>)=>Promise<CalendarPending>;metadataAvailable?:boolean;createOptionsAvailable?:boolean;localFirst?:boolean;sourceLoading?:boolean;onSaveNative?:(draft:CalendarDraft,event?:CalendarEvent)=>Promise<CalendarEvent>;sourceCursor?:string|null;onMoreSources?:()=>void;sourceError?:string;onRefreshPermission?:()=>void;onDeviceCreate?:(job:QueuedCalendarCreate)=>Promise<void>;onDeviceEdit?:(draft:CalendarDraft,event:CalendarEvent)=>Promise<void>;onBackgroundSave?:(job:{optimistic:CalendarEvent;run:()=>Promise<Partial<CalendarEvent>>;check:()=>Promise<Partial<CalendarEvent>>})=>void}){
  const keyboard=useKeyboardUX();
  const scrollRef=useRef<React.ComponentRef<typeof ScrollView>|null>(null);
  const titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),notesRef=useRef<React.ComponentRef<typeof TextInput>>(null),localField=useFocusedField(scrollRef),parentReveal=useContext(ScrollRevealContext),inlineFocused=useRef<React.ComponentRef<typeof TextInput>|null>(null);
@@ -82,6 +76,10 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(!validZone(draft.timeZone))throw Error('시간대를 확인해주세요.');
   if(draft.duckUrl&&!safeCalendarLink(draft.duckUrl)||draft.attachments.some(a=>!a.name.trim()||!safeCalendarLink(a.url)))throw Error('링크와 첨부 파일에는 이름과 https 주소를 입력해주세요.');
   if(!event&&!docen&&!native&&!onDeviceCreate&&!createOptionsAvailable&&((draft.repeat&&draft.repeat!=='none')||draft.guests?.trim()))throw Error('연결을 새로 확인한 뒤 반복·초대를 설정해주세요.');
+  if(event&&onDeviceEdit&&!inline){
+   if(!canWrite&&(!hasLocal||docen||native))throw Error('일정을 저장할 권한을 확인해주세요.');
+   await onDeviceEdit(draft,event);return;
+  }
   if(docen||(localFirst||onDeviceCreate)&&!event&&!inline&&source&&(native||!!source.connectionId)){
    if(!canWrite)throw Error('일정을 저장할 수 없어요.');
    const id=docenId.current??=event?.eventId??('event-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2));

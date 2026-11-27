@@ -30,9 +30,20 @@ export function createSourceEdits({store,assistant,integrations,deferred=false,o
   if(!guard())throw fail(409,'작업이 중지됐어요.');const draft=await assistant.prepare(user,operation,args);onPrepared(draft.id);const result=await assistant.confirm(user,draft.id,true,guard);
   if(result.status!=='succeeded')throw fail(result.status==='unknown'?502:409,'원본 저장 결과를 확인해주세요.');
  }
- async function save(user,id,patch,{retry=false,forceDone=false,guard=()=>true}={}){
+ async function save(user,id,patch,{retry=false,forceDone=false,deviceEditBase,guard=()=>true}={}){
   const key=user+':'+id;if(busy.has(key))throw fail(409,'이 항목을 저장하고 있어요. 잠시 뒤 확인해주세요.');
   busy.add(key);try{if(!guard())throw fail(409,'작업이 중지됐어요.');const before=store.get(user,id);if(!before)throw fail(404,'내 할 일을 찾지 못했어요.');
+   if(deviceEditBase){
+    const {fields:base,sourceId,editedAt}=deviceEditBase;
+    const same=(a,b)=>JSON.stringify(a??null)===JSON.stringify(b??null);
+    if((before.source?.externalId??null)!==sourceId)throw fail(409,'할 일의 원본이 바뀌었어요.');
+    for(const [field,value] of Object.entries(patch)){
+     if(same(before[field],base[field])||same(before[field],value))continue;
+     const lastRemote=Math.max(Date.parse(before.source?.modifiedAt??'')||0,before.sourceSync?.at??0);
+     if(lastRemote>0&&Date.parse(editedAt)>lastRemote)continue;
+     throw fail(409,'다른 곳에서 변경된 할 일이에요. 현재 내용을 확인해주세요.');
+    }
+   }
    if(retry&&before.sourceSync?.state==='queued')return before;
    if(patch.dueDate===null)patch={...patch,dueTime:null};
    if(patch.dueTime!=null&&!(patch.dueDate??before.dueDate))throw fail(400,'예정 날짜를 먼저 선택해주세요.');
@@ -40,15 +51,18 @@ export function createSourceEdits({store,assistant,integrations,deferred=false,o
    const pending=retry?before.sourceSync?.patch:Object.keys(changed).length?{...before.sourceSync?.patch,...changed}:changed;
    if(before.source&&'done' in changed)store.clearTaskSync(user,id);
    if(deferred&&before.source?.provider==='google'&&pending&&Object.keys(pending).length){const queued=store.queueSourceEdit(user,before,patch,pending);onEnqueue();if(queued.sourceSync.state==='unknown')notify(user,queued,'source-unknown');return queued;}
-   let saved=retry?before:store.update(user,id,patch,{skipTaskSync:!!before.source});
-   if(!before.source||!pending||!Object.keys(pending).length)return saved;
    const revision=(before.sourceSync?.revision??0)+1;
-   if(before.source.provider==='apple-reminders')return store.update(user,id,{sourceSync:{state:'device-required',revision,at:Date.now(),patch:pending}});
+   if(before.source?.provider==='apple-reminders'&&pending&&Object.keys(pending).length){
+    return store.update(user,id,{...(retry?{}:patch),sourceSync:{state:'device-required',revision,at:Date.now(),patch:pending}},
+     {skipTaskSync:true,expected:before});
+   }
+   let saved=retry?before:store.update(user,id,patch,{skipTaskSync:!!before.source,expected:deviceEditBase?before:undefined});
+   if(!before.source||!pending||!Object.keys(pending).length)return saved;
    const limitedDone='done' in pending&&!(before.source.provider==='google'&&/^([^:]+):tasks:([^:]+):(.+)$/.test(before.source.externalId));
    const writable=limitedDone?Object.fromEntries(Object.entries(pending).filter(([key])=>key!=='done')):pending;
    if(limitedDone&&!Object.keys(writable).length){saved=store.update(user,id,{sourceSync:{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}});notify(user,saved,'source-completion-limited');return saved;}
    saved=store.update(user,id,{sourceSync:{state:'unknown',revision,at:Date.now(),patch:pending}});
-   try{await apply(user,saved,writable,guard);saved=store.update(user,id,{sourceSync:limitedDone?{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}:{state:'succeeded',revision}});if(limitedDone)notify(user,saved,'source-completion-limited');}
+   try{await apply(user,saved,writable,guard);saved=store.update(user,id,{sourceSync:limitedDone?{state:'failed',revision,at:Date.now(),patch:{done:pending.done},reason:'completion-unsupported'}:{state:'succeeded',revision,at:saved.sourceSync.at}});if(limitedDone)notify(user,saved,'source-completion-limited');}
    catch(error){const unknown=error.status===502||!error.status; saved=store.update(user,id,{sourceSync:{state:unknown?'unknown':'failed',revision,at:Date.now(),patch:pending}});notify(user,saved,unknown?'source-unknown':error.status===422?(before.source.provider==='google'?'source-limited':'source-unsupported'):'source-failed');}
    return saved;
   }finally{busy.delete(key);}

@@ -22,6 +22,7 @@ import {createWeather} from './weather.js';
 import {createConversationAssistant} from './assistant-conversation.js';
 import {createAssistant} from './assistant.js';
 import { fail } from './secrets.js';
+import {validDate} from './store.js';
 const validEmail = value => typeof value === 'string' && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 const validCode = value => typeof value === 'string' && /^\d{6}$/.test(value);
 export function featureRoutes(store, mailer, worker, integrations, limited, clientAddress = req => req.socket.remoteAddress,{background=true,onCalendarQueued=()=>{},deferredSources=process.env.NODE_ENV!=='test'||process.env.SOURCE_QUEUE==='1'}={}) {
@@ -70,7 +71,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
     catch(error){store.releaseBriefingCalendar(user.id,key,claim.lease);throw error;}
   }
   return {
-    updateTodo:(user,id,patch)=>sourceEdits.save(user,id,patch),
+    updateTodo:(user,id,patch,options)=>sourceEdits.save(user,id,patch,options),
     wakeSource,wakeCalendarDelivery,close(){channels.close();agent.close();clearTimeout(sourceTimer);calendarDelivery?.close();if(sourceInterval)clearInterval(sourceInterval);if(scheduledWorker)clearInterval(scheduledWorker);},
     async webhook(req,path,send){if(await channels.webhook(req,path,send)){setImmediate(()=>void channels.tick().then(()=>agent.tick()).catch(()=>undefined));return true;}if(!/^\/api\/webhooks\/(slack|notion|calendar|gmail)(?:\/[a-f0-9-]{36}\/[A-Za-z0-9_-]{43})?$/.test(path))return false;if(limited('provider-event:'+clientAddress(req)))throw fail(429,'변경 알림 요청이 많아요.');const handled=await events.receive(req,path,send);if(handled)setImmediate(()=>{void agentEvents.dispatch().then(()=>channels.tick()).then(()=>agent.tick()).then(()=>events.tick()).then(()=>pushSender.tick()).catch(()=>undefined);});return handled;},
     async callback(req, res, path, url) {
@@ -97,7 +98,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         await schedulerAuth(req.headers.authorization);const body=await json(req);if(Object.keys(body).length)throw fail(400,'예약 실행에는 인자를 넣지 않아요.');
         const result=await drain();send(200,result);return true;
       }
-      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1,todoCreateTargets:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1,docenCalendarReconcile:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
+      if (path === '/api/capabilities' && req.method === 'GET') { send(200, { mail: mailer.configured, todoNotes: true,todoOrdering:1,todoCreateTargets:1,todoSourceRefresh:1, calendarWorkspace:2, calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarFirst:1,docenCalendarReconcile:1, googleMultiAccount:true,assistantChecklist:1,briefingChecklist:1,briefingHourly:true,assistantMemory:1,agentWork:1,importantChanges:{mode:'events-and-polling',receivers:integrations.realtimeReadiness(),intervalSeconds:60,guaranteedRealtime:false},assistant:assistant.status(null).enabled, externalActions:true,scheduledMessages:true,schedulerProtocol:2,naverMail:{configured:integrations.naver.status(null).configured,readOnly:integrations.naver.status(null).readOnly,sendAvailable:integrations.naver.status(null).sendAvailable}, integrations: integrations.status(null).map(({ provider, configured }) => ({ provider, configured })) }); return true; }
       if (!['/api/auth/password/request', '/api/auth/password/confirm'].includes(path) || req.method !== 'POST') return false;
       if (limited('password:' + clientAddress(req))) throw fail(429, '잠시 후 다시 시도해주세요.');
       const body = await json(req); if (!validEmail(body.email)) throw fail(400, '이메일을 확인해주세요.');
@@ -191,6 +192,20 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       if(path==='/api/integrations/naver/resources'&&req.method==='GET'){if(limited('naver-read:'+user.id))throw fail(429,'잠시 후 다시 조회해주세요.');send(200,await integrations.naver.resources(user.id));return true;}
       const detail=/^\/api\/integrations\/(google|notion)\/detail$/.exec(path);if(detail&&req.method==='GET'){if(limited('detail:'+user.id))throw fail(429,'잠시 후 다시 조회해주세요.');const id=url.searchParams.get('id');if(typeof id!=='string'||id.length>1200)throw fail(400,'자료를 확인해주세요.');send(200,await integrations.readSource(user.id,detail[1],id));return true;}
 
+      if(path==='/api/integrations/google/task-refresh'&&req.method==='POST'){
+        const body=await json(req);
+        if(typeof body.list!=='string'||!body.list||body.list.length>1024)throw fail(400,'할 일 목록을 확인해주세요.');
+        const page=await integrations.resources(user.id,'google','tasks',body.list,body.cursor,'sync',undefined,body.connectionId);
+        send(200,{changed:store.syncTaskResources(user.id,'google',page.items),nextCursor:page.nextCursor});return true;
+      }
+      if(path==='/api/integrations/apple-reminders/refresh'&&req.method==='POST'){
+        const body=await readComputerBody(req,256*1024);
+        if(!Array.isArray(body?.items)||body.items.length>40||body.items.some(item=>!item||typeof item.id!=='string'||!item.id||item.id.length>200||
+          typeof item.title!=='string'||!item.title.trim()||item.title.length>120||typeof item.completed!=='boolean'||
+          typeof item.notes!=='string'||item.notes.length>4000||!validDate(item.dueDate??null)||
+          item.dueTime!=null&&(!item.dueDate||typeof item.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(item.dueTime))))throw fail(400,'미리 알림 자료를 확인해주세요.');
+        send(200,{changed:store.syncTaskResources(user.id,'apple-reminders',body.items)});return true;
+      }
       if (path === '/api/integrations/apple-reminders/import' && req.method === 'POST') {
         const body = await readComputerBody(req,256*1024);
         if (!body || !Array.isArray(body.items) || !body.items.length || body.items.length > 20) throw fail(400, '최대 20개를 선택해주세요.');
@@ -254,7 +269,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
       const match = /^\/api\/integrations\/(google|slack|notion)(?:\/(authorize|resources|import))?$/.exec(path); if (!match) return false;
       const [, provider, action] = match;
       if (action === 'authorize' && req.method === 'POST') { const body = await json(req); send(200, integrations.start(user.id, provider, body.features, req.headers['x-duckduck-client'] === 'native',{mode:body.mode,connectionId:body.connectionId})); return true; }
-      if (action === 'resources' && req.method === 'GET') { send(200, await integrations.resources(user.id, provider, url.searchParams.get('feature'), url.searchParams.get('channel'), url.searchParams.get('cursor'), url.searchParams.get('status') ?? 'incomplete',undefined,url.searchParams.get('connectionId')??undefined)); return true; }
+      if (action === 'resources' && req.method === 'GET') { send(200, await integrations.resources(user.id, provider, url.searchParams.get('feature'), url.searchParams.get('channel'), url.searchParams.get('cursor'), url.searchParams.get('status') === 'completed' ? 'completed' : url.searchParams.get('status') === 'sync' ? 'invalid' : url.searchParams.get('status') ?? 'incomplete',undefined,url.searchParams.get('connectionId')??undefined)); return true; }
       if (action === 'import' && req.method === 'POST') { const body = await json(req); send(200, { results: integrations.import(user.id, provider, body.ids) }); return true; }
       if (!action && req.method === 'DELETE') { send(200, await integrations.disconnect(user.id, provider,url.searchParams.get('connectionId')??undefined)); return true; }
       return false;

@@ -34,7 +34,7 @@ export function connectionRead(path:string,method:string){return method==='GET'&
 export function cancelledTransport(error:unknown){return error instanceof Error&&(/fetch request has been cancel[le]+d|network request.*cancel[le]+d/i.test(error.message));}
 
 /** Warm only before explicitly requested app writes, never replay OAuth or imports. */
-export function connectionWrite(path:string,method:string){return method!=='GET'&&(/^\/api\/calendar\/docen\/event-[a-z0-9-]+(?:\/(?:apple-delivery|reconcile))?$/.test(path)||/^\/api\/todos(?:\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?)?(?:\?|$)/.test(path)||/^\/api\/integrations\/(?:google|slack|notion)\/(?:authorize|import|diagnose|task-sync(?:\/(?:pull|retry))?)(?:\?|$)/.test(path)||/^\/api\/integrations\/(?:apple-reminders\/import|naver)(?:\?|$)/.test(path)||method==='DELETE'&&/^\/api\/integrations\/(?:google|slack|notion)(?:\?|$)/.test(path));}
+export function connectionWrite(path:string,method:string){return method!=='GET'&&(/^\/api\/calendar\/docen\/event-[a-z0-9-]+(?:\/(?:apple-delivery|reconcile))?$/.test(path)||/^\/api\/todos(?:\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?)?(?:\?|$)/.test(path)||/^\/api\/integrations\/(?:google|slack|notion)\/(?:authorize|import|diagnose|task-refresh|task-sync(?:\/(?:pull|retry))?)(?:\?|$)/.test(path)||/^\/api\/integrations\/(?:apple-reminders\/(?:import|refresh)|naver)(?:\?|$)/.test(path)||method==='DELETE'&&/^\/api\/integrations\/(?:google|slack|notion)(?:\?|$)/.test(path));}
 
 /** The create endpoint deduplicates the same event ID and unchanged request body. */
 export function retryableDocenCalendarCreate(error:unknown){

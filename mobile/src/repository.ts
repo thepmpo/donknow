@@ -6,13 +6,14 @@ import type { Connection, Draft, Todo } from './domain';
 export const CONNECTION_KEY = 'duckduck.mobile.connection.v1';
 const DEMO_KEY = 'duckduck.mobile.demo.todos.v1';
 export type Patch = Partial<Pick<Todo, 'title' | 'category' | 'done' | 'dueDate' | 'dueTime' | 'reminderAt' | 'notes'>>;
+export type TodoEditBase={fields:Patch;sourceId:string|null;editedAt:string};
 export interface Repository {
   prepare?(draft: Draft): Promise<void>;
   list(): Promise<Todo[]>;
   create(draft: Draft,requestKey?:string): Promise<Todo>;
   receipt?(key:string):Promise<Todo|null>;
   get?(id:string):Promise<Todo>;
-  update(id: string, patch: Patch): Promise<Todo>;
+  update(id: string, patch: Patch, base?:TodoEditBase): Promise<Todo>;
   remove(id: string): Promise<void>;
   reorder(ids:string[]):Promise<Todo[]>;
 }
@@ -38,7 +39,7 @@ export function createRepository(connection: Connection): Repository {
           if(capability.todoCreateTargets!==1)throw new HttpResponseError(409,'선택한 목록에 저장하려면 최신 서버가 필요해요.');
         }
         if (draft.notes) await requireNotes(); return parseTodos([await call('', 'POST', {...validateDraft(draft),...(requestKey?{clientRequestKey:requestKey}:{})})])[0]; },
-      update: async (id, patch) => { if (patch.notes !== undefined) await requireNotes(); return parseTodos([await call('/' + encodeURIComponent(id), 'PATCH', patch)])[0]; },
+      update: async (id, patch, base) => { if (patch.notes !== undefined) await requireNotes(); return parseTodos([await call('/' + encodeURIComponent(id), 'PATCH', {...patch,...(base?{deviceEditBase:base}:{})})])[0]; },
       remove: async id => { await call('/' + encodeURIComponent(id), 'DELETE'); },
       reorder:async ids=>{const c=await request(baseUrl,'/api/capabilities') as {todoOrdering?:number};if(!c.todoOrdering)throw Error('순서 저장을 지원하는 최신 서버가 필요해요. 기존 순서는 유지했어요.');return parseTodos(await request(baseUrl,'/api/todo-order','PUT',{ids}));},
     };

@@ -1,5 +1,7 @@
+import {useDeviceCalendarEdits} from './useDeviceCalendarEdits';
 import {useEffect,useMemo,useRef} from 'react';
 import {AppState} from 'react-native';
+import type {CalendarEditQueue} from './calendar-device-queue';
 import {appleCalendarReceipts} from './calendar-device-queue';
 import {useCalendarLinkedSync} from './useCalendarLinkedSync';
 import {HttpResponseError} from './http-response';
@@ -13,14 +15,14 @@ import {useAppleCalendarData} from './useAppleCalendarData';
 import {isAppleCalendar} from './apple-calendar-model';
 import type {CalendarCreateQueue} from './calendar-create-queue';
 import type {AppleCalendarDevice} from './apple-calendar-model';
-import {docenCalendarId} from './calendar-model';
+import {docenCalendarId,eventOverlaps} from './calendar-model';
 import {mergeCalendarCopies} from './calendar-copies';
 import type {CalendarEvent,CalendarMirror,CalendarSource} from './calendar-model';
 import type {TodoStore} from './useTodos';
 const appleCreatesInFlight=new Set<string>();
 const appleDeletesInFlight=new Set<string>();
 const docenSource:CalendarSource={id:docenCalendarId,name:'도슨 캘린더',provider:'docen',accountLabel:'도슨',canWrite:true,color:'#2366e8'};
-export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof useCalendarData>[1]&{hidden?:string[];syncWhileHidden?:boolean},device?:AppleCalendarDevice,deviceCreateQueue?:CalendarCreateQueue){
+export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof useCalendarData>[1]&{hidden?:string[];syncWhileHidden?:boolean},device?:AppleCalendarDevice,deviceCreateQueue?:CalendarCreateQueue,deviceEditQueue?:CalendarEditQueue){
  const appleDevice=device??appleCalendarDevice;
  const refreshWhileHidden=!!options.syncWhileHidden&&appleDevice.available;
  const syncActive=options.active||refreshWhileHidden;
@@ -28,6 +30,13 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   owner=store.connection?.mode==='cloud'?store.connection.baseUrl+':'+store.user?.id:'demo',
   apple=useAppleCalendarData({owner,...options,refreshWhileHidden,enabled:!!store.user&&options.selectionReady!==false,device:appleDevice});
  const creates=useDeviceCalendarCreates(store,owner,async event=>{google.upsertEvent(event);await flushCalendarSnapshots(owner).catch(()=>{});void google.load();},deviceCreateQueue,options.active,event=>{google.removeEvent(event.id);void google.load();});
+ const edits=useDeviceCalendarEdits(store,owner,appleDevice,google.detailsSupported,apple.save,async(saved,original)=>{
+  if(saved.provider==='apple-calendar'){await apple.load();return;}
+  if(saved.id!==original.id)google.removeEvent(original.id);
+  google.upsertEvent(saved);
+  await flushCalendarSnapshots(owner);
+  void google.load(false,true);
+ },deviceEditQueue);
  const cancelled=new Set(creates.jobs.filter(job=>job.cancelled).map(job=>job.event.id));
  const devicePending=(event:CalendarEvent)=>creates.jobs.some(job=>job.event.id===event.id&&!job.cancelled);
  const visible=useMemo(()=>{
@@ -157,7 +166,13 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   const subscription=AppState.addEventListener('change',state=>{if(state==='active')retry();});
   return ()=>{clearInterval(timer);subscription.remove();};
  },[apple.available,pendingDeleteIds,owner,syncActive]);
- const shown=useMemo(()=>visible.filter(event=>!google.hiddenMirrors.some(target=>matchesCalendarMirror(event,target))),[visible,google.hiddenMirrors]);
+ const shown=useMemo(()=>{
+  const editing=new Set(edits.jobs.map(job=>job.original.id));
+  const local=edits.jobs.filter(job=>eventOverlaps(job.event,options.start,options.end,options.timeZone))
+   .map(job=>({...job.event,saveState:job.blocked?'checking' as const:'saving' as const,canWrite:false}));
+  return [...visible.filter(event=>!editing.has(event.id)),...local]
+   .filter(event=>!google.hiddenMirrors.some(target=>matchesCalendarMirror(event,target)));
+ },[visible,google.hiddenMirrors,edits.jobs,options.start,options.end,options.timeZone]);
  function editingOriginal(event:CalendarEvent){
   if(event.mirror?.provider!=='apple-calendar'||event.mirror.state!=='synced'||!event.providerDetails?.recurrence?.length)return event;
   return shown.find(row=>row.canWrite&&row.provider==='apple-calendar'&&matchesCalendarMirror(row,event.mirror!,event.dueDate))??event;
@@ -170,5 +185,5 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   return [remote?{...event,externalUid:remote.externalUid,color:remote.color??event.mirror?.color??event.color}:event];
  }));
  },[shown]);
- return {...google,confirmedAbsent:(event:CalendarEvent)=>apple.confirmedAbsent(event)||google.confirmedAbsent(event),enqueueCreate:creates.enqueue,devicePending,cancelDeviceCreate:creates.cancel,editingOriginal,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported||creates.enqueue?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>mergeCalendarCopies([...google.cachedEvents(),...apple.cached].filter(event=>{const id=event.mirror?.calendarId??event.calendarId??'primary';return !cancelled.has(event.id)&&(id===docenCalendarId||options.selected.includes(id));})),load:async(more=false,freshRequest=false)=>{await Promise.allSettled([google.load(more,freshRequest),apple.load()]);},loadSources:google.loadSources,upsertEvent:(e:CalendarEvent)=>{if(e.provider!=='apple-calendar')google.upsertEvent(e);},nativeError:apple.error};
+ return {...google,enqueueEdit:edits.enqueue,confirmedAbsent:(event:CalendarEvent)=>apple.confirmedAbsent(event)||google.confirmedAbsent(event),enqueueCreate:creates.enqueue,devicePending,cancelDeviceCreate:creates.cancel,editingOriginal,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported||creates.enqueue?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>mergeCalendarCopies([...google.cachedEvents(),...apple.cached].filter(event=>{const id=event.mirror?.calendarId??event.calendarId??'primary';return !cancelled.has(event.id)&&(id===docenCalendarId||options.selected.includes(id));})),load:async(more=false,freshRequest=false)=>{await Promise.allSettled([google.load(more,freshRequest),apple.load()]);},loadSources:google.loadSources,upsertEvent:(e:CalendarEvent)=>{if(e.provider!=='apple-calendar')google.upsertEvent(e);},nativeError:apple.error};
 }
