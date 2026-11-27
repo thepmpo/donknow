@@ -1,5 +1,41 @@
 # 매일 개발 정리
 
+<!-- daily:2026-11-28:start -->
+### 2026-11-28 — 당일 저장된 작업
+
+실제 정리: 04:24 KST. 새 저장 작업 15개. 자동 집계는 코드 저장 사실이며 테스트/배포 성공을 의미하지 않습니다.
+
+- [d012490](https://github.com/sjfieni/donknow/commit/d012490bbc4dac0f52bedecc224012415dd97592) · 11-27 07:24 · Recover calendar connections and reconcile linked schedule edits
+
+- [970f3a7](https://github.com/sjfieni/donknow/commit/970f3a767f43f817810c348792cee661af41bf14) · 11-27 07:24 · Record calendar recovery behavior and verification
+
+- [ff2871c](https://github.com/sjfieni/donknow/commit/ff2871c525ff892e125676541e5172b6fbb30998) · 11-27 07:24 · Select the weekly view explicitly in week-specific fixture paths
+
+- [3e64d28](https://github.com/sjfieni/donknow/commit/3e64d28dc847b7abb213a5257a2c3e1f9c4accc7) · 11-27 07:25 · Wake pending calendar retries immediately on tab entry
+
+- [1bc2681](https://github.com/sjfieni/donknow/commit/1bc268142bb76cd2854edf5d7510c660618bac51) · 11-27 07:25 · Read calendar failure codes in the supported TypeScript runtime
+
+- [1694f74](https://github.com/sjfieni/donknow/commit/1694f747fd1c0923ba7d6794a1bd0a3da42e5d29) · 11-27 07:40 · Return to the ME overview when the settings tab is reselected
+
+- [e7f5731](https://github.com/sjfieni/donknow/commit/e7f5731eb7505dd255ffdc0e33eabb500b758ba7) · 11-27 07:41 · Restore the requested settings scroll position after returning
+
+- [a7f621d](https://github.com/sjfieni/donknow/commit/a7f621d9d6e7cb917d8c70b844412747105bc47c) · 11-27 07:41 · Record and verify ME tab reselection
+
+- [f2f76c7](https://github.com/sjfieni/donknow/commit/f2f76c718c74c9f18b8d551e4c9c429ddcb82eb9) · 11-27 19:47 · Delete queued calendar creates and refresh Apple calendar sources
+
+- [0259216](https://github.com/sjfieni/donknow/commit/02592163a6a6672560169690890d2c18b56d93e3) · 11-27 19:47 · Record offline calendar cancellation and Apple source refresh
+
+- [8ae11b8](https://github.com/sjfieni/donknow/commit/8ae11b89be20a87a8fe9efc1c8e3b544c322c33c) · 11-27 22:17 · Refresh connected calendars and reconcile Apple deletions
+
+- [fc85b4b](https://github.com/sjfieni/donknow/commit/fc85b4b7637da5c41df0a92aa88826c0a2a7f1bd) · 11-27 22:22 · Keep Apple and Docen deletions in sync across calendar views
+
+- [c9e0041](https://github.com/sjfieni/donknow/commit/c9e0041434f7552ebf5884e879346cdf99101642) · 11-27 22:26 · Verify Apple calendar updates for past dates
+
+- [22d4d35](https://github.com/sjfieni/donknow/commit/22d4d3531149ad639e3224fe4f797749fd95e347) · 11-27 22:38 · Persist iPhone edits and refresh linked task sources
+
+- [cd8e7fc](https://github.com/sjfieni/donknow/commit/cd8e7fcef891521875968d9f4784be54765d141a) · 11-27 22:50 · Continue calendar and task synchronization in background
+<!-- daily:2026-11-28:end -->
+
 <!-- daily:2026-11-27:start -->
 ### 2026-11-27 — 당일 저장된 작업
 
