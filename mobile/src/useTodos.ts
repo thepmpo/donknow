@@ -1,8 +1,8 @@
 import {refreshTodoSources} from './todo-source-refresh';
 import {clearAppleTodoReceipts,useAppleTodoDelivery} from './useAppleTodoDelivery';
 import type {QueuedTodoEdit} from './todo-device-queue';
-import {deviceTodos,isDeviceTodo,queuedTodo} from './todo-device-queue';
-import {appleCalendarReceipts,deviceCalendarEdits,deviceCalendarQueue} from './calendar-device-queue';
+import {deviceTodos,isDeviceTodo,queuedTodo,todoEditSending} from './todo-device-queue';
+import {appleCalendarReceipts,deviceCalendarEdits,deviceCalendarQueue,todoCreateSending} from './calendar-device-queue';
 import {forgetCalendarSnapshots} from './calendar-snapshot-cache';
 import {moveAppleReminder} from './todo-membership';
 import type {AppleMoveReceipt,MembershipPage} from './todo-membership';
@@ -184,7 +184,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     if(!deviceCreateOwner||!device)return;
     const owner=deviceCreateOwner,version=generation.current,{queue,cache}=device;
     const current=()=>generation.current===version&&calendarOwner.current===owner;
-    let sending=false,disposed=false;
+    let disposed=false;
     const retryAt=new Map<string,{attempt:number;at:number}>();
     function publish(){
       if(!current())return;
@@ -197,11 +197,11 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     const unsubscribe=queue.watch(owner,publish);
     void queue.read(owner).then(publish).catch(()=>{});
     async function flush(){
-      if(disposed||!current()||sending||AppState.currentState!=='active'||!repo.current)return;
+      if(disposed||!current()||todoCreateSending.has(owner)||AppState.currentState!=='active'||!repo.current)return;
       const repository=repo.current;
       const job=queue.snapshot(owner)?.find(item=>!item.blocked&&(retryAt.get(item.id)?.at??0)<=Date.now());
       if(!job)return;
-      sending=true;
+      todoCreateSending.add(owner);
       try{
         const saved=await repository.create(job.draft,job.id);
         if(!current())return;
@@ -223,7 +223,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
           const attempt=(retryAt.get(job.id)?.attempt??0)+1;
           retryAt.set(job.id,{attempt,at:Date.now()+Math.min(60000,1000*2**Math.min(attempt-1,6))});
         }
-      }finally{sending=false;}
+      }finally{todoCreateSending.delete(owner);}
     }
     const timer=setInterval(()=>void flush(),1000);
     const app=AppState.addEventListener('change',state=>{if(state==='active')void flush();});
@@ -234,15 +234,15 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     if(!deviceCreateOwner||!device)return;
     const owner=deviceCreateOwner,version=generation.current,{edits,cache}=device;
     const current=()=>version===generation.current&&calendarOwner.current===owner;
-    let sending=false,disposed=false,retryAt=0;
+    let disposed=false,retryAt=0;
     const same=(todo:Todo,patch:Patch)=>Object.entries(patch).every(([key,value])=>JSON.stringify(todo[key as keyof Todo]??null)===JSON.stringify(value??null));
     const replace=(todo:Todo)=>setTodos(rows=>[...rows.map(row=>row.id===todo.id?todo:row),...(!rows.some(row=>row.id===todo.id)?[todo]:[])]);
     async function flush(){
-      if(disposed||!current()||sending||Date.now()<retryAt||AppState.currentState!=='active'||!repo.current?.get)return;
+      if(disposed||!current()||todoEditSending.has(owner)||Date.now()<retryAt||AppState.currentState!=='active'||!repo.current?.get)return;
       const jobs=edits.snapshot(owner)??[],job=jobs.find((candidate,index)=>!candidate.blocked&&!jobs.slice(0,index).some(earlier=>earlier.before.id===candidate.before.id));
       if(!job)return;
       const repository=repo.current,id=job.before.id;
-      sending=true;
+      todoEditSending.add(owner);
       try{
         let saved=await repository.get!(id);
         if(!current())return;
@@ -271,7 +271,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
           await edits.change(owner,job.id,item=>({...item,blocked:true,failure:message(error)})).catch(()=>{});
           reportWrite(job.id,message(error),async()=>{await edits.block(owner,job.id,false);});
         }else retryAt=Date.now()+3000;
-      }finally{sending=false;}
+      }finally{todoEditSending.delete(owner);}
     }
     function changed(){
       if(!current())return;

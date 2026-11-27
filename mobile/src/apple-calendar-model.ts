@@ -26,16 +26,20 @@ export function appleEventPatch(draft:CalendarDraft,event?:CalendarEvent):Device
  return patch;
 }
 export type AppleCalendarDevice={available:boolean;snapshot?:(hidden:string[],start:string,end:string)=>Promise<{calendars:DeviceCalendar[];events:DeviceEvent[]}>;subscribe?:(listener:()=>void)=>()=>void;granted:()=>Promise<boolean>;authorize:()=>Promise<boolean>;calendars:()=>Promise<DeviceCalendar[]>;events:(ids:string[],start:string,end:string)=>Promise<DeviceEvent[]>;isLinkedEventMissing?:(id:string,externalUid:string,calendarId:string)=>Promise<boolean>;readLinked?:(externalUid:string,calendarId:string)=>Promise<DeviceEvent>;read:(id:string,start?:string,calendarId?:string)=>Promise<DeviceEvent>;create:(calendarId:string,patch:DeviceEventPatch)=>Promise<DeviceEvent>;update:(id:string,start:string|undefined,patch:DeviceEventPatch,calendarId?:string)=>Promise<DeviceEvent>;remove:(id:string,start?:string,calendarId?:string)=>Promise<void>};
-export async function saveAppleCalendar(device:AppleCalendarDevice,draft:CalendarDraft,event:CalendarEvent|undefined,current:()=>boolean){
+export async function saveAppleCalendar(device:AppleCalendarDevice,draft:CalendarDraft,event:CalendarEvent|undefined,current:()=>boolean,
+ receipt?:{beforeWrite:()=>Promise<void>}){
  if(!device.available||!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 허용해주세요.');if(!current())throw Error('계정이 바뀌었어요.');
  const rawId=decodeURIComponent(draft.calendarId.slice(appleCalendarPrefix.length)),calendars=await device.calendars(),calendar=calendars.find(c=>c.id===rawId);if(!isAppleCalendar(draft.calendarId)||!calendar?.writable)throw Error('쓰기 가능한 아이폰 캘린더를 선택해주세요.');
  const fresh=event?await device.read(event.eventId!,event.nativeStart,rawId):null;
  if(fresh&&appleEventVersion(fresh)!==event?.etag)throw Error('원본 일정이 바뀌었어요. 새로 확인한 뒤 저장해주세요.');
  const patch=appleEventPatch(draft,event);
  if(fresh?.modified)patch.expectedModified=Date.parse(fresh.modified);
- if(!current())throw Error('계정이 바뀌었어요.');let saved:DeviceEvent;
+ if(!current())throw Error('계정이 바뀌었어요.');
+ // The caller persists a receipt under the captured account, even if the app resumes during the write.
+ if(receipt)await receipt.beforeWrite();
+ let saved:DeviceEvent;
  try{saved=event?await device.update(event.eventId!,event.nativeStart,patch,rawId):await device.create(rawId,patch);}catch{throw Object.assign(Error('아이폰 캘린더에서 저장 결과를 확인해주세요.'),{writeState:'unknown'});}
- if(!current())throw Object.assign(Error('계정이 바뀌어 저장 결과를 표시하지 않았어요.'),{writeState:'unknown'});
+ if(!receipt&&!current())throw Object.assign(Error('계정이 바뀌어 저장 결과를 표시하지 않았어요.'),{writeState:'unknown'});
  const normalized=normalizeAppleEvent(saved,calendar);
  if(patch.allDay!==undefined&&(normalized.allDay!==patch.allDay||patch.allDay&&
    (normalized.dueDate!==patch.allDayStart||normalized.endDate!==patch.allDayEnd))){

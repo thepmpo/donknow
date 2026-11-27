@@ -13,7 +13,7 @@ import {HttpResponseError} from './http-response';
 import type {TodoStore} from './useTodos';
 
 const empty:readonly QueuedCalendarEdit[]=[];
-const sending=new Set<string>();
+export const calendarEditSending=new Set<string>();
 const conflict=(reason:string)=>new HttpResponseError(409,reason);
 function appleMatches(original:CalendarEvent,draft:CalendarDraft,event:DeviceEvent){
  const patch=appleEventPatch(draft,original);
@@ -24,19 +24,13 @@ function appleMatches(original:CalendarEvent,draft:CalendarDraft,event:DeviceEve
   return (event[key as keyof DeviceEvent]??'')===value;
  });
 }
-export function useDeviceCalendarEdits(store:TodoStore,owner:string,device:AppleCalendarDevice,metadataAvailable:boolean,
- saveApple:(draft:CalendarDraft,event:CalendarEvent)=>Promise<CalendarEvent>,onSaved:(saved:CalendarEvent,old:CalendarEvent)=>Promise<void>,injectedQueue?:CalendarEditQueue){
- const enabled=(Platform.OS==='ios'||!!injectedQueue)&&!!store.user?.emailVerified&&store.connection?.mode==='cloud';
- const queue=injectedQueue??deviceCalendarEdits;
- const jobs=useSyncExternalStore(fn=>enabled?queue.watch(owner,fn):()=>{},()=>enabled?queue.snapshot(owner)??empty:empty);
- const latest=useRef({store,owner,device,saveApple,onSaved});latest.current={store,owner,device,saveApple,onSaved};
- useEffect(()=>{
-  if(!enabled)return;
-  let stopped=false,retryAt=0;
-  const context=latest.current,current=()=>!stopped&&latest.current.owner===owner&&context.store.isCurrentSession();
-  async function send(job:QueuedCalendarEdit){
+export async function sendCalendarEdit(job:QueuedCalendarEdit,context:{
+ device:AppleCalendarDevice;request:TodoStore['featureRequest'];
+ saveApple:(draft:CalendarDraft,event:CalendarEvent)=>Promise<CalendarEvent>;
+ current:()=>boolean;saveAction:(id:string)=>Promise<void>;
+}){
+   const {request,current}=context;
    const {original,draft}=job;
-   const request=context.store.featureRequest;
    if(original.provider==='docen'){
     const path='/api/calendar/docen/'+encodeURIComponent(original.eventId!);
     return await request(path,'PUT',{...docenEventPayload(draft,original),deviceReplay:true}) as CalendarEvent;
@@ -62,14 +56,14 @@ export function useDeviceCalendarEdits(store:TodoStore,owner:string,device:Apple
      return normalizeAppleEvent(raw,calendar);
     }
     if(appleEventVersion(raw)!==original.etag)throw conflict('아이폰 원본 일정이 바뀌었어요. 현재 내용을 확인해주세요.');
-    return latest.current.saveApple(draft,original);
+    return context.saveApple(draft,original);
    }
    const args=calendarWriteArgs(draft,original,!job.metadataAvailable);
    const fields=job.metadataAvailable?calendarDuckPatch(draft,original):{};
    let result:CalendarPending|undefined;
    if(args){
     const actionId=job.actionId??(await request('/api/assistant/actions','POST',{operation:'calendar.update',args:{...args,connectionId:original.connectionId??undefined}}) as CalendarPending).id;
-    if(!job.actionId)await queue.change(owner,job.id,entry=>({...entry,actionId}));
+    if(!job.actionId)await context.saveAction(actionId);
     if(!current())throw Error('계정이 바뀌었어요.');
     result=await request('/api/assistant/actions/'+actionId) as CalendarPending;
     if(result.status==='pending')result=await request('/api/assistant/actions/'+actionId+'/confirm','POST',{confirmation:true}) as CalendarPending;
@@ -84,13 +78,24 @@ export function useDeviceCalendarEdits(store:TodoStore,owner:string,device:Apple
    }
    return {...original,...confirmedCalendarPatch(draft,original),eventId:id,duckDetails:details,etag:result?.result?.etag??original.etag};
   }
+export function useDeviceCalendarEdits(store:TodoStore,owner:string,device:AppleCalendarDevice,metadataAvailable:boolean,
+ saveApple:(draft:CalendarDraft,event:CalendarEvent)=>Promise<CalendarEvent>,onSaved:(saved:CalendarEvent,old:CalendarEvent)=>Promise<void>,injectedQueue?:CalendarEditQueue){
+ const enabled=(Platform.OS==='ios'||!!injectedQueue)&&!!store.user?.emailVerified&&store.connection?.mode==='cloud';
+ const queue=injectedQueue??deviceCalendarEdits;
+ const jobs=useSyncExternalStore(fn=>enabled?queue.watch(owner,fn):()=>{},()=>enabled?queue.snapshot(owner)??empty:empty);
+ const latest=useRef({store,owner,device,saveApple,onSaved});latest.current={store,owner,device,saveApple,onSaved};
+ useEffect(()=>{
+  if(!enabled)return;
+  let stopped=false,retryAt=0;
+  const context=latest.current,current=()=>!stopped&&latest.current.owner===owner&&context.store.isCurrentSession();
   async function flush(){
-   if(!current()||sending.has(owner)||Date.now()<retryAt||AppState.currentState!=='active')return;
+   if(!current()||calendarEditSending.has(owner)||Date.now()<retryAt||AppState.currentState!=='active')return;
    const job=queue.snapshot(owner)?.find(entry=>!entry.blocked);
    if(!job)return;
-   sending.add(owner);
+   calendarEditSending.add(owner);
    try{
-    const saved=await send(job);
+    const saved=await sendCalendarEdit(job,{device:context.device,request:context.store.featureRequest,current,
+     saveApple:latest.current.saveApple,saveAction:actionId=>queue.change(owner,job.id,entry=>({...entry,actionId}))});
     if(!current())return;
     await latest.current.onSaved(saved,job.original);
     if(!current())return;
@@ -102,7 +107,7 @@ export function useDeviceCalendarEdits(store:TodoStore,owner:string,device:Apple
      await queue.block(owner,job.id,true).catch(()=>{});
      context.store.reportWrite('calendar-edit:'+job.id,error.message,()=>queue.block(owner,job.id,false));
     }else retryAt=Date.now()+3000;
-   }finally{sending.delete(owner);}
+   }finally{calendarEditSending.delete(owner);}
   }
   const start=()=>{setTimeout(()=>void flush(),32);};
   const watch=queue.watch(owner,start);

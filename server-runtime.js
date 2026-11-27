@@ -1,3 +1,4 @@
+import {startGoogleBackgroundSync} from './server/google-background-sync.js';
 import {publicLaunchRestriction,sendPublicLaunchRestriction} from './server/public-launch.js';
 import {requireNewPassword} from './server/password-policy.js';
 import {publicLegal,validateSignupAgreements} from './server/legal-policy.js';
@@ -38,6 +39,7 @@ const mailer = createMailer();
 // Explicit account-mail requests still call worker.tick immediately. Idle remote DB polling is bounded.
 const worker = startMailWorker(store, mailer, background?(process.env.NODE_ENV === 'test' ? 20 : process.env.STORE_DRIVER==='turso'?15000:2000):null);
 const integrations = createIntegrations(store);
+const googleBackgroundSync=startGoogleBackgroundSync(store,integrations,{enabled:background&&process.env.NODE_ENV!=='test'});
 const todoMembership=createTodoMembership(store,integrations);
 const taskSync=createTaskSync(store,integrations,{background});
 const todoDelivery=createTodoDelivery(store,integrations,{background});
@@ -251,5 +253,5 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
   } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.',...(error.code==='calendar-event-deleted'?{code:error.code}:{}) }); else res.end(); }
 })).listen(Number(process.env.PORT || 3000), lane?'127.0.0.1':'0.0.0.0', () => {if(lane)parentPort.postMessage({type:'ready',port:server.address().port});else console.log('Donknow listening on port ' + server.address().port);if(background&&process.env.NODE_ENV!=='test'){void probeAiConnection();void probeMailConfiguration();}});
-if(lane)parentPort.on('message',message=>{if(message.type==='wake'){features.wakeSource();todoDelivery.wake();}if(message.type==='wake-calendar')features.wakeCalendarDelivery();if(message.type==='close'){features.close();taskSync.stop();todoDelivery.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
+if(lane)parentPort.on('message',message=>{if(message.type==='wake'){features.wakeSource();todoDelivery.wake();}if(message.type==='wake-calendar')features.wakeCalendarDelivery();if(message.type==='close'){features.close();googleBackgroundSync.stop();taskSync.stop();todoDelivery.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
 

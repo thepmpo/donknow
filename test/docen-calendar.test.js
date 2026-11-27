@@ -46,6 +46,10 @@ test('Apple delivery has one owner-bound device claim and keeps an uncertain loc
   const outsideRange=await h.request('/api/calendar/events?calendarId=%40docen&start=2026-12-01&end=2026-12-08&timeZone=Asia%2FSeoul', 'GET',undefined,owner.token);
   assert.deepEqual(outsideRange.data.items,[]);
   assert.equal(outsideRange.data.appleCreates[0].id,save.data.id);
+  const work='/api/calendar/docen/apple-work';
+  assert.equal((await h.request(work)).status,401);
+  assert.deepEqual((await h.request(work,'GET',undefined,other.token)).data.creates,[]);
+  assert.equal((await h.request(work,'GET',undefined,owner.token)).data.creates[0].id,save.data.id);
   const delivery=path+'/apple-delivery';
   assert.equal((await h.request(delivery,'POST',{state:'sending'},other.token)).status,404);
   assert.equal((await h.request(delivery,'POST',{state:'sending'},owner.token)).status,200);
@@ -76,6 +80,7 @@ test('deleting a Docen event during Apple delivery hides it immediately, then qu
   const pending=(await request(range)).data.hiddenMirrors;
   assert.equal(pending[0].state,'delete-queued');
   assert.equal(pending[0].externalEventId,original.externalEventId);
+  assert.equal((await request('/api/calendar/docen/apple-work')).data.deletes[0].externalEventId,original.externalEventId);
   assert.equal((await request(delivery,'POST',{state:'deleted',...original})).status,200);
   assert.deepEqual((await request(range)).data.hiddenMirrors,[]);
   assert.deepEqual((await request(range)).data.items,[]);

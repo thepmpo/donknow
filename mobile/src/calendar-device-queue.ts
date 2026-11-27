@@ -5,14 +5,16 @@ import {createDeviceCreateQueue} from './device-create-queue';
 
 export const deviceCalendarQueue=createCalendarCreateQueue(createCalendarDeviceStore({
  get:key=>SecureStore.getItemAsync(key),
- set:(key,value)=>SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY}),
+ set:(key,value)=>SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY}),
  remove:key=>SecureStore.deleteItemAsync(key),
 },'docen.calendar.outbox.'));
 
+export const calendarCreateSending=new Set<string>();
+export const todoCreateSending=new Set<string>();
 type AppleCalendarReceipt={id:string;claimId:string;started?:boolean;externalEventId?:string;externalUid?:string};
 export const appleCalendarReceipts=createDeviceCreateQueue(createCalendarDeviceStore({
  get:key=>SecureStore.getItemAsync(key),
- set:(key,value)=>SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY}),
+ set:(key,value)=>SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY}),
  remove:key=>SecureStore.deleteItemAsync(key),
 },'docen.calendar.apple-receipts.'),(entry):entry is AppleCalendarReceipt=>{
  const value=entry as Partial<AppleCalendarReceipt>|null;
@@ -32,6 +34,6 @@ export function createCalendarEditQueue(storage:Parameters<typeof createCalendar
 export type CalendarEditQueue=ReturnType<typeof createCalendarEditQueue>;
 export const deviceCalendarEdits=createCalendarEditQueue({
  get:key=>SecureStore.getItemAsync(key),
- set:(key,value)=>SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY}),
+ set:(key,value)=>SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY}),
  remove:key=>SecureStore.deleteItemAsync(key),
 });

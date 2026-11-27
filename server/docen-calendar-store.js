@@ -64,6 +64,25 @@ export function docenCalendarStore(db,box){
    const saved=decode(row);
    return event(saved,saved.args.timeZone,mirror(delivery(user,id)));
   },
+  appleCalendarBackgroundWork(user,after){
+   if(after&&!validId(after))throw fail(400,'동기화 위치를 확인해주세요.');
+   const linked=db.prepare(`SELECT e.id,e.revision,e.data,d.available_at,d.state,d.data AS delivery_data
+    FROM docen_calendar_delivery d JOIN docen_calendar_events e ON e.user_id=d.user_id AND e.id=d.event_id
+    WHERE d.user_id=? AND d.provider='apple-calendar' AND d.state='synced' AND d.event_id>?
+    AND NOT EXISTS (SELECT 1 FROM docen_calendar_deleted x WHERE x.user_id=d.user_id AND x.event_id=d.event_id)
+    ORDER BY d.event_id LIMIT 13`).all(user,after??'');
+   const creates=db.prepare(`SELECT e.id,e.revision,e.data,d.available_at,d.state,d.data AS delivery_data
+    FROM docen_calendar_delivery d JOIN docen_calendar_events e ON e.user_id=d.user_id AND e.id=d.event_id
+    WHERE d.user_id=? AND d.provider='apple-calendar' AND d.state IN ('queued','sending','checking')
+    AND NOT EXISTS (SELECT 1 FROM docen_calendar_deleted x WHERE x.user_id=d.user_id AND x.event_id=d.event_id)
+    ORDER BY d.event_id LIMIT 100`).all(user);
+   const decodeEvent=row=>{
+    const saved=decode(row);
+    return event(saved,saved.args.timeZone,mirror({...row,data:row.delivery_data}));
+   };
+   return {items:linked.slice(0,12).map(decodeEvent),nextCursor:linked.length>12?linked[11].id:null,
+    creates:creates.map(decodeEvent),deletes:pendingDeletes(user).filter(target=>target.provider==='apple-calendar')};
+  },
   saveDocenCalendarEvent(user,id,body){
    let target;
    if(body?.target){
@@ -163,6 +182,15 @@ export function docenCalendarStore(db,box){
     db.prepare("UPDATE docen_calendar_delivery SET state=?,data=? WHERE user_id=? AND event_id=? AND state='sending'").run(input.state==='synced'&&deleted(user,id)?'delete-queued':input.state,box.seal({...target,...(input.state==='synced'?{externalEventId,...(externalUid?{externalUid}:{}),syncBaseline:{fields:input.fields?calendarSyncFields(input.fields):calendarSyncFields(decode(get(user,id)).args),version:null}}:{})}),user,id);
    }else throw fail(409,'동기화 상태가 바뀌었어요.');
    return mirror(delivery(user,id));
+  },
+  linkedGoogleSyncPage(after,limit){
+   return db.prepare(`SELECT d.user_id user,d.event_id id,e.revision
+    FROM docen_calendar_delivery d JOIN docen_calendar_events e ON e.user_id=d.user_id AND e.id=d.event_id
+    JOIN active_users u ON u.id=d.user_id
+    WHERE d.provider='google' AND d.state='synced' AND u.email_verified_at IS NOT NULL
+    AND (d.user_id,d.event_id)>(?,?)
+    AND NOT EXISTS (SELECT 1 FROM docen_calendar_deleted x WHERE x.user_id=d.user_id AND x.event_id=d.event_id)
+    ORDER BY d.user_id,d.event_id LIMIT ?`).all(after.user,after.id,limit);
   },
   linkedDocenCalendar(user,id,revision){
    const saved=get(user,id),row=delivery(user,id);

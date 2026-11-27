@@ -2,11 +2,9 @@ import {useDeviceCalendarEdits} from './useDeviceCalendarEdits';
 import {useEffect,useMemo,useRef} from 'react';
 import {AppState} from 'react-native';
 import type {CalendarEditQueue} from './calendar-device-queue';
-import {appleCalendarReceipts} from './calendar-device-queue';
+import {syncAppleCalendarCreate,syncAppleCalendarDeletes} from './apple-calendar-delivery';
 import {useCalendarLinkedSync} from './useCalendarLinkedSync';
-import {HttpResponseError} from './http-response';
 import {appleCalendarDevice} from './apple-calendar-device';
-import {eventDraft} from './calendar-edit-model';
 import {matchesCalendarMirror,overlayCalendarWrites,removeCalendarEventWrites} from './calendar-write-overlay';
 import {flushCalendarSnapshots} from './calendar-snapshot-cache';
 import {useDeviceCalendarCreates} from './useDeviceCalendarCreates';
@@ -19,8 +17,6 @@ import {docenCalendarId,eventOverlaps} from './calendar-model';
 import {mergeCalendarCopies} from './calendar-copies';
 import type {CalendarEvent,CalendarMirror,CalendarSource} from './calendar-model';
 import type {TodoStore} from './useTodos';
-const appleCreatesInFlight=new Set<string>();
-const appleDeletesInFlight=new Set<string>();
 const docenSource:CalendarSource={id:docenCalendarId,name:'도슨 캘린더',provider:'docen',accountLabel:'도슨',canWrite:true,color:'#2366e8'};
 export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof useCalendarData>[1]&{hidden?:string[];syncWhileHidden?:boolean},device?:AppleCalendarDevice,deviceCreateQueue?:CalendarCreateQueue,deviceEditQueue?:CalendarEditQueue){
  const appleDevice=device??appleCalendarDevice;
@@ -57,60 +53,10 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   const context=native.current, scope=context.owner;
   const current=()=>native.current.owner===scope&&context.store.isCurrentSession();
   async function process(){
-   if(AppState.currentState!=='active'||!current()||appleCreatesInFlight.has(scope))return;
-   appleCreatesInFlight.add(scope);
-   let refresh=false;
-   try{
-    if(!await context.device.granted()||!current())return;
-    const receipts=await appleCalendarReceipts.read(scope);
-    const candidates=latestApple.current;
-    const event=candidates.find(value=>receipts.some(receipt=>receipt.id===value.id&&!!receipt.externalEventId))
-      ??candidates.find(value=>{
-       const known=receipts.find(receipt=>receipt.id===value.id);
-       return known?!known.started:value.mirror?.state==='queued';
-      });
-    if(!event?.eventId||!event.mirror||!current())return;
-    const target=event.mirror,path='/api/calendar/docen/'+encodeURIComponent(event.eventId)+'/apple-delivery';
-    let receipt=receipts.find(value=>value.id===event.id);
-    if(!receipt){
-     const claimId='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{
-      const digit=Math.floor(Math.random()*16);
-      return (c==='x'?digit:(digit&3)|8).toString(16);
-     });
-     receipt={id:event.id,claimId};
-     await appleCalendarReceipts.add(scope,receipt);
-    }
-    if(!current())return;
-    if(!receipt.externalEventId){
-     if(receipt.started)return;
-     try{await context.store.featureRequest(path,'POST',{state:'sending',claimId:receipt.claimId});}
-     catch(error){
-      if(error instanceof HttpResponseError&&error.status===409){await appleCalendarReceipts.remove(scope,receipt.id);refresh=true;}
-      throw error;
-     }
-     if(!current())return;
-     const draft={...eventDraft(event.dueDate??options.start,event.timeZone??options.timeZone,target.calendarId,event),calendarId:target.calendarId,reminderMinutes:null};
-     const recurrence=event.providerDetails?.recurrence?.[0]?.slice('RRULE:FREQ='.length).toLowerCase();
-     if(recurrence==='daily'||recurrence==='weekly'||recurrence==='monthly'||recurrence==='yearly')draft.repeat=recurrence;
-     await appleCalendarReceipts.put(scope,{...receipt,started:true});
-     if(!current())return;
-     let external:CalendarEvent;
-     try{external=await context.apple.save(draft);}
-     catch{if(current())await context.store.featureRequest(path,'POST',{state:'checking',claimId:receipt.claimId});refresh=true;return;}
-     if(!external.eventId)return;
-     receipt={...receipt,started:true,externalEventId:external.eventId,externalUid:external.externalUid};
-     await appleCalendarReceipts.put(scope,receipt);
-    }
-    if(!current())return;
-    await context.store.featureRequest(path,'POST',{state:'synced',claimId:receipt.claimId,externalEventId:receipt.externalEventId,externalUid:receipt.externalUid});
-    await appleCalendarReceipts.remove(scope,receipt.id);
-    refresh=true;
-   }catch{
-    // A reserved claim or an acknowledged EventKit identifier can be replayed safely.
-   }finally{
-    appleCreatesInFlight.delete(scope);
-    if(refresh&&current())void google.load();
-   }
+   if(AppState.currentState==='active')await syncAppleCalendarCreate(scope,()=>latestApple.current,context.device,context.store.featureRequest,current,options.start,options.timeZone,()=>{
+    void google.load();
+    void context.apple.load();
+   });
   }
   void process();
   const timer=setInterval(()=>void process(),5000);
@@ -127,39 +73,10 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
  useEffect(()=>{
   if(!syncActive||!apple.available||!latestDeletes.current.length)return;
   const context=native.current, current=()=>native.current.owner===context.owner&&context.store.isCurrentSession();
-  const missing=(error:unknown)=>!!error&&typeof error==='object'&&'code' in error
-   &&['ERR_EVENT_UNAVAILABLE','ERR_EVENT_NOT_FOUND','ERR_ITEM_NO_LONGER_EXISTS'].includes(String(error.code));
-  async function process(){
-   if(AppState.currentState!=='active'||!current()||!await context.device.granted())return;
-   for(const target of latestDeletes.current){
-    if(!native.current.apple.sources.some(source=>source.id===target.calendarId&&source.canWrite))continue;
-    const key=owner+'|'+target.id,externalEventId=target.externalEventId!;
-    if(appleDeletesInFlight.has(key))continue;
-    appleDeletesInFlight.add(key);
-    try{
-     const rawId=decodeURIComponent(target.calendarId.slice('@apple/'.length));
-     let original;
-     try{original=await context.device.read(externalEventId,undefined,rawId);}
-     catch(error){
-      if(!missing(error)||!target.externalUid||!context.device.readLinked)throw error;
-      try{original=await context.device.readLinked(target.externalUid,rawId);}
-      catch(lookup){
-       if(!missing(lookup)||!await context.device.isLinkedEventMissing?.(externalEventId,target.externalUid,rawId))throw lookup;
-      }
-     }
-     if(original){
-      if(original.calendarId!==rawId||!current())continue;
-      await context.device.remove(original.id,undefined,rawId);
-     }
-     if(!current())continue;
-     await context.store.featureRequest('/api/calendar/docen/'+encodeURIComponent(target.id)+'/apple-delivery','POST',{state:'deleted',externalEventId});
-     await context.apple.load();
-     if(current())void google.load();
-    }catch{
-     // A missing or changed identifier alone is insufficient to confirm an original deletion.
-    }finally{appleDeletesInFlight.delete(key);}
-   }
-  }
+  const process=async()=>{
+   if(AppState.currentState==='active')await syncAppleCalendarDeletes(owner,latestDeletes.current,context.device,context.store.featureRequest,current,
+    id=>native.current.apple.sources.some(source=>source.id===id&&source.canWrite),async()=>{await context.apple.load();if(current())void google.load();});
+  };
   const retry=()=>void process().catch(()=>{});
   retry();
   const timer=setInterval(retry,10000);

@@ -237,6 +237,9 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         const remote=await integrations.calendarReminders(user.id);
         send(200,{...remote,items:[...remote.items,...store.docenCalendarReminders(user.id)]});return true;
       }
+      if(path==='/api/calendar/docen/apple-work'&&req.method==='GET'){
+        send(200,store.appleCalendarBackgroundWork(user.id,url.searchParams.get('cursor')));return true;
+      }
       const reconcile=/^\/api\/calendar\/docen\/(event-[a-z0-9-]{5,44})\/reconcile$/.exec(path);
       if(reconcile&&req.method==='POST'){
         if(limited('docen-reconcile:'+user.id))throw fail(429,'잠시 후 일정을 다시 확인해주세요.');

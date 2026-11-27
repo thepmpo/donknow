@@ -8,6 +8,7 @@ import {createIntegrations} from '../server/integrations.js';
 import {createAssistant} from '../server/assistant.js';
 import {createAutomations} from '../server/automations.js';
 import {createTaskSync} from '../server/task-sync.js';
+import {startGoogleBackgroundSync} from '../server/google-background-sync.js';
 const env={PUBLIC_ORIGIN:'https://fixture.test',GOOGLE_CLIENT_ID:'fixture',GOOGLE_CLIENT_SECRET:'fixture',AI_ENABLED:'true',OPENAI_API_KEY:'fixture',OPENAI_MODEL:'fixture'};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json'}});
 const features=['calendar','calendarWrite','tasks','tasksWrite'];
@@ -33,6 +34,21 @@ async function fixture(){
  async function add(code,options={mode:'add'}){const {url}=integrations.start(user,'google',features,false,options);return integrations.callback('google',new URLSearchParams({state:new URL(url).searchParams.get('state'),code}));}
  return {dir,store,user,other:b.user.id,calls,integrations,add,fail:who=>{failAccount=who;},paginate:()=>{pagination=true;},close:async()=>{store.close();await rm(dir,{recursive:true,force:true});}};
 }
+test('Google background tick reads approved accounts, retries a failed account and preserves distinct task IDs',async()=>{
+ const h=await fixture();
+ const job=startGoogleBackgroundSync(h.store,h.integrations,{enabled:false});
+ try{
+  await h.add('one');await h.add('two');
+  h.fail('two');
+  await job.tick();
+  assert.deepEqual(h.store.list(h.user).map(todo=>todo.title),['one 할 일']);
+  assert.deepEqual(h.store.list(h.other),[]);
+  h.fail(null);
+  await job.tick();
+  await job.tick();
+  assert.deepEqual(h.store.list(h.user).map(todo=>todo.title).sort(),['one 할 일','two 할 일']);
+ }finally{job.stop();await h.close();}
+});
 test('OAuth add keeps existing Google accounts; same-account reapproval preserves identity and secrets stay encrypted',async()=>{
  const h=await fixture();try{
   await h.add('one');const first=h.store.connection(h.user,'google');const cached=await h.integrations.resources(h.user,'google','calendar');await h.add('two');assert.equal(h.store.connections(h.user,'google').length,2);assert.equal(h.store.connection(h.user,'google').accountId,first.accountId);assert.equal(h.integrations.import(h.user,'google',[cached.items[0].id]).length,1,'adding an account preserves the first account cache');

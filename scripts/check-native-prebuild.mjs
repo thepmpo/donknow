@@ -15,6 +15,8 @@ try{
  await run([join(mobile,'node_modules/expo/bin/cli'),'prebuild','--platform','ios','--no-install']);
  const projects=(await readdir(join(directory,'ios'))).filter(name=>name.endsWith('.xcodeproj'));assert.equal(projects.length,1,'Exactly one generated app project is expected');const appName=projects[0].slice(0,-'.xcodeproj'.length);
  const plist=await readFile(join(directory,'ios',appName,'Info.plist'),'utf8');
+ assert.match(plist,/<key>UIBackgroundModes<\/key>\s*<array>[\s\S]*?<string>processing<\/string>[\s\S]*?<\/array>/);
+ assert.match(plist,/<key>BGTaskSchedulerPermittedIdentifiers<\/key>\s*<array>[\s\S]*?<string>com\.expo\.modules\.backgroundtask\.processing<\/string>[\s\S]*?<\/array>/);
  assert.match(plist,/<key>CADisableMinimumFrameDurationOnPhone<\/key>\s*<true\s*\/>/,'iPhone must allow adaptive high refresh for UI-thread motion');
  const project=await readFile(join(directory,'ios',projects[0],'project.pbxproj'),'utf8');assert.ok(project.includes('DuckShortcuts.swift'),'AppIntents source must be linked to the actual app project');
  const autolinker=join(mobile,'node_modules/expo-modules-autolinking/bin/expo-modules-autolinking.js'),resolved=JSON.parse((await run([autolinker,'resolve','--platform','apple','--project-root',directory,'--json'])).stdout),packages=resolved.modules.filter(m=>m.pods.some(p=>p.podspecDir.startsWith(join(directory,'modules')+sep))).map(m=>m.packageName);

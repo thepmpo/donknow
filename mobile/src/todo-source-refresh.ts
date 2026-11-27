@@ -15,7 +15,7 @@ async function pages(current:()=>boolean,read:(cursor?:string)=>Promise<string|n
   seen.add(next);cursor=next;
  }
 }
-export async function refreshTodoSources(request:Request,current:()=>boolean,appleVersions:Map<string,string>){
+export async function refreshTodoSources(request:Request,current:()=>boolean,appleVersions:Map<string,string>,providers:{google?:boolean;apple?:boolean}={}){
  const capabilities=await request('/api/capabilities') as {todoSourceRefresh?:number};
  if(!current()||capabilities.todoSourceRefresh!==1)return false;
  let changed=false;
@@ -60,6 +60,6 @@ export async function refreshTodoSources(request:Request,current:()=>boolean,app
    }catch{}
   }
  }
- await Promise.allSettled([google(),apple()]);
+ await Promise.allSettled([providers.google===false?undefined:google(),providers.apple===false?undefined:apple()]);
  return changed&&current();
 }

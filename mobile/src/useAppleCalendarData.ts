@@ -15,6 +15,28 @@ function displayEvent({id,eventId,nativeStart,externalUid,calendarId,calendarNam
 const emptyEvents:CalendarEvent[]=[],emptySources:CalendarSource[]=[],emptyIds:string[]=[];
 const cache=new Map<string,Snapshot>(),listeners=new Map<string,Set<()=>void>>();
 export function refreshAppleCalendar(owner:string){listeners.get(owner)?.forEach(fn=>fn());}
+export async function refreshStoredAppleCalendar(owner:string,device:AppleCalendarDevice,current:()=>boolean){
+ const key='docen.apple-calendar.snapshot.'+owner;
+ const raw=await AsyncStorage.getItem(key);
+ if(!raw||!device.snapshot||!current())return;
+ const previous=JSON.parse(raw) as Snapshot;
+ if(previous.owner!==owner||!previous.start||!previous.end||!previous.selection)return;
+ const hidden=new Set<string>(JSON.parse(previous.selection));
+ const snapshot=await device.snapshot([],previous.start,previous.end);
+ if(!current())return;
+ const calendars=new Map(snapshot.calendars.map(calendar=>[calendar.id,calendar]));
+ const events=snapshot.events.flatMap(item=>{
+  const calendar=calendars.get(item.calendarId);
+  if(!calendar||hidden.has(appleCalendarSource(calendar).id)||!Number.isFinite(Date.parse(item.startDate))||!Number.isFinite(Date.parse(item.endDate)))return [];
+  return [displayEvent(normalizeAppleEvent(item,calendar))];
+ }).slice(0,1000);
+ const sources=snapshot.calendars.map(calendar=>({...appleCalendarSource(calendar),canWrite:false}));
+ if(!current())return;
+ const next={...previous,calendarIds:[],sources,events,readAt:new Date().toISOString()};
+ await AsyncStorage.setItem(key,JSON.stringify(next));
+ if(current())cache.set(owner,{...next,selection:undefined});
+ return true;
+}
 export function useAppleCalendarData({owner,start,end,timeZone,selected,hidden=[],active,refreshWhileHidden=false,refreshKey,enabled,device=appleCalendarDevice}:{owner:string;start:string;end:string;timeZone:string;selected:string[];hidden?:string[];active:boolean;refreshWhileHidden?:boolean;refreshKey?:number;enabled:boolean;device?:AppleCalendarDevice}){
  const key='docen.apple-calendar.snapshot.'+owner,[state,setState]=useState<Snapshot>(()=>cache.get(owner)??{sources:[],events:[],readAt:null}),[error,setError]=useState(''),[loading,setLoading]=useState(false),generation=useRef(0),current=useRef({owner,start,end,selected,active,enabled});current.current={owner,start,end,selected,active,enabled};
  const hiddenKey=JSON.stringify(hidden.filter(isAppleCalendar).sort());

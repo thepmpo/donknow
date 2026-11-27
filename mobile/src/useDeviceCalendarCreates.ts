@@ -1,13 +1,12 @@
 import {useEffect,useRef,useSyncExternalStore} from 'react';
 import {AppState,Platform} from 'react-native';
-import {deviceCalendarQueue} from './calendar-device-queue';
+import {calendarCreateSending,deviceCalendarQueue} from './calendar-device-queue';
 import {HttpResponseError,retryableDocenCalendarCreate} from './http-response';
 import type {CalendarEvent} from './calendar-model';
 import type {TodoStore} from './useTodos';
 import type {CalendarCreateQueue,QueuedCalendarCreate} from './calendar-create-queue';
 
 const empty:readonly QueuedCalendarCreate[]=[];
-const sending=new Set<string>();
 export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(event:CalendarEvent)=>Promise<void>,injectedQueue?:CalendarCreateQueue,active=true,onRemoved?:(event:CalendarEvent)=>void){
  const queue=injectedQueue??deviceCalendarQueue;
  const enabled=(Platform.OS==='ios'||!!injectedQueue)&&!!store.user?.emailVerified&&store.connection?.mode==='cloud';
@@ -28,12 +27,12 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
   if(!enabled||!jobs.some(job=>!job.blocked))return;
   let disposed=false;
   const process=async()=>{
-   if(disposed||AppState.currentState!=='active'||sending.has(owner))return;
+   if(disposed||AppState.currentState!=='active'||calendarCreateSending.has(owner))return;
    const now=Date.now(),job=queue.snapshot(owner)?.find(job=>!job.blocked&&(retries.current.get(job.id)?.at??0)<=now);
    if(!job)return;
    const context=latest.current,current=()=>latest.current.owner===owner&&context.store.isCurrentSession();
    if(context.owner!==owner||!current())return;
-   sending.add(owner);
+   calendarCreateSending.add(owner);
    try{
     const path='/api/calendar/docen/'+encodeURIComponent(job.id);
     if(job.cancelled){
@@ -92,7 +91,7 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
    }catch{
     const attempt=(retries.current.get(job.id)?.attempt??0)+1;
     retries.current.set(job.id,{attempt,at:Date.now()+Math.min(60000,1000*2**Math.min(attempt-1,6))});
-   }finally{sending.delete(owner);}
+   }finally{calendarCreateSending.delete(owner);}
   };
   const timer=setInterval(()=>void process(),1000);
   const subscription=AppState.addEventListener('change',state=>{

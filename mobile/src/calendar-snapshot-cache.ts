@@ -2,10 +2,11 @@ import {clearCalendarWrites} from './calendar-write-overlay';
 import {Platform} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import {createCalendarSnapshotStore} from './calendar-snapshot-store';
+import {deviceZone,docenCalendarId,eventOverlaps,shiftDay} from './calendar-model';
 import type {CalendarEvent} from './calendar-model';
 import type {CalendarSnapshot} from './calendar-snapshot-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const disk=createCalendarSnapshotStore({get:async key=>Platform.OS==='web'?sessionStorage.getItem(key):SecureStore.getItemAsync(key),set:async(key,value)=>{if(Platform.OS==='web')sessionStorage.setItem(key,value);else await SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY});},remove:async key=>{if(Platform.OS==='web')sessionStorage.removeItem(key);else await SecureStore.deleteItemAsync(key);}});
+const disk=createCalendarSnapshotStore({get:async key=>Platform.OS==='web'?sessionStorage.getItem(key):SecureStore.getItemAsync(key),set:async(key,value)=>{if(Platform.OS==='web')sessionStorage.setItem(key,value);else await SecureStore.setItemAsync(key,value,{keychainAccessible:SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY});},remove:async key=>{if(Platform.OS==='web')sessionStorage.removeItem(key);else await SecureStore.deleteItemAsync(key);}});
 type Signal='update'|'refresh'|'clear';
 const revisions=new Map<string,number>();
 export const calendarSnapshotRevision=(owner:string)=>revisions.get(owner)??0;
@@ -20,6 +21,22 @@ export function restoreCalendarSnapshots(owner:string){if(restored.has(owner))re
 export function flushCalendarSnapshots(owner:string){
  clearTimeout(timers.get(owner));timers.delete(owner);
  return disk.write(owner,[...calendarSnapshots(owner).values()]);
+}
+export async function saveBackgroundCalendarResult(owner:string,id:string,event:CalendarEvent|null,current:()=>boolean){
+ await restoreCalendarSnapshots(owner);
+ if(!current())return false;
+ const periods=calendarSnapshots(owner);
+ let saved=false;
+ invalidateCalendarSnapshotReads(owner);
+ for(const period of periods.values()){
+  const [zone,selection]=[JSON.parse(period.family)[1],JSON.parse(period.key)[1]] as [string,string[]];
+  const insert=event&&(event.calendarId===docenCalendarId||selection.includes(event.calendarId??'primary'))&&
+   eventOverlaps(event,period.start,shiftDay(period.end,-1),zone||deviceZone());
+  period.items=period.items.filter(item=>item.id!==id&&item.id!==event?.id);
+  if(insert){period.items.push(event);saved=true;}
+ }
+ await flushCalendarSnapshots(owner);
+ return event===null||saved;
 }
 export function persistCalendarSnapshots(owner:string){
  clearTimeout(timers.get(owner));timers.set(owner,setTimeout(()=>void flushCalendarSnapshots(owner).catch(()=>{}),250));

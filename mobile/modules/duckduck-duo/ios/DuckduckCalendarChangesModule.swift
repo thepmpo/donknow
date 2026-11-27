@@ -32,6 +32,7 @@ public final class DuckduckCalendarChangesModule: Module {
 
     AsyncFunction("calendarList") { () throws -> [[String: Any]] in
       try self.requireFullAccess()
+      self.refreshSources()
       return self.store.calendars(for: .event).map(self.calendarSnapshot)
     }.runOnQueue(queue)
 

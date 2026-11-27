@@ -22,8 +22,8 @@ async function updateDeviceSession(baseUrl:string,update:(token:string|null)=>De
    await SecureStore.deleteItemAsync(offlineSessionKey(baseUrl));
    return;
   }
-  const options={keychainAccessible:SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY};
-  if(next.token!==previous)await SecureStore.setItemAsync(key,next.token,options);
+  const options={keychainAccessible:SecureStore.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY};
+  if(next.token!==previous||next.user)await SecureStore.setItemAsync(key,next.token,options);
   if(next.user)await SecureStore.setItemAsync(offlineSessionKey(baseUrl),JSON.stringify({tag:tokenTag(next.token),user:next.user}),options).catch(()=>{});
  });
  sessionWrites.set(baseUrl,task);
@@ -42,15 +42,18 @@ export function canRestoreOffline(error:unknown){
  return error instanceof TransportResponseError||error instanceof HttpResponseError&&[502,503,504].includes(error.status)
   ||error instanceof InvalidJsonResponseError&&[502,503,504].includes(error.status);
 }
-export async function request(baseUrl: string, path: string, method = 'GET', body?: unknown): Promise<unknown> {
+type DeviceRequestScope={token:string;allowed:()=>boolean};
+export async function request(baseUrl: string, path: string, method = 'GET', body?: unknown,scope?:DeviceRequestScope): Promise<unknown> {
   // Capture this session before a potentially long health wait; never send an old draft with a new login.
   const token = Platform.OS==='web'?null:await SecureStore.getItemAsync(storageKey(baseUrl));
+  if(scope&&token!==scope.token)throw new AuthRequiredError();
+  if(scope&&!scope.allowed())throw new TransportResponseError('백그라운드 동기화 시간이 끝났어요.');
   // A cold-start 503 must be handled before the write is sent. Never replay its POST/PATCH.
-  if(Platform.OS==='ios'&&method!=='GET'&&(/^\/api\/(?:assistant\/(?:chat|actions)|calendar\/event-details)(?:\/|$)/.test(path)||connectionWrite(path,method)))await readiness.wait(baseUrl).catch(error=>{
+  if(!scope&&Platform.OS==='ios'&&method!=='GET'&&(/^\/api\/(?:assistant\/(?:chat|actions)|calendar\/event-details)(?:\/|$)/.test(path)||connectionWrite(path,method)))await readiness.wait(baseUrl).catch(error=>{
     if(error instanceof Error&&(error.name==='AbortError'||error instanceof TypeError||/network request failed|failed to fetch|load failed/i.test(error.message)))throw new TransportResponseError('서버 연결을 준비하지 못했어요. 작성한 내용은 유지했어요. 잠시 뒤 다시 시도해주세요.');
     throw error;
   });
-  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), connectionRead(path,method)||connectionWrite(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||/^\/api\/todos\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?$/.test(path)||/^\/api\/(?:assistant\/(?:chat|context|actions)|calendar\/event-details)(?:\/|$)/.test(path)?60000:15000);
+  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), scope?8000:connectionRead(path,method)||connectionWrite(path,method)||path==='/api/auth/login'||path==='/api/auth/register'||path==='/api/auth/session'||path==='/api/health'||/^\/api\/todos\/[a-f0-9-]{36}(?:\/source-(?:retry|result))?$/.test(path)||/^\/api\/(?:assistant\/(?:chat|context|actions)|calendar\/event-details)(?:\/|$)/.test(path)?60000:15000);
   try {
     const wirePath=path.startsWith('/api/todos')?path+(path.includes('?')?'&':'?')+'writeStatus=2':path;
     const fetchResponse = () => fetch(baseUrl + wirePath, { method, credentials: 'include', signal: controller.signal,
@@ -77,6 +80,11 @@ export async function request(baseUrl: string, path: string, method = 'GET', bod
     if (error instanceof TypeError || (error instanceof Error && /failed to fetch|network request failed|load failed/i.test(error.message))) throw new TransportResponseError('서버에 연결하지 못했어요. 주소와 네트워크를 확인해주세요.');
     throw error;
   } finally { clearTimeout(timer); }
+}
+export async function bindDeviceRequests(baseUrl:string,allowed:()=>boolean){
+ const token=await SecureStore.getItemAsync(storageKey(baseUrl));
+ if(!token)throw new AuthRequiredError();
+ return (path:string,method?:string,body?:unknown)=>request(baseUrl,path,method,body,{token,allowed});
 }
 export async function session(baseUrl: string): Promise<User> {
   const token=Platform.OS==='ios'?await SecureStore.getItemAsync(storageKey(baseUrl)):null;

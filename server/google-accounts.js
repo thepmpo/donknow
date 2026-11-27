@@ -9,6 +9,9 @@ export function connectionStore(db,box,transaction){
  const rows=(user,provider)=>db.prepare("SELECT * FROM integrations WHERE user_id=? AND (provider=? OR (?='google' AND substr(provider,1,7)='google:')) ORDER BY CASE WHEN provider=? THEN 0 ELSE 1 END,updated_at,provider").all(user,provider,provider,provider);
  const write=(user,key,payload,label)=>db.prepare('INSERT INTO integrations VALUES (?,?,?,?,?) ON CONFLICT(user_id,provider) DO UPDATE SET payload=excluded.payload,label=excluded.label,updated_at=excluded.updated_at').run(user,key,box.seal(payload),label.slice(0,200),new Date().toISOString());
  return {
+  googleSyncUsers(after,limit){
+   return db.prepare("SELECT DISTINCT i.user_id AS id FROM integrations i JOIN active_users u ON u.id=i.user_id WHERE i.user_id>? AND u.email_verified_at IS NOT NULL AND (i.provider='google' OR substr(i.provider,1,7)='google:') ORDER BY i.user_id LIMIT ?").all(after,limit).map(row=>row.id);
+  },
   connectionByKey(user,key){return open(db.prepare('SELECT * FROM integrations WHERE user_id=? AND provider=?').get(user,key));},
   connections(user,provider){return user?rows(user,provider).map(open):[];},
   connection(user,provider,id){return !user?null:id==null?open(db.prepare('SELECT * FROM integrations WHERE user_id=? AND provider=?').get(user,provider)):rows(user,provider).map(open).find(r=>r.connectionId===id)??null;},
