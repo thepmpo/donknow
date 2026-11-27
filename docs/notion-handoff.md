@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-27 · 한국 시간 · 기능 코드 22d4d35 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-27 · 한국 시간 · 기능 코드 cd8e7fc · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-27 — 캘린더·할 일 백그라운드 동기화
+
+- Google 할 일 페이지와 도슨에 연결된 Google 일반 일정을 서버가 앱 실행과 독립적으로 확인한다. 1분마다 계정과 일정 일부를 순서대로 처리하고, 다음 실행에서 일시 실패한 계정도 다시 확인한다. 이미 승인된 연결 범위를 사용한다.
+- iPhone은 앱이 백그라운드로 넘어갈 때와 iOS의 예약 실행 시 캘린더·할 일의 기기 대기열을 이어서 처리한다. Apple 캘린더는 최근 열었던 범위를 기기에 다시 저장하고, 날짜에 관계없이 연결된 일반 일정의 수정과 확인된 삭제를 페이지 단위로 대조한다. Apple 미리알림 목록 변경과 이미 승인된 원본 전송도 이어서 처리한다. 저장 영수증과 계정 범위 검사를 사용한다.
+- 계정 격리, Google 일시 실패 후 재시도 및 중복 방지, Duo·일반 iPhone 모의 화면의 Apple 연동, iOS 번들 및 예약 작업 설정을 검증했다. 실제 iPhone에서의 예약 실행, 서버 배포 및 TestFlight 적용은 미확인이다. iOS 강제 종료와 무료 호스팅의 절전 상태에서는 연속 실행이 보장되지 않는다.
 
 #### 2026-11-27 — 기존 일정과 할 일도 iPhone에 먼저 저장
 
@@ -4236,10 +4242,12 @@ fc85b4b Keep Apple and Docen deletions in sync across calendar views
 9c278cc Document live Apple calendar deletion behavior
 c9e0041 Verify Apple calendar updates for past dates
 22d4d35 Persist iPhone edits and refresh linked task sources
+1fcd40f Document iPhone-first edits and task updates
+cd8e7fc Continue calendar and task synchronization in background
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 22d4d35에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: cd8e7fc에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13508,7 +13516,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/22d4d3531149ad639e3224fe4f797749fd95e347
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/cd8e7fcef891521875968d9f4784be54765d141a
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
@@ -14599,6 +14607,8 @@ Expo JS 내보내기, 브라우저 합성 Duo, Apple SDK 컴파일과 서명, �
 - 사용자가 허용한 계정과 범위 안에서 신규·수정·삭제를 도슨 화면에서도 갱신한다. 변경 신호를 제공하는 연결은 신호를 받으면 관련 항목을 다시 읽는다. 신호를 사용할 수 없는 연결은 화면 진입, 앱 복귀, 합리적인 간격의 갱신과 수동 새로고침을 사용한다. 공급자 지연이나 기기 권한으로 인한 제약은 연결별로 기록한다.
 - 최신 조회를 기다리는 동안 이전 목록을 유지한다. 한 계정의 지연이 다른 계정이나 도슨에 직접 저장한 항목의 표시를 막지 않게 한다. 실패하거나 일부만 받은 응답 때문에 직전 목록을 비우지 않는다.
 - 계정과 원본 ID를 함께 사용해 같은 항목을 하나로 표시한다. 화면에 반영된 최신 변경을 늦게 도착한 이전 응답으로 되돌리지 않는다. 읽기가 잠시 실패한 경우와 원본에서 실제로 삭제된 경우를 구분한다.
+- 서버가 가동 중이면 앱을 열어 두지 않아도 Google 할 일 목록과 도슨에 연결된 Google 일반 일정을 순차 갱신한다. Google 일정 화면은 진입할 때 선택된 원본 캘린더를 다시 조회한다.
+- iPhone은 앱이 백그라운드로 넘어갈 때 전송을 시도하고 iOS가 허용한 다음 실행 시간에도 기기 대기열을 이어서 처리한다. Apple 캘린더·미리알림은 기기의 기존 권한을 사용한다. iOS의 실행 주기와 강제 종료 이후 동작은 사용 환경과 시스템 정책에 따르며, 대기열은 앱을 다시 열 때도 재개한다.
 
 #### 연결 일정의 변경 비교
 
