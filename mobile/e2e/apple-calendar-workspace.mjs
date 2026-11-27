@@ -5,7 +5,7 @@ execFileSync(process.execPath,[resolve(project,'node_modules/expo/bin/cli'),'exp
 const server=http.createServer(async(req,res)=>{const path=new URL(req.url,'http://x').pathname;try{if(path==='/'){res.setHeader('Content-Type','text/html');res.end('<meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body,#root{margin:0;width:100%;height:100%;display:flex;flex-direction:column}</style><div id="root"></div><script src="/fixture.js"></script>');return;}const file=resolve(root,'.'+path);res.setHeader('Content-Type',({'.js':'application/javascript','.ttf':'font/ttf','.png':'image/png','.mp4':'video/mp4'})[extname(file)]||'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
 const origin='https://apple-calendar.test';
 try{for(const [mode,width] of [['duo',430],['standard',390]]){
- const page=await browser.newPage({viewport:{width,height:844},hasTouch:true,isMobile:true}),errors=[];let googleWrites=0,calendarReads=0,statusFailure=false,statusDelay=0,linked=null,pendingDelete=null,remoteDeletes=0,localDeletes=0;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(10000);await page.emulateMedia({reducedMotion:'reduce',colorScheme:'dark'});await page.clock.setFixedTime(new Date('2026-11-25T10:00:00Z'));await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
+ const page=await browser.newPage({viewport:{width,height:844},hasTouch:true,isMobile:true}),errors=[];let googleWrites=0,calendarReads=0,statusFailure=false,statusDelay=0,linked=null,pendingDelete=null,remoteDeletes=0,localDeletes=0;page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(10000);await page.emulateMedia({reducedMotion:'reduce',colorScheme:'dark'});await page.clock.install({time:new Date('2026-11-25T10:00:00Z')});await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
  await page.route(origin+'/**',async route=>{const p=new URL(route.request().url()).pathname;if(p==='/api/calendar/docen/event-linked-apple-sync/reconcile'&&route.request().method()==='POST'){
  const body=route.request().postDataJSON();
  assert.deepEqual(body.missingAppleOriginal,{id:'linked-original',calendarId:'@apple/icloud',externalUid:'linked-uid'});
@@ -131,5 +131,23 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await sheet.waitFor({state:'detached'});
  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
  assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).events.some(event=>event.id==='beyond-ten'),true,'visibility never deletes the source event');
- assert.deepEqual(errors,[]);console.log('PASS '+mode+': ME-only required connections, native calendar create/edit/delete, actual-body AI export, connection refresh feedback, reentry reads, read-only delete feedback, linked deletes both ways, Apple refresh off-tab, calendars beyond ten, no Google write');await page.close();
+ const historical={id:'historical',calendarId:'calendar-10',title:'작년 마지막 날 일정',notes:'',startDate:'2025-12-31T09:00:00Z',endDate:'2025-12-31T10:00:00Z',timeZone:'UTC',allDay:false};
+ await page.evaluate(event=>window.appleCalendarFixture.writeOutside(event),historical);
+ await page.waitForFunction(()=>window.appleCalendarFixture.state().lastEventRange?.start.startsWith('2026'));
+ assert.equal(await page.getByRole('button',{name:/작년 마지막 날 일정.*일정 상세/}).count(),0);
+ await year.click();
+ const yearOverview=page.getByTestId('calendar-year-overview');
+ await yearOverview.getByRole('button',{name:'이전 년',exact:true}).click();
+ await yearOverview.getByRole('button',{name:'2025년 12월로 이동',exact:true}).click();
+ await yearOverview.waitFor({state:'detached'});
+ const oldDay=page.getByTestId('calendar-day-2025-12-31');
+ await oldDay.click();
+ await sheet.getByRole('button',{name:'작년 마지막 날 일정 일정 상세',exact:true}).waitFor();
+ const range=await page.evaluate(()=>window.appleCalendarFixture.state().lastEventRange);
+ assert.ok(range.start<='2025-12-31'&&range.end>'2025-12-31');
+ await page.evaluate(event=>window.appleCalendarFixture.writeOutside({...event,title:'Apple에서 예전 날짜 수정'}),historical);
+ await sheet.getByRole('button',{name:'Apple에서 예전 날짜 수정 일정 상세',exact:true}).waitFor();
+ await page.evaluate(()=>window.appleCalendarFixture.deleteOutside('historical'));
+ await sheet.getByRole('button',{name:'Apple에서 예전 날짜 수정 일정 상세',exact:true}).waitFor({state:'detached'});
+ assert.deepEqual(errors,[]);console.log('PASS '+mode+': ME-only required connections, native calendar create/edit/delete, actual-body AI export, connection refresh feedback, reentry reads, read-only delete feedback, linked deletes both ways, Apple refresh off-tab, calendars beyond ten, historical month fresh reads, no Google write');await page.close();
 }}finally{await browser.close();await new Promise(r=>server.close(r));rmSync(root,{recursive:true,force:true});}
