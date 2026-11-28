@@ -213,6 +213,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
   const date = log && todo.completedAt ? new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(todo.completedAt)) : todo.dueDate ? todo.dueDate.slice(5).replace('-', ' / ') : '';
   const provenance=todoSource(todo);
   const membership=todo.source?.listTitle;
+  const moveStatus=log?'미완료':'완료',moveTarget=log?'Ticket으로':'log로';
   return <Animated.View testID={`completion-motion-${todo.id}`} style={[s.swipeWrap, {opacity:exit}, collapsing && {height:exit.interpolate({inputRange:[0,1],outputRange:[0,rowHeight.current]})}]}>
     <View pointerEvents="none" aria-hidden style={s.swipeBack}><Text style={s.swipeBackText}>{onSelect ? selected ? '선택 취소' : '선택' : ''}</Text><Text style={s.swipeBackText}>{log ? '' : todo.done ? '되돌리기' : '완료'}</Text></View>
     <TodoGestureRow canSwipeLeft={!busy||canToggleWhileBusy} canSwipeRight={!!onSelect&&!selectionBlocked.current} canLift={canLift} reduced={reduced}
@@ -224,7 +225,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
       </Pressable>
       <Pressable disabled={selected!==undefined?selectionBlocked.current:!onEdit||busy} onPressIn={beginPress} onPress={() => selected!==undefined?press(onSelect,'select'):press(onEdit)} onLongPress={canLift&&Platform.OS==='web'?event=>lift({x:event.nativeEvent.pageX,y:event.nativeEvent.pageY}):undefined} delayLongPress={320} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={canLift?'길게 눌러 끌면 옮길 수 있어요.':undefined} accessibilityActions={onSelectAccessible?[{name:'longpress',label:'Ticket 선택 및 이동 메뉴'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onSelectAccessible?.();}} style={s.todoBody}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={[s.todoTitle,desktop&&{fontSize:13,lineHeight:21,fontWeight:'500'}, todo.done && !log && s.doneText]}>{todo.title}</Text>
-        {pending&&!log ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `완료 · ${countdown}초 후 log로 이동` : '완료 · log로 이동'}</Text> : (date||membership||!compact)?<Text numberOfLines={1} style={[s.todoDate,desktop&&s.desktopTodoDate]}>{[date,membership].filter(Boolean).join(' · ')}</Text>:null}
+        {pending ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{moveStatus} · {countdown > 0 ? `${countdown}초 후 ` : ''}{moveTarget} 이동</Text> : (date||membership||!compact)?<Text numberOfLines={1} style={[s.todoDate,desktop&&s.desktopTodoDate]}>{[date,membership].filter(Boolean).join(' · ')}</Text>:null}
         {!!todo.saveState&&!isAppleReminderPreview(todo.id)&&<Text accessibilityLiveRegion="polite" style={s.todoDate}>{todo.saveState==='saving'?'저장 중':'저장 결과 확인 중'}</Text>}
       </Pressable>
       {todo.source&&<View testID={`todo-source-${todo.id}`} style={s.todoProvenance}>
