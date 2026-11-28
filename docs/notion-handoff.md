@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-28 · 한국 시간 · 기능 코드 ffd94a5 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-28 · 한국 시간 · 기능 코드 1bd7e87 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,11 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-28 — 일반 아이폰 하단 탭 글자 제거
+
+- 일반 아이폰의 하단 탭에서 아이콘 아래 글자를 제거했다. 캘린더 아이콘 안의 날짜와 요일, 탭의 접근성 이름과 선택 상태는 유지한다.
+- Chromium에서 화면 글자가 없어도 탭의 접근성 이름과 캘린더 날짜를 읽을 수 있음을 확인했다. 모바일 타입 검사와 iOS 번들 생성을 통과했다.
 
 #### 2026-11-28 — Ticket 편집 팝업과 대기 중인 Ticket 삭제
 
@@ -4395,10 +4400,12 @@ dca98fb Update handoff with the revised Event detail preview
 8c66438 Remove passive Ticket delivery status from the list picker
 9fbec62 Record the Ticket status display verification
 ffd94a5 Open Ticket editors in a popup and handle pending deletion
+16c6e0d Record the Ticket popup and calendar changes
+1bd7e87 Remove visible labels from the standard bottom navigation
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: ffd94a5에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 1bd7e87에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13687,7 +13694,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/ffd94a5f1080edd4ba33785de453b430cf45139e
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/1bd7e87c91f1d81c2bf829c11938d6de9316c0cd
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
