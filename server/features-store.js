@@ -137,14 +137,22 @@ export async function featureStore(db, directory, env = process.env) {
       return transaction(()=>{
         let changed=0;
         const updates=[];
+        const deferred=[];
+        const suppressed=[];
         const lookup=db.prepare('SELECT i.todo_id,t.data FROM imported_resources i LEFT JOIN todos t ON t.id=i.todo_id AND t.user_id=i.user_id WHERE i.user_id=? AND i.provider=? AND i.resource_key=?');
         const update=db.prepare('UPDATE todos SET data=? WHERE id=? AND user_id=?');
         const insert=db.prepare('INSERT INTO todos VALUES (?,?,?)');
         const link=db.prepare('INSERT INTO imported_resources VALUES (?,?,?,?)');
         const stamp=value=>typeof value==='string'&&Number.isFinite(Date.parse(value))?new Date(value).toISOString():null;
+        const sendingLists=provider==='apple-reminders'?new Set(db.prepare(`
+          SELECT json_extract(target, '$.listId') AS listId FROM todo_delivery
+          WHERE user_id=? AND provider='apple-reminders' AND state='sending' AND next_at>?
+        `).all(userId,Date.now()).map(row=>row.listId)):null;
         for(const item of items){
           const row=lookup.get(userId,provider,item.id);
-          if(row&&!row.data)continue; // An item the user removed in Docen stays removed.
+          // EventKit can report a newly created reminder before its delivery receipt arrives.
+          if(!row&&sendingLists?.has(item.listId)){deferred.push(item.id);continue;}
+          if(row&&!row.data){if(provider==='apple-reminders')suppressed.push(item.id);continue;}
           const before=row&&JSON.parse(row.data);
           if(before&&(before.source?.provider!==provider||before.source.externalId!==item.id||
             before.sourceSync?.patch&&before.sourceSync.state!=='succeeded'))continue;
@@ -171,7 +179,7 @@ export async function featureStore(db, directory, env = process.env) {
           changed++;
           if(returnItems)updates.push(todo);
         }
-        return returnItems?{changed,items:updates}:changed;
+        return returnItems?{changed,items:updates,...(deferred.length?{deferred}:{}),...(suppressed.length?{suppressed}:{})}:changed;
       });
     },
     importResources(userId, provider, ids) {

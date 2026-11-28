@@ -2,6 +2,7 @@ import {Platform} from 'react-native';
 import {readIntegrationStatuses} from './integration-settings';
 import {appleReminderDevice} from './apple-reminder-device';
 import {copyReminders} from './apple-reminder-read';
+import type {ListedReminder} from './apple-reminder-read';
 import {parseTodos} from './domain';
 import type {Todo} from './domain';
 
@@ -17,7 +18,19 @@ async function pages(current:()=>boolean,read:(cursor?:string)=>Promise<string|n
   seen.add(next);cursor=next;
  }
 }
-export async function refreshTodoSources(request:Request,current:()=>boolean,appleVersions:Map<string,string>,providers:{google?:boolean;apple?:boolean;onChange?:(items?:Todo[])=>void}={}){
+export async function readAppleTodoLists(current:()=>boolean,onList:(id:string,rows:ListedReminder[])=>void){
+ if(Platform.OS!=='ios')return;
+ const Calendar=await import('expo-calendar');
+ if(!(await Calendar.getRemindersPermissions()).granted||!current())return;
+ const lists=await appleReminderDevice.lists();
+ for(let i=0;current()&&i<lists.length;i+=3){
+  await Promise.allSettled(lists.slice(i,i+3).map(async list=>{
+   const rows=copyReminders(await list.listReminders(null,null,null)).map(row=>({...row,listId:list.id,listTitle:list.title,...(list.color?{color:list.color}:{})}));
+   if(current())onList(list.id,rows);
+  }));
+ }
+}
+export async function refreshTodoSources(request:Request,current:()=>boolean,appleVersions:Map<string,string>,providers:{google?:boolean;apple?:boolean;appleRows?:ReadonlyMap<string,ListedReminder[]>;onChange?:(items?:Todo[])=>void;onSuppressed?:(ids:string[])=>void}={}){
  let changed=false;
  async function google(){
   const capabilities=await request('/api/capabilities') as {todoSourceRefresh?:number};
@@ -45,25 +58,24 @@ export async function refreshTodoSources(request:Request,current:()=>boolean,app
   }));
  }
  async function apple(){
-  if(Platform.OS!=='ios')return;
-  const Calendar=await import('expo-calendar');
-  if(!(await Calendar.getRemindersPermissions()).granted||!current())return;
-  const lists=await appleReminderDevice.lists();
-  async function syncList(list:typeof lists[number]){
+  const readLists=new Map<string,ListedReminder[]>();
+  if(!providers.appleRows)await readAppleTodoLists(current,(id,rows)=>readLists.set(id,rows));
+  const lists=providers.appleRows??readLists;
+  for(const rows of lists.values()){
    if(!current())return;
    try{
-    const rows=copyReminders(await list.listReminders(null,null,null)).map(row=>({...row,listId:list.id,listTitle:list.title,color:list.color}));
     const pending=rows.map(item=>({item,version:JSON.stringify(item)})).filter(({item,version})=>appleVersions.get(item.id)!==version);
     for(let i=0;current()&&i<pending.length;i+=12){
      const batch=pending.slice(i,i+12),items=batch.map(({item})=>item);
-     const result=await request('/api/integrations/apple-reminders/refresh','POST',{items}) as {changed:number;items?:unknown};
-     for(const {item,version} of batch)appleVersions.set(item.id,version);
+     const result=await request('/api/integrations/apple-reminders/refresh','POST',{items}) as {changed:number;items?:unknown;deferred?:string[];suppressed?:string[]};
+     if(!current())return;
+     if(result.suppressed?.length)providers.onSuppressed?.(result.suppressed);
+     for(const {item,version} of batch)if(!result.deferred?.includes(item.id))appleVersions.set(item.id,version);
      changed=changed||result.changed>0;
      if(result.changed&&current())providers.onChange?.(Array.isArray(result.items)?parseTodos(result.items):undefined);
     }
    }catch{}
   }
-  for(let i=0;current()&&i<lists.length;i+=3)await Promise.all(lists.slice(i,i+3).map(syncList));
  }
  await Promise.allSettled([providers.google===false?undefined:google(),providers.apple===false?undefined:apple()]);
  return changed&&current();

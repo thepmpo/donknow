@@ -29,7 +29,7 @@ test('Apple list refresh imports once, applies edits and completion, and respect
   assert.equal((await pull({...original,title:'뒤늦은 원본 조회',modifiedAt:'2026-11-25T04:00:00Z'})).data.changed,0);
   assert.equal((await list())[0].title,'기기 편집');
   assert.equal((await request(path,'DELETE')).status,200);
-  assert.equal((await pull({...original,modifiedAt:'2026-11-25T05:00:00Z'})).data.changed,0);
+  assert.deepEqual((await pull({...original,modifiedAt:'2026-11-25T05:00:00Z'})).data,{changed:0,items:[],suppressed:[original.id]});
   assert.deepEqual(await list(),[]);
  }finally{await h.close();}
 });

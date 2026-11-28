@@ -208,7 +208,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         if (!store.get(userId, id)) return send(404, { error: '할 일을 찾을 수 없어요.' });
         if(req.method==='GET')return send(200,store.todoDelivery.decorate(userId,store.get(userId,id)));
         if(todoMembership.isMoving(userId,id))return send(409,{error:'할 일의 원본 목록을 옮기고 있어요.'});
-        if(store.todoDelivery.status(userId,id)?.state==='sending')return send(409,{error:'선택한 목록에 저장 중이에요. 잠시 뒤 다시 시도해주세요.'});
+        if(store.todoDelivery.status(userId,id)?.state==='sending')return send(409,{code:'todo-delivery-in-progress',error:'선택한 목록에 저장 중이에요. 잠시 뒤 다시 시도해주세요.'});
         if (req.method === 'DELETE') {
          if(!store.remove(userId,id))return send(409,{error:'저장 중인 할 일을 잠시 뒤 다시 확인해주세요.'});
          return send(200,{ok:true});

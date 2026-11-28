@@ -68,16 +68,30 @@ test('Apple delivery is claimed once for exactly one owner and list; receipts ca
   const claim=await h.request(path+'claim','POST',{listId:'list-a'},owner.token);
   assert.equal(claim.status,200);assert.equal(claim.data.todo.dueTime,'09:00');
   assert.equal((await h.request(path+'claim','POST',{listId:'list-a'},owner.token)).status,409);
+  const duringDelivery=await h.request('/api/todos/'+data.id,'PATCH',{title:'미리알림 편집'},owner.token);
+  assert.equal(duringDelivery.status,409);
+  assert.equal(duringDelivery.data.code,'todo-delivery-in-progress');
   assert.equal((await h.request('/api/todos/'+data.id,'DELETE',undefined,owner.token)).status,409);
   const receipt={attempt:claim.data.attempt,externalId:'apple-reminder-id',listId:'list-a',listTitle:'개인'};
+  const native={id:receipt.externalId,listId:receipt.listId,title:body.title,notes:'',dueDate:body.dueDate,dueTime:body.dueTime,completed:false};
+  const refresh=()=>h.request('/api/integrations/apple-reminders/refresh','POST',{items:[native]},owner.token);
+  assert.deepEqual((await refresh()).data,{changed:0,items:[],deferred:[native.id]});
   assert.equal((await h.request(path+'receipt','POST',{...receipt,listId:'list-b'},owner.token)).status,409);
   const first=await h.request(path+'receipt','POST',receipt,owner.token);
   const replay=await h.request(path+'receipt','POST',receipt,owner.token);
   assert.equal(first.status,200);assert.deepEqual(replay.data,first.data);
   assert.equal(first.data.delivery.state,'synced');
   assert.equal(first.data.source.externalId,receipt.externalId);
+  const refreshed=await refresh();
+  assert.equal(refreshed.status,200);
+  assert.ok(refreshed.data.items.every(item=>item.id===data.id));
   const list=(await h.request('/api/todos','GET',undefined,owner.token)).data;
   assert.equal(list.length,1);assert.equal(list[0].id,data.id);
+  const edit=await h.request('/api/todos/'+data.id,'PATCH',{title:'미리알림 편집',deviceEditBase:{
+   sourceId:receipt.externalId,fields:{title:body.title},editedAt:new Date().toISOString(),
+  }},owner.token);
+  assert.equal(edit.status,200);
+  assert.equal(edit.data.sourceSync.state,'device-required');
  }finally{await h.close();}
 });
 

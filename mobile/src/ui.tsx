@@ -1,4 +1,5 @@
 import {TodoDestinationPicker} from './TodoDestinationPicker';
+import {isAppleReminderPreview} from './apple-reminder-view';
 import type {PointerEvent,ViewStyle} from 'react-native';
 import {TodoGestureRow,TodoGestureScroll} from './todo-gestures';
 import type {RowPoint} from './todo-gesture-types';
@@ -224,7 +225,7 @@ export function TodoRow({ todo, pending = false, pendingUntil, busy = false, can
       <Pressable disabled={selected!==undefined?selectionBlocked.current:!onEdit||busy} onPressIn={beginPress} onPress={() => selected!==undefined?press(onSelect,'select'):press(onEdit)} onLongPress={canLift&&Platform.OS==='web'?event=>lift({x:event.nativeEvent.pageX,y:event.nativeEvent.pageY}):undefined} delayLongPress={320} accessibilityRole={onEdit ? 'button' : undefined} accessibilityLabel={onEdit ? `${todo.title} 수정` : undefined} accessibilityHint={canLift?'길게 눌러 끌면 옮길 수 있어요.':undefined} accessibilityActions={onSelectAccessible?[{name:'longpress',label:'할 일 선택 및 이동 메뉴'}]:undefined} onAccessibilityAction={event=>{if(event.nativeEvent.actionName==='longpress')onSelectAccessible?.();}} style={s.todoBody}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={[s.todoTitle,desktop&&{fontSize:13,lineHeight:21,fontWeight:'500'}, todo.done && !log && s.doneText]}>{todo.title}</Text>
         {pending&&!log ? <Text testID={`completion-countdown-${todo.id}`} style={s.pendingText}>{countdown > 0 ? `완료 · ${countdown}초 후 log로 이동` : '완료 · log로 이동'}</Text> : (date||membership||!compact)?<Text numberOfLines={1} style={[s.todoDate,desktop&&s.desktopTodoDate]}>{[date,membership].filter(Boolean).join(' · ')}</Text>:null}
-        {!!todo.saveState&&<Text accessibilityLiveRegion="polite" style={s.todoDate}>{todo.saveState==='saving'?'저장 중':'저장 결과 확인 중'}</Text>}
+        {!!todo.saveState&&!isAppleReminderPreview(todo.id)&&<Text accessibilityLiveRegion="polite" style={s.todoDate}>{todo.saveState==='saving'?'저장 중':'저장 결과 확인 중'}</Text>}
       </Pressable>
       {todo.source&&<View testID={`todo-source-${todo.id}`} style={s.todoProvenance}>
         {todo.source.color?<View testID={`todo-source-color-${todo.id}`} style={{width:9,height:9,borderRadius:5,backgroundColor:todo.source.color}}/>:<Ionicons name={provenance.icon} size={13} color={provenance.color}/>}

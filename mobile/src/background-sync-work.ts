@@ -8,13 +8,13 @@ import {deviceZone,zonedDay} from './calendar-model';
 import type {CalendarEvent} from './calendar-model';
 import {saveBackgroundCalendarResult} from './calendar-snapshot-cache';
 import {updateAppleSource} from './apple-source-edit';
+import {pendingAppleTodoEdit,queuedTodoEditBase,waitingForAppleTodoDelivery} from './apple-todo-edit-queue';
 import {calendarCreateSending,deviceCalendarEdits,deviceCalendarQueue,todoCreateSending} from './calendar-device-queue';
 import {deviceTodos,todoEditSending} from './todo-device-queue';
 import {calendarEditSending,sendCalendarEdit} from './useDeviceCalendarEdits';
 import {refreshTodoSources} from './todo-source-refresh';
 import {parseTodos} from './domain';
 import type {Todo} from './domain';
-import type {Patch} from './repository';
 import {HttpResponseError} from './http-response';
 import type {TodoStore} from './useTodos';
 import {syncAppleTodoDelivery} from './useAppleTodoDelivery';
@@ -127,21 +127,21 @@ export async function syncInBackground(owner:string,request:Request,current:()=>
       const path='/api/todos/'+encodeURIComponent(id);
       let saved=await request(path) as Todo;
       if(!current())return;
+      if(waitingForAppleTodoDelivery(saved)){skipped.add(id);continue;}
       if(Object.entries(job.patch).some(([key,value])=>JSON.stringify(saved[key as keyof Todo]??null)!==JSON.stringify(value??null))){
-       const fields=Object.fromEntries(Object.keys(job.patch).map(key=>[key,job.before[key as keyof Todo]??null])) as Patch;
-       saved=await request(path,'PATCH',{...job.patch,deviceEditBase:{fields,sourceId:job.before.source?.externalId??null,editedAt:job.editedAt}}) as Todo;
+       saved=await request(path,'PATCH',{...job.patch,deviceEditBase:queuedTodoEditBase(job,saved)}) as Todo;
       }
       if(!current())return;
-      if(saved.source?.provider==='apple-reminders'&&['device-required','unknown'].includes(saved.sourceSync?.state??'')){
+      if(pendingAppleTodoEdit(saved)){
        saved=await updateAppleSource(saved,request,current,false);
-       if(saved.sourceSync?.state!=='succeeded'){skipped.add(id);continue;}
+       if(pendingAppleTodoEdit(saved)){skipped.add(id);continue;}
       }
       if(!current())return;
       await cacheTodo(saved);
       if(current())await deviceTodos.edits.remove(owner,job.id);
      }catch(error){
       skipped.add(id);
-      if(error instanceof HttpResponseError&&[400,404,409,422].includes(error.status)){
+      if(error instanceof HttpResponseError&&error.code!=='todo-delivery-in-progress'&&[400,404,409,422].includes(error.status)){
        await deviceTodos.edits.change(owner,job.id,entry=>({...entry,blocked:true,failure:error.message}));
       }
      }

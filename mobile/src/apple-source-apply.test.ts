@@ -2,3 +2,15 @@ import {test} from 'node:test';import assert from 'node:assert/strict';import {a
 const todo:Todo={id:'todo',title:'할 일',done:true,dueDate:null,category:'일상',source:{provider:'apple-reminders',externalId:'original',modifiedAt:'2026-11-15T00:00:00Z'},sourceSync:{state:'device-required',revision:1,patch:{done:true}}};
 test('completion and undo update the same native reminder and verify readback before acknowledgement',async()=>{let completed=false,writes=0,modifiedAt=todo.source!.modifiedAt;const device={authorize:async()=>true,read:async(id:string)=>{assert.equal(id,'original');return {completed,lastModifiedDate:modifiedAt,update:async patch=>{writes++;completed=patch.completed!;modifiedAt='2026-11-16T00:00:00Z';}};}};const first=await applyAppleSource(todo,device,()=>true);assert.equal(first?.state,'succeeded');assert.equal(completed,true);const undo=await applyAppleSource({...todo,done:false,source:{...todo.source!,modifiedAt:first?.modifiedAt},sourceSync:{...todo.sourceSync!,patch:{done:false}}},device,()=>true);assert.equal(undo?.state,'succeeded');assert.equal(completed,false);assert.equal(writes,2);});
 test('unverified write remains unknown; permission failure and account exit never report success or replay',async()=>{let writes=0;const device={authorize:async()=>true,read:async()=>({completed:false,lastModifiedDate:todo.source!.modifiedAt,update:async()=>{writes++;}})};assert.equal((await applyAppleSource(todo,device,()=>true))?.state,'unknown');assert.equal(writes,1);assert.equal((await applyAppleSource(todo,{...device,authorize:async()=>false},()=>true))?.state,'failed');assert.equal(await applyAppleSource(todo,device,()=>false),null);assert.equal(writes,1);});
+
+test('date-only writes acknowledge the EventKit midnight readback without a second write',async()=>{
+ const edit={...todo,dueDate:'2026-11-28',sourceSync:{...todo.sourceSync!,patch:{dueDate:'2026-11-28'}}};
+ let dueDate:Date|null=null,writes=0;
+ const device={authorize:async()=>true,read:async()=>({
+  dueDate,allDay:false,lastModifiedDate:writes?'2026-11-28T03:00:00Z':todo.source!.modifiedAt,
+  update:async()=>{writes++;dueDate=new Date(2026,10,28);},
+ })};
+ assert.equal((await applyAppleSource(edit,device,()=>true))?.state,'succeeded');
+ assert.equal((await applyAppleSource(edit,device,()=>true))?.state,'succeeded');
+ assert.equal(writes,1);
+});

@@ -1,4 +1,6 @@
-import {refreshTodoSources} from './todo-source-refresh';
+import {readAppleTodoLists,refreshTodoSources} from './todo-source-refresh';
+import {isAppleReminderPreview,showAppleReminders} from './apple-reminder-view';
+import type {ListedReminder} from './apple-reminder-read';
 import {appleCalendarDevice} from './apple-calendar-device';
 import {clearAppleTodoReceipts,useAppleTodoDelivery} from './useAppleTodoDelivery';
 import type {QueuedTodoEdit} from './todo-device-queue';
@@ -9,6 +11,7 @@ import {moveAppleReminder} from './todo-membership';
 import type {AppleMoveReceipt,MembershipPage} from './todo-membership';
 import type {Category} from './domain';
 import {updateAppleSource} from './apple-source-edit';
+import {pendingAppleTodoEdit,queuedTodoEditBase,waitingForAppleTodoDelivery} from './apple-todo-edit-queue';
 import {originalContentConfirmed,importedCalendarPatch} from './calendar-source-edit';
 import {calendarSnapshots,invalidateCalendarSnapshotReads,persistCalendarSnapshots,broadcastCalendarSnapshots,refreshCalendarSnapshots} from './calendar-snapshot-cache';
 import { useReminders } from './useReminders';
@@ -235,43 +238,59 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     if(!deviceCreateOwner||!device)return;
     const owner=deviceCreateOwner,version=generation.current,{edits,cache}=device;
     const current=()=>version===generation.current&&calendarOwner.current===owner;
-    let disposed=false,retryAt=0;
+    let disposed=false;
+    const retryJobs=new Map<string,number>();
     const same=(todo:Todo,patch:Patch)=>Object.entries(patch).every(([key,value])=>JSON.stringify(todo[key as keyof Todo]??null)===JSON.stringify(value??null));
     const replace=(todo:Todo)=>setTodos(rows=>[...rows.map(row=>row.id===todo.id?todo:row),...(!rows.some(row=>row.id===todo.id)?[todo]:[])]);
     async function flush(){
-      if(disposed||!current()||todoEditSending.has(owner)||Date.now()<retryAt||AppState.currentState!=='active'||!repo.current?.get)return;
-      const jobs=edits.snapshot(owner)??[],job=jobs.find((candidate,index)=>!candidate.blocked&&!jobs.slice(0,index).some(earlier=>earlier.before.id===candidate.before.id));
-      if(!job)return;
+      if(disposed||!current()||todoEditSending.has(owner)||AppState.currentState!=='active'||!repo.current?.get)return;
+      const jobs=edits.snapshot(owner)??[],job=jobs.find((candidate,index)=>!candidate.blocked&&(retryJobs.get(candidate.id)??0)<=Date.now()&&!jobs.slice(0,index).some(earlier=>earlier.before.id===candidate.before.id));
+      if(!job){
+        const pending=todosRef.current.find(todo=>pendingAppleTodoEdit(todo)&&!jobs.some(item=>item.before.id===todo.id)&&(retryJobs.get(todo.id)??0)<=Date.now());
+        if(!pending)return;
+        todoEditSending.add(owner);
+        retryJobs.set(pending.id,Date.now()+10000);
+        try{
+          const fresh=await repo.current.get!(pending.id);
+          if(!current())return;
+          const saved=pendingAppleTodoEdit(fresh)?await updateAppleSource(fresh,featureRequest,current,false):fresh;
+          if(!current()||pendingAppleTodoEdit(saved)||!todosRef.current.some(todo=>todo.id===saved.id))return;
+          writes.current++;
+          replace(saved);persistDeviceTodos(todosRef.current);
+          retryJobs.delete(pending.id);
+        }catch{}finally{todoEditSending.delete(owner);}
+        return;
+      }
       const repository=repo.current,id=job.before.id;
       todoEditSending.add(owner);
       try{
         let saved=await repository.get!(id);
         if(!current())return;
+        if(waitingForAppleTodoDelivery(saved)){retryJobs.set(job.id,Date.now()+3000);return;}
         if(!same(saved,job.patch)){
-          const fields=Object.fromEntries(Object.keys(job.patch).map(key=>[key,job.before[key as keyof Todo]??null])) as Patch;
-          saved=await repository.update(id,job.patch,{fields,sourceId:job.before.source?.externalId??null,editedAt:job.editedAt});
+          saved=await repository.update(id,job.patch,queuedTodoEditBase(job,saved));
         }
         if(!current())return;
-        if(saved.source?.provider==='apple-reminders'&&['device-required','unknown'].includes(saved.sourceSync?.state??'')){
+        if(pendingAppleTodoEdit(saved)){
           saved=await updateAppleSource(saved,featureRequest,current,false);
         }
         if(!current())return;
-        if(saved.source?.provider==='apple-reminders'&&['device-required','unknown'].includes(saved.sourceSync?.state??'')){
-          retryAt=Date.now()+3000;return;
+        if(pendingAppleTodoEdit(saved)){
+          retryJobs.set(job.id,Date.now()+10000);return;
         }
         writes.current++;
         await cache.write(owner,[...todosRef.current.filter(todo=>todo.id!==id),saved]);
         if(!current())return;
         await edits.remove(owner,job.id);
         if(!current())return;
-        replace(saved);reflectOriginal(saved,job.patch);writeResolved(job.id);
+        retryJobs.delete(job.id);replace(saved);reflectOriginal(saved,job.patch);writeResolved(job.id);
       }catch(error){
         if(!current())return;
         if(error instanceof auth.AuthRequiredError){expireSession();return;}
-        if(error instanceof HttpResponseError&&[400,404,409,422].includes(error.status)){
+        if(error instanceof HttpResponseError&&error.code!=='todo-delivery-in-progress'&&[400,404,409,422].includes(error.status)){
           await edits.change(owner,job.id,item=>({...item,blocked:true,failure:message(error)})).catch(()=>{});
           reportWrite(job.id,message(error),async()=>{await edits.block(owner,job.id,false);});
-        }else retryAt=Date.now()+3000;
+        }else retryJobs.set(job.id,Date.now()+3000);
       }finally{todoEditSending.delete(owner);}
     }
     function changed(){
@@ -285,13 +304,13 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     const unsubscribe=edits.watch(owner,changed);
     void edits.read(owner).then(changed).catch(()=>{});
     const timer=setInterval(()=>void flush(),1000);
-    const listener=AppState.addEventListener('change',state=>{if(state==='active'){retryAt=0;void flush();}});
+    const listener=AppState.addEventListener('change',state=>{if(state==='active'){retryJobs.clear();void flush();}});
     return ()=>{disposed=true;unsubscribe();clearInterval(timer);listener.remove();};
   },[deviceCreateOwner,renderGeneration,device,setTodos]);
-  async function saveTodoEditOnDevice(owner:string,id:string,input:Patch){
+  async function saveTodoEditOnDevice(owner:string,id:string,input:Patch,fromEditor=false){
     if(!device||calendarOwner.current!==owner||localEditWrites.current.has(id)||busy.current.has(id))return false;
     const before=todosRef.current.find(todo=>todo.id===id);
-    if(!before||before.saveState||before.delivery?.state==='sending'||isDeviceTodo(id))return false;
+    if(!before||before.saveState||before.delivery?.state==='sending'&&before.delivery.provider!=='apple-reminders'||isDeviceTodo(id))return false;
     const patch={...input,...(input.dueDate===null?{dueTime:null}:{})};
     let validated:Draft;
     try{validated=validateDraft({...before,...patch});}catch(e){setError(message(e));return false;}
@@ -310,7 +329,13 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       }
       setTodos(rows=>rows);
       return true;
-    }catch(e){if(calendarOwner.current===owner)setError(message(e));return false;}
+    }catch(e){
+      if(calendarOwner.current===owner){
+        if(fromEditor)throw Error('이 아이폰에 변경 내용을 저장하지 못했어요. 잠시 뒤 다시 시도해주세요.');
+        setError(message(e));
+      }
+      return false;
+    }
     finally{localEditWrites.current.delete(id);}
   }
   async function createTodoOnDevice(owner:string,draft:Draft){
@@ -347,9 +372,13 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   async function prepareSave(draft:Draft){if(deviceCreateOwner){validateDraft(draft);return;}const repository=repo.current,version=generation.current;if(!repository)throw Error('연결을 먼저 확인해주세요.');await repository.prepare?.(draft);if(version!==generation.current)throw Error('계정이나 연결이 바뀌었어요. 다시 확인해주세요.');}
   async function beginSave(draft:Draft,id?:string){
     if(!id&&deviceCreateOwner)return !!await createTodoOnDevice(deviceCreateOwner,draft);
+    if(id&&deviceCreateOwner){
+      const blocked=device?.edits.snapshot(deviceCreateOwner)?.find(job=>job.before.id===id&&job.blocked);
+      if(blocked)throw Error(blocked.failure??'기기에 저장한 이전 변경을 확인해주세요.');
+      return saveTodoEditOnDevice(deviceCreateOwner,id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})},true);
+    }
     if(!repo.current||connectingRef.current||loading&&!snapshotReady.current||busy.current.has(id??'create')||id&&todosRef.current.find(t=>t.id===id)?.saveState==='checking')return false;
     if(id&&!todosRef.current.some(t=>t.id===id))return false;
-    if(id&&deviceCreateOwner)return saveTodoEditOnDevice(deviceCreateOwner,id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})});
     if(id)void update(id,{title:draft.title,dueDate:draft.dueDate,reminderAt:draft.reminderAt,notes:draft.notes,...(draft.dueTime!==undefined?{dueTime:draft.dueTime}:{})});
     else void add(draft);
     return true;
@@ -460,9 +489,10 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   async function reorder(ids:string[]):Promise<boolean>{
     if(!repo.current||busy.current.size||connectingRef.current)return false;
-    const version=generation.current,previous=new Map(todosRef.current.map(t=>[t.id,t.order])),ranks=new Map(ids.map((id,i)=>[id,i]));
+    const persistedIds=ids.filter(id=>!isAppleReminderPreview(id));
+    const version=generation.current,previous=new Map(todosRef.current.map(t=>[t.id,t.order])),ranks=new Map(persistedIds.map((id,i)=>[id,i]));
     setTodos(old=>old.map(t=>ranks.has(t.id)?{...t,order:ranks.get(t.id)}:t));
-    const result=await mutate('order',repository=>repository.reorder(ids));
+    const result=await mutate('order',repository=>repository.reorder(persistedIds));
     if(version!==generation.current)return false;
     if(!result){setTodos(old=>old.map(t=>previous.has(t.id)?{...t,order:previous.get(t.id)}:t));return false;}
     const saved=new Map(result.map(t=>[t.id,t.order]));setTodos(old=>old.map(t=>saved.has(t.id)?{...t,order:saved.get(t.id)}:t));return true;
@@ -494,8 +524,13 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     return true;
   }
   async function remove(id: string): Promise<boolean> {
-    if(todosRef.current.find(t=>t.id===id)?.saveState)return false;
+    const item=todosRef.current.find(t=>t.id===id);
+    if(item?.saveState)return false;
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
+    if(removed&&item?.source?.provider==='apple-reminders'){
+      if(localAppleRemovals.current.generation!==generation.current)localAppleRemovals.current={generation:generation.current,ids:new Set()};
+      localAppleRemovals.current.ids.add(item.source.externalId);
+    }
     if (removed) { delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current});setTodos(current => current.filter(todo => todo.id !== id)); const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id); setPending(current => { const next = { ...current }; delete next[id]; return next; }); }
     return !!removed;
   }
@@ -544,19 +579,44 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }, [connection, renderGeneration,user?.id]);
   const sourceRefreshCallback=useRef<()=>void>(()=>{});
   const refreshSources=useCallback(()=>sourceRefreshCallback.current(),[]);
+  const [appleView,setAppleView]=useState<{generation:number;lists:ReadonlyMap<string,ListedReminder[]>;suppressed:ReadonlySet<string>}>();
+  const localAppleRemovals=useRef<{generation:number;ids:Set<string>}>({generation:-1,ids:new Set()});
   useEffect(()=>{
     if(!user?.emailVerified||connection?.mode!=='cloud'||sessionStatus!=='ready')return;
     let disposed=false;
     const running=new Set<'apple'|'google'>(),queued=new Set<'apple'|'google'>();
     let debounce:ReturnType<typeof setTimeout>|undefined;
     const appleVersions=new Map<string,string>();
+    const appleLists=new Map<string,ListedReminder[]>(),suppressed=new Set<string>();
     const current=()=>!disposed&&generation.current===renderGeneration;
+    const publishApple=()=>setAppleView({generation:renderGeneration,lists:new Map(appleLists),suppressed:new Set(suppressed)});
+    let readingApple=false,readAgain=false;
+    async function readApple(){
+      if(!current()||AppState.currentState!=='active')return;
+      if(readingApple){readAgain=true;return;}
+      readingApple=true;
+      try{
+        await readAppleTodoLists(current,(id,rows)=>{
+          if(JSON.stringify(appleLists.get(id))!==JSON.stringify(rows)){appleLists.set(id,rows);publishApple();}
+        });
+      }catch{}finally{
+        readingApple=false;
+        if(current()){
+          void pull('apple');
+          if(readAgain){readAgain=false;void readApple();}
+        }
+      }
+    }
     async function pull(provider:'apple'|'google'){
       if(!current()||AppState.currentState!=='active')return;
       if(running.has(provider)){queued.add(provider);return;}
       running.add(provider);
       let revision=writes.current;
-      try{await refreshTodoSources(featureRequest,current,appleVersions,{apple:provider==='apple',google:provider==='google',onChange:items=>{
+      try{await refreshTodoSources(featureRequest,current,appleVersions,{apple:provider==='apple',google:provider==='google',appleRows:new Map(appleLists),onSuppressed:ids=>{
+        if(!current())return;
+        for(const id of ids)suppressed.add(id);
+        publishApple();
+      },onChange:items=>{
         if(!current())return;
         if(!items?.length||busy.current.size||writes.current!==revision){pendingSourceRefresh.current=true;return;}
         revision=++writes.current;
@@ -569,17 +629,24 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
         if(queued.delete(provider))void pull(provider);
       }
     }
-    const pullAll=()=>{void pull('apple');void pull('google');};
+    const pullAll=()=>{void readApple();void pull('google');};
     sourceRefreshCallback.current=pullAll;
     pullAll();
     const subscription=AppState.addEventListener('change',state=>{if(state==='active')pullAll();});
     const unsubscribe=appleCalendarDevice.subscribe?.(()=>{
       clearTimeout(debounce);
-      debounce=setTimeout(()=>void pull('apple'),300);
+      debounce=setTimeout(()=>void readApple(),300);
     });
     const timer=setInterval(pullAll,60000);
     return ()=>{disposed=true;sourceRefreshCallback.current=()=>{};subscription.remove();unsubscribe?.();clearTimeout(debounce);clearInterval(timer);};
   },[featureRequest,sessionStatus,user?.id,user?.emailVerified]);
+  const displayTodos=useMemo(()=>{
+    if(appleView?.generation!==renderGeneration)return todos;
+    const removals=localAppleRemovals.current;
+    const suppressed=new Set([...appleView.suppressed,...(removals.generation===renderGeneration?removals.ids:[])]);
+    const jobs=deviceCreateOwner?device?.edits.snapshot(deviceCreateOwner)??[]:[];
+    return showAppleReminders(todos,appleView.lists,suppressed,new Set(jobs.map(job=>job.before.id)));
+  },[appleView,renderGeneration,todos,device,deviceCreateOwner]);
   const pendingSourceRefresh=useRef(false);
   useEffect(()=>{
     const timer=setInterval(()=>{
@@ -626,6 +693,6 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { retryDelivery,deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, visible: visibleTodos(todos, pending,Date.now(),completionOrigins), logged:completedTodos(todos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, refreshSources, add, update, remove };
+  return { retryDelivery,deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, calendarTodos:displayTodos, visible: visibleTodos(displayTodos, pending,Date.now(),completionOrigins), logged:completedTodos(displayTodos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, refreshSources, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

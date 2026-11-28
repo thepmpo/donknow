@@ -1,10 +1,19 @@
 import {dateKey} from './domain.ts';
 type NativeReminder={id?:string|null;title?:string|null;notes?:string|null;completed?:boolean;dueDate?:Date|string|null;allDay?:boolean;lastModifiedDate?:Date|string|null};
 export type ReminderItem={id:string;title:string;notes:string;completed:boolean;dueDate:string|null;dueTime:string|null;modifiedAt?:string;color?:string};
+export type ListedReminder=ReminderItem&{listId:string;listTitle:string};
+export function reminderDue(item:Pick<NativeReminder,'dueDate'|'allDay'>){
+ const due=item.dueDate?new Date(item.dueDate):null;
+ if(!due||!Number.isFinite(due.getTime()))return {dueDate:null,dueTime:null};
+ const hours=due.getHours(),minutes=due.getMinutes();
+ // EventKit date-only components can round-trip as midnight with Expo's allDay flag unset.
+ const allDay=item.allDay||hours===0&&minutes===0&&due.getSeconds()===0;
+ return {dueDate:dateKey(due),dueTime:allDay?null:`${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}`};
+}
 /** Copy shared objects before another permission/read can invalidate their native store. */
 export function copyReminders(items:NativeReminder[]):ReminderItem[]{return items.filter(item=>!!item.id).map(item=>{
- const due=item.dueDate?new Date(item.dueDate):null,modified=item.lastModifiedDate?new Date(item.lastModifiedDate):null;
- return {id:item.id!,title:(item.title||'제목 없는 할 일').slice(0,120),notes:(item.notes??'').slice(0,4000),completed:!!item.completed,dueDate:due&&Number.isFinite(due.getTime())?dateKey(due):null,dueTime:due&&Number.isFinite(due.getTime())&&!item.allDay?`${String(due.getHours()).padStart(2,'0')}:${String(due.getMinutes()).padStart(2,'0')}`:null,...(modified&&Number.isFinite(modified.getTime())?{modifiedAt:modified.toISOString()}: {})};
+ const modified=item.lastModifiedDate?new Date(item.lastModifiedDate):null;
+ return {id:item.id!,title:(item.title?.trim()||'제목 없는 할 일').slice(0,120),notes:(item.notes??'').slice(0,4000),completed:!!item.completed,...reminderDue(item),...(modified&&Number.isFinite(modified.getTime())?{modifiedAt:modified.toISOString()}: {})};
  });}
 export async function readReminderItems(id:string,readLists:()=>Promise<{id:string;color?:string|null;listReminders:(start:null,end:null,status:null|'incomplete'|'completed')=>Promise<NativeReminder[]>}[]>,current:()=>boolean,wait:()=>Promise<void>=()=>new Promise(r=>setTimeout(r,250)),status:'incomplete'|'completed'|null=null){
  let items:ReminderItem[]=[];
