@@ -196,7 +196,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
         const body=await json(req);
         if(typeof body.list!=='string'||!body.list||body.list.length>1024)throw fail(400,'할 일 목록을 확인해주세요.');
         const page=await integrations.resources(user.id,'google','tasks',body.list,body.cursor,'sync',undefined,body.connectionId);
-        send(200,{changed:store.syncTaskResources(user.id,'google',page.items),nextCursor:page.nextCursor});return true;
+        send(200,{changed:store.syncTaskResources(user.id,'google',page.items.map(item=>typeof body.listTitle==='string'?{...item,listTitle:body.listTitle.slice(0,200)}:item)),nextCursor:page.nextCursor});return true;
       }
       if(path==='/api/integrations/apple-reminders/refresh'&&req.method==='POST'){
         const body=await readComputerBody(req,256*1024);

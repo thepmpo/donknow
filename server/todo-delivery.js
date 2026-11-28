@@ -14,6 +14,15 @@ export function createTodoDelivery(store,integrations,{background=true}={}){
   if(running)return;
   running=true;
   try{
+   await Promise.all(delivery.pendingSourceDeletes().map(async job=>{
+    try{
+     await integrations.deleteGoogleTask(job.user_id,job.source_id);
+     delivery.finishSourceDelete(job);
+    }catch(error){
+     if([404,410].includes(error?.status))delivery.finishSourceDelete(job);
+     else delivery.retrySourceDelete(job,Math.max(5000,Math.min(error?.retryAfterMs??30000,3600000)));
+    }
+   }));
    for(const job of delivery.pendingGoogle()){
     const {user_id:user,todo_id:id}=job,todo=store.get(user,id);
     if(!todo)continue;

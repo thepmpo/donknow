@@ -9,7 +9,7 @@ import {MotionView,useReducedMotion} from './motion';
 import {useSheetTopBackdrop} from './SheetBackdrop';
 import {colors,typography} from './theme';
 /** Pane-scoped contents, with the same dimming across the app-owned header/safe area. */
-export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=false,animateDismiss=true,headerAction,headerContent,fill=false,centered=false,stableContent=false,children}:{title:string;onClose:()=>void;busy?:boolean;bottomInset?:number;expanded?:boolean;animateDismiss?:boolean;headerAction?:React.ReactNode;headerContent?:React.ReactNode;fill?:boolean;centered?:boolean;stableContent?:boolean;children:React.ReactNode}){
+export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=false,animateDismiss=true,headerAction,headerContent,fill=false,centered=false,stableContent=false,closeInCalendarSlot=false,showTitle=true,children}:{title:string;onClose:()=>void;busy?:boolean;bottomInset?:number;expanded?:boolean;animateDismiss?:boolean;headerAction?:React.ReactNode;headerContent?:React.ReactNode;fill?:boolean;centered?:boolean;stableContent?:boolean;closeInCalendarSlot?:boolean;showTitle?:boolean;children:React.ReactNode}){
  const keyboard=useKeyboardUX(),filled=fill,desktop=useDesktopPresentation();
  const root=useRef<React.ComponentRef<typeof View>>(null),close=useRef(onClose),blocked=useRef(busy),closing=useRef(false),entered=useRef(false),measured=useRef(0);
  const keyboardInset=useKeyboardInset(root);
@@ -34,8 +34,8 @@ export function CalendarSheet({title,onClose,busy=false,bottomInset=0,expanded=f
   <Animated.View onLayout={e=>open(e.nativeEvent.layout.height)} style={[s.wrap,centered&&s.centered,desktop&&!centered&&{width:'100%',maxWidth:640,alignSelf:'center'},expanded&&{maxHeight:'96%'},filled&&{height:'100%',maxHeight:'100%'},{transform:[{translateY:offset}]}]}><CalendarSheetCard identity={title} disabled={busy} onDismiss={dismiss} style={[s.sheet,filled&&{flex:1},centered&&{borderRadius:24},expanded&&{borderRadius:28,margin:8,backgroundColor:colors.surface}]}>
    {headerContent?<View style={[s.heading,s.centeredHeading]}>
     <View style={s.headerContent}>{headerContent}</View>
-    <View style={[s.headerControls,s.trailingControls]}><KeyboardDismiss/><CloseButton onPress={()=>dismiss()} disabled={busy}/>{headerAction}</View>
-   </View>:<View style={s.heading}><Text accessibilityRole="header" style={s.title}>{title}</Text><View style={s.headerControls}><KeyboardDismiss/><CloseButton onPress={()=>dismiss()} disabled={busy}/>{headerAction}</View></View>}<MotionView initial={false} transitionKey={title} distance={0} disabled style={{minHeight:0,flexShrink:1,marginBottom:filled?Math.max(0,keyboardInset.inset-8):0,...(filled?{flex:1}:{})}}>{frozen.current.children}</MotionView>
+    <View style={[s.headerControls,s.trailingControls]}><KeyboardDismiss/><CloseButton onPress={()=>dismiss()} disabled={busy} calendarSlot={closeInCalendarSlot}/>{headerAction}</View>
+   </View>:<View style={s.heading}>{showTitle?<Text accessibilityRole="header" style={s.title}>{title}</Text>:<View style={s.title}/>}<View style={s.headerControls}><KeyboardDismiss/><CloseButton onPress={()=>dismiss()} disabled={busy} calendarSlot={closeInCalendarSlot}/>{headerAction}</View></View>}<MotionView initial={false} transitionKey={title} distance={0} disabled style={{minHeight:0,flexShrink:1,marginBottom:filled?Math.max(0,keyboardInset.inset-8):0,...(filled?{flex:1}:{})}}>{frozen.current.children}</MotionView>
   </CalendarSheetCard></Animated.View>
  </View>;
 }

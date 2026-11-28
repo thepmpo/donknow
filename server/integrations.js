@@ -131,6 +131,16 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if(typeof added.id!=='string'||!added.id||added.id.length>512||added.id.includes(':'))throw fail(502,'Google 할 일 저장 결과를 확인해주세요.');
       return {provider:'google',externalId:record.connectionId+':tasks:'+target.listId+':'+added.id,connectionId:record.connectionId,listId:target.listId,listTitle:title(list.title,'Google Tasks')};
     },
+    async deleteGoogleTask(userId,sourceId){
+      const [,connectionId,listId,taskId]=/^([^:]+):tasks:([^:]+):([^:]+)$/.exec(sourceId)??[];
+      if(!taskId)throw fail(400,'삭제할 Google Tasks 항목이 없어요.');
+      const record=await taskMoveAccess(userId,connectionId);
+      try{
+        await providerRequest('https://tasks.googleapis.com/tasks/v1/lists/'+encodeURIComponent(listId)+'/tasks/'+encodeURIComponent(taskId),{
+          method:'DELETE',headers:{Authorization:'Bearer '+record.accessToken},
+        });
+      }catch(error){if(error.status!==404&&error.status!==410)throw error;}
+    },
     async moveTaskBetweenLists(userId,{connectionId,listId,taskId},destination){
       const record=await taskMoveAccess(userId,connectionId);
       const origin='https://tasks.googleapis.com/tasks/v1';
@@ -240,9 +250,9 @@ export function createIntegrations(store, env = process.env, fetcher = fetch) {
       if (provider === 'google' && feature === 'tasks') {
         if (channel && (typeof channel !== 'string' || channel.length > 1024)) throw fail(400, '목록을 다시 선택해주세요.');
         const path = channel ? `lists/${encodeURIComponent(channel)}/tasks` : 'users/@me/lists';
-        const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus !== 'incomplete' ? 'true' : 'false', showHidden: taskStatus !== 'incomplete' ? 'true' : 'false', showDeleted: 'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
+        const query = new URLSearchParams({ maxResults: '50', ...(channel ? { showCompleted: taskStatus !== 'incomplete' ? 'true' : 'false', showHidden: taskStatus !== 'incomplete' ? 'true' : 'false', showDeleted: taskStatus==='sync'?'true':'false' } : {}), ...(cursor ? { pageToken: cursor } : {}) });
         const value = await googleRead(userId,record,'https://tasks.googleapis.com/tasks/v1/' + path + '?' + query);
-        items = (value.items ?? []).filter(item => !item.deleted && (!channel || taskStatus==='sync' || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null,...(taskStatus==='sync'?{notes:(item.notes??'').slice(0,4000),modifiedAt:item.updated,listId:channel,connectionId:record.connectionId}: {}) } : { id: item.id, title: title(item.title), kind: 'tasklist' });
+        items = (value.items ?? []).filter(item => (!item.deleted||taskStatus==='sync') && (!channel || taskStatus==='sync' || (taskStatus === 'completed' ? item.status === 'completed' : item.status !== 'completed'))).map(item => channel ? { id: `tasks:${channel}:${item.id}`, title: title(item.title), url:item.webViewLink, dueDate: item.due?.slice(0, 10) || null, kind: 'task', completed: item.status === 'completed', completedAt: item.completed ?? null,...(taskStatus==='sync'?{deleted:item.deleted===true,notes:(item.notes??'').slice(0,4000),modifiedAt:item.updated,listId:channel,connectionId:record.connectionId}: {}) } : { id: item.id, title: title(item.title), kind: 'tasklist' });
         nextCursor = value.nextPageToken ?? null;
       }
       if (provider === 'google' && feature === 'drive') {

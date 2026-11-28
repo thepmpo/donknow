@@ -37,6 +37,7 @@ async function scenario(mode){
   releaseTodos();await page.getByTestId('todo-one').waitFor();
   if(mode==='offline'){results.push('503 preserves the pending session and explicit retry restores it');return;}
   await page.getByRole('tab',{name:'출처별 Ticket',exact:true}).click();assert.deepEqual(await page.getByTestId(/^agenda-source:/).evaluateAll(els=>els.map(e=>e.dataset.testid)),['agenda-source:local','agenda-source:slack']);await page.screenshot({path:out+'/04-manual-first.png'});
+  await page.getByRole('button',{name:'도슨 Ticket 목록',exact:true}).click();
   await page.getByRole('button',{name:'Ticket 여러 개 선택',exact:true}).click();await page.getByRole('checkbox',{name:'직접 쓴 두 번째 선택',exact:true}).click();await page.getByRole('button',{name:'선택한 Ticket 이동',exact:true}).click();
   await page.evaluate(()=>{window.reorderSamples=[];const started=performance.now();const sample=()=>{const el=document.querySelector('[data-testid="todo-two"]').parentElement.parentElement;window.reorderSamples.push(new DOMMatrix(getComputedStyle(el).transform).m42);if(performance.now()-started<600)requestAnimationFrame(sample);};requestAnimationFrame(sample);});
   await page.getByRole('button',{name:'선택한 Ticket 위로 이동',exact:true}).click();await page.getByTestId('todo-selection-toolbar').waitFor({state:'hidden'});

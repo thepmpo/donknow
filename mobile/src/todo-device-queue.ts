@@ -8,6 +8,7 @@ import type {Draft,Todo} from './domain';
 
 export type QueuedTodoCreate={id:string;draft:Draft;createdAt:string;blocked?:boolean};
 export type QueuedTodoEdit={id:string;before:Todo;patch:Patch;editedAt:string;blocked?:boolean;failure?:string};
+export type QueuedTodoDelete={id:string;sourceId:string|null;appleId?:string;appleDeleted?:boolean};
 const editableFields=new Set(['title','notes','done','dueDate','dueTime','reminderAt']);
 const prefix='device-todo:';
 export const isDeviceTodo=(id:string)=>id.startsWith(prefix);
@@ -26,6 +27,11 @@ export function createDeviceTodos(storage:Parameters<typeof createCalendarDevice
   const job=entry as Partial<QueuedTodoEdit>|null;
   return typeof job?.id==='string'&&typeof job.before?.id==='string'&&typeof job.editedAt==='string'&&
    !!job.patch&&Object.keys(job.patch).length>0&&Object.keys(job.patch).every(key=>editableFields.has(key));
+ });
+ const deletes=createDeviceCreateQueue(createCalendarDeviceStore(storage,'docen.todo.deletes.'),(entry):entry is QueuedTodoDelete=>{
+  const job=entry as Partial<QueuedTodoDelete>|null;
+  return typeof job?.id==='string'&&(job.sourceId===null||typeof job.sourceId==='string')&&
+   (job.appleId===undefined||typeof job.appleId==='string');
  });
  const snapshots=createCalendarDeviceStore(storage,'docen.todo.snapshot.');
  const cache={
@@ -48,7 +54,7 @@ export function createDeviceTodos(storage:Parameters<typeof createCalendarDevice
   },
   clear:snapshots.clear,
  };
- return {queue,edits,readOfflineUser,cache};
+ return {queue,edits,deletes,readOfflineUser,cache};
 }
 
 const secureStorage={

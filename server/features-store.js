@@ -158,6 +158,12 @@ export async function featureStore(db, directory, env = process.env) {
             if(provider==='apple-reminders')suppressed.push(item.id);
             continue;
           }
+          if(provider==='google'&&item.deleted===true){
+            if(before&&!db.prepare("SELECT 1 FROM todo_delivery WHERE todo_id=? AND state='sending'").get(before.id)){
+              changed+=db.prepare('DELETE FROM todos WHERE user_id=? AND id=?').run(userId,before.id).changes;
+            }
+            continue;
+          }
           if(before&&before.sourceSync?.patch&&before.sourceSync.state!=='succeeded'){
             if(resolve)updates.push(before);
             continue;
@@ -167,7 +173,11 @@ export async function featureStore(db, directory, env = process.env) {
             const previous=stamp(before.source.modifiedAt);
             if(previous&&(!modifiedAt||modifiedAt<=previous)||
               before.sourceSync?.state==='succeeded'&&(!modifiedAt||Date.parse(modifiedAt)<(before.sourceSync.at??0))){
-              if(resolve)updates.push(before);
+              if(item.listId===before.source.listId&&typeof item.listTitle==='string'&&item.listTitle!==before.source.listTitle){
+                const updated={...before,source:{...before.source,listTitle:item.listTitle.slice(0,200)}};
+                update.run(JSON.stringify(updated),row.todo_id,userId);
+                changed++;updates.push(updated);
+              }else if(resolve)updates.push(before);
               continue;
             }
           }

@@ -79,7 +79,7 @@ function Rows({todos,store,onEdit,interactive,day,dateTargets}:{todos:Todo[];sto
    <TodoRow compact todo={todo} selected={selected.length?selected.includes(todo.id):undefined} onEdit={()=>onEdit(todo)} onSelect={interactive?()=>select(todo.id):undefined}
     onSelectAccessible={interactive?()=>setSelected(ids=>ids.includes(todo.id)?ids:[...ids,todo.id]):undefined}
     onLift={interactive&&!store.pending[todo.id]?point=>lift(todo,point):undefined} onDrag={move} onDrop={drop}
-    busy={!!todo.saveState||store.busyIds.includes(todo.id)} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]}
+    busy={todo.id.startsWith('device-todo:')||store.busyIds.includes(todo.id)} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]}
     canToggleWhileBusy={store.completionIds.includes(todo.id)} canSelectWhileBusy={store.completionIds.includes(todo.id)} onToggle={()=>void store.update(todo.id,{done:!todo.done})}/>
   </View>)}
   {lifted&&target===null&&<View pointerEvents="none" style={[styles.line,{top:undefined,bottom:0}]}/>}

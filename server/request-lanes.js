@@ -58,7 +58,7 @@ export async function startRequestLanes({workerUrl=new URL('../server-runtime.js
   headers['x-duck-lane-key']=key;headers['x-duck-client-address']=forwarded&&isIP(forwarded)?forwarded:req.socket.remoteAddress;
   const upstream=http.request({host:'127.0.0.1',port:lane.port,path:req.url,method:req.method,headers,agent:lane.agent},reply=>{
    res.writeHead(reply.statusCode,reply.headers);reply.pipe(res);
-   if(role==='core'&&reply.statusCode<400&&['POST','PATCH'].includes(req.method)&&path.startsWith('/api/todos'))workers.integration.worker.postMessage({type:'wake'});
+   if(role==='core'&&reply.statusCode<400&&['POST','PATCH'].includes(req.method)&&(path.startsWith('/api/todos')||path==='/api/todo-deletions'))workers.integration.worker.postMessage({type:'wake'});
   });
   upstream.on('error',()=>{if(!res.headersSent){res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({error:'서버 응답을 확인하지 못했어요. 저장 결과를 확인해주세요.'}));}else res.destroy();finish();});
   res.on('finish',finish);res.on('close',()=>{upstream.destroy();finish();});req.on('aborted',()=>upstream.destroy());req.pipe(upstream);

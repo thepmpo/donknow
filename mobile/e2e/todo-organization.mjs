@@ -43,6 +43,7 @@ try{
  const popupPromise=page.waitForEvent('popup');await page.getByRole('link',{name:'제안서 검토 원본 열기',exact:true}).click();const popup=await popupPromise;assert.ok(popup.url().startsWith('https://tasks.google.com/'));await popup.close();
  await page.emulateMedia({colorScheme:'dark'});await capture('01-date-default');
  await page.getByTestId('todos-view-source').click();await page.getByTestId('agenda-source:slack').waitFor();await capture('02-source-default');
+ await page.getByRole('button',{name:'Slack Ticket 목록',exact:true}).click();
  assert.equal(await page.getByTestId('todo-source-slack-one').getByText('Slack',{exact:true}).count(),1);
  assert.equal(await page.getByTestId('agenda-source:apple-reminders').getByRole('link').count(),0,'no invented native Apple URL');
  await button('Ticket 여러 개 선택').click();await page.getByRole('checkbox',{name:'견적 내용 확인하기 선택',exact:true}).click();const beforeComplete=calls.filter(c=>c.method==='PATCH').length;

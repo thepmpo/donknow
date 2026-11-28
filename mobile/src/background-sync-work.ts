@@ -8,7 +8,8 @@ import {deviceZone,zonedDay} from './calendar-model';
 import type {CalendarEvent} from './calendar-model';
 import {saveBackgroundCalendarResult} from './calendar-snapshot-cache';
 import {updateAppleSource} from './apple-source-edit';
-import {pendingAppleTodoEdit,queuedTodoEditBase,waitingForAppleTodoDelivery} from './apple-todo-edit-queue';
+import {matchesTodoDeletion,sendTodoDeletion} from './todo-device-deletion';
+import {interruptedTodoEdit,permanentTodoEditError,pendingAppleTodoEdit,queuedTodoEditBase,waitingForAppleTodoDelivery} from './apple-todo-edit-queue';
 import {calendarCreateSending,deviceCalendarEdits,deviceCalendarQueue,todoCreateSending} from './calendar-device-queue';
 import {deviceTodos,todoEditSending} from './todo-device-queue';
 import {calendarEditSending,sendCalendarEdit} from './useDeviceCalendarEdits';
@@ -118,14 +119,23 @@ export async function syncInBackground(owner:string,request:Request,current:()=>
     }
    });
    await isolated(todoEditSending,async()=>{
+    const deletions=await deviceTodos.deletes.read(owner);
+    for(const job of deletions){
+     if(!current())return;
+     await sendTodoDeletion(owner,job,deviceTodos,request,current).catch(async error=>{
+      if(current()&&error instanceof HttpResponseError&&error.code==='todo-delete-source-changed')await deviceTodos.deletes.remove(owner,job.id);
+     });
+    }
     const skipped=new Set<string>();
     for(const job of await deviceTodos.edits.read(owner)){
      if(!current())return;
      const id=job.before.id;
-     if(job.blocked||skipped.has(id)){skipped.add(id);continue;}
+     if(job.blocked&&!interruptedTodoEdit(job.failure)||skipped.has(id)||deletions.some(removal=>matchesTodoDeletion(job.before,removal))){skipped.add(id);continue;}
+     let reading=true;
      try{
       const path='/api/todos/'+encodeURIComponent(id);
       let saved=await request(path) as Todo;
+      reading=false;
       if(!current())return;
       if(waitingForAppleTodoDelivery(saved)){skipped.add(id);continue;}
       if(Object.entries(job.patch).some(([key,value])=>JSON.stringify(saved[key as keyof Todo]??null)!==JSON.stringify(value??null))){
@@ -141,7 +151,8 @@ export async function syncInBackground(owner:string,request:Request,current:()=>
       if(current())await deviceTodos.edits.remove(owner,job.id);
      }catch(error){
       skipped.add(id);
-      if(error instanceof HttpResponseError&&error.code!=='todo-delivery-in-progress'&&[400,404,409,422].includes(error.status)){
+      if(reading&&error instanceof HttpResponseError&&error.status===404)await deviceTodos.edits.remove(owner,job.id);
+      else if(permanentTodoEditError(error)){
        await deviceTodos.edits.change(owner,job.id,entry=>({...entry,blocked:true,failure:error.message}));
       }
      }

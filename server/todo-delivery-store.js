@@ -17,7 +17,11 @@ export function todoDeliveryStore(db,get){
   user_id TEXT NOT NULL REFERENCES users(id), provider TEXT NOT NULL,
   target TEXT NOT NULL, state TEXT NOT NULL, attempt TEXT, next_at INTEGER NOT NULL
  ); CREATE INDEX IF NOT EXISTS todo_delivery_pending ON todo_delivery(provider,state,next_at);
- CREATE INDEX IF NOT EXISTS todo_delivery_owner ON todo_delivery(user_id);`);
+ CREATE INDEX IF NOT EXISTS todo_delivery_owner ON todo_delivery(user_id);
+ CREATE TABLE IF NOT EXISTS todo_source_deletions (
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, source_id TEXT NOT NULL, next_at INTEGER NOT NULL,
+  PRIMARY KEY(user_id,source_id)
+ );`);
  const row=(user,id)=>db.prepare('SELECT * FROM todo_delivery WHERE user_id=? AND todo_id=?').get(user,id);
  const view=r=>r?{...JSON.parse(r.target),state:r.state==='sending'&&r.next_at<Date.now()?'checking':r.state==='reauthorize'?'blocked':r.state}:undefined;
  const current=(user,id)=>get(user,id);
@@ -30,6 +34,38 @@ export function todoDeliveryStore(db,get){
     AND attempt IS ?`).run(status,nextAt,user,id,expected,attempt).changes>0;
  }
  return {
+  deleteLinked(user,input){
+   const {id,sourceId,appleId}=input??{};
+   if(id!=null&&!validId(id)||sourceId!==null&&!(typeof sourceId==='string'&&sourceId.length<=2048)||
+    appleId!==undefined&&(!validId(appleId)||sourceId!==appleId)||!id&&!appleId)throw fail(400,'삭제할 Ticket을 확인해주세요.');
+   db.exec('BEGIN IMMEDIATE');
+   try{
+    const alias=appleId&&db.prepare("SELECT todo_id FROM imported_resources WHERE user_id=? AND provider='apple-reminders' AND resource_key=?").get(user,appleId);
+    const targetId=id??alias?.todo_id;
+    const todo=targetId&&current(user,targetId);
+    if(todo){
+     if((todo.source?.externalId??null)!==sourceId||appleId&&todo.source?.provider!=='apple-reminders')throw Object.assign(fail(409,'Ticket의 연결 목록이 바뀌었어요.'),{code:'todo-delete-source-changed'});
+     if(todo.source?.provider==='apple-reminders'&&!appleId)throw fail(403,'아이폰에서 이 Ticket을 삭제해주세요.');
+     const delivery=row(user,targetId);
+     if(delivery?.state==='sending')throw fail(409,'목록 변경이 처리되는 중이에요.');
+     if(todo.source?.provider==='google'&&/^([^:]+):tasks:([^:]+):([^:]+)$/.test(sourceId)){
+      db.prepare('INSERT OR IGNORE INTO todo_source_deletions VALUES(?,?,?)').run(user,sourceId,Date.now());
+     }
+     db.prepare('DELETE FROM todos WHERE user_id=? AND id=?').run(user,targetId);
+    }
+    if(appleId)db.prepare('INSERT OR IGNORE INTO imported_resources VALUES(?,?,?,?)').run(user,'apple-reminders',appleId,targetId??randomUUID());
+    db.exec('COMMIT');
+   }catch(error){db.exec('ROLLBACK');throw error;}
+  },
+  pendingSourceDeletes(){
+   return db.prepare('SELECT * FROM todo_source_deletions WHERE next_at<=? ORDER BY next_at LIMIT 8').all(Date.now());
+  },
+  finishSourceDelete(job){
+   db.prepare('DELETE FROM todo_source_deletions WHERE user_id=? AND source_id=?').run(job.user_id,job.source_id);
+  },
+  retrySourceDelete(job,delay){
+   db.prepare('UPDATE todo_source_deletions SET next_at=? WHERE user_id=? AND source_id=?').run(Date.now()+delay,job.user_id,job.source_id);
+  },
   enqueue(user,id,target){
    db.prepare("INSERT INTO todo_delivery VALUES(?,?,?,?,'queued',NULL,?)").run(id,user,target.provider,JSON.stringify(target),Date.now());
   },

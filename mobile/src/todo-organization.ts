@@ -2,17 +2,26 @@ import type {Todo} from './domain.ts';
 export type TodoView='date'|'source';
 export function todoSource(todo:Todo){
  const s=todo.source;
+ if(s?.provider==='apple-reminders'&&s.listId)return {key:'apple-reminders:'+s.listId,label:s.listTitle??'미리알림',icon:'checkbox-outline' as const,color:s.color??'#E59337'};
+ if(s?.provider==='google'&&s.externalId.includes(':tasks:')&&s.listId)return {key:'google-tasks:'+(s.connectionId??s.externalId.split(':')[0])+':'+s.listId,label:s.listTitle??'Google Tasks',icon:'checkmark-circle-outline' as const,color:s.color??'#4285F4'};
  if(!s)return {key:'local',label:'도슨',icon:'create-outline' as const,color:'#788391'};
  if(s.provider==='google')return s.externalId.includes(':tasks:')?{key:'google-tasks',label:'Google Tasks',icon:'checkmark-circle-outline' as const,color:'#4285F4'}:s.externalId.includes(':calendar')?{key:'google-calendar',label:'Google Calendar',icon:'calendar-outline' as const,color:'#4285F4'}:s.externalId.includes(':gmail:')?{key:'gmail',label:'Gmail',icon:'mail-outline' as const,color:'#D64B40'}:{key:'google',label:'Google',icon:'logo-google' as const,color:'#4285F4'};
  const values:Record<string,{key:string;label:string;icon:'logo-slack'|'checkbox-outline'|'document-text-outline'|'mail-outline';color:string}>={slack:{key:'slack',label:'Slack',icon:'logo-slack',color:'#B96ED8'},'apple-reminders':{key:'apple-reminders',label:'미리알림',icon:'checkbox-outline',color:'#E59337'},notion:{key:'notion',label:'Notion',icon:'document-text-outline',color:'#788391'},naver:{key:'naver',label:'네이버 메일',icon:'mail-outline',color:'#19A363'}};
  return values[s.provider]??{key:s.provider,label:'연결된 자료',icon:'document-text-outline' as const,color:'#788391'};
 }
 export const compareTodoOrder=(a:Todo,b:Todo)=> (a.order??Number.MAX_SAFE_INTEGER)-(b.order??Number.MAX_SAFE_INTEGER)||(a.dueTime??'99:99').localeCompare(b.dueTime??'99:99');
-export function sourceAgenda(todos:Todo[]){
+export type ReminderListGroup={id:string;title:string;color?:string|null};
+export function sourceAgenda(todos:Todo[],reminderLists:readonly ReminderListGroup[]=[]){
  const groups=new Map<string,{key:string;day:string;title:string;source:ReturnType<typeof todoSource>;todos:Todo[];events:never[]}>();
  for(const todo of todos){const source=todoSource(todo);if(!groups.has(source.key))groups.set(source.key,{key:'source:'+source.key,day:'',title:source.label,source,todos:[],events:[]});groups.get(source.key)!.todos.push(todo);}
+ for(const list of reminderLists){
+  const key='apple-reminders:'+list.id,source={key,label:list.title,icon:'checkbox-outline' as const,color:list.color??'#E59337'};
+  const group=groups.get(key);
+  if(group){group.source=source;group.title=list.title;}
+  else groups.set(key,{key:'source:'+key,day:'',title:list.title,source,todos:[],events:[]});
+ }
  const priority=['local','slack','google-tasks','google-calendar','gmail','google','apple-reminders','notion','naver'];
- const rank=(key:string)=>{const i=priority.indexOf(key);return i<0?priority.length:i;};
+ const rank=(key:string)=>{const i=priority.indexOf(key.split(':')[0]);return i<0?priority.length:i;};
  return [...groups.values()].sort((a,b)=>rank(a.source.key)-rank(b.source.key)||a.title.localeCompare(b.title)).map(g=>({...g,todos:g.todos.sort(compareTodoOrder)}));
 }
 /** One shared item order, while retaining the relative order of a selected group. */

@@ -37,6 +37,7 @@ export function TodosScreen(props:TodosScreenProps){
 function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps){
  const desktop=useDesktopPresentation();
  const toolbarInset=useTodoSelectionInset(),today=dateKey(new Date()),zone=deviceZone(),selection=useCalendarSelection(store);
+ const [openLists,setOpenLists]=useState<Record<string,boolean>>({});
  const [view,setView]=useState<TodoView>('date'),[pulling,setPulling]=useState(false);
  const reduced=useReducedMotion();
  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),focus=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
@@ -66,7 +67,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  if(editor?.todo&&!stableTodos.some(t=>t.id===editedId))stableTodos.push(editor.todo);
  const draft:Todo={id:'inline-draft',title:'',done:false,dueDate:editor?.date??null,category:'일상'};
  const input=editor&&!editor.todo?[...stableTodos,draft]:stableTodos;
- const groups=(view==='date'?todoAgenda(input,calendar.events,today,zone):sourceAgenda(input)).map(g=>({...g,todos:g.todos.filter(t=>t.id!=='inline-draft')}));
+ const groups:(ReturnType<typeof todoAgenda>[number]&{source?:ReturnType<typeof todoSource>})[]=view==='date'?todoAgenda(input,calendar.events,today,zone):sourceAgenda(input,store.appleReminderLists);
  function animateEditorLayout(){if(!reduced&&Platform.OS==='ios')LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);}
  function closeEditor(){animateEditorLayout();Keyboard.dismiss();focus.show(null);setEditingBusy(false);setEditor(null);}
  function edit(group:string,date:string|null,todo?:Todo){if(editor||busy)return;animateEditorLayout();if(todo)Keyboard.dismiss();setBatchMessage('');setEditor({id:++sequence.current,group,date,todo});}
@@ -196,19 +197,25 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
   <ScreenHeading embedded title="Ticket">{selecting&&!drag&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 선택 마치기" disabled={busy} onPress={()=>{cancelDrag();setSelecting(false);setSelected([]);setBatchPanel(null);}} style={styles.headingAction}><Text style={styles.count}>완료</Text></Pressable>}</ScreenHeading>
   <PagePinned testID="todos-pinned-controls"><View style={styles.viewBar}><View accessibilityRole="tablist" style={styles.tabs}>{(['date','source'] as const).map(mode=><Pressable key={mode} testID={'todos-view-'+mode} accessibilityRole="tab" accessibilityLabel={mode==='date'?'날짜별 Ticket':'출처별 Ticket'} accessibilityState={{selected:view===mode,disabled:!!editor||busy||!!drag}} disabled={!!editor||busy||!!drag} onPress={()=>{setView(mode);setBatchPanel(null);setBatchMessage('');}} style={[styles.viewTab,view===mode&&styles.activeTab]}><Text style={[styles.tabText,view===mode&&{color:colors.blueText}]}>{mode==='date'?'날짜별':'출처별'}</Text></Pressable>)}</View>{!selecting&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 추가" disabled={!!editor} onPress={()=>edit(view==='date'?today:'source:local',today)} style={styles.add}><Ionicons name="add" size={19} color={colors.blueText}/><Text style={styles.addText}>Ticket 추가</Text></Pressable>}</View></PagePinned>
   {!store.visible.length&&!calendar.events.length&&<Text style={styles.hint}>필요한 일을 하나씩 적어보세요.</Text>}
-  {groups.map(group=><View key={group.key} testID={'agenda-'+group.key} style={styles.group}>
-   <View style={styles.heading}>{view==='source'?<Ionicons name={todoSource(group.todos[0]??draft).icon} size={28} color={todoSource(group.todos[0]??draft).color}/>:group.day?<Text style={[styles.number,desktop&&{fontSize:27,lineHeight:35}]}>{Number(group.day.slice(8))}</Text>:<Ionicons name={group.key==='overdue'?'alert-circle-outline':'list-outline'} size={27} color={colors.muted}/>}<Text style={[styles.day,desktop&&{fontSize:13,lineHeight:22},view==='source'&&styles.sourceTitle,group.key==='overdue'&&{color:colors.danger}]}>{group.day&&group.day.slice(0,7)!==today.slice(0,7)?Number(group.day.slice(5,7))+'월 · ':''}{group.title}</Text><View style={styles.line}/></View>
+  {groups.map(group=>{
+   const expanded=view==='date'||!!openLists[group.key]||editor?.group===group.key;
+   return <View key={group.key} testID={'agenda-'+group.key} style={styles.group}>
+    {group.source&&view==='source'?<Pressable accessibilityRole="button" accessibilityLabel={group.title+' Ticket 목록'} accessibilityState={{expanded}} disabled={!!editor||busy||!!drag} onPress={()=>setOpenLists(old=>({...old,[group.key]:!expanded}))} style={[styles.heading,{minHeight:44}]}>
+    <Ionicons name={group.source.icon} size={22} color={group.source.color}/><Text style={[styles.day,styles.sourceTitle]}>{group.title}</Text><Text style={styles.hint}>{group.todos.filter(todo=>todo.id!=='inline-draft').length}</Text><View style={styles.line}/><Ionicons name={expanded?'chevron-up':'chevron-down'} size={18} color={colors.secondary}/>
+   </Pressable>:<View style={styles.heading}>{group.day?<Text style={[styles.number,desktop&&{fontSize:27,lineHeight:35}]}>{Number(group.day.slice(8))}</Text>:<Ionicons name={group.key==='overdue'?'alert-circle-outline':'list-outline'} size={27} color={colors.muted}/>}<Text style={[styles.day,desktop&&{fontSize:13,lineHeight:22},view==='source'&&styles.sourceTitle,group.key==='overdue'&&{color:colors.danger}]}>{group.day&&group.day.slice(0,7)!==today.slice(0,7)?Number(group.day.slice(5,7))+'월 · ':''}{group.title}</Text><View style={styles.line}/></View>}
+   {expanded&&<>
    {!!group.events.length&&<View style={styles.events}>{group.events.map(event=><View key={event.id} style={styles.event}><Text numberOfLines={1} style={styles.time}>{event.allDay?'종일':calendarStartLabel(event,group.day,zone)}</Text><Text numberOfLines={2} style={styles.eventTitle}>{event.title}</Text></View>)}</View>}
    {editor?.group===group.key&&!editor.todo&&inline(group.key)}
-   {group.todos.map(todo=>editedId===todo.id?inline(group.key):<ReorderItem previewing={!!drag} previewShift={previewShift(todo.id)} key={todo.id} collapsable={false} ref={node=>register(todo.id,node,todo.id,group.day,group.key)} style={drag?.ids.includes(todo.id)&&{opacity:0}}>
+   {group.todos.filter(todo=>todo.id!=='inline-draft').map(todo=>editedId===todo.id?inline(group.key):<ReorderItem previewing={!!drag} previewShift={previewShift(todo.id)} key={todo.id} collapsable={false} ref={node=>register(todo.id,node,todo.id,group.day,group.key)} style={drag?.ids.includes(todo.id)&&{opacity:0}}>
     {hover?.key===todo.id&&<View pointerEvents="none" testID="todo-drop-line" style={styles.dropLine}/>}
     <TodoRow compact todo={todo} selected={selecting?selected.includes(todo.id):undefined} onSelect={()=>select(todo.id)} onLift={store.pending[todo.id]||todo.done?undefined:point=>beginDrag(todo,group.key,point)}
-      onDrag={moveDrag} onDrop={finishDrag} onSelectAccessible={()=>selectForAccessibility(todo.id)} onOpenSource={todo.source&&['google','slack','notion'].includes(todo.source.provider)&&store.connection?.mode==='cloud'?()=>void openSource(todo):undefined} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]} busy={busy||!!editor||!!todo.saveState||store.busyIds.includes(todo.id)} canToggleWhileBusy={!busy&&!editor&&store.completionIds.includes(todo.id)} canSelectWhileBusy={!busy&&!editor&&store.completionIds.includes(todo.id)} onToggle={()=>void store.update(todo.id,{done:!todo.done})} onEdit={()=>edit(group.key,todo.dueDate,todo)}/>
+      onDrag={moveDrag} onDrop={finishDrag} onSelectAccessible={()=>selectForAccessibility(todo.id)} onOpenSource={todo.source&&['google','slack','notion'].includes(todo.source.provider)&&store.connection?.mode==='cloud'?()=>void openSource(todo):undefined} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]} busy={busy||!!editor||todo.id.startsWith('device-todo:')||store.busyIds.includes(todo.id)} canToggleWhileBusy={!busy&&!editor&&store.completionIds.includes(todo.id)} canSelectWhileBusy={!busy&&!editor&&store.completionIds.includes(todo.id)} onToggle={()=>void store.update(todo.id,{done:!todo.done})} onEdit={()=>edit(group.key,todo.dueDate,todo)}/>
    </ReorderItem>)}
    <View collapsable={false} ref={node=>register('end:'+group.key,node,null,group.day,group.key)} style={[styles.dropEnd,!!group.day&&{minHeight:44}]}>
     {hover?.key==='end:'+group.key&&<View pointerEvents="none" testID="todo-drop-line" style={styles.dropLine}/>}
     {group.day&&!selecting&&!(editor?.group===group.key&&!editor.todo)?<Pressable accessibilityRole="button" accessibilityLabel={group.day+' 새 Ticket 추가'} disabled={!!editor} onPress={()=>edit(group.key,group.day)} style={styles.inlineAdd}><Ionicons name="add" size={18} color={colors.blueText}/><Text style={styles.addText}>Ticket 추가</Text></Pressable>:null}</View>
-  </View>)}
+   </>}
+  </View>;})}
   {view==='date'&&calendar.phase==='error'&&<View style={styles.refresh}><Text style={styles.hint}>Event를 새로 확인하지 못했어요. 저장된 내용은 유지해요.</Text><Pressable accessibilityRole="button" accessibilityLabel="Ticket 화면 Event 다시 확인" onPress={()=>void calendar.load()} style={styles.headingAction}><Text style={{color:colors.blueText}}>다시 확인</Text></Pressable></View>}
   {view==='date'&&!!Object.keys(calendar.cursors).length&&<Pressable accessibilityRole="button" accessibilityLabel="Event 더 불러오기" onPress={()=>void calendar.load(true)} style={styles.inlineAdd}><Text style={{color:colors.blueText}}>Event 더 불러오기</Text></Pressable>}
  </Page>

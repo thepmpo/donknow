@@ -82,10 +82,9 @@ for(const name of ['오늘의 브리핑 열기','docen AI 비서 열기','할 �
 await page.screenshot({path:join(artifacts,'mobile-duckduck.png')});await page.getByRole('textbox',{name:'docen.t ai에 이야기하기',exact:true}).fill('임시 메모');await page.getByRole('button',{name:'docen.t ai에 보내기',exact:true}).click();assert.equal(await page.getByRole('textbox',{name:'정리한 Ticket',exact:true}).count(),0);assert.equal(await page.getByRole('textbox',{name:'docen.t ai에 이야기하기',exact:true}).inputValue(),'임시 메모');
 await page.getByRole('tab',{name:'Ticket',exact:true}).click();await page.getByRole('button',{name:'Ticket 추가',exact:true}).click();await page.getByRole('textbox',{name:'Ticket 제목',exact:true}).fill('회의 자료 보내기');await page.getByRole('button',{name:'저장',exact:true}).click();
 await page.getByRole('button',{name:'회의 자료 보내기 수정',exact:true}).click();
-await page.evaluate(()=>{Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.__sharedTodo=data.text;}});});
-await page.getByRole('button',{name:'Ticket 더보기',exact:true}).click();await page.getByRole('button',{name:'카카오톡 등으로 공유',exact:true}).click();
-assert.equal(await page.evaluate(()=>window.__sharedTodo.includes('회의 자료 보내기')&&!window.__sharedTodo.includes('비공개 대화 원문')),true);
-await page.screenshot({path:join(artifacts,'mobile-kakao-share.png')});
+await page.getByRole('button',{name:'Ticket 삭제',exact:true}).click();
+assert.equal(await page.getByRole('button',{name:'카카오톡 등으로 공유',exact:true}).count(),0);
+await page.getByTestId('ticket-editor-popup').getByRole('button',{name:'닫기',exact:true}).click();
 await page.getByRole('button',{name:'Ticket 편집 취소',exact:true}).click();
 await page.getByRole('tab',{name:'ME',exact:true}).click();await page.screenshot({path:join(artifacts,'mobile-profile.png')});
 await page.getByRole('button',{name:'연결된 서비스 관리',exact:true}).click();await page.getByRole('button',{name:'아이폰 미리 알림 가져오기',exact:true}).click();await page.getByText('아이폰 앱에서 연결해주세요',{exact:true}).filter({visible:true}).waitFor();await page.screenshot({path:join(artifacts,'mobile-apple-reminders.png')});await page.getByRole('button',{name:'돌아가기',exact:true}).click();

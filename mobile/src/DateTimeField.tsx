@@ -16,7 +16,7 @@ export function DateTimePickerPanel({label,value,mode,onChange,onDone,onCancel,d
  </View></ScrollRevealRegion>;
 }
 /** Wheel changes edit the form draft; Done closes the picker without saving the form. */
-export function DateTimeField({label,value,onChange,mode='date',disabled=false,clearable=false,stacked=false,inputLabel=label,activePicker,onPickerChange}:{label:string;value:string|null;onChange:(value:string|null)=>void;mode?:Mode;disabled?:boolean;clearable?:boolean;stacked?:boolean;inputLabel?:string;activePicker?:string|null;onPickerChange?:(value:string|null)=>void}){
+export function DateTimeField({label,value,onChange,mode='date',disabled=false,clearable=false,stacked=false,calendar=false,inputLabel=label,activePicker,onPickerChange}:{label:string;value:string|null;onChange:(value:string|null)=>void;mode?:Mode;disabled?:boolean;clearable?:boolean;stacked?:boolean;calendar?:boolean;inputLabel?:string;activePicker?:string|null;onPickerChange?:(value:string|null)=>void}){
  const [localOpen,setLocalOpen]=useState(false),[pending,setPending]=useState(''),dark=useColorScheme()==='dark';
  const open=onPickerChange?activePicker===inputLabel:localOpen;
  function setOpen(value:boolean){if(onPickerChange)onPickerChange(value?inputLabel:null);else setLocalOpen(value);}
@@ -25,10 +25,10 @@ export function DateTimeField({label,value,onChange,mode='date',disabled=false,c
  function finish(next:string){if(!disabled)onChange(next);setOpen(false);}
  return <View style={s.root} testID={'date-time-field-'+inputLabel}>
   <View style={[s.row,stacked&&s.stacked]}><Text style={s.label}>{label}</Text>
-   {Platform.OS==='web'?React.createElement('input',{type:mode,'aria-label':inputLabel,value:value??'',disabled,onFocus:()=>{setPending(initial());setOpen(true);},onChange:(event:React.ChangeEvent<HTMLInputElement>)=>{setPending(event.target.value);onChange(event.target.value||null);},style:{flex:1,minWidth:0,width:stacked?'100%':undefined,minHeight:44,boxSizing:'border-box',padding:10,fontSize:16,fontFamily:'inherit',border:0,borderRadius:12,color:colors.text,background:colors.grouped,colorScheme:dark?'dark':'light'}}):<Pressable accessibilityRole="button" accessibilityLabel={inputLabel} accessibilityState={{expanded:open,disabled}} disabled={disabled} onPress={()=>open?finish(pending||initial()):begin()} style={s.value}><Text style={s.valueText}>{value?(mode==='date'?value.replaceAll('-','.'):value):'날짜 선택'}</Text></Pressable>}
+   {Platform.OS==='web'&&!calendar?React.createElement('input',{type:mode,'aria-label':inputLabel,value:value??'',disabled,onFocus:()=>{setPending(initial());setOpen(true);},onChange:(event:React.ChangeEvent<HTMLInputElement>)=>{setPending(event.target.value);onChange(event.target.value||null);},style:{flex:1,minWidth:0,width:stacked?'100%':undefined,minHeight:44,boxSizing:'border-box',padding:10,fontSize:16,fontFamily:'inherit',border:0,borderRadius:12,color:colors.text,background:colors.grouped,colorScheme:dark?'dark':'light'}}):<Pressable accessibilityRole="button" accessibilityLabel={inputLabel} accessibilityState={{expanded:open,disabled}} disabled={disabled} onPress={()=>open?finish(pending||initial()):begin()} style={s.value}><Text style={s.valueText}>{value?(mode==='date'?value.replaceAll('-','.'):value):'날짜 선택'}</Text></Pressable>}
    {clearable&&!!value&&<Pressable accessibilityRole="button" accessibilityLabel={label==='예정일'?'날짜 해제':label+' 해제'} disabled={disabled} onPress={()=>{onChange(null);setOpen(false);}} style={s.control}><Text style={s.link}>해제</Text></Pressable>}
   </View>
-  {open&&<DateTimePickerPanel label={inputLabel} value={pending||initial()} mode={mode} onChange={next=>{setPending(next);onChange(next);}} onDone={finish} onCancel={()=>setOpen(false)} disabled={disabled}/>}
+  {open&&<DateTimePickerPanel calendar={calendar} label={inputLabel} value={pending||initial()} mode={mode} onChange={next=>{setPending(next);onChange(next);}} onDone={finish} onCancel={()=>setOpen(false)} disabled={disabled}/>}
  </View>;
 }
 /** Full-width expansion underneath a compact Apple-style start/end row. */

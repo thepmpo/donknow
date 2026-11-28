@@ -59,7 +59,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  assert.equal(googleWrites,0);
  await page.getByRole('button',{name:'아이폰 원본 일정 종일 Event 상세',exact:true}).click();await sheet.getByRole('button',{name:'이 Event 수정',exact:true}).click();await sheet.getByRole('textbox',{name:'Event 제목',exact:true}).fill('아이폰 원본 수정 완료');await sheet.getByRole('button',{name:'Event 저장',exact:true}).click();await sheet.waitFor({state:'detached'});await page.getByRole('button',{name:'아이폰 원본 수정 완료 종일 Event 상세',exact:true}).waitFor();await page.waitForFunction(()=>window.appleCalendarFixture.state().writes.length===3);let after=await page.evaluate(()=>window.appleCalendarFixture.state());assert.equal(after.writes.length,3);assert.deepEqual(Object.keys(after.writes[2].patch).filter(key=>key!=='expectedModified'),['title']);assert.equal(after.writes[2].patch.expectedModified,Date.parse(moved.events[0].modified));assert.equal(after.events[0].notes,'AI가 읽을 실제 아이폰 본문');assert.equal(googleWrites,0);
  await page.getByRole('tab',{name:'ME',exact:true}).click();await page.getByRole('button',{name:'연결된 서비스 관리',exact:true}).click();await page.getByRole('button',{name:'아이폰 캘린더 연결 관리',exact:true}).click();await page.getByRole('button',{name:'선택한 Event·메모를 docen.t ai 채팅에 전달',exact:true}).click();const entries=await page.evaluate(()=>window.exportedAppleEntries);assert.equal(entries.length,1);const body=JSON.parse(Buffer.from(entries[0].files[0].data,'base64').toString('utf8'));assert.equal(body.events[0].notes,'AI가 읽을 실제 아이폰 본문');assert.equal(entries[0].autoSend,false);assert.equal(googleWrites,0);
- await page.getByRole('tab',{name:'캘린더',exact:true}).click();await page.getByRole('button',{name:'아이폰 원본 수정 완료 종일 Event 상세',exact:true}).click();await sheet.getByRole('button',{name:'아이폰 원본 수정 완료',exact:true}).count();await sheet.getByRole('button',{name:'Event 삭제',exact:true}).click();await page.getByRole('button',{name:'원본에서도 Event 삭제',exact:true}).click();await sheet.waitFor({state:'detached'});await page.waitForFunction(()=>window.appleCalendarFixture.state().writes.length===4);after=await page.evaluate(()=>window.appleCalendarFixture.state());assert.equal(after.writes.length,4);assert.equal(after.events.length,0);await page.getByRole('button',{name:'아이폰 원본 수정 완료 종일 Event 상세',exact:true}).waitFor({state:'detached'});assert.equal(googleWrites,0);
+ await page.getByRole('tab',{name:'캘린더',exact:true}).click();await page.getByRole('button',{name:'아이폰 원본 수정 완료 종일 Event 상세',exact:true}).click();await sheet.getByRole('button',{name:'아이폰 원본 수정 완료',exact:true}).count();await sheet.getByRole('button',{name:'Event 삭제',exact:true}).click();await page.getByRole('button',{name:'Event 삭제 확인',exact:true}).click();await sheet.waitFor({state:'detached'});await page.waitForFunction(()=>window.appleCalendarFixture.state().writes.length===4);after=await page.evaluate(()=>window.appleCalendarFixture.state());assert.equal(after.writes.length,4);assert.equal(after.events.length,0);await page.getByRole('button',{name:'아이폰 원본 수정 완료 종일 Event 상세',exact:true}).waitFor({state:'detached'});assert.equal(googleWrites,0);
  await page.getByRole('tab',{name:'ME',exact:true}).click();
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({id:'reenter',calendarId:'icloud',title:'캘린더 재진입 시 불러오기',notes:'',startDate:'2026-11-25T03:00:00Z',endDate:'2026-11-25T04:00:00Z',timeZone:'UTC',allDay:false},false));
  const readsBeforeEntry=calendarReads;
@@ -73,7 +73,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await page.getByRole('button',{name:/읽기 전용 일정.*Event 상세/}).click();
  await sheet.getByRole('button',{name:'Event 삭제',exact:true}).click();
  await page.getByText('이 캘린더에서 Event를 삭제할 권한이 없어요.',{exact:true}).waitFor();
- assert.equal(await page.getByRole('button',{name:'원본에서도 Event 삭제',exact:true}).count(),0);
+ assert.equal(await page.getByRole('button',{name:'Event 삭제 확인',exact:true}).count(),0);
  await page.getByRole('button',{name:'삭제 취소',exact:true}).click();
  if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
  await sheet.waitFor({state:'detached'});
@@ -97,7 +97,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await page.getByRole('tab',{name:'캘린더',exact:true}).click();
  await linkedCard.click();
  await sheet.getByRole('button',{name:'Event 삭제',exact:true}).click();
- await page.getByRole('button',{name:'원본에서도 Event 삭제',exact:true}).click();
+ await page.getByRole('button',{name:'Event 삭제 확인',exact:true}).click();
  await sheet.waitFor({state:'detached'});
  await page.waitForFunction(()=>!window.appleCalendarFixture.state().events.some(event=>event.id==='linked-original'));
  await linkedCard.waitFor({state:'detached'});

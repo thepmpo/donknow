@@ -211,6 +211,13 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         if(target)todoDelivery.wake();
         return send(201,store.todoDelivery.decorate(session.user.id,todo));
       }
+      if(path==='/api/todo-deletions'&&req.method==='POST'){
+        const deletion=await json(req),userId=session.user.id;
+        if(deletion?.id&&todoMembership.isMoving(userId,deletion.id))return send(409,{error:'목록 변경이 처리되는 중이에요.'});
+        store.todoDelivery.deleteLinked(userId,deletion);
+        todoDelivery.wake();
+        return send(200,{ok:true});
+      }
       const sourceLink=/^\/api\/todos\/([^/]+)\/source-link$/.exec(path);if(sourceLink&&req.method==='GET')return send(200,await originalTodoLink(store,integrations,session.user.id,sourceLink[1]));
       if (path.startsWith('/api/todos/')) {
         const id = path.slice('/api/todos/'.length), userId = session.user.id;
@@ -261,7 +268,7 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
     const files = { '/app': ['index.html', 'text/html; charset=utf-8'], '/app/': ['index.html', 'text/html; charset=utf-8'], '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };
     if (!files[path] || req.method !== 'GET') return send(404, { error: '페이지를 찾을 수 없어요.' });
     const [file, type] = files[path]; const content = await readFile(`${root}public/${file}`); res.writeHead(200, { 'Content-Type': type }); res.end(content);
-  } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.',...(error.code==='calendar-event-deleted'?{code:error.code}:{}) }); else res.end(); }
+  } catch (error) { if (!res.headersSent) send(error.status || 500, { error: error.status ? error.message : '요청을 처리하지 못했어요. 다시 시도해주세요.',...(['calendar-event-deleted','todo-edit-busy','todo-delete-source-changed'].includes(error.code)?{code:error.code}:{}) }); else res.end(); }
 })).listen(Number(process.env.PORT || 3000), lane?'127.0.0.1':'0.0.0.0', () => {if(lane)parentPort.postMessage({type:'ready',port:server.address().port});else console.log('Donknow listening on port ' + server.address().port);if(background&&process.env.NODE_ENV!=='test'){void probeAiConnection();void probeMailConfiguration();}});
 if(lane)parentPort.on('message',message=>{if(message.type==='wake'){features.wakeSource();todoDelivery.wake();}if(message.type==='wake-calendar')features.wakeCalendarDelivery();if(message.type==='close'){features.close();googleBackgroundSync.stop();taskSync.stop();todoDelivery.stop();worker.stop();backupJob.stop();server.close(()=>{store.close();process.exit(0);});}});
 

@@ -31,7 +31,7 @@ export function createSourceEdits({store,assistant,integrations,deferred=false,o
   if(result.status!=='succeeded')throw fail(result.status==='unknown'?502:409,'원본 저장 결과를 확인해주세요.');
  }
  async function save(user,id,patch,{retry=false,forceDone=false,deviceEditBase,guard=()=>true}={}){
-  const key=user+':'+id;if(busy.has(key))throw fail(409,'이 항목을 저장하고 있어요. 잠시 뒤 확인해주세요.');
+  const key=user+':'+id;if(busy.has(key))throw Object.assign(fail(409,'이 항목을 저장하고 있어요. 잠시 뒤 확인해주세요.'),{code:'todo-edit-busy'});
   busy.add(key);try{if(!guard())throw fail(409,'작업이 중지됐어요.');const before=store.get(user,id);if(!before)throw fail(404,'내 할 일을 찾지 못했어요.');
    if(deviceEditBase){
     const {fields:base,sourceId,editedAt}=deviceEditBase;

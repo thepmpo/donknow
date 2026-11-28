@@ -491,7 +491,7 @@ await sheet.waitFor();await sheet.getByRole('textbox',{name:'Event 제목',exact
  assert.equal(todoSaved.done,true);
  await edited.click();
  await linkedSheet.getByRole('button',{name:'Event 삭제',exact:true}).click();
- await linked.getByRole('button',{name:'원본에서도 Event 삭제',exact:true}).click();
+ await linked.getByRole('button',{name:'Event 삭제 확인',exact:true}).click();
  await linkedSheet.waitFor({state:'detached'});
  await edited.waitFor({state:'detached'});
  assert.ok(docenSaved,'row is hidden while the server delete has not answered');

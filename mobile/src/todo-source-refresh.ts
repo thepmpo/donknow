@@ -18,11 +18,12 @@ async function pages(current:()=>boolean,read:(cursor?:string)=>Promise<string|n
   seen.add(next);cursor=next;
  }
 }
-export async function readAppleTodoLists(current:()=>boolean,onList:(id:string,rows:ListedReminder[])=>void){
+export async function readAppleTodoLists(current:()=>boolean,onList:(id:string,rows:ListedReminder[])=>void,onLists?:(lists:{id:string;title:string;color?:string|null}[])=>void){
  if(Platform.OS!=='ios')return;
  const Calendar=await import('expo-calendar');
  if(!(await Calendar.getRemindersPermissions()).granted||!current())return;
  const lists=await appleReminderDevice.lists();
+ if(current())onLists?.(lists.map(({id,title,color})=>({id,title,color})));
  for(let i=0;current()&&i<lists.length;i+=3){
   await Promise.allSettled(lists.slice(i,i+3).map(async list=>{
    const rows=copyReminders(await list.listReminders(null,null,null)).map(row=>({...row,listId:list.id,listTitle:list.title,...(list.color?{color:list.color}:{})}));
@@ -41,13 +42,13 @@ export async function refreshTodoSources(request:Request,current:()=>boolean,app
   await Promise.allSettled(accounts.filter(account=>account.features.includes('tasks')).map(async account=>{
    await pages(current,async cursor=>{
     const query=new URLSearchParams({feature:'tasks',...(account.connectionId?{connectionId:account.connectionId}:{}),...(cursor?{cursor}:{})});
-    const page=await request('/api/integrations/google/resources?'+query) as Page<{id:string}>;
+    const page=await request('/api/integrations/google/resources?'+query) as Page<{id:string;title?:string}>;
     if(!Array.isArray(page.items))throw Error('Ticket 목록 응답을 확인해주세요.');
     for(const list of page.items){
      if(!current())break;
      // A failed source list never clears the previously reconciled rows.
      await pages(current,async taskCursor=>{
-      const result=await request('/api/integrations/google/task-refresh','POST',{connectionId:account.connectionId,list:list.id,cursor:taskCursor}) as {changed:number;nextCursor?:string|null};
+      const result=await request('/api/integrations/google/task-refresh','POST',{connectionId:account.connectionId,list:list.id,listTitle:list.title,cursor:taskCursor}) as {changed:number;nextCursor?:string|null};
       changed=changed||result.changed>0;
       if(result.changed&&current())providers.onChange?.();
       return result.nextCursor;

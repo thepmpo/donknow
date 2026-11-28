@@ -167,3 +167,45 @@ test('new Google approval resumes rejected task creates only for that connection
   assert.equal(store.todoDelivery.status(user.id,second.id).state,'blocked');
  }finally{store.close();await rm(dir,{recursive:true,force:true});}
 });
+
+test('linked Ticket deletion is durable, idempotent and isolated to its account',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'docen-todo-delete-')),store=await openStore(dir);
+ try{
+  const {user}=await store.register('delete@example.test','fixture-password-123');
+  const {user:other}=await store.register('other-delete@example.test','fixture-password-123');
+  const sourceId='google-test:tasks:chosen:linked';
+  store.saveGoogleAccount(user.id,{connectionId:'google-test',accountId:'identity',features:['tasks','tasksWrite'],accessToken:'fixture'},'개인');
+  store.syncTaskResources(user.id,'google',[{id:sourceId,title:'삭제할 Ticket',listId:'chosen',completed:false}]);
+  const [todo]=store.todoDelivery.list(user.id);
+  store.todoDelivery.deleteLinked(other.id,{id:todo.id,sourceId});
+  assert.ok(store.get(user.id,todo.id));
+  assert.throws(()=>store.todoDelivery.deleteLinked(user.id,{id:todo.id,sourceId:'stale'}),{status:409});
+  store.todoDelivery.deleteLinked(user.id,{id:todo.id,sourceId});
+  store.todoDelivery.deleteLinked(user.id,{id:todo.id,sourceId});
+  assert.equal(store.todoDelivery.list(user.id).length,0);
+  assert.equal(store.syncTaskResources(user.id,'google',[{id:sourceId,title:'삭제 직전 응답',completed:false}]),0);
+  const requests=[];
+  const adapter=createIntegrations(store,{PUBLIC_ORIGIN:'https://fixture.test'},async(url,options)=>{
+   requests.push([new URL(url).pathname,options.method]);
+   return new Response(null,{status:204});
+  });
+  const worker=createTodoDelivery(store,adapter,{background:false});
+  await worker.tick();
+  await worker.tick();
+  assert.deepEqual(requests,[['/tasks/v1/lists/chosen/tasks/linked','DELETE']]);
+  assert.equal(store.todoDelivery.pendingSourceDeletes().length,0);
+  const apple={id:'deleted-before-import',title:'미리알림',completed:false,listId:'inbox'};
+  store.todoDelivery.deleteLinked(user.id,{id:null,sourceId:apple.id,appleId:apple.id});
+  assert.deepEqual(store.syncTaskResources(user.id,'apple-reminders',[apple],{returnItems:true}).suppressed,[apple.id]);
+  const another={...apple,id:'another-reminder'};
+  store.syncTaskResources(user.id,'apple-reminders',[another]);
+  const [imported]=store.todoDelivery.list(user.id);
+  assert.throws(()=>store.todoDelivery.deleteLinked(user.id,{id:imported.id,sourceId:another.id}),{status:403});
+  store.todoDelivery.deleteLinked(user.id,{id:null,sourceId:another.id,appleId:another.id});
+  assert.equal(store.todoDelivery.list(user.id).length,0);
+  const deletedByGoogle={id:'google-test:tasks:chosen:remote-delete',title:'Google에서 삭제',completed:false};
+  store.syncTaskResources(user.id,'google',[deletedByGoogle]);
+  assert.equal(store.syncTaskResources(user.id,'google',[{...deletedByGoogle,deleted:true}]),1);
+  assert.equal(store.todoDelivery.list(user.id).length,0);
+ }finally{store.close();await rm(dir,{recursive:true,force:true});}
+});
