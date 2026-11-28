@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-11-28",
-  "codeCommit": "c912b726c56a7662bed679d52c9ca786efe37ad4",
-  "assetCommit": "c912b726c56a7662bed679d52c9ca786efe37ad4",
+  "codeCommit": "228d17d1db05a8bdbb036e62fd4909d6b355a800",
+  "assetCommit": "228d17d1db05a8bdbb036e62fd4909d6b355a800",
   "imageCount": 1845,
   "images": [
     {
@@ -8274,8 +8274,8 @@
     {
       "path": "artifacts/event-detail-preview/standard-event-detail.png",
       "category": "단계별 개요 또는 초기 웹 프로토타입",
-      "bytes": 40144,
-      "sha256": "906f44dc489c11524e7336b68dc3c5310f85b229da080210766f08cbd0d31fea",
+      "bytes": 40174,
+      "sha256": "f32aa5c5c1a0b1ceb2fbe5d5d7c6d465e139694cd8b0f01af2af1876f6fc636c",
       "import_path": "images/artifacts__event-detail-preview__standard-event-detail.png"
     },
     {
