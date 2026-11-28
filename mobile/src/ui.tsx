@@ -35,7 +35,7 @@ export function Button({ title, onPress, disabled = false, quiet = false, loadin
 export function CloseButton({onPress,disabled=false,calendarSlot=false}:{onPress:()=>void;disabled?:boolean;calendarSlot?:boolean}) {
   const duo=useDuoBackAction(onPress,disabled,'close',calendarSlot);
   if(duo)return calendarSlot?null:<View pointerEvents="none" accessible={false} style={{width:44,minHeight:44}}/>;
-  return <Pressable accessibilityRole="button" accessibilityLabel="닫기" disabled={disabled} onPress={onPress} style={{width:44,minHeight:44,alignItems:'center',justifyContent:'center',opacity:disabled ? 0.4 : 1}}><Text style={{fontSize:24,lineHeight:28,color:colors.muted}}>×</Text></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityLabel="닫기" disabled={disabled} onPress={onPress} style={{width:44,minHeight:44,alignItems:'center',justifyContent:'center',opacity:disabled ? 0.4 : 1}}><Text style={{fontSize:calendarSlot?32:24,lineHeight:calendarSlot?36:28,color:calendarSlot?colors.text:colors.muted}}>×</Text></Pressable>;
 }
 export function BackButton({onPress,disabled=false}:{onPress:()=>void;disabled?:boolean}){
   const duo=useDuoBackAction(onPress,disabled);

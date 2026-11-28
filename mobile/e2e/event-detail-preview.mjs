@@ -57,7 +57,16 @@ try{
    await close.click();
    await switchButton.waitFor();
    assert.deepEqual(await switchButton.boundingBox(),frame);
-  }else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
+  }else{
+   const close=sheet.getByRole('button',{name:'닫기',exact:true});
+   if(mode==='standard'){
+    const edit=sheet.getByRole('button',{name:'이 Event 수정',exact:true});
+    const editFrame=await edit.boundingBox(),closeFrame=await close.boundingBox();
+    assert.ok(editFrame.x+editFrame.width<=closeFrame.x);
+    assert.equal(await close.getByText('×',{exact:true}).evaluate(el=>getComputedStyle(el).fontSize),'32px');
+   }
+   await close.click();
+  }
   await sheet.waitFor({state:'detached'});
   if(mode==='standard'){
    await page.getByRole('tab',{name:'Ticket',exact:true}).click();
