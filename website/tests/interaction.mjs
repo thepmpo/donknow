@@ -181,7 +181,10 @@ try {
       await demo.locator(".demo-status").innerText(),
       /Added to Tickets/,
     );
-    const englishText = await page.locator("body").innerText();
+    const englishText = (await page
+      .locator("header, main, .site-footer > :not(.footer-business)")
+      .allInnerTexts()).join("\n");
+    assert.equal(await page.locator(".footer-business").getAttribute("lang"), "ko");
     assert.equal(
       /[가-힣]/.test(englishText),
       false,
