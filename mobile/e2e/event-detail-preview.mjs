@@ -64,6 +64,14 @@ try{
    window.appleCalendarFixture.setAllowed(true);
    for(const event of events)window.appleCalendarFixture.writeOutside(event);
   },events);
+  if(mode==='standard'){
+   const nav=page.getByTestId('BottomNavigation');
+   for(const name of ['캘린더','Ticket','docen.t ai','log','ME']){
+    await nav.getByRole('tab',{name,exact:true}).waitFor();
+    assert.equal(await nav.getByText(name,{exact:true}).count(),0);
+   }
+   await nav.getByTestId('navigation-calendar-date').getByText('28',{exact:true}).waitFor();
+  }
   const event=page.getByRole('button',{name:/포트폴리오 정리.*Event 상세/});
   const switchButton=page.getByTestId('DuoCalendarViewButton');
   const frame=mode==='duo'&&await switchButton.boundingBox();
