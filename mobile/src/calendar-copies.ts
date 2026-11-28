@@ -12,6 +12,12 @@ export function appleCalendarView(events:CalendarEvent[]){
  return [...originals.filter(original=>!pending.some(event=>matchesCalendarMirror(original,event.mirror!,event.dueDate))),...pending];
 }
 
+export function mergeDeviceCalendarView(events:CalendarEvent[],hidden:readonly string[]=[]){
+ const apple=appleCalendarView(events).filter(event=>!hidden.includes(event.mirror?.calendarId??event.calendarId??''));
+ const additional=events.filter(event=>event.provider!=='apple-calendar'&&event.mirror?.provider!=='apple-calendar');
+ return mergeCalendarCopies([...apple,...additional],true);
+}
+
 export function displayCalendarMirror(event:CalendarEvent,original:CalendarEvent){
  const mirror=event.mirror;
  const copy={...event,externalUid:original.externalUid,color:original.color??mirror?.color??event.color};
@@ -31,7 +37,7 @@ function occurrenceKey(event:CalendarEvent){
 }
 
 /** EventKit can expose the same Google calendar that an account also connects directly. */
-export function mergeCalendarCopies(events:CalendarEvent[]):CalendarEvent[]{
+export function mergeCalendarCopies(events:CalendarEvent[],preferApple=false):CalendarEvent[]{
  const sameCalendar=new Map<string,CalendarEvent>();
  for(const event of events){
   const occurrence=(event.provider==='apple-calendar'||event.provider==='google')&&occurrenceKey(event);
@@ -54,7 +60,7 @@ export function mergeCalendarCopies(events:CalendarEvent[]):CalendarEvent[]{
   // Ambiguous subscriptions can intentionally put a copy in more than one calendar.
   if(apple.length!==1||google.length!==1)continue;
   const [device]=apple,[cloud]=google;
-  copies.add(device.mirror||device.canWrite&&!cloud.canWrite?cloud.id:device.id);
+  copies.add(preferApple||device.mirror||device.canWrite&&!cloud.canWrite?cloud.id:device.id);
  }
  return unique.filter(event=>!copies.has(event.id));
 }

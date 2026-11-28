@@ -110,6 +110,11 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  const timedMonthCard=page.getByTestId('calendar-date-grid').getByRole('button',{name:'원본에서 바로 작성 일정 상세',exact:true});
  await timedMonthCard.waitFor({timeout:4000});
  await timedMonthCard.getByText(/^(오전 1시|01:00)$/).waitFor({timeout:4000});
+ const firstThree=await timedMonthCard.getByText('원본에서 바로 작성',{exact:true}).evaluate(node=>{
+  const range=document.createRange();range.setStart(node.firstChild,0);range.setEnd(node.firstChild,3);
+  return [...new Set([...range.getClientRects()].map(rect=>rect.y))].length;
+ });
+ assert.equal(firstThree,1,'three typical Korean title glyphs fit on the first line');
  const darkTitle=await timedMonthCard.getByText('원본에서 바로 작성',{exact:true}).evaluate(node=>getComputedStyle(node).color);
  await page.screenshot({path:out+'/'+mode+'-readable-month-dark.png'});
  await page.emulateMedia({colorScheme:'light',reducedMotion:'reduce'});
@@ -142,13 +147,10 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await sheet.waitFor({state:'detached'});
  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
  assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).events.some(event=>event.id==='beyond-ten'),true,'visibility never deletes the source event');
- for(const [view,expected] of [['아이폰 캘린더','visible'],['통합 보기','detached']]){
-  await page.getByTestId('calendar-visibility-button').click();
-  await page.getByRole('radio',{name:view,exact:true}).click();
-  if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
-  await sheet.waitFor({state:'detached'});
-  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:expected,timeout:4000});
- }
+ await page.getByTestId('calendar-visibility-button').click();
+ assert.equal(await page.getByRole('radiogroup',{name:'캘린더 표시 기준'}).count(),0);
+ if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
+ await sheet.waitFor({state:'detached'});
  const historical={id:'historical',calendarId:'calendar-10',title:'작년 마지막 날 일정',notes:'',startDate:'2025-12-31T09:00:00Z',endDate:'2025-12-31T10:00:00Z',timeZone:'UTC',allDay:false};
  await page.evaluate(event=>window.appleCalendarFixture.writeOutside(event),historical);
  await page.waitForFunction(()=>window.appleCalendarFixture.state().lastEventRange?.start.startsWith('2026'));

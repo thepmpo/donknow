@@ -1,22 +1,25 @@
 import {useEffect,useRef,useState} from 'react';
+import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {docenCalendarId} from './calendar-model';
 import {isAppleCalendar} from './apple-calendar-model';
 import type {TodoStore} from './useTodos';
 export const calendarSelectionKey=(owner:string)=>'duck.calendar.selection.'+owner;
-export type CalendarSourceView='apple'|'combined';
-type Selection={ids:string[];knownAppleIds?:string[];hideDocen?:boolean;hiddenIds?:string[];sourceView?:CalendarSourceView};
+type Selection={ids:string[];knownAppleIds?:string[];hideDocen?:boolean;hiddenIds?:string[];deviceSelection?:boolean};
 const selectionListeners=new Map<string,Set<(value:Selection)=>void>>();
 const noHiddenCalendars:string[]=[];
-const defaultSelection:Selection={ids:['primary']};
+const deviceSelection=Platform.OS==='ios';
+const defaultSelection:Selection=deviceSelection?{ids:[],hideDocen:true,deviceSelection:true}:{ids:['primary']};
 function parseSelection(raw:string|null):Selection {
  try{
   const value=JSON.parse(raw??'null');
   const ids=value?.ids??value;
   if(Array.isArray(ids)&&ids.every(id=>typeof id==='string'&&id.length>0&&id.length<=1500)){
    const known=Array.isArray(value?.knownAppleIds)?value.knownAppleIds.filter((id:unknown)=>typeof id==='string'&&isAppleCalendar(id)):undefined;
-   return {ids:[...new Set<string>(ids)],knownAppleIds:known,hideDocen:value?.hideDocen===true,hiddenIds:Array.isArray(value?.hiddenIds)?value.hiddenIds.filter((id:unknown)=>typeof id==='string'):undefined,
-    sourceView:value?.sourceView==='apple'||value?.sourceView==='combined'?value.sourceView:undefined};
+   const hiddenIds=Array.isArray(value?.hiddenIds)?value.hiddenIds.filter((id:unknown)=>typeof id==='string'):undefined;
+   const migrated=deviceSelection&&!value?.deviceSelection&&value?.sourceView!=='combined';
+   return {ids:[...new Set<string>(migrated?ids.filter(isAppleCalendar):ids)],knownAppleIds:known,
+    hideDocen:migrated||value?.hideDocen===true,hiddenIds:migrated?undefined:hiddenIds,deviceSelection:deviceSelection||undefined};
   }
  }catch{}
  return defaultSelection;
@@ -46,7 +49,8 @@ export function useCalendarSelection(store:TodoStore){
  }
  function reveal(id:string){
   const before=latest.current;
-  if(id===docenCalendarId||before.ids.includes(id)||before.hiddenIds?.includes(id))return;
+  if(id===docenCalendarId){if(before.hideDocen)save({...before,hideDocen:false});return;}
+  if(before.ids.includes(id))return;
   if(!isAppleCalendar(id)&&before.ids.filter(value=>!isAppleCalendar(value)).length>=10)return;
   setIds([...before.ids,id]);
  }
@@ -65,6 +69,5 @@ export function useCalendarSelection(store:TodoStore){
   if(known&&available.every(id=>known.includes(id))&&!additions.length)return;
   save({...value,ids:[...new Set([...value.ids,...additions])],knownAppleIds:[...new Set([...(known??[]),...available])]});
  }
- return {ids:value.ids,hiddenIds:value.hiddenIds??noHiddenCalendars,showDocen:!value.hideDocen,sourceView:value.sourceView,
-  setSourceView:(sourceView:CalendarSourceView)=>save({...latest.current,sourceView}),ready,setIds,toggle,reveal,reconcileApple};
+ return {ids:value.ids,hiddenIds:value.hiddenIds??noHiddenCalendars,showDocen:!value.hideDocen,ready,setIds,toggle,reveal,reconcileApple};
 }

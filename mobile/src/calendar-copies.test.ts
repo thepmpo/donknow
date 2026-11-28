@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {appleCalendarView,displayCalendarMirror,mergeCalendarCopies} from './calendar-copies.ts';
+import {appleCalendarView,displayCalendarMirror,mergeCalendarCopies,mergeDeviceCalendarView} from './calendar-copies.ts';
 import type {CalendarEvent} from './calendar-model.ts';
 
 const apple:CalendarEvent={id:'apple-12',externalUid:'first',provider:'apple-calendar',calendarId:'@apple/test',
@@ -32,6 +32,11 @@ test('merge the same calendar occurrence across Apple and Google and prefer a wr
  const nextOccurrence={...apple,id:'apple-13',dueDate:'2026-11-13',startAt:'2026-11-13T00:00:00Z',endAt:'2026-11-13T01:00:00Z'};
  assert.deepEqual(mergeCalendarCopies([apple,google,nextOccurrence]).map(e=>e.id),[google.id,nextOccurrence.id]);
  assert.deepEqual(mergeCalendarCopies([apple,{...google,canWrite:false}]).map(e=>e.id),[apple.id]);
+});
+test('the device view prefers the Apple copy and keeps selected independent cloud events',()=>{
+ const separate={...google,id:'google-only',externalUid:'separate'};
+ assert.deepEqual(mergeDeviceCalendarView([google,apple,separate]).map(event=>event.id),[apple.id,separate.id]);
+ assert.deepEqual(mergeDeviceCalendarView([google,apple,separate],['@apple/test']).map(event=>event.id),[google.id,separate.id]);
 });
 test('keep separate same-title entries and calendars that share an ambiguous UID',()=>{
  assert.equal(mergeCalendarCopies([apple,{...google,externalUid:'second'}]).length,2);

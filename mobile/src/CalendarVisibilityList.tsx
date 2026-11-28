@@ -13,15 +13,13 @@ function checkColor(color:string){
  const channels=[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);
  return channels[0]*.2126+channels[1]*.7152+channels[2]*.0722>.179?'#111':'#fff';
 }
-export function CalendarVisibilityList({sources,selected,showDocen,busy,ready,more,readOnly=false,viewControl,onToggle,onMore}:{
- sources:CalendarSource[];selected:ReadonlySet<string>;showDocen:boolean;busy:boolean;ready:boolean;more:boolean;readOnly?:boolean;
- viewControl?:React.ReactNode;
+export function CalendarVisibilityList({sources,selected,showDocen,busy,ready,more,onToggle,onMore}:{
+ sources:CalendarSource[];selected:ReadonlySet<string>;showDocen:boolean;busy:boolean;ready:boolean;more:boolean;
  onToggle:(id:string)=>void;onMore:()=>void;
 }){
  const [collapsed,setCollapsed]=useState<Set<string>>(()=>new Set());
  const groups=groupCalendarSources(sources);
  return <ScrollArea testID="calendar-visibility-list" showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-  {viewControl}
   {groups.map(group=>{
    const expanded=!collapsed.has(group.id);
    return <View key={group.id}>
@@ -33,10 +31,10 @@ export function CalendarVisibilityList({sources,selected,showDocen,busy,ready,mo
     </Pressable>
     {expanded&&<View style={styles.group}>
      {group.items.map((source,index)=>{
-      const visible=readOnly||(source.id===docenCalendarId?showDocen:selected.has(source.id));
+      const visible=source.id===docenCalendarId?showDocen:selected.has(source.id);
       const color=source.color||colors.action;
       return <Pressable key={source.id} accessibilityRole="checkbox" accessibilityLabel={source.name+' 표시'}
-       accessibilityState={{checked:visible,disabled:readOnly||!ready}} aria-checked={visible} disabled={readOnly||!ready} onPress={()=>onToggle(source.id)}
+       accessibilityState={{checked:visible,disabled:!ready}} aria-checked={visible} disabled={!ready} onPress={()=>onToggle(source.id)}
        style={({pressed})=>[styles.row,pressed&&styles.pressed]}>
        <View style={[styles.marker,{borderColor:color,backgroundColor:visible?color:'transparent'}]}>
         {visible&&<Ionicons name="checkmark" size={14} color={checkColor(color)}/>}
