@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-28 · 한국 시간 · 기능 코드 1b08744 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-28 · 한국 시간 · 기능 코드 0791a76 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-28 — Ticket 편집 팝업과 원본 목록 변경
+
+- 제목과 메모를 적고, 작은 버튼으로 날짜·알림·목록을 연다. 날짜는 없음·오늘·내일·다음 주말·다음 주를 빠르게 고르거나 날짜와 시간을 직접 지정할 수 있다. 편집 영역 위의 팝업으로 열려 목록과 편집 영역의 높이를 늘리지 않는다.
+- 아이폰에서 읽은 미리알림은 서버가 등록하기 전에도 선택하고 열 수 있다. 저장 시 선택한 원본 ID를 우선 등록하고, 자동 등록과 겹쳐도 같은 도슨 Ticket에 반영한다.
+- 같은 서비스와 계정의 목록은 원본을 이동한다. Apple과 Google 사이의 전환은 새 서비스에서 저장이 확인된 뒤 기존 도슨 Ticket의 연결을 바꾸고 이전 원본은 보관한다. 새 연결이 확인되기까지 기존 연결 정보와 도슨의 날짜·메모가 남는다.
+- 일반·Duo·웹 브라우저에서 끝 항목 편집, 날짜 팝업과 저장, Apple에서 Google로 전환 요청을 재현했다. 서버 모의 테스트에서 새 연결 확인과 이전 항목의 중복 유입 차단을 확인했다. 운영 서버 배포, TestFlight 제출, 실제 계정과 아이폰 검수는 별도다.
 
 #### 2026-11-28 — 월간 Event 제목의 글자 끝 페이드
 
@@ -4347,10 +4354,12 @@ b66a0d6 Document the monthly calendar title fade
 2c1e1da Rename product UI and separate calendar swipes from taps
 276cbd4 Refresh project notes and verify bilingual product labels
 1b08744 Fade the last letters of clipped month Event titles
+e4d4e17 Update project notes for monthly Event title treatment
+0791a76 Make Ticket editing compact and let users switch source lists
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 1b08744에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 0791a76에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13619,7 +13628,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/1b087444309da213b498776e23fce9d77539990d
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/0791a76a0e64c68516e2bdd6907b71931413304a
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
