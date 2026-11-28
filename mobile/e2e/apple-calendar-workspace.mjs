@@ -104,7 +104,18 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  assert.equal(localDeletes,1);
 
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({id:'outside',calendarId:'icloud',title:'원본에서 바로 작성',notes:'',startDate:'2026-11-25T01:00:00Z',endDate:'2026-11-25T02:00:00Z',timeZone:'UTC',allDay:false}));
- await page.getByRole('button',{name:/원본에서 바로 작성.*일정 상세/}).waitFor({timeout:4000});
+ await year.click();
+ await page.getByTestId('calendar-year-overview').getByRole('button',{name:'2026년 11월로 이동',exact:true}).click();
+ await page.getByTestId('calendar-year-overview').waitFor({state:'detached'});
+ const timedMonthCard=page.getByTestId('calendar-date-grid').getByRole('button',{name:'원본에서 바로 작성 일정 상세',exact:true});
+ await timedMonthCard.waitFor({timeout:4000});
+ await timedMonthCard.getByText(/^(오전 1시|01:00)$/).waitFor({timeout:4000});
+ const darkTitle=await timedMonthCard.getByText('원본에서 바로 작성',{exact:true}).evaluate(node=>getComputedStyle(node).color);
+ await page.screenshot({path:out+'/'+mode+'-readable-month-dark.png'});
+ await page.emulateMedia({colorScheme:'light',reducedMotion:'reduce'});
+ await page.waitForFunction(previous=>[...document.querySelectorAll('[role=button][aria-label="원본에서 바로 작성 일정 상세"] span, [role=button][aria-label="원본에서 바로 작성 일정 상세"] [dir=auto]')].some(node=>node.textContent==='원본에서 바로 작성'&&getComputedStyle(node).color!==previous),darkTitle);
+ await page.screenshot({path:out+'/'+mode+'-readable-month-light.png'});
+ await page.emulateMedia({colorScheme:'dark',reducedMotion:'reduce'});
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({...window.appleCalendarFixture.state().events[0],title:'원본에서 바로 수정'}));
  await page.getByRole('button',{name:/원본에서 바로 수정.*일정 상세/}).waitFor({timeout:4000});
  await page.getByRole('tab',{name:'ME',exact:true}).click();
@@ -131,7 +142,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await sheet.waitFor({state:'detached'});
  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
  assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).events.some(event=>event.id==='beyond-ten'),true,'visibility never deletes the source event');
- for(const [view,expected] of [['아이폰 기준','visible'],['통합 보기','detached']]){
+ for(const [view,expected] of [['아이폰 캘린더','visible'],['통합 보기','detached']]){
   await page.getByTestId('calendar-visibility-button').click();
   await page.getByRole('radio',{name:view,exact:true}).click();
   if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
@@ -148,7 +159,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await yearOverview.getByRole('button',{name:'2025년 12월로 이동',exact:true}).click();
  await yearOverview.waitFor({state:'detached'});
  const oldDay=page.getByTestId('calendar-day-2025-12-31');
- await oldDay.click();
+ await oldDay.click({position:{x:20,y:15}});
  await sheet.getByRole('button',{name:'작년 마지막 날 일정 일정 상세',exact:true}).waitFor();
  const range=await page.evaluate(()=>window.appleCalendarFixture.state().lastEventRange);
  assert.ok(range.start<='2025-12-31'&&range.end>'2025-12-31');
