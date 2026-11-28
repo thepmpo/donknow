@@ -17,6 +17,9 @@ test('Apple list refresh imports once, applies edits and completion, and respect
   assert.equal(inserted.data.items[0].title,original.title);
   assert.equal((await pull(original)).data.changed,0);
   const [{id}]=await list();
+  const resolved=await request('/api/integrations/apple-reminders/refresh','POST',{items:[original],resolve:true});
+  assert.equal(resolved.data.changed,0);
+  assert.equal(resolved.data.items[0].id,id);
   assert.equal((await pull({...original,title:'Apple 수정',completed:true,modifiedAt:'2026-11-25T02:00:00Z'})).data.changed,1);
   assert.equal((await list())[0].done,true);
   assert.equal((await pull(original)).data.changed,0);

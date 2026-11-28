@@ -133,7 +133,7 @@ export async function featureStore(db, directory, env = process.env) {
       } });
     },
     importedSourceLocator(user,id){const row=db.prepare('SELECT r.payload FROM imported_resources i JOIN integration_resources r ON r.user_id=i.user_id AND r.provider=i.provider AND r.resource_key=i.resource_key WHERE i.user_id=? AND i.todo_id=?').get(user,id);if(!row)return null;const r=JSON.parse(row.payload);return {calendarId:r.calendarId,eventId:r.eventId,connectionId:r.connectionId};},
-    syncTaskResources(userId,provider,items,{returnItems=false}={}){
+    syncTaskResources(userId,provider,items,{returnItems=false,resolve=false}={}){
       return transaction(()=>{
         let changed=0;
         const updates=[];
@@ -154,13 +154,22 @@ export async function featureStore(db, directory, env = process.env) {
           if(!row&&sendingLists?.has(item.listId)){deferred.push(item.id);continue;}
           if(row&&!row.data){if(provider==='apple-reminders')suppressed.push(item.id);continue;}
           const before=row&&JSON.parse(row.data);
-          if(before&&(before.source?.provider!==provider||before.source.externalId!==item.id||
-            before.sourceSync?.patch&&before.sourceSync.state!=='succeeded'))continue;
+          if(before&&(before.source?.provider!==provider||before.source.externalId!==item.id)){
+            if(provider==='apple-reminders')suppressed.push(item.id);
+            continue;
+          }
+          if(before&&before.sourceSync?.patch&&before.sourceSync.state!=='succeeded'){
+            if(resolve)updates.push(before);
+            continue;
+          }
           const modifiedAt=stamp(item.modifiedAt);
           if(before){
             const previous=stamp(before.source.modifiedAt);
-            if(previous&&(!modifiedAt||modifiedAt<=previous))continue;
-            if(before.sourceSync?.state==='succeeded'&&(!modifiedAt||Date.parse(modifiedAt)<(before.sourceSync.at??0)))continue;
+            if(previous&&(!modifiedAt||modifiedAt<=previous)||
+              before.sourceSync?.state==='succeeded'&&(!modifiedAt||Date.parse(modifiedAt)<(before.sourceSync.at??0))){
+              if(resolve)updates.push(before);
+              continue;
+            }
           }
           if(!before&&item.completed)continue;
           const dueDate=typeof item.dueDate==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(item.dueDate)&&stamp(item.dueDate)?.slice(0,10)===item.dueDate?item.dueDate:null;
@@ -173,7 +182,10 @@ export async function featureStore(db, directory, env = process.env) {
             notes:typeof item.notes==='string'?item.notes.slice(0,4000):before?.notes??'',done:item.completed===true,
             ...(provider==='apple-reminders'?{dueTime:dueDate?item.dueTime??null:null}:!dueDate?{dueTime:null}: {}),
             completedAt:item.completed?(stamp(item.completedAt)??before?.completedAt??modifiedAt??new Date().toISOString()):null};
-          if(before&&JSON.stringify(before)===JSON.stringify(todo))continue;
+          if(before&&JSON.stringify(before)===JSON.stringify(todo)){
+            if(resolve)updates.push(before);
+            continue;
+          }
           if(before)update.run(JSON.stringify(todo),todo.id,userId);
           else {insert.run(todo.id,userId,JSON.stringify(todo));link.run(userId,provider,item.id,todo.id);}
           changed++;

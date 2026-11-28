@@ -13,7 +13,7 @@ const linked:Todo={id:'docen',category:'업무',done:false,title:'이전 제목'
 test('device reminders appear before cloud registration and become one editable row once linked',()=>{
  const [preview]=showAppleReminders([],lists,new Set(),new Set());
  assert.equal(preview.title,item.title);
- assert.equal(preview.saveState,'saving');
+ assert.equal(preview.saveState,undefined,'an item remains interactive before Docen associates its persistent ID');
  const rows=showAppleReminders([linked],lists,new Set(),new Set());
  assert.equal(rows.length,1);
  assert.equal(rows[0].id,linked.id);

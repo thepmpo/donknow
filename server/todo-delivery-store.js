@@ -33,6 +33,24 @@ export function todoDeliveryStore(db,get){
   enqueue(user,id,target){
    db.prepare("INSERT INTO todo_delivery VALUES(?,?,?,?,'queued',NULL,?)").run(id,user,target.provider,JSON.stringify(target),Date.now());
   },
+  switchTarget(user,id,input){
+   const target=todoTarget(input),todo=current(user,id);
+   if(!target||!todo)throw fail(404,'연결을 변경할 Ticket을 찾지 못했어요.');
+   if(todo.sourceSync?.patch)throw fail(409,'원본 반영이 끝난 뒤 목록을 변경해주세요.');
+   const existing=row(user,id);
+   if(existing&&!['synced','blocked','reauthorize'].includes(existing.state)){
+    const previous=JSON.parse(existing.target);
+    if(previous.provider===target.provider&&previous.listId===target.listId&&previous.connectionId===target.connectionId)return decorate(user,todo);
+    throw fail(409,'이전에 선택한 목록의 저장 결과를 확인하고 있어요.');
+   }
+   const sameSource=todo.source?.provider===target.provider&&todo.source?.listId===target.listId&&
+    (target.provider==='apple-reminders'||todo.source?.connectionId===target.connectionId);
+   if(sameSource)return decorate(user,todo);
+   db.prepare(`INSERT INTO todo_delivery VALUES(?,?,?,?,'queued',NULL,?)
+    ON CONFLICT(todo_id) DO UPDATE SET provider=excluded.provider,target=excluded.target,state='queued',attempt=NULL,next_at=excluded.next_at`)
+    .run(id,user,target.provider,JSON.stringify(target),Date.now());
+   return decorate(user,todo);
+  },
   decorate,
   list(user){
    return db.prepare(`SELECT todos.data,delivery.target,delivery.state,delivery.next_at FROM todos
@@ -89,7 +107,7 @@ export function todoDeliveryStore(db,get){
      const alias=db.prepare('SELECT todo_id FROM imported_resources WHERE user_id=? AND provider=? AND resource_key=?')
       .get(user,source.provider,source.externalId);
      if(alias&&alias.todo_id!==id&&current(user,alias.todo_id))throw fail(409,'이 원본은 이미 다른 도슨 할 일에 연결돼 있어요.');
-     db.prepare('UPDATE todos SET data=? WHERE user_id=? AND id=?').run(JSON.stringify({...todo,source}),user,id);
+     db.prepare('UPDATE todos SET data=? WHERE user_id=? AND id=?').run(JSON.stringify({...todo,source,sourceSync:undefined}),user,id);
      db.prepare('INSERT INTO imported_resources VALUES (?,?,?,?) ON CONFLICT(user_id,provider,resource_key) DO UPDATE SET todo_id=excluded.todo_id')
       .run(user,source.provider,source.externalId,id);
      state(user,id,'synced','sending',attempt);

@@ -2,8 +2,8 @@ import React, {useLayoutEffect,useRef,useState} from 'react';
 import {Platform,StyleSheet,Text,TextInput,View} from 'react-native';
 import {colors,typography} from './theme';
 import {formatNoteEdit,MAX_NOTES_LENGTH} from './notes';
-export function NotesField({value,onChange,disabled=false,label='메모',onFocus,onResize,compact=false}:{value:string;onChange:(text:string)=>void;disabled?:boolean;label?:string;onFocus?:(input:React.ComponentRef<typeof TextInput>|null)=>void;onResize?:()=>void;compact?:boolean}) {
-  const minimum=compact?72:220;
+export function NotesField({value,onChange,disabled=false,label='메모',onFocus,onResize,compact=false,minimumHeight}:{value:string;onChange:(text:string)=>void;disabled?:boolean;label?:string;onFocus?:(input:React.ComponentRef<typeof TextInput>|null)=>void;onResize?:()=>void;compact?:boolean;minimumHeight?:number}) {
+  const minimum=minimumHeight??(compact?72:220);
   const caretFrame=useRef<number|undefined>(undefined);
   const inputRef=useRef<React.ComponentRef<typeof TextInput>>(null);
   const [width,setWidth]=useState(0);

@@ -9,7 +9,7 @@ import {BrandLoading} from './BrandLoading';
 import {useDesktopPresentation} from './DesktopPresentation';
 import {Ionicons} from '@expo/vector-icons';
 import {todoSource} from './todo-organization';
-import {KeyboardDismiss,useKeyboardUX} from './KeyboardUX';
+import {KeyboardDismiss} from './KeyboardUX';
 import {ScrollRevealContext,useFocusedField,useKeyboardInset} from './useFocusedField';
 import {ScrollArea as ScrollView} from './ScrollArea';
 import { useDuoTrailingNavigation } from './DuoLayout';
@@ -19,10 +19,10 @@ import {NotesField} from './NotesField';
 import { DraggableSheet, MotionView, useReducedMotion, useModalDismiss, motion } from './motion';
 import { MotionPressable as Pressable, MotionModal as Modal } from './motion';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {Animated, Easing, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, Keyboard, KeyboardAvoidingView, Share} from 'react-native';
-import {DateTimeField} from './DateTimeField';
+import {Animated, Easing, PanResponder, Platform,  StyleSheet, Text, TextInput, View, Switch, KeyboardAvoidingView, Share} from 'react-native';
+import {DateTimeField,DateTimePickerPanel} from './DateTimeField';
 import {todoReminderInstant} from './calendar-display';
-import {deviceZone} from './calendar-model';
+import {deviceZone,shiftDay} from './calendar-model';
 import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, dateKey, validateDraft, formatDueDate } from './domain';
 import type { Draft, Todo } from './domain';
 import type { TodoStore } from './useTodos';
@@ -57,7 +57,7 @@ export function Page({ children, refreshControl, compact = false, scrollRef,onSc
   const chrome=!!heading||pinned.length>0;
   const body=chrome?parts.filter(child=>child!==heading&&!pinned.includes(child)):children;
   const nativeRefresh=refresh?React.cloneElement(refresh,{refreshing:indicator.visible,onRefresh:()=>{indicator.begin();refresh.props.onRefresh?.();},tintColor:'transparent',colors:['transparent'],progressBackgroundColor:'transparent'}):undefined;
-  const pageScroll=<ScrollView directionalLockEnabled={todoGestures} style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:chrome?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30}]}>{body}</ScrollView>;
+  const pageScroll=<ScrollView directionalLockEnabled={todoGestures} style={{flex:1,minHeight:0}} ref={scrollRef} testID={testID} scrollEnabled={scrollEnabled} scrollEventThrottle={16} onScroll={event=>{if(refresh)setPullVisible(event.nativeEvent.contentOffset.y < -28);onScroll?.(event);}} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" refreshControl={nativeRefresh} contentContainerStyle={[s.page,{paddingTop:chrome?4:layout.pageTop,paddingBottom:(duo ? 0 : layout.navigationHeight+insets.bottom)+layout.sectionGap+bottomSpace},desktop&&{padding:30,paddingTop:28,paddingBottom:30+bottomSpace}]}>{body}</ScrollView>;
   return <MotionView style={{flex:1,minHeight:0}} distance={0}>{chrome&&<View testID="fixed-page-heading" onLayout={event=>setChromeHeight(event.nativeEvent.layout.height)} style={{paddingHorizontal:layout.pageInset,paddingTop:layout.pageTop,backgroundColor:colors.bg,zIndex:1}}>{heading}{pinned}</View>}{todoGestures?<TodoGestureScroll>{pageScroll}</TodoGestureScroll>:pageScroll}{!!refresh&&!indicator.expired&&(indicator.visible||pullVisible)&&<View testID="brand-pull-refresh" pointerEvents="none" style={{position:'absolute',left:0,right:0,top:chromeHeight,height:52,alignItems:'center',justifyContent:'center'}}><BrandLoading size={48} label={refreshing?'새로고침 중':'당겨서 새로고침'}/></View>}</MotionView>;
 }
 export function TodoRow({ todo, pending = false, pendingUntil, busy = false, canToggleWhileBusy = false, canSelectWhileBusy = false, onToggle, onEdit, log = false,compact=false,selected,onSelect,onOpenSource,onLift,onDrag,onDrop,onSelectAccessible }: { onLift?:(point:RowPoint)=>void;onDrag?:(point:RowPoint)=>void;onDrop?:(completed:boolean)=>void;onSelectAccessible?:()=>void;selected?:boolean;onSelect?:()=>void;onOpenSource?:()=>void;todo: Todo; pending?: boolean; pendingUntil?: number; busy?: boolean; canToggleWhileBusy?: boolean; canSelectWhileBusy?:boolean; onToggle: () => void; onEdit?: () => void; log?: boolean;compact?:boolean }) {
@@ -247,16 +247,20 @@ export function TodoEditor(props:TodoEditorProps){
 /** Same form in the native modal's own safe surface or a geometry fixture. */
 export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,presentation='sheet'}:{todo?:Todo;dueDate:string|null;store:TodoStore;onClose:()=>void;visible?:boolean;onBusy?:(busy:boolean)=>void;presentation?:'sheet'|'inline'}){
   const parentReveal=useContext(ScrollRevealContext),inline=presentation==='inline',focusedInline=useRef<React.ComponentRef<typeof TextInput>|null>(null);
-  const [tools,setTools]=useState<'date'|'alarm'|'more'|null>(null);
+  const [tools,setTools]=useState<'date'|'date-detail'|'alarm'|'destination'|'more'|null>(null);
   const [destination,setDestination]=useState<React.ComponentProps<typeof TodoDestinationPicker>['value']>(null);
+  const [nextDestination,setNextDestination]=useState<typeof destination>(null);
   function focusInput(input:React.ComponentRef<typeof TextInput>|null){focusedInline.current=input;if(inline)parentReveal(input);else field.focus(input);}
   function revealInput(){if(inline){if(focusedInline.current)parentReveal(focusedInline.current);}else field.reveal();}
-  const keyboard=useKeyboardUX(),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
+  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null),titleRef=useRef<React.ComponentRef<typeof TextInput>>(null),field=useFocusedField(scroll),surface=useRef<React.ComponentRef<typeof View>>(null),keyboardInset=useKeyboardInset(surface);
   const [title, setTitle] = useState(todo?.title ?? '');
   const [date, setDate] = useState(todo?.dueDate ?? dueDate);
   const [notes,setNotes] = useState(todo?.notes ?? '');
-  const sourceTimeEditable=destination?.target.provider==='apple-reminders'||todo?.source?.provider==='apple-reminders'||todo?.source?.provider==='google'&&todo.source.externalId.includes(':calendar');
+  const live=todo?store.findTodo(todo.id)??todo:undefined;
+  const selectedProvider=live?.delivery?.provider??live?.source?.provider??destination?.target.provider;
+  const sourceTimeEditable=selectedProvider!=='google'||!!live?.source?.externalId.includes(':calendar');
   const [dueTime,setDueTime]=useState<string|null>(todo?.dueTime??null);
+  const [detailDay,setDetailDay]=useState(dateKey(new Date())),[detailTime,setDetailTime]=useState<string|null>(null);
   const [alarm, setAlarm] = useState(!!todo?.reminderAt),[alarmConfigured,setAlarmConfigured]=useState(!!todo?.reminderAt);
   const originalTime = todo?.reminderAt ? new Date(todo.reminderAt) : null;
   const [alarmDay,setAlarmDay]=useState(originalTime?dateKey(originalTime):(todo?.dueDate??dueDate??dateKey(new Date())));
@@ -291,45 +295,133 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
       if (!(error instanceof Error && error.name === 'AbortError')) setShareStatus('공유하지 못했어요. 다시 시도해주세요.');
     }
   }
-  async function remove() { if (!todo) return; setSaving(true); if (await store.remove(todo.id)) onClose(); else { setError('삭제하지 못했어요. 다시 시도해주세요.'); setSaving(false); } }
-  const delivery=todo?.delivery;
-  const destinationControl=!todo?<TodoDestinationPicker store={store} value={destination} onChange={setDestination} disabled={saving}/>:
-   delivery?.state==='blocked'?<Button title="선택한 목록에 다시 보내기" quiet disabled={saving}
-    onPress={()=>void store.retryDelivery(todo.id).catch(e=>setError(e instanceof Error?e.message:'다시 보내지 못했어요.'))}/>:
-   delivery?.state==='checking'?<Text style={s.muted}>선택한 목록에서 저장 결과를 확인해주세요.</Text>:
-   delivery?.state==='queued'&&delivery.provider==='apple-reminders'?<Text style={s.muted}>아이폰 미리알림 전송 대기</Text>:null;
-  const footer=<View style={{flexDirection:'row',alignItems:'center',gap:8}}>
-    {!!todo&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 삭제" disabled={saving} onPress={()=>void remove()} style={[s.more,{paddingHorizontal:8}]}><Text style={s.deleteText}>삭제</Text></Pressable>}
-    <View style={{flex:1}}/>
-    <Pressable accessibilityRole="button" accessibilityLabel="Ticket 편집 취소" disabled={saving} onPress={onClose} style={[s.more,{paddingHorizontal:12}]}><Text style={s.subtitle}>취소</Text></Pressable>
-    <Pressable accessibilityRole="button" accessibilityLabel="저장" accessibilityState={{busy:saving,disabled:saving||!title.trim()}} disabled={saving||!title.trim()} onPress={()=>void save()} style={[s.more,{paddingHorizontal:16,borderRadius:14,backgroundColor:colors.pale,opacity:(saving||!title.trim()) ? .4 : 1}]}><Text style={{...typography.body,color:colors.blueText,fontWeight:'600'}}>{saving?'저장 중…':'저장'}</Text></Pressable>
-  </View>;
-  if(inline)return <View testID="todo-inline-editor" style={{backgroundColor:colors.surface,borderRadius:20,padding:16,gap:8,marginVertical:6}}>
-    <TextInput ref={titleRef} autoFocus={visible&&!todo} accessibilityLabel="Ticket 제목" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} placeholder="새 Ticket" placeholderTextColor={colors.muted} onFocus={()=>{setActivePicker(null);focusInput(titleRef.current);}} style={[s.editorInput,{backgroundColor:'transparent',padding:0,minHeight:44}]}/>
-    {destinationControl}
-    <NotesField compact value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);focusInput(input);}} onResize={revealInput}/>
-    <View style={{flexDirection:'row',alignItems:'center',gap:4,flexWrap:'wrap'}}>
-     <Pressable accessibilityRole="button" accessibilityLabel="예정일 편집" accessibilityState={{expanded:tools==='date'}} disabled={saving} onPress={()=>{Keyboard.dismiss();setActivePicker(null);setTools(v=>v==='date'?null:'date');}} style={[s.more,{flexDirection:'row',gap:6,paddingHorizontal:8}]}><Ionicons name="calendar-outline" size={20} color={colors.blueText}/><Text style={s.subtitle}>{date?formatDueDate(date):'날짜 없음'}</Text></Pressable>
-     <Pressable accessibilityRole="button" accessibilityLabel="알림 편집" accessibilityState={{expanded:tools==='alarm'}} disabled={saving} onPress={()=>{Keyboard.dismiss();setActivePicker(null);setTools(v=>v==='alarm'?null:'alarm');}} style={s.more}><Ionicons name={alarm?'notifications':'notifications-outline'} size={21} color={alarm?colors.blueText:colors.muted}/></Pressable>
-     {!!todo&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 더보기" accessibilityState={{expanded:tools==='more'}} disabled={saving} onPress={()=>{Keyboard.dismiss();setActivePicker(null);setTools(v=>v==='more'?null:'more');}} style={s.more}><Ionicons name="ellipsis-horizontal" size={22} color={colors.muted}/></Pressable>}
+  async function remove() {
+    if(!todo)return;
+    setSaving(true);
+    try{if(await store.remove(todo.id)){onClose();return;}setError('삭제하지 못했어요. 다시 시도해주세요.');}
+    catch(e){setError(e instanceof Error?e.message:'삭제하지 못했어요.');}
+    finally{setSaving(false);}
+  }
+  function closeTools(){
+   if(saving)return;
+   setTools(null);setActivePicker(null);setNextDestination(null);setError('');
+  }
+  function setPreset(value:string|null){
+   setDate(value);if(!value)setDueTime(null);closeTools();
+  }
+  async function changeDestination(){
+   if(!live||!nextDestination)return;
+   setError('');setSaving(true);
+   try{await store.changeTodoDestination(live.id,nextDestination.target);setTools(null);setNextDestination(null);}
+   catch(e){setError(e instanceof Error?e.message:'목록을 변경하지 못했어요.');}
+   finally{setSaving(false);}
+  }
+  const delivery=live?.delivery,localDay=new Date(),today=dateKey(localDay);
+  const nextMonday=(8-localDay.getDay())%7||7;
+  const presetDates=[['없음',null],['오늘',today],['내일',shiftDay(today,1)],['다음 주말',shiftDay(today,(6-localDay.getDay()+7)%7||7)],['다음 주',shiftDay(today,nextMonday)]] as const;
+  const target=nextDestination?.target,source=live?.source;
+  const crossProvider=!!(source&&target&&(source.provider!==target.provider||
+   target.provider==='google'&&(source.connectionId??source.externalId.split(':')[0])!==target.connectionId));
+  const canChangeList=store.user?.emailVerified&&store.connection?.mode==='cloud'&&
+   (!source||source.provider==='apple-reminders'||source.provider==='google'&&source.externalId.includes(':tasks:'));
+  const listTitle=delivery&&delivery.state!=='synced'
+   ?(delivery.provider==='apple-reminders'?'미리알림':'Google Tasks')+' · 반영 대기'
+   :source?.listTitle??(source?.provider==='apple-reminders'?'미리알림':source?.provider==='google'?'Google Tasks':destination?.title??'도슨');
+  function toolButton(label:string,icon:React.ComponentProps<typeof Ionicons>['name'],open:NonNullable<typeof tools>,selected=false,hint?:string,summary?:string){
+   return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityHint={hint} accessibilityState={{expanded:tools===open}} disabled={saving}
+    onPress={()=>{setTools(open);setActivePicker(null);setError('');}} style={s.more}>
+    <View style={[s.editorTool,selected&&{backgroundColor:colors.pale},summary&&{width:'auto',paddingHorizontal:6}]}>
+     <Ionicons name={icon} size={18} color={selected?colors.blueText:colors.secondary}/>
+     {!!summary&&<Text style={s.muted}>{summary}</Text>}
     </View>
-    {tools==='date'&&<><DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/>{sourceTimeEditable&&<DateTimeField label="예정 시간" inputLabel="예정 시간" mode="time" value={date?dueTime:null} onChange={setDueTime} disabled={saving||!date} clearable activePicker={activePicker} onPickerChange={setActivePicker}/>}</>}
-    {tools==='alarm'&&<><View style={s.dateField}><Label>알림</Label><View style={{flex:1}}/><Switch accessibilityLabel="Ticket 알림" value={alarm} disabled={saving} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} trackColor={{true:colors.blue}}/></View>{alarm&&<><DateTimeField label="알림 날짜" value={alarmDay} onChange={v=>v&&setAlarmDay(v)} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/><DateTimeField label="알림 시간" mode="time" value={alarmTime} onChange={v=>v&&setAlarmTime(v)} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/></>}</>}
-    {tools==='more'&&<><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={()=>void shareTodo()}/>{!!shareStatus&&<Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</>}
-    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-    {!keyboard.occluding&&!activePicker&&footer}
+   </Pressable>;
+  }
+  const editorActions=<View style={{flexDirection:'row',alignItems:'center'}}>
+    <Pressable accessibilityRole="button" accessibilityLabel="Ticket 편집 취소" disabled={saving} onPress={onClose} style={s.more}><Ionicons name="close" size={19} color={colors.secondary}/></Pressable>
+    <Pressable accessibilityRole="button" accessibilityLabel="저장" accessibilityState={{busy:saving,disabled:saving||!title.trim()}} disabled={saving||!title.trim()} onPress={()=>void save()} style={[s.more,{opacity:(saving||!title.trim()) ? .4 : 1}]}>
+     <View style={[s.editorTool,{backgroundColor:colors.pale}]}><Ionicons name="checkmark" size={20} color={colors.blueText}/></View>
+    </Pressable>
   </View>;
+  const editorFields=<>
+   <View style={{flexDirection:'row',alignItems:'center'}}>
+    <TextInput ref={titleRef} autoFocus={inline&&visible&&!todo} accessibilityLabel="Ticket 제목" value={title} onChangeText={setTitle} maxLength={120}
+     editable={!saving} placeholder="제목" placeholderTextColor={colors.muted} onFocus={()=>focusInput(titleRef.current)}
+     style={[s.editorInput,{backgroundColor:'transparent',padding:0,minHeight:44,flex:1,minWidth:0}]}/>
+    {editorActions}
+   </View>
+   <NotesField compact minimumHeight={40} value={notes} onChange={setNotes} disabled={saving} onFocus={focusInput} onResize={revealInput}/>
+   <View style={s.editorTools}>
+    {toolButton('예정일 편집','calendar-outline','date',!!date,date?formatDueDate(date)+(dueTime?' · '+dueTime:''):'날짜 없음',date?.slice(5).replace('-','.'))}
+    {toolButton('알림 편집',alarm?'notifications':'notifications-outline','alarm',alarm)}
+    {canChangeList&&toolButton('Ticket 저장 목록 선택','albums-outline','destination',!!source||!!destination,listTitle)}
+    {!!todo&&toolButton('Ticket 더보기','ellipsis-horizontal','more')}
+   </View>
+   {!!error&&!tools&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+  </>;
+  const popup=tools&&<Modal visible transparent animationType="fade" onRequestClose={closeTools}>
+   <KeyboardAvoidingView style={s.editorPopupBackdrop} behavior={Platform.OS==='ios'?'padding':undefined}>
+    <Pressable accessibilityRole="button" accessibilityLabel="배경 눌러 닫기" disabled={saving} onPress={closeTools} style={StyleSheet.absoluteFill}/>
+    <View role="dialog" accessibilityViewIsModal testID="ticket-editor-popup" style={s.editorPopup}>
+     <View style={s.editorPopupHeading}><Text accessibilityRole="header" style={s.sectionTitle}>
+      {tools==='destination'?'저장 목록':tools==='alarm'?'알림':tools==='date-detail'?'날짜 및 시간':tools==='date'?'예정일':'Ticket 옵션'}
+     </Text><CloseButton disabled={saving} onPress={closeTools}/></View>
+     <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{flexShrink:1}} contentContainerStyle={{gap:6}}>
+      {tools==='date'&&<>
+       {presetDates.map(([label,value])=><Pressable key={label} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected:date===value}} onPress={()=>setPreset(value)} style={s.editorOption}>
+        <Text style={s.editorOptionText}>{label}</Text>{date===value&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}
+       </Pressable>)}
+       <Pressable accessibilityRole="button" accessibilityLabel="날짜 및 시간…" onPress={()=>{setDetailDay(date??today);setDetailTime(date?dueTime:null);setTools('date-detail');}} style={s.editorOption}>
+        <Text style={s.editorOptionText}>날짜 및 시간…</Text><Ionicons name="chevron-forward" size={18} color={colors.secondary}/>
+       </Pressable>
+      </>}
+      {tools==='date-detail'&&<>
+       <DateTimePickerPanel calendar label="예정일" value={detailDay} mode="date" onChange={setDetailDay}
+        onDone={value=>{setDate(value);setDueTime(detailTime);closeTools();}} onCancel={closeTools} disabled={saving}/>
+       {sourceTimeEditable&&<DateTimeField label="예정 시간" mode="time" value={detailTime} onChange={setDetailTime} clearable disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/>}
+       <Button title="적용" quiet onPress={()=>{setDate(detailDay);setDueTime(detailTime);closeTools();}}/>
+      </>}
+      {tools==='alarm'&&<>
+       <View style={s.editorOption}><Label>알림</Label><Switch accessibilityLabel="Ticket 알림" value={alarm} disabled={saving}
+        onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??today);setAlarmConfigured(true);}setAlarm(value);}} trackColor={{true:colors.blue}}/></View>
+       {alarm&&<>
+        <DateTimeField label="알림 날짜" value={alarmDay} onChange={v=>v&&setAlarmDay(v)} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/>
+        <DateTimeField label="알림 시간" mode="time" value={alarmTime} onChange={v=>v&&setAlarmTime(v)} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/>
+       </>}
+      </>}
+      {tools==='destination'&&<>
+       <Text style={s.muted}>현재 · {listTitle}</Text>
+       {!nextDestination&&<TodoDestinationPicker embedded allowLocal={!todo} editing={live} store={store} value={destination} disabled={saving}
+        onChange={pick=>{if(todo){setNextDestination(pick);}else{setDestination(pick);closeTools();}}}/>}
+       {!!nextDestination&&<>
+        <Text style={s.editorOptionText}>{nextDestination.title}</Text>
+        {crossProvider&&<Text style={s.muted}>선택한 서비스에 복사한 뒤 도슨 연결을 바꿔요. 이전 서비스의 원본은 보관돼요.</Text>}
+        <Button title={crossProvider?'복사하고 연결 변경':'목록 변경'} loading={saving} disabled={saving} onPress={()=>void changeDestination()}/>
+        <Button title="다른 목록 선택" quiet disabled={saving} onPress={()=>setNextDestination(null)}/>
+       </>}
+       {!!todo&&delivery?.state==='blocked'&&<Button title="선택한 목록에 다시 보내기" quiet disabled={saving}
+        onPress={()=>void store.retryDelivery(live!.id).then(closeTools).catch(e=>setError(e instanceof Error?e.message:'다시 보내지 못했어요.'))}/>}
+       {delivery?.state==='checking'&&<Text style={s.muted}>선택한 목록에서 저장 결과를 확인해주세요.</Text>}
+      </>}
+      {tools==='more'&&!!todo&&<>
+       <Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={()=>void shareTodo()}/>
+       <Pressable accessibilityRole="button" accessibilityLabel="Ticket 삭제" disabled={saving} onPress={()=>void remove()} style={s.editorOption}><Text style={s.deleteText}>삭제</Text></Pressable>
+       {!!shareStatus&&<Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}
+      </>}
+      {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+     </ScrollView>
+    </View>
+   </KeyboardAvoidingView>
+  </Modal>;
+  if(inline)return <><View testID="todo-inline-editor" style={s.editorCard}>{editorFields}</View>{popup}</>;
   return <ScrollRevealContext.Provider value={field.show}><View ref={surface} onLayout={keyboardInset.measure} style={s.modalBackdrop}>
-      <DraggableSheet testID="todo-editor-surface" visible={visible} presentation="none" style={[s.sheet,{height:'90%',maxHeight:'90%',paddingBottom:16,overflow:'hidden'}]} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}><View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo ? 'Ticket 수정' : '새로운 Ticket'}</Text><View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View></View><View style={{flex:1,minHeight:0,paddingBottom:Math.max(0,keyboardInset.inset-16)}}><ScrollView ref={scroll} onLayout={field.reveal} onContentSizeChange={field.reveal} onScroll={field.onScroll} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" testID="editor-scroll" style={{flex:1,minHeight:0}} automaticallyAdjustKeyboardInsets={false} contentInsetAdjustmentBehavior="never" contentContainerStyle={{gap:layout.actionGap,paddingBottom:layout.sectionGap}}>
-        <TextInput ref={titleRef} onFocus={()=>{setActivePicker(null);focusInput(titleRef.current);}} accessibilityLabel="Ticket 제목" placeholder="어떤 일을 해볼까요?" value={title} onChangeText={setTitle} maxLength={120} editable={!saving} style={s.editorInput} />
-        {destinationControl}
-        <DateField value={date} onChange={setDate} disabled={saving} activePicker={activePicker} onPickerChange={setActivePicker}/>{sourceTimeEditable&&<DateTimeField label="예정 시간" inputLabel="예정 시간" mode="time" value={date?dueTime:null} onChange={setDueTime} disabled={saving||!date} clearable activePicker={activePicker} onPickerChange={setActivePicker}/>}<NotesField value={notes} onChange={setNotes} disabled={saving} onFocus={input=>{setActivePicker(null);focusInput(input);}} onResize={field.reveal}/>
-        <View style={s.dateField}><Label>알림</Label><View style={{ flex: 1 }} /><Switch accessibilityLabel="Ticket 알림" value={alarm} onValueChange={value=>{if(value&&!alarmConfigured){setAlarmDay(date??dateKey(new Date()));setAlarmConfigured(true);}setAlarm(value);}} disabled={saving} trackColor={{ true: colors.blue }} /></View>
-        {alarm&&<View style={{gap:12,backgroundColor:colors.grouped,padding:12,borderRadius:18}}><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 날짜" value={alarmDay} disabled={saving} onChange={value=>value&&setAlarmDay(value)}/><DateTimeField activePicker={activePicker} onPickerChange={setActivePicker} label="알림 시간" value={alarmTime} mode="time" disabled={saving} onChange={value=>value&&setAlarmTime(value)}/></View>}
-        {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-        {!!todo && <View><Button title="카카오톡 등으로 공유" quiet disabled={saving} onPress={() => { void shareTodo(); }} />{!!shareStatus && <Text accessibilityLiveRegion="polite" style={s.muted}>{shareStatus}</Text>}</View>}
-      </ScrollView>{!keyboard.occluding&&!activePicker&&<View testID="todo-editor-save" style={{paddingTop:layout.actionGap,flexShrink:0}}>{footer}</View>}</View></DraggableSheet>
-    </View></ScrollRevealContext.Provider>;
+   <DraggableSheet testID="todo-editor-surface" visible={visible} presentation="none" style={s.sheet} onDismiss={()=>{if(!saving)onClose();}} disabled={saving}>
+    <View style={s.sheetHeader}><Text style={s.sectionTitle}>{todo?'Ticket 수정':'새로운 Ticket'}</Text>
+     <View style={{flexDirection:'row',alignItems:'center'}}><KeyboardDismiss/><CloseButton disabled={saving} onPress={onClose}/></View>
+    </View>
+    <ScrollView ref={scroll} onLayout={field.reveal} onContentSizeChange={field.reveal} onScroll={field.onScroll} keyboardShouldPersistTaps="handled"
+     testID="editor-scroll" style={{flexShrink:1,marginBottom:keyboardInset.inset}} contentContainerStyle={s.editorCard}>{editorFields}</ScrollView>
+   </DraggableSheet>{popup}
+  </View></ScrollRevealContext.Provider>;
 }
 export const s = StyleSheet.create({
   page: { padding: spacing.xl, paddingTop: spacing.xxl, paddingBottom: 40, flexGrow: 1 },
@@ -350,6 +442,14 @@ export const s = StyleSheet.create({
   more: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }, moreText: { fontSize: 23, color: colors.muted }, restore: { ...typography.caption, color: colors.blueText },
   dateField: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.lg, flexWrap: 'wrap' }, dateInput: { flex: 1, minHeight: 48, padding: spacing.md, borderRadius: radius.small, backgroundColor: colors.grouped, color: colors.text, ...typography.detail }, datePick: { flex: 1, minHeight: 44, padding: spacing.md, alignItems: 'flex-end', justifyContent: 'center' },
   modalBackdrop: { flex: 1, backgroundColor: colors.scrim, justifyContent: 'flex-end' }, sheet: { maxHeight:'90%', backgroundColor: colors.sheet, padding: spacing.xl, paddingBottom: 38, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, width: '100%', maxWidth: 600, alignSelf: 'center' }, sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xl },
+  editorCard:{backgroundColor:colors.surface,borderRadius:18,padding:12,gap:5,marginVertical:4},
+  editorTools:{flexDirection:'row',alignItems:'center',flexWrap:'wrap',columnGap:2},
+  editorTool:{width:34,height:32,borderRadius:10,flexDirection:'row',gap:3,alignItems:'center',justifyContent:'center',backgroundColor:colors.grouped},
+  editorPopupBackdrop:{flex:1,justifyContent:'center',alignItems:'center',padding:16,backgroundColor:colors.scrim},
+  editorPopup:{width:'100%',maxWidth:360,maxHeight:'90%',flexShrink:1,borderRadius:20,padding:14,backgroundColor:colors.popup},
+  editorPopupHeading:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',minHeight:44},
+  editorOption:{minHeight:44,flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingHorizontal:10,borderRadius:10,backgroundColor:colors.grouped},
+  editorOptionText:{...typography.detail,color:colors.text},
   editorInput: { ...typography.body, color: colors.text, backgroundColor: colors.grouped, padding: spacing.lg, borderRadius: radius.button, minHeight: 60 }, error: { ...typography.caption, color: colors.danger, marginVertical: spacing.md }, deleteText: { ...typography.detail, color: colors.danger },
   empty: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 56, gap: spacing.md }, emptyText: { ...typography.detail, color: colors.muted, textAlign: 'center' },
   card: { backgroundColor: colors.surface, borderRadius: radius.card, padding: spacing.xl, marginTop: spacing.xl },

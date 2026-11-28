@@ -2,6 +2,7 @@ import type {ListedReminder} from './apple-reminder-read.ts';
 import type {Todo} from './domain.ts';
 
 const prefix='apple-reminder-preview:';
+export const appleReminderPreviewId=(id:string)=>prefix+id;
 export const isAppleReminderPreview=(id:string)=>id.startsWith(prefix);
 
 export function showAppleReminders(
@@ -19,13 +20,13 @@ export function showAppleReminders(
    completedAt:completed?todo.completedAt??original.modifiedAt??null:null,
    source:{...todo.source,listId,listTitle,color:color??todo.source.color}};
  });
- // The preview keeps the native read visible before the server allocates a Docen ID.
+ // Native rows remain selectable while Docen allocates their persistent IDs.
  for(const item of native.values()){
   if(item.completed||suppressed.has(item.id)||todos.some(todo=>
    todo.delivery?.provider==='apple-reminders'&&todo.delivery.state!=='synced'&&todo.delivery.listId===item.listId&&
    todo.title===item.title&&todo.dueDate===item.dueDate&&(todo.dueTime??null)===item.dueTime))continue;
-  rows.push({id:prefix+item.id,category:'업무',done:false,title:item.title,notes:item.notes,dueDate:item.dueDate,
-   dueTime:item.dueTime,saveState:'saving',source:{provider:'apple-reminders',externalId:item.id,
+  rows.push({id:appleReminderPreviewId(item.id),category:'업무',done:false,title:item.title,notes:item.notes,dueDate:item.dueDate,
+   dueTime:item.dueTime,source:{provider:'apple-reminders',externalId:item.id,
     listId:item.listId,listTitle:item.listTitle,color:item.color,modifiedAt:item.modifiedAt}});
  }
  return rows;

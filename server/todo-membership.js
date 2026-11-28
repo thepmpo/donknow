@@ -39,7 +39,8 @@ export function createTodoMembership(store,integrations){
   isMoving:(user,id)=>moving.has(user+':'+id),
   async move(user,id,input){
    const todo=find(user,id),source=scope(todo),{destination,apple}=input,key=user+':'+id;
-   if(moving.has(key)||todo.sourceSync?.state==='queued')throw fail(409,'원본 변경이 끝나면 다시 이동해주세요.');
+   const delivery=store.todoDelivery.status(user,id);
+   if(moving.has(key)||todo.sourceSync?.patch||delivery&&['queued','sending','checking'].includes(delivery.state))throw fail(409,'원본 변경이 끝나면 다시 이동해주세요.');
    if(source.kind==='local'){
     if(apple||!categories.includes(destination))throw fail(400,'이동할 분류를 확인해주세요.');
     return store.update(user,id,{category:destination});

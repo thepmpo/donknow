@@ -1,5 +1,5 @@
 import {readAppleTodoLists,refreshTodoSources} from './todo-source-refresh';
-import {isAppleReminderPreview,showAppleReminders} from './apple-reminder-view';
+import {appleReminderPreviewId,isAppleReminderPreview,showAppleReminders} from './apple-reminder-view';
 import type {ListedReminder} from './apple-reminder-read';
 import {appleCalendarDevice} from './apple-calendar-device';
 import {clearAppleTodoReceipts,useAppleTodoDelivery} from './useAppleTodoDelivery';
@@ -21,7 +21,7 @@ import { AppState, Platform } from 'react-native';
 import {HttpResponseError,retryableDocenCalendarCreate} from './http-response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COMPLETION_DELAY, COMPLETION_FADE_DURATION, serverUrl, visibleTodos, completedTodos, validateDraft } from './domain';
-import type { Connection, Draft, Todo } from './domain';
+import type { Connection, Draft, Todo, TodoDestination } from './domain';
 import { CONNECTION_KEY, createRepository } from './repository';
 import type { Patch, Repository } from './repository';
 const message = (error: unknown) => error instanceof Error ? error.message : '저장하지 못했어요. 다시 시도해주세요.';
@@ -32,6 +32,8 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   const [todos, commitTodos] = useState<Todo[]>([]);
   const todosRef = useRef<Todo[]>([]);
   const calendarOwner=useRef<string|null>(null);
+  const localAppleRemovals=useRef<{generation:number;ids:Set<string>}>({generation:-1,ids:new Set()});
+  const resolvedAppleIds=useRef<{generation:number;ids:Map<string,string>}>({generation:-1,ids:new Map()});
   const setTodos = useCallback((value: Todo[] | ((current: Todo[]) => Todo[])) => {
     const base = typeof value === 'function' ? value(todosRef.current) : value;
     const owner=calendarOwner.current;
@@ -45,6 +47,18 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
         ...(edit.blocked?{saveState:'checking' as const}: {})});
     }
     const next=device?[...Array.from(byId.values()).filter(todo=>!isDeviceTodo(todo.id)),...(jobs??[]).map(queuedTodo)]:base;
+    if(owner){
+      if(localAppleRemovals.current.generation!==generation.current)localAppleRemovals.current={generation:generation.current,ids:new Set()};
+      if(resolvedAppleIds.current.generation!==generation.current)resolvedAppleIds.current={generation:generation.current,ids:new Map()};
+      for(const item of next)if(item.source?.provider==='apple-reminders')resolvedAppleIds.current.ids.set(appleReminderPreviewId(item.source.externalId),item.id);
+      for(const previous of todosRef.current){
+        const current=byId.get(previous.id);
+        if(previous.source?.provider==='apple-reminders'&&current?.source&&
+          (current.source.provider!==previous.source.provider||current.source.externalId!==previous.source.externalId)){
+          localAppleRemovals.current.ids.add(previous.source.externalId);
+        }
+      }
+    }
     todosRef.current=next;commitTodos(next);
   }, [device]);
   const [pending, setPending] = useState<Record<string, number>>({});
@@ -371,6 +385,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
    * the unmounted form, owns reconciliation and failure messages. */
   async function prepareSave(draft:Draft){if(deviceCreateOwner){validateDraft(draft);return;}const repository=repo.current,version=generation.current;if(!repository)throw Error('연결을 먼저 확인해주세요.');await repository.prepare?.(draft);if(version!==generation.current)throw Error('계정이나 연결이 바뀌었어요. 다시 확인해주세요.');}
   async function beginSave(draft:Draft,id?:string){
+    if(id)id=(await resolveTodo(id)).id;
     if(!id&&deviceCreateOwner)return !!await createTodoOnDevice(deviceCreateOwner,draft);
     if(id&&deviceCreateOwner){
       const blocked=device?.edits.snapshot(deviceCreateOwner)?.find(job=>job.before.id===id&&job.blocked);
@@ -447,6 +462,9 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     return job.promise;
   }
   async function update(id: string, patch: Patch): Promise<boolean> {
+    if(isAppleReminderPreview(id)){
+      try{id=(await resolveTodo(id)).id;}catch(e){setError(message(e));return false;}
+    }
     if(deviceCreateOwner&&!('category' in patch))return saveTodoEditOnDevice(deviceCreateOwner,id,patch);
     if (typeof patch.done === 'boolean' && Object.keys(patch).length === 1) return updateCompletion(id, patch.done);
     const version=generation.current,before=todosRef.current.find(t=>t.id===id),fields={...before?.sourceSync?.patch,...Object.fromEntries(Object.entries(patch).filter(([k,v])=>JSON.stringify(v??null)!==JSON.stringify(before?.[k as keyof Todo]??null)))};
@@ -499,6 +517,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   const appleMoveReceipts=useRef(new Map<string,AppleMoveReceipt>());
   async function moveMembership(id:string,destination:string,target:MembershipPage){
+    if(isAppleReminderPreview(id))id=(await resolveTodo(id)).id;
     const todo=todosRef.current.find(item=>item.id===id),version=generation.current;
     if(!todo||todo.done||todo.saveState||todo.sourceSync?.state==='queued')return false;
     const current=()=>version===generation.current;
@@ -520,10 +539,32 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       return result;
     });
     if(!saved||!current())return false;
-    setTodos(items=>items.map(item=>item.id===id?saved:item));
+    setTodos(items=>items.map(item=>item.id===id?saved:item));persistDeviceTodos(todosRef.current);refreshSources();
     return true;
   }
+  async function changeTodoDestination(id:string,target:TodoDestination){
+    const todo=await resolveTodo(id);
+    if(deviceCreateOwner&&device?.edits.snapshot(deviceCreateOwner)?.some(job=>job.before.id===todo.id)){
+      throw Error('이 Ticket의 변경 내용을 원본에 반영 중이에요. 목록을 다시 선택해주세요.');
+    }
+    const source=todo.source;
+    const googleAccount=source?.provider==='google'?source.connectionId??source.externalId.split(':')[0]:null;
+    const sameProvider=source?.provider===target.provider&&(target.provider==='apple-reminders'||googleAccount===target.connectionId);
+    if(sameProvider){
+      if(source?.listId===target.listId)return todo;
+      const moved=await moveMembership(todo.id,target.listId,target.provider==='apple-reminders'?{kind:'apple',items:[]}:{kind:'google',items:[],connectionId:target.connectionId});
+      if(!moved)throw Error('이 목록으로 이동하지 못했어요. 원본 목록 권한과 연결을 확인해주세요.');
+      return findTodo(todo.id)??todo;
+    }
+    const version=generation.current;
+    const saved=await featureRequest('/api/todos/'+encodeURIComponent(todo.id)+'/destination','POST',target) as Todo;
+    if(version!==generation.current)throw sessionChanged();
+    writes.current++;
+    setTodos(items=>items.map(item=>item.id===todo.id?saved:item));persistDeviceTodos(todosRef.current);
+    return saved;
+  }
   async function remove(id: string): Promise<boolean> {
+    if(isAppleReminderPreview(id))id=(await resolveTodo(id)).id;
     const item=todosRef.current.find(t=>t.id===id);
     if(item?.saveState)return false;
     const removed = await mutate(id, async repository => { await repository.remove(id); return true; });
@@ -580,7 +621,6 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   const sourceRefreshCallback=useRef<()=>void>(()=>{});
   const refreshSources=useCallback(()=>sourceRefreshCallback.current(),[]);
   const [appleView,setAppleView]=useState<{generation:number;lists:ReadonlyMap<string,ListedReminder[]>;suppressed:ReadonlySet<string>}>();
-  const localAppleRemovals=useRef<{generation:number;ids:Set<string>}>({generation:-1,ids:new Set()});
   useEffect(()=>{
     if(!user?.emailVerified||connection?.mode!=='cloud'||sessionStatus!=='ready')return;
     let disposed=false;
@@ -647,6 +687,35 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     const jobs=deviceCreateOwner?device?.edits.snapshot(deviceCreateOwner)??[]:[];
     return showAppleReminders(todos,appleView.lists,suppressed,new Set(jobs.map(job=>job.before.id)));
   },[appleView,renderGeneration,todos,device,deviceCreateOwner]);
+  function findTodo(id:string){
+    if(!isAppleReminderPreview(id))return todosRef.current.find(todo=>todo.id===id);
+    const resolved=resolvedAppleIds.current.generation===generation.current?resolvedAppleIds.current.ids.get(id):undefined;
+    return todosRef.current.find(todo=>todo.id===resolved)
+      ??displayTodos.find(todo=>todo.id===id);
+  }
+  async function resolveTodo(id:string):Promise<Todo>{
+    const item=findTodo(id),version=generation.current;
+    if(!item)throw Error('이 Ticket을 다시 불러와주세요.');
+    if(!isAppleReminderPreview(item.id))return item;
+    const source=item.source;
+    const original=source?.listId&&appleView?.generation===version?appleView.lists.get(source.listId)?.find(row=>row.id===source.externalId):null;
+    if(!original)throw Error('아이폰에서 원본 미리알림을 다시 확인해주세요.');
+    const result=await featureRequest('/api/integrations/apple-reminders/refresh','POST',{items:[original],resolve:true}) as {items?:Todo[];suppressed?:string[];deferred?:string[]};
+    if(version!==generation.current)throw sessionChanged();
+    if(result.suppressed?.includes(original.id)){
+      localAppleRemovals.current.ids.add(original.id);setTodos(rows=>rows);
+      throw Error('이 미리알림의 도슨 연결이 이미 바뀌었어요.');
+    }
+    const matches=(todo:Todo)=>todo.source?.provider==='apple-reminders'&&todo.source.externalId===original.id;
+    let saved=result.items?.find(matches)??todosRef.current.find(matches);
+    if(!saved&&!result.deferred?.includes(original.id))saved=(await repo.current?.list())?.find(matches);
+    if(version!==generation.current)throw sessionChanged();
+    if(!saved)throw Error('원본 목록의 저장을 확인하고 있어요. 잠시 뒤 다시 시도해주세요.');
+    const existing=todosRef.current.find(todo=>todo.id===saved.id);
+    if(existing)return existing;
+    writes.current++;setTodos(rows=>[...rows,saved]);persistDeviceTodos(todosRef.current);
+    return saved;
+  }
   const pendingSourceRefresh=useRef(false);
   useEffect(()=>{
     const timer=setInterval(()=>{
@@ -693,6 +762,6 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   async function passwordResetComplete() { if (connection?.mode === 'cloud') { await auth.forgetSession(connection.baseUrl); expireSession(); setNotice('비밀번호를 바꿨어요. 다시 로그인해주세요.'); } }
   const isCurrentSession = () => renderGeneration === generation.current;
-  return { retryDelivery,deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo:(id:string)=>todosRef.current.find(todo=>todo.id===id), connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, calendarTodos:displayTodos, visible: visibleTodos(displayTodos, pending,Date.now(),completionOrigins), logged:completedTodos(displayTodos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, refreshSources, add, update, remove };
+  return { retryDelivery,deviceCreatesEnabled:!!deviceCreateOwner,prepareSave,reportWrite,writeResolved,beginSave,writeReports,checkWrite,sessionStatus,retrySession,reorder,moveMembership,retrySource,findTodo,changeTodoDestination, connection, user, reminders, notice, setNotice, isCurrentSession, featureRequest, refreshAccount, deleteAccount, passwordResetComplete, authenticate, logout, todos, calendarTodos:displayTodos, visible: visibleTodos(displayTodos, pending,Date.now(),completionOrigins), logged:completedTodos(displayTodos,pending,Date.now(),completionOrigins).map(todo=>Object.hasOwn(pendingOrder.current,todo.id)?{...todo,completedAt:pendingOrder.current[todo.id]||null}:todo).sort((a,b)=>(b.completedAt??'').localeCompare(a.completedAt??'')), pending, loading, connecting, busyIds, completionIds, error, setError, connect, refresh, refreshSources, add, update, remove };
 }
 export type TodoStore = ReturnType<typeof useTodos>;

@@ -204,7 +204,7 @@ export function featureRoutes(store, mailer, worker, integrations, limited, clie
           typeof item.title!=='string'||!item.title.trim()||item.title.length>120||typeof item.completed!=='boolean'||
           typeof item.notes!=='string'||item.notes.length>4000||!validDate(item.dueDate??null)||
           item.dueTime!=null&&(!item.dueDate||typeof item.dueTime!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(item.dueTime))))throw fail(400,'미리 알림 자료를 확인해주세요.');
-        send(200,store.syncTaskResources(user.id,'apple-reminders',body.items,{returnItems:true}));return true;
+        send(200,store.syncTaskResources(user.id,'apple-reminders',body.items,{returnItems:true,resolve:body.resolve===true}));return true;
       }
       if (path === '/api/integrations/apple-reminders/import' && req.method === 'POST') {
         const body = await readComputerBody(req,256*1024);

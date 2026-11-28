@@ -54,15 +54,16 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  useEffect(()=>{if(!active){cancelDrag();setBatchPanel(null);}},[active]);
  const handledTop=useRef(0);
  useEffect(()=>{if(!scrollToTopRequest||handledTop.current===scrollToTopRequest)return;handledTop.current=scrollToTopRequest;if(active&&!editor&&!drag)scroll.current?.scrollTo({y:0,animated:!reduced});},[scrollToTopRequest,active]);
- useEffect(()=>{setSelected(old=>old.filter(id=>store.visible.some(t=>t.id===id&&!t.done)));},[store.visible.map(t=>t.id+':'+t.done).join('|')]);
+ useEffect(()=>{setSelected(old=>[...new Set(old.map(id=>store.findTodo(id)?.id??id))].filter(id=>store.visible.some(t=>t.id===id&&!t.done)));},[store.visible.map(t=>t.id+':'+t.done).join('|')]);
  useEffect(()=>{
   if(!selected.length&&!drag){setSelecting(false);setBatchPanel(null);}
  },[selected.length,drag]);
  const calendar=useCalendarData(store,{start:today,end:shiftDay(today,14),month:today.slice(0,7),timeZone:zone,selected:selection.ids,active:active&&view==='date',selectionReady:selection.ready});
  useEffect(()=>{if(active)store.refreshSources?.();},[active,store.refreshSources]);
  async function pull(){if(pulling)return;store.refreshSources?.();setPulling(true);try{await Promise.allSettled([store.refresh(),...(view==='date'?[calendar.load()]:[])]);}finally{setPulling(false);}}
- const stableTodos=editor?.todo?store.visible.map(t=>t.id===editor.todo!.id?editor.todo!:t):[...store.visible];
- if(editor?.todo&&!stableTodos.some(t=>t.id===editor.todo!.id))stableTodos.push(editor.todo);
+ const editedId=editor?.todo&&(store.findTodo(editor.todo.id)?.id??editor.todo.id);
+ const stableTodos=editor?.todo?store.visible.map(t=>t.id===editedId?{...editor.todo!,id:t.id}:t):[...store.visible];
+ if(editor?.todo&&!stableTodos.some(t=>t.id===editedId))stableTodos.push(editor.todo);
  const draft:Todo={id:'inline-draft',title:'',done:false,dueDate:editor?.date??null,category:'일상'};
  const input=editor&&!editor.todo?[...stableTodos,draft]:stableTodos;
  const groups=(view==='date'?todoAgenda(input,calendar.events,today,zone):sourceAgenda(input)).map(g=>({...g,todos:g.todos.filter(t=>t.id!=='inline-draft')}));
@@ -199,7 +200,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
    <View style={styles.heading}>{view==='source'?<Ionicons name={todoSource(group.todos[0]??draft).icon} size={28} color={todoSource(group.todos[0]??draft).color}/>:group.day?<Text style={[styles.number,desktop&&{fontSize:27,lineHeight:35}]}>{Number(group.day.slice(8))}</Text>:<Ionicons name={group.key==='overdue'?'alert-circle-outline':'list-outline'} size={27} color={colors.muted}/>}<Text style={[styles.day,desktop&&{fontSize:13,lineHeight:22},view==='source'&&styles.sourceTitle,group.key==='overdue'&&{color:colors.danger}]}>{group.day&&group.day.slice(0,7)!==today.slice(0,7)?Number(group.day.slice(5,7))+'월 · ':''}{group.title}</Text><View style={styles.line}/></View>
    {!!group.events.length&&<View style={styles.events}>{group.events.map(event=><View key={event.id} style={styles.event}><Text numberOfLines={1} style={styles.time}>{event.allDay?'종일':calendarStartLabel(event,group.day,zone)}</Text><Text numberOfLines={2} style={styles.eventTitle}>{event.title}</Text></View>)}</View>}
    {editor?.group===group.key&&!editor.todo&&inline(group.key)}
-   {group.todos.map(todo=>editor?.todo?.id===todo.id?inline(group.key):<ReorderItem previewing={!!drag} previewShift={previewShift(todo.id)} key={todo.id} collapsable={false} ref={node=>register(todo.id,node,todo.id,group.day,group.key)} style={drag?.ids.includes(todo.id)&&{opacity:0}}>
+   {group.todos.map(todo=>editedId===todo.id?inline(group.key):<ReorderItem previewing={!!drag} previewShift={previewShift(todo.id)} key={todo.id} collapsable={false} ref={node=>register(todo.id,node,todo.id,group.day,group.key)} style={drag?.ids.includes(todo.id)&&{opacity:0}}>
     {hover?.key===todo.id&&<View pointerEvents="none" testID="todo-drop-line" style={styles.dropLine}/>}
     <TodoRow compact todo={todo} selected={selecting?selected.includes(todo.id):undefined} onSelect={()=>select(todo.id)} onLift={store.pending[todo.id]||todo.done?undefined:point=>beginDrag(todo,group.key,point)}
       onDrag={moveDrag} onDrop={finishDrag} onSelectAccessible={()=>selectForAccessibility(todo.id)} onOpenSource={todo.source&&['google','slack','notion'].includes(todo.source.provider)&&store.connection?.mode==='cloud'?()=>void openSource(todo):undefined} pending={!!store.pending[todo.id]} pendingUntil={store.pending[todo.id]} busy={busy||!!editor||!!todo.saveState||store.busyIds.includes(todo.id)} canToggleWhileBusy={!busy&&!editor&&store.completionIds.includes(todo.id)} canSelectWhileBusy={!busy&&!editor&&store.completionIds.includes(todo.id)} onToggle={()=>void store.update(todo.id,{done:!todo.done})} onEdit={()=>edit(group.key,todo.dueDate,todo)}/>

@@ -188,6 +188,15 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
       }
       const todoMove=/^\/api\/todos\/([a-f0-9-]{36})\/membership$/.exec(path);
       if(todoMove&&req.method==='POST')return send(200,await todoMembership.move(session.user.id,todoMove[1],await json(req)));
+      const todoSwitch=/^\/api\/todos\/([a-f0-9-]{36})\/destination$/.exec(path);
+      if(todoSwitch&&req.method==='POST'){
+        const user=session.user.id,id=todoSwitch[1],todo=store.get(user,id);
+        if(!todo)return send(404,{error:'연결을 변경할 Ticket을 찾지 못했어요.'});
+        if(todoMembership.isMoving(user,id)||todo.source&&todo.source.provider!=='apple-reminders'&&
+          !(todo.source.provider==='google'&&/^[^:]+:tasks:/.test(todo.source.externalId)))return send(409,{error:'현재 원본의 목록을 변경할 수 없어요.'});
+        const saved=store.todoDelivery.switchTarget(user,id,await json(req));todoDelivery.wake();
+        return send(200,saved);
+      }
       if (path === '/api/todos' && req.method === 'POST') {
         const body = await json(req);
         if (!validNotes(body.notes ?? '')) return send(400, { error: '메모는 4,000자 이내로 적어주세요.' });
@@ -208,7 +217,8 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         if (!store.get(userId, id)) return send(404, { error: '할 일을 찾을 수 없어요.' });
         if(req.method==='GET')return send(200,store.todoDelivery.decorate(userId,store.get(userId,id)));
         if(todoMembership.isMoving(userId,id))return send(409,{error:'할 일의 원본 목록을 옮기고 있어요.'});
-        if(store.todoDelivery.status(userId,id)?.state==='sending')return send(409,{code:'todo-delivery-in-progress',error:'선택한 목록에 저장 중이에요. 잠시 뒤 다시 시도해주세요.'});
+        const deliveryState=store.todoDelivery.status(userId,id)?.state;
+        if(deliveryState==='sending'||req.method==='PATCH'&&deliveryState==='queued'&&store.get(userId,id)?.source)return send(409,{code:'todo-delivery-in-progress',error:'선택한 목록에 저장 중이에요. 잠시 뒤 다시 시도해주세요.'});
         if (req.method === 'DELETE') {
          if(!store.remove(userId,id))return send(409,{error:'저장 중인 할 일을 잠시 뒤 다시 확인해주세요.'});
          return send(200,{ok:true});

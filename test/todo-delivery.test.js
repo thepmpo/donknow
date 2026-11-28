@@ -95,6 +95,51 @@ test('Apple delivery is claimed once for exactly one owner and list; receipts ca
  }finally{await h.close();}
 });
 
+test('switching a Ticket from Apple to Google preserves its Docen ID and suppresses the previous source after confirmation',async()=>{
+ const h=await apiHarness();
+ try{
+  const owner=await h.verified();
+  const request=(path,method,body)=>h.request(path,method,body,owner.token);
+  const apple={id:'native-ticket',listId:'inbox',title:'원본 Ticket',notes:'메모',dueDate:'2026-11-28',completed:false};
+  const original=await request('/api/integrations/apple-reminders/refresh','POST',{items:[apple]});
+  const {id}=original.data.items[0];
+  const target={provider:'google',connectionId:'google-account',listId:'work'};
+  const queued=await request('/api/todos/'+id+'/destination','POST',target);
+  assert.equal(queued.status,200);
+  assert.equal(queued.data.id,id);
+  assert.equal(queued.data.delivery.state,'queued');
+  assert.equal(queued.data.source.externalId,apple.id);
+  const replay=await request('/api/todos/'+id+'/destination','POST',target);
+  assert.equal(replay.data.delivery.state,'queued');
+  const list=await request('/api/todos');
+  assert.equal(list.data.length,1);
+ }finally{await h.close();}
+ const dir=await mkdtemp(join(tmpdir(),'docen-transfer-')),store=await openStore(dir);
+ try{
+  const {user}=await store.register('transfer@example.test','fixture-password-123');
+  const [original]=store.syncTaskResources(user.id,'apple-reminders',[
+   {id:'native-id',listId:'inbox',title:'원본 Ticket',notes:'메모',dueDate:'2026-11-28',completed:false},
+  ],{returnItems:true}).items;
+  store.todoDelivery.switchTarget(user.id,original.id,{provider:'google',connectionId:'google-account',listId:'work'});
+  const attempt=store.todoDelivery.claim(user.id,original.id,'google');
+  const source={provider:'google',externalId:'google-account:tasks:work:remote',listId:'work',connectionId:'google-account'};
+  const saved=store.todoDelivery.finish(user.id,original.id,attempt,source);
+  assert.equal(saved.id,original.id);
+  assert.equal(saved.notes,original.notes);
+  assert.deepEqual(saved.source,source);
+  const pulled=store.syncTaskResources(user.id,'apple-reminders',[{id:'native-id',title:'이전 원본'}],{returnItems:true});
+  assert.deepEqual(pulled,{changed:0,items:[],suppressed:['native-id']});
+  assert.equal(store.list(user.id).length,1);
+  store.todoDelivery.switchTarget(user.id,original.id,{provider:'apple-reminders',listId:'another-list'});
+  const appleAttempt=store.todoDelivery.claim(user.id,original.id,'apple-reminders');
+  const movedBack=store.todoDelivery.appleReceipt(user.id,original.id,{attempt:appleAttempt,externalId:'new-native-id',listId:'another-list',listTitle:'새 목록'});
+  assert.equal(movedBack.id,original.id);
+  assert.equal(movedBack.source.listTitle,'새 목록');
+  assert.equal(store.syncTaskResources(user.id,'google',[{id:source.externalId,title:'이전 Google 원본'}]),0);
+  assert.equal(store.list(user.id).length,1);
+ }finally{store.close();await rm(dir,{recursive:true,force:true});}
+});
+
 test('new Google approval resumes rejected task creates only for that connection',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'docen-todo-reauthorize-')),store=await openStore(dir);
  try{
