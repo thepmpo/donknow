@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-28 · 한국 시간 · 기능 코드 8c66438 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-28 · 한국 시간 · 기능 코드 ffd94a5 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,13 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-28 — Ticket 편집 팝업과 대기 중인 Ticket 삭제
+
+- Ticket 편집과 날짜, 알림, 저장 목록, 삭제 확인을 한 팝업에서 전환한다. 긴 제목과 메모는 줄바꿈으로 표시하며, 닫기 위치는 Event 상세와 맞춘다. 삭제 확인은 취소와 삭제를 나란히 제공한다. Event 상세의 반복 안내와 메모 보충 문구를 제거했다.
+- 캘린더의 저장 대기 Ticket을 선택하거나 열 수 있게 했다. 삭제를 아이폰에 먼저 기록하고, 취소한 생성 요청은 서버에서 재전송을 막는다. 자동 재시도를 유지하고 iOS의 실제 미리알림 삭제는 별도 EventKit 작업 큐로 보낸다.
+- 미리알림 Ticket의 저장 목록은 기기 목록부터 읽고 요청이 길어지면 다시 불러오기 버튼을 표시한다. 날짜 팝업의 달력에서 좌우로 밀어 달을 바꿀 수 있다. 오늘과 다음 7일의 Ticket은 날짜별, 그 뒤는 월별로 표시하고 날짜 없음은 접을 수 있게 했다. 출처별 탭은 숨겼다.
+- Chromium에서 일반·Duo·웹 편집 팝업, 월 이동, 삭제 취소, 28일 대기 Ticket 선택·삭제와 재시도를 확인했다. 서버 테스트에서 취소한 생성 요청의 재전송과 계정 격리를 확인했다. 실제 아이폰 EventKit과 TestFlight는 새 서명 빌드에서 확인해야 한다.
 
 #### 2026-11-28 — Ticket 저장 대기 문구 제거
 
@@ -4386,10 +4393,12 @@ c912b72 Sync Ticket deletions and refine calendar detail controls
 228d17d Move and enlarge the phone Event detail close button
 dca98fb Update handoff with the revised Event detail preview
 8c66438 Remove passive Ticket delivery status from the list picker
+9fbec62 Record the Ticket status display verification
+ffd94a5 Open Ticket editors in a popup and handle pending deletion
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 8c66438에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: ffd94a5에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13678,7 +13687,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/8c664380bb4b77528fb2a2e4f0584a219c024448
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/ffd94a5f1080edd4ba33785de453b430cf45139e
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
