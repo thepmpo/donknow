@@ -61,12 +61,12 @@ function ShellContent() {
    requestCalendar('cycle',target,!duo&&tab!=='calendar');if(target==='active')setTab('calendar');
   },[duo,split,tab,requestCalendar]);
 
-  useEffect(()=>{let active=true;const stop=listenAssistantEntry(value=>{void(async()=>{const files=[];if(store.user)for(const f of value.files??[]){if(!active)return;files.push(await store.featureRequest('/api/agent/files','POST',f) as import('./src/agent').AgentFile);}if(!active)return;setEntry({id:value.id,message:value.message,autoSend:value.autoSend&&!!store.user,files});setTab('duck');})().catch(()=>{if(active)store.setError('전달한 자료를 준비하지 못했어요. docen 채팅에서 다시 확인해주세요.');});});return()=>{active=false;stop();};},[store.user?.id,calendarScope]);
+  useEffect(()=>{let active=true;const stop=listenAssistantEntry(value=>{void(async()=>{const files=[];if(store.user)for(const f of value.files??[]){if(!active)return;files.push(await store.featureRequest('/api/agent/files','POST',f) as import('./src/agent').AgentFile);}if(!active)return;setEntry({id:value.id,message:value.message,autoSend:value.autoSend&&!!store.user,files});setTab('duck');})().catch(()=>{if(active)store.setError('전달한 자료를 준비하지 못했어요. docen.t ai 채팅에서 다시 확인해주세요.');});});return()=>{active=false;stop();};},[store.user?.id,calendarScope]);
   useEffect(()=>listenForDuckNotification(()=>setTab('duck')),[]);
   const editorSequence = useRef(0);
   const [editor, setEditor] = useState<{ instance:number; todo?: Todo; date: string | null } | null>(null);
   const onAdd = (date: string | null) => { Keyboard.dismiss();setEditor({ instance:++editorSequence.current, date }); };
-  const onEdit = (todo: Todo) => { if(todo.saveState){store.setNotice('저장 결과를 확인하고 있어요. docen 채팅에서 결과를 확인해주세요.');return;}Keyboard.dismiss();setEditor({ instance:++editorSequence.current, todo, date: todo.dueDate }); };
+  const onEdit = (todo: Todo) => { if(todo.saveState){store.setNotice('저장 결과를 확인하고 있어요. docen.t ai 채팅에서 결과를 확인해주세요.');return;}Keyboard.dismiss();setEditor({ instance:++editorSequence.current, todo, date: todo.dueDate }); };
   const [duckSession, setDuckSession] = useState(0);
   useEffect(() => { setEditor(null);setEntry(null);setDesktopChatRequest(0);setProfileRequest(null);setUnread(0);setCalendarNavigation(null); setDuckSession(current => current + 1); setTab(desktop?'duck':'todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
   const sessionPending=store.sessionStatus==='restoring'||store.sessionStatus==='unavailable';

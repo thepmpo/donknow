@@ -17,7 +17,7 @@ export type AssistantDraft={id:string;operation:string;label:string;args:Record<
 export type AssistantProposal={operation:string;label:string;args:Record<string,unknown>;sourceRefs:string[];section?:string};
 export type AssistantStatus={access?:{plan:'pro';mode:'complimentary';chat:boolean;createFromSources:boolean};usage?:{funded:boolean;remainingKrw:number;proPriceKrw:number};connections?:{provider:string;connected:boolean}[];googleAccounts?:{connectionId:string;label:string}[];enabled:boolean;message:string;agent?:{backgroundChat?:boolean;persistentJobs?:boolean;voice?:boolean;persona?:{name:string;appearance:{color:string;eyes:string;glasses:boolean;accessory:string}}};memory?:{enabled:boolean;revision:number;count:number;turnCount:number};actions:AssistantDefinition[];consentScopes?:Record<string,string>};
 export type AssistantTurn={id?:string;createdAt?:number;role:'user'|'assistant';text:string;state?:'sending'|'sent'|'failed';proposals?:AssistantProposal[];items?:BriefingItem[];jobs?:AgentJob[];files?:AgentFile[];citations?:{url:string;title:string}[];responsibilities?:{id:string;title:string}[]};
-export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'docen Todo'};
+export const assistantNames:Record<string,string>={google:'Google',slack:'Slack',notion:'Notion',naver:'네이버 메일',todo:'docen Ticket'};
 export const assistantLabels:Record<string,string>={recurrence:'반복 규칙',attendees:'초대 메일을 받을 사람',title:'제목',notes:'메모',dueDate:'예정일',text:'내용',to:'받는 이메일',subject:'메일 제목',start:'시작',end:'종료',done:'완료 상태',read:'읽음 상태'};
 export const assistantStatusLabels:Record<string,string>={pending:'확인 대기',running:'처리 중',succeeded:'완료',failed:'실패 · 새 초안에서 다시 확인',unknown:'결과 불확실 · 원본 확인 필요',cancelled:'취소','restored-cancelled':'복원 시 취소'};
 export const assistantTargetKeys=['id','list','channel','parent','ts','thread','connectionId'];
@@ -57,11 +57,11 @@ export function useAssistant(store:TodoStore,scheduledMessages:{title:string;tex
   // from enabling chat. Each rejection is still surfaced and can be retried.
   const results=await Promise.allSettled([
    store.featureRequest('/api/assistant/status').catch(error=>{if(latest())setStatus(null);throw error;}).then(async value=>{if(!latest())return;const next=value as AssistantStatus;setStatus(next);if(next.memory?.enabled){const history=await store.featureRequest('/api/assistant/conversation') as {turns:AssistantTurn[]};if(latest()&&!working.current)setTurns(history.turns.slice(-40));}}),
-   store.featureRequest('/api/assistant/actions').then(value=>{const actions=(value as {actions?:AssistantDraft[]}|null)?.actions;if(!Array.isArray(actions))throw new Error('비서 작업 응답을 확인하지 못했어요. 이전 내용은 유지했어요.');if(latest()&&revision===draftRevision.current)setDrafts(actions);}),
+   store.featureRequest('/api/assistant/actions').then(value=>{const actions=(value as {actions?:AssistantDraft[]}|null)?.actions;if(!Array.isArray(actions))throw new Error('docen.t ai 작업 응답을 확인하지 못했어요. 이전 내용은 유지했어요.');if(latest()&&revision===draftRevision.current)setDrafts(actions);}),
   ]);
   if(!latest()||revision!==draftRevision.current||errorVersion!==errorRevision.current)return;
   const failed=results.find(result=>result.status==='rejected');
-  if(failed?.status==='rejected'){setError(failed.reason instanceof Error?failed.reason.message:'비서 기능을 불러오지 못했어요.');setErrorKind('load');}else if(errorKind==='load'){setError('');setErrorKind(null);}
+  if(failed?.status==='rejected'){setError(failed.reason instanceof Error?failed.reason.message:'docen.t ai 기능을 불러오지 못했어요.');setErrorKind('load');}else if(errorKind==='load'){setError('');setErrorKind(null);}
  }
  async function run<T>(fn:()=>Promise<T>,kind:'chat'|'action'|'context'='action'):Promise<T|undefined>{
   if(working.current)return;const version=generation.current;working.current=true;errorRevision.current++;setBusy(true);setBusyKind(kind);setError('');setErrorKind(null);

@@ -60,7 +60,7 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
     for(let page=0;page<(v===2&&id!==docenCalendarId&&!more?4:1);page++){
      const confirmedWrites=id===docenCalendarId?captureConfirmedCalendarWrites(owner,'docen'):null;
      const query=new URLSearchParams({month,...(v===2?{v:'2',calendarId:id,timeZone,start,end}:{}),...(cursor?{cursor}:{})});
-     const result=await (freshRequest||confirmedWrites?.hasWrites?featureRequest:request)('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('일정 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
+     const result=await (freshRequest||confirmedWrites?.hasWrites?featureRequest:request)('/api/calendar/events?'+query) as Page;if(!validCalendarPage(result))throw Error('Event 응답 형식을 확인하지 못했어요. 다시 확인해주세요.');if(!fresh())return;
      if(id===docenCalendarId){
       const mirrors=Array.isArray(result.hiddenMirrors)&&result.hiddenMirrors.length?result.hiddenMirrors:noHiddenMirrors;
       const appleCreates=Array.isArray(result.appleCreates)&&result.appleCreates.length?result.appleCreates:noAppleCreates;
@@ -102,8 +102,8 @@ export function useCalendarData(store:TodoStore,{start,end,month,timeZone,select
    const connectedSources=ok.filter(p=>p.calendarId!==docenCalendarId);
    const unconnected=connectedSources.length>0&&connectedSources.every(p=>p.connectionState==='unconnected');
    setPhase(unconnected?'unconnected':failed.length||Object.keys(next).length?'partial':'ready');
-   if(failed.length)setError('일부 캘린더를 확인하지 못했어요. 표시되지 않은 일정이 있을 수 있어요.');
-  }catch(e){if(fresh()){setError(e instanceof Error?e.message:'일정을 불러오지 못했어요.');setPhase('error');}}
+   if(failed.length)setError('일부 캘린더를 확인하지 못했어요. 표시되지 않은 Event가 있을 수 있어요.');
+  }catch(e){if(fresh()){setError(e instanceof Error?e.message:'Event를 불러오지 못했어요.');setPhase('error');}}
  },[key,store.user?.id,request,featureRequest,selectionReady]);
  const phaseRef=useRef(phase);phaseRef.current=phase;
  // Keep the cached period on screen and start a new read for each calendar entry.

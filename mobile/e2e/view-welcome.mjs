@@ -20,7 +20,7 @@ try{
    async function centered(){const box=await welcome.boundingBox(),area=await scroll.boundingBox();assert.ok(Math.abs(box.x+box.width/2-area.x-area.width/2)<3,'welcome horizontal center');assert.ok(Math.abs(box.y+box.height/2-area.y-area.height/2)<12,'welcome vertical center within conversation viewport');assert.ok(box.y>=area.y-1&&box.y+box.height<=area.y+area.height+1,'full welcome fits');}
    await centered();await page.screenshot({path:out+'/'+mode+'-'+(cloud?'signed-in':'demo')+'-welcome.png'});
    await page.setViewportSize({width,height:650});await page.waitForTimeout(350);await centered();await page.setViewportSize({width,height});
-   if(cloud){const consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true});if(await consent.count())await consent.click();await page.getByRole('textbox',{name:'docen에게 이야기하기',exact:true}).fill('안녕');await page.getByRole('button',{name:'docen에게 보내기',exact:true}).click();await page.getByText('확인했어요. 다음 일을 알려주세요.',{exact:true}).waitFor();assert.equal(await page.getByTestId('chat-welcome-content').count(),0);}
+   if(cloud){const consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Ticket을 AI에 보내 분석하기 동의',exact:true});if(await consent.count())await consent.click();await page.getByRole('textbox',{name:'docen.t ai에 이야기하기',exact:true}).fill('안녕');await page.getByRole('button',{name:'docen.t ai에 보내기',exact:true}).click();await page.getByText('확인했어요. 다음 일을 알려주세요.',{exact:true}).waitFor();assert.equal(await page.getByTestId('chat-welcome-content').count(),0);}
    assert.deepEqual(errors,[]);console.log('PASS '+mode+' '+(cloud?'signed-in':'demo')+' centered welcome and view access');await page.close();
   }
  }

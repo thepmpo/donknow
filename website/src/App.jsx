@@ -63,7 +63,7 @@ const initialTasks = [
     id: "personal",
     title: ["도서관에 책 반납하기", "Return the library books"],
     note: [
-      "미리알림에 남아 있는 이번 주 할 일이에요.",
+      "미리알림에 남아 있는 이번 주 Ticket이에요.",
       "An unfinished reminder for this week.",
     ],
     source: ["미리알림", "Reminders"],
@@ -73,8 +73,8 @@ const initialTasks = [
 ];
 const demoNotices = {
   todo: [
-    "할 일에 담았어요. 할 일 탭에서 확인해보세요.",
-    "Added to To-dos. Open To-dos to see it.",
+    "Ticket에 담았어요. Ticket 탭에서 확인해보세요.",
+    "Added to Tickets. Open Tickets to see it.",
   ],
   calendar: [
     "캘린더에 담았어요. 왼쪽 캘린더에서 확인해보세요.",
@@ -88,7 +88,7 @@ const demoNotices = {
 };
 const views = [
   { id: "inbox", icon: Sparkles, name: ["브리핑", "Briefing"] },
-  { id: "todo", icon: ListTodo, name: ["할 일", "To-dos"] },
+  { id: "todo", icon: ListTodo, name: ["Ticket", "Ticket"] },
   { id: "calendar", icon: CalendarDays, name: ["캘린더", "Calendar"] },
   { id: "done", icon: CheckCheck, name: ["기록", "Log"] },
 ];
@@ -243,7 +243,7 @@ function Demo({ en }) {
                     ]
                   : view === "calendar"
                     ? [
-                        "시간을 정한 일은 일정으로 이어져요.",
+                        "시간을 정한 일은 Event로 이어져요.",
                         "Make time for what matters.",
                       ]
                     : [
@@ -295,7 +295,7 @@ function Demo({ en }) {
                         <div className="task-actions">
                           <button onClick={() => move(task.id, "todo")}>
                             <Plus size={14} />
-                            {tr(["할 일로", "To-do"])}
+                            {tr(["Ticket으로", "Ticket"])}
                           </button>
                           <button
                             onClick={() => {
@@ -305,7 +305,7 @@ function Demo({ en }) {
                             }}
                           >
                             <CalendarDays size={14} />
-                            {tr(["일정으로", "Schedule"])}
+                            {tr(["Event로", "Event"])}
                           </button>
                           <button onClick={() => move(task.id, "done")}>
                             {tr(["대화에서 마치기", "Finish here"])}
@@ -325,7 +325,7 @@ function Demo({ en }) {
                           {tr(["날짜", "Date"])}
                           <input
                             ref={dateRef}
-                            aria-label={tr(["일정 날짜", "Event date"])}
+                            aria-label={tr(["Event 날짜", "Event date"])}
                             type="date"
                             required
                             value={date}
@@ -335,7 +335,7 @@ function Demo({ en }) {
                         <label>
                           {tr(["시간", "Time"])}
                           <input
-                            aria-label={tr(["일정 시간", "Event time"])}
+                            aria-label={tr(["Event 시간", "Event time"])}
                             type="time"
                             required
                             value={time}
@@ -343,7 +343,7 @@ function Demo({ en }) {
                           />
                         </label>
                         <button type="submit" className="small-primary">
-                          {tr(["일정에 담기", "Add event"])}
+                          {tr(["Event에 담기", "Add event"])}
                         </button>
                         <button
                           type="button"
@@ -365,7 +365,7 @@ function Demo({ en }) {
                   {tr(
                     view === "inbox"
                       ? [
-                          "지금 확인할 일은 모두 정리했어요",
+                          "지금 확인할 Ticket은 모두 정리했어요",
                           "You’re all caught up",
                         ]
                       : ["아직 담긴 일이 없어요", "Nothing here yet"],
@@ -373,7 +373,7 @@ function Demo({ en }) {
                 </h3>
                 <p>
                   {tr([
-                    "브리핑에서 할 일을 골라 담아보세요.",
+                    "브리핑에서 Ticket을 골라 담아보세요.",
                     "Choose an item from your briefing.",
                   ])}
                 </p>
@@ -400,7 +400,7 @@ function Demo({ en }) {
           <h3>{tr(["하나씩, 가볍게.", "One thing at a time."])}</h3>
           <p>
             {tr([
-              "지금 할 일과 나중에 할 일을 나누면 하루가 조금 더 선명해져요.",
+              "지금 Ticket과 나중에 Ticket을 나누면 하루가 조금 더 선명해져요.",
               "A little clarity about what’s next makes space for the rest.",
             ])}
           </p>
@@ -411,7 +411,7 @@ function Demo({ en }) {
           <div className="agenda-line">
             <span>10:00</span>
             <div>
-              <strong>{tr(["오늘 할 일 살펴보기", "Review the day"])}</strong>
+              <strong>{tr(["오늘 Ticket 살펴보기", "Review the day"])}</strong>
               <small>
                 {tr(["내 시간을 먼저 챙겨요", "Make time for yourself"])}
               </small>
@@ -435,17 +435,17 @@ const faqs = [
   [
     "docen은 어떤 서비스인가요?",
     "What is docen?",
-    "연결한 자료에서 챙길 일을 살펴보고, 브리핑·할 일·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 할 일로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
+    "연결한 자료에서 챙길 일을 살펴보고, 브리핑·Ticket·캘린더로 정리하는 개인 비서예요. 받은 모든 내용을 Ticket으로 만들 필요는 없어요. 필요한 일만 옮기거나 대화 안에서 마칠 수 있어요.",
     "docen brings your next steps into a briefing, to-do list and calendar. Keep only the things you need, or finish them in the conversation.",
   ],
   [
     "라이트와 프로는 무엇이 다른가요?",
     "What is the difference between Lite and Pro?",
-    "정상 월요금은 라이트19,900원·프로55,900원이에요. 연간 결제는 각각202,800원·598,800원으로, 월환산16,900원·49,900원이에요. 베타 기간에는 월 결제에도 같은 연간 할인가를 적용해요. 라이트의 정리 기능에 프로는 직접 AI채팅과 확대 사용량을 더하며, 두 플랜 모두 사용량 제한이 있어요. 결제는 준비 중이에요.",
-    "Regular monthly prices are ₩19,900 for Lite and ₩55,900 for Pro. Annual plans cost ₩202,800 and ₩598,800, equivalent to ₩16,900 and ₩49,900 per month. During beta, monthly billing gets the same annual discounted rate. Pro adds direct AI chat and a larger allowance to Lite’s organization tools. Both have usage limits. Checkout is in preparation.",
+    "정상 월요금은 라이트19,900원·프로55,900원이에요. 연간 결제는 각각202,800원·598,800원으로, 월환산16,900원·49,900원이에요. 베타 기간에는 월 결제에도 같은 연간 할인가를 적용해요. 라이트의 정리 기능에 프로는 직접 docen.t ai 채팅과 확대 사용량을 더하며, 두 플랜 모두 사용량 제한이 있어요. 결제는 준비 중이에요.",
+    "Regular monthly prices are ₩19,900 for Lite and ₩55,900 for Pro. Annual plans cost ₩202,800 and ₩598,800, equivalent to ₩16,900 and ₩49,900 per month. During beta, monthly billing gets the same annual discounted rate. Pro adds direct docen.t ai chat and a larger allowance to Lite’s organization tools. Both have usage limits. Checkout is in preparation.",
   ],
   [
-    "할 일과 일정을 바꾸면 원본도 바뀌나요?",
+    "Ticket과 Event를 바꾸면 원본도 바뀌나요?",
     "Will changes update the original service?",
     "지원되는 연결의 항목은 권한과 수정 내용을 확인한 뒤 원본에 반영해요. 읽기 전용이나 미지원 항목은 제한을 알려드려요. docen에서만 만든 항목은 docen 안에서만 바뀌어요.",
     "Supported connections can update the source with the necessary permissions and confirmation. Read-only and unsupported items have limits. docen-only items stay in docen.",
@@ -605,7 +605,7 @@ export function App() {
           <p className="hero-kicker">
             <span className="tiny-blue-dot" />
             {t(
-              "할 일과 일정을 잇는 나의 AI 비서",
+              "Ticket과 Event를 잇는 docen.t ai",
               "Your personal assistant, from thought to done",
             )}
           </p>
@@ -616,7 +616,7 @@ export function App() {
           </h1>
           <p className="hero-copy">
             {t(
-              "메시지 속 약속부터 머릿속 할 일까지.",
+              "메시지 속 약속부터 머릿속 Ticket까지.",
               "From a promise in a message to a thought on your mind.",
             )}
             <br />
@@ -655,7 +655,7 @@ export function App() {
             </h2>
             <p>
               {t(
-                "모든 메시지가 할 일이 될 필요는 없어요. 다음 행동은 내가 정해요.",
+                "모든 메시지가 Ticket이 될 필요는 없어요. 다음 행동은 내가 정해요.",
                 "Not every message needs a task. You choose the next step.",
               )}
             </p>
@@ -674,7 +674,7 @@ export function App() {
                 ListTodo,
                 t("필요한 일만 담고", "Keep what matters"),
                 t(
-                  "할 일로 옮기거나, 날짜를 정해 캘린더에 담아요.",
+                  "Ticket으로 옮기거나, 날짜를 정해 캘린더에 담아요.",
                   "Keep it as a to-do, or give it a date and make it an event.",
                 ),
               ],
@@ -701,7 +701,7 @@ export function App() {
             <div className="feature-copy">
               <span className="eyebrow blue">A LITTLE MORE CLARITY</span>
               <h2>
-                {t("오늘 할 일은,", "Today’s tasks.")}
+                {t("오늘 Ticket은,", "Today’s tasks.")}
                 <br />
                 {t("오늘 보이게.", "A clearer day.")}
               </h2>
@@ -738,7 +738,7 @@ export function App() {
             <div className="todo-illustration product-surface">
               <div className="mini-toolbar">
                 <span>
-                  <ListTodo size={18} /> {t("할 일", "To-dos")}
+                  <ListTodo size={18} /> {t("Ticket", "Ticket")}
                 </span>
                 <span className="segmented-label">
                   {t("날짜별", "By date")}
@@ -796,13 +796,13 @@ export function App() {
             <div className="feature-copy">
               <span className="eyebrow blue">YOUR TIME, IN ONE PLACE</span>
               <h2>
-                {t("할 일에 시간을 주면,", "Give your to-dos time.")}
+                {t("Ticket에 시간을 주면,", "Give your to-dos time.")}
                 <br />
                 {t("계획이 되니까.", "Make a plan that fits.")}
               </h2>
               <p>
                 {t(
-                  "할 일과 일정을 오가며 내 하루를 계획하세요. 오늘 해야 하는 일과 이미 잡힌 약속을 한눈에 확인해요.",
+                  "Ticket과 Event를 오가며 내 하루를 계획하세요. 오늘 해야 하는 일과 이미 잡힌 약속을 한눈에 확인해요.",
                   "Bring to-dos and events into the same day. See what needs doing alongside the plans you already have.",
                 )}
               </p>
@@ -846,7 +846,7 @@ export function App() {
                   <strong>{t("제안서 검토하기", "Review the proposal")}</strong>
                   <small>
                     {t(
-                      "할 일에서 일정으로",
+                      "Ticket에서 Event로",
                       "From a to-do to time on your calendar",
                     )}
                   </small>
@@ -859,7 +859,7 @@ export function App() {
                     {t("잠깐, 나를 위한 시간", "A little time for yourself")}
                   </strong>
                   <small>
-                    {t("내가 직접 만든 일정", "An event you created")}
+                    {t("내가 직접 만든 Event", "An event you created")}
                   </small>
                 </div>
               </div>
@@ -872,7 +872,7 @@ export function App() {
         <section className="ai-section" id="ai">
           <div className="section-wrap">
             <div className="section-heading">
-              <span className="eyebrow blue">YOUR AI, YOUR WAY</span>
+              <span className="eyebrow blue">docen.t ai</span>
               <h2>
                 {t("같은 정리 방식으로,", "The same clear workflow.")}
                 <br />
@@ -901,7 +901,7 @@ export function App() {
                 </h3>
                 <p>
                   {t(
-                    "자료를 정리하고, 브리핑을 받고, 문서 초안을 만들어요. 필요한 내용은 할 일과 캘린더로 이어가세요.",
+                    "자료를 정리하고, 브리핑을 받고, 문서 초안을 만들어요. 필요한 내용은 Ticket과 캘린더로 이어가세요.",
                     "Organize sources, receive briefings and draft supported documents. Keep the next step as a to-do or calendar event.",
                   )}
                 </p>
@@ -909,13 +909,13 @@ export function App() {
                   <span>{t("자료 · 브리핑", "Sources · Briefings")}</span>
                   <ArrowRight size={18} />
                   <span>
-                    <Duck /> {t("할 일 · 캘린더", "To-dos · Calendar")}
+                    <Duck /> {t("Ticket · 캘린더", "Tickets · Calendar")}
                   </span>
                 </div>
                 <small>
                   {t(
-                    "기본 월 사용량 · 직접 AI 채팅은 프로에서",
-                    "Base monthly allowance · Direct AI chat in Pro",
+                    "기본 월 사용량 · 직접 docen.t ai 채팅은 프로에서",
+                    "Base monthly allowance · Direct docen.t ai chat in Pro",
                   )}
                 </small>
               </article>
@@ -934,17 +934,17 @@ export function App() {
                 </h3>
                 <p>
                   {t(
-                    "라이트의 정리 기능에 직접 AI 채팅을 더해요. 더 넉넉한 사용량으로 자료를 질문하고 문서 작업을 이어가세요.",
-                    "Everything in Lite, plus direct AI chat. Ask about your sources and work on documents with a larger monthly allowance.",
+                    "라이트의 정리 기능에 직접 docen.t ai 채팅을 더해요. 더 넉넉한 사용량으로 자료를 질문하고 문서 작업을 이어가세요.",
+                    "Everything in Lite, plus direct docen.t ai chat. Ask about your sources and work on documents with a larger monthly allowance.",
                   )}
                 </p>
                 <div className="ai-route">
                   <span>
                     <Duck />
-                    {t("docen AI", "docen AI")}
+                    {t("docen.t ai", "docen.t ai")}
                   </span>
                   <ArrowRight size={18} />
-                  <span>{t("채팅 · 할 일 · 캘린더", "Chat · To-dos · Calendar")}</span>
+                  <span>{t("채팅 · Ticket · 캘린더", "Chat · Tickets · Calendar")}</span>
                 </div>
                 <small>
                   {t(
@@ -978,7 +978,7 @@ export function App() {
               [
                 CalendarDays,
                 "Google Calendar",
-                t("일정 조회 · 권한 내 수정", "View events · permitted edits"),
+                t("Event 조회 · 권한 내 수정", "View events · permitted edits"),
               ],
               [
                 Mail,
@@ -988,7 +988,7 @@ export function App() {
               [
                 ClipboardList,
                 "Google Tasks",
-                t("할 일 가져오기 · 상태 반영", "Import tasks · update status"),
+                t("Ticket 가져오기 · 상태 반영", "Import tasks · update status"),
               ],
               [
                 Smartphone,

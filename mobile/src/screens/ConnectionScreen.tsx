@@ -12,10 +12,10 @@ export function ConnectionScreen({ store, onDone }: { store: TodoStore; onDone?:
   async function connect() { if (await store.connect({ mode: 'cloud', baseUrl: url })) onDone?.(); }
   async function demo() { if (await store.connect({ mode: 'demo' })) onDone?.(); }
   return <Page><View style={styles.welcome}><View style={{alignSelf:'center',marginBottom:20}}><BrandMotion size={88}/></View><BrandWordmark style={styles.brand}/><Text style={s.subtitle}>나의 하루를 가볍게, docen과 함께.</Text></View>
-    <View style={{ marginTop: 18 }}><Button title="화면 먼저 체험하기" disabled={store.connecting || store.loading || !!store.busyIds.length} onPress={() => { void demo(); }} /><Text style={styles.note}>체험 모드에서는 예시 할 일을 이 기기에만 저장해요.{ '\n' }클라우드 데이터와 합쳐지지 않아요.</Text></View>
-    <View style={s.card}><Text style={s.sectionTitle}>클라우드 서버 연결</Text><Text style={[s.subtitle, { marginTop: 12 }]}>이미 연결할 서버가 있다면 주소를 입력해주세요. 로그인한 뒤 할 일을 클라우드에 저장할 수 있어요.</Text><TextInput accessibilityLabel="클라우드 서버 주소" value={url} onChangeText={setUrl} autoCapitalize="none" autoCorrect={false} keyboardType="url" placeholder="https://서버주소" placeholderTextColor="#a1adbd" style={styles.input} editable={!store.connecting} />
+    <View style={{ marginTop: 18 }}><Button title="화면 먼저 체험하기" disabled={store.connecting || store.loading || !!store.busyIds.length} onPress={() => { void demo(); }} /><Text style={styles.note}>체험 모드에서는 예시 Ticket을 이 기기에만 저장해요.{ '\n' }클라우드 데이터와 합쳐지지 않아요.</Text></View>
+    <View style={s.card}><Text style={s.sectionTitle}>클라우드 서버 연결</Text><Text style={[s.subtitle, { marginTop: 12 }]}>이미 연결할 서버가 있다면 주소를 입력해주세요. 로그인한 뒤 Ticket을 클라우드에 저장할 수 있어요.</Text><TextInput accessibilityLabel="클라우드 서버 주소" value={url} onChangeText={setUrl} autoCapitalize="none" autoCorrect={false} keyboardType="url" placeholder="https://서버주소" placeholderTextColor="#a1adbd" style={styles.input} editable={!store.connecting} />
     <Button title={store.connecting ? '연결 확인 중…' : '연결하기'} disabled={store.connecting || !url.trim() || !!store.busyIds.length || store.loading} onPress={() => { void connect(); }} />
-    <Text style={styles.note}>계정별로 할 일과 완료 기록을 저장해요.{ '\n' }연결한 뒤 로그인하거나 계정을 만들 수 있어요.</Text></View>
+    <Text style={styles.note}>계정별로 Ticket과 완료 기록을 저장해요.{ '\n' }연결한 뒤 로그인하거나 계정을 만들 수 있어요.</Text></View>
 
     {store.connecting && <BrandLoading size={28}/>}
     {!!onDone && <BackButton disabled={store.connecting} onPress={onDone} />}

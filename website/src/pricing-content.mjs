@@ -3,7 +3,7 @@ export const pricingCopy = {
   ko: {
     lang: "ko",
     title: "요금제와 기능 비교 · docen",
-    meta: "docen 무료·라이트 월16,900원·프로 월49,900원·비즈니스 상담형 요금제. 브리핑부터 문서 초안과 AI 채팅까지, 필요한 사용량을 골라보세요. 결제 준비 중.",
+    meta: "docen 무료·라이트 월16,900원·프로 월49,900원·비즈니스 상담형 요금제. 브리핑부터 문서 초안과 docen.t ai 채팅까지, 필요한 사용량을 골라보세요. 결제 준비 중.",
     nav: ["작동 방식", "요금제", "오픈 준비 중"],
     eyebrow: "A PLAN FOR YOUR DAY",
     heading: "내 방식에 맞는 docen.",
@@ -14,11 +14,11 @@ export const pricingCopy = {
       {
         name: "무료",
         tag: "직접 정리하는 하루",
-        description: "할 일과 일정을 직접 정리하며<br>docen을 시작하고 싶다면.",
+        description: "Ticket과 Event를 직접 정리하며<br>docen을 시작하고 싶다면.",
         price: "0원",
         note: "기본 정리 기능",
         features: [
-          "할 일·캘린더 직접 작성",
+          "Ticket·캘린더 직접 작성",
           "날짜·출처별 목록",
           "지원 연결의 자료 가져오기",
           "완료 기록과 원본 링크",
@@ -28,16 +28,16 @@ export const pricingCopy = {
       },
       {
         name: "라이트",
-        tag: "가볍게 시작하는 AI 비서",
+        tag: "가볍게 시작하는 docen.t ai",
         description:
           "브리핑부터 문서 초안까지.<br>필요한 일을 적당한 사용량으로.",
         price: "16,900원",
-        note: "기본 월 사용량 · 직접 AI 채팅 제외",
+        note: "기본 월 사용량 · 직접 docen.t ai 채팅 제외",
         features: [
           "무료의 기본 정리 기능",
           "브리핑·지원 자료 정리",
           "지원 문서 초안 작성",
-          "받은 내용을 할 일·일정으로",
+          "받은 내용을 Ticket·Event로",
         ],
         cta: "라이트 기능 살펴보기",
         href: "#compare",
@@ -46,9 +46,9 @@ export const pricingCopy = {
         name: "프로",
         tag: "대화하며, 더 넉넉하게",
         description:
-          "라이트의 정리 기능에<br>직접 AI 채팅과 더 많은 사용량까지.",
+          "라이트의 정리 기능에<br>직접 docen.t ai 채팅과 더 많은 사용량까지.",
         price: "49,900원",
-        note: "직접 AI 채팅 · 확대 월 사용량",
+        note: "직접 docen.t ai 채팅 · 확대 월 사용량",
         features: [
           "라이트의 모든 정리 기능",
           "docen 안에서 직접 AI와 대화",
@@ -79,7 +79,7 @@ export const pricingCopy = {
       },
     ],
     notice:
-      "라이트와 프로는 브리핑·자료 정리·지원 문서 초안·할 일/일정 전환을 함께 제공하는 개편안이에요. 직접 AI 채팅은 프로에서 제공하며, 두 요금제 모두 사용량 한도가 있어요. 비즈니스 기능과 제공량은 상담 후 확정해요. 현재 계정 권한과 결제 상태는 바뀌지 않아요.",
+      "라이트와 프로는 브리핑·자료 정리·지원 문서 초안·Ticket/Event 전환을 함께 제공하는 개편안이에요. 직접 docen.t ai 채팅은 프로에서 제공하며, 두 요금제 모두 사용량 한도가 있어요. 비즈니스 기능과 제공량은 상담 후 확정해요. 현재 계정 권한과 결제 상태는 바뀌지 않아요.",
     compareHeading: "기능과 사용량을 한눈에.",
     legend: "✓ 포함 · — 미포함 · 상담으로 범위 확정",
     scroll: "표를 좌우로 밀어 모든 요금제를 비교하세요.",
@@ -90,12 +90,12 @@ export const pricingCopy = {
     included: "포함",
     consult: "협의",
     rows: [
-      ["할 일·캘린더 직접 작성", "yes", "yes", "yes", "consult"],
+      ["Ticket·캘린더 직접 작성", "yes", "yes", "yes", "consult"],
       ["지원 자료 가져오기·날짜·출처별 정리", "yes", "yes", "yes", "consult"],
       ["완료 기록·지원하는 원본 링크", "yes", "yes", "yes", "consult"],
       ["브리핑·중요한 변화 알림", "no", "yes", "yes", "consult"],
       ["지원 자료 정리·문서 초안 작성", "no", "yes", "yes", "consult"],
-      ["받은 내용 → 할 일·일정 전환", "no", "yes", "yes", "consult"],
+      ["받은 내용 → Ticket·Event 전환", "no", "yes", "yes", "consult"],
       ["동의한 기억·자료 맥락 활용", "no", "yes", "yes", "consult"],
       ["docen 안에서 직접 AI와 대화", "no", "no", "yes", "consult"],
       ["월 AI 사용량", "없음", "기본 제공량", "더 넉넉한 제공량", "맞춤 협의"],
@@ -116,8 +116,8 @@ export const pricingCopy = {
     ],
     usageHeading: "넉넉하게 쓰되, 무제한은 아니에요.",
     usage: [
-      "브리핑·자료 정리·문서 작성·AI 채팅은 공통 월 사용량에서 처리해요. 긴 문서와 여러 단계의 작업은 짧은 정리보다 더 많은 사용량을 쓸 수 있어요. 정확한 제공량과 차감 기준은 결제 시작 전에 안내해요.",
-      "한도에 도달하면 AI 처리를 멈추고 알려드려요. 자동으로 추가 결제하지 않으며, 기본 할 일·캘린더 직접 정리는 계속 사용할 수 있어요. 더 큰 사용량이 필요하면 비즈니스 상담으로 범위를 정해요.",
+      "브리핑·자료 정리·문서 작성·docen.t ai 채팅은 공통 월 사용량에서 처리해요. 긴 문서와 여러 단계의 작업은 짧은 정리보다 더 많은 사용량을 쓸 수 있어요. 정확한 제공량과 차감 기준은 결제 시작 전에 안내해요.",
+      "한도에 도달하면 AI 처리를 멈추고 알려드려요. 자동으로 추가 결제하지 않으며, 기본 Ticket·캘린더 직접 정리는 계속 사용할 수 있어요. 더 큰 사용량이 필요하면 비즈니스 상담으로 범위를 정해요.",
       "지원되는 형식과 연결 권한 안에서 제공해요. 문서 초안은 실제로 확인한 자료를 바탕으로 작성하며 제출 전 검토가 필요해요. 외부 AI 연결은 준비 중이며 Dots의 기존 대화·기억·결과를 자동으로 가져오는 기능은 제공하지 않아요.",
     ],
     footer: "docen · 2026.11.19 요금 개편안",
@@ -138,11 +138,11 @@ export const pricingCopy = {
       {
         name: "Free",
         tag: "A day you organize yourself",
-        description: "Start with a simple place<br>for your to-dos and events.",
+        description: "Start with a simple place<br>for your Tickets and events.",
         price: "₩0",
         note: "Core organization tools",
         features: [
-          "Create to-dos and events",
+          "Create Tickets and events",
           "Lists by date and source",
           "Import from supported connections",
           "Completion history and source links",
@@ -156,7 +156,7 @@ export const pricingCopy = {
         description:
           "From briefings to document drafts,<br>with a smaller monthly allowance.",
         price: "₩16,900",
-        note: "Base monthly allowance · No direct AI chat",
+        note: "Base monthly allowance · No direct docen.t ai chat",
         features: [
           "All core Free features",
           "Briefings and supported source summaries",
@@ -175,7 +175,7 @@ export const pricingCopy = {
         note: "Direct AI chat · Larger monthly allowance",
         features: [
           "All Lite organization features",
-          "Chat directly with docen AI",
+          "Chat directly with docen.t ai",
           "Process more documents and sources",
           "A larger shared AI allowance",
         ],
@@ -214,7 +214,7 @@ export const pricingCopy = {
     included: "Included",
     consult: "By agreement",
     rows: [
-      ["Create to-dos and calendar events", "yes", "yes", "yes", "consult"],
+      ["Create Tickets and calendar events", "yes", "yes", "yes", "consult"],
       [
         "Import sources; organize by date and source",
         "yes",
@@ -245,7 +245,7 @@ export const pricingCopy = {
         "consult",
       ],
       ["Use approved memory and source context", "no", "yes", "yes", "consult"],
-      ["Chat directly with docen AI", "no", "no", "yes", "consult"],
+      ["Chat directly with docen.t ai", "no", "no", "yes", "consult"],
       [
         "Monthly AI allowance",
         "None",
@@ -271,7 +271,7 @@ export const pricingCopy = {
     usageHeading: "More room to work. Clear limits.",
     usage: [
       "Briefings, source summaries, document drafting and AI chat share a monthly allowance. Long documents and work with multiple steps can use more than a short summary. Exact allowances and usage rules will be published before paid checkout opens.",
-      "When you reach your limit, AI processing pauses and we let you know. There are no automatic overage charges. You can still organize to-dos and events manually. Contact us about Business if you need a larger allowance.",
+      "When you reach your limit, AI processing pauses and we let you know. There are no automatic overage charges. You can still organize Tickets and events manually. Contact us about Business if you need a larger allowance.",
       "Features depend on supported formats and source permissions. Document drafts use information actually retrieved and should be reviewed before submission. External AI connections are in preparation; existing dot conversations, memories and results are not imported automatically.",
     ],
     footer: "docen · Proposed plans, November 19, 2026",

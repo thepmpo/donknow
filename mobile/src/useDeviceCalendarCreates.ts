@@ -102,11 +102,11 @@ export function useDeviceCalendarCreates(store:TodoStore,owner:string,onSaved:(e
   return()=>{disposed=true;clearInterval(timer);clearTimeout(start);subscription.remove();};
  },[enabled,owner,jobs,queue,active]);
  async function cancel(id:string){
-  if(!enabled)throw Error('기기에서 일정을 확인하지 못했어요.');
+  if(!enabled)throw Error('기기에서 Event를 확인하지 못했어요.');
   retries.current.delete(id);
   let found=false;
   await queue.change(owner,id,job=>{found=true;return {...job,cancelled:true,blocked:false};});
-  if(!found)throw Error('일정이 서버에 반영됐어요. 다시 열어 삭제해주세요.');
+  if(!found)throw Error('Event가 서버에 반영됐어요. 다시 열어 삭제해주세요.');
  }
  return {jobs,cancel,enqueue:enabled?(job:QueuedCalendarCreate)=>queue.add(owner,job):undefined};
 }

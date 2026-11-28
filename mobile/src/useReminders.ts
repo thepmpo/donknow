@@ -28,11 +28,11 @@ export function useReminders(todos: Todo[], owner: string | null,request?:(path:
       if(calendarCache.current.owner!==owner)calendarCache.current={owner,items:[]};
       let calendarError='';
       if(owner&&enabled&&allowed&&request){try{
-        const result=await request('/api/calendar/reminders');if(!validCalendarReminderPlan(result))throw Error('일정 알림 응답을 확인하지 못했어요.');
+        const result=await request('/api/calendar/reminders');if(!validCalendarReminderPlan(result))throw Error('Event 알림 응답을 확인하지 못했어요.');
         if(run!==generation.current)return;
         if(result.state==='ready'||result.state==='unconnected')calendarCache.current={owner,items:result.items};
-        else calendarError='일정 알림을 모두 갱신하지 못했어요. 이전 예약은 유지해요.';
-      }catch(e){if(run!==generation.current)return;if(e&&typeof e==='object'&&'status' in e&&e.status===404)calendarCache.current={owner,items:[]};else calendarError='일정 알림을 갱신하지 못했어요. 이전 예약은 유지해요.';}}
+        else calendarError='Event 알림을 모두 갱신하지 못했어요. 이전 예약은 유지해요.';
+      }catch(e){if(run!==generation.current)return;if(e&&typeof e==='object'&&'status' in e&&e.status===404)calendarCache.current={owner,items:[]};else calendarError='Event 알림을 갱신하지 못했어요. 이전 예약은 유지해요.';}}
       if(run!==generation.current)return;
       if(calendarError&&owner&&!calendarCache.current.items.length){calendarCache.current={owner,items:retainedCalendarReminders(await notifications.getAllScheduledNotificationsAsync(),owner)};}
       if(run!==generation.current)return;

@@ -45,7 +45,7 @@ try{
 
  const button=name=>page.getByRole('button',{name,exact:true});
  const capture=async name=>{await page.screenshot({path:resolve(output,name+'.png')});captures.push(name);};
- await page.goto(`http://127.0.0.1:${server.address().port}`);await page.getByRole('textbox',{name:'할 일 제목',exact:true}).waitFor();
+ await page.goto(`http://127.0.0.1:${server.address().port}`);await page.getByRole('textbox',{name:'Ticket 제목',exact:true}).waitFor();
  for(const [name,width,height,open,duo] of [['01-phone',390,510,false,false],['02-folded',431,590,false,true],['03-open-landscape',960,540,true,true],['04-open-portrait',740,650,true,true]]){
   await page.setViewportSize({width,height});await page.evaluate(g=>window.keyboardDevice.geometry(g),duo?geometry(width,height,open):null);
   const notes=page.getByRole('textbox',{name:'메모',exact:true});await notes.focus();await page.evaluate(()=>window.keyboardDevice.keyboard(true));await notes.fill('지금 쓰는 첫 줄이 바로 보여야 해요.\n준비물을 입력합니다.');await page.waitForTimeout(100);
@@ -55,7 +55,7 @@ try{
   if(duo){const close=page.getByTestId('DuoKeyboardDismissButton');await close.waitFor();const b=await close.boundingBox();assert.ok(b.x>=width-geometry(width,height,open).safeArea.right,'keyboard control stays in physical camera column');assert.equal(await page.getByTestId('DuoBackButton').count(),1,'X remains a separate action');const x=await page.getByTestId('DuoBackButton').boundingBox();assert.ok(b.y+b.height<x.y&&Math.abs(b.x+b.width/2-x.x-x.width/2)<1);await capture(name+'-memo-keyboard');await close.click();assert.equal(await notes.inputValue(),'지금 쓰는 첫 줄이 바로 보여야 해요.\n준비물을 입력합니다.');assert.equal(await page.evaluate(()=>!!window.editorClosed),false);}
   else {assert.equal(await button('키보드 내리기').count(),0,'ordinary native accessory is not counterfeited on web');await capture(name+'-memo-keyboard');await notes.blur();}
   await page.evaluate(()=>window.keyboardDevice.keyboard(false));await page.getByTestId('todo-editor-save').waitFor();if(duo)await page.getByTestId('DuoBackButton').waitFor();assert.equal(writes,0);assert.equal(calls.filter(c=>c.method!=='GET'&&c.method!=='OPTIONS').length,0,'typing/dismiss never writes');
-  const title=page.getByRole('textbox',{name:'할 일 제목',exact:true});await title.focus();await page.evaluate(()=>window.keyboardDevice.keyboard(true));await page.waitForTimeout(80);const a=await title.boundingBox(),b=await page.getByTestId('editor-scroll').boundingBox();assert.ok(a.y>=b.y-1,'returning to title reveals it too');await title.blur();await page.evaluate(()=>window.keyboardDevice.keyboard(false));
+  const title=page.getByRole('textbox',{name:'Ticket 제목',exact:true});await title.focus();await page.evaluate(()=>window.keyboardDevice.keyboard(true));await page.waitForTimeout(80);const a=await title.boundingBox(),b=await page.getByTestId('editor-scroll').boundingBox();assert.ok(a.y>=b.y-1,'returning to title reveals it too');await title.blur();await page.evaluate(()=>window.keyboardDevice.keyboard(false));
  }
  await page.evaluate(()=>{window.keyboardDevice.mode('app');window.keyboardDevice.geometry(null);});await page.setViewportSize({width:390,height:844});await page.getByRole('tab',{name:'캘린더',exact:true}).click();
  const current=()=>page.getByTestId('DuoActivePane').getByTestId('calendar-period-current');

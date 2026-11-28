@@ -22,7 +22,7 @@ export function validDate(value: string | null): boolean {
 }
 export function validateDraft(draft: Draft): Draft {
   const title = draft.title.trim();
-  if (!title || title.length > 120) throw new Error('할 일을 120자 이내로 적어주세요.');
+  if (!title || title.length > 120) throw new Error('Ticket을 120자 이내로 적어주세요.');
   if (!validDate(draft.dueDate)) throw new Error('날짜를 YYYY-MM-DD 형식으로 선택해주세요.');
   if(draft.dueTime!=null&&(!draft.dueDate||!/^([01]\d|2[0-3]):[0-5]\d$/.test(draft.dueTime)))throw Error('예정 날짜와 시간을 확인해주세요.');
   if (draft.reminderAt != null && (!Number.isFinite(Date.parse(draft.reminderAt)) || new Date(draft.reminderAt).toISOString() !== draft.reminderAt)) throw new Error('알림 시간을 확인해주세요.');
@@ -60,7 +60,7 @@ export function sampleTodos(): Todo[] {
 }
 export function parseTodos(value: unknown): Todo[] {
   if (!Array.isArray(value) || !value.every(todo => todo && typeof todo.id === 'string' && typeof todo.title === 'string' && typeof todo.done === 'boolean' && (todo.notes === undefined || (typeof todo.notes === 'string' && todo.notes.length <= MAX_NOTES_LENGTH)) && (todo.dueDate == null || (typeof todo.dueDate === 'string' && validDate(todo.dueDate))) && (todo.reminderAt == null || (typeof todo.reminderAt === 'string' && Number.isFinite(Date.parse(todo.reminderAt)))) && (todo.dueTime==null||(typeof todo.dueTime==='string'&&!!todo.dueDate&&/^([01]\d|2[0-3]):[0-5]\d$/.test(todo.dueTime))) && (todo.sourceSync==null||(typeof todo.sourceSync==='object'&&['succeeded','failed','unknown','device-required','queued'].includes(todo.sourceSync.state)&&Number.isSafeInteger(todo.sourceSync.revision)&&todo.sourceSync.revision>0)) && (todo.completedAt == null || (typeof todo.completedAt === 'string' && Number.isFinite(Date.parse(todo.completedAt)))))) {
-    throw new Error('서버의 할 일 데이터를 읽을 수 없어요.');
+    throw new Error('서버의 Ticket 데이터를 읽을 수 없어요.');
   }
   return value.map(todo => ({ ...todo, dueDate: todo.dueDate ?? null, category: ['일상', '업무', '건강'].includes(todo.category) ? todo.category : '일상' }));
 }

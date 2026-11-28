@@ -107,7 +107,7 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
  }));
  },[shown,applePrimary,options.hidden]);
  async function checkEvent(event:CalendarEvent){
-  if(!event.eventId)throw Error('원본 일정 번호를 확인하지 못했어요.');
+  if(!event.eventId)throw Error('원본 Event 번호를 확인하지 못했어요.');
   if(event.provider==='apple-calendar')return apple.checkEvent(event);
   if(event.provider==='docen'){
    try{return await store.featureRequest('/api/calendar/docen/'+encodeURIComponent(event.eventId)) as CalendarEvent;}
@@ -116,7 +116,7 @@ export function useUnifiedCalendarData(store:TodoStore,options:Parameters<typeof
   const query=new URLSearchParams({calendarId:event.calendarId??'primary',eventId:event.eventId,timeZone:options.timeZone,
    ...(event.connectionId?{connectionId:event.connectionId}:{})});
   const result=await store.featureRequest('/api/calendar/event?'+query) as {item?:CalendarEvent|null};
-  if(result.item===undefined)throw Error('원본 일정 응답을 확인하지 못했어요.');
+  if(result.item===undefined)throw Error('원본 Event 응답을 확인하지 못했어요.');
   return result.item;
  }
  return {...google,applePrimary,checkEvent,enqueueEdit:edits.enqueue,confirmedAbsent:(event:CalendarEvent)=>apple.confirmedAbsent(event)||google.confirmedAbsent(event),enqueueCreate:creates.enqueue,devicePending,cancelDeviceCreate:creates.cancel,editingOriginal,phase:apple.error?'partial':google.phase==='unconnected'&&(apple.sources.length||google.docenSupported)?'ready':google.phase,readAt:[google.readAt,apple.readAt].filter((v):v is string=>!!v).sort().at(-1)??null,error:[google.error,apple.error].filter(Boolean).join(' '),sources:[...google.sources,...apple.sources,...(google.docenSupported||creates.enqueue?[docenSource]:[])],events,appleAvailable:apple.available,allowApple:async()=>{const granted=await (device??appleCalendarDevice).authorize();if(granted)await apple.load();return granted;},saveApple:apple.save,deleteApple:apple.remove,cachedEvents:()=>{

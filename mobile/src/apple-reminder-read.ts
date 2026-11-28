@@ -13,7 +13,7 @@ export function reminderDue(item:Pick<NativeReminder,'dueDate'|'allDay'>){
 /** Copy shared objects before another permission/read can invalidate their native store. */
 export function copyReminders(items:NativeReminder[]):ReminderItem[]{return items.filter(item=>!!item.id).map(item=>{
  const modified=item.lastModifiedDate?new Date(item.lastModifiedDate):null;
- return {id:item.id!,title:(item.title?.trim()||'제목 없는 할 일').slice(0,120),notes:(item.notes??'').slice(0,4000),completed:!!item.completed,...reminderDue(item),...(modified&&Number.isFinite(modified.getTime())?{modifiedAt:modified.toISOString()}: {})};
+ return {id:item.id!,title:(item.title?.trim()||'제목 없는 Ticket').slice(0,120),notes:(item.notes??'').slice(0,4000),completed:!!item.completed,...reminderDue(item),...(modified&&Number.isFinite(modified.getTime())?{modifiedAt:modified.toISOString()}: {})};
  });}
 export async function readReminderItems(id:string,readLists:()=>Promise<{id:string;color?:string|null;listReminders:(start:null,end:null,status:null|'incomplete'|'completed')=>Promise<NativeReminder[]>}[]>,current:()=>boolean,wait:()=>Promise<void>=()=>new Promise(r=>setTimeout(r,250)),status:'incomplete'|'completed'|null=null){
  let items:ReminderItem[]=[];

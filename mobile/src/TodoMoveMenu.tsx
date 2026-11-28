@@ -17,7 +17,7 @@ export function TodoMoveMenu({store,ids,busy,onMove}:{store:TodoStore;ids:string
   const todos=store.visible.filter(item=>selected.includes(item.id));
   setError('');setLoading(true);
   async function read(){
-   if(!todos.length||todos.length!==selected.length)throw Error('이동할 할 일을 다시 선택해주세요.');
+   if(!todos.length||todos.length!==selected.length)throw Error('이동할 Ticket을 다시 선택해주세요.');
    if(todos.every(todo=>!todo.source))return localMembership(todos);
    if(todos.every(todo=>todo.source?.provider==='apple-reminders'))return appleMembership(todos);
    return await store.featureRequest('/api/todo-membership/options','POST',{ids:selected,cursor:request.cursor}) as MembershipPage;

@@ -22,7 +22,7 @@ export function appleEventPatch(draft:CalendarDraft,event?:CalendarEvent):Device
  if(!old||old.reminderMinutes!==draft.reminderMinutes)patch.alarms=draft.reminderMinutes===null?[]:[{relativeOffset:-draft.reminderMinutes}];
  if(!event&&draft.repeat&&draft.repeat!=='none')patch.repeat=draft.repeat;
  if(!event&&draft.guests?.trim())throw Error('아이폰 캘린더의 초대는 원본 캘린더에서 설정해주세요.');
- if(event&&draft.calendarId!==event.calendarId)throw Error('아이폰 일정의 캘린더 이동은 원본에서 진행해주세요.');
+ if(event&&draft.calendarId!==event.calendarId)throw Error('아이폰 Event의 캘린더 이동은 원본에서 진행해주세요.');
  return patch;
 }
 export type AppleCalendarDevice={available:boolean;snapshot?:(hidden:string[],start:string,end:string)=>Promise<{calendars:DeviceCalendar[];events:DeviceEvent[]}>;subscribe?:(listener:()=>void)=>()=>void;granted:()=>Promise<boolean>;authorize:()=>Promise<boolean>;calendars:()=>Promise<DeviceCalendar[]>;events:(ids:string[],start:string,end:string)=>Promise<DeviceEvent[]>;isLinkedEventMissing?:(id:string,externalUid:string,calendarId:string)=>Promise<boolean>;readLinked?:(externalUid:string,calendarId:string)=>Promise<DeviceEvent>;read:(id:string,start?:string,calendarId?:string)=>Promise<DeviceEvent>;create:(calendarId:string,patch:DeviceEventPatch)=>Promise<DeviceEvent>;update:(id:string,start:string|undefined,patch:DeviceEventPatch,calendarId?:string)=>Promise<DeviceEvent>;remove:(id:string,start?:string,calendarId?:string)=>Promise<void>};
@@ -31,7 +31,7 @@ export async function saveAppleCalendar(device:AppleCalendarDevice,draft:Calenda
  if(!device.available||!await device.granted())throw Error('ME에서 아이폰 캘린더 접근을 허용해주세요.');if(!current())throw Error('계정이 바뀌었어요.');
  const rawId=decodeURIComponent(draft.calendarId.slice(appleCalendarPrefix.length)),calendars=await device.calendars(),calendar=calendars.find(c=>c.id===rawId);if(!isAppleCalendar(draft.calendarId)||!calendar?.writable)throw Error('쓰기 가능한 아이폰 캘린더를 선택해주세요.');
  const fresh=event?await device.read(event.eventId!,event.nativeStart,rawId):null;
- if(fresh&&appleEventVersion(fresh)!==event?.etag)throw Error('원본 일정이 바뀌었어요. 새로 확인한 뒤 저장해주세요.');
+ if(fresh&&appleEventVersion(fresh)!==event?.etag)throw Error('원본 Event가 바뀌었어요. 새로 확인한 뒤 저장해주세요.');
  const patch=appleEventPatch(draft,event);
  if(fresh?.modified)patch.expectedModified=Date.parse(fresh.modified);
  if(!current())throw Error('계정이 바뀌었어요.');

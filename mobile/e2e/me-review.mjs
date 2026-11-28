@@ -42,7 +42,7 @@ try{
   return fulfill({items:[],actions:[]});
  });
 
- await page.goto(`http://127.0.0.1:${server.address().port}`);await page.evaluate(()=>window.duoFixture.showApp());await page.getByRole('heading',{name:'할 일',exact:true}).waitFor();
+ await page.goto(`http://127.0.0.1:${server.address().port}`);await page.evaluate(()=>window.duoFixture.showApp());await page.getByRole('heading',{name:'Ticket',exact:true}).waitFor();
  const capture=async(name,step)=>{await page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));await page.screenshot({path:resolve(output,name+'.png')});report.steps.push({name,step});};
  const me=()=>page.getByRole('tab',{name:'ME',exact:true});
  await me().click();await page.getByRole('heading',{name:'ME',exact:true}).waitFor();assert.equal(await page.getByRole('tab',{name:'내정보',exact:true}).count(),0);await capture('01-me-entry','ME 진입');

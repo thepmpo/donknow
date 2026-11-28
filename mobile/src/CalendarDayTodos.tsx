@@ -73,7 +73,7 @@ function Rows({todos,store,onEdit,interactive,day,dateTargets}:{todos:Todo[];sto
   void store.reorder(moveTodoIds(items,drag.ids,drag.target??after)).then(saved=>{if(saved)setSelected([]);});
  }
  return <View ref={root} collapsable={false} testID="calendar-day-todos">
-  {!!selected.length&&!lifted&&<Pressable accessibilityRole="button" accessibilityLabel="할 일 선택 마치기" onPress={()=>setSelected([])} style={styles.done}><Text style={styles.action}>완료</Text></Pressable>}
+  {!!selected.length&&!lifted&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 선택 마치기" onPress={()=>setSelected([])} style={styles.done}><Text style={styles.action}>완료</Text></Pressable>}
   {rows.map(todo=><View key={todo.id} collapsable={false} ref={node=>{if(node)nodes.current.set(todo.id,node);else nodes.current.delete(todo.id);}} style={lifted?.ids.includes(todo.id)?styles.lifted:undefined}>
    {lifted&&target===todo.id&&<View pointerEvents="none" style={styles.line}/>}
    <TodoRow compact todo={todo} selected={selected.length?selected.includes(todo.id):undefined} onEdit={()=>onEdit(todo)} onSelect={interactive?()=>select(todo.id):undefined}

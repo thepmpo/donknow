@@ -42,7 +42,7 @@ export async function refreshTodoSources(request:Request,current:()=>boolean,app
    await pages(current,async cursor=>{
     const query=new URLSearchParams({feature:'tasks',...(account.connectionId?{connectionId:account.connectionId}:{}),...(cursor?{cursor}:{})});
     const page=await request('/api/integrations/google/resources?'+query) as Page<{id:string}>;
-    if(!Array.isArray(page.items))throw Error('할 일 목록 응답을 확인해주세요.');
+    if(!Array.isArray(page.items))throw Error('Ticket 목록 응답을 확인해주세요.');
     for(const list of page.items){
      if(!current())break;
      // A failed source list never clears the previously reconciled rows.

@@ -88,6 +88,7 @@ export function CalendarDropDate({day,children,style,enabled=true}:{day:string;c
 export function CalendarDraggableEvent({event,todo,day,style,contentStyle,fill=false,dragEnabled=true,...props}:Omit<PressableProps,'style'>&Item&{day:string;style?:StyleProp<ViewStyle>;contentStyle?:StyleProp<ViewStyle>;fill?:boolean;dragEnabled?:boolean}){
  const item:Item=todo?{todo}:{event:event!},id=todo?'todo:'+todo.id:event!.id;
  const drag=useContext(Context),reduced=useReducedMotion(),blockPress=useRef(false);
+ const tapOrigin=useRef<RowPoint|null>(null);
  const canSelect=!!(drag?.enabled&&dragEnabled&&!(todo??event)?.saveState);
  const selected=drag?.selectedId===id;
  const canLift=!!(canSelect&&(todo||event?.canWrite&&event.eventId&&event.etag));
@@ -116,7 +117,7 @@ export function CalendarDraggableEvent({event,todo,day,style,contentStyle,fill=f
   onPointerMove:(pointerEvent:React.PointerEvent<HTMLElement>)=>{
    const e=pointerEvent.nativeEvent,pending=pointer.current;if(!pending||pending.id!==e.pointerId)return;
    if(pending.held&&canLift)drag?.move({x:e.clientX,y:e.clientY});
-   else if(Math.hypot(e.clientX-pending.origin.x,e.clientY-pending.origin.y)>9)clear();
+   else if(Math.hypot(e.clientX-pending.origin.x,e.clientY-pending.origin.y)>9){blockPress.current=true;clear();}
   },
   onPointerUp:(pointerEvent:React.PointerEvent<HTMLElement>)=>{
    const e=pointerEvent.nativeEvent;
@@ -125,10 +126,25 @@ export function CalendarDraggableEvent({event,todo,day,style,contentStyle,fill=f
   },
   onPointerCancel:()=>{if(pointer.current?.held&&canLift)drag?.finish(false);clear();},
  }:undefined;
+ function trackTap(x:number,y:number){
+  const start=tapOrigin.current;
+  if(start&&Math.hypot(x-start.x,y-start.y)>9)blockPress.current=true;
+ }
  return <View {...(web as unknown as React.ComponentProps<typeof View>)} style={[style,drag?.lifted?.id===id&&styles.lifted,Platform.OS==='web'&&({userSelect:'none'} as ViewStyle)]}>
   <TodoGestureRow calendarItem fill={fill} canSwipeLeft={false} canSwipeRight={false} canLift={canLift} reduced={reduced} onSwipeStart={noop} onSwipeEnd={noop}
    onLift={point=>{blockPress.current=true;drag?.start(item,day,point);}} onDrag={point=>drag?.move(point)} onDrop={completed=>drag?.finish(completed)}>
-   <MotionPressable {...props} accessibilityState={{...props.accessibilityState,selected}} accessibilityActions={canSelect?[{name:'longpress',label:todo?'할 일 선택':'일정 선택'}]:props.accessibilityActions} onAccessibilityAction={e=>{if(canSelect&&e.nativeEvent.actionName==='longpress')drag?.setSelectedId(id);else props.onAccessibilityAction?.(e);}} onLongPress={canSelect&&!canLift&&Platform.OS!=='web'?()=>{blockPress.current=true;drag?.setSelectedId(id);}:undefined} delayLongPress={330} onPressIn={e=>{blockPress.current=false;props.onPressIn?.(e);}} onPress={e=>{e.stopPropagation();if(!blockPress.current){drag?.setSelectedId(null);props.onPress?.(e);}}} style={[fill&&{flex:1},contentStyle,selected&&styles.selected]}/>
+   <MotionPressable {...props} accessibilityState={{...props.accessibilityState,selected}} accessibilityActions={canSelect?[{name:'longpress',label:todo?'Ticket 선택':'Event 선택'}]:props.accessibilityActions} onAccessibilityAction={e=>{if(canSelect&&e.nativeEvent.actionName==='longpress')drag?.setSelectedId(id);else props.onAccessibilityAction?.(e);}} onLongPress={canSelect&&!canLift&&Platform.OS!=='web'?()=>{blockPress.current=true;drag?.setSelectedId(id);}:undefined} delayLongPress={330}
+    onTouchStart={e=>{const {pageX,pageY}=e.nativeEvent;tapOrigin.current={x:pageX,y:pageY};blockPress.current=false;props.onTouchStart?.(e);}}
+    onTouchMove={e=>{trackTap(e.nativeEvent.pageX,e.nativeEvent.pageY);props.onTouchMove?.(e);}}
+    onTouchCancel={e=>{tapOrigin.current=null;blockPress.current=true;props.onTouchCancel?.(e);}}
+    onPressIn={e=>{if(Platform.OS!=='web'&&!tapOrigin.current){tapOrigin.current={x:e.nativeEvent.pageX,y:e.nativeEvent.pageY};blockPress.current=false;}props.onPressIn?.(e);}}
+    onPress={e=>{
+     e.stopPropagation();
+     if(Platform.OS!=='web')trackTap(e.nativeEvent.pageX,e.nativeEvent.pageY);
+     const moved=blockPress.current;
+     tapOrigin.current=null;blockPress.current=false;
+     if(!moved){drag?.setSelectedId(null);props.onPress?.(e);}
+    }} style={[fill&&{flex:1},contentStyle,selected&&styles.selected]}/>
   </TodoGestureRow>
  </View>;
 }

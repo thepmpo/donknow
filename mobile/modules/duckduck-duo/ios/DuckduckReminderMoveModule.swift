@@ -12,7 +12,7 @@ public final class DuckduckReminderMoveModule: Module {
       guard let first = items.first?.calendar,
             items.allSatisfy({ $0.calendar?.source.sourceIdentifier == first.source.sourceIdentifier }) else {
         throw NSError(domain: "DocenReminderMove", code: 1,
-          userInfo: [NSLocalizedDescriptionKey: "같은 미리 알림 계정의 할 일을 선택해주세요."])
+          userInfo: [NSLocalizedDescriptionKey: "같은 미리 알림 계정의 Ticket을 선택해주세요."])
       }
       return store.calendars(for: .reminder).filter {
         $0.source.sourceIdentifier == first.source.sourceIdentifier && $0.allowsContentModifications

@@ -43,7 +43,7 @@ export async function sendCalendarEdit(job:QueuedCalendarEdit,context:{
     catch(error){
      if(!original.recurring){
       const code=(error as {code?:unknown})?.code;
-      if(code==='ERR_EVENT_UNAVAILABLE'||code==='ERR_EVENT_NOT_FOUND')throw conflict('아이폰 원본에서 일정을 찾지 못했어요. 기기에 변경 내용을 보관했어요.');
+      if(code==='ERR_EVENT_UNAVAILABLE'||code==='ERR_EVENT_NOT_FOUND')throw conflict('아이폰 원본에서 Event를 찾지 못했어요. 기기에 변경 내용을 보관했어요.');
       throw error;
      }
      const movedStart=wallTime(draft.startDay,draft.allDay?'00:00':draft.startTime,draft.timeZone);
@@ -55,7 +55,7 @@ export async function sendCalendarEdit(job:QueuedCalendarEdit,context:{
      if(!calendar)throw conflict('아이폰 캘린더 목록을 확인해주세요.');
      return normalizeAppleEvent(raw,calendar);
     }
-    if(appleEventVersion(raw)!==original.etag)throw conflict('아이폰 원본 일정이 바뀌었어요. 현재 내용을 확인해주세요.');
+    if(appleEventVersion(raw)!==original.etag)throw conflict('아이폰 원본 Event가 바뀌었어요. 현재 내용을 확인해주세요.');
     return context.saveApple(draft,original);
    }
    const args=calendarWriteArgs(draft,original,!job.metadataAvailable);
@@ -67,8 +67,8 @@ export async function sendCalendarEdit(job:QueuedCalendarEdit,context:{
     if(!current())throw Error('계정이 바뀌었어요.');
     result=await request('/api/assistant/actions/'+actionId) as CalendarPending;
     if(result.status==='pending')result=await request('/api/assistant/actions/'+actionId+'/confirm','POST',{confirmation:true}) as CalendarPending;
-    if(result.status==='unknown')throw conflict('Google 일정 저장 결과를 원본에서 확인해주세요.');
-    if(result.status!=='succeeded')throw conflict('Google 일정 변경을 확인하지 못했어요.');
+    if(result.status==='unknown')throw conflict('Google Event 저장 결과를 원본에서 확인해주세요.');
+    if(result.status!=='succeeded')throw conflict('Google Event 변경을 확인하지 못했어요.');
    }
    const id=result?.result?.id??original.eventId;
    let details=original.duckDetails;
@@ -117,7 +117,7 @@ export function useDeviceCalendarEdits(store:TodoStore,owner:string,device:Apple
   return ()=>{stopped=true;watch();clearInterval(timer);listener.remove();};
  },[enabled,owner,queue,store.featureRequest]);
  return {jobs,enqueue:enabled?async(draft:CalendarDraft,original:CalendarEvent)=>{
-  if(original.saveState||!original.eventId||!store.isCurrentSession())throw conflict('일정을 다시 열어 확인해주세요.');
+  if(original.saveState||!original.eventId||!store.isCurrentSession())throw conflict('Event를 다시 열어 확인해주세요.');
   if(queue.snapshot(owner)?.some(job=>job.id===original.id))throw conflict('기기에 저장된 변경을 먼저 동기화하고 있어요.');
   if(original.provider==='apple-calendar')appleEventPatch(draft,original);
   else if(original.provider==='docen')docenEventPayload(draft,original);

@@ -304,7 +304,7 @@ private struct CalendarAlarm: Record {
 }
 
 private final class EventUnavailable: Exception {
-  override var reason: String { "아이폰 캘린더에서 해당 일정을 찾지 못했어요." }
+  override var reason: String { "아이폰 캘린더에서 해당 Event를 찾지 못했어요." }
 }
 
 private final class AccessRequired: Exception {
@@ -312,9 +312,9 @@ private final class AccessRequired: Exception {
 }
 
 private final class EventChanged: Exception {
-  override var reason: String { "원본 일정이 바뀌었어요. 다시 확인해주세요." }
+  override var reason: String { "원본 Event가 바뀌었어요. 다시 확인해주세요." }
 }
 
 private final class EventAmbiguous: Exception {
-  override var reason: String { "같은 원본 식별자의 일정이 여러 개 있어요." }
+  override var reason: String { "같은 원본 식별자의 Event가 여러 개 있어요." }
 }

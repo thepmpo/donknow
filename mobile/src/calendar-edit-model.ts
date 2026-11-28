@@ -21,7 +21,7 @@ export function calendarWriteArgs(draft:CalendarDraft,event?:CalendarEvent,legac
   if(guests.length>20||guests.some(v=>!/^[A-Za-z0-9.!#$%&'*+\/=\?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v)))throw Error('초대할 사람은 이메일 주소로 최대 20명까지 입력해주세요.');
   if(guests.length)patch.attendees=[...new Set(guests.map(v=>v.toLowerCase()))];
  }
- if(!original||legacy||draft.title!==original.title){if(!draft.title.trim())throw Error('일정 제목을 적어주세요.');patch.title=draft.title.trim();}
+ if(!original||legacy||draft.title!==original.title){if(!draft.title.trim())throw Error('Event 제목을 적어주세요.');patch.title=draft.title.trim();}
  if(!original||legacy||draft.location!==original.location)patch.location=draft.location;
  if(!event?.notesPartial&&(!original||legacy||draft.notes!==original.notes))patch.notes=draft.notes;
  if(!original||legacy||(['startDay','endDay','startTime','endTime','allDay'] as const).some(k=>draft[k]!==original[k])){

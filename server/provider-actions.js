@@ -14,8 +14,8 @@ const calendarFields={calendarId,allDay:v=>typeof v==='boolean',startDate:v=>typ
 const instant = value => str(value, 40) && /(?:Z|[+-]\d\d:\d\d)$/.test(value) && Number.isFinite(Date.parse(value));
 const text = value => str(value) && !!value.trim();
 export const actionDefinitions = {
- 'todo.create': { provider:'todo', label:'Todo 추가', fields:{title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'}, required:['title'] },
- 'todo.update': { provider:'todo', label:'Todo 수정', fields:{id:identifier,title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'},required:['id'] },
+ 'todo.create': { provider:'todo', label:'Ticket 추가', fields:{title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'}, required:['title'] },
+ 'todo.update': { provider:'todo', label:'Ticket 수정', fields:{id:identifier,title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'},required:['id'] },
  'naver.markRead': {provider:'naver',feature:'mailWrite',label:'네이버 메일 읽음 처리',fields:{id:identifier,read:v=>typeof v==='boolean'},required:['id','read']},
  'naver.reply': {provider:'naver',feature:'mailWrite',label:'네이버 메일 답장 발송',fields:{id:identifier,text},required:['id','text']},
  'naver.send': {provider:'naver',feature:'mailWrite',label:'네이버 메일 발송',fields:{to:email,subject:v=>str(v,200)&&!!v.trim()&&!/[\r\n]/.test(v),text},required:['to','subject','text']},
@@ -27,11 +27,11 @@ export const actionDefinitions = {
  'notion.create': {provider:'notion',feature:'pagesWrite',label:'Notion 하위 페이지 만들기',fields:{parent:uuid,title:validTitle,text},required:['parent','title','text']},
  'notion.append': {provider:'notion',feature:'pagesWrite',label:'Notion에 내용 추가',fields:{id:uuid,text},required:['id','text']},
  'notion.rename': {provider:'notion',feature:'pagesWrite',label:'Notion 페이지 제목 수정',fields:{id:uuid,title:validTitle},required:['id','title']},
- 'tasks.create': {provider:'google',feature:'tasksWrite',label:'Google Tasks 할 일 추가',fields:{list:identifier,title:validTitle,notes:validNotes,dueDate:validDate},required:['list','title']},
- 'tasks.update': {provider:'google',feature:'tasksWrite',label:'Google Tasks 할 일 수정',fields:{list:identifier,id:identifier,title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'},required:['list','id']},
- 'calendar.create': {provider:'google',feature:'calendarWrite',label:'캘린더 일정 추가',fields:{title:validTitle,start:instant,end:instant,notes:validNotes,recurrence:v=>Array.isArray(v)&&v.length===1&&/^RRULE:FREQ=(DAILY|WEEKLY|MONTHLY|YEARLY)$/.test(v[0]),attendees:v=>Array.isArray(v)&&v.length>0&&v.length<=20&&v.every(email)&&new Set(v.map(a=>a.toLowerCase())).size===v.length,...calendarFields},required:['title']},
- 'calendar.update': {provider:'google',feature:'calendarWrite',label:'캘린더 일정 수정',fields:{id:calendarEventId,title:validTitle,start:instant,end:instant,notes:validNotes,destinationCalendarId:calendarId,...calendarFields},required:['id']},
- 'calendar.delete': {provider:'google',feature:'calendarWrite',label:'캘린더 일정 삭제',fields:{id:calendarEventId,calendarId,expectedETag:calendarFields.expectedETag},required:['id','calendarId','expectedETag']},
+ 'tasks.create': {provider:'google',feature:'tasksWrite',label:'Google Tasks에 Ticket 추가',fields:{list:identifier,title:validTitle,notes:validNotes,dueDate:validDate},required:['list','title']},
+ 'tasks.update': {provider:'google',feature:'tasksWrite',label:'Google Tasks의 Ticket 수정',fields:{list:identifier,id:identifier,title:validTitle,notes:validNotes,dueDate:validDate,done:v=>typeof v==='boolean'},required:['list','id']},
+ 'calendar.create': {provider:'google',feature:'calendarWrite',label:'캘린더 Event 추가',fields:{title:validTitle,start:instant,end:instant,notes:validNotes,recurrence:v=>Array.isArray(v)&&v.length===1&&/^RRULE:FREQ=(DAILY|WEEKLY|MONTHLY|YEARLY)$/.test(v[0]),attendees:v=>Array.isArray(v)&&v.length>0&&v.length<=20&&v.every(email)&&new Set(v.map(a=>a.toLowerCase())).size===v.length,...calendarFields},required:['title']},
+ 'calendar.update': {provider:'google',feature:'calendarWrite',label:'캘린더 Event 수정',fields:{id:calendarEventId,title:validTitle,start:instant,end:instant,notes:validNotes,destinationCalendarId:calendarId,...calendarFields},required:['id']},
+ 'calendar.delete': {provider:'google',feature:'calendarWrite',label:'캘린더 Event 삭제',fields:{id:calendarEventId,calendarId,expectedETag:calendarFields.expectedETag},required:['id','calendarId','expectedETag']},
  'drive.create': {provider:'google',feature:'driveWrite',label:'Drive 텍스트 파일 만들기',fields:{title:validTitle,text},required:['title','text']},
  'drive.rename': {provider:'google',feature:'driveWrite',label:'Drive 파일 이름 수정',fields:{id:identifier,title:validTitle},required:['id','title']},
  'drive.updateText': {provider:'google',feature:'driveWrite',label:'Drive 텍스트 파일 내용 교체',fields:{id:identifier,text},required:['id','text']},

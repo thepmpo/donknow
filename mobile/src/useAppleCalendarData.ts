@@ -82,7 +82,7 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,hidden=[
    cache.set(owner,empty);setState(empty);
    setError('iPhone 캘린더에 전체 접근을 허용해주세요.');
    await AsyncStorage.removeItem(key).catch(()=>{});
-  }else setError(e instanceof Error?e.message:'아이폰 일정을 확인하지 못했어요.');
+  }else setError(e instanceof Error?e.message:'아이폰 Event를 확인하지 못했어요.');
  }finally{if(fresh())setLoading(false);}},[owner,windowStart,windowEnd,hiddenKey,enabled,device,start,end,timeZone]);
  useEffect(()=>{let alive=true;const runOwner=owner;if(device.available&&enabled)void AsyncStorage.getItem(key).then(raw=>{if(!alive||current.current.owner!==runOwner||cache.has(owner)||!raw)return;try{const saved=JSON.parse(raw);if(Array.isArray(saved.sources)&&Array.isArray(saved.events)){const display:Snapshot={...saved,owner,selection:undefined,calendarIds:[],events:saved.events.map(displayEvent),sources:saved.sources.map((source:CalendarSource)=>({...source,canWrite:false}))};cache.set(owner,display);setState(display);}}catch{}});return()=>{alive=false;generation.current++;};},[owner,device,enabled]);
  useEffect(()=>{if(active||refreshWhileHidden)void load();},[active,refreshWhileHidden,refreshKey,load]);

@@ -42,8 +42,8 @@ try{
    if(path==='/api/capabilities')return route.fulfill({json:{assistant:true}});
    throw Error('Unexpected API request '+request.method()+' '+path);
   });
-  const composer=page.getByRole('textbox',{name:'docen에게 이야기하기',exact:true}),send=page.getByRole('button',{name:'docen에게 보내기',exact:true}),consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Todo를 AI에 보내 분석하기 동의',exact:true});
-  async function open(){historyReads=0;await page.goto(origin);await page.getByRole('tab',{name:'docen',exact:true}).click();await page.getByTestId('duck-composer').waitFor();}
+  const composer=page.getByRole('textbox',{name:'docen.t ai에 이야기하기',exact:true}),send=page.getByRole('button',{name:'docen.t ai에 보내기',exact:true}),consent=page.getByRole('checkbox',{name:'선택한 자료와 내 Ticket을 AI에 보내 분석하기 동의',exact:true});
+  async function open(){historyReads=0;await page.goto(origin);await page.getByRole('tab',{name:'docen.t ai',exact:true}).click();await page.getByTestId('duck-composer').waitFor();}
   async function visibleNearComposer(locator,label){
    const box=await locator.boundingBox(),input=await composer.boundingBox();
    assert.ok(box&&input&&box.y>=0&&box.y+box.height<=input.y+1&&input.y+input.height<844,label+' remains visible above the composer');
@@ -70,9 +70,9 @@ try{
   assert.equal(chatCalls.length,beforeRetry+1);assert.equal(chatCalls.at(-1).message,'내용을 고친 뒤 다시 요청');assert.equal(await composer.inputValue(),'');assert.equal(await page.getByRole('alert').count(),0);
 
   // The parent status read succeeds; the inline hook's own status read fails.
-  statusFailure=true;await open();await composer.fill('연결 복구 후 보낼 요청');await consent.tap();await page.getByRole('button',{name:'AI 연결 다시 확인',exact:true}).waitFor();await visibleNearComposer(page.getByRole('alert'),'status load failure');assert.equal(await send.isDisabled(),true);
-  const beforeStatusRetry=chatCalls.length;statusFailure=false;await page.getByRole('button',{name:'AI 연결 다시 확인',exact:true}).tap();await page.waitForFunction(()=>document.querySelector('[aria-label="docen에게 보내기"]')?.getAttribute('aria-disabled')!=='true');assert.equal(await send.isDisabled(),false);assert.equal(chatCalls.length,beforeStatusRetry,'connection retry does not call AI');
-  historyFailure=true;await open();await composer.fill('기록 조회 실패와 별개인 요청');await consent.tap();await page.getByRole('button',{name:'AI 연결 다시 확인',exact:true}).waitFor();assert.equal(await send.isDisabled(),false,'failed history does not disable ready AI');await send.tap();await page.getByText('요청한 내용을 확인했어요.',{exact:true}).waitFor();historyFailure=false;
+  statusFailure=true;await open();await composer.fill('연결 복구 후 보낼 요청');await consent.tap();await page.getByRole('button',{name:'docen.t ai 연결 다시 확인',exact:true}).waitFor();await visibleNearComposer(page.getByRole('alert'),'status load failure');assert.equal(await send.isDisabled(),true);
+  const beforeStatusRetry=chatCalls.length;statusFailure=false;await page.getByRole('button',{name:'docen.t ai 연결 다시 확인',exact:true}).tap();await page.waitForFunction(()=>document.querySelector('[aria-label="docen에게 보내기"]')?.getAttribute('aria-disabled')!=='true');assert.equal(await send.isDisabled(),false);assert.equal(chatCalls.length,beforeStatusRetry,'connection retry does not call AI');
+  historyFailure=true;await open();await composer.fill('기록 조회 실패와 별개인 요청');await consent.tap();await page.getByRole('button',{name:'docen.t ai 연결 다시 확인',exact:true}).waitFor();assert.equal(await send.isDisabled(),false,'failed history does not disable ready AI');await send.tap();await page.getByText('요청한 내용을 확인했어요.',{exact:true}).waitFor();historyFailure=false;
 
   // A stale client account flag cannot block an account verified on the server.
   emailVerified=false;await open();await composer.fill('인증 갱신 뒤 요청');await consent.tap();await send.tap();await page.getByText('요청한 내용을 확인했어요.',{exact:true}).waitFor();emailVerified=true;

@@ -67,7 +67,7 @@ export function createRepository(connection: Connection): Repository {
     }),
     update: (id, patch) => mutate(items => {
       const index = items.findIndex(todo => todo.id === id);
-      if (index < 0) throw new Error('할 일을 찾을 수 없어요.');
+      if (index < 0) throw new Error('Ticket을 찾을 수 없어요.');
       const previous = items[index];
       const next = { ...previous, ...patch };
       validateDraft(next);

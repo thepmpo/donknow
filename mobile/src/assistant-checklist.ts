@@ -34,14 +34,14 @@ export async function saveChecklist(entry:ChecklistEntry,proposal:AssistantPropo
    // The returned server ID is the identity. Same titles may be different tasks.
    await ctx.refresh();check();
    const todo=ctx.todo(entry.todoId);
-   if(!todo)throw new Error('연결된 할 일을 찾지 못했어요. Todo와 log를 확인해주세요.');
+   if(!todo)throw new Error('연결된 Ticket을 찾지 못했어요. Ticket과 log를 확인해주세요.');
    if(todo.done!==done){if(!await ctx.update(todo.id,{done}))throw new Error('상태를 저장하지 못했어요. 현재 목록을 확인하고 다시 시도해주세요.');check();}
    entry.excluded=false;return;
   }
   if(!entry.action){
    const capabilities=await ctx.request('/api/capabilities') as {assistantChecklist?:number};check();
-   if(capabilities.assistantChecklist!==1)throw new Error('채팅 할 일 저장을 지원하는 최신 서버가 필요해요.');
-   if(proposal.operation!=='todo.create')throw new Error('할 일 후보만 저장할 수 있어요.');
+   if(capabilities.assistantChecklist!==1)throw new Error('채팅 Ticket 저장을 지원하는 최신 서버가 필요해요.');
+   if(proposal.operation!=='todo.create')throw new Error('Ticket 후보만 저장할 수 있어요.');
    const draft=validateDraft({title:String(proposal.args.title??''),dueDate:typeof proposal.args.dueDate==='string'?proposal.args.dueDate:null,notes:String(proposal.args.notes??''),category:'업무'});
    entry.action=await ctx.request('/api/assistant/actions','POST',{operation:'todo.create',args:{title:draft.title,dueDate:draft.dueDate,notes:draft.notes,done}}) as AssistantDraft;check();ctx.changed();
   }

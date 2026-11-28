@@ -6,7 +6,7 @@ export const pushPreferenceKey=(store:TodoStore)=>'duck.push.enabled.'+(store.co
 import type {TodoStore} from './useTodos';
 const key='duckduck.push-device-id';
 export async function connectPush(store:TodoStore){
- if(Platform.OS!=='ios')throw new Error('아이폰에 설치한 docen에서 알림을 연결해주세요. 웹에서는 docen 채팅으로 확인할 수 있어요.');
+ if(Platform.OS!=='ios')throw new Error('아이폰에 설치한 docen에서 알림을 연결해주세요. 웹에서는 docen.t ai 채팅으로 확인할 수 있어요.');
  const original=store.user?.id,notifications=await import('expo-notifications');
  const permission=await notifications.requestPermissionsAsync();if(!(permission.granted||permission.ios?.status===notifications.IosAuthorizationStatus.PROVISIONAL))throw new Error('아이폰 설정에서 docen 알림을 허용해주세요.');
  if(!store.isCurrentSession())throw new Error('계정이 바뀌었어요. 다시 연결해주세요.');

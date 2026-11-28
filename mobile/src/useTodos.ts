@@ -195,7 +195,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       setTodos(old=>old);
       for(const job of queue.snapshot(owner)??[]){
         const id=queuedTodo(job).id;
-        if(job.blocked&&!writeChecks.current.has(id))reportWrite(id,'기기에 저장한 할 일의 동기화를 확인해주세요.',()=>queue.block(owner,job.id,false));
+        if(job.blocked&&!writeChecks.current.has(id))reportWrite(id,'기기에 저장한 Ticket의 동기화를 확인해주세요.',()=>queue.block(owner,job.id,false));
       }
     }
     const unsubscribe=queue.watch(owner,publish);
@@ -549,7 +549,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       const repository = createRepository(connection);
       snapshotReady.current=false;refreshing.current=false;generation.current++; repo.current = account.emailVerified?repository:null; clearTimers(); setPending({}); setTodos([]); setUser(account);setSessionStatus('ready');
       if(!account.emailVerified){setLoading(false);return true;}
-      try{const data = await repository.list();snapshotReady.current=true;setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 할 일을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
+      try{const data = await repository.list();snapshotReady.current=true;setTodos(data);}catch(e){if(e instanceof auth.AuthRequiredError)throw e;setError('로그인은 완료했지만 Ticket을 불러오지 못했어요. 다시 시도를 눌러주세요.');}setLoading(false);return true;
     } catch (e) { if (e instanceof auth.AuthRequiredError) expireSession(); setError(message(e)); return false; }
     finally { connectingRef.current = false; setConnecting(false);setLoading(false); }
   }
@@ -677,7 +677,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       if (version !== generation.current) throw sessionChanged();
       if (user && account.id !== user.id) { expireSession(); throw new auth.AuthRequiredError(); }
       setUser(account);
-      if(account.emailVerified&&!repo.current){const repository=createRepository(connection);repo.current=repository;void repository.list().then(data=>{if(version===generation.current){snapshotReady.current=true;setTodos(data);}}).catch(()=>{if(version===generation.current)setError('할 일을 불러오지 못했어요. 다시 시도해주세요.');});}
+      if(account.emailVerified&&!repo.current){const repository=createRepository(connection);repo.current=repository;void repository.list().then(data=>{if(version===generation.current){snapshotReady.current=true;setTodos(data);}}).catch(()=>{if(version===generation.current)setError('Ticket을 불러오지 못했어요. 다시 시도해주세요.');});}
     } catch (e) {
       if (version !== generation.current) throw sessionChanged();
       if (e instanceof auth.AuthRequiredError) expireSession();

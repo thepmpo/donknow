@@ -1,3 +1,4 @@
+import {AI_NAME} from './BrandWordmark';
 import {BrandMark} from './BrandMark';
 import React,{type ComponentRef,useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
 import {Animated,AppState,Easing,PanResponder,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
@@ -11,8 +12,8 @@ import {NavigationGlass} from './NavigationGlass';
 import {lensPosition,shouldScrub,tabAtPoint} from './navigation-geometry';
 export const appTabs=[
  {id:'calendar',name:'캘린더',label:'캘린더',icon:'calendar-outline'},
- {id:'todos',name:'Todo 리스트',label:'할 일',icon:'checkmark-circle-outline'},
- {id:'duck',name:'docen',label:'docen',icon:'chatbubble-outline'},
+ {id:'todos',name:'Ticket',label:'Ticket',icon:'checkmark-circle-outline'},
+ {id:'duck',name:AI_NAME,label:AI_NAME,icon:'chatbubble-outline'},
  {id:'log',name:'log',label:'log',icon:'time-outline'},
  {id:'profile',name:'ME',label:'ME',icon:'person-outline'},
 ] as const;

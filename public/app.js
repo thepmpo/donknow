@@ -16,7 +16,7 @@ function render() {
  $('count').textContent=todos.filter(t=>!t.done).length;
  const list = $('list'); list.replaceChildren();
  const visible=todos.filter(t=>!t.done||pendingCompleted.has(t.id));
- if (!visible.length) { const empty=document.createElement('div');empty.className='empty';const icon=document.createElement('span');icon.textContent='✓';const title=document.createElement('div');title.textContent='남은 할 일이 없어요';const sub=document.createElement('small');sub.textContent='가벼운 마음으로, 작은 일부터 시작해요.';empty.append(icon,title,sub);list.append(empty); }
+ if (!visible.length) { const empty=document.createElement('div');empty.className='empty';const icon=document.createElement('span');icon.textContent='✓';const title=document.createElement('div');title.textContent='남은 Ticket이 없어요';const sub=document.createElement('small');sub.textContent='가벼운 마음으로, 작은 일부터 시작해요.';empty.append(icon,title,sub);list.append(empty); }
  visible.forEach(todo=>{
   const row=document.createElement('div');row.className='todo'+(todo.done?' done':'');
   const toggle=document.createElement('button');toggle.className='toggle';toggle.textContent='✓';toggle.setAttribute('aria-label',todo.title+(todo.done?' 미완료로 변경':' 완료하기'));toggle.setAttribute('aria-pressed',todo.done);
@@ -34,7 +34,7 @@ function render() {
 }
 $('add-form').onsubmit=async event=>{event.preventDefault();const title=$('title').value.trim();if(!title)return;$('add-button').disabled=true;try{await api('','POST',{title,category:$('category').value,dueDate:$('todo-date').value||null});todos=await api();$('title').value='';$('error').hidden=true;render();$('title').focus();}catch(e){showError(e);}finally{$('add-button').disabled=false;}};
 
-const tabNames = {calendar:'캘린더',todos:'Todo 리스트',duckduck:'docen',log:'log',profile:'내정보'};
+const tabNames = {calendar:'캘린더',todos:'Ticket',duckduck:'docen.t ai',log:'log',profile:'내정보'};
 function navigate(selected) {
  document.querySelectorAll('[data-view]').forEach(view => { view.hidden = view.dataset.view !== selected; });
  document.querySelectorAll('[data-tab]').forEach(tab => {
@@ -59,8 +59,8 @@ $('duck-form').onsubmit = event => {
  const actions = document.createElement('div');actions.className = 'draft-actions';
  const dateLabel = document.createElement('label');dateLabel.className='draft-date';dateLabel.textContent='예정일 ';
  const dateInput = document.createElement('input');dateInput.type='date';dateInput.value=today;dateLabel.append(dateInput);card.append(dateLabel);
- const move = document.createElement('button');move.type = 'button';move.className = 'transfer-button';move.textContent = 'Todo 리스트에 추가';
- const open = document.createElement('button');open.type = 'button';open.className = 'open-todos';open.textContent = 'Todo 보기 →';open.hidden = true;
+ const move = document.createElement('button');move.type = 'button';move.className = 'transfer-button';move.textContent = 'Ticket에 추가';
+ const open = document.createElement('button');open.type = 'button';open.className = 'open-todos';open.textContent = 'Ticket 보기 →';open.hidden = true;
  open.onclick = () => navigate('todos');
  move.onclick = async () => {
   move.disabled = true;move.textContent = '저장하는 중…';
@@ -69,7 +69,7 @@ $('duck-form').onsubmit = event => {
    // Reflect the successful write without a second request that could fail after saving.
    todos.push(saved);render();
    move.textContent = '추가 완료 ✓';dateInput.disabled=true;open.hidden = false;
-   $('duck-status').textContent = 'Todo 리스트에 추가했어요. 원래 내용도 여기에 남아 있어요.';
+   $('duck-status').textContent = 'Ticket에 추가했어요. 원래 내용도 여기에 남아 있어요.';
   } catch (error) {
    move.disabled = false;move.textContent = '다시 추가하기';
    $('duck-status').textContent = error.message;
@@ -89,7 +89,7 @@ function renderCalendar() {
   const button=document.createElement('button');button.className='calendar-day';
   const number=document.createElement('span');number.className='day-number';number.textContent=date.getDate();button.append(number);
   button.classList.toggle('other-month',date.getMonth()!==month);button.classList.toggle('today',key===today);button.classList.toggle('chosen',key===selectedDate);
-  button.setAttribute('aria-pressed',String(key===selectedDate));button.setAttribute('aria-label',`${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일, 할 일 ${tasks.length}개`);
+  button.setAttribute('aria-pressed',String(key===selectedDate));button.setAttribute('aria-label',`${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일, Ticket ${tasks.length}개`);
   tasks.slice(0,2).forEach(todo=>{const event=document.createElement('span');event.className='calendar-event'+(todo.done?' event-done':'');event.textContent=todo.title;button.append(event);});
   if(tasks.length>2){const more=document.createElement('small');more.className='calendar-more';more.textContent='+'+(tasks.length-2);button.append(more);}
   button.onclick=()=>{selectedDate=key;if(date.getMonth()!==month)calendarMonth=new Date(date.getFullYear(),date.getMonth(),1);renderCalendar();};grid.append(button);
@@ -97,7 +97,7 @@ function renderCalendar() {
  $('agenda-title').textContent=new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'short'}).format(new Date(selectedDate+'T12:00:00'));
  const agenda=$('agenda-list');agenda.replaceChildren();
  const tasks=todos.filter(t=>t.dueDate===selectedDate);
- if(!tasks.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='이날은 아직 할 일이 없어요.';agenda.append(empty);}
+ if(!tasks.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='이날은 아직 Ticket이 없어요.';agenda.append(empty);}
  tasks.forEach(todo=>{
   const row=document.createElement('div');row.className='todo'+(todo.done?' done':'');
   const toggle=document.createElement('button');toggle.className='toggle';toggle.textContent='✓';toggle.setAttribute('aria-label',todo.title+(todo.done?' 미완료로 변경':' 완료하기'));toggle.setAttribute('aria-pressed',String(todo.done));
@@ -125,7 +125,7 @@ function showDialog(title,description){
  const text=document.createElement('p');text.textContent=description;content.append(heading,text);
  $('detail-dialog').showModal();return content;
 }
-const serviceInfo={slack:['Slack 연결','대화에서 할 일을 찾고 docen과 함께 정리할 수 있도록 연결할 예정이에요. 현재는 연결되지 않았고 메시지를 읽거나 전송하지 않아요.'],google:['Google 연결','Gmail, Calendar, Drive 등의 정보를 docen과 함께 활용할 예정이에요. 필요한 권한을 선택하고 승인하는 연결 기능은 준비 중이에요. 현재 Google 데이터는 가져오지 않아요.'],notion:['Notion 연결','문서와 프로젝트에서 필요한 내용을 찾아 할 일로 정리할 예정이에요. 현재 Notion 연결과 데이터 접근은 제공하지 않아요.']};
+const serviceInfo={slack:['Slack 연결','대화에서 Ticket을 찾고 docen과 함께 정리할 수 있도록 연결할 예정이에요. 현재는 연결되지 않았고 메시지를 읽거나 전송하지 않아요.'],google:['Google 연결','Gmail, Calendar, Drive 등의 정보를 docen과 함께 활용할 예정이에요. 필요한 권한을 선택하고 승인하는 연결 기능은 준비 중이에요. 현재 Google 데이터는 가져오지 않아요.'],notion:['Notion 연결','문서와 프로젝트에서 필요한 내용을 찾아 Ticket으로 정리할 예정이에요. 현재 Notion 연결과 데이터 접근은 제공하지 않아요.']};
 document.querySelectorAll('[data-service]').forEach(button=>button.onclick=()=>showDialog(...serviceInfo[button.dataset.service]));
 function applyProfile(){const name=readPreference('duckduck.name','나의 공간');$('profile-name').textContent=name;$('profile-avatar').textContent=Array.from(name)[0]||'나';}
 applyProfile();
@@ -139,17 +139,17 @@ $('edit-profile').onclick=()=>{
 $('compact-mode').checked=readPreference('duckduck.compact','false')==='true';
 document.body.classList.toggle('compact-mode',$('compact-mode').checked);
 $('compact-mode').onchange=()=>{writePreference('duckduck.compact',String($('compact-mode').checked));document.body.classList.toggle('compact-mode',$('compact-mode').checked);};
-$('privacy-info').onclick=()=>showDialog('데이터와 개인정보','할 일은 로그인한 계정별로 이 개발 환경의 서버에 저장돼요. 표시 이름과 목록 설정은 이 브라우저에 저장돼요. docen의 입력 카드는 새로고침하면 사라지지만 Todo에 추가한 내용은 유지돼요. 로그인 정보는 HttpOnly 쿠키로 관리하고, 외부 서비스와 데이터를 주고받지 않아요.');
+$('privacy-info').onclick=()=>showDialog('데이터와 개인정보','Ticket은 로그인한 계정별로 이 개발 환경의 서버에 저장돼요. 표시 이름과 목록 설정은 이 브라우저에 저장돼요. docen의 입력 카드는 새로고침하면 사라지지만 Ticket에 추가한 내용은 유지돼요. 로그인 정보는 HttpOnly 쿠키로 관리하고, 외부 서비스와 데이터를 주고받지 않아요.');
 function editTodo(todo){
- const content=showDialog('할 일 수정','해야 할 일을 편하게 다듬어주세요.');
+ const content=showDialog('Ticket 수정','해야 Ticket을 편하게 다듬어주세요.');
  const form=document.createElement('form');form.className='dialog-form todo-edit-form';
- const input=document.createElement('input');input.value=todo.title;input.maxLength=120;input.required=true;input.setAttribute('aria-label','할 일 제목');
+ const input=document.createElement('input');input.value=todo.title;input.maxLength=120;input.required=true;input.setAttribute('aria-label','Ticket 제목');
  const save=document.createElement('button');save.className='primary-button';save.textContent='저장';
  const error=document.createElement('p');error.setAttribute('role','alert');error.className='dialog-error';
  form.onsubmit=async event=>{event.preventDefault();if(!input.value.trim())return;save.disabled=true;try{const saved=await api('/'+todo.id,'PATCH',{title:input.value.trim(),dueDate:dateInput.value||null});todos=todos.map(t=>t.id===saved.id?saved:t);render();$('detail-dialog').close();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}};
  const dateLabel=document.createElement('label');dateLabel.textContent='예정일';dateLabel.className='edit-date-label';
  const dateInput=document.createElement('input');dateInput.type='date';dateInput.value=todo.dueDate||'';dateInput.setAttribute('aria-label','예정일');dateLabel.append(dateInput);
- const remove=document.createElement('button');remove.type='button';remove.className='remove-todo';remove.textContent='할 일 삭제';
+ const remove=document.createElement('button');remove.type='button';remove.className='remove-todo';remove.textContent='Ticket 삭제';
  remove.onclick=async()=>{remove.disabled=true;save.disabled=true;try{await api('/'+todo.id,'DELETE');todos=todos.filter(t=>t.id!==todo.id);render();$('detail-dialog').close();}catch(e){error.textContent=e.message;remove.disabled=false;save.disabled=false;}};
  form.append(input,dateLabel,save);content.append(form,error,remove);input.focus();
 }

@@ -49,7 +49,7 @@ export function TodoDestinationPicker({store,value,onChange,disabled}:{store:Tod
   </Pressable>;
  }
  return <View>
-  <Pressable accessibilityRole="button" accessibilityLabel="할 일 저장 목록 선택" accessibilityState={{expanded:open}} disabled={disabled}
+  <Pressable accessibilityRole="button" accessibilityLabel="Ticket 저장 목록 선택" accessibilityState={{expanded:open}} disabled={disabled}
    onPress={()=>{if(open)close();else{setOpen(true);void root();}}}
    style={{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:12,paddingHorizontal:12,borderRadius:12,backgroundColor:colors.grouped}}>
    <Text style={{...typography.detail,color:colors.text}}>저장 목록</Text>

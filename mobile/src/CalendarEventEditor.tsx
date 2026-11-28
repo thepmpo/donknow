@@ -57,12 +57,12 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
  const connectionId=event?.connectionId??source?.connectionId;
  function notify(unknown:boolean){void store.featureRequest('/api/assistant/notices','POST',{code:unknown?'calendar-unknown':'calendar-failed',provider:native?'apple-calendar':'google',title:draft.title}).catch(()=>{});}
  const savingRef=useRef(false),docenId=useRef<string|null>(null);
- async function work(fn:()=>Promise<void>){if(savingRef.current)return;savingRef.current=true;setBusy(true);onBusy(true);setError('');try{await fn();}catch(e){setError(e instanceof Error?e.message:'일정을 저장하지 못했어요.');if(locked||pending||e instanceof Error&&/권한|연결|버전/.test(e.message))notify(locked||!!(e&&typeof e==='object'&&'writeState' in e&&e.writeState==='unknown'));}finally{savingRef.current=false;setBusy(false);onBusy(false);}}
+ async function work(fn:()=>Promise<void>){if(savingRef.current)return;savingRef.current=true;setBusy(true);onBusy(true);setError('');try{await fn();}catch(e){setError(e instanceof Error?e.message:'Event를 저장하지 못했어요.');if(locked||pending||e instanceof Error&&/권한|연결|버전/.test(e.message))notify(locked||!!(e&&typeof e==='object'&&'writeState' in e&&e.writeState==='unknown'));}finally{savingRef.current=false;setBusy(false);onBusy(false);}}
  async function finish(savedEventId:string,remote:boolean,deliver=true,etag?:string){
-  if(remote&&!savedEventId)throw Error('저장한 원본 일정 번호를 확인하지 못했어요. 같은 실행의 결과를 다시 확인해주세요.');
+  if(remote&&!savedEventId)throw Error('저장한 원본 Event 번호를 확인하지 못했어요. 같은 실행의 결과를 다시 확인해주세요.');
   let patch:Partial<CalendarEvent>=remote?confirmedCalendarPatch(draft,event):{};
   if(hasLocal){
-   if(!connectionId||!savedEventId)throw Error('Google 저장은 완료됐지만 docen 정보를 연결할 일정 번호를 확인하지 못했어요. 원본을 새로 확인해주세요.');
+   if(!connectionId||!savedEventId)throw Error('Google 저장은 완료됐지만 docen 정보를 연결할 Event 번호를 확인하지 못했어요. 원본을 새로 확인해주세요.');
    const details=await store.featureRequest('/api/calendar/event-details','PATCH',{connectionId,calendarId:draft.calendarId,eventId:savedEventId,expectedRevision:event&&draft.calendarId!==(event.calendarId??'primary')?0:event?.duckDetails?.revision??0,patch:localPatch,timeZone:draft.timeZone}) as {revision:number;fields:NonNullable<CalendarEvent['duckDetails']>['fields']};
    patch={...patch,duckDetails:{revision:details.revision,fields:details.fields}};
    }
@@ -77,11 +77,11 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(draft.duckUrl&&!safeCalendarLink(draft.duckUrl)||draft.attachments.some(a=>!a.name.trim()||!safeCalendarLink(a.url)))throw Error('링크와 첨부 파일에는 이름과 https 주소를 입력해주세요.');
   if(!event&&!docen&&!native&&!onDeviceCreate&&!createOptionsAvailable&&((draft.repeat&&draft.repeat!=='none')||draft.guests?.trim()))throw Error('연결을 새로 확인한 뒤 반복·초대를 설정해주세요.');
   if(event&&onDeviceEdit&&!inline){
-   if(!canWrite&&(!hasLocal||docen||native))throw Error('일정을 저장할 권한을 확인해주세요.');
+   if(!canWrite&&(!hasLocal||docen||native))throw Error('Event를 저장할 권한을 확인해주세요.');
    await onDeviceEdit(draft,event);return;
   }
   if(docen||(localFirst||onDeviceCreate)&&!event&&!inline&&source&&(native||!!source.connectionId)){
-   if(!canWrite)throw Error('일정을 저장할 수 없어요.');
+   if(!canWrite)throw Error('Event를 저장할 수 없어요.');
    const id=docenId.current??=event?.eventId??('event-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2));
    const target=docen?undefined:{provider:native?'apple-calendar' as const:'google' as const,calendarId:draft.calendarId,connectionId:source?.connectionId,name:source?.name,color:source?.color};
    if(onDeviceCreate&&!event){
@@ -107,7 +107,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    if(!args&&!hasLocal)throw Error('변경한 내용이 없어요.');
    if(hasLocal&&!connectionId)throw Error('저장할 캘린더 연결을 확인해주세요.');
    if(!args){await finish(event?.eventId??'',false);return;}
-   if(!canWrite||event&&!event.etag)throw Error('일정을 새로 불러온 뒤 다시 저장해주세요.');
+   if(!canWrite||event&&!event.etag)throw Error('Event를 새로 불러온 뒤 다시 저장해주세요.');
    const payload={...args,...(connectionId?{connectionId}:{})};
    action=prepareAction?await prepareAction(payload):await store.featureRequest('/api/assistant/actions','POST',{operation:event?'calendar.update':'calendar.create',args:payload}) as CalendarPending;
   }
@@ -120,7 +120,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    catch(error){
     if(readOnly)throw error;
     try{result=await store.featureRequest('/api/assistant/actions/'+actionId) as CalendarPending;}
-    catch{throw Object.assign(Error('일정 저장 결과를 확인하지 못했어요.'),{writeState:'unknown'});}
+    catch{throw Object.assign(Error('Event 저장 결과를 확인하지 못했어요.'),{writeState:'unknown'});}
    }
    return result;
   };
@@ -128,7 +128,7 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    const optimistic:CalendarEvent={...event,...confirmedCalendarPatch(draft,event),id:event?.id??'pending:'+actionId,title:draft.title.trim(),calendarId:draft.calendarId,calendarName:source?.name??event?.calendarName,color:event?.color??source?.color,connectionId,dueDate:draft.startDay,saveState:'saving',canWrite:false,etag:null};
    const attempt=async(readOnly=false)=>{
     const result=await execute(readOnly);
-    if(result.status!=='succeeded')throw Object.assign(Error('일정을 저장하지 못했어요.'),{writeState:['failed','cancelled','expired'].includes(result.status)?'failed':'unknown'});
+    if(result.status!=='succeeded')throw Object.assign(Error('Event를 저장하지 못했어요.'),{writeState:['failed','cancelled','expired'].includes(result.status)?'failed':'unknown'});
     return finish(result.result?.id??event?.eventId??'',true,false,result.result?.etag);
    };
    onBackgroundSave({optimistic,run:()=>attempt(),check:()=>attempt(true)});return;
@@ -137,8 +137,8 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
   if(result.status==='succeeded'){
    const id=result.result?.id??event?.eventId??'';onActionState({pending:result,locked:true,remoteDone:true,savedEventId:id});await finish(id,true,true,result.result?.etag);
   }else if(['failed','cancelled','expired'].includes(result.status)){
-   onActionState(null);throw Error('일정을 저장하지 못했어요. 다시 시도해주세요.');
-  }else{setError('일정이 저장됐는지 확인해주세요.');notify(true);}
+   onActionState(null);throw Error('Event를 저장하지 못했어요. 다시 시도해주세요.');
+  }else{setError('Event가 저장됐는지 확인해주세요.');notify(true);}
  });}
  async function check(){await work(async()=>{
   if(!pending)return;
@@ -167,20 +167,20 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    <Text style={s.help}>{draft.startDay} {draft.allDay?'종일':draft.startTime} → {draft.endDay} {draft.allDay?'종일':draft.endTime}</Text>
    <Text style={s.help}>{source?.name??draft.calendarId}</Text>
    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-   <Button title="저장" accessibilityLabel="확인하고 일정 추가" onPress={()=>void save(true)} disabled={busy}/>
+   <Button title="저장" accessibilityLabel="확인하고 Event 추가" onPress={()=>void save(true)} disabled={busy}/>
    <Button title="미리보기 취소하고 편집" quiet onPress={()=>void cancelPrepared()} disabled={busy}/>
   </>:<>
-   <View style={s.group}><TextInput ref={titleRef} onFocus={()=>{setPicker(null);field.focus(titleRef.current);}} accessibilityLabel="일정 제목" placeholder="제목" placeholderTextColor={colors.muted} value={draft.title} onChangeText={title=>update({title})} editable={!busy} maxLength={event?.title===draft.title?Math.max(120,draft.title.length):120} style={[s.input,s.eventTitle,{backgroundColor:'transparent',paddingHorizontal:0}]}/></View>
+   <View style={s.group}><TextInput ref={titleRef} onFocus={()=>{setPicker(null);field.focus(titleRef.current);}} accessibilityLabel="Event 제목" placeholder="제목" placeholderTextColor={colors.muted} value={draft.title} onChangeText={title=>update({title})} editable={!busy} maxLength={event?.title===draft.title?Math.max(120,draft.title.length):120} style={[s.input,s.eventTitle,{backgroundColor:'transparent',paddingHorizontal:0}]}/></View>
    <View style={s.group}>
     <CalendarDateTimeRow kind="시작" day={draft.startDay} time={draft.startTime} allDay={draft.allDay} disabled={readonly} open={picker?.row==='시작'?picker.mode:null} onOpen={mode=>setPicker(mode?{row:'시작',mode}:null)} onDay={startDay=>update({startDay,endDay:draft.endDay<startDay?startDay:draft.endDay})} onTime={startTime=>update({startTime})}/>
     <CalendarDateTimeRow kind="종료" day={draft.endDay} time={draft.endTime} allDay={draft.allDay} disabled={readonly} open={picker?.row==='종료'?picker.mode:null} onOpen={mode=>setPicker(mode?{row:'종료',mode}:null)} onDay={endDay=>update({endDay})} onTime={endTime=>update({endTime})}/>
-    <View style={s.row}><Text style={s.title}>하루 종일</Text><Switch accessibilityLabel="종일 일정" value={draft.allDay} disabled={readonly} onValueChange={allDay=>{setPicker(null);update({allDay});}}/></View>
+    <View style={s.row}><Text style={s.title}>하루 종일</Text><Switch accessibilityLabel="종일 Event" value={draft.allDay} disabled={readonly} onValueChange={allDay=>{setPicker(null);update({allDay});}}/></View>
 
-    {!event&&!docen&&(createOptionsAvailable||native)&&<><Pressable accessibilityRole="button" accessibilityLabel="일정 반복 선택" accessibilityState={{expanded:repeatOpen}} onPress={()=>{setPicker(null);setRepeatOpen(v=>!v);}} style={s.row}><Text style={s.title}>반복</Text><Text style={s.help}>{repeatLabels[draft.repeat??'none']}</Text><Ionicons name="chevron-down" size={16} color={colors.muted}/></Pressable>{repeatOpen&&<View>{(Object.keys(repeatLabels) as Array<keyof typeof repeatLabels>).map(repeat=><Pressable key={repeat} accessibilityRole="radio" accessibilityLabel={'반복 '+repeatLabels[repeat]} accessibilityState={{checked:(draft.repeat??'none')===repeat}} onPress={()=>{update({repeat});setRepeatOpen(false);}} style={s.choice}><Text style={s.title}>{repeatLabels[repeat]}</Text>{(draft.repeat??'none')===repeat&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</Pressable>)}</View>}</>}
+    {!event&&!docen&&(createOptionsAvailable||native)&&<><Pressable accessibilityRole="button" accessibilityLabel="Event 반복 선택" accessibilityState={{expanded:repeatOpen}} onPress={()=>{setPicker(null);setRepeatOpen(v=>!v);}} style={s.row}><Text style={s.title}>반복</Text><Text style={s.help}>{repeatLabels[draft.repeat??'none']}</Text><Ionicons name="chevron-down" size={16} color={colors.muted}/></Pressable>{repeatOpen&&<View>{(Object.keys(repeatLabels) as Array<keyof typeof repeatLabels>).map(repeat=><Pressable key={repeat} accessibilityRole="radio" accessibilityLabel={'반복 '+repeatLabels[repeat]} accessibilityState={{checked:(draft.repeat??'none')===repeat}} onPress={()=>{update({repeat});setRepeatOpen(false);}} style={s.choice}><Text style={s.title}>{repeatLabels[repeat]}</Text>{(draft.repeat??'none')===repeat&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</Pressable>)}</View>}</>}
 
 
    </View>
-   {!event&&!docen&&!native&&createOptionsAvailable&&<View style={s.group}><Text style={s.help}>초대받는 사람</Text><TextInput accessibilityLabel="일정 초대 이메일" placeholder="이메일 주소 · 여러 명은 쉼표로 구분" placeholderTextColor={colors.muted} value={draft.guests??''} onChangeText={guests=>update({guests})} autoCapitalize="none" keyboardType="email-address" maxLength={5100} style={s.input}/></View>}
+   {!event&&!docen&&!native&&createOptionsAvailable&&<View style={s.group}><Text style={s.help}>초대받는 사람</Text><TextInput accessibilityLabel="Event 초대 이메일" placeholder="이메일 주소 · 여러 명은 쉼표로 구분" placeholderTextColor={colors.muted} value={draft.guests??''} onChangeText={guests=>update({guests})} autoCapitalize="none" keyboardType="email-address" maxLength={5100} style={s.input}/></View>}
 
    <View style={[s.group,{gap:0}]}><Pressable accessibilityRole="button" accessibilityLabel="저장할 캘린더 선택" accessibilityState={{expanded:calendarOpen,busy:sourceLoading}} disabled={readonly} onPress={()=>{setPicker(null);setReminderOpen(false);setCalendarOpen(v=>!v);}} style={s.row}><Text style={s.title}>캘린더</Text><View style={s.trailing}><Text numberOfLines={1} style={[s.help,{flexShrink:1,color:colors.text}]}>{source?.name??destinationChosen.current?.name??event?.mirror?.name??event?.calendarName??(sourceLoading?'확인 중':sourceError?'연결 확인':'선택')}</Text>{!readonly&&<Ionicons name={calendarOpen?'chevron-up':'chevron-down'} size={17} color={colors.muted}/>}</View></Pressable>
     {calendarOpen&&<View testID="calendar-destination-menu" style={s.popup}>
@@ -202,12 +202,12 @@ export function CalendarEventEditor({store,draft,onDraft,event,sources,onSaved,o
    {(metadataAvailable||native)&&<View style={[s.group,{gap:0}]}><Pressable accessibilityRole="button" accessibilityLabel="알림 선택" accessibilityState={{expanded:reminderOpen}} onPress={()=>{setPicker(null);setCalendarOpen(false);setReminderOpen(v=>!v);}} style={s.row}><Text style={s.title}>알림</Text><View style={s.trailing}><Text style={s.help}>{reminderOffsetLabel(draft.reminderMinutes)}</Text><Ionicons name={reminderOpen?'chevron-up':'chevron-down'} size={17} color={colors.muted}/></View></Pressable>
     {reminderOpen&&<ScrollRevealRegion><View testID="calendar-reminder-menu" accessibilityRole="radiogroup" accessibilityLabel="알림 시간" style={s.popup}>{reminderChoices.map((minutes,index)=><Pressable key={String(minutes)} style={[s.reminderChoice,index>0&&s.choiceDivider]} accessibilityRole="radio" accessibilityLabel={'알림 '+reminderOffsetLabel(minutes)} accessibilityState={{checked:draft.reminderMinutes===minutes}} onPress={()=>{update({reminderMinutes:minutes});setReminderOpen(false);}}><Text style={s.reminderText}>{reminderOffsetLabel(minutes)}</Text><View testID={'calendar-reminder-check-'+String(minutes)} style={s.checkSlot}>{draft.reminderMinutes===minutes&&<Ionicons name="checkmark" size={18} color={colors.blueText}/>}</View></Pressable>)}</View></ScrollRevealRegion>}
    </View>}
-   <View style={s.group}><TextInput ref={notesRef} placeholder="메모" placeholderTextColor={colors.muted} onFocus={()=>{setPicker(null);field.focus(notesRef.current);}} accessibilityLabel="일정 메모" editable={!busy&&!event?.notesPartial} multiline value={draft.notes} onChangeText={notes=>update({notes})} maxLength={4000} onContentSizeChange={field.reveal} style={[s.input,{minHeight:110,textAlignVertical:'top'}]}/>
-    {(metadataAvailable||native)&&<View style={s.row}><Ionicons name="link-outline" size={19} color={colors.muted}/><TextInput accessibilityLabel="일정 링크" placeholder="URL" placeholderTextColor={colors.muted} value={draft.duckUrl} onChangeText={duckUrl=>update({duckUrl})} autoCapitalize="none" keyboardType="url" maxLength={2000} style={[s.input,{flex:1}]}/></View>}
+   <View style={s.group}><TextInput ref={notesRef} placeholder="메모" placeholderTextColor={colors.muted} onFocus={()=>{setPicker(null);field.focus(notesRef.current);}} accessibilityLabel="Event 메모" editable={!busy&&!event?.notesPartial} multiline value={draft.notes} onChangeText={notes=>update({notes})} maxLength={4000} onContentSizeChange={field.reveal} style={[s.input,{minHeight:110,textAlignVertical:'top'}]}/>
+    {(metadataAvailable||native)&&<View style={s.row}><Ionicons name="link-outline" size={19} color={colors.muted}/><TextInput accessibilityLabel="Event 링크" placeholder="URL" placeholderTextColor={colors.muted} value={draft.duckUrl} onChangeText={duckUrl=>update({duckUrl})} autoCapitalize="none" keyboardType="url" maxLength={2000} style={[s.input,{flex:1}]}/></View>}
    </View>
    {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </>}
   </>;
- return <ScrollRevealContext.Provider value={field.show}><View style={{minHeight:0,flexShrink:inline?0:1,...(!inline&&keyboard.occluding?{flex:1}:{})}}>{inline?<View testID="calendar-event-editor" style={{gap:16,paddingBottom:24}}>{fields}</View>:<ScrollView ref={scrollRef} onLayout={field.reveal} onScroll={field.onScroll} onContentSizeChange={field.reveal} style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} testID="calendar-event-editor" keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:16,paddingBottom:24}}>{fields}</ScrollView>}{!pending&&!locked&&!keyboard.occluding&&!picker&&!reminderOpen&&!calendarOpen&&<View style={{paddingTop:8,borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line}}><Button title="저장" accessibilityLabel={inline?'일정 저장 내용 미리보기':'일정 저장'} loading={busy} disabled={busy||!!picker||(!canWrite&&(!event||!metadataAvailable))} onPress={()=>void save()}/></View>}</View></ScrollRevealContext.Provider>;
+ return <ScrollRevealContext.Provider value={field.show}><View style={{minHeight:0,flexShrink:inline?0:1,...(!inline&&keyboard.occluding?{flex:1}:{})}}>{inline?<View testID="calendar-event-editor" style={{gap:16,paddingBottom:24}}>{fields}</View>:<ScrollView ref={scrollRef} onLayout={field.reveal} onScroll={field.onScroll} onContentSizeChange={field.reveal} style={{flexShrink:1,...(keyboard.occluding?{flex:1}:{})}} testID="calendar-event-editor" keyboardShouldPersistTaps="handled" contentContainerStyle={{gap:16,paddingBottom:24}}>{fields}</ScrollView>}{!pending&&!locked&&!keyboard.occluding&&!picker&&!reminderOpen&&!calendarOpen&&<View style={{paddingTop:8,borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line}}><Button title="저장" accessibilityLabel={inline?'Event 저장 내용 미리보기':'Event 저장'} loading={busy} disabled={busy||!!picker||(!canWrite&&(!event||!metadataAvailable))} onPress={()=>void save()}/></View>}</View></ScrollRevealContext.Provider>;
 }
 const s=StyleSheet.create({calendarGroup:{paddingVertical:6},calendarAccount:{...typography.caption,color:colors.muted,paddingHorizontal:14,paddingVertical:6},calendarChoice:{minHeight:48,flexDirection:'row',alignItems:'center',gap:10,paddingHorizontal:14,paddingVertical:7},calendarDot:{width:10,height:10,borderRadius:5},trailing:{flexDirection:'row',alignItems:'center',justifyContent:'flex-end',gap:8,flexShrink:1,marginLeft:16},checkSlot:{width:24,height:24,alignItems:'center',justifyContent:'center',flexShrink:0},actionText:{...typography.detail,color:colors.blueText},reminderText:{...typography.body,color:colors.text,flex:1},reminderChoice:{minHeight:48,paddingHorizontal:14,paddingVertical:10,flexDirection:'row',alignItems:'center',gap:12},choiceDivider:{borderTopWidth:StyleSheet.hairlineWidth,borderColor:colors.line},popup:{backgroundColor:colors.popup,borderRadius:20,borderWidth:StyleSheet.hairlineWidth,borderColor:colors.popupLine,overflow:'hidden'},field:{gap:4},input:{minHeight:44,backgroundColor:colors.grouped,borderRadius:12,padding:10,...typography.body,color:colors.text},group:{gap:8,padding:12,borderRadius:20,backgroundColor:colors.surface},row:{gap:8,flexDirection:'row',justifyContent:'space-between',alignItems:'center',minHeight:44},dates:{flexDirection:'row',gap:8},choice:{minHeight:44,paddingVertical:10,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:8},title:{...typography.body,color:colors.text,fontWeight:'600'},eventTitle:{fontSize:24,lineHeight:32,fontWeight:'700',color:colors.text},section:{...typography.section,color:colors.text},help:{...typography.detail,color:colors.muted},error:{...typography.detail,color:colors.danger},options:{flexDirection:'row',flexWrap:'wrap',gap:6},option:{minHeight:44,padding:10,borderRadius:14,backgroundColor:colors.grouped,justifyContent:'center'},selected:{borderWidth:1,borderColor:colors.action}});

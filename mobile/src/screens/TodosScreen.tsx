@@ -84,7 +84,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
    if(failed.length)setBatchMessage(`${failed.length}개를 처리하지 못했어요. 다시 시도해주세요.`);
   }finally{if(ownerRef.current===captured)setBatchBusy(false);}
  }
- async function openSource(todo:Todo){const captured=owner;try{const result=await store.featureRequest('/api/todos/'+encodeURIComponent(todo.id)+'/source-link') as {url:string};if(ownerRef.current!==captured)return;const url=safeCalendarLink(result.url);if(!url)throw Error('원본 링크를 확인하지 못했어요.');await Linking.openURL(url);}catch(e){if(ownerRef.current===captured)setBatchMessage(e instanceof Error?e.message:'원본 앱에서 이 할 일을 확인해주세요.');}}
+ async function openSource(todo:Todo){const captured=owner;try{const result=await store.featureRequest('/api/todos/'+encodeURIComponent(todo.id)+'/source-link') as {url:string};if(ownerRef.current!==captured)return;const url=safeCalendarLink(result.url);if(!url)throw Error('원본 링크를 확인하지 못했어요.');await Linking.openURL(url);}catch(e){if(ownerRef.current===captured)setBatchMessage(e instanceof Error?e.message:'원본 앱에서 이 Ticket을 확인해주세요.');}}
  async function drop(ids:string[],target:Target){
   if(busy||editor)return;const captured=owner;setBatchBusy(true);setBatchMessage('');const failed:string[]=[];
   try{
@@ -133,7 +133,7 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
   if(!node||!surface.current)return;
   const ids=selected.includes(todo.id)?selected:[todo.id];
   if(view==='source'&&ids.some(id=>{const item=store.findTodo(id);return !item||todoSource(item).key!==todoSource(todo).key;})){
-   setBatchMessage('같은 출처의 할 일을 선택해 옮겨주세요.');return;
+   setBatchMessage('같은 출처의 Ticket을 선택해 옮겨주세요.');return;
   }
   Keyboard.dismiss();setBatchPanel(null);
   const session:DragSession={ids,origin:point,pointer:point,grip:{x:0,y:0},card:null,scrollStart:scrollY.current,targets:[],measuredCount:0};
@@ -192,8 +192,8 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
  const inline=(group:string)=>editor?.group===group?<ScrollRevealRegion key={editor.id} testID="todo-inline-region">{active&&<OverlayBack onClose={closeEditor} busy={editingBusy}/>}<MotionView distance={6}><TodoEditorForm presentation="inline" todo={editor.todo} dueDate={editor.date} store={store} onClose={closeEditor} onBusy={setEditingBusy}/></MotionView></ScrollRevealRegion>:null;
  return <ScrollRevealContext.Provider value={focus.show}><View ref={surface} collapsable={false} onLayout={keyboardInset.measure} style={{flex:1,minHeight:0}}><View onLayout={focus.reveal} style={{flex:1,minHeight:0,marginBottom:keyboardInset.inset}}>
  <Page todoGestures testID="todos-list-scroll" scrollRef={scroll} scrollEnabled={!drag} bottomSpace={selecting?112:0} onScroll={e=>{scrollY.current=e.nativeEvent.contentOffset.y;focus.onScroll(e);}} compact refreshControl={<RefreshControl refreshing={pulling} onRefresh={()=>void pull()} enabled={!drag} tintColor={colors.blue}/>}>
-  <ScreenHeading embedded title="할 일">{selecting&&!drag&&<Pressable accessibilityRole="button" accessibilityLabel="할 일 선택 마치기" disabled={busy} onPress={()=>{cancelDrag();setSelecting(false);setSelected([]);setBatchPanel(null);}} style={styles.headingAction}><Text style={styles.count}>완료</Text></Pressable>}</ScreenHeading>
-  <PagePinned testID="todos-pinned-controls"><View style={styles.viewBar}><View accessibilityRole="tablist" style={styles.tabs}>{(['date','source'] as const).map(mode=><Pressable key={mode} testID={'todos-view-'+mode} accessibilityRole="tab" accessibilityLabel={mode==='date'?'날짜별 할 일':'출처별 할 일'} accessibilityState={{selected:view===mode,disabled:!!editor||busy||!!drag}} disabled={!!editor||busy||!!drag} onPress={()=>{setView(mode);setBatchPanel(null);setBatchMessage('');}} style={[styles.viewTab,view===mode&&styles.activeTab]}><Text style={[styles.tabText,view===mode&&{color:colors.blueText}]}>{mode==='date'?'날짜별':'출처별'}</Text></Pressable>)}</View>{!selecting&&<Pressable accessibilityRole="button" accessibilityLabel="할 일 추가" disabled={!!editor} onPress={()=>edit(view==='date'?today:'source:local',today)} style={styles.add}><Ionicons name="add" size={19} color={colors.blueText}/><Text style={styles.addText}>할 일 추가</Text></Pressable>}</View></PagePinned>
+  <ScreenHeading embedded title="Ticket">{selecting&&!drag&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 선택 마치기" disabled={busy} onPress={()=>{cancelDrag();setSelecting(false);setSelected([]);setBatchPanel(null);}} style={styles.headingAction}><Text style={styles.count}>완료</Text></Pressable>}</ScreenHeading>
+  <PagePinned testID="todos-pinned-controls"><View style={styles.viewBar}><View accessibilityRole="tablist" style={styles.tabs}>{(['date','source'] as const).map(mode=><Pressable key={mode} testID={'todos-view-'+mode} accessibilityRole="tab" accessibilityLabel={mode==='date'?'날짜별 Ticket':'출처별 Ticket'} accessibilityState={{selected:view===mode,disabled:!!editor||busy||!!drag}} disabled={!!editor||busy||!!drag} onPress={()=>{setView(mode);setBatchPanel(null);setBatchMessage('');}} style={[styles.viewTab,view===mode&&styles.activeTab]}><Text style={[styles.tabText,view===mode&&{color:colors.blueText}]}>{mode==='date'?'날짜별':'출처별'}</Text></Pressable>)}</View>{!selecting&&<Pressable accessibilityRole="button" accessibilityLabel="Ticket 추가" disabled={!!editor} onPress={()=>edit(view==='date'?today:'source:local',today)} style={styles.add}><Ionicons name="add" size={19} color={colors.blueText}/><Text style={styles.addText}>Ticket 추가</Text></Pressable>}</View></PagePinned>
   {!store.visible.length&&!calendar.events.length&&<Text style={styles.hint}>필요한 일을 하나씩 적어보세요.</Text>}
   {groups.map(group=><View key={group.key} testID={'agenda-'+group.key} style={styles.group}>
    <View style={styles.heading}>{view==='source'?<Ionicons name={todoSource(group.todos[0]??draft).icon} size={28} color={todoSource(group.todos[0]??draft).color}/>:group.day?<Text style={[styles.number,desktop&&{fontSize:27,lineHeight:35}]}>{Number(group.day.slice(8))}</Text>:<Ionicons name={group.key==='overdue'?'alert-circle-outline':'list-outline'} size={27} color={colors.muted}/>}<Text style={[styles.day,desktop&&{fontSize:13,lineHeight:22},view==='source'&&styles.sourceTitle,group.key==='overdue'&&{color:colors.danger}]}>{group.day&&group.day.slice(0,7)!==today.slice(0,7)?Number(group.day.slice(5,7))+'월 · ':''}{group.title}</Text><View style={styles.line}/></View>
@@ -206,17 +206,17 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
    </ReorderItem>)}
    <View collapsable={false} ref={node=>register('end:'+group.key,node,null,group.day,group.key)} style={[styles.dropEnd,!!group.day&&{minHeight:44}]}>
     {hover?.key==='end:'+group.key&&<View pointerEvents="none" testID="todo-drop-line" style={styles.dropLine}/>}
-    {group.day&&!selecting&&!(editor?.group===group.key&&!editor.todo)?<Pressable accessibilityRole="button" accessibilityLabel={group.day+' 새 할 일 추가'} disabled={!!editor} onPress={()=>edit(group.key,group.day)} style={styles.inlineAdd}><Ionicons name="add" size={18} color={colors.blueText}/><Text style={styles.addText}>할 일 추가</Text></Pressable>:null}</View>
+    {group.day&&!selecting&&!(editor?.group===group.key&&!editor.todo)?<Pressable accessibilityRole="button" accessibilityLabel={group.day+' 새 Ticket 추가'} disabled={!!editor} onPress={()=>edit(group.key,group.day)} style={styles.inlineAdd}><Ionicons name="add" size={18} color={colors.blueText}/><Text style={styles.addText}>Ticket 추가</Text></Pressable>:null}</View>
   </View>)}
-  {view==='date'&&calendar.phase==='error'&&<View style={styles.refresh}><Text style={styles.hint}>일정을 새로 확인하지 못했어요. 저장된 내용은 유지해요.</Text><Pressable accessibilityRole="button" accessibilityLabel="할 일 화면 일정 다시 확인" onPress={()=>void calendar.load()} style={styles.headingAction}><Text style={{color:colors.blueText}}>다시 확인</Text></Pressable></View>}
-  {view==='date'&&!!Object.keys(calendar.cursors).length&&<Pressable accessibilityRole="button" accessibilityLabel="일정 더 불러오기" onPress={()=>void calendar.load(true)} style={styles.inlineAdd}><Text style={{color:colors.blueText}}>일정 더 불러오기</Text></Pressable>}
+  {view==='date'&&calendar.phase==='error'&&<View style={styles.refresh}><Text style={styles.hint}>Event를 새로 확인하지 못했어요. 저장된 내용은 유지해요.</Text><Pressable accessibilityRole="button" accessibilityLabel="Ticket 화면 Event 다시 확인" onPress={()=>void calendar.load()} style={styles.headingAction}><Text style={{color:colors.blueText}}>다시 확인</Text></Pressable></View>}
+  {view==='date'&&!!Object.keys(calendar.cursors).length&&<Pressable accessibilityRole="button" accessibilityLabel="Event 더 불러오기" onPress={()=>void calendar.load(true)} style={styles.inlineAdd}><Text style={{color:colors.blueText}}>Event 더 불러오기</Text></Pressable>}
  </Page>
  {!!batchMessage&&!drag&&<View pointerEvents="none" style={[styles.batchNotice,{bottom:toolbarInset+(selecting?100:12)}]}><Text accessibilityLiveRegion="polite" style={styles.hint}>{batchMessage}</Text></View>}
  {selecting&&!drag&&<TodoSelectionToolbar count={selected.length} inset={toolbarInset} busy={!selected.length||busy||!!batchPanel} testID="todo-selection-toolbar" actions={[
-  {icon:'calendar-outline',label:'날짜 변경',description:'선택한 할 일 예정일 변경',onPress:()=>{setBatchMonth((store.findTodo(selected[0])?.dueDate??today).slice(0,7));setBatchPanel('date');}},
-  {icon:'trash-outline',label:'삭제',description:'선택한 할 일 삭제',destructive:true,onPress:()=>setBatchPanel('delete')},
+  {icon:'calendar-outline',label:'날짜 변경',description:'선택한 Ticket 예정일 변경',onPress:()=>{setBatchMonth((store.findTodo(selected[0])?.dueDate??today).slice(0,7));setBatchPanel('date');}},
+  {icon:'trash-outline',label:'삭제',description:'선택한 Ticket 삭제',destructive:true,onPress:()=>setBatchPanel('delete')},
  ]}/>}
- {!!batchPanel&&active&&<CalendarSheet centered bottomInset={toolbarInset} title={batchPanel==='date'?'날짜 변경':'할 일 삭제'} onClose={()=>setBatchPanel(null)} busy={busy}>
+ {!!batchPanel&&active&&<CalendarSheet centered bottomInset={toolbarInset} title={batchPanel==='date'?'날짜 변경':'Ticket 삭제'} onClose={()=>setBatchPanel(null)} busy={busy}>
   <OverlayBack onClose={()=>setBatchPanel(null)} busy={busy}/>
   <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.batchPanel}>
    {batchPanel==='date'&&<>
@@ -225,8 +225,8 @@ function TodosContent({store,active=true,scrollToTopRequest=0}:TodosScreenProps)
     <Button title="날짜 없음" quiet disabled={busy} onPress={()=>void applyBatch(id=>store.update(id,{dueDate:null}))}/>
    </>}
    {batchPanel==='delete'&&<>
-    <Text style={styles.monthLabel}>선택한 할 일 {selected.length}개를 도슨에서 삭제할까요?</Text>
-    <Pressable accessibilityRole="button" accessibilityLabel="도슨에서 선택한 할 일 삭제 확인" disabled={busy} onPress={()=>void applyBatch(store.remove)} style={styles.confirmDelete}><Text style={[styles.addText,styles.destructive]}>삭제</Text></Pressable>
+    <Text style={styles.monthLabel}>선택한 Ticket {selected.length}개를 도슨에서 삭제할까요?</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel="도슨에서 선택한 Ticket 삭제 확인" disabled={busy} onPress={()=>void applyBatch(store.remove)} style={styles.confirmDelete}><Text style={[styles.addText,styles.destructive]}>삭제</Text></Pressable>
    </>}
   </ScrollView>
  </CalendarSheet>}

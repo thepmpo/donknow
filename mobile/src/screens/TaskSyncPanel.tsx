@@ -18,8 +18,8 @@ export function TaskSyncPanel({store,refreshKey=0,onRequestPermission,connection
     {status&&!status.canEnable&&<><Text style={s.muted}>아직 Google에서 완료 상태 수정 권한을 승인하지 않았어요. 체크 표시만으로는 권한이 추가되지 않아요.</Text><Button title="Google Tasks 수정 권한 승인" quiet disabled={busy} onPress={onRequestPermission}/></>}
     <Button title={status?.enabled?'백그라운드 완료 전송 끄기':'백그라운드 완료 전송 켜기'} disabled={busy||!status||(!status.enabled&&!status.canEnable)} onPress={()=>{void configure();}} />
     <View style={{height:10}}/><Button title="동기화 상태 새로고침" quiet disabled={busy} onPress={()=>{void load();}} />
-    {status?.enabled&&<><View style={{height:10}}/><Button title={cursor?'다음 할 일의 Google 상태 확인':'Google 완료 상태 다시 읽기'} quiet disabled={busy} onPress={()=>{void pull();}} /><Text style={s.muted}>가져온 항목을 5개씩 확인해요. 충돌한 항목은 Google 상태로 맞춰요. 무료 서버가 쉬는 동안에는 자동 전송이 지연될 수 있어요.</Text></>}
-    {status?.jobs.map(job=><View key={job.todoId} style={{marginTop:14}}><Text style={s.subtitle}>{store.todos.find(todo=>todo.id===job.todoId)?.title??'할 일'} · {job.status==='conflict'?'확인 필요':job.status==='failed'?'전송 실패':'전송 대기'}</Text>{!!job.error&&<Text style={s.muted}>{job.error}</Text>}</View>)}
+    {status?.enabled&&<><View style={{height:10}}/><Button title={cursor?'다음 Ticket의 Google 상태 확인':'Google 완료 상태 다시 읽기'} quiet disabled={busy} onPress={()=>{void pull();}} /><Text style={s.muted}>가져온 항목을 5개씩 확인해요. 충돌한 항목은 Google 상태로 맞춰요. 무료 서버가 쉬는 동안에는 자동 전송이 지연될 수 있어요.</Text></>}
+    {status?.jobs.map(job=><View key={job.todoId} style={{marginTop:14}}><Text style={s.subtitle}>{store.todos.find(todo=>todo.id===job.todoId)?.title??'Ticket'} · {job.status==='conflict'?'확인 필요':job.status==='failed'?'전송 실패':'전송 대기'}</Text>{!!job.error&&<Text style={s.muted}>{job.error}</Text>}</View>)}
     {!!status?.jobs.some(job=>job.status==='failed')&&<Button title="실패한 동기화 다시 시도" quiet disabled={busy} onPress={()=>{void retry();}} />}
     {!!message&&<Text accessibilityLiveRegion="polite" style={s.subtitle}>{message}</Text>}{!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
   </View>;

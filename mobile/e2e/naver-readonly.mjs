@@ -26,7 +26,7 @@ try{
   if(path==='/api/operations/backup')return route.fulfill({json:{enabled:false,offsite:false,failed:false,lastLocalSuccess:null}});
   throw Error('Unexpected API '+req.method()+' '+path);
  });
- await page.goto(origin);await page.getByRole('tab',{name:'docen',exact:true}).click();await openDuckTools(page);await page.getByRole('button',{name:'docen AI 비서 열기',exact:true}).click();
+ await page.goto(origin);await page.getByRole('tab',{name:'docen.t ai',exact:true}).click();await openDuckTools(page);await page.getByRole('button',{name:'docen.t ai 열기',exact:true}).click();
  await page.getByRole('button',{name:'네이버 메일 연결 설정',exact:true}).click();await page.getByText('원본의 읽음 상태를 바꾸거나 메일을 보내지 않아요.',{exact:true}).waitFor();
  assert.equal(await page.getByRole('checkbox',{name:'읽음 상태 변경 허용',exact:true}).count(),0);assert.equal(await page.getByRole('checkbox',{name:'메일 발송·답장 허용',exact:true}).count(),0);
  await page.getByRole('textbox',{name:'네이버 메일 주소',exact:true}).fill('fixture@naver.com');await page.getByLabel('네이버 앱 비밀번호',{exact:true}).fill('fixture-password');await page.getByRole('button',{name:'네이버 메일 연결',exact:true}).click();

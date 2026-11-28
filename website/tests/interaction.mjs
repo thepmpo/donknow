@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 const origin = process.env.WEBSITE_ORIGIN || "http://127.0.0.1:4173";
 const out = resolve(
-  new URL("../../artifacts/docen-identity-2026-11-23/site", import.meta.url)
+  process.env.WEBSITE_CAPTURE_DIR || new URL("../../artifacts/docen-identity-2026-11-23/site", import.meta.url)
     .pathname,
 );
 await mkdir(out, { recursive: true });
@@ -54,12 +54,12 @@ try {
       assert.equal((await demo.boundingBox()).height, initialHeight);
     }
     await demo
-      .getByRole("button", { name: "할 일로", exact: true })
+      .getByRole("button", { name: "Ticket으로", exact: true })
       .first()
       .click();
     assert.equal(await demo.locator(".demo-task").count(), 2);
     await assertDemoHeight();
-    await demo.locator(".demo-sidebar").getByRole("button", { name: /^할 일/ }).click();
+    await demo.locator(".demo-sidebar").getByRole("button", { name: /^Ticket/ }).click();
     await assertDemoHeight();
     assert.match(
       await demo.locator(".demo-task").innerText(),
@@ -71,14 +71,14 @@ try {
       .getByRole("button", { name: /브리핑/ })
       .click();
     await demo
-      .getByRole("button", { name: "일정으로", exact: true })
+      .getByRole("button", { name: "Event로", exact: true })
       .first()
       .click();
-    await demo.getByLabel("일정 날짜").fill("2026-11-20");
+    await demo.getByLabel("Event 날짜").fill("2026-11-20");
     await assertDemoHeight();
-    await demo.getByLabel("일정 시간").fill("14:00");
+    await demo.getByLabel("Event 시간").fill("14:00");
     await demo
-      .getByRole("button", { name: "일정에 담기", exact: true })
+      .getByRole("button", { name: "Event에 담기", exact: true })
       .click();
     await demo.getByRole("button", { name: /캘린더/ }).click();
     await assertDemoHeight();
@@ -170,7 +170,7 @@ try {
       assert.equal(await page.locator(".mobile-menu").count(), 0);
     }
     await demo
-      .getByRole("button", { name: "할 일로", exact: true })
+      .getByRole("button", { name: "Ticket으로", exact: true })
       .first()
       .click();
     await page.getByRole("button", { name: "Switch to English" }).click();
@@ -179,7 +179,7 @@ try {
     assert.equal(await page.locator("#pricing").getAttribute("lang"), "en");
     assert.match(
       await demo.locator(".demo-status").innerText(),
-      /Added to To-dos/,
+      /Added to Tickets/,
     );
     const englishText = await page.locator("body").innerText();
     assert.equal(
