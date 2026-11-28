@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-28 · 한국 시간 · 기능 코드 4469641 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-28 · 한국 시간 · 기능 코드 2d4d903 · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-28 — Apple 미리알림의 기기 표시와 원본 연결
+
+- iPhone의 미리알림 목록을 EventKit에서 읽는 대로 할 일과 캘린더에 표시한다. 서버 등록 전에도 제목과 날짜를 볼 수 있고, 등록 후에는 같은 원본 ID로 편집할 수 있다. 도슨에 저장한 미전송 편집을 이전 원본 조회가 덮어쓰지 않게 했다.
+- 미리알림을 만드는 중에도 편집을 기기에 보관하고, Apple 원본 ID가 연결되면 선택한 목록의 같은 항목에 반영한다. 날짜만 지정한 항목은 기기 날짜를 비교한다. 미확인 편집은 대기열에 두고 원본을 다시 확인한다. 도슨이 Apple 저장 결과를 받기 전에 새 항목을 읽어도 서버가 같은 할 일을 따로 만들지 않게 했다.
+- Apple 연동 응답을 모의한 앱 테스트와 서버 통합 테스트로 날짜만 있는 항목, 기존 할 일 편집, 생성 직후 재조회와 원본 ID 연결을 검사했다. 사진의 특정 항목과 변경 후 실제 iPhone 동작은 미확인이다. 서버와 TestFlight 배포는 별도다.
 
 #### 2026-11-28 — 월간 일정 제목의 말줄임 끝 처리
 
@@ -4323,10 +4329,12 @@ f652d1c Document monthly calendar legibility changes
 cb65ccf Use a single calendar filter list and fit more month title text
 23a81cb Record calendar list and typography verification
 4469641 Soften truncated titles in monthly calendar cards
+b66a0d6 Document the monthly calendar title fade
+2d4d903 Fix iPhone Reminders display and queued edits
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 4469641에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 2d4d903에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13595,7 +13603,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/4469641d9677b5fb7c60f94a82f0951f03a85b1e
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/2d4d903c024410b5eae45e59c1cf5c7bc4aad3ea
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
