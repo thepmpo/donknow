@@ -389,7 +389,7 @@ notion-handoff.md와public/project.html은scripts/build-handoff.py생성물이�
 
 ## 분야별 기록과 과거 이력 — 현재 계약은 위 통합 기준 우선
 
-> 기준: 2026-11-28 · 한국 시간 · 기능 코드 06439e8 · 문서와 GitHub 소스가 이어받기의 기준입니다.
+> 기준: 2026-11-28 · 한국 시간 · 기능 코드 4a011ac · 문서와 GitHub 소스가 이어받기의 기준입니다.
 > 이 파일은 저장소의 기술 인계 원본입니다. 사용자용 업무 기록은 선택한 개인 Notion의 **duckduck · 제품·개발 기록**에 남깁니다. 비공개 Notion 페이지를 이 공개 파일에 복제하지 않습니다. 아래 상태 표에서 구현/자동 테스트/실사용 확인을 구분합니다.
 
 ## 최신 PC 웹 작업공간 — 2026-11-22
@@ -866,6 +866,12 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 **GitHub 저장과 실제 Render 배포는 다릅니다.** 자동 배포는 꺼져 있습니다. 이 작업 시작 때의 실제 live는1f7dc5d/dep-dbrap0btqb8s73e0v600(15:22:33 KST)이며 이번 문서의 공개 반영은 최종 배포ID/SHA/응답으로 별도 확인합니다. 최종 운영 결과는 선택한 Notion 작업 기록과 실제 Render 상태에서 확인하며 Git push나 웹 회귀를 운영 성공으로 대신하지 않습니다.
 
 ## 3. 최근 변경과 매일 기록
+
+#### 2026-11-28 — iPhone 캘린더에 표시하는 일정의 기준
+
+- iPhone의 기본 일정 보기는 EventKit의 전체 캘린더 조회 결과를 사용한다. Google에서 따로 읽은 일정과 연결이 끝난 도슨 사본은 통합 보기에서 확인한다. iPhone 기준에서 도슨 표시 설정으로 가려졌던 Apple 캘린더도 읽어서 표시한다. 앱에서 저장한 Apple 연결 일정은 원본 반영 중에도 기기 기준 화면에서 이어서 보인다.
+- 날짜 범위 조회는 EventKit의 전체 캘린더 조건을 사용한다. 종일 반복 일정의 시작일과 종료일이 같은 값으로 들어오면 시작 날짜에 하루를 표시한다. 새 일정의 저장 기본값은 기기에서 지정한 기본 캘린더를 사용한다.
+- 모의 일반·Duo 화면과 단위 검사에서 종일 일정, 여러 Apple 목록 및 통합 보기 전환을 검사했다. 실제 11월 26일 항목의 EventKit 응답과 iPhone에 설치된 새 서명 빌드 확인은 별도다. iOS는 Apple 캘린더 앱의 표시 체크 상태를 공개하지 않으므로 기준은 권한 범위에서 읽힌 캘린더 전체다.
 
 #### 2026-11-28 — 일정 한 건 삭제 확인과 원본 일정·미리알림 반영
 
@@ -4288,12 +4294,15 @@ c9e0041 Verify Apple calendar updates for past dates
 1fcd40f Document iPhone-first edits and task updates
 cd8e7fc Continue calendar and task synchronization in background
 97b27b2 Document background synchronization rollout and verification
+668a562 docs: daily project update [skip ci]
 06439e8 Reconcile confirmed calendar deletions and speed up Apple source reads
 4dc670d Document calendar and reminder repairs
+408f3e4 Merge daily documentation with calendar and reminder repairs
+4a011ac Use the complete EventKit calendar snapshot as the iPhone schedule view
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
-- 이번 확장 코드: 06439e8에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
+- 이번 확장 코드: 4a011ac에 저장. 실제 Render 반영은 수동 배포/Live 확인 필요.
 - 새 수정은 이 절에 날짜, 요청, 결정, 관련 커밋, 테스트, 실제 배포 확인을 이어서 기록한다.
 
 ## 4. 화면과 사용 흐름
@@ -13562,7 +13571,7 @@ docen을 이어받으려면 이 문서 맨 앞의 통합 기준과 docs/DOCEN-ST
 - 서버 상태: https://duckduck-test.onrender.com/api/health
 - 코드: https://github.com/thepmpo/donknow
 - 전체 소스 다운로드: https://github.com/thepmpo/donknow/archive/refs/heads/main.zip
-- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/06439e82df9d4dbee5768df9029b74d406b9179a
+- 기능 기준 커밋: https://github.com/thepmpo/donknow/tree/4a011ac0770b42b55652950a7df4843014fedef7
 - Render 서비스: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0
 - Render 환경: https://dashboard.render.com/web/srv-dbgpc0ff3r2c73abc7e0/env
 - Render Blueprint: https://dashboard.render.com/blueprint/exs-dbgorbjbc2fs73b9o2b0
