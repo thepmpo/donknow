@@ -24,6 +24,7 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
     CREATE INDEX IF NOT EXISTS sessions_user ON sessions(user_id);
     CREATE TABLE IF NOT EXISTS todos (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), data TEXT NOT NULL);
     CREATE INDEX IF NOT EXISTS todos_user ON todos(user_id);
+    CREATE TABLE IF NOT EXISTS todo_cancelled_creates (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE);
     CREATE TABLE IF NOT EXISTS migrations (name TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id));`);
   accountPolicySchema(db);
   const agreementsStore=signupAgreementsStore(db);
@@ -83,18 +84,31 @@ export async function openStore(directory, { env = process.env, remoteFactory } 
       }catch(error){db.exec('ROLLBACK');throw error;}
     },
     todoWriteReceipt(userId,key){return get(userId,writeId(userId,key));},
+    cancelTodoCreate(userId,key){
+      const id=writeId(userId,key);
+      db.exec('BEGIN IMMEDIATE');
+      try{
+        db.prepare('INSERT OR IGNORE INTO todo_cancelled_creates VALUES (?,?)').run(id,userId);
+        db.prepare("UPDATE todo_delivery SET state='blocked' WHERE user_id=? AND todo_id=? AND state='queued'").run(userId,id);
+        db.exec('COMMIT');
+      }catch(error){db.exec('ROLLBACK');throw error;}
+      return todoDelivery.decorate(userId,get(userId,id));
+    },
     create(userId, draft, { done = false, requestKey,target } = {}) {
-      const id=requestKey!==undefined?writeId(userId,requestKey):randomUUID(),existing=requestKey!==undefined?get(userId,id):null;
-      if(existing)return existing;
+      const id=requestKey!==undefined?writeId(userId,requestKey):randomUUID();
       const now=new Date().toISOString(),todo={...draft,id,done:done===true,createdAt:now,...(done===true?{completedAt:now}:{})};
+      const insert=()=>db.prepare(`INSERT INTO todos(id,user_id,data) SELECT ?,?,?
+        WHERE NOT EXISTS (SELECT 1 FROM todo_cancelled_creates WHERE id=?) ON CONFLICT(id) DO NOTHING`).run(id,userId,JSON.stringify(todo),id);
       if(target){
        db.exec('BEGIN IMMEDIATE');
        try{
-        if(db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo)).changes)todoDelivery.enqueue(userId,id,target);
+        if(insert().changes)todoDelivery.enqueue(userId,id,target);
         db.exec('COMMIT');
        }catch(error){db.exec('ROLLBACK');throw error;}
-      }else db.prepare('INSERT INTO todos VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING').run(id,userId,JSON.stringify(todo));
-      return requestKey!==undefined?get(userId,id):todo;
+      }else insert();
+      const saved=requestKey===undefined?todo:get(userId,id);
+      if(!saved)throw fail(410,'이미 삭제한 Ticket이에요.');
+      return saved;
     },
     update(userId, id, patch, { remote = false, skipTaskSync = false, expected } = {}) {
       db.exec('BEGIN IMMEDIATE');

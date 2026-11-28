@@ -66,7 +66,7 @@ function ShellContent() {
   const editorSequence = useRef(0);
   const [editor, setEditor] = useState<{ instance:number; todo?: Todo; date: string | null } | null>(null);
   const onAdd = (date: string | null) => { Keyboard.dismiss();setEditor({ instance:++editorSequence.current, date }); };
-  const onEdit = (todo: Todo) => { if(todo.id.startsWith('device-todo:'))return;Keyboard.dismiss();setEditor({ instance:++editorSequence.current, todo, date: todo.dueDate }); };
+  const onEdit = (todo: Todo) => {Keyboard.dismiss();setEditor({ instance:++editorSequence.current, todo, date: todo.dueDate }); };
   const [duckSession, setDuckSession] = useState(0);
   useEffect(() => { setEditor(null);setEntry(null);setDesktopChatRequest(0);setProfileRequest(null);setUnread(0);setCalendarNavigation(null); setDuckSession(current => current + 1); setTab(desktop?'duck':'todos'); }, [store.user?.id, store.connection?.mode, store.connection?.mode === 'cloud' ? store.connection.baseUrl : '']);
   const sessionPending=store.sessionStatus==='restoring'||store.sessionStatus==='unavailable';

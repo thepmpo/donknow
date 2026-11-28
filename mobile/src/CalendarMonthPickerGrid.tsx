@@ -1,5 +1,6 @@
-import React from 'react';
-import {StyleSheet,Text,View} from 'react-native';
+import React,{useMemo,useRef} from 'react';
+import {PanResponder,Platform,StyleSheet,Text,View} from 'react-native';
+import type {ViewStyle} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {periodShift,visibleDays} from './calendar-model';
 import {MotionPressable as Pressable} from './motion';
@@ -8,7 +9,12 @@ import {colors,typography} from './theme';
 export function CalendarMonthPickerGrid({month,onMonth,today,selected,onDay,disabled=false,compact=false}:{month:string;onMonth:(value:string)=>void;today:string;selected:ReadonlySet<string|null>;onDay:(day:string)=>void;disabled?:boolean;compact?:boolean}){
  const dates=visibleDays(month,month+'-01','month');
  function shift(amount:number){onMonth(periodShift(month,month+'-01','month',amount).month);}
- return <View testID="month-picker-grid" style={styles.root}>
+ const latest=useRef({shift,disabled});latest.current={shift,disabled};
+ const swipe=useMemo(()=>PanResponder.create({
+  onMoveShouldSetPanResponderCapture:(_,g)=>!latest.current.disabled&&g.numberActiveTouches===1&&Math.abs(g.dx)>12&&Math.abs(g.dx)>Math.abs(g.dy)*1.4,
+  onPanResponderRelease:(_,g)=>{if(!latest.current.disabled&&Math.abs(g.dx)>45)latest.current.shift(g.dx<0?1:-1);},
+ }),[]);
+ return <View testID="month-picker-grid" style={[styles.root,Platform.OS==='web'&&({touchAction:'pan-y'} as ViewStyle)]} {...swipe.panHandlers}>
   <View style={styles.monthRow}>
    <Pressable accessibilityRole="button" accessibilityLabel="이전 달" disabled={disabled} onPress={()=>shift(-1)} style={styles.arrow}><Ionicons name="chevron-back" size={20} color={colors.blueText}/></Pressable>
    <Text numberOfLines={1} style={styles.monthLabel}>{Number(month.slice(0,4))}년 {Number(month.slice(5))}월</Text>

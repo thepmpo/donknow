@@ -50,7 +50,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
         ...(edit.patch.done===undefined?{}:{completedAt:edit.patch.done?previous.completedAt??edit.editedAt:null}),
         ...(edit.blocked?{saveState:'checking' as const}: {})});
     }
-    const next=device?[...Array.from(byId.values()).filter(todo=>!isDeviceTodo(todo.id)),...(jobs??[]).map(queuedTodo)]:base;
+    const next=device?[...Array.from(byId.values()).filter(todo=>!isDeviceTodo(todo.id)),...(jobs??[]).map(queuedTodo).filter(todo=>!deletes.some(job=>matchesTodoDeletion(todo,job)))]:base;
     if(owner){
       if(localAppleRemovals.current.generation!==generation.current)localAppleRemovals.current={generation:generation.current,ids:new Set()};
       if(resolvedAppleIds.current.generation!==generation.current)resolvedAppleIds.current={generation:generation.current,ids:new Map()};
@@ -204,7 +204,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   const deviceSaving=useRef(false);
   useEffect(()=>{
     if(!deviceCreateOwner||!device)return;
-    const owner=deviceCreateOwner,version=generation.current,{queue,cache}=device;
+    const owner=deviceCreateOwner,version=generation.current,{queue,cache,deletes}=device;
     const current=()=>generation.current===version&&calendarOwner.current===owner;
     let disposed=false;
     const retryAt=new Map<string,{attempt:number;at:number}>();
@@ -213,7 +213,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       setTodos(old=>old);
       for(const job of queue.snapshot(owner)??[]){
         const id=queuedTodo(job).id;
-        if(job.blocked&&!writeChecks.current.has(id))reportWrite(id,'기기에 저장한 Ticket의 동기화를 확인해주세요.',()=>queue.block(owner,job.id,false));
+        if(job.blocked&&!deletes.snapshot(owner)?.some(removal=>removal.id===id)&&!writeChecks.current.has(id))reportWrite(id,'기기에 저장한 Ticket의 동기화를 확인해주세요.',()=>queue.block(owner,job.id,false));
       }
     }
     const unsubscribe=queue.watch(owner,publish);
@@ -221,12 +221,17 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     async function flush(){
       if(disposed||!current()||todoCreateSending.has(owner)||AppState.currentState!=='active'||!repo.current)return;
       const repository=repo.current;
-      const job=queue.snapshot(owner)?.find(item=>!item.blocked&&(retryAt.get(item.id)?.at??0)<=Date.now());
+      const job=queue.snapshot(owner)?.find(item=>!item.blocked&&!deletes.snapshot(owner)?.some(job=>matchesTodoDeletion(queuedTodo(item),job))&&(retryAt.get(item.id)?.at??0)<=Date.now());
       if(!job)return;
       todoCreateSending.add(owner);
       try{
         const saved=await repository.create(job.draft,job.id);
         if(!current())return;
+        const cancellation=deletes.snapshot(owner)?.find(removal=>matchesTodoDeletion(queuedTodo(job),removal));
+        if(cancellation){
+          await deletes.change(owner,cancellation.id,entry=>({...entry,resolvedId:saved.id}));
+          return;
+        }
         writes.current++;
         const next=[...todosRef.current.filter(todo=>todo.id!==saved.id),saved];
         await cache.write(owner,next);
@@ -266,12 +271,12 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
       if(removal){
         todoEditSending.add(owner);
         try{
-          await sendTodoDeletion(owner,removal,localDevice,featureRequest,current);
-          if(current()){writes.current++;setTodos(rows=>rows.filter(todo=>!matchesTodoDeletion(todo,removal)));writeResolved(removal.id);}
+          const deleted=await sendTodoDeletion(owner,removal,localDevice,featureRequest,current);
+          if(current()&&deleted){writes.current++;setTodos(rows=>rows.filter(todo=>!matchesTodoDeletion(todo,deleted)));writeResolved(removal.id);}
         }catch(error){
           retryJobs.set('delete:'+removal.id,Date.now()+5000);
           if(current()&&error instanceof HttpResponseError){
-            if(error.code==='todo-delete-source-changed'){
+            if(error.code==='todo-delete-source-changed'&&!isDeviceTodo(removal.id)){
               await deletes.remove(owner,removal.id).catch(()=>{});
               setNotice(error.message);
               void refresh();
@@ -540,7 +545,8 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   async function reorder(ids:string[]):Promise<boolean>{
     if(!repo.current||busy.current.size||connectingRef.current)return false;
-    const persistedIds=ids.filter(id=>!isAppleReminderPreview(id));
+    const persistedIds=ids.filter(id=>!isAppleReminderPreview(id)&&!isDeviceTodo(id));
+    if(!persistedIds.length)return false;
     const version=generation.current,previous=new Map(todosRef.current.map(t=>[t.id,t.order])),ranks=new Map(persistedIds.map((id,i)=>[id,i]));
     setTodos(old=>old.map(t=>ranks.has(t.id)?{...t,order:ranks.get(t.id)}:t));
     const result=await mutate('order',repository=>repository.reorder(persistedIds));
@@ -598,7 +604,7 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
   }
   async function remove(id: string): Promise<boolean> {
     const item=findTodo(id);
-    if(!item||isDeviceTodo(item.id))return false;
+    if(!item)return false;
     id=item.id;
     const appleId=item.source?.provider==='apple-reminders'?item.source.externalId:undefined;
     const deletion:QueuedTodoDelete={id,sourceId:item.source?.externalId??null,appleId};
@@ -622,9 +628,9 @@ export function useTodos(device=Platform.OS==='ios'?deviceTodos:undefined) {
     }
     if (removed) { delete originsRef.current[id];delete pendingOrder.current[id];setCompletionOrigins({...originsRef.current});setTodos(current => current.filter(todo => todo.id !== id)); const timer = timers.current.get(id); if (timer) clearTimeout(timer); timers.current.delete(id); setPending(current => { const next = { ...current }; delete next[id]; return next; }); }
     if(removed){
+      writeResolved(id);
       const jobs=owner&&device?device.edits.snapshot(owner):undefined;
       for(const job of jobs??[])if(matchesTodoDeletion(job.before,deletion))writeResolved(job.id);
-      persistDeviceTodos(todosRef.current);
     }
     return !!removed;
   }

@@ -47,7 +47,7 @@ export function todoDeliveryStore(db,get){
      if((todo.source?.externalId??null)!==sourceId||appleId&&todo.source?.provider!=='apple-reminders')throw Object.assign(fail(409,'Ticket의 연결 목록이 바뀌었어요.'),{code:'todo-delete-source-changed'});
      if(todo.source?.provider==='apple-reminders'&&!appleId)throw fail(403,'아이폰에서 이 Ticket을 삭제해주세요.');
      const delivery=row(user,targetId);
-     if(delivery?.state==='sending')throw fail(409,'목록 변경이 처리되는 중이에요.');
+     if(delivery?.state==='sending'&&delivery.next_at>Date.now())throw fail(409,'목록 변경이 처리되는 중이에요.');
      if(todo.source?.provider==='google'&&/^([^:]+):tasks:([^:]+):([^:]+)$/.test(sourceId)){
       db.prepare('INSERT OR IGNORE INTO todo_source_deletions VALUES(?,?,?)').run(user,sourceId,Date.now());
      }

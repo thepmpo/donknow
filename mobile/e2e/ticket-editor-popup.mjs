@@ -5,7 +5,7 @@ execFileSync(process.execPath,[resolve(project,'node_modules/expo/bin/cli'),'exp
 const server=http.createServer(async(req,res)=>{const path=new URL(req.url,'http://x').pathname;try{if(path==='/'){res.setHeader('Content-Type','text/html');res.end('<meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body,#root{margin:0;width:100%;height:100%;display:flex;flex-direction:column}</style><div id="root"></div><script src="/fixture.js"></script>');return;}const file=resolve(root,'.'+path);res.setHeader('Content-Type',({'.js':'application/javascript','.ttf':'font/ttf','.png':'image/png','.mp4':'video/mp4'})[extname(file)]||'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
 
 const origin='https://ticket-editor.test';
-const apple={id:'apple-ticket',title:'마지막 미리알림',notes:'남겨둘 메모',done:false,category:'업무',dueDate:null,
+const apple={id:'apple-ticket',title:'마지막 미리알림',notes:'남겨둘 메모를 여러 줄 이어서 적었습니다. 이어지는 문장도 편집창에서 끝까지 확인합니다.',done:false,category:'업무',dueDate:null,
  source:{provider:'apple-reminders',externalId:'reminder',listId:'inbox',listTitle:'Inbox'}};
 try{
  for(const [mode,width] of [['standard',390],['duo',430],['web',1280]]){
@@ -37,18 +37,29 @@ try{
   await page.evaluate(()=>window.viewWelcomeFixture.showTodos());
   const last=page.getByRole('button',{name:'마지막 미리알림 수정',exact:true});
   await last.click();
-  const editor=page.getByTestId('todo-inline-editor'),popup=page.getByTestId('ticket-editor-popup');
+  const editor=page.getByTestId('todo-editor-surface'),popup=page.getByTestId('ticket-editor-popup');
   const title=editor.getByRole('textbox',{name:'Ticket 제목'}),note=editor.getByRole('textbox',{name:'메모'});
   assert.equal(await title.inputValue(),apple.title);assert.equal(await note.inputValue(),apple.notes);
-  const height=(await editor.boundingBox()).height;
+  const rowFrame=await last.boundingBox();
   await editor.getByRole('button',{name:'예정일 편집',exact:true}).click();
   await popup.getByRole('button',{name:'오늘',exact:true}).waitFor();
-  assert.equal((await editor.boundingBox()).height,height,'opening the preset popup leaves the editor height unchanged');
+  assert.equal(await editor.count(),0,'tools replace the popup contents');
+  assert.equal((await last.boundingBox()).y,rowFrame.y,'the popup does not expand the underlying list');
   await popup.getByRole('button',{name:'내일',exact:true}).click();
   await popup.waitFor({state:'detached'});
   await editor.getByText('11.29',{exact:true}).waitFor();
   await editor.getByRole('button',{name:'예정일 편집',exact:true}).click();
   await popup.getByRole('button',{name:'날짜 및 시간…',exact:true}).click();
+  if(mode==='standard'){
+   const grid=await popup.getByTestId('month-picker-grid').boundingBox();
+   const cdp=await page.context().newCDPSession(page);
+   const x=Math.round(grid.x+grid.width*.80),y=Math.round(grid.y+grid.height*.6);
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+   for(let i=1;i<=6;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-i*20,y}]});
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+   await popup.getByText('2026년 12월',{exact:true}).waitFor();
+   await popup.getByRole('button',{name:'이전 달',exact:true}).click();
+  }
   await popup.getByRole('button',{name:'2026-11-30로 변경',exact:true}).click();
   await popup.getByRole('button',{name:'적용',exact:true}).click();
   await editor.getByText('11.30',{exact:true}).waitFor();
@@ -65,8 +76,14 @@ try{
   await popup.waitFor({state:'detached'});
   assert.equal(requestCount,1);
   assert.equal(await note.inputValue(),apple.notes);
-  assert.deepEqual(errors,[]);
   if(process.env.TICKET_CAPTURE_DIR)await page.screenshot({path:out+'/'+mode+'-ticket-editor.png'});
+  await editor.getByRole('button',{name:'Ticket 삭제',exact:true}).click();
+  await popup.getByText('Ticket을 삭제할까요?').waitFor();
+  if(process.env.TICKET_CAPTURE_DIR)await page.screenshot({path:out+'/'+mode+'-ticket-delete.png'});
+  await popup.getByRole('button',{name:'삭제 취소',exact:true}).click();
+  await editor.getByRole('button',{name:'Ticket 편집 취소',exact:true}).click();
+  await editor.waitFor({state:'detached'});
+  assert.deepEqual(errors,[]);
   console.log('PASS '+mode+': last Ticket, layered preset and detailed dates, and Apple-to-Google destination');
   await page.close();
  }

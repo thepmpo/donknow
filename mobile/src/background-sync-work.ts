@@ -11,7 +11,7 @@ import {updateAppleSource} from './apple-source-edit';
 import {matchesTodoDeletion,sendTodoDeletion} from './todo-device-deletion';
 import {interruptedTodoEdit,permanentTodoEditError,pendingAppleTodoEdit,queuedTodoEditBase,waitingForAppleTodoDelivery} from './apple-todo-edit-queue';
 import {calendarCreateSending,deviceCalendarEdits,deviceCalendarQueue,todoCreateSending} from './calendar-device-queue';
-import {deviceTodos,todoEditSending} from './todo-device-queue';
+import {deviceTodos,isDeviceTodo,queuedTodo,todoEditSending} from './todo-device-queue';
 import {calendarEditSending,sendCalendarEdit} from './useDeviceCalendarEdits';
 import {refreshTodoSources} from './todo-source-refresh';
 import {parseTodos} from './domain';
@@ -107,9 +107,10 @@ export async function syncInBackground(owner:string,request:Request,current:()=>
   (async()=>{
    // Serialize cache writes for creates and edits during this background pass.
    await isolated(todoCreateSending,async()=>{
+    await deviceTodos.deletes.read(owner);
     for(const job of await deviceTodos.queue.read(owner)){
      if(!current())return;
-     if(job.blocked)continue;
+     if(job.blocked||deviceTodos.deletes.snapshot(owner)?.some(removal=>matchesTodoDeletion(queuedTodo(job),removal)))continue;
      try{
       const saved=await request('/api/todos','POST',{...job.draft,clientRequestKey:job.id}) as Todo;
       if(!current())return;
@@ -123,7 +124,7 @@ export async function syncInBackground(owner:string,request:Request,current:()=>
     for(const job of deletions){
      if(!current())return;
      await sendTodoDeletion(owner,job,deviceTodos,request,current).catch(async error=>{
-      if(current()&&error instanceof HttpResponseError&&error.code==='todo-delete-source-changed')await deviceTodos.deletes.remove(owner,job.id);
+      if(current()&&error instanceof HttpResponseError&&error.code==='todo-delete-source-changed'&&!isDeviceTodo(job.id))await deviceTodos.deletes.remove(owner,job.id);
      });
     }
     const skipped=new Set<string>();

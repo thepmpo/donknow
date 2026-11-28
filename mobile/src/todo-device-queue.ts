@@ -8,7 +8,7 @@ import type {Draft,Todo} from './domain';
 
 export type QueuedTodoCreate={id:string;draft:Draft;createdAt:string;blocked?:boolean};
 export type QueuedTodoEdit={id:string;before:Todo;patch:Patch;editedAt:string;blocked?:boolean;failure?:string};
-export type QueuedTodoDelete={id:string;sourceId:string|null;appleId?:string;appleDeleted?:boolean};
+export type QueuedTodoDelete={id:string;sourceId:string|null;appleId?:string;appleDeleted?:boolean;resolvedId?:string};
 const editableFields=new Set(['title','notes','done','dueDate','dueTime','reminderAt']);
 const prefix='device-todo:';
 export const isDeviceTodo=(id:string)=>id.startsWith(prefix);

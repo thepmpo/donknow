@@ -89,9 +89,9 @@ export function CalendarDraggableEvent({event,todo,day,style,contentStyle,fill=f
  const item:Item=todo?{todo}:{event:event!},id=todo?'todo:'+todo.id:event!.id;
  const drag=useContext(Context),reduced=useReducedMotion(),blockPress=useRef(false);
  const tapOrigin=useRef<RowPoint|null>(null);
- const canSelect=!!(drag?.enabled&&dragEnabled&&!(todo??event)?.saveState);
+ const canSelect=!!(drag?.enabled&&dragEnabled&&(!!todo||!event?.saveState));
  const selected=drag?.selectedId===id;
- const canLift=!!(canSelect&&(todo||event?.canWrite&&event.eventId&&event.etag));
+ const canLift=!!(canSelect&&(todo?!todo.saveState:event?.canWrite&&event.eventId&&event.etag));
  const pointer=useRef<{id:number;origin:RowPoint;timer:ReturnType<typeof setTimeout>;held:boolean;releaseScroll?:()=>void}|null>(null);
  function clear(){if(pointer.current){clearTimeout(pointer.current.timer);pointer.current.releaseScroll?.();}pointer.current=null;}
  useEffect(()=>{if(!canSelect)clear();return clear;},[canSelect,canLift]);

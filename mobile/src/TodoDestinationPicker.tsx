@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Platform,Pressable,Text,View} from 'react-native';
-import {writableReminderLists} from './useAppleTodoDelivery';
+import {ActivityIndicator,Platform,Pressable,Text,View} from 'react-native';
 import {appleMembership} from './todo-membership';
+import {writableReminderLists} from './useAppleTodoDelivery';
 import {colors,typography} from './theme';
 import type {Todo,TodoDestination} from './domain';
 import type {TodoStore} from './useTodos';
@@ -13,7 +13,7 @@ export function TodoDestinationPicker({store,value,onChange,disabled,embedded=fa
  const [accounts,setAccounts]=useState<List[]>([]),[scope,setScope]=useState<string|null>(null);
  const [lists,setLists]=useState<List[]>([]),[next,setNext]=useState<string|null>(null);
  const run=useRef(0);
- useEffect(()=>{if(embedded)void root();return()=>{run.current++;};},[embedded]);
+ useEffect(()=>{if(embedded){if(Platform.OS==='ios'&&editing?.source?.provider==='apple-reminders')void load('@apple');else void root();}return()=>{run.current++;};},[embedded]);
  if(!store.user?.emailVerified||store.connection?.mode!=='cloud')return null;
  function start(){setError('');setBusy(true);return ++run.current;}
  function close(){run.current++;setOpen(false);setBusy(false);setError('');}
@@ -31,7 +31,7 @@ export function TodoDestinationPicker({store,value,onChange,disabled,embedded=fa
   if(!cursor){setLists([]);setNext(null);}
   const id=start();
   try{
-   const result=key==='@apple'?(editing?.source?.provider==='apple-reminders'?await appleMembership([editing]):{items:await writableReminderLists(),nextCursor:null}):await store.featureRequest(
+   const result=key==='@apple'?{items:await appleLists(),nextCursor:null}:await store.featureRequest(
     '/api/todo-destinations?'+new URLSearchParams({connectionId:key,...(cursor?{cursor}:{})}),
    ) as {items:List[];nextCursor?:string|null};
    if(id!==run.current)return;
@@ -39,6 +39,23 @@ export function TodoDestinationPicker({store,value,onChange,disabled,embedded=fa
    setNext(result.nextCursor??null);
   }catch(e){if(id===run.current)setError(e instanceof Error?e.message:'목록을 불러오지 못했어요.');}
   finally{if(id===run.current)setBusy(false);}
+ }
+ async function appleLists(){
+  let timeout:ReturnType<typeof setTimeout>|undefined;
+  const read=async()=>{
+   const source=editing?.source;
+   if(!editing||source?.provider!=='apple-reminders')return writableReminderLists();
+   try{return (await appleMembership([editing])).items;}
+   catch{
+    const lists=await writableReminderLists();
+    const account=lists.find(list=>list.id===source.listId)?.source.id;
+    return account?lists.filter(list=>list.source.id===account):lists.filter(list=>list.id===source.listId);
+   }
+  };
+  try{return await Promise.race([read(),new Promise<never>((_,reject)=>{
+   timeout=setTimeout(()=>reject(Error('미리알림 목록을 불러오지 못했어요.')),8000);
+  })]);}
+  finally{clearTimeout(timeout);}
  }
  function choose(item:List){
   if(!scope)return;
@@ -64,8 +81,9 @@ export function TodoDestinationPicker({store,value,onChange,disabled,embedded=fa
    {!scope&&accounts.map(account=>row('Google Tasks · '+account.title,()=>void load(account.id),account.id))}
    {scope&&lists.map(item=>row(item.title,()=>choose(item),item.id,item.color))}
    {scope&&next&&row('목록 더 보기',()=>void load(scope,next))}
-   {!!error&&<Text accessibilityRole="alert" style={{...typography.detail,color:colors.danger,padding:12}}>{error}</Text>}
-   {busy&&<Text accessibilityLiveRegion="polite" style={{...typography.detail,color:colors.secondary,padding:12}}>목록을 불러오고 있어요.</Text>}
+   {!busy&&!!error&&row('목록 다시 불러오기',()=>void (scope?load(scope):root()))}
+   {!busy&&!error&&!!scope&&!lists.length&&<Text style={{...typography.detail,color:colors.secondary,padding:12}}>선택할 목록이 없어요.</Text>}
+   {busy&&<ActivityIndicator accessibilityLabel="목록 불러오는 중" style={{padding:12}} color={colors.blueText}/>}
   </View>}
  </View>;
 }

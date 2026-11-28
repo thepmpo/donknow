@@ -211,6 +211,10 @@ const server = http.createServer((req,res)=>requestMetrics(req,res,async()=>{
         if(target)todoDelivery.wake();
         return send(201,store.todoDelivery.decorate(session.user.id,todo));
       }
+      if(path==='/api/todo-create-cancellations'&&req.method==='POST'){
+        const {requestKey}=await json(req);
+        return send(200,{todo:store.cancelTodoCreate(session.user.id,requestKey)});
+      }
       if(path==='/api/todo-deletions'&&req.method==='POST'){
         const deletion=await json(req),userId=session.user.id;
         if(deletion?.id&&todoMembership.isMoving(userId,deletion.id))return send(409,{error:'목록 변경이 처리되는 중이에요.'});

@@ -3,6 +3,7 @@ import EventKit
 import ExpoModulesCore
 
 public final class DuckduckReminderMoveModule: Module {
+  private let deletionQueue = DispatchQueue(label: "docen.reminders.deletion", qos: .userInitiated)
   public func definition() -> ModuleDefinition {
     Name("DuckduckReminderMove")
 
@@ -24,6 +25,27 @@ public final class DuckduckReminderMoveModule: Module {
         ]
       }
     }
+
+    AsyncFunction("remove") { (id: String) throws in
+      let status = EKEventStore.authorizationStatus(for: .reminder)
+      let allowed: Bool
+      if #available(iOS 17.0, *) {
+        allowed = status == .fullAccess
+      } else {
+        allowed = status == .authorized
+      }
+      guard allowed else {
+        throw NSError(domain: "DocenReminderMove", code: 4,
+          userInfo: [NSLocalizedDescriptionKey: "아이폰 미리알림 접근을 허용해주세요."])
+      }
+      let store = EKEventStore()
+      guard let item = store.calendarItem(withIdentifier: id) as? EKReminder else { return }
+      guard item.calendar?.allowsContentModifications == true else {
+        throw NSError(domain: "DocenReminderMove", code: 5,
+          userInfo: [NSLocalizedDescriptionKey: "이 목록의 미리알림을 삭제할 권한이 없어요."])
+      }
+      try store.remove(item, commit: true)
+    }.runOnQueue(deletionQueue)
 
     AsyncFunction("move") { (id: String, destination: String) throws -> [String: String] in
       let store = EKEventStore()
