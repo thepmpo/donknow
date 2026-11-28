@@ -874,6 +874,8 @@ Duo는 본문 안쪽 오른쪽이 아니라 **물리 카메라가 있는 맨 오
 
 #### 2026-11-28 — iPhone 캘린더에 표시하는 일정의 기준
 
+- 연동 불일치의 원인, 이전 시도, TestFlight 76과 사용자 확인, 재발 시 검증 순서를 별도 회고에 기록했다. [Apple 캘린더 연동 회고](apple-calendar-sync-investigation.md)
+
 - iPhone의 기본 일정 보기는 EventKit의 전체 캘린더 조회 결과를 사용한다. Google에서 따로 읽은 일정과 연결이 끝난 도슨 사본은 통합 보기에서 확인한다. iPhone 기준에서 도슨 표시 설정으로 가려졌던 Apple 캘린더도 읽어서 표시한다. 앱에서 저장한 Apple 연결 일정은 원본 반영 중에도 기기 기준 화면에서 이어서 보인다.
 - 날짜 범위 조회는 EventKit의 전체 캘린더 조건을 사용한다. 종일 반복 일정의 시작일과 종료일이 같은 값으로 들어오면 시작 날짜에 하루를 표시한다. 새 일정의 저장 기본값은 기기에서 지정한 기본 캘린더를 사용한다.
 - 모의 일반·Duo 화면과 단위 검사에서 종일 일정, 여러 Apple 목록 및 통합 보기 전환을 검사했다. 실제 11월 26일 항목의 EventKit 응답과 iPhone에 설치된 새 서명 빌드 확인은 별도다. iOS는 Apple 캘린더 앱의 표시 체크 상태를 공개하지 않으므로 기준은 권한 범위에서 읽힌 캘린더 전체다.
@@ -4306,6 +4308,8 @@ cd8e7fc Continue calendar and task synchronization in background
 4a011ac Use the complete EventKit calendar snapshot as the iPhone schedule view
 0bbb545 Document the iPhone calendar source view and verification
 7e57f6a Improve title and time legibility in the monthly calendar
+f652d1c Document monthly calendar legibility changes
+8babee2 Record the iPhone calendar sync investigation and TestFlight 76 fix
 ```
 
 - 새 범위의 실제 외부 연결·아이폰 기기 확인: 아직 완료로 표시하지 않음.
