@@ -115,6 +115,13 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
   return [...new Set([...range.getClientRects()].map(rect=>rect.y))].length;
  });
  assert.equal(firstThree,1,'three typical Korean title glyphs fit on the first line');
+ await timedMonthCard.getByTestId('month-title-fade').waitFor();
+ assert.match(await timedMonthCard.getByTestId('month-title-fade').evaluate(node=>getComputedStyle(node).backgroundImage),/linear-gradient/);
+ await page.evaluate(()=>window.appleCalendarFixture.writeOutside({id:'short-title',calendarId:'icloud',title:'약속',notes:'',startDate:'2026-11-26T01:00:00Z',endDate:'2026-11-26T02:00:00Z',timeZone:'UTC',allDay:false}));
+ const shortTitle=page.getByTestId('calendar-date-grid').getByRole('button',{name:'약속 일정 상세',exact:true});
+ await shortTitle.waitFor();
+ assert.equal(await shortTitle.getByTestId('month-title-fade').count(),0);
+ await page.evaluate(()=>window.appleCalendarFixture.deleteOutside('short-title'));
  const darkTitle=await timedMonthCard.getByText('원본에서 바로 작성',{exact:true}).evaluate(node=>getComputedStyle(node).color);
  await page.screenshot({path:out+'/'+mode+'-readable-month-dark.png'});
  await page.emulateMedia({colorScheme:'light',reducedMotion:'reduce'});
