@@ -131,6 +131,13 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await sheet.waitFor({state:'detached'});
  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:'detached',timeout:4000});
  assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).events.some(event=>event.id==='beyond-ten'),true,'visibility never deletes the source event');
+ for(const [view,expected] of [['아이폰 기준','visible'],['통합 보기','detached']]){
+  await page.getByTestId('calendar-visibility-button').click();
+  await page.getByRole('radio',{name:view,exact:true}).click();
+  if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
+  await sheet.waitFor({state:'detached'});
+  await page.getByRole('button',{name:/열 개 밖 아이폰 일정.*일정 상세/}).waitFor({state:expected,timeout:4000});
+ }
  const historical={id:'historical',calendarId:'calendar-10',title:'작년 마지막 날 일정',notes:'',startDate:'2025-12-31T09:00:00Z',endDate:'2025-12-31T10:00:00Z',timeZone:'UTC',allDay:false};
  await page.evaluate(event=>window.appleCalendarFixture.writeOutside(event),historical);
  await page.waitForFunction(()=>window.appleCalendarFixture.state().lastEventRange?.start.startsWith('2026'));

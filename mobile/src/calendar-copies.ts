@@ -1,4 +1,16 @@
 import type {CalendarEvent} from './calendar-model.ts';
+import {matchesCalendarMirror} from './calendar-write-overlay.ts';
+
+export function appleCalendarView(events:CalendarEvent[]){
+ const originals=mergeCalendarCopies(events.filter(event=>event.provider==='apple-calendar'));
+ const pending=events.filter(event=>{
+  const mirror=event.mirror;
+  return mirror?.provider==='apple-calendar'&&(event.saveState||
+   ['queued','sending','checking'].includes(mirror.state)||
+   mirror.state==='synced'&&typeof mirror.syncRevision==='number'&&(event.duckDetails?.revision??0)>mirror.syncRevision);
+ });
+ return [...originals.filter(original=>!pending.some(event=>matchesCalendarMirror(original,event.mirror!,event.dueDate))),...pending];
+}
 
 export function displayCalendarMirror(event:CalendarEvent,original:CalendarEvent){
  const mirror=event.mirror;

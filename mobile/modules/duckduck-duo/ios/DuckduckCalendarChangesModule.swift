@@ -52,7 +52,7 @@ public final class DuckduckCalendarChangesModule: Module {
       let visible = calendars.filter { !hidden.contains($0.calendarIdentifier) }
       return [
         "calendars": calendars.map(self.calendarSnapshot),
-        "events": self.events(in: visible, start: start, end: end),
+        "events": self.events(in: hidden.isEmpty ? nil : visible, start: start, end: end),
       ]
     }.runOnQueue(queue)
 
@@ -151,12 +151,13 @@ public final class DuckduckCalendarChangesModule: Module {
     ]
     value["account"] = calendar.source?.title
     value["accountId"] = calendar.source?.sourceIdentifier
+    value["isDefault"] = calendar.calendarIdentifier == store.defaultCalendarForNewEvents?.calendarIdentifier
     if let color = calendar.cgColor { value["color"] = calendarColor(color) }
     return value
   }
 
-  private func events(in calendars: [EKCalendar], start: Double, end: Double) -> [[String: Any]] {
-    guard !calendars.isEmpty, end > start else { return [] }
+  private func events(in calendars: [EKCalendar]?, start: Double, end: Double) -> [[String: Any]] {
+    guard calendars?.isEmpty != true, end > start else { return [] }
     let predicate = store.predicateForEvents(
       withStart: Date(timeIntervalSince1970: start / 1000),
       end: Date(timeIntervalSince1970: end / 1000), calendars: calendars

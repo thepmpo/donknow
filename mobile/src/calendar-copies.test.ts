@@ -1,12 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {displayCalendarMirror,mergeCalendarCopies} from './calendar-copies.ts';
+import {appleCalendarView,displayCalendarMirror,mergeCalendarCopies} from './calendar-copies.ts';
 import type {CalendarEvent} from './calendar-model.ts';
 
 const apple:CalendarEvent={id:'apple-12',externalUid:'first',provider:'apple-calendar',calendarId:'@apple/test',
  title:'일정',dueDate:'2026-11-12',startAt:'2026-11-12T00:00:00.000Z',endAt:'2026-11-12T01:00:00.000Z',canWrite:true};
 const google:CalendarEvent={...apple,id:'google-12',provider:'google',calendarId:'primary',
  startAt:'2026-11-12T09:00:00+09:00',endAt:'2026-11-12T10:00:00+09:00'};
+test('Apple calendar view shows all native calendars, excludes stale copies, and retains a pending Apple write',()=>{
+ const recurring={...apple,id:'apple-26',eventId:'repeat',externalUid:'monthly',calendarId:'@apple/other',
+  dueDate:'2026-11-26',endDate:'2026-11-27',allDay:true,recurring:true};
+ const stale:CalendarEvent={...apple,id:'stale',provider:'docen',calendarId:'@docen',
+  mirror:{provider:'apple-calendar',calendarId:'@apple/test',externalEventId:'gone',state:'synced'}};
+ const pending:CalendarEvent={...stale,id:'pending',mirror:{...stale.mirror!,externalEventId:undefined,state:'queued'}};
+ assert.deepEqual(appleCalendarView([google,stale,apple,recurring,pending]).map(event=>event.id),
+  ['apple-12','apple-26','pending']);
+ assert.deepEqual(appleCalendarView([google,stale,apple,pending]).map(event=>event.id),['apple-12','pending']);
+});
 test('a newer Apple date is visible before reconciliation while a local unsent edit stays visible',()=>{
  const copy:CalendarEvent={...apple,id:'docen-copy',provider:'docen',etag:'4',duckDetails:{revision:4,fields:{}},
   mirror:{state:'synced',provider:'apple-calendar',calendarId:'@apple/test',syncRevision:4}};

@@ -23,6 +23,14 @@ test('EventKit civil dates stay on the selected local day for all-day events',()
  assert.equal(event.externalUid,'eventkit-uid');
 });
 
+test('EventKit all-day occurrences with the same civil start and end still cover their start day',()=>{
+ const event=normalizeAppleEvent({...native,allDay:true,recurrence:true,
+  allDayStart:'2026-11-26',allDayEnd:'2026-11-26'},calendar);
+ assert.equal(event.dueDate,'2026-11-26');
+ assert.equal(event.endDate,'2026-11-27');
+ assert.equal(event.recurring,true);
+});
+
 test('a timed response cannot acknowledge an all-day EventKit save',async()=>{
  const {d}=device(),id=appleCalendarSource(calendar).id;
  const draft={...eventDraft('2026-11-27','Asia/Seoul',id),title:'하루 종일'};

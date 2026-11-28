@@ -80,7 +80,7 @@ export function useAppleCalendarData({owner,start,end,timeZone,selected,hidden=[
   if(e&&typeof e==='object'&&'code' in e&&e.code==='ERR_ACCESS_REQUIRED'){
    const empty={owner,sources:[],events:[],readAt:null};
    cache.set(owner,empty);setState(empty);
-   if(current.current.selected.some(isAppleCalendar))setError('아이폰 캘린더 접근이 해제됐어요. ME에서 접근 권한을 확인해주세요.');
+   setError('iPhone 캘린더에 전체 접근을 허용해주세요.');
    await AsyncStorage.removeItem(key).catch(()=>{});
   }else setError(e instanceof Error?e.message:'아이폰 일정을 확인하지 못했어요.');
  }finally{if(fresh())setLoading(false);}},[owner,windowStart,windowEnd,hiddenKey,enabled,device,start,end,timeZone]);
