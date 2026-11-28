@@ -284,7 +284,7 @@ export function CalendarScreen({store,onAdd,onEdit:editTodo,active=true,syncWhil
       const background=palette?.background??(Platform.OS==='web'?colors.pale:dark?'#10243e':'#e8f3ff');
       return <CalendarDraggableEvent dragEnabled={interactive} event={e} day={day} key={e.id} accessibilityRole="button" accessibilityLabel={e.title+' Event 상세'} onPress={press=>{press.stopPropagation();if(!swipeConsumed.current)openEvent(e);}} accessibilityHint={eventTime(e,zone)}
        contentStyle={[s.eventPill,{height:cardHeight,justifyContent:showTime?'space-between':'center',backgroundColor:background,borderRadius:e.allDay?8:5}]}>
-       <CalendarMonthTitle title={e.title} lines={titleLines} color={palette?.text??colors.text} background={background} fontScale={fontScale}/>
+       <CalendarMonthTitle title={e.title} lines={titleLines} color={palette?.text??colors.text} fontScale={fontScale}/>
        {showTime&&<Text numberOfLines={1} maxFontSizeMultiplier={monthLabelScale} style={[s.startTime,{color:palette?.text??colors.secondary}]}>{size.width/7<54?calendarStartLabel(e,day,zone):monthStartLabel(e,day,zone)}</Text>}
       </CalendarDraggableEvent>;
      })}

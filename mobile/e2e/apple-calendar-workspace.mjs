@@ -22,8 +22,8 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  }
  if(route.request().method()!=='GET'){googleWrites++;return route.fulfill({status:400,json:{error:'unexpected server write'}});}if(p==='/api/auth/session')return route.fulfill({json:{user:{id:'apple-user',email:'apple@example.test',emailVerified:true}}});if(p==='/api/todos')return route.fulfill({json:[]});if(p==='/api/capabilities')return route.fulfill({json:{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1,docenCalendarReconcile:1}});if(p==='/api/calendar/calendars')return route.fulfill({status:409,json:{error:'서비스 연결을 다시 승인해주세요.'}});if(p==='/api/calendar/events'){calendarReads++;const calendarId=new URL(route.request().url()).searchParams.get('calendarId')??'primary';return route.fulfill({json:{items:calendarId==='@docen'&&linked?[linked]:[],calendarId,hiddenMirrors:calendarId==='@docen'&&pendingDelete?[pendingDelete]:[],nextCursor:null,connectionState:'connected',readAt:new Date().toISOString()}});}if(p==='/api/assistant/status')return route.fulfill({json:{enabled:false,actions:[]}});if(p==='/api/integrations'){if(statusDelay)await new Promise(resolve=>setTimeout(resolve,statusDelay));if(statusFailure)return route.fulfill({status:503,json:{error:'연결 조회 실패'}});return route.fulfill({json:[{provider:'google',connected:true,configured:true,features:['calendar','calendarWrite'],accounts:[{connectionId:'google-fixture',label:'예시',features:['calendar','calendarWrite']},{connectionId:'extra-fixture',label:'추가 계정',features:['tasks','tasksWrite','drive','driveContent']}]}]});}if(p==='/api/assistant/actions')return route.fulfill({json:{actions:[]}});return route.fulfill({status:404,json:{error:'fixture endpoint'}});});
  await page.goto('http://127.0.0.1:'+server.address().port+'/?nativeCalendar=1&deviceEdits=1&initialWeek=1&mode='+mode);await page.getByTestId('calendar-week-workspace').waitFor();const year=page.getByTestId('calendar-year-trigger');await year.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();const sheet=page.getByTestId('calendar-sheet');await sheet.getByRole('button',{name:'캘린더 항목 추가',exact:true}).click();await sheet.getByRole('textbox',{name:'Event 제목',exact:true}).fill('아이폰 원본 일정');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();assert.equal(await sheet.getByRole('button',{name:'ME 연결 관리 열기',exact:true}).count(),0);if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();await sheet.waitFor({state:'detached'});await page.getByRole('tab',{name:'ME',exact:true}).click();await page.getByRole('button',{name:'연결된 서비스 관리',exact:true}).click();
- for(const label of ['Google 캘린더 연결 관리','Google 할 일 연결 관리','Google 문서·스프레드시트·드라이브 연결 관리','아이폰 캘린더 연결 관리','아이폰 미리 알림 가져오기','네이버 캘린더 연결 관리','네이버 메일 연결 관리'])assert.equal(await page.getByRole('button',{name:label,exact:true}).count(),1);
- for(const name of ['Google 캘린더','Google 할 일','Google 문서·스프레드시트·드라이브'])await page.getByRole('button',{name:name+' 연결 관리',exact:true}).getByText('연결됨',{exact:true}).waitFor();
+ for(const label of ['Google 캘린더 연결 관리','Google Tasks 연결 관리','Google 문서·스프레드시트·드라이브 연결 관리','아이폰 캘린더 연결 관리','아이폰 미리 알림 가져오기','네이버 캘린더 연결 관리','네이버 메일 연결 관리'])assert.equal(await page.getByRole('button',{name:label,exact:true}).count(),1);
+ for(const name of ['Google 캘린더','Google Tasks','Google 문서·스프레드시트·드라이브'])await page.getByRole('button',{name:name+' 연결 관리',exact:true}).getByText('연결됨',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Google 캘린더 연결 관리',exact:true}).click();
  statusDelay=350;statusFailure=true;
  await page.getByRole('button',{name:'연결 상태 새로고침',exact:true}).click();
@@ -35,7 +35,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await page.getByText('저장된 연결을 확인했어요.',{exact:true}).waitFor();
  statusDelay=0;
  if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await page.getByRole('button',{name:'돌아가기',exact:true}).click();
- await page.getByRole('button',{name:'아이폰 캘린더 연결 관리',exact:true}).click();await page.getByRole('button',{name:'아이폰 캘린더 연결',exact:true}).click();await page.getByRole('button',{name:'아이폰 캘린더 개인 Event 표시',exact:true}).waitFor();const state=await page.evaluate(()=>window.appleCalendarFixture.state());assert.equal(state.allowed,true);assert.equal(state.writes.length,0);assert.equal(googleWrites,0);await page.evaluate(()=>window.appleCalendarFixture.setListDelay(400));
+ await page.getByRole('button',{name:'아이폰 캘린더 연결 관리',exact:true}).click();await page.getByRole('button',{name:'아이폰 캘린더 연결',exact:true}).click();await page.getByRole('button',{name:'아이폰 캘린더 개인 일정 표시',exact:true}).waitFor();const state=await page.evaluate(()=>window.appleCalendarFixture.state());assert.equal(state.allowed,true);assert.equal(state.writes.length,0);assert.equal(googleWrites,0);await page.evaluate(()=>window.appleCalendarFixture.setListDelay(400));
  await page.getByRole('button',{name:'다시 확인',exact:true}).click();
  assert.equal(await page.getByRole('button',{name:'확인 중…',exact:true}).isDisabled(),true);
  await page.getByText('캘린더 목록 3개를 확인했어요.',{exact:true}).waitFor();
@@ -45,7 +45,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await page.getByRole('button',{name:'아이폰 캘린더 연결',exact:true}).click();
  await page.getByText('캘린더 목록 3개를 확인했어요.',{exact:true}).waitFor();
  await page.screenshot({path:out+'/'+mode+'-me-calendars.png'});
- await page.getByRole('tab',{name:'캘린더',exact:true}).click();await year.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();await sheet.getByRole('button',{name:'캘린더 항목 추가',exact:true}).click();await sheet.getByRole('textbox',{name:'Event 제목',exact:true}).fill('아이폰 원본 일정');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();const nativeGroups=sheet.getByTestId('calendar-destination-account');assert.deepEqual(await nativeGroups.evaluateAll(groups=>groups.map(group=>group.getAttribute('aria-label'))),['iCloud','CalDAV','도슨']);assert.deepEqual(await nativeGroups.first().getByRole('radio').evaluateAll(radios=>radios.map(r=>r.getAttribute('aria-label'))),['캘린더 개인 일정','캘린더 가족 일정']);await sheet.getByRole('radio',{name:'캘린더 개인 Event',exact:true}).click();assert.equal(await sheet.getByRole('textbox',{name:'Event 초대 이메일',exact:true}).count(),0);await sheet.getByRole('textbox',{name:'Event 메모',exact:true}).fill('AI가 읽을 실제 아이폰 본문');await sheet.getByRole('button',{name:'Event 저장',exact:true}).click();assert.equal(googleWrites,0);await sheet.waitFor({state:'detached'});await page.getByRole('button',{name:'아이폰 원본 일정 종일 Event 상세',exact:true}).waitFor();assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).writes.length,1);await page.screenshot({path:out+'/'+mode+'-native-event.png'});
+ await page.getByRole('tab',{name:'캘린더',exact:true}).click();await year.hover();await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();await sheet.getByRole('button',{name:'캘린더 항목 추가',exact:true}).click();await sheet.getByRole('textbox',{name:'Event 제목',exact:true}).fill('아이폰 원본 일정');await sheet.getByRole('button',{name:'저장할 캘린더 선택',exact:true}).click();const nativeGroups=sheet.getByTestId('calendar-destination-account');assert.deepEqual(await nativeGroups.evaluateAll(groups=>groups.map(group=>group.getAttribute('aria-label'))),['iCloud','CalDAV','도슨']);assert.deepEqual(await nativeGroups.first().getByRole('radio').evaluateAll(radios=>radios.map(r=>r.getAttribute('aria-label'))),['캘린더 개인 일정','캘린더 가족 일정']);await sheet.getByRole('radio',{name:'캘린더 개인 일정',exact:true}).click();assert.equal(await sheet.getByRole('textbox',{name:'Event 초대 이메일',exact:true}).count(),0);await sheet.getByRole('textbox',{name:'Event 메모',exact:true}).fill('AI가 읽을 실제 아이폰 본문');await sheet.getByRole('button',{name:'Event 저장',exact:true}).click();assert.equal(googleWrites,0);await sheet.waitFor({state:'detached'});await page.getByRole('button',{name:'아이폰 원본 일정 종일 Event 상세',exact:true}).waitFor();assert.equal((await page.evaluate(()=>window.appleCalendarFixture.state())).writes.length,1);await page.screenshot({path:out+'/'+mode+'-native-event.png'});
  const dropped=page.getByRole('button',{name:'아이폰 원본 일정 종일 Event 상세',exact:true});
  await dropped.hover();await page.mouse.down();await page.getByTestId('calendar-drag-preview').waitFor();await page.mouse.up();
  assert.equal(await dropped.getAttribute('aria-selected'),'true');
@@ -72,7 +72,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  await page.evaluate(event=>window.appleCalendarFixture.writeOutside(event),readOnlyEvent);
  await page.getByRole('button',{name:/읽기 전용 일정.*Event 상세/}).click();
  await sheet.getByRole('button',{name:'Event 삭제',exact:true}).click();
- await page.getByText('이 캘린더에서 일정을 삭제할 권한이 없어요.',{exact:true}).waitFor();
+ await page.getByText('이 캘린더에서 Event를 삭제할 권한이 없어요.',{exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'원본에서도 Event 삭제',exact:true}).count(),0);
  await page.getByRole('button',{name:'삭제 취소',exact:true}).click();
  if(mode==='duo')await page.getByTestId('DuoBackButton').click();else await sheet.getByRole('button',{name:'닫기',exact:true}).click();
@@ -116,7 +116,19 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  });
  assert.equal(firstThree,1,'three typical Korean title glyphs fit on the first line');
  await timedMonthCard.getByTestId('month-title-fade').waitFor();
- assert.match(await timedMonthCard.getByTestId('month-title-fade').evaluate(node=>getComputedStyle(node).backgroundImage),/linear-gradient/);
+ const fade=await timedMonthCard.getByTestId('month-title-fade').evaluate(node=>{
+  const style=getComputedStyle(node),text=getComputedStyle(node.firstElementChild);
+  return {mask:style.maskImage,background:style.backgroundImage,overflow:text.textOverflow,clamp:text.webkitLineClamp};
+ });
+ assert.match(fade.mask,/linear-gradient/);
+ assert.equal(fade.background,'none','the title mask does not shade the colored card');
+ assert.equal(fade.overflow,'clip');
+ assert.equal(fade.clamp,'none','clipping never inserts an ellipsis');
+ assert.equal(await timedMonthCard.getByText(/^(오전 1시|01:00)$/).evaluate(node=>getComputedStyle(node).maskImage),'none');
+ await page.evaluate(()=>window.appleCalendarFixture.writeOutside({id:'long-all-day',calendarId:'icloud',title:'종일 프로그램 준비와 참가자 연락',notes:'',startDate:'2026-11-27T00:00:00Z',endDate:'2026-11-28T00:00:00Z',timeZone:'UTC',allDay:true}));
+ const allDayTitle=page.getByRole('button',{name:'종일 프로그램 준비와 참가자 연락 Event 상세',exact:true}).getByTestId('month-title-fade');
+ await allDayTitle.waitFor();
+ assert.equal(await allDayTitle.evaluate(node=>getComputedStyle(node.firstElementChild).whiteSpace),'nowrap');
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({id:'short-title',calendarId:'icloud',title:'약속',notes:'',startDate:'2026-11-26T01:00:00Z',endDate:'2026-11-26T02:00:00Z',timeZone:'UTC',allDay:false}));
  const shortTitle=page.getByTestId('calendar-date-grid').getByRole('button',{name:'약속 Event 상세',exact:true});
  await shortTitle.waitFor();
@@ -125,7 +137,7 @@ try{for(const [mode,width] of [['duo',430],['standard',390]]){
  const darkTitle=await timedMonthCard.getByText('원본에서 바로 작성',{exact:true}).evaluate(node=>getComputedStyle(node).color);
  await page.screenshot({path:out+'/'+mode+'-readable-month-dark.png'});
  await page.emulateMedia({colorScheme:'light',reducedMotion:'reduce'});
- await page.waitForFunction(previous=>[...document.querySelectorAll('[role=button][aria-label="원본에서 바로 작성 일정 상세"] span, [role=button][aria-label="원본에서 바로 작성 일정 상세"] [dir=auto]')].some(node=>node.textContent==='원본에서 바로 작성'&&getComputedStyle(node).color!==previous),darkTitle);
+ await page.waitForFunction(previous=>[...document.querySelectorAll('[role=button][aria-label="원본에서 바로 작성 Event 상세"] span, [role=button][aria-label="원본에서 바로 작성 Event 상세"] [dir=auto]')].some(node=>node.textContent==='원본에서 바로 작성'&&getComputedStyle(node).color!==previous),darkTitle);
  await page.screenshot({path:out+'/'+mode+'-readable-month-light.png'});
  await page.emulateMedia({colorScheme:'dark',reducedMotion:'reduce'});
  await page.evaluate(()=>window.appleCalendarFixture.writeOutside({...window.appleCalendarFixture.state().events[0],title:'원본에서 바로 수정'}));

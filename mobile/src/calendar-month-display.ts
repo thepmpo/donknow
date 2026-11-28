@@ -3,6 +3,7 @@ import type {CalendarEvent} from './calendar-model.ts';
 
 const gap=3;
 export const monthTitleLine=16,monthTimeLine=13,monthLabelScale=1.15;
+export const monthTitleFadeWidth=12;
 
 export function monthStartLabel(event:CalendarEvent,day:string,zone:string){
  const time=calendarStartLabel(event,day,zone);
