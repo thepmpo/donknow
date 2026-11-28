@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-28",
-  "codeCommit": "1bae53271e44b7c066607e78a9d3ab9790cc88b2",
-  "assetCommit": "1578e2809c553b5a1a4c1e4662402bf2f3a6bc10",
-  "imageCount": 1841,
+  "codeCommit": "c912b726c56a7662bed679d52c9ca786efe37ad4",
+  "assetCommit": "c912b726c56a7662bed679d52c9ca786efe37ad4",
+  "imageCount": 1845,
   "images": [
     {
       "path": "artifacts/docen-identity-2026-11-23/browser/motion-home.png",
@@ -8263,6 +8263,34 @@
       "bytes": 37928,
       "sha256": "e9599e80facf217cdfba3ef8001088ccb2b9d0801627ad0cc2a9f340dea31194",
       "import_path": "images/artifacts__email-verification-2026-11-22__verification-mobile.png"
+    },
+    {
+      "path": "artifacts/event-detail-preview/duo-event-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42678,
+      "sha256": "5580df6662cbfd2847a224cd0680ad11ae2cc4f09fd05cc43a40a3cc8e5f3749",
+      "import_path": "images/artifacts__event-detail-preview__duo-event-detail.png"
+    },
+    {
+      "path": "artifacts/event-detail-preview/standard-event-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 40144,
+      "sha256": "906f44dc489c11524e7336b68dc3c5310f85b229da080210766f08cbd0d31fea",
+      "import_path": "images/artifacts__event-detail-preview__standard-event-detail.png"
+    },
+    {
+      "path": "artifacts/event-detail-preview/standard-ticket-lists.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 26715,
+      "sha256": "a3678476adf43052b77540abf4d74db6224e33033f393e37b627dad7673cd4b4",
+      "import_path": "images/artifacts__event-detail-preview__standard-ticket-lists.png"
+    },
+    {
+      "path": "artifacts/event-detail-preview/web-event-detail.png",
+      "category": "단계별 개요 또는 초기 웹 프로토타입",
+      "bytes": 42163,
+      "sha256": "654d74a3600eb2d9ba80857ba23a7512e84979938c99020ea633c847565c5e41",
+      "import_path": "images/artifacts__event-detail-preview__web-event-detail.png"
     },
     {
       "path": "artifacts/features-overview.png",
