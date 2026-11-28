@@ -10,12 +10,24 @@ const events=[
  {id:'preview-event-2',title:'보리 미용',calendarId:'icloud',startDate:'2026-11-08T14:00:00Z',endDate:'2026-11-08T15:00:00Z',allDay:false,timeZone:'UTC',notes:''},
 ];
 const ticket=(id,title,listId,listTitle)=>({id,title,dueDate:null,category:'일상',done:false,source:{provider:'apple-reminders',listId,listTitle,externalId:'preview-'+id,color:'#6aaff7'}});
+const localTicket={id:'local-ticket',title:'기기에 반영할 삭제',dueDate:null,category:'일상',done:false,
+ delivery:{provider:'apple-reminders',state:'checking',listId:'inbox'}};
+const legacyEdit={id:'legacy-edit',before:localTicket,patch:{notes:'기기에 보관한 메모'},
+ editedAt:'2026-11-28T10:00:00Z',blocked:true,failure:'기존 저장이 처리되지 않았어요.'};
 try{
  for(const [mode,width,height] of [['duo',430,844],['standard',390,844],['web',1120,850]]){
   const page=await browser.newPage({viewport:{width,height},hasTouch:mode!=='web',isMobile:mode!=='web'});
   await page.emulateMedia({reducedMotion:'reduce',colorScheme:'dark'});
   await page.clock.install({time:new Date('2026-11-28T10:00:00Z')});
   await page.addInitScript(origin=>localStorage.setItem('duckduck.mobile.connection.v1',JSON.stringify({mode:'cloud',baseUrl:origin})),origin);
+  if(mode==='standard')await page.addInitScript(({owner,legacyEdit})=>{
+   if(sessionStorage.getItem('fixture.legacy-edit-seeded'))return;
+   const key='docen.todo.edits.'+owner.split('').map(char=>char.charCodeAt(0).toString(16).padStart(4,'0')).join('');
+   const chunks=JSON.stringify([legacyEdit]).match(/.{1,400}/g);
+   chunks.forEach((chunk,index)=>sessionStorage.setItem(key+'.fixture.'+index,chunk));
+   sessionStorage.setItem(key,JSON.stringify({owner,g:'fixture',parts:chunks.length,at:Date.now()}));
+   sessionStorage.setItem('fixture.legacy-edit-seeded','1');
+  },{owner:origin+':preview-user',legacyEdit});
   let acceptDeletes=false,deleted=false,deleteRequests=0;
   await page.route(origin+'/**',route=>{
    const path=new URL(route.request().url()).pathname;
@@ -28,7 +40,7 @@ try{
    }
    const payloads={
     '/api/auth/session':{user:{id:'preview-user',email:'preview@example.test',emailVerified:true}},
-    '/api/todos':[ticket('a','공부 기록 정리','today',"Today's"),ticket('b','국간장','inbox','Inbox'),...(!deleted?[{id:'local-ticket',title:'기기에 반영할 삭제',dueDate:null,category:'일상',done:false}]:[])],
+    '/api/todos':[ticket('a','공부 기록 정리','today',"Today's"),ticket('b','국간장','inbox','Inbox'),...(!deleted?[localTicket]:[])],
     '/api/capabilities':{calendarWorkspace:2,calendarDetails:1,calendarCreateOptions:1,docenCalendar:1},
     '/api/calendar/calendars':{items:[],nextCursor:null},
     '/api/calendar/events':{items:[],nextCursor:null,connectionState:'connected'},
@@ -81,7 +93,16 @@ try{
    assert.equal(await row.count(),0);
    await page.getByRole('tab',{name:'날짜별 Ticket'}).click();
    const local=page.getByRole('button',{name:'기기에 반영할 삭제 수정'});
+   await local.waitFor();
+   assert.equal(await page.getByTestId('todo-local-ticket').getByText(/저장 결과 확인 중|반영 대기/).count(),0);
    await local.click();
+   const editor=page.getByTestId('todo-inline-editor');
+   assert.equal(await editor.getByRole('textbox',{name:'메모'}).inputValue(),'기기에 보관한 메모');
+   await editor.getByRole('button',{name:'Ticket 저장 목록 선택'}).click();
+   const popup=page.getByTestId('ticket-editor-popup');
+   await popup.getByText('현재 · 미리알림',{exact:true}).waitFor();
+   assert.equal(await popup.getByText(/저장 결과를 확인|반영 대기/).count(),0);
+   await popup.getByRole('button',{name:'닫기',exact:true}).click();
    await page.getByRole('button',{name:'Ticket 삭제',exact:true}).click();
    await page.getByRole('button',{name:'Ticket 삭제 확인'}).click();
    await local.waitFor({state:'detached'});

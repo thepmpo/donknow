@@ -309,7 +309,7 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
   const canChangeList=store.user?.emailVerified&&store.connection?.mode==='cloud'&&
    (!source||source.provider==='apple-reminders'||source.provider==='google'&&source.externalId.includes(':tasks:'));
   const listTitle=delivery&&delivery.state!=='synced'
-   ?(delivery.provider==='apple-reminders'?'미리알림':'Google Tasks')+' · 반영 대기'
+   ?(delivery.provider==='apple-reminders'?'미리알림':'Google Tasks')
    :source?.listTitle??(source?.provider==='apple-reminders'?'미리알림':source?.provider==='google'?'Google Tasks':destination?.title??'도슨');
   function toolButton(label:string,icon:React.ComponentProps<typeof Ionicons>['name'],open:NonNullable<typeof tools>,selected=false,hint?:string,summary?:string){
    return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityHint={hint} accessibilityState={{expanded:tools===open}} disabled={saving}
@@ -383,7 +383,6 @@ export function TodoEditorForm({todo,dueDate,store,onClose,visible=true,onBusy,p
        </>}
        {!!todo&&delivery?.state==='blocked'&&<Button title="선택한 목록에 다시 보내기" quiet disabled={saving}
         onPress={()=>void store.retryDelivery(live!.id).then(closeTools).catch(e=>setError(e instanceof Error?e.message:'다시 보내지 못했어요.'))}/>}
-       {delivery?.state==='checking'&&<Text style={s.muted}>선택한 목록에서 저장 결과를 확인해주세요.</Text>}
       </>}
       {tools==='delete'&&!!todo&&<>
        <Text style={s.editorOptionText}>{todo.title}</Text>
